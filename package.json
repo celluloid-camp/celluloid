@@ -1,0 +1,50 @@
+{
+  "name": "celluloid",
+  "version": "0.1.0",
+  "descriptions": "Celluloid helps students and teacher to interact by annotating online educational videos",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.2",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "nocache": "^2.0.0",
+    "passport": "^0.4.0",
+    "pg": "^7.4.0"
+  },
+  "scripts": {
+    "build": "yarn build-client && yarn build-server && cp -r client/build dist/client",
+    "watch": "concurrently \"yarn watch-server\" \"yarn watch-client\"",
+    "watch-client": "cd client && yarn start",
+    "build-client": "cd client && yarn build",
+    "build-server": "NODE_ENV=production webpack --config webpack-server.config.js --colors",
+    "watch-server": "concurrently \"yarn build-server --watch\" \"nodemon --use-strict dist/index.js\"",
+    "start": "cd dist && node --use-strict index.js",
+    "deploy": "./bin/deploy"
+  },
+  "author": "Erwan Queffélec <erwan.queffelec@gmail.com",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/bcrypt": "^1.0.0",
+    "@types/compression": "^0.0.35",
+    "@types/cookie-parser": "^1.4.1",
+    "@types/dotenv": "^4.0.2",
+    "@types/express": "^4.0.39",
+    "@types/passport": "^0.4.3",
+    "@types/pg": "^7.4.1",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.2",
+    "concurrently": "^3.5.0",
+    "eslint": "^4.1.1",
+    "eslint-config-airbnb": "^15.0.2",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.1.0",
+    "nodemon": "^1.11.0",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack": "^3.0.0"
+  }
+}

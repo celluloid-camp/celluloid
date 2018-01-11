@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+basedir=$(dirname $0)/../
+tag=$(git rev-parse --abbrev-ref HEAD).$(git describe --always)
+webapp_image=celluloid-webapp:${tag}
+webapp_proxy_image=celluloid-webapp-proxy:${tag}
+registry=475267145210.dkr.ecr.eu-west-1.amazonaws.com
+set -a
+source "${basedir}/deploy.env"
+set +a                         
+
+pushd ${basedir}
+  $(aws ecr get-login | sed 's/-e none//g')
+  docker build . -t ${webapp_image} -f Dockerfile.webapp
+  docker tag ${webapp_image} ${registry}/${webapp_image}
+  docker push ${registry}/${webapp_image} 
+  docker build . -t ${webapp_proxy_image} -f Dockerfile.webapp_proxy
+  docker tag ${webapp_proxy_image} ${registry}/${webapp_proxy_image}
+  docker push ${registry}/${webapp_proxy_image} 
+  pushd ${COOL_INFRA_PATH}
+  terraform init
+  terraform get
+  TF_VAR_docker_tag=${tag} terraform apply
+  popd
+popd

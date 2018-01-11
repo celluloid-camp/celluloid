@@ -1,0 +1,39 @@
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as compression from 'compression';
+import * as nocache from 'nocache';
+import * as dotenv from 'dotenv';
+import * as ApiProjects from './api/Projects';
+import * as ApiTags from './api/Tags';
+import * as path from 'path';
+
+const cookieParser = require('cookie-parser');
+
+dotenv.config();
+
+const app = express();
+
+app.use(express.static('../client/build/'));
+app.use(bodyParser.json());
+app.use(compression());
+
+app.use('/api/projects/', ApiProjects);
+app.use('/api/tags', ApiTags)
+
+app.get('/elb-status', (req, res) => {
+  res.status(200);
+  res.send();
+});
+
+app.use('/service-worker.js', nocache());
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+});
+
+app.listen(process.env.CELLULOID_LISTEN_PORT, () => {
+  console.log(
+    `HTTP server listening on port ${process.env.CELLULOID_LISTEN_PORT}`
+    + ` in ${process.env.NODE_ENV} mode`
+  );
+});
