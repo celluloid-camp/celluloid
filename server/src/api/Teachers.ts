@@ -19,12 +19,12 @@ function validateSignup(payload) {
 
   if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
     result.success = false;
-    result.errors.email = 'Please provide a correct email address.';
+    result.errors.email = 'Cette adresse email est invalide';
   }
 
   if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
     result.success = false;
-    result.errors.password = 'Password must have at least 8 characters.';
+    result.errors.password = 'La longueur minimale du mot de passe est fixée à 8 caractères';
   }
 
   return result;
@@ -38,12 +38,12 @@ function validateLogin(payload) {
 
   if (!payload || typeof payload.email !== 'string' || payload.email.trim().length === 0) {
     result.success = false;
-    result.errors.email = 'Please provide your email address.';
+    result.errors.email = `Merci de saisir votre adresse email`;
   }
 
   if (!payload || typeof payload.password !== 'string' || payload.password.trim().length === 0) {
     result.success = false;
-    result.errors.password = 'Please provide your password.';
+    result.errors.password = 'Merci de saisir votre mot de passe';
   }
 
   return result;
