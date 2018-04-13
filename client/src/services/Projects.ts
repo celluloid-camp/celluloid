@@ -30,8 +30,10 @@ export default class Projects {
     }).then(response => {
       if (response.status === 200) {
         return response.json();
+      } else if (response.status === 404) {
+        throw new Error(`Désolé ! Ce projet est introuvable... Peut-être a-t-il été supprimé ou privatisé ?`);
       }
-      throw new Error(`Could not perform request (error ${response.status})`);
+      throw new Error(`Désolé ! La requête a échouée... Veuillez réessayer plus tard ou bien nous contacter`);
     });
   }
 
@@ -49,7 +51,9 @@ export default class Projects {
       if (response.status === 201) {
         return response.json();
       }
-      throw new Error(`Oops! Project creation failed (code ${response.status})`);
+      throw new Error(
+        `Désolé ! La création du projet a échouée... Veuillez réessayer plus tard ou bien nous contacter`
+      );
     });
   }
 }

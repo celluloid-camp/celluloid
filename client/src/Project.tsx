@@ -207,7 +207,8 @@ const Project = withRouter(
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid> :
+            </Grid> : this.state.error ?
+            <div style={{ color: 'red', fontWeight: 'bold'}}>{this.state.error}</div> :
             <div>loading...</div>
           }
         </Paper>
