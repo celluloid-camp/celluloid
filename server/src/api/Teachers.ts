@@ -3,7 +3,11 @@ import * as express from 'express';
 import pool from '../common/Postgres';
 import * as validator from 'validator';
 
+import * as auth from '../auth/Local';
+
 import { SignupValidation, LoginValidation } from '../../../common/src/types/Teacher';
+
+import { loginRequired } from '../auth/Utils';
 
 const router = express.Router();
 
@@ -45,22 +49,57 @@ function validateLogin(payload) {
   return result;
 }
 
-router.post('/signup', (req, res) => {
+router.post('/signup', (req, res, next) => {
   const result = validateSignup(req.body);
 
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return res.status(200).json(result);
+  return auth.authenticate('local-signup', error => {
+    if (error) {
+      result.success = false;
+      res.status(400).json(result);
+    } else {
+      res.status(200).json(result);
+    }
+  })(req, res, next);
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res, next) => {
   const result = validateSignup(req.body);
 
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return res.status(200).json(result);
+  return auth.authenticate('local-login', (error, user, info) => {
+    if (error) {
+      result.success = false;
+      res.status(401).json(result);
+    } else {
+      req.login(user, err => {
+        if (err) {
+          result.success = false;
+          res.status(500).json(result);
+        } else {
+          res.status(200).json(result);
+        }
+      });
+    }
+  })(req, res, next);
+});
+
+router.get('/me', loginRequired, (req, res, next) => {
+  return res.status(200).json({
+    teacher: {
+       email: req.user.email,
+       name: req.user.name
+    }
+  });
+});
+
+router.put('/logout', loginRequired, (req, res, next) => {
+  req.logout();
+  return res.status(200).send();
 });
 
 export = router;

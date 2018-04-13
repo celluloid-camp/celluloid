@@ -49,4 +49,32 @@ export default class Teachers {
               `Could not perform request (error ${response.status}`);
         });
   }
+
+  static me() {
+    const headers = {
+      'Accepts': 'application/json',
+    };
+
+    return fetch(`/api/teachers/me`, {
+             method: 'GET',
+             headers: new Headers(headers),
+             credentials: 'include'
+           })
+        .then(response => {
+          if (response.status === 200) {
+            return response.json();
+          } else if (response.status === 401) {
+            return response.json();
+          }
+          throw new Error(
+              `Could not perform request (error ${response.status}`);
+        });
+  }
+
+  static logout() {
+    return fetch(`/api/teachers/logout`, {
+      method: 'PUT',
+      credentials: 'include'
+    });
+  }
 }

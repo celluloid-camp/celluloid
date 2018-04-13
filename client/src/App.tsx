@@ -15,6 +15,7 @@ import 'flag-icon-css/css/flag-icon.css';
 import TeacherSignup, { TeacherSignupPayload, TeacherSignupAction } from './TeacherSignup';
 import TeacherLogin, { TeacherLoginAction } from './TeacherLogin';
 import { TeacherCredentials } from './types/Teacher';
+import TeachersService from './services/Teachers';
 
 const decorate = withStyles(({ palette, spacing }) => ({
   grow: {
@@ -29,16 +30,37 @@ interface Props extends RouteComponentProps<{}> {
 
 }
 
+interface State {
+  signupOpen: boolean;
+  loginOpen: boolean;
+  teacher?: {
+    email: string;
+    name?: string;
+  };
+}
+
 const Menu = withRouter(decorate<Props>(
   class extends React.Component<
     Props
     & WithStyles<'grow' | 'largeBar'>
-    > {
+    , State> {
 
     state = {
       signupOpen: false,
-      loginOpen: false
-    };
+      loginOpen: false,
+    } as State;
+
+    getTeacher() {
+      TeachersService.me().then(result => {
+        if (result.teacher) {
+          this.setState({ teacher: result.teacher });
+        }
+      }).catch(err => null);
+    }
+
+    componentWillMount() {
+      this.getTeacher();
+    }
 
     render() {
       const showLogin = () => {
@@ -50,9 +72,11 @@ const Menu = withRouter(decorate<Props>(
       };
 
       const closeLogin = (action: TeacherLoginAction, value: TeacherCredentials) => {
+        this.setState({ signupOpen: false });
         this.setState({ loginOpen: false });
         switch (action) {
           case TeacherLoginAction.Login:
+            this.getTeacher();
             break;
           case TeacherLoginAction.ForgotPassword:
             break;
@@ -75,6 +99,7 @@ const Menu = withRouter(decorate<Props>(
             this.setState({ loginOpen: true });
             break;
           case TeacherSignupAction.Signup:
+            this.getTeacher();
             break;
           case TeacherSignupAction.None:
             break;
@@ -84,6 +109,50 @@ const Menu = withRouter(decorate<Props>(
         return Promise.resolve({});
       };
 
+      const logout = () => {
+        TeachersService.logout().then(() => {
+          this.setState({teacher: undefined});
+        })
+        .catch(err => null);
+      };
+
+      const renderLoginBar = () => {
+        if (this.state.teacher) {
+          const name = this.state.teacher.name;
+          const email = this.state.teacher.email;
+          return (
+            <div>
+              <Button
+                color="primary"
+              >
+                {name ? name : email}
+              </Button>
+              <Button
+                onClick={logout}
+                color="primary"
+              >
+                {`Deconnexion`}
+              </Button>
+            </div>
+          );
+        } else {
+          return (
+            <div>
+              <Button
+                onClick={showSignup}
+              >
+                {`Inscription`}
+              </Button>
+              <Button
+                onClick={showLogin}
+                color="primary"
+              >
+                {`Connexion`}
+              </Button>
+            </div>
+          );
+        }
+      };
       const classes = this.props.classes;
       return (
         <div>
@@ -103,17 +172,7 @@ const Menu = withRouter(decorate<Props>(
                 />
               </IconButton>
               <Button>{`À propos`}</Button>
-              <Button
-                onClick={showSignup}
-              >
-                {`Inscription`}
-              </Button>
-              <Button
-                onClick={showLogin}
-                color="primary"
-              >
-                {`Connexion`}
-              </Button>
+              {renderLoginBar()}
             </Toolbar>
           </AppBar >
           <TeacherSignup

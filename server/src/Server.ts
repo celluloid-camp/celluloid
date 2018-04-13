@@ -7,6 +7,8 @@ import * as ApiProjects from './api/Projects';
 import * as ApiTeachers from './api/Teachers';
 import * as ApiTags from './api/Tags';
 import * as path from 'path';
+import * as passport from './auth/Local';
+import * as session from 'express-session';
 
 const cookieParser = require('cookie-parser');
 
@@ -17,7 +19,13 @@ const app = express();
 app.use(express.static('../client/build/'));
 app.use(bodyParser.json());
 app.use(compression());
-
+app.use(session({
+  secret: process.env.CELLULOID_JWT_SECRET,
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/api/projects/', ApiProjects);
 app.use('/api/teachers/', ApiTeachers);
 app.use('/api/tags', ApiTags)

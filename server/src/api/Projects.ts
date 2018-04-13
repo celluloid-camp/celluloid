@@ -2,7 +2,16 @@ import * as express from 'express';
 
 import pool from '../common/Postgres';
 
+import { loginRequired } from '../auth/Utils';
+
 const router = express.Router();
+
+const orMatchesUserId = user => {
+  if (user) {
+    return `OR p.author = '${user.id}'`
+  }
+  return '';
+}
 
 router.get('/', (req, res) => {
   pool.query(`
@@ -14,7 +23,8 @@ router.get('/', (req, res) => {
       ON p.id = t2p."projectId"
       LEFT JOIN "Tag" t
       ON t2p."tagId" = t.id
-      GROUP BY p.id;
+      WHERE p.public = true ${orMatchesUserId(req.user)}
+      GROUP BY p.id
     `)
     .then(result => {
       const projects = result.rows.map(row => {
@@ -31,7 +41,6 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:projectId', (req, res) => {
-  console.log(req.params.projectId);
   pool.query(`
       SELECT
         p.*,
@@ -42,6 +51,7 @@ router.get('/:projectId', (req, res) => {
       LEFT JOIN "Tag" t
       ON t.id = t2p."tagId"
       WHERE p.id = $1
+      AND (p.public = true ${orMatchesUserId(req.user)})
       GROUP BY p.id
     `, [req.params.projectId])
     .then(result => {
@@ -53,7 +63,7 @@ router.get('/:projectId', (req, res) => {
         res.json(projects[0])
       } else {
         res.status(404);
-        res.json({ error: 'project does not exist or was deleted' });
+        res.json({ error: 'Project not found' });
       }
     })
     .catch(error => {
@@ -63,12 +73,12 @@ router.get('/:projectId', (req, res) => {
     });
 });
 
-router.put('/:projectId', (req, res) => {
+router.put('/:projectId', loginRequired, (req, res) => {
   res.status(500);
   res.json({ error: 'Not implemented' });
 })
 
-router.post('/', (req, res) => {
+router.post('/', loginRequired, (req, res) => {
   pool.query(`
     INSERT INTO "Project" (
       "id",
@@ -84,7 +94,8 @@ router.post('/', (req, res) => {
       "levelStart",
       "levelEnd",
       "public",
-      "collaborative"
+      "collaborative",
+      "langId"
     ) VALUES (
       uuid_generate_v4(),
       NOW(),
@@ -99,14 +110,15 @@ router.post('/', (req, res) => {
       $7,
       $8,
       $9,
-      $10
+      $10,
+      'fra'
     ) RETURNING *
   `, [
       req.body.videoId,
       req.body.title,
       req.body.description,
       req.body.assignments,
-      "Laurent Bourgatte",
+      req.user.id,
       req.body.objective,
       req.body.levelStart,
       req.body.levelEnd,
@@ -116,8 +128,6 @@ router.post('/', (req, res) => {
     .then(result => {
       if (result.rows.length === 1) {
         res.status(201);
-        console.log(result.rows[0]);
-        console.log(result.rows[0]);
         res.send(result.rows[0]);
       } else {
         console.error('More than one project row inserted (this should NEVER happen)', result);
