@@ -30,7 +30,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
 }));
 
 const Home = decorate<{}>(
-  class extends React.Component<WithStyles<'content'> & WithStyles<'center'> & WithStyles<'block'>> {
+  class extends React.Component<WithStyles<'content' | 'center' | 'block'>> {
 
     state = {
       newProjectDialogOpen: false,

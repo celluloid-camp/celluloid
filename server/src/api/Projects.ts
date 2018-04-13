@@ -6,10 +6,10 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   pool.query(`
-      SELECT 
-        p.*, 
-        to_json(array_agg(t)) as tags 
-      FROM "Project" p 
+      SELECT
+        p.*,
+        to_json(array_agg(t)) as tags
+      FROM "Project" p
       LEFT JOIN "TagToProject" t2p
       ON p.id = t2p."projectId"
       LEFT JOIN "Tag" t
@@ -33,7 +33,7 @@ router.get('/', (req, res) => {
 router.get('/:projectId', (req, res) => {
   console.log(req.params.projectId);
   pool.query(`
-      SELECT 
+      SELECT
         p.*,
         to_json(array_agg(t)) as tags
       FROM "Project" p

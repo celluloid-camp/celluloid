@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "es5",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true, 
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "removeComments": true,
+    "strictNullChecks": false,
+    "outDir": "build",
+    "lib": ["es2017", "dom"]
+  },
+  "include": [
+    "src/**/*",
+    "../common/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Switch, NavLink } from 'react-router-dom';
+import { Route, Switch, NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -12,6 +12,9 @@ import Project from './Project';
 import Video from './Video';
 import IconButton from 'material-ui/IconButton';
 import 'flag-icon-css/css/flag-icon.css';
+import TeacherSignup, { TeacherSignupPayload, TeacherSignupAction } from './TeacherSignup';
+import TeacherLogin, { TeacherLoginAction } from './TeacherLogin';
+import { TeacherCredentials } from './types/Teacher';
 
 const decorate = withStyles(({ palette, spacing }) => ({
   grow: {
@@ -22,12 +25,64 @@ const decorate = withStyles(({ palette, spacing }) => ({
   },
 }));
 
-const Menu = decorate<{}>(
+interface Props extends RouteComponentProps<{}> {
+
+}
+
+const Menu = withRouter(decorate<Props>(
   class extends React.Component<
-    WithStyles<'grow'>
-    & WithStyles<'largeBar'>
+    Props
+    & WithStyles<'grow' | 'largeBar'>
     > {
+
+    state = {
+      signupOpen: false,
+      loginOpen: false
+    };
+
     render() {
+      const showLogin = () => {
+        this.setState({ loginOpen: true });
+      };
+
+      const showSignup = () => {
+        this.setState({ signupOpen: true });
+      };
+
+      const closeLogin = (action: TeacherLoginAction, value: TeacherCredentials) => {
+        this.setState({ loginOpen: false });
+        switch (action) {
+          case TeacherLoginAction.Login:
+            break;
+          case TeacherLoginAction.ForgotPassword:
+            break;
+          case TeacherLoginAction.Signup:
+            this.setState({ signupOpen: true });
+            break;
+          case TeacherLoginAction.None:
+            break;
+          default:
+            break;
+        }
+        return Promise.resolve({});
+      };
+
+      const closeSignup = (action: TeacherSignupAction, value: TeacherSignupPayload) => {
+        this.setState({ signupOpen: false });
+        this.setState({ loginOpen: false });
+        switch (action) {
+          case TeacherSignupAction.Login:
+            this.setState({ loginOpen: true });
+            break;
+          case TeacherSignupAction.Signup:
+            break;
+          case TeacherSignupAction.None:
+            break;
+          default:
+            break;
+        }
+        return Promise.resolve({});
+      };
 
       const classes = this.props.classes;
       return (
@@ -47,23 +102,36 @@ const Menu = decorate<{}>(
                   className="flag-icon flag-icon-fr"
                 />
               </IconButton>
-              <Button>À propos</Button>
-              <Button>Inscription</Button>
-              <Button color="primary">Connexion</Button>
+              <Button>{`À propos`}</Button>
+              <Button
+                onClick={showSignup}
+              >
+                {`Inscription`}
+              </Button>
+              <Button
+                onClick={showLogin}
+                color="primary"
+              >
+                {`Connexion`}
+              </Button>
             </Toolbar>
           </AppBar >
+          <TeacherSignup
+            onClose={closeSignup}
+            isOpen={this.state.signupOpen}
+          />
+          <TeacherLogin
+            onClose={closeLogin}
+            isOpen={this.state.loginOpen}
+          />
           <div style={{ paddingTop: 100 }}>
-            <Switch>
-              <Route exact={true} path="/" component={Home} />
-              <Route path="/projects/:projectId/video" component={Video} />
-              <Route path="/projects/:projectId" component={Project} />
-            </Switch >
+            {this.props.children}
           </div>
-        </div >
+        </div>
       );
     }
   }
-);
+));
 
 const menuified = (component: JSX.Element) => () => {
   return (<Menu>{component}</Menu>);

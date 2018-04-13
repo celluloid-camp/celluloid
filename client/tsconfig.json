@@ -5,10 +5,9 @@
     "target": "es5",
     "lib": ["es2017", "dom"],
     "sourceMap": true,
-    "allowJs": true,
+    "allowJs": false,
     "jsx": "react",
     "moduleResolution": "node",
-    "rootDir": "src",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -17,6 +16,10 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true
   },
+  "include": [
+    "src/**/*",
+    "../common/**/*"
+  ],
   "exclude": [
     "node_modules",
     "build",

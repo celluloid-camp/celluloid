@@ -8,40 +8,17 @@ import Switch from 'material-ui/Switch';
 import Chip from 'material-ui/Chip';
 import Video from './Video';
 
-import { withStyles } from 'material-ui/styles';
-
 import { ProjectData } from './types/Project';
 
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import ProjectsService from './services/Projects';
-
-const decorate = withStyles(({ palette, spacing }) => ({
-  videoContainer: {
-    border: '2px solid #757575',
-    position: 'relative' as 'relative',
-    height: 0,
-    width: '100%',
-    paddingBottom: '56.25%'
-  },
-  videoIframe: {
-    position: 'absolute' as 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%'
-  }
-}));
 
 interface ProjectParams {
   projectId: string;
 }
 
 interface Props extends RouteComponentProps<ProjectParams> {
-  classes: {
-    videoContainer: string;
-    videoIframe: string;
-  };
 }
 
 interface State {
@@ -49,13 +26,13 @@ interface State {
   error?: string;
 }
 
-const Project = decorate<{}>(
-  class extends React.Component<Props, State> {
+const Project = withRouter(
+  class extends React.Component<
+    Props,
+    State
+    > {
 
-    constructor(props: Props) {
-      super(props);
-      this.state = {};
-    }
+    state = {} as State;
 
     componentWillMount() {
       const projectId = this.props.match.params.projectId;
@@ -105,6 +82,7 @@ const Project = decorate<{}>(
                     style={{
                       width: '100%',
                       textAlign: 'right',
+                      border: '2px solid 0x757575'
                     }}
                   > <Video {...props} />
                   </Grid>

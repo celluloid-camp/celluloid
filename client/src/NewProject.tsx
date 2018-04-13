@@ -40,6 +40,7 @@ import TagData from './types/Tag';
 import { MouseEvent } from 'react';
 import { NewProjectData } from './types/Project';
 import { levelLabel, levelsCount } from './Levels';
+import YouTubeService from './services/YouTube';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };
 
@@ -65,6 +66,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
     marginBottom: spacing.unit * 3,
     left: 0,
     right: 0,
+    zIndex: 1,
   },
   suggestion: {
     display: 'block',
@@ -73,7 +75,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
     margin: 0,
     padding: 0,
     listStyleType: 'none',
-  }
+  },
 }));
 
 const NewProject = decorate<Props>(
@@ -83,9 +85,11 @@ const NewProject = decorate<Props>(
     & WithStyles<'container'>
     & WithStyles<'suggestionsContainerOpen'>
     & WithStyles<'suggestion'>
+    & WithStyles<'input'>
     & WithStyles<'suggestionsList'>> {
 
     state = {
+      videoTitle: '',
       videoId: this.props.videoId,
       title: '',
       description: '',
@@ -104,6 +108,17 @@ const NewProject = decorate<Props>(
       error: undefined,
       suggestions: []
     };
+
+    componentWillReceiveProps(newProps: Props) {
+      const videoId = this.props.videoId;
+      YouTubeService.getVideoNameById(videoId)
+        .then((videoTitle: string) => {
+          this.setState({ videoTitle });
+        })
+        .catch((error: Error) => {
+          this.setState({ error: error.message });
+        });
+    }
 
     render() {
       const { fullScreen, videoId, isOpen } = this.props;
@@ -124,6 +139,7 @@ const NewProject = decorate<Props>(
         this.props.onClose(send, project)
           .then(() => {
             this.setState({
+              videoTitle: '',
               videoId: this.props.videoId,
               title: '',
               description: '',
@@ -165,7 +181,7 @@ const NewProject = decorate<Props>(
         const { containerProps, children } = params;
 
         return (
-          <Paper {...containerProps} square={true}>
+          <Paper {...containerProps} square={true} style={{ zIndex: 999 }}>
             {children}
           </Paper>
         );
@@ -214,17 +230,47 @@ const NewProject = decorate<Props>(
       };
 
       const renderInputComponent = (props: Autosuggest.InputProps<TagData>) => {
-        const { classes, ref, onChange, value } = props;
+        const {
+          classes,
+          ref,
+          height,
+          width,
+          form,
+          formAction,
+          formEncType,
+          formMethod,
+          formNoValidate,
+          formTarget,
+          min,
+          max,
+          required,
+          alt,
+          src,
+          accept,
+          capture,
+          checked,
+          crossOrigin,
+          list,
+          maxLength,
+          minLength,
+          multiple,
+          pattern,
+          readOnly,
+          size,
+          step,
+          defaultValue,
+          ...others
+        } = props;
+
         return (
           <TextField
             fullWidth={true}
-            inputRef={ref}
             InputProps={{
+              inputRef: ref,
               classes: {
                 input: classes.input
               },
-              onChange,
-              value
+              ...others
             }}
           />
         );
@@ -237,11 +283,10 @@ const NewProject = decorate<Props>(
       };
 
       const inputProps = {
-        placeholder: 'Search a country (start with a)',
+        placeholder: 'rechercher...',
         classes: this.props.classes,
         value: this.state.searchTag,
         onChange: onSuggestChange,
-        type: 'search',
       };
 
       return (
@@ -267,6 +312,21 @@ const NewProject = decorate<Props>(
                 backgroundRepeat: 'no-repeat'
               }}
             />
+            <div
+              style={{
+                justifyContent: 'center',
+                padding: 16,
+                display: 'flex',
+                flexWrap: 'wrap'
+              }}
+            >
+              <Typography
+                type="title"
+                gutterBottom={true}
+              >
+                {this.state.videoTitle}
+              </Typography>
+            </div>
             <TextField
               label="Titre"
               style={{ display: 'flex', flex: 1 }}
@@ -427,7 +487,7 @@ const NewProject = decorate<Props>(
               }}
             >
               <Typography>
-                Ou bien
+                Ou bien recherchez ou ajoutez un domaine
               </Typography>
             </div>
             <div

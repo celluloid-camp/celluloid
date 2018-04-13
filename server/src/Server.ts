@@ -4,6 +4,7 @@ import * as compression from 'compression';
 import * as nocache from 'nocache';
 import * as dotenv from 'dotenv';
 import * as ApiProjects from './api/Projects';
+import * as ApiTeachers from './api/Teachers';
 import * as ApiTags from './api/Tags';
 import * as path from 'path';
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use(compression());
 
 app.use('/api/projects/', ApiProjects);
+app.use('/api/teachers/', ApiTeachers);
 app.use('/api/tags', ApiTags)
 
 app.get('/elb-status', (req, res) => {

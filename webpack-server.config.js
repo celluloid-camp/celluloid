@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const fs = require('fs');
 
 const isProduction = process.env.NODE_ENV === 'production';
-const srcPath = Path.join(__dirname, './server/src');
+const srcPath = Path.join(__dirname, './server');
 const distPath = Path.join(__dirname, './dist');
 
 const output = {
@@ -42,14 +42,12 @@ const webpackConfig = {
   context: srcPath,
   target: 'node',
   externals,
-  entry: [Path.join(srcPath, 'Server')],
+  entry: [Path.join(srcPath, 'src', 'Server')],
   output,
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts'],
     modules: [
       srcPath,
-      srcPath + '/common',
-      srcPath + '/api',
       'node_modules',
     ],
   },
