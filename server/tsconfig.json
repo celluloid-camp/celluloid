@@ -3,7 +3,7 @@
     "sourceMap": true,
     "target": "es5",
     "jsx": "react",
-    "allowSyntheticDefaultImports": true, 
+    "allowSyntheticDefaultImports": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
