@@ -15,8 +15,8 @@ import { NewProjectData, ProjectData } from './types/Project';
 import TagsService from './services/Tags';
 import ProjectsService from './services/Projects';
 
-const studentsIcon = require('./students.svg');
-const teacherIcon = require('./teacher.svg');
+const studentsIcon = require('./img/students.svg');
+const teacherIcon = require('./img/teacher.svg');
 
 const decorate = withStyles(({ palette, spacing }) => ({
   center: {
