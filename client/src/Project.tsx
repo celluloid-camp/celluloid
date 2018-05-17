@@ -8,7 +8,7 @@ import Switch from 'material-ui/Switch';
 import Chip from 'material-ui/Chip';
 import Video from './Video';
 
-import { ProjectData } from './types/Project';
+import { ProjectData } from '../../common/src/types/Project';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 

@@ -10,7 +10,7 @@ import Chip from 'material-ui/Chip';
 // import Button from 'material-ui/IconButton';
 
 import PlayIcon from 'material-ui-icons/PlayCircleOutline';
-import { ProjectData } from './types/Project';
+import { ProjectData } from '../../common/src/types/Project';
 
 const decorate = withStyles(({ palette, spacing }) => ({
   thumbnailCard: {

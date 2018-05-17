@@ -15,10 +15,7 @@ import CloseIcon from 'material-ui-icons/Close';
 
 import TeachersService from './services/Teachers';
 
-import { LoginValidation } from '../../common/src/types/Teacher';
-
-import { MouseEvent } from 'react';
-import { TeacherCredentials } from './types/Teacher';
+import { TeacherCredentials, LoginValidation } from '../../common/src/types/Teacher';
 
 interface Props {
   isOpen: boolean;
@@ -61,7 +58,7 @@ export default class TeacherLogin extends React.Component<
 
     const { fullScreen, isOpen } = this.props;
 
-    const onClose = (action: TeacherLoginAction) => (event: MouseEvent<HTMLElement>) => {
+    const onClose = (action: TeacherLoginAction) => (event: React.MouseEvent<HTMLElement>) => {
       this.props.onClose(action, this.state.credentials)
         .then(() => {
           this.setState({
@@ -78,7 +75,7 @@ export default class TeacherLogin extends React.Component<
         });
     };
 
-    const onLogin = (event: MouseEvent<HTMLElement>) => {
+    const onLogin = (event: React.MouseEvent<HTMLElement>) => {
       TeachersService.login(
         this.state.credentials.email,
         this.state.credentials.password

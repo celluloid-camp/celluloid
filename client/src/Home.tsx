@@ -10,8 +10,8 @@ import TextField from 'material-ui/TextField';
 
 import ProjectGrid from './ProjectGrid';
 import NewProject from './NewProject';
-import TagData from './types/Tag';
-import { NewProjectData, ProjectData } from './types/Project';
+import TagData from '../../common/src/types/Tag';
+import { NewProjectData, ProjectData } from '../../common/src/types/Project';
 import TagsService from './services/Tags';
 import ProjectsService from './services/Projects';
 

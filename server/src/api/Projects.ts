@@ -35,13 +35,12 @@ router.get('/', (req, res) => {
     })
     .catch(error => {
       console.error('Failed to fetch projects from database', error);
-      res.status(500);
-      res.json({ error: error.message });
+      res.status(500).json({ error: error.message });
     });
 });
 
-router.get('/:projectId', (req, res) => {
-  pool.query(`
+function getProject(projectId, user) {
+  return pool.query(`
       SELECT
         p.*,
         to_json(array_agg(t)) as tags
@@ -51,32 +50,154 @@ router.get('/:projectId', (req, res) => {
       LEFT JOIN "Tag" t
       ON t.id = t2p."tagId"
       WHERE p.id = $1
-      AND (p.public = true ${orMatchesUserId(req.user)})
+      AND (p.public = true ${orMatchesUserId(user)})
       GROUP BY p.id
-    `, [req.params.projectId])
-    .then(result => {
-      if (result.rows.length === 1) {
-        const projects = result.rows.map(row => {
-          row.tags = row.tags.filter(tag => tag)
-          return row;
-        });
-        res.json(projects[0])
-      } else {
-        res.status(404);
-        res.json({ error: 'Project not found' });
-      }
+    `, [projectId])
+  .then(result => {
+      return new Promise((resolve, reject) => {
+        if (result.rows.length === 1) {
+          const projects = result.rows.map(row => {
+            row.tags = row.tags.filter(tag => tag)
+            return row;
+          });
+          resolve(projects[0]);
+        } else {
+          reject('ProjectNotFound');
+        }
+      });
+    }
+  );
+}
+
+function projectOwnershipRequired(req, res, next) {
+  return pool.query(`
+    SELECT
+      "id"
+    FROM "Project"
+    WHERE "id" = $1
+    AND "author" = $2
+    `, [
+      req.params.projectId,
+      req.user.id
+    ]
+  ).then(result => {
+    if (result.rows.length === 1) {
+      return next();
+    } else {
+      return res.status(403).json({ error: 'ProjectOwnershipRequired' })
+    }
+  }).catch(error => {
+    return res.status(500).json({ error: 'ProjectFetchFailed' })
+  });
+}
+
+router.get('/:projectId', (req, res) => {
+  getProject(req.params.projectId, req.user)
+    .then(project => {
+      res.json(project);
     })
     .catch(error => {
-      console.error('Failed to fetch projects from database', error);
-      res.status(500);
-      res.json({ error: error.message });
+      console.error('Failed to fetch projects', error);
+      if (error.message === "ProjectNotFound") {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
     });
 });
 
-router.put('/:projectId', loginRequired, (req, res) => {
-  res.status(500);
-  res.json({ error: 'Not implemented' });
-})
+router.post('/:projectId/annotations', loginRequired, (req, res) => {
+  const projectId = req.params.projectId;
+  const annotation = req.body;
+  const user = req.user;
+  getProject(req.params.projectId, req.user)
+    .then(project => {
+      if (project.author !== user.id && !project.collaborative) {
+        res.status(403).json({error: 'ProjectNotCollaborative'});
+      } else {
+        pool.query(`
+          INSERT INTO "Annotation"
+          VALUES (
+            uuid_generate_v4(),
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6
+          )
+          RETURNING *
+        `, [
+          req.body.text,
+          req.body.secondsStart,
+          req.body.secondsStop,
+          req.body.pause,
+          req.user.id,
+          projectId
+        ]).then(result => {
+          if (result.rows.length === 1) {
+            res.status(201).json(result.rows[0]);
+          } else {
+            console.error('Failed to create annotation', result);
+            res.status(500).json({ error: 'AnnotationInsertionError' })
+          }
+
+        }).catch(error => {
+          console.error('Failed to create annotation', error);
+          res.status(500).json({ error: 'AnnotationInsertionError' });
+        })
+      }
+    })
+    .catch(error => {
+      console.error('Failed to create annotation', error);
+      if (error.message === "ProjectNotFound") {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    });
+});
+
+router.put('/:projectId', loginRequired, projectOwnershipRequired, (req, res) => {
+  pool.query(`
+    UPDATE "Project"
+    SET
+      "views"           = $1,
+      "shares"          = $2,
+      "title"           = $3,
+      "description"     = $4,
+      "assignments"     = $5,
+      "objective"       = $7,
+      "levelStart"      = $8,
+      "levelEnd"        = $9,
+      "public"          = $10,
+      "collaborative"   = $11
+    RETURNING *
+  `, [
+      req.body.views  || 0,
+      req.body.shares || 0,
+      req.body.title,
+      req.body.description,
+      req.body.assignments,
+      req.body.objective,
+      req.body.levelStart,
+      req.body.levelEnd,
+      req.body.public,
+      req.body.collaborative
+    ])
+    .then(result => {
+      if (result.rows.length === 1) {
+        return res.status(201).json(result.rows[0]);
+      } else {
+        console.error('Failed to create project', result);
+        return res.status(500).json({ error: 'ProjectUpdateFailed' });
+      }
+    })
+    .catch(error => {
+      console.error('Failed to create project', error);
+      return res.status(500).json({ error: 'ProjectUpdateFailed' });
+    })
+});
 
 router.post('/', loginRequired, (req, res) => {
   pool.query(`
@@ -130,15 +251,13 @@ router.post('/', loginRequired, (req, res) => {
         res.status(201);
         res.send(result.rows[0]);
       } else {
-        console.error('More than one project row inserted (this should NEVER happen)', result);
-        res.status(500);
-        res.send();
+        console.error('Failed to create project', result);
+        res.status(500).json({ error: 'ProjectInsertionFailed' });
       }
     })
     .catch(error => {
-      console.error('Could not insert new project into database', error);
-      res.status(500);
-      res.send();
+      console.error('Failed to create project', error);
+      res.status(500).json({ error: 'ProjectInsertionFailed' });
     })
 });
 

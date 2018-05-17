@@ -24,9 +24,6 @@ import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import { MenuItem } from 'material-ui/Menu';
 
-const parse = require('autosuggest-highlight/parse');
-const match = require('autosuggest-highlight/match');
-
 import CloseIcon from 'material-ui-icons/Close';
 import AddIcon from 'material-ui-icons/Add';
 import RemoveIcon from 'material-ui-icons/Remove';
@@ -35,12 +32,14 @@ import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 import * as Autosuggest from 'react-autosuggest';
+const parse = require('autosuggest-highlight/parse');
+const match = require('autosuggest-highlight/match');
 
-import TagData from './types/Tag';
-import { MouseEvent } from 'react';
-import { NewProjectData } from './types/Project';
 import { levelLabel, levelsCount } from './Levels';
 import YouTubeService from './services/YouTube';
+
+import TagData from '../../common/src/types/Tag';
+import { NewProjectData } from '../../common/src/types/Project';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };
 
@@ -123,7 +122,7 @@ const NewProject = decorate<Props>(
     render() {
       const { fullScreen, videoId, isOpen } = this.props;
 
-      const onClose = (send: boolean) => (event: MouseEvent<HTMLElement>) => {
+      const onClose = (send: boolean) => (event: React.MouseEvent<HTMLElement>) => {
         const project = {
           videoId: this.state.videoId,
           title: this.state.title,

@@ -7,15 +7,19 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import { WithStyles } from 'material-ui/styles/withStyles';
+import IconButton from 'material-ui/IconButton';
+
+import 'flag-icon-css/css/flag-icon.css';
+
+import TeacherSignup, { TeacherSignupPayload, TeacherSignupAction } from './TeacherSignup';
+import TeacherLogin, { TeacherLoginAction } from './TeacherLogin';
 import Home from './Home';
 import Project from './Project';
 import Video from './Video';
-import IconButton from 'material-ui/IconButton';
-import 'flag-icon-css/css/flag-icon.css';
-import TeacherSignup, { TeacherSignupPayload, TeacherSignupAction } from './TeacherSignup';
-import TeacherLogin, { TeacherLoginAction } from './TeacherLogin';
-import { TeacherCredentials } from './types/Teacher';
+
 import TeachersService from './services/Teachers';
+
+import { TeacherCredentials } from '../../common/src/types/Teacher';
 
 const decorate = withStyles(({ palette, spacing }) => ({
   grow: {

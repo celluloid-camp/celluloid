@@ -22,10 +22,9 @@ import TeachersService from './services/Teachers';
 import CloseIcon from 'material-ui-icons/Close';
 
 import { MouseEvent } from 'react';
-import { NewProjectData } from './types/Project';
+import { NewProjectData } from '../../common/src/types/Project';
 // import { levelLabel, levelsCount } from './Levels';
-import { NewTeacherData } from './types/Teacher';
-import { SignupValidation } from '../../common/src/types/Teacher';
+import { NewTeacherData, SignupValidation } from '../../common/src/types/Teacher';
 
 interface Props {
   isOpen: boolean;
