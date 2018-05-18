@@ -10,11 +10,24 @@ import Chip from 'material-ui/Chip';
 // import Button from 'material-ui/IconButton';
 
 import PlayIcon from 'material-ui-icons/PlayCircleOutline';
-import { ProjectData } from '../../common/src/types/Project';
+import { DisplayProjectData } from '../../common/src/types/Project';
+import { getTeacherDisplayName } from './types/Teacher';
 
 const decorate = withStyles(({ palette, spacing }) => ({
+  '@keyframes fade-card-in': {
+    from: {
+      opacity: 0,
+      transform: 'scale(0.0)'
+    },
+    to: {
+      opacity: 1,
+      transform: 'scale(1.0)'
+    }
+  },
   thumbnailCard: {
-    height: '100%'
+    height: '100%',
+    animation: 'fade-card-in 0.5s ease-out 0s 1',
+    transition: 'all 1s ease'
   },
   thumbnailImage: {
     height: '120px',
@@ -23,10 +36,11 @@ const decorate = withStyles(({ palette, spacing }) => ({
   }
 }));
 
-const ProjectThumbnail = decorate<ProjectData>(
-  class extends React.Component<ProjectData
+const ProjectThumbnail = decorate<DisplayProjectData>(
+  class extends React.Component<DisplayProjectData
     & WithStyles<'thumbnailCard'>
     & WithStyles<'thumbnailImage'>
+    & WithStyles<'@keyframes fade-card-in'>
     > {
     render() {
       const {
@@ -115,7 +129,7 @@ const ProjectThumbnail = decorate<ProjectData>(
                 </Grid>
                 <Grid item={true} xs={12}>
                   <Typography style={{ paddingTop: 24 }}>
-                    {author}
+                    {getTeacherDisplayName(author)}
                   </Typography>
                   <Typography type="caption">
                     {new Date(publishedAt).toLocaleDateString()}
@@ -151,45 +165,39 @@ const ProjectThumbnail = decorate<ProjectData>(
 );
 
 interface GridProps {
-  projects: ProjectData[];
+  projects: DisplayProjectData[];
 }
 
-const ProjectGrid = decorate<GridProps>(
-  class extends React.Component<
-    GridProps
-    & WithStyles<'thumbnailCard'>
-    & WithStyles<'thumbnailImage'>
-    > {
+const ProjectGrid = class extends React.Component<GridProps> {
 
-    constructor(props: GridProps & { classes: { thumbnailCard: string; thumbnailImage: string; } }) {
-      super(props);
-      this.state = {
-        projects: [] as ProjectData[],
-        error: undefined
-      };
-    }
-
-    render() {
-      return (
-        <div style={{ padding: 20 }}>
-          <Grid
-            container={true}
-            spacing={40}
-            direction="row"
-          >
-            {
-              this.props.projects.map((project: ProjectData, idx) =>
-                <ProjectThumbnail
-                  key={project.id}
-                  {...project}
-                />
-              )
-            }
-          </Grid>
-        </div>
-      );
-    }
+  constructor(props: GridProps & { classes: { thumbnailCard: string; thumbnailImage: string; } }) {
+    super(props);
+    this.state = {
+      projects: [] as DisplayProjectData[],
+      error: undefined
+    };
   }
-);
+
+  render() {
+    return (
+      <div style={{ padding: 20 }}>
+        <Grid
+          container={true}
+          spacing={40}
+          direction="row"
+        >
+          {
+            this.props.projects.map((project: DisplayProjectData, idx) =>
+              <ProjectThumbnail
+                key={project.id}
+                {...project}
+              />
+            )
+          }
+        </Grid>
+      </div>
+    );
+  }
+};
 
 export default ProjectGrid;

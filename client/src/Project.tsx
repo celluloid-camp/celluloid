@@ -13,12 +13,13 @@ import { ProjectData } from '../../common/src/types/Project';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import ProjectsService from './services/Projects';
+import { MaybeWithTeacher } from './types/Teacher';
 
 interface ProjectParams {
   projectId: string;
 }
 
-interface Props extends RouteComponentProps<ProjectParams> {
+interface Props extends RouteComponentProps<ProjectParams>, MaybeWithTeacher {
 }
 
 interface State {

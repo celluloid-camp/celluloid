@@ -10,10 +10,13 @@ import TextField from 'material-ui/TextField';
 
 import ProjectGrid from './ProjectGrid';
 import NewProject from './NewProject';
-import TagData from '../../common/src/types/Tag';
-import { NewProjectData, ProjectData } from '../../common/src/types/Project';
 import TagsService from './services/Tags';
 import ProjectsService from './services/Projects';
+
+import { MaybeWithTeacher } from './types/Teacher';
+
+import { NewProjectData, DisplayProjectData } from '../../common/src/types/Project';
+import TagData from '../../common/src/types/Tag';
 
 const studentsIcon = require('./img/students.svg');
 const teacherIcon = require('./img/teacher.svg');
@@ -29,20 +32,24 @@ const decorate = withStyles(({ palette, spacing }) => ({
   }
 }));
 
-const Home = decorate<{}>(
-  class extends React.Component<WithStyles<'content' | 'center' | 'block'>> {
+interface Props extends MaybeWithTeacher, WithStyles<'content' | 'center' | 'block'> {
+
+}
+
+const Home = decorate<MaybeWithTeacher>(
+  class extends React.Component<Props> {
 
     state = {
       newProjectDialogOpen: false,
       newProjectVideoId: 'krGikyXAR9w',
       tags: [] as TagData[],
-      projects: [] as ProjectData[],
+      projects: [] as DisplayProjectData[],
       error: undefined
     };
 
     loadContent() {
       ProjectsService.fetch()
-        .then((projects: ProjectData[]) => {
+        .then((projects: DisplayProjectData[]) => {
           this.setState({ projects, error: undefined });
           TagsService.fetch()
             .then((tags: TagData[]) => {
@@ -61,6 +68,12 @@ const Home = decorate<{}>(
       this.loadContent();
     }
 
+    componentWillReceiveProps(newProps: Props) {
+      if (newProps.teacher !== this.props.teacher) {
+        this.loadContent();
+      }
+    }
+
     render() {
       const classes = this.props.classes;
 
@@ -72,7 +85,7 @@ const Home = decorate<{}>(
         return new Promise((resolve, reject) => {
           if (send) {
             ProjectsService.create(newProject)
-              .then((project: ProjectData) => {
+              .then((project: DisplayProjectData) => {
                 this.setState({ newProjectDialogOpen: false });
                 this.loadContent();
                 resolve();
@@ -107,7 +120,15 @@ const Home = decorate<{}>(
                 <Grid container={true} spacing={24} direction="column">
                   <Grid item={true}>
                     <Typography type="headline" gutterBottom={true}>
-                      <b>{`Votre outil pédagogique numérique pour l'analyse de video`}</b>
+                      {this.props.teacher ?
+                        <b>
+                          {`Bonjour ${this.props.teacher.email} Votre outil pédagogique numérique`
+                            + `pour l'analyse de video`}
+                        </b> :
+                        <b>
+                          {`Votre outil pédagogique numérique pour l'analyse de video`}
+                        </b>
+                      }
                     </Typography>
                   </Grid>
                   <Grid item={true}>

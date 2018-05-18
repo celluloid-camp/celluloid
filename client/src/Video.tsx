@@ -13,12 +13,15 @@ import { WithStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
+import Button from 'material-ui/Button';
 
-import AnnotationIcon from 'material-ui-icons/Announcement';
+import AnnotationIcon from 'material-ui-icons/Comment';
 import PlayIcon from 'material-ui-icons/PlayArrow';
 import PauseIcon from 'material-ui-icons/Pause';
 import FullScreenEnterIcon from 'material-ui-icons/Fullscreen';
 import FullscreenExitIcon from 'material-ui-icons/FullscreenExit';
+import EditIcon from 'material-ui-icons/Edit';
+import RemoveIcon from 'material-ui-icons/Remove';
 
 import Fullscreen from 'react-full-screen';
 
@@ -27,12 +30,14 @@ import 'rc-slider/assets/index.css';
 
 import Annotation from './Annotation';
 import { formatDuration } from './utils/DurationUtils';
+import { MaybeWithTeacher } from './types/Teacher';
 
 interface ProjectParams {
   projectId: string;
 }
 
-interface Props extends RouteComponentProps<ProjectParams> {
+interface Props extends RouteComponentProps<ProjectParams>, MaybeWithTeacher {
+
 }
 
 enum PlayerState {
@@ -49,9 +54,6 @@ const decorate = withStyles(({ palette, spacing }) => ({
     width: '100%',
     paddingBottom: '56.25%',
     backgroundColor: 'black',
-    '&:hover $controlFrame': {
-      opacity: 1
-    }
   },
   videoIframe: {
     position: 'absolute' as 'absolute',
@@ -60,6 +62,16 @@ const decorate = withStyles(({ palette, spacing }) => ({
     width: '100%',
     height: '100%',
     border: 0,
+  },
+  glassPane: {
+    opacity: 0,
+    position: 'absolute' as 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 0,
+    margin: 0,
   },
   annotationFrame: {
     verticalAlign: 'middle',
@@ -70,7 +82,6 @@ const decorate = withStyles(({ palette, spacing }) => ({
     left: 0,
     right: 0,
     zIndex: 1,
-    padding: '8px 8px',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   controlFrame: {
@@ -80,12 +91,19 @@ const decorate = withStyles(({ palette, spacing }) => ({
     position: 'absolute' as 'absolute',
     bottom: 0,
     left: 0,
+    right: 0,
     width: '100%',
     height: 56,
     zIndex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    transition: '1s ease',
-    opacity: 0,
+    transition: 'opacity 0.5s ease',
+  },
+  annotateButton: {
+    right: 28,
+    bottom: 28,
+    transition: 'opacity 0.8s ease',
+    position: 'absolute' as 'absolute',
+    zIndex: 2
   },
   controls: {
     width: '100%',
@@ -109,6 +127,8 @@ interface State {
   player?: Player;
   fullscreen: boolean;
   playing: boolean;
+  userActive: boolean;
+  isAddingAnnotation: boolean;
 }
 
 interface Player {
@@ -123,15 +143,17 @@ const Video = decorate<Props>(
   class extends React.Component<
     Props
     & WithStyles<'controlFrame' | 'annotationFrame' | 'videoIframe'
-    | 'videoWrapper' | 'videoContainer' | 'controls' | 'icon'>,
+    | 'videoWrapper' | 'videoContainer' | 'controls' | 'icon' | 'glassPane' | 'annotateButton'>,
     State> {
-
+    timeoutId = -1;
     intervalId = -1;
     state = {
       position: 0,
       duration: 0,
       fullscreen: false,
-      playing: false
+      playing: false,
+      userActive: true,
+      isAddingAnnotation: false,
     } as State;
 
     timer() {
@@ -144,8 +166,23 @@ const Video = decorate<Props>(
       });
     }
 
+    resetTimeout() {
+      this.setState({
+        userActive: true,
+      });
+      clearInterval(this.timeoutId);
+      this.timeoutId = setInterval(this.fadeOutTimer.bind(this), 2000);
+    }
+
+    fadeOutTimer() {
+      this.setState({
+        userActive: false
+      });
+    }
+
     componentWillUnmount() {
       clearInterval(this.intervalId);
+      clearInterval(this.timeoutId);
     }
 
     getProject() {
@@ -168,6 +205,7 @@ const Video = decorate<Props>(
 
     componentWillMount() {
       this.getProject();
+      this.resetTimeout();
     }
 
     render() {
@@ -205,6 +243,8 @@ const Video = decorate<Props>(
         }
       };
 
+      const onMouseMove = this.resetTimeout.bind(this);
+
       const classes = this.props.classes;
       return (
         <Fullscreen
@@ -217,7 +257,9 @@ const Video = decorate<Props>(
               height: '100%', backgroundColor: 'black', display: 'flex', alignItems: 'center'
             }}
           >
-            <div className={classes.videoWrapper}>
+            <div
+              className={classes.videoWrapper}
+            >
               {this.state.project &&
                 <div>
                   <YouTube
@@ -236,22 +278,52 @@ const Video = decorate<Props>(
                     onReady={videoLoaded}
                     onStateChange={videoStateChanged}
                   />
+                  <div
+                    className={classes.glassPane}
+                    onMouseMove={onMouseMove}
+                  />
                   <div className={classes.annotationFrame}>
-                    <Annotation
-                      user={{
-                        id: 'kiki',
-                        email: 'koko@gmail.com',
-                        firstName: 'Cool',
-                        lastName: 'Kid'
-                      }}
-                      video={{
-                        position: this.state.position,
-                        duration: this.state.duration
-                      }}
-                      projectId={this.props.match.params.projectId}
-                    />
+                    {(this.state.isAddingAnnotation && this.props.teacher) &&
+                      <Annotation
+                        teacher={{
+                          id: this.props.teacher.id,
+                          email: this.props.teacher.email,
+                          firstName: this.props.teacher.firstName,
+                          lastName: this.props.teacher.lastName
+                        }}
+                        video={{
+                          position: this.state.position,
+                          duration: this.state.duration
+                        }}
+                        projectId={this.props.match.params.projectId}
+                      />
+                    }
                   </div>
-                  <div className={classes.controlFrame}>
+                  {this.props.teacher &&
+                    <Button
+                      color="accent"
+                      fab={true}
+                      raised={true}
+                      className={classes.annotateButton}
+                      style={{
+                        opacity: this.state.userActive || this.state.isAddingAnnotation
+                        ? 1 : 0
+                      }}
+                      onClick={() => {
+                        this.setState({ isAddingAnnotation: !this.state.isAddingAnnotation });
+                      }}
+                    >
+                      {!this.state.isAddingAnnotation ?
+                        <EditIcon /> : <RemoveIcon />
+                      }
+                    </Button>
+                  }
+                  <div
+                    className={classes.controlFrame}
+                    style={{
+                      opacity: this.state.userActive ? 1 : 0
+                    }}
+                  >
                     <Grid
                       container={true}
                       direction="row"
@@ -259,17 +331,6 @@ const Video = decorate<Props>(
                       alignItems="center"
                       className={classes.controls}
                     >
-                      <Grid
-                        item={true}
-                      >
-                        <IconButton
-                          color="inherit"
-                          onClick={toggleFullscreen}
-                          classes={{ icon: classes.icon }}
-                        >
-                          <AnnotationIcon />
-                        </IconButton>
-                      </Grid>
                       <Grid
                         item={true}
                       >
@@ -334,6 +395,17 @@ const Video = decorate<Props>(
                             <FullscreenExitIcon /> :
                             <FullScreenEnterIcon />
                           }
+                        </IconButton>
+                      </Grid>
+                      <Grid
+                        item={true}
+                      >
+                        <IconButton
+                          color="primary"
+                          onClick={toggleFullscreen}
+                          classes={{ icon: classes.icon }}
+                        >
+                          <AnnotationIcon />
                         </IconButton>
                       </Grid>
                     </Grid>

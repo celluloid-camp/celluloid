@@ -19,7 +19,9 @@ import Video from './Video';
 
 import TeachersService from './services/Teachers';
 
-import { TeacherCredentials } from '../../common/src/types/Teacher';
+import { MaybeWithTeacher } from './types/Teacher';
+
+import { TeacherCredentials, TeacherRecord } from '../../common/src/types/Teacher';
 
 const decorate = withStyles(({ palette, spacing }) => ({
   grow: {
@@ -37,17 +39,11 @@ interface Props extends RouteComponentProps<{}> {
 interface State {
   signupOpen: boolean;
   loginOpen: boolean;
-  teacher?: {
-    email: string;
-    name?: string;
-  };
+  teacher?: TeacherRecord;
 }
 
-const Menu = withRouter(decorate<Props>(
-  class extends React.Component<
-    Props
-    & WithStyles<'grow' | 'largeBar'>
-    , State> {
+const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =>
+  class Menu extends React.Component<Props & WithStyles<'grow' | 'largeBar'>, State> {
 
     state = {
       signupOpen: false,
@@ -115,14 +111,14 @@ const Menu = withRouter(decorate<Props>(
 
       const logout = () => {
         TeachersService.logout().then(() => {
-          this.setState({teacher: undefined});
+          this.setState({ teacher: undefined });
         })
-        .catch(err => null);
+          .catch(err => null);
       };
 
       const renderLoginBar = () => {
         if (this.state.teacher) {
-          const name = this.state.teacher.name;
+          const name = this.state.teacher.firstName;
           const email = this.state.teacher.email;
           return (
             <div>
@@ -188,25 +184,21 @@ const Menu = withRouter(decorate<Props>(
             isOpen={this.state.loginOpen}
           />
           <div style={{ paddingTop: 100 }}>
-            {this.props.children}
+            <Child {...this.props} teacher={this.state.teacher}/>
           </div>
         </div>
       );
     }
   }
-));
-
-const menuified = (component: JSX.Element) => () => {
-  return (<Menu>{component}</Menu>);
-};
+);
 
 class App extends React.Component {
   render() {
     return (
       <Switch>
-        <Route exact={true} path="/" render={menuified(<Home />)} />
+        <Route exact={true} path="/" component={withRouter(decorate<Props>(menuified(Home)))} />
         <Route path="/projects/:projectId/video" component={Video} />
-        <Route path="/projects/:projectId" render={menuified(<Project />)} />
+        <Route path="/projects/:projectId" component={withRouter(decorate<Props>(menuified(Project)))} />
       </Switch >
     );
   }

@@ -23,19 +23,14 @@ import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 import AnnotationsService from './services/Projects';
+import { MaybeWithTeacher } from './types/Teacher';
 
 const caretStart = require('./img/caret-start.png');
 const caretStop = require('./img/caret-stop.png');
 
 const randomColor = require('randomcolor');
 
-interface Props {
-  user: {
-    id: string;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-  };
+interface Props extends MaybeWithTeacher {
   annotation?: AnnotationData;
   video: {
     position: number;
@@ -91,6 +86,13 @@ const decorate = withStyles(({ palette, spacing }) => ({
   }
 }));
 
+const DEFAULT_ANNOTATION_DURATION = 60
+
+function maxAnnotationDuration(startTime: number, duration: number) {
+  const stopTime = startTime + DEFAULT_ANNOTATION_DURATION;
+  return (stopTime < duration ? stopTime : duration);
+}
+
 const Annotation = decorate<Props>(
   class extends React.Component<
     Props
@@ -100,27 +102,22 @@ const Annotation = decorate<Props>(
 
     constructor(props: Props
       & WithStyles<'white' | 'lightGray' | 'avatar' | 'underline' | 'buttonRoot'>) {
-
       super(props);
+      console.log(this.props.teacher);
       if (this.props.annotation) {
         this.state = {
           isEditing: false,
-          user: this.props.user,
+          user: this.props.teacher,
           annotation: this.props.annotation
         } as State;
       } else {
         this.state = {
           isEditing: true,
-          user: {
-            id: 'koko',
-            email: 'koko@gmail.com',
-            firstName: 'Cool',
-            lastName: 'Kid'
-          },
+          user: this.props.teacher,
           annotation: {
             text: '',
-            start: this.props.video.position,
-            end: this.props.video.duration,
+            startTime: this.props.video.position,
+            stopTime: maxAnnotationDuration(this.props.video.position, this.props.video.duration),
             pause: false
           }
         } as State;
@@ -191,24 +188,24 @@ const Annotation = decorate<Props>(
                     if (!this.props.annotation) {
                       AnnotationsService.createAnnotation(this.props.projectId, this.state.annotation)
                         .then(annotation => this.setState({
-                           annotation,
-                           error: undefined,
-                           isEditing: !this.state.isEditing
-                          }))
-                        .catch(error => this.setState({error: error.message}));
+                          annotation,
+                          error: undefined,
+                          isEditing: !this.state.isEditing
+                        }))
+                        .catch(error => this.setState({ error: error.message }));
                     } else {
                       AnnotationsService.updateAnnotation(this.props.projectId, this.state.annotation)
                         .then(annotation => this.setState({
-                           annotation,
-                           error: undefined,
-                           isEditing: !this.state.isEditing
-                          }))
-                        .catch(error => this.setState({error: error.message}));
+                          annotation,
+                          error: undefined,
+                          isEditing: !this.state.isEditing
+                        }))
+                        .catch(error => this.setState({ error: error.message }));
                     }
                   } else {
-                  this.setState({
-                    isEditing: !this.state.isEditing,
-                  });
+                    this.setState({
+                      isEditing: !this.state.isEditing,
+                    });
                   }
                 }}
               >
@@ -245,7 +242,7 @@ const Annotation = decorate<Props>(
                 raised={true}
                 onClick={event => {
                   const state = this.state as State;
-                  state.annotation.start = Math.max(0, state.annotation.start - 1);
+                  state.annotation.startTime = Math.max(0, state.annotation.startTime - 1);
                   this.setState(state);
                 }}
               >
@@ -254,7 +251,7 @@ const Annotation = decorate<Props>(
               <Typography
                 className={classes.lightGray}
               >
-                {formatDuration(this.state.annotation.start)}
+                {formatDuration(this.state.annotation.startTime)}
               </Typography>
               <Button
                 classes={{ root: classes.buttonRoot }}
@@ -262,7 +259,7 @@ const Annotation = decorate<Props>(
                 raised={true}
                 onClick={event => {
                   const state = this.state as State;
-                  state.annotation.start = Math.min(state.annotation.end, state.annotation.start + 1);
+                  state.annotation.startTime = Math.min(state.annotation.stopTime, state.annotation.startTime + 1);
                   this.setState(state);
                 }}
               >
@@ -272,11 +269,11 @@ const Annotation = decorate<Props>(
                 <Range
                   min={0}
                   max={this.props.video.duration}
-                  value={[this.state.annotation.start, this.state.annotation.end + 60]}
+                  value={[this.state.annotation.startTime, this.state.annotation.stopTime]}
                   onChange={values => {
                     const state = this.state;
-                    state.annotation.start = values[0];
-                    state.annotation.end = values[1];
+                    state.annotation.startTime = values[0];
+                    state.annotation.stopTime = values[1];
                     this.setState(state);
                   }}
                   trackStyle={[{ backgroundColor: 'orange' }]}
@@ -310,7 +307,7 @@ const Annotation = decorate<Props>(
                 raised={true}
                 onClick={event => {
                   const state = this.state as State;
-                  state.annotation.end = Math.max(state.annotation.start, state.annotation.end - 1);
+                  state.annotation.stopTime = Math.max(state.annotation.startTime, state.annotation.stopTime - 1);
                   this.setState(state);
                 }}
               >
@@ -319,7 +316,7 @@ const Annotation = decorate<Props>(
               <Typography
                 className={classes.lightGray}
               >
-                {formatDuration(this.state.annotation.end)}
+                {formatDuration(this.state.annotation.stopTime)}
               </Typography>
               <Button
                 classes={{ root: classes.buttonRoot }}
@@ -327,7 +324,7 @@ const Annotation = decorate<Props>(
                 raised={true}
                 onClick={event => {
                   const state = this.state as State;
-                  state.annotation.end = Math.min(state.annotation.end + 1, this.props.video.duration);
+                  state.annotation.stopTime = Math.min(state.annotation.stopTime + 1, this.props.video.duration);
                   this.setState(state);
                 }}
               >

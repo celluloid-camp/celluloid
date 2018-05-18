@@ -8,7 +8,7 @@ const router = express.Router();
 
 const orMatchesUserId = user => {
   if (user) {
-    return `OR p.author = '${user.id}'`
+    return `OR p."authorId" = '${user.id}'`
   }
   return '';
 }
@@ -17,14 +17,21 @@ router.get('/', (req, res) => {
   pool.query(`
       SELECT
         p.*,
-        to_json(array_agg(t)) as tags
+        to_json(array_agg(t)) as tags,
+        json_build_object(
+          'firstName',  a."firstName",
+          'lastName',   a."lastName",
+          'email',      a."email"
+        ) as author
       FROM "Project" p
+      INNER JOIN "Teacher" a
+      ON a.id = p."authorId"
       LEFT JOIN "TagToProject" t2p
       ON p.id = t2p."projectId"
       LEFT JOIN "Tag" t
       ON t2p."tagId" = t.id
       WHERE p.public = true ${orMatchesUserId(req.user)}
-      GROUP BY p.id
+      GROUP BY p.id, a.id
     `)
     .then(result => {
       const projects = result.rows.map(row => {
@@ -43,15 +50,18 @@ function getProject(projectId, user) {
   return pool.query(`
       SELECT
         p.*,
-        to_json(array_agg(t)) as tags
+        to_json(array_agg(t)) as tags,
+        row_to_json(a) as author
       FROM "Project" p
+      INNER JOIN "Teacher" a
+      ON a.id = p."authorId"
       LEFT JOIN "TagToProject" t2p
       ON p.id = t2p."projectId"
       LEFT JOIN "Tag" t
       ON t.id = t2p."tagId"
       WHERE p.id = $1
       AND (p.public = true ${orMatchesUserId(user)})
-      GROUP BY p.id
+      GROUP BY p.id, a.id
     `, [projectId])
   .then(result => {
       return new Promise((resolve, reject) => {
@@ -75,7 +85,7 @@ function projectOwnershipRequired(req, res, next) {
       "id"
     FROM "Project"
     WHERE "id" = $1
-    AND "author" = $2
+    AND "authorId" = $2
     `, [
       req.params.projectId,
       req.user.id
@@ -112,7 +122,7 @@ router.post('/:projectId/annotations', loginRequired, (req, res) => {
   const user = req.user;
   getProject(req.params.projectId, req.user)
     .then(project => {
-      if (project.author !== user.id && !project.collaborative) {
+      if (project.authorId !== user.id && !project.collaborative) {
         res.status(403).json({error: 'ProjectNotCollaborative'});
       } else {
         pool.query(`
@@ -129,8 +139,8 @@ router.post('/:projectId/annotations', loginRequired, (req, res) => {
           RETURNING *
         `, [
           req.body.text,
-          req.body.secondsStart,
-          req.body.secondsStop,
+          req.body.startTime,
+          req.body.stopTime,
           req.body.pause,
           req.user.id,
           projectId
@@ -210,7 +220,7 @@ router.post('/', loginRequired, (req, res) => {
       "title",
       "description",
       "assignments",
-      "author",
+      "authorId",
       "objective",
       "levelStart",
       "levelEnd",

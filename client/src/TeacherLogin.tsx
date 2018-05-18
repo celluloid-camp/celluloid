@@ -46,13 +46,10 @@ export default class TeacherLogin extends React.Component<
     },
     result: {
       success: true,
-      errors: {
-        email: undefined,
-        password: undefined
-      }
+      errors: {}
     },
     error: undefined
-  };
+  } as State;
 
   render() {
 
@@ -110,31 +107,31 @@ export default class TeacherLogin extends React.Component<
           </span>
           {'Connexion'}
         </DialogTitle>
-        <DialogContent style={{padding: 16}}>
+        <DialogContent style={{ padding: 16 }}>
           <TextField
             label="Email"
             required={true}
-            error={this.state.result.errors.email ? true : false}
+            error={this.state.result.errors && this.state.result.errors.email ? true : false}
             style={{ display: 'flex', flex: 1 }}
             onChange={event => {
               const state = this.state;
               state.credentials.email = event.target.value;
               this.setState(state);
             }}
-            helperText={this.state.result.errors.email}
+            helperText={this.state.result.errors && this.state.result.errors.email}
           />
           <TextField
             label="Mot de passe"
             required={true}
             type="password"
-            error={this.state.result.errors.password ? true : false}
+            error={this.state.result.errors && this.state.result.errors.password ? true : false}
             style={{ display: 'flex', flex: 1 }}
             onChange={event => {
               const state = this.state;
               state.credentials.password = event.target.value;
               this.setState(state);
             }}
-            helperText={this.state.result.errors.password}
+            helperText={this.state.result.errors && this.state.result.errors.password}
           />
           <div
             style={{

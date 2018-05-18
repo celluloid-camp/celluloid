@@ -1,5 +1,6 @@
 import TagData from './Tag';
 import { NewProjectData } from './Project';
+import { TeacherData } from './Teacher';
 
 export interface NewProjectData {
   videoId: string;
@@ -18,6 +19,10 @@ export interface ProjectData extends NewProjectData {
   id: string;
   views?: number;
   shares?: number;
-  author: string;
+  authorId: string;
   publishedAt: string;
+}
+
+export interface DisplayProjectData extends ProjectData {
+  author: TeacherData;
 }
