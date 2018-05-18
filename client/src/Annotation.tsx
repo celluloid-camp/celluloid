@@ -86,7 +86,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
   }
 }));
 
-const DEFAULT_ANNOTATION_DURATION = 60
+const DEFAULT_ANNOTATION_DURATION = 60;
 
 function maxAnnotationDuration(startTime: number, duration: number) {
   const stopTime = startTime + DEFAULT_ANNOTATION_DURATION;
@@ -103,7 +103,6 @@ const Annotation = decorate<Props>(
     constructor(props: Props
       & WithStyles<'white' | 'lightGray' | 'avatar' | 'underline' | 'buttonRoot'>) {
       super(props);
-      console.log(this.props.teacher);
       if (this.props.annotation) {
         this.state = {
           isEditing: false,

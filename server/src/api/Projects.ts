@@ -116,11 +116,37 @@ router.get('/:projectId', (req, res) => {
     });
 });
 
+router.get('/:projectId/annotations', loginRequired, (req, res) => {
+  const projectId = req.params.projectId;
+  const user = req.user;
+
+  getProject(projectId, req.user)
+    .then(project => {
+      return pool.query(
+        `SELECT * FROM "Annotation"
+        WHERE "projectId" = $1
+        ORDER BY "startTime" ASC`,
+        [ projectId ]
+      );
+    })
+    .then(result => {
+      res.status(200).json(result.rows);
+    })
+    .catch(error => {
+      console.error('Failed to fetch annotation', error);
+      if (error.message === "ProjectNotFound") {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    });
+});
+
 router.post('/:projectId/annotations', loginRequired, (req, res) => {
   const projectId = req.params.projectId;
   const annotation = req.body;
   const user = req.user;
-  getProject(req.params.projectId, req.user)
+  getProject(projectId, req.user)
     .then(project => {
       if (project.authorId !== user.id && !project.collaborative) {
         res.status(403).json({error: 'ProjectNotCollaborative'});
