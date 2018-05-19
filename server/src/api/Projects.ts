@@ -72,7 +72,7 @@ function getProject(projectId, user) {
           });
           resolve(projects[0]);
         } else {
-          reject('ProjectNotFound');
+          reject(new Error('ProjectNotFound'));
         }
       });
     }
@@ -102,15 +102,18 @@ function projectOwnershipRequired(req, res, next) {
 }
 
 router.get('/:projectId', (req, res) => {
-  getProject(req.params.projectId, req.user)
+  const projectId = req.params.projectId;
+  getProject(projectId, req.user)
     .then(project => {
       res.json(project);
     })
     .catch(error => {
-      console.error('Failed to fetch projects', error);
+      console.error(`Failed to fetch project ${projectId}:`, error);
       if (error.message === "ProjectNotFound") {
+        console.log("404 error");
         res.status(404).json({ error: error.message });
       } else {
+        console.log("500 error WTF ???");
         res.status(500).json({ error: error.message });
       }
     });
@@ -123,7 +126,17 @@ router.get('/:projectId/annotations', loginRequired, (req, res) => {
   getProject(projectId, req.user)
     .then(project => {
       return pool.query(
-        `SELECT * FROM "Annotation"
+        `SELECT
+          a.*,
+          json_build_object(
+            'id', t."id",
+            'email', t."email",
+            'firstName', t."firstName",
+            'lastName', t."lastName"
+          ) as teacher
+        FROM "Annotation" a
+        INNER JOIN "Teacher" t
+        ON t."id" = a."teacherId"
         WHERE "projectId" = $1
         ORDER BY "startTime" ASC`,
         [ projectId ]
@@ -225,7 +238,7 @@ router.put('/:projectId', loginRequired, projectOwnershipRequired, (req, res) =>
       if (result.rows.length === 1) {
         return res.status(201).json(result.rows[0]);
       } else {
-        console.error('Failed to create project', result);
+        console.error('Failed to update project', result);
         return res.status(500).json({ error: 'ProjectUpdateFailed' });
       }
     })

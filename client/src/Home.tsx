@@ -76,11 +76,9 @@ const Home = decorate<MaybeWithTeacher>(
 
     render() {
       const classes = this.props.classes;
-
       const showNewProjectDialog = () => {
         this.setState({ newProjectDialogOpen: true });
       };
-
       const closeNewProjectDialog = (send: boolean, newProject: NewProjectData) => {
         return new Promise((resolve, reject) => {
           if (send) {

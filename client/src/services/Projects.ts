@@ -77,7 +77,7 @@ export default class Projects {
       credentials: 'include',
       body: JSON.stringify(annotation)
     }).then(response => {
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.json();
       } else if (response.status === 404) {
         throw new Error(`Désolé ! Ce projet est introuvable... Peut-être a-t-il été supprimé ou privatisé ?`);

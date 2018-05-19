@@ -16,7 +16,7 @@ import deepOrange from 'material-ui/colors/deepOrange';
 import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 
-import { AnnotationData } from '../../common/src/types/Annotation';
+import { AnnotationData, AnnotationRecord } from '../../common/src/types/Annotation';
 import { formatDuration } from './utils/DurationUtils';
 
 import { Range } from 'rc-slider';
@@ -31,12 +31,13 @@ const caretStop = require('./img/caret-stop.png');
 const randomColor = require('randomcolor');
 
 interface Props extends MaybeWithTeacher {
-  annotation?: AnnotationData;
+  annotation?: AnnotationRecord;
   video: {
     position: number;
     duration: number;
   };
   projectId: string;
+  updateCallback: Function;
 }
 
 interface State {
@@ -135,6 +136,8 @@ const Annotation = decorate<Props>(
         user.firstName || user.lastName ?
           `${avatarify(user.firstName)}${avatarify(user.lastName)}`
           : avatarify(user.email);
+      const formattedStart = formatDuration(this.state.annotation.startTime);
+      const formattedStop = formatDuration(this.state.annotation.stopTime);
 
       return (
         <div>
@@ -178,6 +181,11 @@ const Annotation = decorate<Props>(
                 </Typography>
 
               }
+              secondary={!this.state.isEditing &&
+                <Typography type="caption" className={classes.lightGray}>
+                  {`${formattedStart} - ${formattedStop}`}
+                </Typography>
+              }
             />
             <ListItemSecondaryAction>
               <IconButton
@@ -186,19 +194,26 @@ const Annotation = decorate<Props>(
                   if (this.state.isEditing) {
                     if (!this.props.annotation) {
                       AnnotationsService.createAnnotation(this.props.projectId, this.state.annotation)
-                        .then(annotation => this.setState({
-                          annotation,
-                          error: undefined,
-                          isEditing: !this.state.isEditing
-                        }))
+                        .then(annotation => {
+                          this.setState({
+                            annotation,
+                            error: undefined,
+                            isEditing: !this.state.isEditing
+
+                          });
+                          this.props.updateCallback();
+                        })
                         .catch(error => this.setState({ error: error.message }));
                     } else {
                       AnnotationsService.updateAnnotation(this.props.projectId, this.state.annotation)
-                        .then(annotation => this.setState({
-                          annotation,
-                          error: undefined,
-                          isEditing: !this.state.isEditing
-                        }))
+                        .then(annotation => {
+                          this.setState({
+                            annotation,
+                            error: undefined,
+                            isEditing: !this.state.isEditing
+                          });
+                          this.props.updateCallback();
+                        })
                         .catch(error => this.setState({ error: error.message }));
                     }
                   } else {

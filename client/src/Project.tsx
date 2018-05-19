@@ -35,7 +35,17 @@ const Project = withRouter(
 
     state = {} as State;
 
+    componentWillReceiveProps(props: Props) {
+      if (props.teacher !== this.props.teacher) {
+        this.load();
+      }
+    }
+
     componentWillMount() {
+      this.load();
+    }
+
+    load() {
       const projectId = this.props.match.params.projectId;
 
       ProjectsService.get(projectId)

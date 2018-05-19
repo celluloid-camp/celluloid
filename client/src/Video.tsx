@@ -28,10 +28,10 @@ import Fullscreen from 'react-full-screen';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import Annotation from './Annotation';
-import { AnnotationData } from '../../common/src/types/Annotation';
+import { AnnotationData, AnnotationRecord } from '../../common/src/types/Annotation';
 import { formatDuration } from './utils/DurationUtils';
 import { MaybeWithTeacher } from './types/Teacher';
+import Annotation from './Annotation';
 
 interface ProjectParams {
   projectId: string;
@@ -49,8 +49,28 @@ enum PlayerState {
   CUED = 4
 }
 
+const ANNOTATION_TIMEOUT = 5000;
 
 const decorate = withStyles(({ palette, spacing }) => ({
+  hintBox: {
+    top: -20,
+    position: 'relative' as 'relative',
+  },
+  hint: {
+    position: 'absolute' as 'absolute',
+    top: 0,
+    bottom: 0,
+    height: 8,
+    minWidth: 8,
+    margin: 0,
+    padding: 0,
+    borderRadius: 6,
+    backgroundColor: 'white',
+    border: '2px solid white',
+    '&:hover': {
+      border: '2px solid orange',
+    }
+  },
   videoWrapper: {
     position: 'relative' as 'relative',
     width: '100%',
@@ -121,8 +141,8 @@ const decorate = withStyles(({ palette, spacing }) => ({
 }));
 
 interface State {
-  annotations: Set<AnnotationData>;
-  visibleAnnotations: Set<AnnotationData>;
+  annotations: Set<AnnotationRecord>;
+  visibleAnnotations: Set<AnnotationRecord>;
   project?: ProjectData;
   error?: string;
   position: number;
@@ -146,7 +166,7 @@ interface Player {
 const Video = decorate<Props>(
   class extends React.Component<
     Props
-    & WithStyles<'controlFrame' | 'annotationFrame' | 'videoIframe'
+    & WithStyles<'controlFrame' | 'annotationFrame' | 'videoIframe' | 'hint' | 'hintBox'
     | 'videoWrapper' | 'videoContainer' | 'controls' | 'icon' | 'glassPane' | 'annotateButton'>,
     State> {
     timeoutId = -1;
@@ -166,10 +186,26 @@ const Video = decorate<Props>(
       const player = this.state.player;
       const position = player ? player.getCurrentTime() : 0;
       const duration = player ? player.getDuration() : 0;
-      this.setState({
-        position,
-        duration
+      const annotations = this.state.annotations;
+      const visibleAnnotations = new Set(
+        Array
+          .from(annotations.values())
+          .filter(annotation =>
+            this.shouldDisplayAnnotation(annotation)
+          )
+      );
+      visibleAnnotations.forEach(annotation => {
+        if (annotation.pause
+          && !this.state.visibleAnnotations.has(annotation)
+          && this.state.player) {
+          this.state.player.pauseVideo();
+        }
       });
+      const state = this.state;
+      state.visibleAnnotations = visibleAnnotations;
+      state.position = position;
+      state.duration = duration;
+      this.setState(state);
     }
 
     resetTimeout() {
@@ -177,7 +213,7 @@ const Video = decorate<Props>(
         userActive: true,
       });
       clearInterval(this.timeoutId);
-      this.timeoutId = setInterval(this.fadeOutTimer.bind(this), 2000);
+      this.timeoutId = setInterval(this.fadeOutTimer.bind(this), ANNOTATION_TIMEOUT);
     }
 
     fadeOutTimer() {
@@ -186,8 +222,15 @@ const Video = decorate<Props>(
       });
     }
 
+    seek(value: number) {
+      const player = this.state.player;
+      if (player) {
+        player.seekTo(value);
+      }
+    }
+
     shouldDisplayAnnotation(annotation: AnnotationData) {
-      return (this.state.position >= annotation.startTime && this.state.position < annotation.stopTime);
+      return (this.state.position >= annotation.startTime && this.state.position <= annotation.stopTime);
     }
 
     componentWillUnmount() {
@@ -203,7 +246,7 @@ const Video = decorate<Props>(
           this.setState({ project });
           return (ProjectsService.getAnnotations(projectId));
         })
-        .then((annotations: AnnotationData[]) => {
+        .then((annotations: AnnotationRecord[]) => {
           this.setState({ annotations: new Set(annotations) });
         })
         .catch((error: Error) => {
@@ -217,15 +260,19 @@ const Video = decorate<Props>(
     }
 
     render() {
+      const getAnnotationPosition = (annotation: AnnotationRecord) =>
+       `${(annotation.startTime * 100 / this.state.duration)}%`;
+      const getAnnotationWidth = (annotation: AnnotationRecord) =>
+          `${((annotation.stopTime - annotation.startTime) * 100
+            / this.state.duration
+          )}%`;
       const videoLoaded = (event: { target: Player }) => {
         const player = event.target;
         this.intervalId = setInterval(this.timer.bind(this), 1000);
         this.setState({ player });
       };
-
       const videoStateChanged = (event: { target: Player, data: number }) => {
         const state = event.data as PlayerState;
-
         switch (state) {
           case PlayerState.PLAYING:
           case PlayerState.BUFFERING:
@@ -236,11 +283,13 @@ const Video = decorate<Props>(
             this.setState({ playing: false });
         }
       };
-
       const toggleFullscreen = () => {
         this.setState({ fullscreen: !this.state.fullscreen });
       };
-
+      const onClickVideoArea = () => {
+        onMouseMove();
+        togglePlay();
+      };
       const togglePlay = () => {
         if (this.state.player) {
           if (this.state.playing) {
@@ -250,10 +299,10 @@ const Video = decorate<Props>(
           }
         }
       };
-
       const onMouseMove = this.resetTimeout.bind(this);
-
+      const callback = this.getProject.bind(this);
       const classes = this.props.classes;
+      const seek = this.seek.bind(this);
       return (
         <div>
           <Fullscreen
@@ -263,7 +312,10 @@ const Video = decorate<Props>(
             <div
               className={'full-screenable-node'}
               style={{
-                height: '100%', backgroundColor: 'black', display: 'flex', alignItems: 'center'
+                height: '100%',
+                backgroundColor: 'black',
+                display: 'flex',
+                alignItems: 'center'
               }}
             >
               <div
@@ -290,10 +342,27 @@ const Video = decorate<Props>(
                     <div
                       className={classes.glassPane}
                       onMouseMove={onMouseMove}
+                      onClick={onClickVideoArea}
                     />
                     <div className={classes.annotationFrame}>
+                      {Array.from(this.state.visibleAnnotations.values())
+                        .map(annotation =>
+                          <Annotation
+                            teacher={annotation.teacher}
+                            key={annotation.id}
+                            annotation={annotation}
+                            video={{
+                              position: this.state.position,
+                              duration: this.state.duration
+                            }}
+                            projectId={this.props.match.params.projectId}
+                            updateCallback={callback}
+                          />
+                        )
+                      }
                       {(this.state.isAddingAnnotation && this.props.teacher) &&
                         <Annotation
+                          key="new"
                           teacher={{
                             id: this.props.teacher.id,
                             email: this.props.teacher.email,
@@ -305,6 +374,7 @@ const Video = decorate<Props>(
                             duration: this.state.duration
                           }}
                           projectId={this.props.match.params.projectId}
+                          updateCallback={callback}
                         />
                       }
                     </div>
@@ -358,29 +428,47 @@ const Video = decorate<Props>(
                           item={true}
                           style={{ flexGrow: 1 }}
                         >
-                          <Slider
-                            min={0}
-                            max={this.state.duration}
-                            value={this.state.position}
-                            trackStyle={[{ backgroundColor: 'orange' }]}
-                            handleStyle={[{
-                              borderColor: 'orange'
-                            }, {
-                              borderColor: 'orange'
-                            }]}
-                            onChange={value => {
-                              if (this.state.player) {
-                                this.state.player.seekTo(value, false);
-                                this.setState({ position: value });
-                              }
-                            }}
-                            onAfterChange={value => {
-                              if (this.state.player) {
-                                this.state.player.seekTo(value, true);
-                                this.setState({ position: value });
-                              }
-                            }}
-                          />
+                          <Grid
+                            direction="column"
+                          >
+                            <Grid
+                              item={true}
+                              style={{ flexGrow: 1 }}
+                            >
+                              <div className={classes.hintBox}>
+                                {Array.from(this.state.annotations)
+                                  .map(annotation =>
+                                    <div
+                                      key={annotation.id}
+                                      className={classes.hint}
+                                      style={{
+                                        left: getAnnotationPosition(annotation),
+                                        width: getAnnotationWidth(annotation)
+                                      }}
+                                      onClick={() => seek(annotation.startTime)}
+                                    />
+                                  )}
+                              </div>
+                            </Grid>
+                            <Grid
+                              item={true}
+                              style={{ flexGrow: 1 }}
+                            >
+                              <Slider
+                                min={0}
+                                max={this.state.duration}
+                                value={this.state.position}
+                                trackStyle={[{ backgroundColor: 'orange' }]}
+                                handleStyle={[{
+                                  borderColor: 'orange'
+                                }, {
+                                  borderColor: 'orange'
+                                }]}
+                                onChange={seek}
+                                onAfterChange={seek}
+                              />
+                            </Grid>
+                          </Grid>
                         </Grid>
                         <Grid
                           item={true}
@@ -424,19 +512,6 @@ const Video = decorate<Props>(
               </div>
             </div>
           </Fullscreen>
-          <div>
-            {Array.from(this.state.annotations.values()).map((annotation, i) => {
-              const color = this.shouldDisplayAnnotation(annotation) ? 'green' : 'red';
-              return (
-                <div key={i} style={{ color }}>
-                  <i>{formatDuration(annotation.startTime)} - {formatDuration(annotation.stopTime)}</i>
-                  <br />
-                  <b>{annotation.text}</b>
-                  <br />
-                </div>
-              );
-            })}
-          </div>
         </div>
       );
     }
