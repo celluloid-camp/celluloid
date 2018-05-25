@@ -118,15 +118,9 @@ const Home = decorate<MaybeWithTeacher>(
                 <Grid container={true} spacing={24} direction="column">
                   <Grid item={true}>
                     <Typography type="headline" gutterBottom={true}>
-                      {this.props.teacher ?
-                        <b>
-                          {`Bonjour ${this.props.teacher.email} Votre outil pédagogique numérique`
-                            + `pour l'analyse de video`}
-                        </b> :
-                        <b>
-                          {`Votre outil pédagogique numérique pour l'analyse de video`}
-                        </b>
-                      }
+                      <b>
+                        {`Votre outil pédagogique numérique pour l'analyse de video`}
+                      </b>
                     </Typography>
                   </Grid>
                   <Grid item={true}>

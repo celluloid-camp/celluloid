@@ -110,14 +110,34 @@ router.get('/:projectId', (req, res) => {
     .catch(error => {
       console.error(`Failed to fetch project ${projectId}:`, error);
       if (error.message === "ProjectNotFound") {
-        console.log("404 error");
         res.status(404).json({ error: error.message });
       } else {
-        console.log("500 error WTF ???");
         res.status(500).json({ error: error.message });
       }
     });
 });
+
+function getAnnotation(annotationId: string, user) {
+  return pool.query(`
+      SELECT
+        a.*
+      FROM "Annotation" a
+      INNER JOIN "Project" p
+      ON a."projectId" = p."id"
+      WHERE a.id = $1
+      AND (p.public = true ${orMatchesUserId(user)})
+    `, [annotationId])
+  .then(result => {
+      return new Promise((resolve, reject) => {
+        if (result.rows.length === 1) {
+          resolve(result.rows[0]);
+        } else {
+          reject(new Error('AnnotationNotFound'));
+        }
+      });
+    }
+  );
+}
 
 router.get('/:projectId/annotations', loginRequired, (req, res) => {
   const projectId = req.params.projectId;
@@ -146,7 +166,6 @@ router.get('/:projectId/annotations', loginRequired, (req, res) => {
       res.status(200).json(result.rows);
     })
     .catch(error => {
-      console.error('Failed to fetch annotation', error);
       if (error.message === "ProjectNotFound") {
         res.status(404).json({ error: error.message });
       } else {
@@ -207,22 +226,73 @@ router.post('/:projectId/annotations', loginRequired, (req, res) => {
     });
 });
 
+router.put('/:projectId/annotations/:annotationId', loginRequired, (req, res) => {
+  const projectId = req.params.projectId;
+  const annotationId = req.params.annotationId;
+  const annotation = req.body;
+  const user = req.user;
+  getAnnotation(annotationId, req.user)
+    .then(annotation => {
+      if (annotation.teacherId !== user.id) {
+        res.status(403).json({error: 'TeacherNotAnnotationOwner'});
+      } else {
+        pool.query(`
+          UPDATE "Annotation"
+          SET
+            "text"      = $2,
+            "startTime" = $3,
+            "stopTime"  = $4,
+            "pause"     = $5
+          WHERE "id"    = $1
+          RETURNING *
+        `, [
+          req.body.id,
+          req.body.text,
+          req.body.startTime,
+          req.body.stopTime,
+          req.body.pause
+        ]).then(result => {
+          if (result.rows.length === 1) {
+            res.status(200).json(result.rows[0]);
+          } else {
+            console.error('Failed to update annotation', result);
+            res.status(500).json({ error: 'AnnotationUpdateError' })
+          }
+
+        }).catch(error => {
+          console.error('Failed to update annotation', error);
+          res.status(500).json({ error: 'AnnotationUpdateError' });
+        })
+      }
+    })
+    .catch(error => {
+      console.error('Failed to update annotation', error);
+      if (error.message === "AnnotationNotFound") {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    });
+});
+
 router.put('/:projectId', loginRequired, projectOwnershipRequired, (req, res) => {
   pool.query(`
     UPDATE "Project"
     SET
-      "views"           = $1,
-      "shares"          = $2,
-      "title"           = $3,
-      "description"     = $4,
-      "assignments"     = $5,
-      "objective"       = $7,
-      "levelStart"      = $8,
-      "levelEnd"        = $9,
-      "public"          = $10,
-      "collaborative"   = $11
+      "views"           = $2,
+      "shares"          = $3,
+      "title"           = $4,
+      "description"     = $5,
+      "assignments"     = $6,
+      "objective"       = $8,
+      "levelStart"      = $9,
+      "levelEnd"        = $10,
+      "public"          = $11,
+      "collaborative"   = $12
+    WHERE id = $1
     RETURNING *
   `, [
+      req.params.projectId,
       req.body.views  || 0,
       req.body.shares || 0,
       req.body.title,
@@ -236,7 +306,7 @@ router.put('/:projectId', loginRequired, projectOwnershipRequired, (req, res) =>
     ])
     .then(result => {
       if (result.rows.length === 1) {
-        return res.status(201).json(result.rows[0]);
+        return res.status(200).json(result.rows[0]);
       } else {
         console.error('Failed to update project', result);
         return res.status(500).json({ error: 'ProjectUpdateFailed' });

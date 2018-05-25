@@ -33,14 +33,27 @@ const decorate = withStyles(({ palette, spacing }) => ({
     height: '120px',
     textAlign: 'center',
     padding: spacing.unit * 6,
+  },
+  visibilityContainer: {
+    display: 'flex' as 'flex',
+    flexDirection: 'column' as 'column',
+    justifyContent: 'flex-start' as 'flex-start',
+    alignItems: 'flex-end' as 'flex-end',
+    position: 'absolute' as 'absolute',
+    right: 0,
+    top: 0,
+    padding: spacing.unit,
+  },
+  visibilityChip: {
+    backgroundColor: palette.secondary['400'],
+    margin: spacing.unit
   }
 }));
 
 const ProjectThumbnail = decorate<DisplayProjectData>(
   class extends React.Component<DisplayProjectData
-    & WithStyles<'thumbnailCard'>
-    & WithStyles<'thumbnailImage'>
-    & WithStyles<'@keyframes fade-card-in'>
+    & WithStyles<'thumbnailCard' | 'thumbnailImage'
+    | '@keyframes fade-card-in' | 'visibilityContainer' | 'visibilityChip'>
     > {
     render() {
       const {
@@ -80,6 +93,20 @@ const ProjectThumbnail = decorate<DisplayProjectData>(
                   }}
                 >
                   <PlayIcon style={{ width: 56, height: 56, color: 'white' }} />
+                </div>
+                <div className={classes.visibilityContainer}>
+                  {this.props.public &&
+                    <Chip
+                      className={classes.visibilityChip}
+                      label="public"
+                    />
+                  }
+                  {this.props.collaborative &&
+                    <Chip
+                      className={classes.visibilityChip}
+                      label="collaboratif"
+                    />
+                  }
                 </div>
                 <div
                   style={{

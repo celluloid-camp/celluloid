@@ -16,19 +16,17 @@ import deepOrange from 'material-ui/colors/deepOrange';
 import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 
-import { AnnotationData, AnnotationRecord } from '../../common/src/types/Annotation';
+import { AnnotationRecord } from '../../common/src/types/Annotation';
 import { formatDuration } from './utils/DurationUtils';
 
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 import AnnotationsService from './services/Projects';
-import { MaybeWithTeacher } from './types/Teacher';
+import { MaybeWithTeacher, getTeacherColor } from './types/Teacher';
 
 const caretStart = require('./img/caret-start.png');
 const caretStop = require('./img/caret-stop.png');
-
-const randomColor = require('randomcolor');
 
 interface Props extends MaybeWithTeacher {
   annotation?: AnnotationRecord;
@@ -38,10 +36,12 @@ interface Props extends MaybeWithTeacher {
   };
   projectId: string;
   updateCallback: Function;
+  seekCallback: Function;
 }
 
 interface State {
-  annotation: AnnotationData;
+  focused: boolean;
+  annotation: AnnotationRecord;
   startError?: string;
   isEditing: boolean;
   user: {
@@ -106,12 +106,14 @@ const Annotation = decorate<Props>(
       super(props);
       if (this.props.annotation) {
         this.state = {
+          focused: false,
           isEditing: false,
-          user: this.props.teacher,
+          user: this.props.annotation.teacher,
           annotation: this.props.annotation
         } as State;
       } else {
         this.state = {
+          focused: true,
           isEditing: true,
           user: this.props.teacher,
           annotation: {
@@ -141,14 +143,14 @@ const Annotation = decorate<Props>(
 
       return (
         <div>
-          <ListItem>
+          <ListItem
+            button={true}
+            onClick={() => this.setState({ focused: !this.state.focused })}
+          >
             <ListItemAvatar>
               <Avatar
                 style={{
-                  backgroundColor: randomColor({
-                    seed: user.id,
-                    luminosity: 'bright'
-                  })
+                  backgroundColor: getTeacherColor(user.id)
                 }}
               >
                 {avatarLabel}
@@ -176,7 +178,17 @@ const Annotation = decorate<Props>(
                   error={this.state.error ? true : false}
                   helperText={this.state.error}
                 /> :
-                <Typography className={classes.white}>
+                <Typography
+                  className={classes.white}
+                  style={this.state.focused ?
+                    {} :
+                    {
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }
+                  }
+                >
                   {this.state.annotation.text}
                 </Typography>
 
@@ -187,48 +199,50 @@ const Annotation = decorate<Props>(
                 </Typography>
               }
             />
-            <ListItemSecondaryAction>
-              <IconButton
-                color="primary"
-                onClick={() => {
-                  if (this.state.isEditing) {
-                    if (!this.props.annotation) {
-                      AnnotationsService.createAnnotation(this.props.projectId, this.state.annotation)
-                        .then(annotation => {
-                          this.setState({
-                            annotation,
-                            error: undefined,
-                            isEditing: !this.state.isEditing
+            {(this.props.teacher && this.props.teacher.id === this.state.user.id) &&
+              <ListItemSecondaryAction>
+                <IconButton
+                  color="primary"
+                  onClick={() => {
+                    if (this.state.isEditing) {
+                      if (!this.props.annotation) {
+                        AnnotationsService.createAnnotation(this.props.projectId, this.state.annotation)
+                          .then(annotation => {
+                            this.setState({
+                              annotation,
+                              error: undefined,
+                              isEditing: !this.state.isEditing
 
-                          });
-                          this.props.updateCallback();
-                        })
-                        .catch(error => this.setState({ error: error.message }));
+                            });
+                            this.props.updateCallback();
+                          })
+                          .catch(error => this.setState({ error: error.message }));
+                      } else {
+                        AnnotationsService.updateAnnotation(this.props.projectId, this.state.annotation)
+                          .then(annotation => {
+                            this.setState({
+                              annotation,
+                              error: undefined,
+                              isEditing: !this.state.isEditing
+                            });
+                            this.props.updateCallback();
+                          })
+                          .catch(error => this.setState({ error: error.message }));
+                      }
                     } else {
-                      AnnotationsService.updateAnnotation(this.props.projectId, this.state.annotation)
-                        .then(annotation => {
-                          this.setState({
-                            annotation,
-                            error: undefined,
-                            isEditing: !this.state.isEditing
-                          });
-                          this.props.updateCallback();
-                        })
-                        .catch(error => this.setState({ error: error.message }));
+                      this.setState({
+                        isEditing: !this.state.isEditing,
+                      });
                     }
-                  } else {
-                    this.setState({
-                      isEditing: !this.state.isEditing,
-                    });
+                  }}
+                >
+                  {this.state.isEditing ?
+                    <AddIcon /> :
+                    <EditIcon />
                   }
-                }}
-              >
-                {this.state.isEditing ?
-                  <AddIcon /> :
-                  <EditIcon />
-                }
-              </IconButton>
-            </ListItemSecondaryAction>
+                </IconButton>
+              </ListItemSecondaryAction>
+            }
           </ListItem>
           {this.state.isEditing &&
             <ListItem style={{ paddingLeft: 72, paddingTop: 0 }}>
@@ -258,6 +272,7 @@ const Annotation = decorate<Props>(
                   const state = this.state as State;
                   state.annotation.startTime = Math.max(0, state.annotation.startTime - 1);
                   this.setState(state);
+                  this.props.seekCallback(state.annotation.startTime);
                 }}
               >
                 {`◀`}
@@ -275,6 +290,7 @@ const Annotation = decorate<Props>(
                   const state = this.state as State;
                   state.annotation.startTime = Math.min(state.annotation.stopTime, state.annotation.startTime + 1);
                   this.setState(state);
+                  this.props.seekCallback(state.annotation.startTime);
                 }}
               >
                 {`▶`}
@@ -286,8 +302,14 @@ const Annotation = decorate<Props>(
                   value={[this.state.annotation.startTime, this.state.annotation.stopTime]}
                   onChange={values => {
                     const state = this.state;
-                    state.annotation.startTime = values[0];
-                    state.annotation.stopTime = values[1];
+                    if (state.annotation.startTime !== values[0]) {
+                      state.annotation.startTime = values[0];
+                      this.props.seekCallback(state.annotation.startTime);
+                    }
+                    if (state.annotation.stopTime !== values[1]) {
+                      state.annotation.stopTime = values[1];
+                      this.props.seekCallback(state.annotation.stopTime);
+                    }
                     this.setState(state);
                   }}
                   trackStyle={[{ backgroundColor: 'orange' }]}
@@ -323,6 +345,7 @@ const Annotation = decorate<Props>(
                   const state = this.state as State;
                   state.annotation.stopTime = Math.max(state.annotation.startTime, state.annotation.stopTime - 1);
                   this.setState(state);
+                  this.props.seekCallback(state.annotation.stopTime);
                 }}
               >
                 {`◀`}
@@ -340,6 +363,7 @@ const Annotation = decorate<Props>(
                   const state = this.state as State;
                   state.annotation.stopTime = Math.min(state.annotation.stopTime + 1, this.props.video.duration);
                   this.setState(state);
+                  this.props.seekCallback(state.annotation.stopTime);
                 }}
               >
                 {`▶`}

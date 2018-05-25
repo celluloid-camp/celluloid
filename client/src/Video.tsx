@@ -30,7 +30,7 @@ import 'rc-slider/assets/index.css';
 
 import { AnnotationData, AnnotationRecord } from '../../common/src/types/Annotation';
 import { formatDuration } from './utils/DurationUtils';
-import { MaybeWithTeacher } from './types/Teacher';
+import { MaybeWithTeacher, getTeacherColor } from './types/Teacher';
 import Annotation from './Annotation';
 
 interface ProjectParams {
@@ -53,22 +53,30 @@ const ANNOTATION_TIMEOUT = 5000;
 
 const decorate = withStyles(({ palette, spacing }) => ({
   hintBox: {
-    top: -20,
-    position: 'relative' as 'relative',
+    overflowY: 'auto' as 'auto',
+    overflowX: 'hidden' as 'scroll',
+    height: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    position: 'absolute' as 'absolute',
+    transition: 'all 0.5s ease',
+    bottom: 56,
+    width: '100%'
   },
   hint: {
+    cursor: 'pointer' as 'pointer',
+    opacity: 0,
     position: 'absolute' as 'absolute',
+    zIndex: 6,
     top: 0,
-    bottom: 0,
-    height: 8,
-    minWidth: 8,
+    height: 10,
+    minWidth: 10,
     margin: 0,
     padding: 0,
-    borderRadius: 6,
+    borderRadius: 8,
     backgroundColor: 'white',
-    border: '2px solid white',
+    transition: 'all 0.5s ease',
     '&:hover': {
-      border: '2px solid orange',
+      border: '2px solid white !important'
     }
   },
   videoWrapper: {
@@ -107,7 +115,6 @@ const decorate = withStyles(({ palette, spacing }) => ({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   controlFrame: {
-    verticalAlign: 'middle',
     textAlign: 'left',
     color: 'white',
     position: 'absolute' as 'absolute',
@@ -118,7 +125,8 @@ const decorate = withStyles(({ palette, spacing }) => ({
     height: 56,
     zIndex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    transition: 'opacity 0.5s ease',
+    transition: 'all 0.5s ease',
+    padding: 0
   },
   annotateButton: {
     right: 28,
@@ -128,8 +136,10 @@ const decorate = withStyles(({ palette, spacing }) => ({
     zIndex: 2
   },
   controls: {
+    transition: 'all 0.5s ease',
     width: '100%',
-    height: 56,
+    height: '100%',
+    bottom: 0,
     margin: 0,
     padding: 0,
     paddingRight: 130
@@ -152,6 +162,8 @@ interface State {
   fullscreen: boolean;
   playing: boolean;
   userActive: boolean;
+  showNav: boolean;
+  focusedAnnotation?: string;
   isAddingAnnotation: boolean;
 }
 
@@ -177,6 +189,7 @@ const Video = decorate<Props>(
       fullscreen: false,
       playing: false,
       userActive: true,
+      showNav: false,
       isAddingAnnotation: false,
       annotations: new Set(),
       visibleAnnotations: new Set(),
@@ -261,11 +274,11 @@ const Video = decorate<Props>(
 
     render() {
       const getAnnotationPosition = (annotation: AnnotationRecord) =>
-       `${(annotation.startTime * 100 / this.state.duration)}%`;
+        `${(annotation.startTime * 100 / this.state.duration)}%`;
       const getAnnotationWidth = (annotation: AnnotationRecord) =>
-          `${((annotation.stopTime - annotation.startTime) * 100
-            / this.state.duration
-          )}%`;
+        `${((annotation.stopTime - annotation.startTime) * 100
+          / this.state.duration
+        )}%`;
       const videoLoaded = (event: { target: Player }) => {
         const player = event.target;
         this.intervalId = setInterval(this.timer.bind(this), 1000);
@@ -300,7 +313,12 @@ const Video = decorate<Props>(
         }
       };
       const onMouseMove = this.resetTimeout.bind(this);
-      const callback = this.getProject.bind(this);
+      const updateCallback = () => {
+        this.setState({
+          isAddingAnnotation: false
+        });
+        this.getProject.bind(this);
+      };
       const classes = this.props.classes;
       const seek = this.seek.bind(this);
       return (
@@ -344,40 +362,47 @@ const Video = decorate<Props>(
                       onMouseMove={onMouseMove}
                       onClick={onClickVideoArea}
                     />
-                    <div className={classes.annotationFrame}>
-                      {Array.from(this.state.visibleAnnotations.values())
-                        .map(annotation =>
+                    {!this.state.showNav &&
+                      <div
+                        className={classes.annotationFrame}
+                        onMouseMove={onMouseMove}
+                      >
+                        {Array.from(this.state.visibleAnnotations.values())
+                          .map(annotation =>
+                            <Annotation
+                              teacher={annotation.teacher}
+                              key={annotation.id}
+                              annotation={annotation}
+                              video={{
+                                position: this.state.position,
+                                duration: this.state.duration
+                              }}
+                              projectId={this.props.match.params.projectId}
+                              updateCallback={updateCallback}
+                              seekCallback={seek}
+                            />
+                          )
+                        }
+                        {(this.state.isAddingAnnotation && this.props.teacher) &&
                           <Annotation
-                            teacher={annotation.teacher}
-                            key={annotation.id}
-                            annotation={annotation}
+                            key="new"
+                            teacher={{
+                              id: this.props.teacher.id,
+                              email: this.props.teacher.email,
+                              firstName: this.props.teacher.firstName,
+                              lastName: this.props.teacher.lastName
+                            }}
                             video={{
                               position: this.state.position,
                               duration: this.state.duration
                             }}
                             projectId={this.props.match.params.projectId}
-                            updateCallback={callback}
+                            updateCallback={updateCallback}
+                            seekCallback={seek}
                           />
-                        )
-                      }
-                      {(this.state.isAddingAnnotation && this.props.teacher) &&
-                        <Annotation
-                          key="new"
-                          teacher={{
-                            id: this.props.teacher.id,
-                            email: this.props.teacher.email,
-                            firstName: this.props.teacher.firstName,
-                            lastName: this.props.teacher.lastName
-                          }}
-                          video={{
-                            position: this.state.position,
-                            duration: this.state.duration
-                          }}
-                          projectId={this.props.match.params.projectId}
-                          updateCallback={callback}
-                        />
-                      }
-                    </div>
+                        }
+                      </div>
+                    }
                     {this.props.teacher &&
                       <Button
                         color="accent"
@@ -398,9 +423,50 @@ const Video = decorate<Props>(
                       </Button>
                     }
                     <div
+                      onMouseMove={onMouseMove}
+                      className={classes.hintBox}
+                      style={{
+                        opacity: this.state.userActive || this.state.showNav ? 1 : 0,
+                        height: this.state.showNav ? 'calc(100% - 56px)' : 0
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: 'relative' as 'relative',
+                          margin: 24,
+                          height: 'calc(100% - 48px)',
+                          width: 'calc(100% - 48px)',
+                        }}
+                      >
+                        {Array.from(this.state.annotations)
+                          .map((annotation, index) =>
+                            <div
+                              key={annotation.id}
+                              className={classes.hint}
+                              style={{
+                                opacity: this.state.showNav ? 1 : 0,
+                                top: this.state.showNav ? index * 24 : 0,
+                                left: getAnnotationPosition(annotation),
+                                width: getAnnotationWidth(annotation),
+                                backgroundColor: this.shouldDisplayAnnotation(annotation) ?
+                                  'white' :
+                                  getTeacherColor(annotation.teacherId),
+                                border: `2px solid ${getTeacherColor(annotation.teacherId)}`
+                              }}
+                              onClick={() => {
+                                seek(annotation.startTime);
+                                this.timer();
+                                this.setState({ showNav: false });
+                              }}
+                            />
+                          )}
+                      </div>
+                    </div>
+                    <div
+                      onMouseMove={onMouseMove}
                       className={classes.controlFrame}
                       style={{
-                        opacity: this.state.userActive ? 1 : 0
+                        opacity: this.state.userActive || this.state.showNav ? 1 : 0,
                       }}
                     >
                       <Grid
@@ -429,27 +495,9 @@ const Video = decorate<Props>(
                           style={{ flexGrow: 1 }}
                         >
                           <Grid
+                            container={true}
                             direction="column"
                           >
-                            <Grid
-                              item={true}
-                              style={{ flexGrow: 1 }}
-                            >
-                              <div className={classes.hintBox}>
-                                {Array.from(this.state.annotations)
-                                  .map(annotation =>
-                                    <div
-                                      key={annotation.id}
-                                      className={classes.hint}
-                                      style={{
-                                        left: getAnnotationPosition(annotation),
-                                        width: getAnnotationWidth(annotation)
-                                      }}
-                                      onClick={() => seek(annotation.startTime)}
-                                    />
-                                  )}
-                              </div>
-                            </Grid>
                             <Grid
                               item={true}
                               style={{ flexGrow: 1 }}
@@ -498,8 +546,8 @@ const Video = decorate<Props>(
                           item={true}
                         >
                           <IconButton
-                            color="primary"
-                            onClick={toggleFullscreen}
+                            color={this.state.showNav ? 'primary' : 'accent'}
+                            onClick={() => this.setState({ showNav: !this.state.showNav })}
                             classes={{ icon: classes.icon }}
                           >
                             <AnnotationIcon />

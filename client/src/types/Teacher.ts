@@ -1,5 +1,6 @@
-import { TeacherRecord, TeacherData } from '../../../common/src/types/Teacher';
+import { TeacherData, TeacherRecord } from '../../../common/src/types/Teacher';
 
+const randomColor = require('randomcolor');
 export interface MaybeWithTeacher {
   teacher?: TeacherRecord;
 }
@@ -25,4 +26,8 @@ export function getTeacherInitials(teacher: TeacherData): string {
       .split(' ')
       .map(part => part.substring(0, 1))
       .join();
+}
+
+export function getTeacherColor(id: string): string {
+  return randomColor({seed: id, luminosity: 'bright'});
 }
