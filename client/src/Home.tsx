@@ -41,7 +41,7 @@ const Home = decorate<MaybeWithTeacher>(
 
     state = {
       newProjectDialogOpen: false,
-      newProjectVideoId: 'krGikyXAR9w',
+      newProjectVideoUrl: 'https://www.youtube.com/watch?v=krGikyXAR9w',
       tags: [] as TagData[],
       projects: [] as DisplayProjectData[],
       error: undefined
@@ -100,8 +100,12 @@ const Home = decorate<MaybeWithTeacher>(
       };
 
       const handleVideoIdChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ newProjectVideoId: event.target.value });
+        this.setState({ newProjectVideoUrl: event.target.value });
       };
+
+      const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
+
+      const videoId = parsedVideoUrl.searchParams.get('v');
 
       return (
         <div>
@@ -166,7 +170,9 @@ const Home = decorate<MaybeWithTeacher>(
                         <TextField
                           label="Ajouter un lien vidéo"
                           onChange={handleVideoIdChanged}
-                          value={this.state.newProjectVideoId}
+                          value={this.state.newProjectVideoUrl}
+                          error={videoId ? false : true}
+                          helperText={videoId ? undefined : `Ceci n'est pas une video YouTube valide`}
                         />
                       </Grid>
                       <Grid item={true}>
@@ -178,15 +184,18 @@ const Home = decorate<MaybeWithTeacher>(
                           }}
                           color="primary"
                           onClick={showNewProjectDialog}
+                          disabled={!videoId}
                         >
                           {`NOUVEAU PROJET`}
                         </Button>
-                        <NewProject
-                          onClose={closeNewProjectDialog}
-                          isOpen={this.state.newProjectDialogOpen}
-                          videoId={this.state.newProjectVideoId}
-                          tags={this.state.tags}
-                        />
+                        {videoId &&
+                          <NewProject
+                            onClose={closeNewProjectDialog}
+                            isOpen={this.state.newProjectDialogOpen}
+                            videoId={videoId}
+                            tags={this.state.tags}
+                          />
+                        }
                       </Grid>
                     </Grid>
                   </Grid>

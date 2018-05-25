@@ -89,14 +89,12 @@ const NewProject = decorate<Props>(
 
     state = {
       videoTitle: '',
-      videoId: this.props.videoId,
       title: '',
       description: '',
       objective: '',
       assignments: [] as string[],
       views: 0,
       shares: 0,
-      author: 'Erwan Queffélec',
       levelStart: 0,
       levelEnd: levelsCount - 1,
       nextAssignment: '',
@@ -124,7 +122,7 @@ const NewProject = decorate<Props>(
 
       const onClose = (send: boolean) => (event: React.MouseEvent<HTMLElement>) => {
         const project = {
-          videoId: this.state.videoId,
+          videoId: this.props.videoId,
           title: this.state.title,
           description: this.state.description,
           objective: this.state.objective,
@@ -139,14 +137,12 @@ const NewProject = decorate<Props>(
           .then(() => {
             this.setState({
               videoTitle: '',
-              videoId: this.props.videoId,
               title: '',
               description: '',
               objective: '',
               assignments: [] as string[],
               views: 0,
               shares: 0,
-              author: 'Erwan Queffélec',
               levelStart: 0,
               levelEnd: levelsCount - 1,
               nextAssignment: '',
