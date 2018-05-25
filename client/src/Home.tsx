@@ -17,6 +17,9 @@ import { MaybeWithTeacher } from './types/Teacher';
 
 import { NewProjectData, DisplayProjectData } from '../../common/src/types/Project';
 import TagData from '../../common/src/types/Tag';
+import { YouTubeVideo } from './types/YouTubeVideo';
+
+import YouTubeService from './services/YouTube';
 
 const studentsIcon = require('./img/students.svg');
 const teacherIcon = require('./img/teacher.svg');
@@ -36,16 +39,28 @@ interface Props extends MaybeWithTeacher, WithStyles<'content' | 'center' | 'blo
 
 }
 
+interface State {
+  newProjectDialogOpen: boolean;
+  newProjectVideoUrl: string;
+  video?: YouTubeVideo;
+  tags: TagData[];
+  projects: DisplayProjectData[];
+  videoError?: string;
+  error?: string;
+}
+
 const Home = decorate<MaybeWithTeacher>(
-  class extends React.Component<Props> {
+  class extends React.Component<Props, State> {
 
     state = {
       newProjectDialogOpen: false,
       newProjectVideoUrl: 'https://www.youtube.com/watch?v=krGikyXAR9w',
       tags: [] as TagData[],
       projects: [] as DisplayProjectData[],
-      error: undefined
-    };
+      videoError: undefined,
+      error: undefined,
+      video: undefined
+    } as State;
 
     loadContent() {
       ProjectsService.fetch()
@@ -77,7 +92,35 @@ const Home = decorate<MaybeWithTeacher>(
     render() {
       const classes = this.props.classes;
       const showNewProjectDialog = () => {
-        this.setState({ newProjectDialogOpen: true });
+        const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
+        const videoId = parsedVideoUrl.searchParams.get('v');
+
+        if (videoId) {
+          YouTubeService.getVideoNameById(videoId)
+            .then((videoTitle: string) => {
+              this.setState({
+                video: {
+                  id: videoId,
+                  title: videoTitle,
+                  thumbnailUrl: `http://img.youtube.com/vi/${videoId}/0.jpg`
+                },
+                newProjectDialogOpen: true
+              });
+            })
+            .catch(() => {
+              this.setState({
+                video: undefined,
+                newProjectDialogOpen: false,
+                videoError: 'Cette URL Youtube est invalide'
+              });
+            });
+        } else {
+          this.setState({
+            video: undefined,
+            newProjectDialogOpen: false,
+            videoError: 'Cette URL Youtube est invalide'
+          });
+        }
       };
       const closeNewProjectDialog = (send: boolean, newProject: NewProjectData) => {
         return new Promise((resolve, reject) => {
@@ -99,13 +142,9 @@ const Home = decorate<MaybeWithTeacher>(
         });
       };
 
-      const handleVideoIdChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const handleVideoUrlChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({ newProjectVideoUrl: event.target.value });
       };
-
-      const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
-
-      const videoId = parsedVideoUrl.searchParams.get('v');
 
       return (
         <div>
@@ -168,11 +207,15 @@ const Home = decorate<MaybeWithTeacher>(
                     >
                       <Grid item={true}>
                         <TextField
+                          style={{
+                            width: 384
+                          }}
                           label="Ajouter un lien vidéo"
-                          onChange={handleVideoIdChanged}
+                          onChange={handleVideoUrlChanged}
                           value={this.state.newProjectVideoUrl}
-                          error={videoId ? false : true}
-                          helperText={videoId ? undefined : `Ceci n'est pas une video YouTube valide`}
+                          error={this.state.videoError ? true : false}
+                          fullWidth={true}
+                          helperText={this.state.videoError}
                         />
                       </Grid>
                       <Grid item={true}>
@@ -184,15 +227,14 @@ const Home = decorate<MaybeWithTeacher>(
                           }}
                           color="primary"
                           onClick={showNewProjectDialog}
-                          disabled={!videoId}
                         >
                           {`NOUVEAU PROJET`}
                         </Button>
-                        {videoId &&
+                        {this.state.video &&
                           <NewProject
                             onClose={closeNewProjectDialog}
                             isOpen={this.state.newProjectDialogOpen}
-                            videoId={videoId}
+                            video={this.state.video}
                             tags={this.state.tags}
                           />
                         }

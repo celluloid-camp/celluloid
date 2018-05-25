@@ -36,15 +36,15 @@ const parse = require('autosuggest-highlight/parse');
 const match = require('autosuggest-highlight/match');
 
 import { levelLabel, levelsCount } from './Levels';
-import YouTubeService from './services/YouTube';
 
 import TagData from '../../common/src/types/Tag';
 import { NewProjectData } from '../../common/src/types/Project';
+import { YouTubeVideo } from './types/YouTubeVideo';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };
 
 interface Props {
-  videoId: string;
+  video: YouTubeVideo;
   isOpen: boolean;
   tags: TagData[];
   onClose(send: boolean, value: NewProjectData): Promise<{}>;
@@ -106,23 +106,12 @@ const NewProject = decorate<Props>(
       suggestions: []
     };
 
-    componentWillReceiveProps(newProps: Props) {
-      const videoId = this.props.videoId;
-      YouTubeService.getVideoNameById(videoId)
-        .then((videoTitle: string) => {
-          this.setState({ videoTitle });
-        })
-        .catch((error: Error) => {
-          this.setState({ error: error.message });
-        });
-    }
-
     render() {
-      const { fullScreen, videoId, isOpen } = this.props;
+      const { fullScreen, video, isOpen } = this.props;
 
       const onClose = (send: boolean) => (event: React.MouseEvent<HTMLElement>) => {
         const project = {
-          videoId: this.props.videoId,
+          videoId: this.props.video.id,
           title: this.state.title,
           description: this.state.description,
           objective: this.state.objective,
@@ -301,7 +290,7 @@ const NewProject = decorate<Props>(
               style={{
                 width: '100%',
                 height: 256,
-                backgroundImage: `url(http://img.youtube.com/vi/${videoId}/0.jpg)`,
+                backgroundImage: `url(${video.thumbnailUrl})`,
                 backgroundPosition: 'center',
                 backgroundAttachement: 'contain',
                 backgroundRepeat: 'no-repeat'
@@ -319,7 +308,7 @@ const NewProject = decorate<Props>(
                 type="title"
                 gutterBottom={true}
               >
-                {this.state.videoTitle}
+                {this.props.video.title}
               </Typography>
             </div>
             <TextField
@@ -650,7 +639,6 @@ const NewProject = decorate<Props>(
             </Grid>
             {this.state.error &&
               <Typography
-                type="title"
                 style={{ padding: 24, color: 'red', textAlign: 'center' }}
               >
                 {this.state.error}
