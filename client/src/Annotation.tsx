@@ -1,20 +1,21 @@
 import * as React from 'react';
 
-import TextField from 'material-ui/TextField';
-import Avatar from 'material-ui/Avatar';
-import { ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
-import { withStyles, WithStyles } from 'material-ui/styles';
-import IconButton from 'material-ui/IconButton';
-import Button from 'material-ui/Button';
-import Checkbox from 'material-ui/Checkbox';
-import Typography from 'material-ui/Typography';
-import {
-  FormControlLabel,
-} from 'material-ui/Form';
-import deepOrange from 'material-ui/colors/deepOrange';
+import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import Typography from '@material-ui/core/Typography';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import deepOrange from '@material-ui/core/colors/deepOrange';
 
-import AddIcon from 'material-ui-icons/Add';
-import EditIcon from 'material-ui-icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 
 import { AnnotationRecord } from '../../common/src/types/Annotation';
 import { formatDuration } from './utils/DurationUtils';
@@ -61,9 +62,9 @@ const decorate = withStyles(({ palette, spacing }) => ({
     color: '#CCC'
   },
   underline: {
-    '&:hover:before': {
-      backgroundColor: ['#CCC', '!important']
-    },
+    // '&:hover:before': {
+    //   backgroundColor: ['#CCC', '!important']
+    // },
     '&:before': {
       backgroundColor: '#CCC'
     }
@@ -194,7 +195,7 @@ const Annotation = decorate<Props>(
 
               }
               secondary={!this.state.isEditing &&
-                <Typography type="caption" className={classes.lightGray}>
+                <Typography variant="caption" className={classes.lightGray}>
                   {`${formattedStart} - ${formattedStop}`}
                 </Typography>
               }
@@ -266,8 +267,8 @@ const Annotation = decorate<Props>(
               />
               <Button
                 classes={{ root: classes.buttonRoot }}
-                dense={true}
-                raised={true}
+                size="small"
+                variant="raised"
                 onClick={event => {
                   const state = this.state as State;
                   state.annotation.startTime = Math.max(0, state.annotation.startTime - 1);
@@ -284,8 +285,8 @@ const Annotation = decorate<Props>(
               </Typography>
               <Button
                 classes={{ root: classes.buttonRoot }}
-                dense={true}
-                raised={true}
+                size="small"
+                variant="raised"
                 onClick={event => {
                   const state = this.state as State;
                   state.annotation.startTime = Math.min(state.annotation.stopTime, state.annotation.startTime + 1);
@@ -339,8 +340,8 @@ const Annotation = decorate<Props>(
               </div>
               <Button
                 classes={{ root: classes.buttonRoot }}
-                dense={true}
-                raised={true}
+                size="small"
+                variant="raised"
                 onClick={event => {
                   const state = this.state as State;
                   state.annotation.stopTime = Math.max(state.annotation.startTime, state.annotation.stopTime - 1);
@@ -357,8 +358,8 @@ const Annotation = decorate<Props>(
               </Typography>
               <Button
                 classes={{ root: classes.buttonRoot }}
-                dense={true}
-                raised={true}
+                size="small"
+                variant="raised"
                 onClick={event => {
                   const state = this.state as State;
                   state.annotation.stopTime = Math.min(state.annotation.stopTime + 1, this.props.video.duration);

@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import Button from 'material-ui/Button';
-import { withStyles } from 'material-ui/styles';
-import { WithStyles } from 'material-ui/styles/withStyles';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
-import TextField from 'material-ui/TextField';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import { WithStyles } from '@material-ui/core/styles/withStyles';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import TextField from '@material-ui/core/TextField';
 
 import ProjectGrid from './ProjectGrid';
 import NewProject from './NewProject';
@@ -26,16 +26,16 @@ const teacherIcon = require('./img/teacher.svg');
 
 const decorate = withStyles(({ palette, spacing }) => ({
   center: {
-    textAlign: 'center',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    textAlign: 'center' as 'center',
+    marginLeft: 'auto' as 'auto',
+    marginRight: 'auto' as 'auto',
   },
   block: {
     padding: spacing.unit * 6
   }
 }));
 
-interface Props extends MaybeWithTeacher, WithStyles<'content' | 'center' | 'block'> {
+interface Props extends MaybeWithTeacher, WithStyles<'center' | 'block'> {
 
 }
 
@@ -160,14 +160,14 @@ const Home = decorate<MaybeWithTeacher>(
               <Grid item={true} sm={12} lg={3}>
                 <Grid container={true} spacing={24} direction="column">
                   <Grid item={true}>
-                    <Typography type="headline" gutterBottom={true}>
+                    <Typography variant="headline" gutterBottom={true}>
                       <b>
                         {`Votre outil pédagogique numérique pour l'analyse de video`}
                       </b>
                     </Typography>
                   </Grid>
                   <Grid item={true}>
-                    <Typography type="subheading" gutterBottom={true}>
+                    <Typography variant="subheading" gutterBottom={true}>
                       {`Celluloid est une plateforme collaborative pour les enseignants et les élèves.`}
                       <br />
                       <b>{`Créez-vous une séquence de cours`}</b>
@@ -187,13 +187,13 @@ const Home = decorate<MaybeWithTeacher>(
                     <img height={100} src={teacherIcon} alt="students icon" />
                   </Grid>
                   <Grid item={true}>
-                    <Typography type="title" gutterBottom={true}>
+                    <Typography variant="title" gutterBottom={true}>
                       {`Créer un nouveau projet`}
                     </Typography>
                     <Divider />
                   </Grid>
                   <Grid item={true}>
-                    <Typography type="subheading">
+                    <Typography variant="subheading">
                       {`Autour d'une video de votre choix, construisez une séquence de cours complète pour vos élèves`}
                     </Typography>
                   </Grid>
@@ -220,7 +220,7 @@ const Home = decorate<MaybeWithTeacher>(
                       </Grid>
                       <Grid item={true}>
                         <Button
-                          raised={true}
+                          variant="raised"
                           style={{
                             borderRadius: 24,
                             color: 'white'
@@ -254,13 +254,13 @@ const Home = decorate<MaybeWithTeacher>(
                     <img height={100} src={studentsIcon} alt="students icon" />
                   </Grid>
                   <Grid item={true}>
-                    <Typography type="title" gutterBottom={true}>
+                    <Typography variant="title" gutterBottom={true}>
                       {`Rejoindre un projet`}
                     </Typography>
                     <Divider />
                   </Grid>
                   <Grid item={true}>
-                    <Typography type="subheading">
+                    <Typography variant="subheading">
                       {`Vous souhaitez annoter et participer à une séquence organisée par votre
                   professeur`}
                     </Typography>
@@ -274,7 +274,7 @@ const Home = decorate<MaybeWithTeacher>(
                       justify="center"
                     >
                       <Grid item={true}>
-                        <Button raised={true} style={{ borderRadius: 24, color: 'white' }} color="primary">
+                        <Button variant="raised" style={{ borderRadius: 24, color: 'white' }} color="primary">
                           {`REJOINDRE UN PROJET`}
                         </Button>
                       </Grid>

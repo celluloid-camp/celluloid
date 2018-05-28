@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Switch from 'material-ui/Switch';
-import Chip from 'material-ui/Chip';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
+import Chip from '@material-ui/core/Chip';
 import Video from './Video';
 
 import { ProjectData } from '../../common/src/types/Project';
@@ -106,12 +106,12 @@ const Project = withRouter(
                     >
                       <Grid item={true} xs={9}>
                         <div style={{ textAlign: 'left' }}>
-                          <Typography gutterBottom={true} type="display1" style={{ color: '#272727' }}>
+                          <Typography gutterBottom={true} variant="display1" style={{ color: '#272727' }}>
                             {this.state.project.title}
                             &nbsp;
                           <i style={{ verticalAlign: 'middle' }} className="material-icons">edit</i>
                           </Typography>
-                          <Typography gutterBottom={true} type="subheading" style={{ color: '#757575' }}>
+                          <Typography gutterBottom={true} variant="subheading" style={{ color: '#757575' }}>
                             {this.state.project.description}
                           </Typography>
                         </div>
@@ -140,12 +140,12 @@ const Project = withRouter(
                     >
                       <Grid item={true} xs={1}>
                         <div style={{ textAlign: 'right' }}>
-                          <Typography gutterBottom={true} type="title" style={{ color: '#74AA55' }}>
+                          <Typography gutterBottom={true} variant="title" style={{ color: '#74AA55' }}>
                             {`Objectif`}
                           </Typography>
                           <Typography
                             gutterBottom={true}
-                            type="subheading"
+                            variant="subheading"
                             style={{ paddingTop: 8, color: '#74AA55' }}
                           >
                             {`Exercice`}
@@ -154,12 +154,12 @@ const Project = withRouter(
                       </Grid>
                       <Grid item={true} xs={9}>
                         <div style={{ textAlign: 'left' }}>
-                          <Typography gutterBottom={true} type="title" style={{ color: '#272727' }}>
+                          <Typography gutterBottom={true} variant="title" style={{ color: '#272727' }}>
                             {this.state.project.objective}
                           </Typography>
                           <ol style={{ paddingLeft: 14 }}>
                             {this.state.project.assignments.map((question, index) =>
-                              <Typography gutterBottom={true} type="subheading" key={index}>
+                              <Typography gutterBottom={true} variant="subheading" key={index}>
                                 <li>
                                   {question}
                                 </li>
@@ -196,7 +196,11 @@ const Project = withRouter(
                   style={{ width: '100%', textAlign: 'left' }}
                 >
                   <Grid item={true} xs={12}>
-                    <Button raised={true} color="primary" style={{ color: 'white', borderRadius: 24 }}>
+                    <Button
+                      variant="raised"
+                      color="primary"
+                      style={{ color: 'white', borderRadius: 24 }}
+                    >
                       <i style={{ verticalAlign: 'middle' }} className="material-icons">share</i>
                       &nbsp;
                     {`PARTAGER`}

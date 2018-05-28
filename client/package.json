@@ -7,29 +7,29 @@
   "proxy": "http://localhost:3001",
   "devDependencies": {
     "@types/autosuggest-highlight": "^3.1.0",
-    "@types/jest": "^21.1.8",
+    "@types/jest": "^22.2.3",
     "@types/jss": "^9.3.0",
     "@types/moment-duration-format": "^2.2.0",
-    "@types/node": "^8.0.58",
+    "@types/node": "^10.1.2",
+    "@types/query-string": "^5.1.0",
     "@types/randomcolor": "^0.4.3",
     "@types/rc-slider": "^8.2.1",
     "@types/react": "^16.0.28",
+    "@types/react-autosuggest": "^9.3.2",
     "@types/react-dom": "^16.0.3",
-    "@types/react-redux": "^5.0.14",
+    "@types/react-redux": "^6.0.0",
     "@types/react-router-dom": "^4.2.3",
     "@types/react-transition-group": "^2.0.9",
     "@types/react-youtube": "^7.4.0",
-    "react-scripts-ts": "2.8.0"
+    "react-scripts-ts": "2.16.0",
+    "webpack-cli": "^2.1.4"
   },
   "dependencies": {
-    "@types/query-string": "^5.1.0",
-    "@types/react-autosuggest": "^9.3.2",
+    "@material-ui/core": "^1.0.0",
+    "@material-ui/icons": "^1.0.0",
     "autosuggest-highlight": "^3.1.1",
-    "flag-icon-css": "^2.9.0",
-    "material-ui": "^1.0.0-beta.23",
-    "material-ui-icons": "^1.0.0-beta.17",
     "moment-duration-format": "^2.2.2",
-    "query-string": "^5.1.0",
+    "query-string": "^6.1.0",
     "randomcolor": "^0.5.3",
     "rc-slider": "^8.5.0",
     "react": "^16.2.0",
@@ -40,7 +40,7 @@
     "react-router-dom": "^4.2.2",
     "react-transition-group": "^2.3.1",
     "react-youtube": "^7.5.0",
-    "redux": "^3.7.2"
+    "redux": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",

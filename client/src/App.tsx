@@ -1,15 +1,12 @@
 import * as React from 'react';
 import { Route, Switch, NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
-import { WithStyles } from 'material-ui/styles/withStyles';
-import IconButton from 'material-ui/IconButton';
-
-import 'flag-icon-css/css/flag-icon.css';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import { WithStyles } from '@material-ui/core/styles/withStyles';
 
 import TeacherSignup, { TeacherSignupPayload, TeacherSignupAction } from './TeacherSignup';
 import TeacherLogin, { TeacherLoginAction } from './TeacherLogin';
@@ -160,28 +157,25 @@ const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =
             <Toolbar>
               <div className={classes.grow}>
                 <NavLink to="/" style={{ textDecoration: 'none' }}>
-                  <Typography type="display1">
+                  <Typography variant="display1">
                     <b>{`Celluloid`}</b>
                   </Typography>
                 </NavLink>
               </div>
-              <IconButton>
-                <span
-                  style={{ height: 18, width: 24, margin: 0, border: '1px solid #141414' }}
-                  className="flag-icon flag-icon-fr"
-                />
-              </IconButton>
+              <Button>
+                {`fr`}
+              </Button>
               <Button>{`À propos`}</Button>
               {renderLoginBar()}
             </Toolbar>
           </AppBar >
           <TeacherSignup
             onClose={closeSignup}
-            isOpen={this.state.signupOpen}
+            open={this.state.signupOpen}
           />
           <TeacherLogin
             onClose={closeLogin}
-            isOpen={this.state.loginOpen}
+            open={this.state.loginOpen}
           />
           <div style={{ paddingTop: 100 }}>
             <Child {...this.props} teacher={this.state.teacher}/>

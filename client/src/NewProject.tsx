@@ -1,32 +1,29 @@
 import * as React from 'react';
 
-import Button from 'material-ui/Button';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  InjectedProps
-} from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import List, {
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  ListItemAvatar
-} from 'material-ui/List';
-import Chip from 'material-ui/Chip';
-import Switch from 'material-ui/Switch';
-import Avatar from 'material-ui/Avatar/Avatar';
-import withStyles, { WithStyles } from 'material-ui/styles/withStyles';
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import { MenuItem } from 'material-ui/Menu';
+import Button from '@material-ui/core/Button';
+import Dialog, { DialogProps } from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Chip from '@material-ui/core/Chip';
+import Switch from '@material-ui/core/Switch';
+import Avatar from '@material-ui/core/Avatar/Avatar';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import MenuItem from '@material-ui/core/MenuItem';
 
-import CloseIcon from 'material-ui-icons/Close';
-import AddIcon from 'material-ui-icons/Add';
-import RemoveIcon from 'material-ui-icons/Remove';
+import CloseIcon from '@material-ui/icons/Close';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -78,14 +75,9 @@ const decorate = withStyles(({ palette, spacing }) => ({
 }));
 
 const NewProject = decorate<Props>(
-  class extends React.Component<Props
-    & InjectedProps
-    & WithStyles<'avatar'>
-    & WithStyles<'container'>
-    & WithStyles<'suggestionsContainerOpen'>
-    & WithStyles<'suggestion'>
-    & WithStyles<'input'>
-    & WithStyles<'suggestionsList'>> {
+  class extends React.Component<Props & DialogProps
+    & WithStyles<'avatar' | 'container' | 'suggestionsContainerOpen' |
+    'suggestion' | 'input' | 'suggestionsList'>> {
 
     state = {
       videoTitle: '',
@@ -194,12 +186,6 @@ const NewProject = decorate<Props>(
         );
       };
 
-      const onSuggestionFetchRequested = ({ value }: Autosuggest.SuggestionsFetchRequestedParams): void => {
-        this.setState({
-          suggestions: getSuggestions(value)
-        });
-      };
-
       const getSuggestions = (value: string) => {
         const inputValue = value.trim().toLowerCase();
         const inputLength = inputValue.length;
@@ -207,6 +193,12 @@ const NewProject = decorate<Props>(
         return inputLength === 0 ? [] : this.props.tags.filter(tag =>
           tag.name.toLowerCase().slice(0, inputLength) === inputValue
         );
+      };
+
+      const onSuggestionFetchRequested = ({ value }: Autosuggest.SuggestionsFetchRequestedParams): void => {
+        this.setState({
+          suggestions: getSuggestions(value)
+        });
       };
 
       const getSuggestionValue = (suggestion: TagData): string => {
@@ -291,9 +283,9 @@ const NewProject = decorate<Props>(
                 width: '100%',
                 height: 256,
                 backgroundImage: `url(${video.thumbnailUrl})`,
-                backgroundPosition: 'center',
-                backgroundAttachement: 'contain',
-                backgroundRepeat: 'no-repeat'
+                backgroundPosition: 'center' as 'center',
+                backgroundAttachment: 'contain' as 'contain',
+                backgroundRepeat: 'no-repeat' as 'no-repeat'
               }}
             />
             <div
@@ -305,7 +297,7 @@ const NewProject = decorate<Props>(
               }}
             >
               <Typography
-                type="title"
+                variant="title"
                 gutterBottom={true}
               >
                 {this.props.video.title}
@@ -337,10 +329,10 @@ const NewProject = decorate<Props>(
                 this.setState({ objective: event.target.value });
               }}
             />
-            <Typography type="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+            <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
               {`Activités proposées`}
             </Typography>
-            <Typography type="subheading">
+            <Typography variant="subheading">
               {`Listez les différentes questions et actions à remplir, relatives à l'ensemble de la vidéo`}
             </Typography>
             <List>
@@ -414,10 +406,10 @@ const NewProject = decorate<Props>(
                 </ListItemSecondaryAction>
               </ListItem>
             </List>
-            <Typography type="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+            <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
               {`Matière `}
             </Typography>
-            <Typography type="subheading">
+            <Typography variant="subheading">
               {`Indiquez le domaine ou la matière dont traite votre séquence`}
             </Typography>
             <div
@@ -499,10 +491,10 @@ const NewProject = decorate<Props>(
                 inputProps={inputProps}
               />
             </div>
-            <Typography type="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+            <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
               {`Niveau `}
             </Typography>
-            <Typography type="subheading">
+            <Typography variant="subheading">
               {`Veuillez préciser à quels niveaux de scolarité s'adresse cette séquence`}
             </Typography>
             <div
@@ -521,7 +513,7 @@ const NewProject = decorate<Props>(
                 }}
               >
                 <Typography
-                  type="caption"
+                  variant="caption"
                   style={{ textAlign: 'center' }}
                 >
                   {levelLabel(this.state.levelStart)}
@@ -537,7 +529,7 @@ const NewProject = decorate<Props>(
                 }}
               >
                 <Typography
-                  type="caption"
+                  variant="caption"
                   style={{ textAlign: 'center' }}
                 >
                   {levelLabel(this.state.levelEnd)}
@@ -557,7 +549,7 @@ const NewProject = decorate<Props>(
                 />
               </div>
             </div>
-            <Typography type="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+            <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
               {`Partage`}
             </Typography>
             <Grid
@@ -567,7 +559,7 @@ const NewProject = decorate<Props>(
             >
               <Grid item={true} xs={2}>
                 <Typography
-                  type="subheading"
+                  variant="subheading"
                   style={{ paddingTop: 12, textAlign: 'right' }}
                 >
                   {`Public`}
@@ -608,7 +600,7 @@ const NewProject = decorate<Props>(
             >
               <Grid item={true} xs={2}>
                 <Typography
-                  type="subheading"
+                  variant="subheading"
                   style={{ paddingTop: 12, textAlign: 'right' }}
                 >
                   {`Collaboratif`}
@@ -649,7 +641,7 @@ const NewProject = decorate<Props>(
             <Button
               onClick={onClose(true)}
               color="primary"
-              raised={true}
+              variant="raised"
             >
               {`Enregistrer`}
             </Button>

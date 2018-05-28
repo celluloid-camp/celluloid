@@ -1,4 +1,11 @@
-import { TeacherRecord } from "./Teacher";
+import { TeacherRecord } from './Teacher';
+
+export interface AnnotationData {
+  text: string;
+  startTime: number;
+  stopTime: number;
+  pause: boolean;
+}
 
 export interface AnnotationRecord extends AnnotationData {
   createdAt: Date;
@@ -7,11 +14,4 @@ export interface AnnotationRecord extends AnnotationData {
   teacherId: string;
   id: string;
   teacher: TeacherRecord;
-}
-
-export interface AnnotationData {
-  text: string;
-  startTime: number;
-  stopTime: number;
-  pause: boolean;
 }

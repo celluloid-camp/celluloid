@@ -1,15 +1,17 @@
 import * as React from 'react';
 
-import { withStyles } from 'material-ui/styles';
-import { WithStyles } from 'material-ui/styles/withStyles';
+import { withStyles } from '@material-ui/core/styles';
+import { WithStyles } from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router-dom';
-import Grid from 'material-ui/Grid';
-import Card, { CardMedia, CardContent } from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
-import Chip from 'material-ui/Chip';
-// import Button from 'material-ui/IconButton';
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
+// import Button from '@material-ui/core/IconButton';
 
-import PlayIcon from 'material-ui-icons/PlayCircleOutline';
+import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import { DisplayProjectData } from '../../common/src/types/Project';
 import { getTeacherDisplayName } from './types/Teacher';
 
@@ -31,7 +33,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
   },
   thumbnailImage: {
     height: '120px',
-    textAlign: 'center',
+    textAlign: 'center' as 'center',
     padding: spacing.unit * 6,
   },
   visibilityContainer: {
@@ -122,7 +124,7 @@ const ProjectThumbnail = decorate<DisplayProjectData>(
                 />
                 <div>
                   <Typography
-                    type="title"
+                    variant="title"
                     style={{
                       position: 'absolute',
                       zIndex: 3,
@@ -150,7 +152,7 @@ const ProjectThumbnail = decorate<DisplayProjectData>(
                 }}
               >
                 <Grid item={true} xs={12}>
-                  <Typography type="subheading" gutterBottom={true}>
+                  <Typography variant="subheading" gutterBottom={true}>
                     <b>{objective}</b>
                   </Typography>
                 </Grid>
@@ -158,7 +160,7 @@ const ProjectThumbnail = decorate<DisplayProjectData>(
                   <Typography style={{ paddingTop: 24 }}>
                     {getTeacherDisplayName(author)}
                   </Typography>
-                  <Typography type="caption">
+                  <Typography variant="caption">
                     {new Date(publishedAt).toLocaleDateString()}
                   </Typography>
                 </Grid>

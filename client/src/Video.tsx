@@ -8,20 +8,20 @@ import ProjectsService from './services/Projects';
 
 import YouTube, { } from 'react-youtube';
 
-import { withStyles } from 'material-ui/styles';
-import { WithStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
-import IconButton from 'material-ui/IconButton';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import { WithStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 
-import AnnotationIcon from 'material-ui-icons/Comment';
-import PlayIcon from 'material-ui-icons/PlayArrow';
-import PauseIcon from 'material-ui-icons/Pause';
-import FullScreenEnterIcon from 'material-ui-icons/Fullscreen';
-import FullscreenExitIcon from 'material-ui-icons/FullscreenExit';
-import EditIcon from 'material-ui-icons/Edit';
-import RemoveIcon from 'material-ui-icons/Remove';
+import AnnotationIcon from '@material-ui/icons/Comment';
+import PlayIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import FullScreenEnterIcon from '@material-ui/icons/Fullscreen';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import EditIcon from '@material-ui/icons/Edit';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import Fullscreen from 'react-full-screen';
 
@@ -104,8 +104,8 @@ const decorate = withStyles(({ palette, spacing }) => ({
     margin: 0,
   },
   annotationFrame: {
-    verticalAlign: 'middle',
-    textAlign: 'left',
+    verticalAlign: 'middle' as 'middle',
+    textAlign: 'left' as 'left',
     color: 'white',
     position: 'absolute' as 'absolute',
     top: 0,
@@ -115,7 +115,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   controlFrame: {
-    textAlign: 'left',
+    textAlign: 'left' as 'left',
     color: 'white',
     position: 'absolute' as 'absolute',
     bottom: 0,
@@ -273,17 +273,22 @@ const Video = decorate<Props>(
     }
 
     render() {
+      const onMouseMove = this.resetTimeout.bind(this);
+
       const getAnnotationPosition = (annotation: AnnotationRecord) =>
         `${(annotation.startTime * 100 / this.state.duration)}%`;
+
       const getAnnotationWidth = (annotation: AnnotationRecord) =>
         `${((annotation.stopTime - annotation.startTime) * 100
           / this.state.duration
         )}%`;
+
       const videoLoaded = (event: { target: Player }) => {
         const player = event.target;
         this.intervalId = setInterval(this.timer.bind(this), 1000);
         this.setState({ player });
       };
+
       const videoStateChanged = (event: { target: Player, data: number }) => {
         const state = event.data as PlayerState;
         switch (state) {
@@ -296,13 +301,11 @@ const Video = decorate<Props>(
             this.setState({ playing: false });
         }
       };
+
       const toggleFullscreen = () => {
         this.setState({ fullscreen: !this.state.fullscreen });
       };
-      const onClickVideoArea = () => {
-        onMouseMove();
-        togglePlay();
-      };
+
       const togglePlay = () => {
         if (this.state.player) {
           if (this.state.playing) {
@@ -312,15 +315,23 @@ const Video = decorate<Props>(
           }
         }
       };
-      const onMouseMove = this.resetTimeout.bind(this);
+
+      const onClickVideoArea = () => {
+        onMouseMove();
+        togglePlay();
+      };
+
       const updateCallback = () => {
         this.setState({
           isAddingAnnotation: false
         });
         this.getProject.bind(this);
       };
+
       const classes = this.props.classes;
+
       const seek = this.seek.bind(this);
+
       return (
         <div>
           <Fullscreen
@@ -405,9 +416,8 @@ const Video = decorate<Props>(
                     }
                     {this.props.teacher &&
                       <Button
-                        color="accent"
-                        fab={true}
-                        raised={true}
+                        color="secondary"
+                        variant="fab"
                         className={classes.annotateButton}
                         style={{
                           opacity: this.state.userActive || this.state.isAddingAnnotation
@@ -482,7 +492,7 @@ const Video = decorate<Props>(
                           <IconButton
                             color="inherit"
                             onClick={togglePlay}
-                            classes={{ icon: classes.icon }}
+                            classes={{ root: classes.icon }}
                           >
                             {this.state.playing ?
                               <PauseIcon /> :
@@ -523,7 +533,7 @@ const Video = decorate<Props>(
                         >
                           <Typography
                             style={{ color: 'white' }}
-                            type="caption"
+                            variant="caption"
                           >
                             {`${formatDuration(this.state.position)} / ${formatDuration(this.state.duration)}`}
                           </Typography>
@@ -534,7 +544,7 @@ const Video = decorate<Props>(
                           <IconButton
                             color="inherit"
                             onClick={toggleFullscreen}
-                            classes={{ icon: classes.icon }}
+                            classes={{ root: classes.icon }}
                           >
                             {this.state.fullscreen ?
                               <FullscreenExitIcon /> :
@@ -546,9 +556,9 @@ const Video = decorate<Props>(
                           item={true}
                         >
                           <IconButton
-                            color={this.state.showNav ? 'primary' : 'accent'}
+                            color={this.state.showNav ? 'primary' : 'secondary'}
                             onClick={() => this.setState({ showNav: !this.state.showNav })}
-                            classes={{ icon: classes.icon }}
+                            classes={{ root: classes.icon }}
                           >
                             <AnnotationIcon />
                           </IconButton>

@@ -6,7 +6,7 @@ import Theme from './Theme';
 import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { MuiThemeProvider } from 'material-ui/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 ReactDOM.render(
   <Router>
     <MuiThemeProvider theme={Theme}>

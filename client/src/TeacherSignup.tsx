@@ -1,33 +1,24 @@
 import * as React from 'react';
 
-import Button from 'material-ui/Button';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  InjectedProps
-} from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-// import Chip from 'material-ui/Chip';
-// import Switch from 'material-ui/Switch';
-// import Avatar from 'material-ui/Avatar/Avatar';
-// import withStyles, { WithStyles } from 'material-ui/styles/withStyles';
-// import Grid from 'material-ui/Grid';
-// import Paper from 'material-ui/Paper';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 
 import TeachersService from './services/Teachers';
 
-import CloseIcon from 'material-ui-icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { MouseEvent } from 'react';
 import { NewProjectData } from '../../common/src/types/Project';
-// import { levelLabel, levelsCount } from './Levels';
 import { NewTeacherData, SignupValidation } from '../../common/src/types/Teacher';
 
 interface Props {
-  isOpen: boolean;
+  open: boolean;
   project?: NewProjectData;
   onClose(action: TeacherSignupAction, value: TeacherSignupPayload): Promise<{}>;
 }
@@ -52,7 +43,7 @@ interface State {
 }
 
 export default class TeacherSignup extends React.Component<
-  Props & InjectedProps, State
+  Props, State
   > {
 
   state = {
@@ -74,27 +65,7 @@ export default class TeacherSignup extends React.Component<
 
   render() {
 
-    const { fullScreen, isOpen, project } = this.props;
-
-    const onSignup = (event: MouseEvent<HTMLElement>) => {
-      TeachersService.signup(
-        this.state.teacher.email,
-        this.state.teacher.password
-      ).then((result: SignupValidation) => {
-        if (result.success) {
-          onClose(TeacherSignupAction.Login)(event);
-        } else {
-          this.setState({
-            result,
-            error: `Échec, veuillez vérifier le formulaire`
-          });
-        }
-      }).catch(error => {
-        this.setState({
-          error: 'Échec, veuillez vérifier votre connexion Internet'
-        });
-      });
-    };
+    const { open, project } = this.props;
 
     const onClose = (action: TeacherSignupAction) => (event: MouseEvent<HTMLElement>) => {
       this.props.onClose(action, {
@@ -120,19 +91,41 @@ export default class TeacherSignup extends React.Component<
       });
     };
 
+    const onSignup = (event: MouseEvent<HTMLElement>) => {
+      TeachersService.signup(
+        this.state.teacher.email,
+        this.state.teacher.password
+      ).then((result: SignupValidation) => {
+        if (result.success) {
+          onClose(TeacherSignupAction.Login)(event);
+        } else {
+          this.setState({
+            result,
+            error: `Échec, veuillez vérifier le formulaire`
+          });
+        }
+      }).catch(error => {
+        this.setState({
+          error: 'Échec, veuillez vérifier votre connexion Internet'
+        });
+      });
+    };
+
     const checkConfirm = (state: State) => {
       return !(state.confirmPassword === state.teacher.password);
     };
 
     return (
       <Dialog
-        fullScreen={fullScreen}
-        open={isOpen}
+        onClick={onClose(TeacherSignupAction.None)}
+        open={open}
         fullWidth={true}
       >
         <DialogTitle style={{ textAlign: 'center' }}>
           <span style={{ position: 'absolute', right: 16, top: 8 }}>
-            <IconButton onClick={onClose(TeacherSignupAction.None)}>
+            <IconButton
+              onClick={onClose(TeacherSignupAction.None)}
+            >
               <CloseIcon />
             </IconButton>
           </span>
@@ -207,7 +200,7 @@ export default class TeacherSignup extends React.Component<
           <Button
             onClick={onSignup}
             color="primary"
-            raised={true}
+            variant="raised"
             disabled={this.state.confirmError}
           >
             {`Inscription`}
@@ -215,7 +208,7 @@ export default class TeacherSignup extends React.Component<
           <Button
             onClick={onClose(TeacherSignupAction.Login)}
             color="primary"
-            raised={false}
+            variant="raised"
           >
             {`Connexion`}
           </Button>

@@ -1,24 +1,22 @@
 import * as React from 'react';
 
-import Button from 'material-ui/Button';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  InjectedProps
-} from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 
-import CloseIcon from 'material-ui-icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 
 import TeachersService from './services/Teachers';
 
 import { TeacherCredentials, LoginValidation } from '../../common/src/types/Teacher';
 
 interface Props {
-  isOpen: boolean;
+  open: boolean;
   onClose(action: TeacherLoginAction, value: TeacherCredentials): Promise<{}>;
 }
 
@@ -36,7 +34,7 @@ export enum TeacherLoginAction {
 }
 
 export default class TeacherLogin extends React.Component<
-  Props & InjectedProps, State
+  Props, State
   > {
 
   state = {
@@ -53,7 +51,7 @@ export default class TeacherLogin extends React.Component<
 
   render() {
 
-    const { fullScreen, isOpen } = this.props;
+    const { open } = this.props;
 
     const onClose = (action: TeacherLoginAction) => (event: React.MouseEvent<HTMLElement>) => {
       this.props.onClose(action, this.state.credentials)
@@ -95,9 +93,9 @@ export default class TeacherLogin extends React.Component<
 
     return (
       <Dialog
-        fullScreen={fullScreen}
-        open={isOpen}
+        open={open}
         fullWidth={true}
+        onClose={onClose(TeacherLoginAction.None)}
       >
         <DialogTitle style={{ textAlign: 'center' }}>
           <span style={{ position: 'absolute', right: 16, top: 8 }}>
@@ -163,7 +161,7 @@ export default class TeacherLogin extends React.Component<
             <Button
               onClick={onClose(TeacherLoginAction.ForgotPassword)}
               color="primary"
-              raised={false}
+              variant="raised"
             >
               {`Mot de passe oublié`}
             </Button>
@@ -173,14 +171,14 @@ export default class TeacherLogin extends React.Component<
           <Button
             onClick={onLogin}
             color="primary"
-            raised={true}
+            variant="raised"
           >
             {`Connexion`}
           </Button>
           <Button
             onClick={onClose(TeacherLoginAction.Signup)}
             color="primary"
-            raised={false}
+            variant="raised"
           >
             {`Inscription`}
           </Button>
