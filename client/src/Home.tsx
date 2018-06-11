@@ -93,7 +93,9 @@ const Home = decorate<MaybeWithTeacher>(
       const classes = this.props.classes;
       const showNewProjectDialog = () => {
         const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
-        const videoId = parsedVideoUrl.searchParams.get('v');
+        const videoId = parsedVideoUrl.hostname.endsWith('youtu.be') ?
+          parsedVideoUrl.pathname.replace(/\//, '') :
+          parsedVideoUrl.searchParams.get('v');
 
         if (videoId) {
           YouTubeService.getVideoNameById(videoId)
