@@ -54,7 +54,7 @@ const Home = decorate<MaybeWithTeacher>(
 
     state = {
       newProjectDialogOpen: false,
-      newProjectVideoUrl: 'https://www.youtube.com/watch?v=krGikyXAR9w',
+      newProjectVideoUrl: '',
       tags: [] as TagData[],
       projects: [] as DisplayProjectData[],
       videoError: undefined,
@@ -92,36 +92,45 @@ const Home = decorate<MaybeWithTeacher>(
     render() {
       const classes = this.props.classes;
       const showNewProjectDialog = () => {
-        const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
-        const videoId = parsedVideoUrl.hostname.endsWith('youtu.be') ?
-          parsedVideoUrl.pathname.replace(/\//, '') :
-          parsedVideoUrl.searchParams.get('v');
+        try {
+          const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
+          const videoId = parsedVideoUrl.hostname.endsWith('youtu.be') ?
+            parsedVideoUrl.pathname.replace(/\//, '') :
+            parsedVideoUrl.searchParams.get('v');
 
-        if (videoId) {
-          YouTubeService.getVideoNameById(videoId)
-            .then((videoTitle: string) => {
-              this.setState({
-                video: {
-                  id: videoId,
-                  title: videoTitle,
-                  thumbnailUrl: `http://img.youtube.com/vi/${videoId}/0.jpg`
-                },
-                newProjectDialogOpen: true
+          if (videoId) {
+            YouTubeService.getVideoNameById(videoId)
+              .then((videoTitle: string) => {
+                this.setState({
+                  video: {
+                    id: videoId,
+                    title: videoTitle,
+                    thumbnailUrl: `http://img.youtube.com/vi/${videoId}/0.jpg`
+                  },
+                  newProjectDialogOpen: true
+                });
+              })
+              .catch(() => {
+                this.setState({
+                  video: undefined,
+                  newProjectDialogOpen: false,
+                  videoError: `Ceci n'est pas un lien YouTube valide`
+                });
               });
-            })
-            .catch(() => {
-              this.setState({
-                video: undefined,
-                newProjectDialogOpen: false,
-                videoError: 'Cette URL Youtube est invalide'
-              });
+          } else {
+            this.setState({
+              video: undefined,
+              newProjectDialogOpen: false,
+              videoError: `Ceci n'est pas un lien YouTube valide`
             });
-        } else {
+          }
+        } catch (err) {
           this.setState({
             video: undefined,
             newProjectDialogOpen: false,
-            videoError: 'Cette URL Youtube est invalide'
+            videoError: `Ceci n'est pas un lien YouTube valide`
           });
+
         }
       };
       const closeNewProjectDialog = (send: boolean, newProject: NewProjectData) => {
@@ -212,7 +221,7 @@ const Home = decorate<MaybeWithTeacher>(
                           style={{
                             width: 384
                           }}
-                          label="Ajouter un lien vidéo"
+                          label="Ajouter un lien vers une vidéo YouTube..."
                           onChange={handleVideoUrlChanged}
                           value={this.state.newProjectVideoUrl}
                           error={this.state.videoError ? true : false}
@@ -223,10 +232,6 @@ const Home = decorate<MaybeWithTeacher>(
                       <Grid item={true}>
                         <Button
                           variant="raised"
-                          style={{
-                            borderRadius: 24,
-                            color: 'white'
-                          }}
                           color="primary"
                           onClick={showNewProjectDialog}
                         >
@@ -276,7 +281,10 @@ const Home = decorate<MaybeWithTeacher>(
                       justify="center"
                     >
                       <Grid item={true}>
-                        <Button variant="raised" style={{ borderRadius: 24, color: 'white' }} color="primary">
+                        <Button
+                          variant="raised"
+                          color="primary"
+                        >
                           {`REJOINDRE UN PROJET`}
                         </Button>
                       </Grid>

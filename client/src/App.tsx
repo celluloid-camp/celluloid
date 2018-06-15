@@ -24,9 +24,6 @@ const decorate = withStyles(({ palette, spacing }) => ({
   grow: {
     flex: 1
   },
-  largeBar: {
-    height: '80px'
-  },
 }));
 
 interface Props extends RouteComponentProps<{}> {
@@ -40,7 +37,7 @@ interface State {
 }
 
 const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =>
-  class Menu extends React.Component<Props & WithStyles<'grow' | 'largeBar'>, State> {
+  class Menu extends React.Component<Props & WithStyles<'grow'>, State> {
 
     state = {
       signupOpen: false,
@@ -150,10 +147,11 @@ const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =
           );
         }
       };
-      const classes = this.props.classes;
+
+      const { classes, ...other } = this.props;
       return (
         <div>
-          <AppBar color="default" className={classes.largeBar}>
+          <AppBar color="default" >
             <Toolbar>
               <div className={classes.grow}>
                 <NavLink to="/" style={{ textDecoration: 'none' }}>
@@ -162,7 +160,9 @@ const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =
                   </Typography>
                 </NavLink>
               </div>
-              <Button>
+              <Button
+                color="secondary"
+              >
                 {`fr`}
               </Button>
               <Button>{`À propos`}</Button>
@@ -177,8 +177,8 @@ const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =
             onClose={closeLogin}
             open={this.state.loginOpen}
           />
-          <div style={{ paddingTop: 100 }}>
-            <Child {...this.props} teacher={this.state.teacher}/>
+          <div style={{ paddingTop: 64 }}>
+            <Child {...other} teacher={this.state.teacher} />
           </div>
         </div>
       );

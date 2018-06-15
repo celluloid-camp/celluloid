@@ -32,7 +32,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
     transition: 'all 1s ease'
   },
   thumbnailImage: {
-    height: '120px',
+    height: '196px',
     textAlign: 'center' as 'center',
     padding: spacing.unit * 6,
   },
@@ -47,7 +47,8 @@ const decorate = withStyles(({ palette, spacing }) => ({
     padding: spacing.unit,
   },
   visibilityChip: {
-    backgroundColor: palette.secondary['400'],
+    backgroundColor: palette.secondary.dark,
+    color: 'white',
     margin: spacing.unit
   }
 }));

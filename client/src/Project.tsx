@@ -14,6 +14,9 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import ProjectsService from './services/Projects';
 import { MaybeWithTeacher } from './types/Teacher';
+import ShareProject from './ShareProject';
+
+import ShareIcon from '@material-ui/icons/Share';
 
 interface ProjectParams {
   projectId: string;
@@ -25,6 +28,7 @@ interface Props extends RouteComponentProps<ProjectParams>, MaybeWithTeacher {
 interface State {
   project?: ProjectData;
   error?: string;
+  shareOpen: boolean;
 }
 
 const Project = withRouter(
@@ -33,7 +37,7 @@ const Project = withRouter(
     State
     > {
 
-    state = {} as State;
+    state = { shareOpen: false } as State;
 
     componentWillReceiveProps(props: Props) {
       if (props.teacher !== this.props.teacher) {
@@ -199,12 +203,18 @@ const Project = withRouter(
                     <Button
                       variant="raised"
                       color="primary"
-                      style={{ color: 'white', borderRadius: 24 }}
+                      onClick={() => {
+                        this.setState({ shareOpen: !this.state.shareOpen });
+                      }}
                     >
-                      <i style={{ verticalAlign: 'middle' }} className="material-icons">share</i>
-                      &nbsp;
-                    {`PARTAGER`}
+                      <ShareIcon style={{marginRight: 16}}/>
+                      {`PARTAGER`}
                     </Button>
+                    <ShareProject
+                      isOpen={this.state.shareOpen}
+                      project={this.state.project}
+                      onClose={() => null}
+                    />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <Typography>
@@ -223,8 +233,8 @@ const Project = withRouter(
                 </Grid>
               </Grid>
             </Grid> : this.state.error ?
-            <div style={{ color: 'red', fontWeight: 'bold'}}>{this.state.error}</div> :
-            <div>loading...</div>
+              <div style={{ color: 'red', fontWeight: 'bold' }}>{this.state.error}</div> :
+              <div>loading...</div>
           }
         </Paper>
       );

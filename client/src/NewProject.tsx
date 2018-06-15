@@ -305,7 +305,6 @@ const NewProject = decorate<Props>(
             </div>
             <TextField
               label="Titre"
-              style={{ display: 'flex', flex: 1 }}
               helperText="Le titre permet de référencer votre séquence sur la plate-forme"
               onChange={event => {
                 this.setState({ title: event.target.value });
@@ -313,7 +312,6 @@ const NewProject = decorate<Props>(
             />
             <TextField
               label="Description"
-              style={{ display: 'flex', flex: 1 }}
               helperText="Décrivez brièvement le contenu de la vidéo"
               multiline={true}
               onChange={event => {
@@ -322,7 +320,6 @@ const NewProject = decorate<Props>(
             />
             <TextField
               label="Objectif"
-              style={{ display: 'flex', flex: 1 }}
               helperText="Rédigez un objectif global pour ce projet"
               multiline={true}
               onChange={event => {
