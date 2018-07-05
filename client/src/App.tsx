@@ -150,7 +150,7 @@ const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =
 
       const { classes, ...other } = this.props;
       return (
-        <div>
+        <div style={{ height: '100%' }}>
           <AppBar color="default" >
             <Toolbar>
               <div className={classes.grow}>
@@ -177,7 +177,7 @@ const menuified = (<P extends MaybeWithTeacher>(Child: React.ComponentType<P>) =
             onClose={closeLogin}
             open={this.state.loginOpen}
           />
-          <div style={{ paddingTop: 64 }}>
+          <div style={{ paddingTop: 64, height: '100%' }}>
             <Child {...other} teacher={this.state.teacher} />
           </div>
         </div>

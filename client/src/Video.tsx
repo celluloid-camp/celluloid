@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-
+import * as classNames from 'classnames';
 import { ProjectData } from '../../common/src/types/Project';
 import { RouteComponentProps } from 'react-router';
 
@@ -8,8 +8,7 @@ import ProjectsService from './services/Projects';
 
 import YouTube, { } from 'react-youtube';
 
-import { withStyles } from '@material-ui/core/styles';
-import { WithStyles } from '@material-ui/core/styles';
+import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -28,30 +27,19 @@ import Fullscreen from 'react-full-screen';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import { AnnotationData, AnnotationRecord } from '../../common/src/types/Annotation';
+import { AnnotationRecord, AnnotationData } from '../../common/src/types/Annotation';
 import { formatDuration } from './utils/DurationUtils';
-import { MaybeWithTeacher, getTeacherColor } from './types/Teacher';
+import { MaybeWithTeacher } from './types/Teacher';
 import Annotation from './Annotation';
+import AnnotationHints from './AnnotationHints';
+import * as AnnotationUtils from './AnnotationUtils';
+import Palette from './Palette';
 
 interface ProjectParams {
   projectId: string;
 }
 
-interface Props extends RouteComponentProps<ProjectParams>, MaybeWithTeacher {
-
-}
-
-enum PlayerState {
-  ENDED = 0,
-  PLAYING = 1,
-  PAUSED = 2,
-  BUFFERING = 3,
-  CUED = 4
-}
-
-const ANNOTATION_TIMEOUT = 5000;
-
-const decorate = withStyles(({ palette, spacing }) => ({
+const styles = createStyles({
   hintBox: {
     overflowY: 'auto' as 'auto',
     overflowX: 'hidden' as 'scroll',
@@ -62,26 +50,16 @@ const decorate = withStyles(({ palette, spacing }) => ({
     bottom: 56,
     width: '100%'
   },
-  hint: {
-    cursor: 'pointer' as 'pointer',
-    opacity: 0,
-    position: 'absolute' as 'absolute',
-    zIndex: 6,
-    top: 0,
-    height: 10,
-    minWidth: 10,
-    margin: 0,
-    padding: 0,
-    borderRadius: 8,
-    backgroundColor: 'white',
-    transition: 'all 0.5s ease',
-    '&:hover': {
-      border: '2px solid white !important'
-    }
+  hintBoxExpanded: {
+    height: 'calc(100% - 56px)'
+  },
+  hintBoxCollapsed: {
+    height: 0
   },
   videoWrapper: {
     position: 'relative' as 'relative',
     width: '100%',
+    height: '100%',
     paddingBottom: '56.25%',
     backgroundColor: 'black',
   },
@@ -147,8 +125,30 @@ const decorate = withStyles(({ palette, spacing }) => ({
   icon: {
     height: 32,
     width: 32
+  },
+  visible: {
+    opacity: 1
+  },
+  hidden: {
+    opacity: 0
   }
-}));
+});
+
+interface Props
+  extends
+  RouteComponentProps<ProjectParams>,
+  MaybeWithTeacher,
+  WithStyles<typeof styles> { }
+
+enum PlayerState {
+  ENDED = 0,
+  PLAYING = 1,
+  PAUSED = 2,
+  BUFFERING = 3,
+  CUED = 4
+}
+
+const ANNOTATION_TIMEOUT = 5000;
 
 interface State {
   annotations: Set<AnnotationRecord>;
@@ -175,12 +175,8 @@ interface Player {
   seekTo: Function;
 }
 
-const Video = decorate<Props>(
-  class extends React.Component<
-    Props
-    & WithStyles<'controlFrame' | 'annotationFrame' | 'videoIframe' | 'hint' | 'hintBox'
-    | 'videoWrapper' | 'videoContainer' | 'controls' | 'icon' | 'glassPane' | 'annotateButton'>,
-    State> {
+const Video = withStyles(styles)(
+  class extends React.Component<Props, State> {
     timeoutId = -1;
     intervalId = -1;
     state = {
@@ -204,7 +200,7 @@ const Video = decorate<Props>(
         Array
           .from(annotations.values())
           .filter(annotation =>
-            this.shouldDisplayAnnotation(annotation)
+            AnnotationUtils.visible(annotation, this.state.position)
           )
       );
       visibleAnnotations.forEach(annotation => {
@@ -242,10 +238,6 @@ const Video = decorate<Props>(
       }
     }
 
-    shouldDisplayAnnotation(annotation: AnnotationData) {
-      return (this.state.position >= annotation.startTime && this.state.position <= annotation.stopTime);
-    }
-
     componentWillUnmount() {
       clearInterval(this.intervalId);
       clearInterval(this.timeoutId);
@@ -253,7 +245,6 @@ const Video = decorate<Props>(
 
     getProject() {
       const projectId = this.props.match.params.projectId;
-
       return ProjectsService.get(projectId)
         .then((project: ProjectData) => {
           this.setState({ project });
@@ -274,21 +265,11 @@ const Video = decorate<Props>(
 
     render() {
       const onMouseMove = this.resetTimeout.bind(this);
-
-      const getAnnotationPosition = (annotation: AnnotationRecord) =>
-        `${(annotation.startTime * 100 / this.state.duration)}%`;
-
-      const getAnnotationWidth = (annotation: AnnotationRecord) =>
-        `${((annotation.stopTime - annotation.startTime) * 100
-          / this.state.duration
-        )}%`;
-
       const videoLoaded = (event: { target: Player }) => {
         const player = event.target;
         this.intervalId = setInterval(this.timer.bind(this), 1000);
         this.setState({ player });
       };
-
       const videoStateChanged = (event: { target: Player, data: number }) => {
         const state = event.data as PlayerState;
         switch (state) {
@@ -301,11 +282,9 @@ const Video = decorate<Props>(
             this.setState({ playing: false });
         }
       };
-
       const toggleFullscreen = () => {
         this.setState({ fullscreen: !this.state.fullscreen });
       };
-
       const togglePlay = () => {
         if (this.state.player) {
           if (this.state.playing) {
@@ -315,262 +294,231 @@ const Video = decorate<Props>(
           }
         }
       };
-
-      const onClickVideoArea = () => {
+      const onClickVideo = () => {
         onMouseMove();
         togglePlay();
       };
-
       const updateCallback = () => {
         this.setState({
           isAddingAnnotation: false
         });
         this.getProject.bind(this);
       };
-
       const classes = this.props.classes;
-
       const seek = this.seek.bind(this);
-
+      const controlsOpacity = this.state.userActive || this.state.showNav ?
+        classes.visible : classes.hidden;
+      const hintBoxHeight = this.state.showNav ?
+        classes.hintBoxExpanded : classes.hintBoxCollapsed;
       return (
-        <div>
-          <Fullscreen
-            enabled={this.state.fullscreen}
-            onChange={fullscreen => this.setState({ fullscreen })}
+        <Fullscreen
+          enabled={this.state.fullscreen}
+          onChange={fullscreen => this.setState({ fullscreen })}
+        >
+          <div
+            className={classNames(
+              'full-screenable-node',
+              classes.videoWrapper
+            )}
           >
-            <div
-              className={'full-screenable-node'}
-              style={{
-                height: '100%',
-                backgroundColor: 'black',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <div
-                className={classes.videoWrapper}
-              >
-                {this.state.project &&
-                  <div>
-                    <YouTube
-                      videoId={this.state.project.videoId}
-                      opts={{
-                        playerVars: {
-                          modestbranding: 1,
-                          rel: 0,
-                          start: 0,
-                          showinfo: 0,
-                          iv_load_policy: 3,
-                          controls: 0
-                        }
-                      }}
-                      className={classes.videoIframe}
-                      onReady={videoLoaded}
-                      onStateChange={videoStateChanged}
-                    />
-                    <div
-                      className={classes.glassPane}
-                      onMouseMove={onMouseMove}
-                      onClick={onClickVideoArea}
-                    />
-                    {!this.state.showNav &&
-                      <div
-                        className={classes.annotationFrame}
-                        onMouseMove={onMouseMove}
-                      >
-                        {Array.from(this.state.visibleAnnotations.values())
-                          .map(annotation =>
-                            <Annotation
-                              teacher={annotation.teacher}
-                              key={annotation.id}
-                              annotation={annotation}
-                              video={{
-                                position: this.state.position,
-                                duration: this.state.duration
-                              }}
-                              projectId={this.props.match.params.projectId}
-                              updateCallback={updateCallback}
-                              seekCallback={seek}
-                            />
-                          )
-                        }
-                        {(this.state.isAddingAnnotation && this.props.teacher) &&
-                          <Annotation
-                            key="new"
-                            teacher={{
-                              id: this.props.teacher.id,
-                              email: this.props.teacher.email,
-                              firstName: this.props.teacher.firstName,
-                              lastName: this.props.teacher.lastName
-                            }}
-                            video={{
-                              position: this.state.position,
-                              duration: this.state.duration
-                            }}
-                            projectId={this.props.match.params.projectId}
-                            updateCallback={updateCallback}
-                            seekCallback={seek}
-                          />
-                        }
-                      </div>
+            {this.state.project &&
+              <div>
+                <YouTube
+                  videoId={this.state.project.videoId}
+                  opts={{
+                    playerVars: {
+                      modestbranding: 1,
+                      rel: 0,
+                      start: 0,
+                      showinfo: 0,
+                      iv_load_policy: 3,
+                      controls: 0
                     }
-                    {this.props.teacher &&
-                      <Button
-                        color="secondary"
-                        variant="fab"
-                        className={classes.annotateButton}
-                        style={{
-                          opacity: this.state.userActive || this.state.isAddingAnnotation
-                            ? 1 : 0
-                        }}
-                        onClick={() => {
-                          this.setState({ isAddingAnnotation: !this.state.isAddingAnnotation });
-                        }}
-                      >
-                        {!this.state.isAddingAnnotation ?
-                          <EditIcon /> : <RemoveIcon />
-                        }
-                      </Button>
+                  }}
+                  className={classes.videoIframe}
+                  onReady={videoLoaded}
+                  onStateChange={videoStateChanged}
+                />
+                <div
+                  className={classes.glassPane}
+                  onMouseMove={onMouseMove}
+                  onClick={onClickVideo}
+                />
+                {!this.state.showNav &&
+                  <div
+                    className={classes.annotationFrame}
+                    onMouseMove={onMouseMove}
+                  >
+                    {Array.from(this.state.visibleAnnotations.values())
+                      .map(annotation =>
+                        <Annotation
+                          teacher={annotation.teacher}
+                          key={annotation.id}
+                          annotation={annotation}
+                          video={{
+                            position: this.state.position,
+                            duration: this.state.duration
+                          }}
+                          projectId={this.props.match.params.projectId}
+                          updateCallback={updateCallback}
+                          seekCallback={seek}
+                        />
+                      )
                     }
-                    <div
-                      onMouseMove={onMouseMove}
-                      className={classes.hintBox}
-                      style={{
-                        opacity: this.state.userActive || this.state.showNav ? 1 : 0,
-                        height: this.state.showNav ? 'calc(100% - 56px)' : 0
-                      }}
+                    {(this.state.isAddingAnnotation && this.props.teacher) &&
+                      <Annotation
+                        key="new"
+                        teacher={{
+                          id: this.props.teacher.id,
+                          email: this.props.teacher.email,
+                          firstName: this.props.teacher.firstName,
+                          lastName: this.props.teacher.lastName
+                        }}
+                        video={{
+                          position: this.state.position,
+                          duration: this.state.duration
+                        }}
+                        projectId={this.props.match.params.projectId}
+                        updateCallback={updateCallback}
+                        seekCallback={seek}
+                      />
+                    }
+                  </div>
+                }
+                {this.props.teacher &&
+                  <Button
+                    color="secondary"
+                    variant="fab"
+                    className={classes.annotateButton}
+                    style={{
+                      opacity: this.state.userActive || this.state.isAddingAnnotation
+                        ? 1 : 0
+                    }}
+                    onClick={() => {
+                      this.setState({ isAddingAnnotation: !this.state.isAddingAnnotation });
+                    }}
+                  >
+                    {!this.state.isAddingAnnotation ?
+                      <EditIcon /> : <RemoveIcon />
+                    }
+                  </Button>
+                }
+                <div
+                  onMouseMove={onMouseMove}
+                  className={classNames(classes.hintBox, controlsOpacity, hintBoxHeight)}
+                >
+                  <AnnotationHints
+                    duration={this.state.duration}
+                    position={this.state.position}
+                    annotations={this.state.annotations}
+                    visible={this.state.showNav}
+                    onClick={(annotation: AnnotationData) => () => {
+                      this.setState({
+                        position: annotation.startTime,
+                        showNav: false
+                      });
+                      this.timer();
+                      seek(annotation.startTime);
+                    }}
+                  />
+                </div>
+                <div
+                  onMouseMove={onMouseMove}
+                  className={classNames([classes.controlFrame, controlsOpacity])}
+                >
+                  <Grid
+                    container={true}
+                    direction="row"
+                    spacing={24}
+                    justify="space-between"
+                    alignItems="center"
+                    className={classes.controls}
+                  >
+                    <Grid
+                      item={true}
                     >
-                      <div
-                        style={{
-                          position: 'relative' as 'relative',
-                          margin: 24,
-                          height: 'calc(100% - 48px)',
-                          width: 'calc(100% - 48px)',
-                        }}
+                      <IconButton
+                        color="inherit"
+                        onClick={togglePlay}
+                        classes={{ root: classes.icon }}
                       >
-                        {Array.from(this.state.annotations)
-                          .map((annotation, index) =>
-                            <div
-                              key={annotation.id}
-                              className={classes.hint}
-                              style={{
-                                opacity: this.state.showNav ? 1 : 0,
-                                top: this.state.showNav ? index * 24 : 0,
-                                left: getAnnotationPosition(annotation),
-                                width: getAnnotationWidth(annotation),
-                                backgroundColor: this.shouldDisplayAnnotation(annotation) ?
-                                  'white' :
-                                  getTeacherColor(annotation.teacherId),
-                                border: `2px solid ${getTeacherColor(annotation.teacherId)}`
-                              }}
-                              onClick={() => {
-                                seek(annotation.startTime);
-                                this.timer();
-                                this.setState({ showNav: false });
-                              }}
-                            />
-                          )}
-                      </div>
-                    </div>
-                    <div
-                      onMouseMove={onMouseMove}
-                      className={classes.controlFrame}
-                      style={{
-                        opacity: this.state.userActive || this.state.showNav ? 1 : 0,
-                      }}
+                        {this.state.playing ?
+                          <PauseIcon /> :
+                          <PlayIcon />
+                        }
+                      </IconButton>
+                    </Grid>
+                    <Grid
+                      item={true}
+                      style={{ flexGrow: 1 }}
                     >
                       <Grid
                         container={true}
-                        direction="row"
-                        justify="space-between"
-                        alignItems="center"
-                        className={classes.controls}
+                        direction="column"
                       >
-                        <Grid
-                          item={true}
-                        >
-                          <IconButton
-                            color="inherit"
-                            onClick={togglePlay}
-                            classes={{ root: classes.icon }}
-                          >
-                            {this.state.playing ?
-                              <PauseIcon /> :
-                              <PlayIcon />
-                            }
-                          </IconButton>
-                        </Grid>
                         <Grid
                           item={true}
                           style={{ flexGrow: 1 }}
                         >
-                          <Grid
-                            container={true}
-                            direction="column"
-                          >
-                            <Grid
-                              item={true}
-                              style={{ flexGrow: 1 }}
-                            >
-                              <Slider
-                                min={0}
-                                max={this.state.duration}
-                                value={this.state.position}
-                                trackStyle={[{ backgroundColor: 'orange' }]}
-                                handleStyle={[{
-                                  borderColor: 'orange'
-                                }, {
-                                  borderColor: 'orange'
-                                }]}
-                                onChange={seek}
-                                onAfterChange={seek}
-                              />
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                        <Grid
-                          item={true}
-                        >
-                          <Typography
-                            style={{ color: 'white' }}
-                            variant="caption"
-                          >
-                            {`${formatDuration(this.state.position)} / ${formatDuration(this.state.duration)}`}
-                          </Typography>
-                        </Grid>
-                        <Grid
-                          item={true}
-                        >
-                          <IconButton
-                            color="inherit"
-                            onClick={toggleFullscreen}
-                            classes={{ root: classes.icon }}
-                          >
-                            {this.state.fullscreen ?
-                              <FullscreenExitIcon /> :
-                              <FullScreenEnterIcon />
-                            }
-                          </IconButton>
-                        </Grid>
-                        <Grid
-                          item={true}
-                        >
-                          <IconButton
-                            color={this.state.showNav ? 'primary' : 'secondary'}
-                            onClick={() => this.setState({ showNav: !this.state.showNav })}
-                            classes={{ root: classes.icon }}
-                          >
-                            <AnnotationIcon />
-                          </IconButton>
+                          <Slider
+                            min={0}
+                            max={this.state.duration}
+                            value={this.state.position}
+                            trackStyle={[{ backgroundColor: Palette.secondary }]}
+                            handleStyle={{
+                              borderColor: Palette.secondary
+                            }}
+                            onChange={value => {
+                              this.setState({ position: value });
+                            }}
+                            onAfterChange={value => {
+                              seek(value);
+                            }}
+                          />
                         </Grid>
                       </Grid>
-                    </div>
-                  </div>
-                }
+                    </Grid>
+                    <Grid
+                      item={true}
+                    >
+                      <Typography
+                        style={{ color: 'white' }}
+                        variant="caption"
+                      >
+                        {`${formatDuration(this.state.position)} / ${formatDuration(this.state.duration)}`}
+                      </Typography>
+                    </Grid>
+                    <Grid
+                      item={true}
+                    >
+                      <IconButton
+                        color="inherit"
+                        onClick={toggleFullscreen}
+                        classes={{ root: classes.icon }}
+                      >
+                        {this.state.fullscreen ?
+                          <FullscreenExitIcon /> :
+                          <FullScreenEnterIcon />
+                        }
+                      </IconButton>
+                    </Grid>
+                    <Grid
+                      item={true}
+                    >
+                      <IconButton
+                        color={this.state.showNav ? 'primary' : 'secondary'}
+                        onClick={() => this.setState({ showNav: !this.state.showNav })}
+                        classes={{ root: classes.icon }}
+                      >
+                        <AnnotationIcon />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </div>
               </div>
-            </div>
-          </Fullscreen>
-        </div>
+            }
+          </div>
+        </Fullscreen>
       );
     }
   }

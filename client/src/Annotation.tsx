@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
+import { List } from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,7 +13,7 @@ import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import deepOrange from '@material-ui/core/colors/deepOrange';
+import Palette from './Palette';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -55,6 +56,9 @@ interface State {
 }
 
 const decorate = withStyles(({ palette, spacing }) => ({
+  transparent: {
+    backgroundColor: 'rgba(0,0,0,0)'
+  },
   white: {
     color: 'white'
   },
@@ -62,17 +66,21 @@ const decorate = withStyles(({ palette, spacing }) => ({
     color: '#CCC'
   },
   underline: {
-    // '&:hover:before': {
-    //   backgroundColor: ['#CCC', '!important']
-    // },
+    borderBottom: '1px solid white',
+    '&:hover': {
+      '&:before': {
+        borderBottom: '1px solid white',
+      },
+      '&:after': {
+        borderBottom: '1px solid white',
+      }
+    },
     '&:before': {
-      backgroundColor: '#CCC'
+      borderBottom: '1px solid white',
+    },
+    '&:after': {
+      borderBottom: '1px solid white',
     }
-  },
-  avatar: {
-    margin: 10,
-    color: '#fff',
-    backgroundColor: deepOrange[500]
   },
   buttonRoot: {
     fontSize: 10,
@@ -98,12 +106,12 @@ function maxAnnotationDuration(startTime: number, duration: number) {
 const Annotation = decorate<Props>(
   class extends React.Component<
     Props
-    & WithStyles<'white' | 'lightGray' | 'avatar' | 'underline' | 'buttonRoot'>,
+    & WithStyles<'white' | 'transparent' | 'lightGray' | 'avatar' | 'underline' | 'buttonRoot'>,
     State
     > {
 
     constructor(props: Props
-      & WithStyles<'white' | 'lightGray' | 'avatar' | 'underline' | 'buttonRoot'>) {
+      & WithStyles<'white' | 'transparent' | 'lightGray' | 'avatar' | 'underline' | 'buttonRoot'>) {
       super(props);
       if (this.props.annotation) {
         this.state = {
@@ -143,9 +151,8 @@ const Annotation = decorate<Props>(
       const formattedStop = formatDuration(this.state.annotation.stopTime);
 
       return (
-        <div>
+                    <List>
           <ListItem
-            button={true}
             onClick={() => this.setState({ focused: !this.state.focused })}
           >
             <ListItemAvatar>
@@ -164,6 +171,7 @@ const Annotation = decorate<Props>(
                   InputLabelProps={{ classes: { root: classes.lightGray } }}
                   InputProps={{
                     classes: {
+                      input: classes.transparent,
                       root: classes.white,
                       underline: classes.underline
                     }
@@ -205,6 +213,7 @@ const Annotation = decorate<Props>(
                 <IconButton
                   color="primary"
                   onClick={() => {
+
                     if (this.state.isEditing) {
                       if (!this.props.annotation) {
                         AnnotationsService.createAnnotation(this.props.projectId, this.state.annotation)
@@ -313,7 +322,7 @@ const Annotation = decorate<Props>(
                     }
                     this.setState(state);
                   }}
-                  trackStyle={[{ backgroundColor: 'orange' }]}
+                  trackStyle={[{ backgroundColor: Palette.secondary }]}
                   handleStyle={[{
                     border: 0,
                     borderRadius: 0,
@@ -371,7 +380,7 @@ const Annotation = decorate<Props>(
               </Button>
             </ListItem>
           }
-        </div>
+                    </List>
       );
     }
   }
