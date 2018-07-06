@@ -1,4 +1,5 @@
-import builder from '../common/Postgres';
+import builder from 'common/Postgres';
+import {ProjectData} from '../../../common/src/types/Project';
 
 export const orIsAuthor = (builder, user) =>
     user ? builder.orWhere('Project.authorId', '=', user.id) : builder;
@@ -76,6 +77,7 @@ export function create(project, user) {
       .insert({
         ...project,
         id: builder.raw('uuid_generate_v4()'),
+        authorId: user.id,
         publishedAt: builder.raw('NOW()'),
         views: 0,
         shares: 0,
@@ -84,10 +86,10 @@ export function create(project, user) {
       .returning(builder.raw('*'))
 }
 
-export function update(project, projectId) {
+export function update(project, projectId): Promise<ProjectData> {
   return builder('Project')
-    .update(project)
-    .returning(builder.raw('*'))
-    .where('projectId', projectId)
-    .then(rows => rows[0]);
+      .update(project)
+      .returning(builder.raw('*'))
+      .where('projectId', projectId)
+      .then(rows => rows[0]);
 }

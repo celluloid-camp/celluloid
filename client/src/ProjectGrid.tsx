@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
-import { WithStyles } from '@material-ui/core/styles/withStyles';
+import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -15,7 +14,7 @@ import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import { DisplayProjectData } from '../../common/src/types/Project';
 import { getTeacherDisplayName } from './types/Teacher';
 
-const decorate = withStyles(({ palette, spacing }) => ({
+const styles = ({ palette, spacing }: Theme) => createStyles({
   '@keyframes fade-card-in': {
     from: {
       opacity: 0,
@@ -51,13 +50,12 @@ const decorate = withStyles(({ palette, spacing }) => ({
     color: 'white',
     margin: spacing.unit
   }
-}));
+});
 
-const ProjectThumbnail = decorate<DisplayProjectData>(
-  class extends React.Component<DisplayProjectData
-    & WithStyles<'thumbnailCard' | 'thumbnailImage'
-    | '@keyframes fade-card-in' | 'visibilityContainer' | 'visibilityChip'>
-    > {
+interface Props extends WithStyles<typeof styles>, DisplayProjectData { }
+
+const ProjectThumbnail = withStyles(styles)(
+  class extends React.Component<Props> {
     render() {
       const {
         id,

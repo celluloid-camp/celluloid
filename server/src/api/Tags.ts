@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import builder from '../common/Postgres';
+import builder from 'common/Postgres';
 
 const router = express.Router();
 
