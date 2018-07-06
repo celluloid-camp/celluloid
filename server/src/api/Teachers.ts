@@ -3,8 +3,7 @@ import * as validator from 'validator';
 
 import {LoginValidation, SignupValidation} from '../../../common/src/types/Teacher';
 import * as auth from '../auth/Local';
-import {loginRequired} from '../auth/Utils';
-import pool from '../common/Postgres';
+import {isLoggedIn} from '../auth/Utils';
 
 const router = express.Router();
 
@@ -87,7 +86,7 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
-router.get('/me', loginRequired, (req, res, next) => {
+router.get('/me', isLoggedIn, (req, res) => {
   return res.status(200).json({
     teacher: {
       email: req.user.email,
@@ -99,9 +98,9 @@ router.get('/me', loginRequired, (req, res, next) => {
   });
 });
 
-router.put('/logout', loginRequired, (req, res, next) => {
+router.put('/logout', isLoggedIn, (req, res) => {
   req.logout();
   return res.status(200).send();
 });
 
-export = router;
+export default router;

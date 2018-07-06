@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "descriptions": "Celluloid helps students and teacher to interact by annotating online educational videos",
   "dependencies": {
+    "@types/knex": "^0.14.15",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.2",
     "compression": "^1.7.2",
@@ -11,6 +12,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "hoist-non-react-statics": "^2.5.0",
+    "knex": "^0.15.0",
     "nocache": "^2.0.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
