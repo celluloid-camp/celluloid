@@ -6,15 +6,15 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import Chip from '@material-ui/core/Chip';
-import Video from './Video';
+import Video from 'Video';
 
 import { ProjectData } from '../../common/src/types/Project';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import ProjectsService from './services/Projects';
-import { MaybeWithTeacher } from './types/Teacher';
-import ShareProject from './ShareProject';
+import ProjectsService from 'services/ProjectsService';
+import { WithLogin } from 'types/Teacher';
+import ShareProject from 'ShareProject';
 
 import ShareIcon from '@material-ui/icons/Share';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
@@ -23,7 +23,7 @@ interface ProjectParams {
   projectId: string;
 }
 
-interface Props extends RouteComponentProps<ProjectParams>, MaybeWithTeacher {
+interface Props extends RouteComponentProps<ProjectParams>, WithLogin {
 }
 
 interface State {

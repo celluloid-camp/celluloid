@@ -1,5 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import Palette from './Palette';
+import Palette from 'Palette';
 
 const Theme = createMuiTheme({
   typography: {

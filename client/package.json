@@ -27,6 +27,7 @@
     "enzyme": "^3.3.0",
     "prop-types": "^15.6.2",
     "react-scripts-ts": "2.16.0",
+    "redux-devtools-extension": "^2.13.5",
     "typescript": "^2.9.2",
     "webpack": "^4.15.1",
     "webpack-cli": "^2.1.4"
@@ -52,7 +53,8 @@
     "react-router-dom": "^4.2.2",
     "react-transition-group": "^2.3.1",
     "react-youtube": "^7.5.0",
-    "redux": "^4.0.0"
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",

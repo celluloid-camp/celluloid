@@ -3,12 +3,12 @@ import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import * as nocache from 'nocache';
 import * as dotenv from 'dotenv';
-import ApiProjects from './api/Projects';
-import ApiTeachers from './api/Teachers';
-import ApiTags from './api/Tags';
 import * as path from 'path';
-import * as passport from './auth/Local';
+import * as passport from 'auth/Local';
 import * as session from 'express-session';
+import ApiProjects from 'api/Projects';
+import ApiTeachers from 'api/Teachers';
+import ApiTags from 'api/Tags';
 
 require('cookie-parser');
 

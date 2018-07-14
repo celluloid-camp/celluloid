@@ -13,24 +13,24 @@ import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Palette from './Palette';
+import Palette from 'Palette';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { AnnotationRecord } from '../../common/src/types/Annotation';
-import { formatDuration } from './utils/DurationUtils';
+import { AnnotationData, AnnotationRecord } from '../../common/src/types/Annotation';
+import { formatDuration } from 'utils/DurationUtils';
 
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import AnnotationsService from './services/Projects';
-import { MaybeWithTeacher, getTeacherColor } from './types/Teacher';
+import AnnotationsService from 'services/ProjectsService';
+import { WithLogin, getTeacherColor } from 'types/Teacher';
 
 const caretStart = require('./img/caret-start.png');
 const caretStop = require('./img/caret-stop.png');
 
-interface Props extends MaybeWithTeacher {
+interface Props extends WithLogin {
   annotation?: AnnotationRecord;
   video: {
     position: number;
@@ -43,7 +43,7 @@ interface Props extends MaybeWithTeacher {
 
 interface State {
   focused: boolean;
-  annotation: AnnotationRecord;
+  annotation: AnnotationData | AnnotationData;
   startError?: string;
   isEditing: boolean;
   user: {
@@ -118,7 +118,7 @@ const Annotation = decorate<Props>(
           focused: false,
           isEditing: false,
           user: this.props.annotation.teacher,
-          annotation: this.props.annotation
+          annotation: this.props.annotation as AnnotationRecord
         } as State;
       } else {
         this.state = {
@@ -130,7 +130,7 @@ const Annotation = decorate<Props>(
             startTime: this.props.video.position,
             stopTime: maxAnnotationDuration(this.props.video.position, this.props.video.duration),
             pause: false
-          }
+          } as AnnotationData
         } as State;
       }
     }
@@ -151,7 +151,7 @@ const Annotation = decorate<Props>(
       const formattedStop = formatDuration(this.state.annotation.stopTime);
 
       return (
-                    <List>
+        <List>
           <ListItem
             onClick={() => this.setState({ focused: !this.state.focused })}
           >
@@ -228,8 +228,12 @@ const Annotation = decorate<Props>(
                           })
                           .catch(error => this.setState({ error: error.message }));
                       } else {
-                        AnnotationsService.updateAnnotation(this.props.projectId, this.state.annotation)
-                          .then(annotation => {
+                        AnnotationsService.updateAnnotation(
+                          this.props.projectId,
+                          this.props.annotation.id,
+                          this.state.annotation
+                        )
+                          .then((annotation: AnnotationRecord) => {
                             this.setState({
                               annotation,
                               error: undefined,
@@ -237,7 +241,7 @@ const Annotation = decorate<Props>(
                             });
                             this.props.updateCallback();
                           })
-                          .catch(error => this.setState({ error: error.message }));
+                          .catch((error: Error) => this.setState({ error: error.message }));
                       }
                     } else {
                       this.setState({
@@ -380,7 +384,7 @@ const Annotation = decorate<Props>(
               </Button>
             </ListItem>
           }
-                    </List>
+        </List>
       );
     }
   }

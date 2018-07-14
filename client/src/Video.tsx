@@ -4,7 +4,7 @@ import * as classNames from 'classnames';
 import { ProjectData } from '../../common/src/types/Project';
 import { RouteComponentProps } from 'react-router';
 
-import ProjectsService from './services/Projects';
+import ProjectsService from 'services/ProjectsService';
 
 import YouTube, { } from 'react-youtube';
 
@@ -28,12 +28,12 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 import { AnnotationRecord, AnnotationData } from '../../common/src/types/Annotation';
-import { formatDuration } from './utils/DurationUtils';
-import { MaybeWithTeacher } from './types/Teacher';
-import Annotation from './Annotation';
-import AnnotationHints from './AnnotationHints';
-import * as AnnotationUtils from './AnnotationUtils';
-import Palette from './Palette';
+import { formatDuration } from 'utils/DurationUtils';
+import { WithLogin } from 'types/Teacher';
+import Annotation from 'Annotation';
+import AnnotationHints from 'AnnotationHints';
+import * as AnnotationUtils from 'AnnotationUtils';
+import Palette from 'Palette';
 
 interface ProjectParams {
   projectId: string;
@@ -137,7 +137,7 @@ const styles = createStyles({
 interface Props
   extends
   RouteComponentProps<ProjectParams>,
-  MaybeWithTeacher,
+  WithLogin,
   WithStyles<typeof styles> { }
 
 enum PlayerState {
@@ -371,8 +371,7 @@ const Video = withStyles(styles)(
                         teacher={{
                           id: this.props.teacher.id,
                           email: this.props.teacher.email,
-                          firstName: this.props.teacher.firstName,
-                          lastName: this.props.teacher.lastName
+                          username: this.props.teacher.username
                         }}
                         video={{
                           position: this.state.position,

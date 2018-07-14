@@ -76,14 +76,15 @@ router.post('/login', (req, res, next) => {
           result.success = false;
           res.status(500).json(result);
         } else {
-          console.log(user);
-          console.log(info);
-          console.log(result);
           res.status(200).json(result);
         }
       });
     }
   })(req, res, next);
+});
+
+router.post('/confirm', (req, res) => {
+
 });
 
 router.get('/me', isLoggedIn, (req, res) => {

@@ -8,10 +8,10 @@ export interface AnnotationData {
 }
 
 export interface AnnotationRecord extends AnnotationData {
-  createdAt: Date;
-  updatedAt: Date;
   projectId: string;
   teacherId: string;
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
   teacher: TeacherRecord;
 }

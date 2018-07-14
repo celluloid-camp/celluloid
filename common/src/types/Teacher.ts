@@ -1,19 +1,32 @@
 import TagData from './Tag';
 
+export interface SignupErrors {
+  email?: string;
+  password?: string;
+  username?: string;
+  confirmPassword?: string;
+  server?: string;
+}
+
 export interface SignupValidation {
   success: boolean;
-  errors: { email?: string; password?: string; };
+  errors?: SignupErrors;
+}
+
+export interface LoginErrors {
+  email?: string;
+  password?: string;
+  server?: string;
 }
 
 export interface LoginValidation {
   success: boolean;
-  errors: { email?: string; password?: string; };
+  errors?: LoginErrors;
 }
 
 export interface TeacherData {
   email: string;
-  firstName?: string;
-  lastName?: string;
+  username: string;
   subjects?: TagData[];
 }
 
@@ -23,6 +36,21 @@ export interface TeacherRecord extends TeacherData {
 
 export interface NewTeacherData extends TeacherData {
   password: string;
+}
+
+export interface ConfirmTeacherData {
+  email: string;
+  code: string;
+}
+
+export interface ConfirmSignupErrors {
+  email: string;
+  code: string;
+}
+
+export interface ConfirmSignupValidation {
+  success: boolean;
+  errors?: ConfirmSignupErrors;
 }
 
 export interface TeacherCredentials {

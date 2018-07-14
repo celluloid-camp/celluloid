@@ -32,11 +32,11 @@ import * as Autosuggest from 'react-autosuggest';
 const parse = require('autosuggest-highlight/parse');
 const match = require('autosuggest-highlight/match');
 
-import { levelLabel, levelsCount } from './Levels';
+import { levelLabel, levelsCount } from 'types/Levels';
 
 import TagData from '../../common/src/types/Tag';
 import { NewProjectData } from '../../common/src/types/Project';
-import { YouTubeVideo } from './types/YouTubeVideo';
+import { YouTubeVideo } from 'types/YouTubeVideo';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/';
+import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -12,7 +12,6 @@ import Chip from '@material-ui/core/Chip';
 
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import { DisplayProjectData } from '../../common/src/types/Project';
-import { getTeacherDisplayName } from './types/Teacher';
 
 const styles = ({ palette, spacing }: Theme) => createStyles({
   '@keyframes fade-card-in': {
@@ -157,7 +156,7 @@ const ProjectThumbnail = withStyles(styles)(
                 </Grid>
                 <Grid item={true} xs={12}>
                   <Typography style={{ paddingTop: 24 }}>
-                    {getTeacherDisplayName(author)}
+                    {author.username}
                   </Typography>
                   <Typography variant="caption">
                     {new Date(publishedAt).toLocaleDateString()}

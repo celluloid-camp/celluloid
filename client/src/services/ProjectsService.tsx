@@ -1,6 +1,6 @@
 import { NewProjectData } from '../../../common/src/types/Project';
 
-import { AnnotationData, AnnotationRecord } from '../../../common/src/types/Annotation';
+import { AnnotationData } from '../../../common/src/types/Annotation';
 
 export default class Projects {
   static fetch() {
@@ -39,13 +39,13 @@ export default class Projects {
     });
   }
 
-  static updateAnnotation(projectId: string, annotation: AnnotationRecord) {
+  static updateAnnotation(projectId: string, annotationId: string, annotation: AnnotationData) {
     const headers = {
       'Accepts': 'application/json',
       'Content-type': 'application/json'
     };
 
-    return fetch(`/api/projects/${projectId}/annotations/${annotation.id}`, {
+    return fetch(`/api/projects/${projectId}/annotations/${annotationId}`, {
       method: 'PUT',
       headers: new Headers(headers),
       credentials: 'include',

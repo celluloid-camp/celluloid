@@ -8,18 +8,18 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 
-import ProjectGrid from './ProjectGrid';
-import NewProject from './NewProject';
-import TagsService from './services/Tags';
-import ProjectsService from './services/Projects';
+import ProjectGrid from 'ProjectGrid';
+import NewProject from 'NewProject';
+import TagsService from 'services/TagsService';
+import ProjectsService from 'services/ProjectsService';
 
-import { MaybeWithTeacher } from './types/Teacher';
+import { WithLogin } from 'types/Teacher';
 
 import { NewProjectData, DisplayProjectData } from '../../common/src/types/Project';
 import TagData from '../../common/src/types/Tag';
-import { YouTubeVideo } from './types/YouTubeVideo';
+import { YouTubeVideo } from 'types/YouTubeVideo';
 
-import YouTubeService from './services/YouTube';
+import YouTubeService from 'services/YoutubeService';
 
 const studentsIcon = require('./img/students.svg');
 const teacherIcon = require('./img/teacher.svg');
@@ -35,7 +35,7 @@ const decorate = withStyles(({ palette, spacing }) => ({
   }
 }));
 
-interface Props extends MaybeWithTeacher, WithStyles<'center' | 'block'> {
+interface Props extends WithLogin, WithStyles<'center' | 'block'> {
 
 }
 
@@ -49,7 +49,7 @@ interface State {
   error?: string;
 }
 
-const Home = decorate<MaybeWithTeacher>(
+const Home = decorate<WithLogin>(
   class extends React.Component<Props, State> {
 
     state = {

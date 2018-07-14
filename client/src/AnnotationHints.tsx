@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import { getTeacherColor } from './types/Teacher';
+import { getTeacherColor } from 'types/Teacher';
 
 import { AnnotationRecord } from '../../common/src/types/Annotation';
-import * as AnnotationUtils from './AnnotationUtils';
+import * as AnnotationUtils from 'AnnotationUtils';
 
 const styles = createStyles({
   visible: {
