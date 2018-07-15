@@ -1,27 +1,17 @@
-import TagData from './Tag';
+import TagData from './TagTypes';
 
-export interface SignupErrors {
+export interface SigninErrors {
   email?: string;
   password?: string;
   username?: string;
   confirmPassword?: string;
+  code?: string;
   server?: string;
 }
 
-export interface SignupValidation {
+export interface SigninValidation {
   success: boolean;
-  errors?: SignupErrors;
-}
-
-export interface LoginErrors {
-  email?: string;
-  password?: string;
-  server?: string;
-}
-
-export interface LoginValidation {
-  success: boolean;
-  errors?: LoginErrors;
+  errors: SigninErrors;
 }
 
 export interface TeacherData {
@@ -34,11 +24,11 @@ export interface TeacherRecord extends TeacherData {
   id: string;
 }
 
-export interface NewTeacherData extends TeacherData {
+export interface TeacherSignupData extends TeacherData {
   password: string;
 }
 
-export interface ConfirmTeacherData {
+export interface TeacherConfirmData {
   email: string;
   code: string;
 }

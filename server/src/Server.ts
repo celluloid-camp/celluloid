@@ -6,9 +6,9 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as passport from 'auth/Local';
 import * as session from 'express-session';
-import ApiProjects from 'api/Projects';
-import ApiTeachers from 'api/Teachers';
-import ApiTags from 'api/Tags';
+import ProjectsApi from 'api/ProjectsApi';
+import TeachersApi from 'api/TeachersApi';
+import TagsApi from 'api/TagsApi';
 
 require('cookie-parser');
 
@@ -26,9 +26,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/api/projects/', ApiProjects);
-app.use('/api/teachers/', ApiTeachers);
-app.use('/api/tags', ApiTags)
+app.use('/api/projects/', ProjectsApi);
+app.use('/api/teachers/', TeachersApi);
+app.use('/api/tags', TagsApi)
 
 app.get('/elb-status', (req, res) => {
   res.status(200);

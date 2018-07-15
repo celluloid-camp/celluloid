@@ -1,25 +1,17 @@
 import * as SigninDialog from 'components/Signin';
 
 import {
-  LoginErrors,
-  SignupErrors,
+  SigninErrors,
   TeacherRecord
-} from '../../../common/src/types/Teacher';
+} from '../../../common/src/types/TeacherTypes';
 
 export type User = TeacherRecord;
 
-export interface LoginState {
-  errors?: LoginErrors;
-}
-
-export interface SingupState {
-  errors?: SignupErrors;
-}
-
 export interface SigninState {
+  loading: boolean;
   dialog: SigninDialog.DialogState;
-  login: LoginState;
-  signup: SingupState;
+  errors: SigninErrors;
+  email?: string;
 }
 
 export interface AppState {

@@ -7,7 +7,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { WithLogin } from 'types/Teacher';
 
 import Menu from './MenuComponent';
-import { fetchCurrentUserThunk, doLogoutThunk } from 'actions/Signin/User';
+import { fetchCurrentUserThunk, doLogoutThunk } from 'actions/Signin/UserActions';
 
 interface Props extends RouteComponentProps<{}> {
   onMount(): Promise<AnyAction>;

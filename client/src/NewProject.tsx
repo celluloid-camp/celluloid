@@ -34,8 +34,8 @@ const match = require('autosuggest-highlight/match');
 
 import { levelLabel, levelsCount } from 'types/Levels';
 
-import TagData from '../../common/src/types/Tag';
-import { NewProjectData } from '../../common/src/types/Project';
+import TagData from '../../common/src/types/TagTypes';
+import { NewProjectData } from '../../common/src/types/ProjectTypes';
 import { YouTubeVideo } from 'types/YouTubeVideo';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };

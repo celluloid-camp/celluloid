@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import * as classNames from 'classnames';
-import { ProjectData } from '../../common/src/types/Project';
+import { ProjectData } from '../../common/src/types/ProjectTypes';
 import { RouteComponentProps } from 'react-router';
 
 import ProjectsService from 'services/ProjectsService';
@@ -27,7 +27,7 @@ import Fullscreen from 'react-full-screen';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import { AnnotationRecord, AnnotationData } from '../../common/src/types/Annotation';
+import { AnnotationRecord, AnnotationData } from '../../common/src/types/AnnotationTypes';
 import { formatDuration } from 'utils/DurationUtils';
 import { WithLogin } from 'types/Teacher';
 import Annotation from 'Annotation';

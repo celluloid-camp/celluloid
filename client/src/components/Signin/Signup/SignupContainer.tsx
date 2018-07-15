@@ -7,17 +7,17 @@ import { doSignupThunk, openLogin } from 'actions/Signin';
 import { AppState } from 'types/AppState';
 import Signup from './SignupComponent';
 
-import { NewTeacherData, SignupErrors } from '../../../../../common/src/types/Teacher';
+import { TeacherSignupData, SigninErrors } from '../../../../../common/src/types/TeacherTypes';
 
 interface Props {
-  errors?: SignupErrors;
+  errors: SigninErrors;
   onClickLogin(): Action<null>;
-  onSubmit(data: NewTeacherData): Promise<AnyAction>;
+  onSubmit(data: TeacherSignupData): Promise<AnyAction>;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onSubmit: (data: NewTeacherData): Promise<AnyAction> =>
+    onSubmit: (data: TeacherSignupData): Promise<AnyAction> =>
       doSignupThunk(data)(dispatch),
     onClickLogin: () => dispatch(openLogin())
   };
@@ -25,11 +25,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    errors: state.signin.signup.errors
+    errors: state.signin.errors
   };
 };
 
-interface State extends NewTeacherData {
+interface State extends TeacherSignupData {
   confirmPassword: string;
 }
 
@@ -56,6 +56,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
       return (
         <Signup
+          data={this.state}
+          errors={this.props.errors}
           confirmPasswordError={confirmPasswordError}
           onClickLogin={this.props.onClickLogin}
           onSubmit={() => this.props.onSubmit(this.state)}

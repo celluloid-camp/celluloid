@@ -1,7 +1,7 @@
 
-import builder from '../common/Postgres';
+import builder from 'common/Postgres';
 
-import * as ProjectsData from './Projects';
+import * as ProjectStore from './ProjectStore';
 
 export function getAll(projectId, user) {
   return builder
@@ -27,7 +27,7 @@ export function getOne(annotationId: string, user) {
       .where('Annotation.id', annotationId)
       .whereAnd(builder => {
         builder.where('Project.public', true);
-        builder.modify(ProjectsData.orIsAuthor, user);
+        builder.modify(ProjectStore.orIsAuthor, user);
         return builder;
       })
       .then(

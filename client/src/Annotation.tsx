@@ -18,7 +18,7 @@ import Palette from 'Palette';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { AnnotationData, AnnotationRecord } from '../../common/src/types/Annotation';
+import { AnnotationData, AnnotationRecord } from '../../common/src/types/AnnotationTypes';
 import { formatDuration } from 'utils/DurationUtils';
 
 import { Range } from 'rc-slider';

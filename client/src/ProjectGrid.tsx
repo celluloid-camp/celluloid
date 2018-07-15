@@ -11,7 +11,7 @@ import Chip from '@material-ui/core/Chip';
 // import Button from '@material-ui/core/IconButton';
 
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
-import { DisplayProjectData } from '../../common/src/types/Project';
+import { DisplayProjectData } from '../../common/src/types/ProjectTypes';
 
 const styles = ({ palette, spacing }: Theme) => createStyles({
   '@keyframes fade-card-in': {

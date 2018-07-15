@@ -1,16 +1,16 @@
 import * as express from 'express';
 
-import {isLoggedIn} from '../auth/Utils';
-import * as ProjectsData from '../data/Projects';
+import {isLoggedIn} from 'auth/Utils';
+import * as ProjectStore from 'store/ProjectStore';
 
-import ApiAnnotations from './Annotations'
+import AnnotationsApi from './AnnotationsApi'
 
 const router = express.Router();
 
-router.use('/:projectId/annotations', ApiAnnotations)
+router.use('/:projectId/annotations', AnnotationsApi)
 
 router.get('/', (req, res) => {
-  ProjectsData.getAll(req.user)
+  ProjectStore.getAll(req.user)
       .then(result => {
         return res.json(result);
       })
@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
 });
 
 function isOwner(req, res, next) {
-  return ProjectsData.isOwner(req.params.projectId, req.user)
+  return ProjectStore.isOwner(req.params.projectId, req.user)
       .then(
           isOwner => isOwner ?
               next() :
@@ -32,7 +32,7 @@ function isOwner(req, res, next) {
 router.get('/:projectId', (req, res) => {
   const projectId = req.params.projectId;
 
-  ProjectsData.getOne(projectId, req.user)
+  ProjectStore.getOne(projectId, req.user)
       .then(project => {
         res.json(project);
       })
@@ -48,7 +48,7 @@ router.get('/:projectId', (req, res) => {
 
 router.put(
     '/:projectId', isLoggedIn, isOwner,
-    (req, res) => {ProjectsData.update(req.body, req.params.projectId)
+    (req, res) => {ProjectStore.update(req.body, req.params.projectId)
                        .then(result => res.status(200).json(result))
                        .catch(error => {
                          console.error('Failed to update project', error);
@@ -57,7 +57,7 @@ router.put(
                        })});
 
 router.post('/', isLoggedIn, (req, res) => {
-  ProjectsData.create(req.body, req.user)
+  ProjectStore.create(req.body, req.user)
       .then(result => {
         res.status(201).json(result[0]);
       })

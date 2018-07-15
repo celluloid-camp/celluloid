@@ -1,8 +1,8 @@
 import * as express from 'express';
 
-import {isLoggedIn} from '../auth/Utils';
-import * as AnnotationsData from '../data/Annotations';
-import * as ProjectsData from '../data/Projects';
+import {isLoggedIn} from 'auth/Utils';
+import * as AnnotationStore from 'store/AnnotationStore';
+import * as ProjectStore from 'store/ProjectStore';
 
 const router = express.Router();
 
@@ -10,8 +10,8 @@ router.get('/', isLoggedIn, (req, res) => {
   const projectId = req.params.projectId;
   const user = req.user;
 
-  ProjectsData.getOne(projectId, user)
-      .then(() => AnnotationsData.getAll(projectId, user))
+  ProjectStore.getOne(projectId, user)
+      .then(() => AnnotationStore.getAll(projectId, user))
       .then(annotations => res.status(200).json(annotations))
       .catch(
           error => error.message === 'ProjectNotFound' ?
@@ -24,12 +24,12 @@ router.post('/', isLoggedIn, (req, res) => {
   const annotation = req.body;
   const user = req.user;
 
-  ProjectsData.getOne(projectId, user)
+  ProjectStore.getOne(projectId, user)
       .then(
           project => project.authorId !== user.id && !project.collaborative ?
               Promise.reject(new Error('ProjectNotCollaborative')) :
               Promise.resolve())
-      .then(AnnotationsData.create(annotation, user, projectId))
+      .then(AnnotationStore.create(annotation, user, projectId))
       .then(res.status(201).json)
       .catch(error => {
         console.error('Failed to create annotation', error);
@@ -46,12 +46,12 @@ router.put('/:annotationId', isLoggedIn, (req, res) => {
   const updated = req.body;
   const user = req.user;
 
-  AnnotationsData.getOne(annotationId, req.user)
+  AnnotationStore.getOne(annotationId, req.user)
       .then(
           old => old.teacherId !== user.id ?
               Promise.reject(new Error('TeacherNotAnnotationOwner')) :
               Promise.resolve())
-      .then(AnnotationsData.update(annotationId, updated))
+      .then(AnnotationStore.update(annotationId, updated))
       .then(result => res.status(200).json(result[0]))
       .catch(error => {
         console.error('Failed to update annotation', error);

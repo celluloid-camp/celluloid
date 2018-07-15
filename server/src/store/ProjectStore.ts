@@ -1,5 +1,5 @@
 import builder from 'common/Postgres';
-import {ProjectData} from '../../../common/src/types/Project';
+import {ProjectData} from '../../../common/src/types/ProjectTypes';
 
 export const orIsAuthor = (builder, user) =>
     user ? builder.orWhere('Project.authorId', '=', user.id) : builder;
@@ -26,12 +26,7 @@ export function getAll(user) {
       .select(
           builder.raw('"Project".*'),
           builder.raw(`to_json(array_agg("Tag")) AS "tags"`),
-          builder.raw(
-              `json_build_object(` +
-              `'firstName',  "Teacher"."firstName",` +
-              `'lastName',   "Teacher"."lastName",` +
-              `'email',      "Teacher"."email"` +
-              `) AS "author"`))
+          builder.raw(`row_to_json("Teacher") as "author"`))
       .from('Project')
       .innerJoin('Teacher', 'Teacher.id', 'Project.authorId')
       .leftJoin('TagToProject', 'Project.id', 'TagToProject.projectId')

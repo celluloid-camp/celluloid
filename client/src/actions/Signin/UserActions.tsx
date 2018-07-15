@@ -1,6 +1,6 @@
 import ActionType from 'types/ActionType';
 import { Action } from 'types/Action';
-import { TeacherRecord } from '../../../../common/src/types/Teacher';
+import { TeacherRecord } from '../../../../common/src/types/TeacherTypes';
 import TeachersService from 'services/TeachersService';
 import { Dispatch } from 'redux';
 

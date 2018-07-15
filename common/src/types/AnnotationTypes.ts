@@ -1,4 +1,4 @@
-import { TeacherRecord } from './Teacher';
+import { TeacherRecord } from './TeacherTypes';
 
 export interface AnnotationData {
   text: string;

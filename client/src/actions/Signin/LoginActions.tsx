@@ -3,8 +3,14 @@ import TeachersService from 'services/TeachersService';
 import { Action } from 'types/Action';
 import ActionType from 'types/ActionType';
 
-import { LoginErrors, LoginValidation, TeacherCredentials } from '../../../../common/src/types/Teacher';
-import { fetchCurrentUserThunk } from './User';
+import {
+  SigninErrors,
+  SigninValidation,
+  TeacherCredentials
+} from '../../../../common/src/types/TeacherTypes';
+import { fetchCurrentUserThunk } from './UserActions';
+import { openConfirmSignup } from './SignupActions';
+import { triggerSigninLoading } from '.';
 
 export function openLogin(): Action<null> {
   return {
@@ -18,23 +24,29 @@ export function succeedLogin(): Action<null> {
   };
 }
 
-export function failLogin(errors: LoginErrors):
-  Action<LoginErrors> {
+export function failLogin(errors: SigninErrors):
+  Action<SigninErrors> {
   return { type: ActionType.FAIL_LOGIN, payload: errors, error: true };
 }
 
 export const doLoginThunk = (credentials: TeacherCredentials) =>
   (dispatch: Dispatch) => {
+    dispatch(triggerSigninLoading());
     return TeachersService
       .login(credentials)
-      .then((result: LoginValidation) => {
+      .then((result: SigninValidation) => {
         if (result.errors) {
-          // tslint:disable-next-line:no-console
-          console.log(result.errors);
-          return dispatch(failLogin(result.errors));
+          if (result.errors.server === 'UserNotConfirmed') {
+            return dispatch(openConfirmSignup(credentials.email));
+          } else {
+            return dispatch(failLogin(result.errors));
+          }
         } else {
           fetchCurrentUserThunk()(dispatch);
           return dispatch(succeedLogin());
         }
+      })
+      .catch(() => {
+        return dispatch(failLogin({ server: 'RequestFailed' }));
       });
   };

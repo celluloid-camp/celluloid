@@ -1,75 +1,52 @@
 import * as React from 'react';
 import { AnyAction } from 'redux';
 
-import { Action } from 'types/Action';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { SigninErrors, TeacherSignupData } from '../../../../../common/src/types/TeacherTypes';
+import { SigninErrors, TeacherConfirmData } from '../../../../../common/src/types/TeacherTypes';
 import SigninAction from '../SigninAction';
 
 interface Props {
-  data: TeacherSignupData;
+  data: TeacherConfirmData;
   errors: SigninErrors;
-  confirmPasswordError?: string;
   onChange(name: string, value: string): void;
-  onClickLogin(): Action<null>;
+  onClickResend(): Promise<AnyAction>;
   onSubmit(): Promise<AnyAction>;
 }
 
 export default ({
   data,
   errors,
-  confirmPasswordError,
   onChange,
+  onClickResend,
   onSubmit,
-  onClickLogin
 }: Props) => (
     <div>
       <TextField
-        error={errors && errors.username ? true : false}
-        label="Nom complet"
-        value={data.username}
-        required={true}
-        style={{ display: 'flex', flex: 1 }}
-        onChange={event => onChange('username', event.target.value)}
-        helperText={errors && errors.username}
-      />
-      <TextField
-        error={errors && errors.email ? true : false}
         label="Email"
-        value={data.email}
         required={true}
+        value={data.email}
+        error={errors && errors.email ? true : false}
         style={{ display: 'flex', flex: 1 }}
         onChange={event => onChange('email', event.target.value)}
         helperText={errors && errors.email}
       />
       <TextField
-        error={errors && errors.password ? true : false}
-        label="Mot de passe"
-        value={data.password}
-        type="password"
+        label="Code de confirmation"
         required={true}
+        value={data.code}
+        error={errors && errors.code ? true : false}
         style={{ display: 'flex', flex: 1 }}
-        onChange={event => onChange('password', event.target.value)}
-        helperText={errors && errors.password}
-      />
-      <TextField
-        error={confirmPasswordError ? true : false}
-        label="Confirmer le mot de passe"
-        type="password"
-        required={true}
-        style={{ display: 'flex', flex: 1 }}
-        onChange={event => onChange('confirmPassword', event.target.value)}
-        helperText={confirmPasswordError}
+        onChange={event => onChange('confirmationCode', event.target.value)}
+        helperText={errors && errors.code ? errors.code : 'Ce code vous a été envoyé par email'}
       />
       <div
         style={{
           justifyContent: 'center',
           display: 'flex',
           paddingTop: 16,
-          paddingBottom: 16,
           flexWrap: 'wrap',
         }}
       >
@@ -89,23 +66,19 @@ export default ({
           justifyContent: 'center',
           paddingBottom: 16,
           display: 'flex',
-          flexDirection: 'column',
           flexWrap: 'wrap'
         }}
       >
-        <Typography variant="caption">
-          {`Déja un compte ?`}
-        </Typography>
         <Button
-          onClick={onClickLogin}
+          onClick={onClickResend}
           color="primary"
         >
-          {`Se connecter`}
+          {`Envoyer un nouveau code`}
         </Button>
       </div>
       <SigninAction
         onSubmit={onSubmit}
-        actionName="S'inscrire"
+        actionName="Confirmer l'inscription"
       />
     </div>
   );

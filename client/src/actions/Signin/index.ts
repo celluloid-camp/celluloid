@@ -8,6 +8,13 @@ Action<null> {
   };
 }
 
-export * from './Login';
-export * from './Signup';
-export * from './User';
+export function triggerSigninLoading():
+Action<null> {
+  return {
+    type: ActionType.TRIGGER_SIGNIN_LOADING
+  };
+}
+
+export * from './LoginActions';
+export * from './SignupActions';
+export * from './UserActions';

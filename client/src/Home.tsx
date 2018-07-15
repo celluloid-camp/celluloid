@@ -15,8 +15,8 @@ import ProjectsService from 'services/ProjectsService';
 
 import { WithLogin } from 'types/Teacher';
 
-import { NewProjectData, DisplayProjectData } from '../../common/src/types/Project';
-import TagData from '../../common/src/types/Tag';
+import { NewProjectData, DisplayProjectData } from '../../common/src/types/ProjectTypes';
+import TagData from '../../common/src/types/TagTypes';
 import { YouTubeVideo } from 'types/YouTubeVideo';
 
 import YouTubeService from 'services/YoutubeService';

@@ -9,8 +9,8 @@ export class SignupOpen implements DialogStateInterface {
 }
 
 export class ConfirmSignupOpen implements DialogStateInterface {
-  readonly kind = 'Confirm';
-  readonly title = 'Confirmer son email';
+  readonly kind = 'ConfirmSignup';
+  readonly title = 'Confirmation';
 }
 
 export class LoginOpen implements DialogStateInterface {

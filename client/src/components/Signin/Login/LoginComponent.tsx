@@ -6,17 +6,19 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { LoginErrors } from '../../../../../common/src/types/Teacher';
+import { SigninErrors, TeacherCredentials } from '../../../../../common/src/types/TeacherTypes';
 import SigninAction from '../SigninAction';
 
 interface Props {
-  errors?: LoginErrors;
+  credentials: TeacherCredentials;
+  errors: SigninErrors;
   onChange(name: string, value: string): void;
   onClickSignup(): Action<null>;
   onSubmit(): Promise<AnyAction>;
 }
 
 export default ({
+  credentials,
   errors,
   onChange,
   onSubmit,
@@ -26,6 +28,7 @@ export default ({
       <TextField
         label="Email"
         required={true}
+        value={credentials.email}
         error={errors && errors.email ? true : false}
         style={{ display: 'flex', flex: 1 }}
         onChange={event => onChange('email', event.target.value)}
@@ -34,6 +37,7 @@ export default ({
       <TextField
         label="Mot de passe"
         required={true}
+        value={credentials.password}
         type="password"
         error={errors && errors.password ? true : false}
         style={{ display: 'flex', flex: 1 }}

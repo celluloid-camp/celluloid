@@ -3,7 +3,7 @@ import * as classNames from 'classnames';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import { getTeacherColor } from 'types/Teacher';
 
-import { AnnotationRecord } from '../../common/src/types/Annotation';
+import { AnnotationRecord } from '../../common/src/types/AnnotationTypes';
 import * as AnnotationUtils from 'AnnotationUtils';
 
 const styles = createStyles({

@@ -10,7 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import * as moment from 'moment';
 
-import { ProjectData } from '../../common/src/types/Project';
+import { ProjectData } from '../../common/src/types/ProjectTypes';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';

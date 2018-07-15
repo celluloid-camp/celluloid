@@ -1,4 +1,4 @@
-import { TeacherData, TeacherRecord } from '../../../common/src/types/Teacher';
+import { TeacherData, TeacherRecord } from '../../../common/src/types/TeacherTypes';
 
 const randomColor = require('randomcolor');
 

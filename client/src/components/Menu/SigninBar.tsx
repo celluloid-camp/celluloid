@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
 
-import { TeacherRecord } from '../../../../common/src/types/Teacher';
+import { TeacherRecord } from '../../../../common/src/types/TeacherTypes';
 
 interface SigninBarProps {
   user?: TeacherRecord;
