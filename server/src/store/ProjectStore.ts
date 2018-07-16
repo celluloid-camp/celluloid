@@ -1,4 +1,7 @@
+import {triggerAsyncId} from 'async_hooks';
+import {ResourceGroupsTaggingAPI} from 'aws-sdk';
 import builder from 'common/Postgres';
+
 import {ProjectData} from '../../../common/src/types/ProjectTypes';
 
 export const orIsAuthor = (builder, user) =>
@@ -68,9 +71,10 @@ export function getOne(projectId, user) {
 }
 
 export function create(project, user) {
+  const {tags, ...props} = project;
   return builder('Project')
       .insert({
-        ...project,
+        ...props,
         id: builder.raw('uuid_generate_v4()'),
         userId: user.id,
         publishedAt: builder.raw('NOW()'),
