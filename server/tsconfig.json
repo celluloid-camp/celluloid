@@ -9,10 +9,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "declaration": false,
-    "noImplicitAny": false,
-    "noImplicitReturns": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
     "removeComments": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "outDir": "build",
     "lib": ["es2017", "dom"],
     "baseUrl": "./src"

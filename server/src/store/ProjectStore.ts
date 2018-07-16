@@ -1,94 +1,108 @@
-import {triggerAsyncId} from 'async_hooks';
-import {ResourceGroupsTaggingAPI} from 'aws-sdk';
-import builder from 'common/Postgres';
+import builder, { getExactlyOne } from 'common/Postgres';
 
-import {ProjectData} from '../../../common/src/types/ProjectTypes';
+import { ProjectData, NewProjectData } from '../../../common/src/types/ProjectTypes';
+import { TeacherData, TeacherRecord } from '../../../common/src/types/TeacherTypes';
+import { QueryBuilder } from 'knex';
 
-export const orIsAuthor = (builder, user) =>
-    user ? builder.orWhere('Project.userId', '=', user.id) : builder;
+export const orIsAuthor =
+  (nested: QueryBuilder, user: TeacherRecord) =>
+    user ?
+      nested.orWhere('Project.userId', '=', user.id)
+      : nested;
 
-export const filterNull = prop => obj => {
-  obj[prop] = obj[prop].filter(elem => elem);
-  return obj
-};
+export const filterNull = (prop: string) =>
+  // tslint:disable-next-line:no-any
+  (obj: any) => {
+    // tslint:disable-next-line:no-any
+    obj[prop] = obj[prop].filter((elem: any) => elem);
+    return obj;
+  };
 
-export function isOwner(projectId, user) {
-  if (user) {
-    return builder.first('id')
-        .from('Project')
-        .where('id', projectId)
-        .andWhere('userId', user)
-        .then(row => row ? true : false);
-  } else {
-    return Promise.resolve(false)
-  }
+export function isOwner(projectId: string, user: TeacherRecord) {
+  return builder.first('id')
+    .from('Project')
+    .where('id', projectId)
+    .andWhere('userId', user.id)
+    .then((row: ProjectData) => row ? true : false);
 }
 
-export function getAll(user) {
+export function getAll(user: TeacherData) {
   return builder
-      .select(
-          builder.raw('"Project".*'),
-          builder.raw(`to_json(array_agg("Tag")) AS "tags"`),
-          builder.raw(`row_to_json("User") as "user"`))
-      .from('Project')
-      .innerJoin('User', 'User.id', 'Project.userId')
-      .leftJoin('TagToProject', 'Project.id', 'TagToProject.projectId')
-      .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
-      .where('Project.public', true)
-      .modify(orIsAuthor, user)
-      .groupBy('Project.id', 'User.id')
-      .map(filterNull('tags'))
+    .select(
+      builder.raw('"Project".*'),
+      builder.raw(`to_json(array_agg("Tag")) AS "tags"`),
+      builder.raw(`row_to_json("User") as "user"`))
+    .from('Project')
+    .innerJoin('User', 'User.id', 'Project.userId')
+    .leftJoin('TagToProject', 'Project.id', 'TagToProject.projectId')
+    .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
+    .where('Project.public', true)
+    .modify(orIsAuthor, user)
+    .groupBy('Project.id', 'User.id')
+    .map(filterNull('tags'));
 }
 
-export function getOne(projectId, user) {
+export function getOne(projectId: string, user: TeacherRecord) {
   return builder
-      .first(
-          builder.raw('"Project".*'),
-          builder.raw(`to_json(array_agg("Tag")) as "tags"`),
-          builder.raw(`row_to_json("User") as "user"`))
-      .from('Project')
-      .innerJoin('User', 'User.id', 'Project.userId')
-      .leftJoin('TagToProject', 'Project.id', 'TagToProject.projectId')
-      .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
-      .where(builder => {
-        builder.where('Project.public', true);
-        if (user) {
-          builder.orWhere('Project.userId', '=', user.id)
+    .first(
+      builder.raw('"Project".*'),
+      builder.raw(`to_json(array_agg("Tag")) as "tags"`),
+      builder.raw(`row_to_json("User") as "user"`))
+    .from('Project')
+    .innerJoin('User', 'User.id', 'Project.userId')
+    .leftJoin('TagToProject', 'Project.id', 'TagToProject.projectId')
+    .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
+    .where((nested: QueryBuilder) => {
+      nested.where('Project.public', true);
+      if (user) {
+        nested.orWhere('Project.userId', user.id);
+      }
+      return nested;
+    })
+    .andWhere('Project.id', '=', projectId)
+    .groupBy('Project.id', 'User.id')
+    .then((row?: ProjectData) => {
+      return new Promise((resolve, reject) => {
+        if (row) {
+          resolve(filterNull('tags')(row));
+        } else {
+          reject(new Error('ProjectNotFound'));
         }
-        return builder;
-      })
-      .andWhere('Project.id', '=', projectId)
-      .groupBy('Project.id', 'User.id')
-      .then(row => {
-        return new Promise((resolve, reject) => {
-          if (row) {
-            resolve(filterNull('tags')(row));
-          } else {
-            reject(new Error('ProjectNotFound'));
-          }
-        });
       });
+    });
 }
 
-export function create(project, user) {
-  const {tags, ...props} = project;
+export function create(project: NewProjectData, user: TeacherRecord) {
+  const { tags, ...props } = project;
   return builder('Project')
-      .insert({
-        ...props,
-        id: builder.raw('uuid_generate_v4()'),
-        userId: user.id,
-        publishedAt: builder.raw('NOW()'),
-        views: 0,
-        shares: 0,
-        langId: 'fra',
-      })
-      .returning(builder.raw('*'))
+    .insert({
+      ...props,
+      id: builder.raw('uuid_generate_v4()'),
+      userId: user.id,
+      publishedAt: builder.raw('NOW()'),
+      views: 0,
+      shares: 0,
+      langId: 'fra',
+    })
+    .returning('*')
+    .then(getExactlyOne);
 }
 
-export function update(project, projectId): Promise<ProjectData> {
+export function update(projectId: string, props: ProjectData) {
   return builder('Project')
-      .update(project)
-      .returning(builder.raw('*'))
-      .where('projectId', projectId)
-      .then(rows => rows[0]);
+    .update(props)
+    .returning('*')
+    .where('projectId', projectId)
+    .then(getExactlyOne);
 }
+
+// export function shareById(projectId: string, shareData: ShareData) {
+//   return builder('Project')
+//     .update({
+//       shared: true,
+//       shareName,
+//       sharePassword,
+//       shareExpiresAt,
+//       shareMaxUsers
+//     })
+// }

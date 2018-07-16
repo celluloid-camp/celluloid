@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-const knex = require('knex');
+import * as Knex from 'knex';
 
 dotenv.config();
 
@@ -7,17 +7,36 @@ const config = {
   user: process.env.CELLULOID_PG_USER,
   password: process.env.CELLULOID_PG_PASSWORD,
   host: process.env.CELLULOID_PG_HOST,
-  port: parseInt(process.env.CELLULOID_PG_PORT),
+  port: parseInt(process.env.CELLULOID_PG_PORT as string, 10),
   database: process.env.CELLULOID_PG_DATABASE,
 };
 
-const builder = knex({
+const builder = Knex({
   client: 'pg',
   connection: config,
   pool: {
-    max: parseInt(process.env.CELLULOID_PG_MAX_POOL_SIZE),
-    idleTimeoutMillis: parseInt(process.env.CELLULOID_PG_IDLE_TIMEOUT)
+    max: parseInt(
+      process.env.CELLULOID_PG_MAX_POOL_SIZE as string,
+      10
+    ),
+    idleTimeoutMillis: parseInt(
+      process.env.CELLULOID_PG_IDLE_TIMEOUT as string,
+      10
+    )
   }
 });
+
+// tslint:disable-next-line:no-any
+export function getExactlyOne(rows: any[]) {
+  if (rows.length === 1) {
+    return Promise.resolve(rows[0]);
+  } else {
+    console.error(
+      'Update or insert result has less or more than one row',
+      rows
+    );
+    return Promise.reject(Error('NotExactlyOneRow'));
+  }
+}
 
 export default builder;

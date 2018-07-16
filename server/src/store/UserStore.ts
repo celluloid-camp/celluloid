@@ -1,13 +1,17 @@
 import { generateConfirmationCode } from 'auth/Utils';
 import * as bcrypt from 'bcrypt';
-import builder from 'common/Postgres';
+import builder, { getExactlyOne } from 'common/Postgres';
 
-function hashPassword(password) {
+function hashPassword(password: string) {
   const salt = bcrypt.genSaltSync();
   return bcrypt.hashSync(password, salt);
 }
 
-export function create(username, email, password) {
+export function create(
+  username: string,
+  email: string,
+  password: string
+) {
   return builder('User')
     .insert({
       id: builder.raw('uuid_generate_v4()'),
@@ -19,18 +23,23 @@ export function create(username, email, password) {
       confirmed: false
     })
     .returning('*')
-    .then(assertExactlyOneRow);
+    .then(getExactlyOne);
 }
 
-export function updatePasswordByEmail(email, password) {
+export function updatePasswordByEmail(
+  email: string,
+  password: string
+) {
   return builder('User')
-    .update({ password: hashPassword(password) })
+    .update({
+      password: hashPassword(password)
+    })
     .where('email', email)
     .returning('*')
-    .then(assertExactlyOneRow);
+    .then(getExactlyOne);
 }
 
-export function updateCodeByEmail(email) {
+export function updateCodeByEmail(email: string) {
   return builder('User')
     .update({
       code: generateConfirmationCode(),
@@ -38,37 +47,29 @@ export function updateCodeByEmail(email) {
     })
     .where('email', email)
     .returning('*')
-    .then(assertExactlyOneRow);
+    .then(getExactlyOne);
 }
 
-export function confirmByEmail(email) {
+export function confirmByEmail(email: string) {
   return builder('User')
-    .update({ code: null, codeGeneratedAt: null, confirmed: true })
+    .update({
+      code: null,
+      codeGeneratedAt: null,
+      confirmed: true
+    })
     .where('email', email)
     .returning('*')
-    .then(assertExactlyOneRow);
+    .then(getExactlyOne);
 }
 
-export function getById(id) {
+export function getById(id: string) {
   return builder('User')
     .first()
     .where('id', id);
 }
 
-export function getByEmail(email) {
+export function getByEmail(email: string) {
   return builder('User')
     .first()
     .where('email', email);
-}
-
-function assertExactlyOneRow(rows) {
-  if (rows.length === 1) {
-    return Promise.resolve(rows[0]);
-  } else {
-    console.error(
-      'Update or insert result has less or more than one row',
-      rows
-    );
-    return Promise.reject(Error('NotExactlyOneRow'));
-  }
 }

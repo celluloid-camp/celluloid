@@ -7,8 +7,8 @@ import * as compression from 'compression';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
 import * as session from 'express-session';
-import * as nocache from 'nocache';
 import * as path from 'path';
+import { nocache } from 'common/NoCache';
 
 require('cookie-parser');
 
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(compression());
 app.use(
   session({
-    secret: process.env.CELLULOID_JWT_SECRET,
+    secret: process.env.CELLULOID_JWT_SECRET as string,
     resave: false,
     saveUninitialized: true
   })

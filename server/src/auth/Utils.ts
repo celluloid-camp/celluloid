@@ -1,6 +1,8 @@
 import { sendMail } from 'common/Mailer';
+import { Response, Request, NextFunction } from 'express';
+import { TeacherServerRecord } from 'types/TeacherTypes';
 
-export function isLoggedIn(req, res, next) {
+export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
   if (!req.user) {
     return Promise.resolve(res.status(401).json({}));
   }
@@ -14,7 +16,7 @@ export function generateConfirmationCode() {
   return `${first}${second}`;
 }
 
-export function sendConfirmationCode(user) {
+export function sendConfirmationCode(user: TeacherServerRecord) {
   const subject = `Bienvenue sur Celluloid, ${user.username} !`;
   const text =
     `Bonjour ${user.username},\n\n` +
@@ -34,7 +36,7 @@ export function sendConfirmationCode(user) {
   );
 }
 
-export function sendPasswordReset(user) {
+export function sendPasswordReset(user: TeacherServerRecord) {
   const subject = `${
     user.username
   } : réinitialisation de votre mot de passe Celluloid`;

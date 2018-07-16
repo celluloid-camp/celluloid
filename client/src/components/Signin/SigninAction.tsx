@@ -29,16 +29,16 @@ export default withStyles(styles)(
         root: classes.dialogActionsRoot
       }}
     >
-      <Button
-        type="submit"
-        onClick={event => {
+      <form
+        onSubmit={event => {
           event.preventDefault();
           onSubmit();
         }}
-        color="secondary"
       >
-        {actionName}
-      </Button>
+        <Button type="submit" variant="contained" color="secondary">
+          {actionName}
+        </Button>
+      </form>
     </DialogActions>
   )
 );

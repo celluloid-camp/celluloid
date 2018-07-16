@@ -1,4 +1,4 @@
-import { green, orange } from '@material-ui/core/colors';
+import { green, deepOrange } from '@material-ui/core/colors';
 
 const Palette = {
   error: '#be454f',
@@ -6,7 +6,7 @@ const Palette = {
   notice: '#88b04b',
   info: '#43883c',
   primary: green['600'],
-  secondary: orange['500']
+  secondary: deepOrange['500']
 };
 
 export default Palette;

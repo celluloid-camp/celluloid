@@ -12,7 +12,6 @@
     "express-session": "^1.15.6",
     "hoist-non-react-statics": "^2.5.0",
     "knex": "^0.15.0",
-    "nocache": "^2.0.0",
     "nodemailer": "^4.6.7",
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.4.0",
@@ -46,6 +45,7 @@
     "@types/passport": "^0.4.4",
     "@types/passport-local": "^1.0.33",
     "@types/pg": "^7.4.1",
+    "@types/ramda": "^0.25.35",
     "@types/validator": "^9.4.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.3",
@@ -59,6 +59,7 @@
     "nodemon": "^1.11.0",
     "ts-loader": "^4.3.0",
     "tslint": "^5.10.0",
+    "tslint-react": "^3.6.0",
     "typescript": "^2.6.2",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.4"

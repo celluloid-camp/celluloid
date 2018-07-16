@@ -5,23 +5,29 @@ import { IStrategyOptionsWithRequest, Strategy, VerifyFunctionWithRequest } from
 import * as UserStore from 'store/UserStore';
 
 import { sendConfirmationCode } from './Utils';
+import { TeacherRecord } from '../../../common/src/types/TeacherTypes';
+import { TeacherServerRecord } from 'types/TeacherTypes';
 
 passport.serializeUser(({ id }, done) => {
   return Promise.resolve(done(null, id));
 });
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser((id: string, done) => {
   return UserStore.getById(id)
-    .then(result => {
+    .then((result: TeacherRecord) => {
       if (result) {
         return Promise.resolve(done(null, result));
       } else {
         console.error(
-          `Deserialize user failed: user with id ${id} does not exist`);
-        return Promise.resolve(done(new Error('InvalidUser'), null));
+          `Deserialize user failed: user with id` +
+          ` ${id} does not exist`
+        );
+        return Promise.resolve(done(new Error('InvalidUser')));
       }
     })
-    .catch(error => Promise.resolve(done(error)));
+    .catch((error: Error) =>
+      Promise.resolve(done(error))
+    );
 });
 
 const options = {
@@ -32,22 +38,24 @@ const options = {
 function verifySignup(): VerifyFunctionWithRequest {
   return (req, email, password, done) =>
     UserStore.create(req.body.username, email, password)
-      .then(user => {
-        return sendConfirmationCode(user);
-      })
-      .then(user => Promise.resolve(done(null, user)))
-      .catch(error => Promise.resolve(done(error)));
+      .then((user: TeacherServerRecord) => sendConfirmationCode(user))
+      .then((user: TeacherRecord) => Promise.resolve(done(null, user)))
+      .catch((error: Error) => Promise.resolve(done(error)));
 }
 
-const loginStrategy = new Strategy(options, (req, email, password, done) => {
+const loginStrategy = new Strategy(options, (_, email, password, done) => {
   return UserStore.getByEmail(email)
-    .then(user => {
+    .then((user: TeacherServerRecord) => {
       if (user) {
         if (!bcrypt.compareSync(password, user.password)) {
-          console.error(`Login failed for user ${user.email}: bad password`);
+          console.error(
+            `Login failed for user ${user.email}: bad password`
+          );
           return Promise.resolve(done(new Error('InvalidUser')));
         } else if (!user.confirmed) {
-          console.error(`Login failed: ${user.email} is not confirmed`);
+          console.error(
+            `Login failed: ${user.email} is not confirmed`
+          );
           return Promise.resolve(done(new Error('UserNotConfirmed')));
         }
         return Promise.resolve(done(null, user));
@@ -55,7 +63,7 @@ const loginStrategy = new Strategy(options, (req, email, password, done) => {
       console.error(`Login failed: ${email} does not exist`);
       return Promise.resolve(done(new Error('InvalidUser')));
     })
-    .catch(error => Promise.resolve(done(error)));
+    .catch((error: Error) => Promise.resolve(done(error)));
 });
 
 const signupStrategy = new Strategy(options, verifySignup());

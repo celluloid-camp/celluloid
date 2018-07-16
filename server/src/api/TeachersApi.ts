@@ -4,40 +4,39 @@ import {
   sendConfirmationCode,
   sendPasswordReset
 } from 'auth/Utils';
-import * as express from 'express';
+import { Request, Response, Router } from 'express';
 import * as UserStore from 'store/UserStore';
 import * as validator from 'validator';
 
-import { SigninResult } from '../../../common/src/types/TeacherTypes';
+import {
+  SigninResult,
+  TeacherConfirmData,
+  TeacherConfirmResetPasswordData,
+  TeacherCredentials,
+  TeacherRecord,
+  TeacherSignupData
+} from '../../../common/src/types/TeacherTypes';
+import { TeacherServerRecord } from 'types/TeacherTypes';
 
-const router = express.Router();
+const router = Router();
 
-function validateSignup(payload) {
+function validateSignup(payload: TeacherSignupData) {
   const result = { success: true, errors: {} } as SigninResult;
 
-  if (
-    !payload ||
-    typeof payload.username !== 'string' ||
-    payload.password.trim().length < 1
-  ) {
+  if (!payload || typeof payload.username !== 'string' ||
+    payload.password.trim().length < 1) {
     result.success = false;
     result.errors.username = `UsernameMissing`;
   }
 
-  if (
-    !payload ||
-    typeof payload.email !== 'string' ||
-    !validator.isEmail(payload.email)
-  ) {
+  if (!payload || typeof payload.email !== 'string' ||
+    !validator.isEmail(payload.email)) {
     result.success = false;
     result.errors.email = 'InvalidEmailFormat';
   }
 
-  if (
-    !payload ||
-    typeof payload.password !== 'string' ||
-    payload.password.trim().length < 8
-  ) {
+  if (!payload || typeof payload.password !== 'string' ||
+    payload.password.trim().length < 8) {
     result.success = false;
     result.errors.password = 'InvalidPasswordFormat';
   }
@@ -50,55 +49,45 @@ function validateConfirmationCode(code: string): boolean {
   return codeRegExp.test(trimmedCode);
 }
 
-function validateConfirmResetPassword(payload) {
-  const result = { success: true, errors: {} } as SigninResult;
+function validateConfirmResetPassword(
+  payload: TeacherConfirmResetPasswordData
+) {
+  const result = {
+    success: true,
+    errors: {}
+  } as SigninResult;
 
-  if (
-    !payload ||
-    typeof payload.email !== 'string' ||
-    payload.email.trim().length === 0
-  ) {
+  if (!payload || typeof payload.email !== 'string' ||
+    payload.email.trim().length === 0) {
     result.success = false;
     result.errors.email = 'InvalidEmailFormat';
   }
 
-  if (
-    !payload ||
-    typeof payload.password !== 'string' ||
-    payload.password.trim().length < 8
-  ) {
+  if (!payload || typeof payload.password !== 'string' ||
+    payload.password.trim().length < 8) {
     result.success = false;
     result.errors.password = 'InvalidPasswordFormat';
   }
 
-  if (
-    !payload ||
-    typeof payload.code !== 'string' ||
-    !validateConfirmationCode(payload.code)
-  ) {
+  if (!payload || typeof payload.code !== 'string' ||
+    !validateConfirmationCode(payload.code)) {
     result.success = false;
     result.errors.code = `InvalidCodeFormat`;
   }
-
   return result;
 }
 
-function validateConfirmSignup(payload) {
+function validateConfirmSignup(payload: TeacherConfirmData) {
   const result = { success: true, errors: {} } as SigninResult;
-  if (
-    !payload ||
-    typeof payload.email !== 'string' ||
-    !validator.isEmail(payload.email)
-  ) {
+
+  if (!payload || typeof payload.email !== 'string' ||
+    !validator.isEmail(payload.email)) {
     result.success = false;
     result.errors.email = 'InvalidEmailFormat';
   }
 
-  if (
-    !payload ||
-    typeof payload.code !== 'string' ||
-    !validateConfirmationCode(payload.code)
-  ) {
+  if (!payload || typeof payload.code !== 'string' ||
+    !validateConfirmationCode(payload.code)) {
     result.success = false;
     result.errors.code = `InvalidCodeFormat`;
   }
@@ -106,23 +95,17 @@ function validateConfirmSignup(payload) {
   return result;
 }
 
-function validateLogin(payload) {
+function validateLogin(payload: TeacherCredentials) {
   const result = { success: true, errors: {} } as SigninResult;
 
-  if (
-    !payload ||
-    typeof payload.email !== 'string' ||
-    payload.email.trim().length === 0
-  ) {
+  if (!payload || typeof payload.email !== 'string' ||
+    payload.email.trim().length === 0) {
     result.success = false;
     result.errors.email = `MissingEmail`;
   }
 
-  if (
-    !payload ||
-    typeof payload.password !== 'string' ||
-    payload.password.trim().length === 0
-  ) {
+  if (!payload || typeof payload.password !== 'string' ||
+    payload.password.trim().length === 0) {
     result.success = false;
     result.errors.password = 'MissingPassword';
   }
@@ -142,27 +125,28 @@ router.post('/signup', (req, res, next) => {
         `Failed to sign user up` + ` with email ${req.body.email}`,
         error
       );
-      if (
-        error.code === '23505' &&
-        error.constraint === 'User_username_key'
-      ) {
-        return res
-          .status(409)
-          .json({
-            success: false,
-            errors: { username: 'UsernameAlreadyExists' }
-          });
+      if (error.code === '23505' && error.constraint === 'User_username_key') {
+        return res.status(409).json({
+          success: false,
+          errors: { username: 'UsernameAlreadyExists' }
+        });
       } else if (
         error.code === '23505' &&
         error.constraint === 'User_email_key'
       ) {
         return res
           .status(409)
-          .json({ success: false, errors: { email: 'EmailAlreadyExists' } });
+          .json({
+            success: false,
+            errors: { email: 'EmailAlreadyExists' }
+          });
       } else {
         return res
           .status(500)
-          .json({ success: false, errors: { server: error.message } });
+          .json({
+            success: false,
+            errors: { server: error.message }
+          });
       }
     } else {
       console.log(`New signup from user with email ${req.body.email}`, result);
@@ -196,7 +180,7 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
-function compareCodes(expected, actual) {
+function compareCodes(expected: string, actual: string) {
   return expected.replace(/\s/g, '') === actual.replace(/\s/g, '');
 }
 
@@ -206,40 +190,49 @@ router.post('/confirm-signup', (req, res, next) => {
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return UserStore.getByEmail(payload.email).then(user => {
+  return UserStore.getByEmail(payload.email).then((user: TeacherServerRecord) => {
     if (!user) {
       console.error(
         `Failed to confirm signup: user` +
-          `with email ${payload.email} not found`
+        `with email ${payload.email} not found`
       );
       return res
         .status(401)
-        .json({ success: false, errors: { server: 'InvalidUser' } });
+        .json({
+          success: false,
+          errors: { server: 'InvalidUser' }
+        });
     } else {
       if (compareCodes(user.code, payload.code)) {
         return UserStore.confirmByEmail(payload.email)
           .then(() => {
             return res.status(200).json({ success: true, errors: {} });
           })
-          .catch(error => {
+          .catch((error: Error) => {
             console.error(
               `Failed to confirm signup for user` +
-                `with email ${payload.email}`,
+              `with email ${payload.email}`,
               error
             );
             return res
               .status(500)
-              .json({ success: true, errors: { server: 'RequestFailed' } });
+              .json({
+                success: true,
+                errors: { server: 'RequestFailed' }
+              });
           });
       } else {
         console.error(
           `Failed to confirm signup for user` +
-            ` with email ${payload.email}:` +
-            ` received code ${payload.code}, expected ${user.code}`
+          ` with email ${payload.email}:` +
+          ` received code ${payload.code}, expected ${user.code}`
         );
         return res
           .status(401)
-          .json({ success: false, errors: { server: 'InvalidUser' } });
+          .json({
+            success: false,
+            errors: { server: 'InvalidUser' }
+          });
       }
     }
   });
@@ -251,11 +244,11 @@ router.post('/confirm-reset-password', (req, res) => {
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return UserStore.getByEmail(payload.email).then(user => {
+  return UserStore.getByEmail(payload.email).then((user?: TeacherServerRecord) => {
     if (!user) {
       console.error(
         `Failed to confirm password reset: user` +
-          ` with email ${payload.email} not found`
+        ` with email ${payload.email} not found`
       );
       return res
         .status(401)
@@ -269,66 +262,92 @@ router.post('/confirm-reset-password', (req, res) => {
           .then(() => {
             return res.status(200).json({ success: true, errors: {} });
           })
-          .catch(error => {
+          .catch((error: Error) => {
             console.error(
               `Failed to confirm password reset for user` +
-                ` with email ${payload.email}`,
+              ` with email ${payload.email}`,
               error
             );
             return res
               .status(500)
-              .json({ success: true, errors: { server: 'RequestFailed' } });
+              .json({
+                success: true,
+                errors: { server: 'RequestFailed' }
+              });
           });
       } else {
         console.error(
           `Failed to confirm password reset` +
-            ` for user with email ${payload.email}:` +
-            ` received code ${payload.code}, expected ${user.code}`
+          ` for user with email ${payload.email}:` +
+          ` received code ${payload.code}, expected ${user.code}`
         );
         return res
           .status(401)
-          .json({ success: false, errors: { server: 'InvalidUser' } });
+          .json({
+            success: false,
+            errors: { server: 'InvalidUser' }
+          });
       }
     }
   });
 });
 
-const resendCode = sender => (req, res) => {
-  const payload = req.body;
-  if (!payload.email || payload.email.trim().length === 0) {
-    return res
-      .status(400)
-      .json({ success: false, errors: { email: 'MissingEmail' } });
-  }
-  return UserStore.getByEmail(payload.email).then(user => {
-    if (!user) {
-      console.error(
-        `Failed to resend authorization code:` +
-          ` user with email ${payload.email} not found`
-      );
+const resendCode = (sender: (user: TeacherRecord) =>
+  Promise<TeacherServerRecord>) =>
+  (req: Request, res: Response) => {
+    const payload = req.body;
+    if (!payload.email || payload.email.trim().length === 0) {
       return res
-        .status(401)
-        .json({ success: false, errors: { server: 'InvalidUser' } });
-    } else {
-      return UserStore.updateCodeByEmail(payload.email).then(user => {
-        sender(user)
-          .then(() => {
-            return res.status(200).json({ success: true, errors: {} });
-          })
-          .catch(error => {
-            console.error(
-              `Failed to resend authorization code for user ` +
-                ` with email ${payload.email}`,
-              error
-            );
-            return res
-              .status(500)
-              .json({ success: true, errors: { server: 'RequestFailed' } });
-          });
-      });
+        .status(400)
+        .json({
+          success: false,
+          errors: { email: 'MissingEmail' }
+        });
     }
-  });
-};
+    return UserStore
+      .getByEmail(payload.email)
+      .then((user?: TeacherServerRecord) => {
+        if (!user) {
+          // tslint:disable-next-line:no-console
+          console.error(
+            `Failed to resend authorization code:` +
+            ` user with email ${payload.email} not found`
+          );
+          return res
+            .status(401)
+            .json({
+              success: false,
+              errors: { server: 'InvalidUser' }
+            });
+        } else {
+          return UserStore.updateCodeByEmail(payload.email).then(
+            (updatedUser: TeacherRecord) => {
+              return sender(updatedUser)
+                .then(() => {
+                  return res
+                    .status(200)
+                    .json({ success: true, errors: {} });
+                });
+            }
+          );
+        }
+      })
+      .catch((error: Error) => {
+        // tslint:disable-next-line:no-console
+        console.error(
+          `Failed to resend authorization code for user ` +
+          ` with email ${payload.email}`,
+          error
+        );
+        return res
+          .status(500)
+          .json({
+            success: true,
+            errors: { server: 'RequestFailed' }
+          });
+
+      });
+  };
 
 router.post('/reset-password', (req, res) => {
   return resendCode(sendPasswordReset)(req, res);
@@ -339,13 +358,17 @@ router.post('/resend-code', (req, res) => {
 });
 
 router.get('/me', isLoggedIn, (req, res) => {
-  return res.status(200).json({
-    teacher: {
-      email: req.user.email,
-      username: req.user.username,
-      id: req.user.id
-    }
-  });
+  if (req.user) {
+    return res.status(200).json({
+      teacher: {
+        email: req.user.email,
+        username: req.user.username,
+        id: req.user.id
+      }
+    });
+  } else {
+    return res.status(500).send();
+  }
 });
 
 router.put('/logout', isLoggedIn, (req, res) => {

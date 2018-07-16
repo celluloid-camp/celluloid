@@ -2,64 +2,71 @@
 import builder from 'common/Postgres';
 
 import * as ProjectStore from './ProjectStore';
+import { TeacherRecord } from '../../../common/src/types/TeacherTypes';
+import { AnnotationRecord, AnnotationData } from '../../../common/src/types/AnnotationTypes';
+import { QueryBuilder } from 'knex';
+import { TeacherServerRecord } from 'types/TeacherTypes';
 
-export function getAll(projectId, user) {
+export function getAll(projectId: string, user: TeacherRecord) {
   return builder
-      .select(
-          builder.raw('"Annotation".*'),
-          builder.raw(
-              'json_build_object(' +
-              `'id', "User"."id",` +
-              `'email', "User"."email",` +
-              `'username', "User"."username"` +
-              ') as "teacher"'))
-      .from('Annotation')
-      .innerJoin('User', 'User.id', 'Annotation.userId')
-      .where('Annotation.projectId', projectId)
-      .orderBy('Annotation.startTime', 'asc');
+    .select(
+      builder.raw('"Annotation".*'),
+      builder.raw(
+        'json_build_object(' +
+        `'id', "User"."id",` +
+        `'email', "User"."email",` +
+        `'username', "User"."username"` +
+        ') as "teacher"'))
+    .from('Annotation')
+    .innerJoin('User', 'User.id', 'Annotation.userId')
+    .where('Annotation.projectId', projectId)
+    .orderBy('Annotation.startTime', 'asc');
 }
 
-export function getOne(annotationId: string, user) {
+export function getOne(annotationId: string, user: TeacherServerRecord) {
   return builder.first()
-      .from('Annotation')
-      .innerJoin('Project', 'Project.id', 'Annotation.projectId')
-      .where('Annotation.id', annotationId)
-      .whereAnd(builder => {
-        builder.where('Project.public', true);
-        builder.modify(ProjectStore.orIsAuthor, user);
-        return builder;
-      })
-      .then(
-          row => row ? Promise.resolve(row) :
-                       Promise.reject(new Error('AnnotationNotFound')));
+    .from('Annotation')
+    .innerJoin('Project', 'Project.id', 'Annotation.projectId')
+    .where('Annotation.id', annotationId)
+    .andWhere((nested: QueryBuilder) => {
+      nested.where('Project.public', true);
+      nested.modify(ProjectStore.orIsAuthor, user);
+      return nested;
+    })
+    .then((row?: AnnotationRecord) => row ? Promise.resolve(row) :
+      Promise.reject(new Error('AnnotationNotFound')));
 }
 
-export const create = (annotation, user, projectId) => () =>
+export const create = (
+  annotation: AnnotationData,
+  user: TeacherRecord,
+  projectId: string
+) => () =>
     builder('Annotation')
-        .insert({
-          'id': builder.raw('uuid_generate_v4()'),
-          'text': annotation.text,
-          'startTime': annotation.startTime,
-          'stopTime': annotation.stopTime,
-          'pause': annotation.pause,
-          'userId': user.id,
-          'projectId': projectId
-        })
-        .returning(builder.raw('*'))
-        .then(rows => rows[0])
-        .catch(error => {
-          console.error('Failed to create annotation', error);
-          Promise.resolve(new Error('AnnotationInsertionError'));
-        });
-
-export const update = (id, data) => () => {
-  return builder('Annotation')
-      .update({
-        text: data.text,
-        startTime: data.startTime,
-        stopTime: data.stopTime,
-        pause: data.pause
+      .insert({
+        'id': builder.raw('uuid_generate_v4()'),
+        'text': annotation.text,
+        'startTime': annotation.startTime,
+        'stopTime': annotation.stopTime,
+        'pause': annotation.pause,
+        'userId': user.id,
+        'projectId': projectId
       })
-      .returning(builder.raw('*'))
-      .where('id', id)
+      .returning('*')
+      .then((rows: AnnotationRecord[]) => rows[0])
+      .catch((error: Error) => {
+        console.error('Failed to create annotation', error);
+        Promise.resolve(new Error('AnnotationInsertionError'));
+      });
+
+export const update = (id: string, data: AnnotationData) => () => {
+  return builder('Annotation')
+    .update({
+      text: data.text,
+      startTime: data.startTime,
+      stopTime: data.stopTime,
+      pause: data.pause
+    })
+    .returning('*')
+    .where('id', id);
 };
