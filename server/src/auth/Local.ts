@@ -7,21 +7,21 @@ import * as UserStore from 'store/UserStore';
 import { sendConfirmationCode } from './Utils';
 
 passport.serializeUser(({ id }, done) => {
-  return done(null, id);
+  return Promise.resolve(done(null, id));
 });
 
 passport.deserializeUser((id, done) => {
   return UserStore.getById(id)
     .then(result => {
       if (result) {
-        return done(null, result);
+        return Promise.resolve(done(null, result));
       } else {
         console.error(
           `Deserialize user failed: user with id ${id} does not exist`);
-        return done(new Error('InvalidUser'), null);
+        return Promise.resolve(done(new Error('InvalidUser'), null));
       }
     })
-    .catch(error => done(error));
+    .catch(error => Promise.resolve(done(error)));
 });
 
 const options = {
@@ -35,8 +35,8 @@ function verifySignup(): VerifyFunctionWithRequest {
       .then(user => {
         return sendConfirmationCode(user);
       })
-      .then(user => done(null, user))
-      .catch(error => done(error));
+      .then(user => Promise.resolve(done(null, user)))
+      .catch(error => Promise.resolve(done(error)));
 }
 
 const loginStrategy = new Strategy(options, (req, email, password, done) => {
@@ -45,17 +45,17 @@ const loginStrategy = new Strategy(options, (req, email, password, done) => {
       if (user) {
         if (!bcrypt.compareSync(password, user.password)) {
           console.error(`Login failed for user ${user.email}: bad password`);
-          return done(new Error('InvalidUser'));
+          return Promise.resolve(done(new Error('InvalidUser')));
         } else if (!user.confirmed) {
           console.error(`Login failed: ${user.email} is not confirmed`);
-          return done(new Error('UserNotConfirmed'));
+          return Promise.resolve(done(new Error('UserNotConfirmed')));
         }
-        return done(null, user);
+        return Promise.resolve(done(null, user));
       }
       console.error(`Login failed: ${email} does not exist`);
-      return done(new Error('InvalidUser'));
+      return Promise.resolve(done(new Error('InvalidUser')));
     })
-    .catch(error => done(error));
+    .catch(error => Promise.resolve(done(error)));
 });
 
 const signupStrategy = new Strategy(options, verifySignup());

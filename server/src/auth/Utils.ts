@@ -2,9 +2,9 @@ import { sendMail } from 'common/Mailer';
 
 export function isLoggedIn(req, res, next) {
   if (!req.user) {
-    return res.status(401).json({});
+    return Promise.resolve(res.status(401).json({}));
   }
-  return next();
+  return Promise.resolve(next());
 }
 
 export function generateConfirmationCode() {
