@@ -4,6 +4,7 @@ import Home from 'Home';
 import Project from 'Project';
 import Video from 'Video';
 import { withMenu } from 'components/Menu';
+
 class App extends React.Component {
   render() {
     return (

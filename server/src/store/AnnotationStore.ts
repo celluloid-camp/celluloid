@@ -9,13 +9,12 @@ export function getAll(projectId, user) {
           builder.raw('"Annotation".*'),
           builder.raw(
               'json_build_object(' +
-              `'id', "Teacher"."id",` +
-              `'email', "Teacher"."email",` +
-              `'firstName', "Teacher"."firstName"` +
-              `'lastName', "Teacher.lastName"` +
+              `'id', "User"."id",` +
+              `'email', "User"."email",` +
+              `'username', "User"."username"` +
               ') as "teacher"'))
       .from('Annotation')
-      .innerJoin('Teacher', 'Teacher.id', 'Annotation.teacherId')
+      .innerJoin('User', 'User.id', 'Annotation.userId')
       .where('Annotation.projectId', projectId)
       .orderBy('Annotation.startTime', 'asc');
 }
@@ -43,7 +42,7 @@ export const create = (annotation, user, projectId) => () =>
           'startTime': annotation.startTime,
           'stopTime': annotation.stopTime,
           'pause': annotation.pause,
-          'teacherId': user.id,
+          'userId': user.id,
           'projectId': projectId
         })
         .returning(builder.raw('*'))

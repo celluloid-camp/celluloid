@@ -83,8 +83,8 @@ export default
                 backgroundColor:
                   AnnotationUtils.visible(annotation, position) ?
                     'white' :
-                    getTeacherColor(annotation.teacherId),
-                border: `2px solid ${getTeacherColor(annotation.teacherId)}`
+                    getTeacherColor(annotation.userId),
+                border: `2px solid ${getTeacherColor(annotation.userId)}`
               }}
               onClick={onClick(annotation)}
             />

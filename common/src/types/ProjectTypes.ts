@@ -19,10 +19,13 @@ export interface ProjectData extends NewProjectData {
   id: string;
   views?: number;
   shares?: number;
-  authorId: string;
+  userId: string;
   publishedAt: string;
+  shared: boolean;
+  shareName?: string;
+  shareExpiresAt: string;
 }
 
 export interface DisplayProjectData extends ProjectData {
-  author: TeacherData;
+  user: TeacherData;
 }

@@ -5,7 +5,7 @@ import ActionType from 'types/ActionType';
 
 import {
   SigninErrors,
-  SigninValidation,
+  SigninResult,
   TeacherCredentials
 } from '../../../../common/src/types/TeacherTypes';
 import { fetchCurrentUserThunk } from './UserActions';
@@ -34,10 +34,10 @@ export const doLoginThunk = (credentials: TeacherCredentials) =>
     dispatch(triggerSigninLoading());
     return TeachersService
       .login(credentials)
-      .then((result: SigninValidation) => {
-        if (result.errors) {
+      .then((result: SigninResult) => {
+        if (!result.success) {
           if (result.errors.server === 'UserNotConfirmed') {
-            return dispatch(openConfirmSignup(credentials.email));
+            return dispatch(openConfirmSignup(credentials));
           } else {
             return dispatch(failLogin(result.errors));
           }

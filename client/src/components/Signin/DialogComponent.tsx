@@ -1,33 +1,55 @@
 import * as React from 'react';
 
+import {
+  Theme,
+  createStyles,
+  withStyles,
+  WithStyles
+} from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import createStyles from '@material-ui/core/styles/createStyles';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import ConfirmResetPassword from './ConfirmResetPassword';
+import ResetPassword from './ResetPassword';
+import ConfirmSignup from './ConfirmSignup';
 import Signup from './Signup';
 import Login from './Login';
-import ConfirmSignup from './ConfirmSignup';
 
-const styles = createStyles({
-  closeIcon: {
-    position: 'absolute', right: 16, top: 8
-  },
-  progress: {
-    flexGrow: 1
-  }
-});
+const styles = ({ spacing }: Theme) =>
+  createStyles({
+    closeIcon: {
+      position: 'absolute',
+      right: 16,
+      top: 8
+    },
+    progress: {
+      flexGrow: 1
+    },
+    title: {
+      textTransform: 'uppercase',
+      textAlign: 'center'
+    },
+    content: {
+      padding: spacing.unit * 2,
+      margin: spacing.unit
+    }
+  });
 
 interface Props extends WithStyles<typeof styles> {
   loading: boolean;
   title: string;
   open: boolean;
   onCancel: Function;
-  Content?: typeof Login | typeof Signup | typeof ConfirmSignup | undefined;
+  Content?:
+    | typeof Login
+    | typeof Signup
+    | typeof ConfirmSignup
+    | typeof ResetPassword
+    | typeof ConfirmResetPassword;
 }
 
 export default withStyles(styles)((props: Props) => {
@@ -40,7 +62,7 @@ export default withStyles(styles)((props: Props) => {
       fullWidth={true}
       onClose={() => onCancel()}
     >
-      <DialogTitle style={{ textAlign: 'center' }}>
+      <DialogTitle className={classes.title}>
         <span className={classes.closeIcon}>
           <IconButton onClick={() => onCancel()}>
             <CloseIcon />
@@ -49,16 +71,14 @@ export default withStyles(styles)((props: Props) => {
         {title}
       </DialogTitle>
       <div className={classes.progress}>
-        {loading ?
+        {loading ? (
           <LinearProgress variant="query" />
-          :
+        ) : (
           <LinearProgress variant="determinate" value={0} />
-        }
+        )}
       </div>
-      <DialogContent style={{ padding: 16 }}>
-        {Content &&
-          <Content />
-        }
+      <DialogContent className={classes.content}>
+        {Content && <Content />}
       </DialogContent>
     </Dialog>
   );

@@ -1,15 +1,20 @@
 import * as React from 'react';
 import { AnyAction } from 'redux';
+import { withStyles, WithStyles } from '@material-ui/core';
 
-import { Action } from 'types/Action';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
 
-import { SigninErrors, TeacherSignupData } from '../../../../../common/src/types/TeacherTypes';
+import {
+  SigninErrors,
+  TeacherSignupData
+} from '../../../../../common/src/types/TeacherTypes';
+import { Action } from 'types/Action';
 import SigninAction from '../SigninAction';
+import SigninAltAction from '../SigninAltAction';
+import SigninError from '../SigninError';
+import { dialogStyles } from '../DialogStyles';
 
-interface Props {
+interface Props extends WithStyles<typeof dialogStyles> {
   data: TeacherSignupData;
   errors: SigninErrors;
   confirmPasswordError?: string;
@@ -18,94 +23,61 @@ interface Props {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default ({
-  data,
-  errors,
-  confirmPasswordError,
-  onChange,
-  onSubmit,
-  onClickLogin
-}: Props) => (
+export default withStyles(dialogStyles)(
+  ({
+    classes,
+    data,
+    errors,
+    confirmPasswordError,
+    onChange,
+    onSubmit,
+    onClickLogin
+  }: Props) => (
     <div>
       <TextField
-        error={errors && errors.username ? true : false}
+        error={errors.username ? true : false}
         label="Nom complet"
         value={data.username}
         required={true}
-        style={{ display: 'flex', flex: 1 }}
+        className={classes.input}
         onChange={event => onChange('username', event.target.value)}
         helperText={errors && errors.username}
       />
       <TextField
-        error={errors && errors.email ? true : false}
+        error={errors.email ? true : false}
         label="Email"
         value={data.email}
         required={true}
-        style={{ display: 'flex', flex: 1 }}
+        className={classes.input}
         onChange={event => onChange('email', event.target.value)}
-        helperText={errors && errors.email}
+        helperText={errors.email}
       />
       <TextField
-        error={errors && errors.password ? true : false}
+        error={errors.password ? true : false}
         label="Mot de passe"
         value={data.password}
         type="password"
         required={true}
-        style={{ display: 'flex', flex: 1 }}
+        className={classes.input}
         onChange={event => onChange('password', event.target.value)}
-        helperText={errors && errors.password}
+        helperText={errors.password}
       />
       <TextField
         error={confirmPasswordError ? true : false}
         label="Confirmer le mot de passe"
         type="password"
         required={true}
-        style={{ display: 'flex', flex: 1 }}
+        className={classes.input}
         onChange={event => onChange('confirmPassword', event.target.value)}
         helperText={confirmPasswordError}
       />
-      <div
-        style={{
-          justifyContent: 'center',
-          display: 'flex',
-          paddingTop: 16,
-          paddingBottom: 16,
-          flexWrap: 'wrap',
-        }}
-      >
-        {errors && errors.server &&
-          <Typography
-            style={{
-              color: 'red',
-              fontWeight: 'bold'
-            }}
-          >
-            {errors.server}
-          </Typography>
-        }
-      </div>
-      <div
-        style={{
-          justifyContent: 'center',
-          paddingBottom: 16,
-          display: 'flex',
-          flexDirection: 'column',
-          flexWrap: 'wrap'
-        }}
-      >
-        <Typography variant="caption">
-          {`Déja un compte ?`}
-        </Typography>
-        <Button
-          onClick={onClickLogin}
-          color="primary"
-        >
-          {`Se connecter`}
-        </Button>
-      </div>
-      <SigninAction
-        onSubmit={onSubmit}
-        actionName="S'inscrire"
+      {errors.server && <SigninError error={errors.server} />}
+      <SigninAltAction
+        heading="Déjà un compte ?"
+        actionName="Se connecter"
+        onSubmit={onClickLogin}
       />
+      <SigninAction onSubmit={onSubmit} actionName="S'inscrire" />
     </div>
-  );
+  )
+);

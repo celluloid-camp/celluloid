@@ -6,7 +6,8 @@ const initialState = {
   loading: false,
   errors: {},
   dialog: new SigninDialog.Closed(),
-  email: undefined
+  email: undefined,
+  password: undefined
 };
 
 export default (state = initialState, action: AnyAction) => {
@@ -28,7 +29,19 @@ export default (state = initialState, action: AnyAction) => {
         loading: false,
         errors: {},
         dialog: new SigninDialog.ConfirmSignupOpen(),
-        email: action.payload
+        credentials: action.payload
+      };
+    case ActionType.OPEN_RESET_PASSWORD:
+      return {
+        loading: false,
+        errors: {},
+        dialog: new SigninDialog.ResetPasswordOpen(),
+      };
+    case ActionType.OPEN_CONFIRM_RESET_PASSWORD:
+      return {
+        loading: false,
+        errors: {},
+        dialog: new SigninDialog.ConfirmResetPasswordOpen(),
       };
     case ActionType.TRIGGER_SIGNIN_LOADING:
       return {
@@ -39,7 +52,7 @@ export default (state = initialState, action: AnyAction) => {
       return {
         loading: false,
         errors: {},
-        dialog: new SigninDialog.Closed()
+        dialog: new SigninDialog.Closed(),
       };
     case ActionType.FAIL_LOGIN:
     case ActionType.FAIL_SIGNUP:
@@ -50,11 +63,17 @@ export default (state = initialState, action: AnyAction) => {
         errors: action.payload,
       };
     case ActionType.SUCCEED_LOGIN:
+      return {
+        loading: false,
+        dialog: new SigninDialog.Closed(),
+        errors: {}
+      };
     case ActionType.SUCCEED_SIGNUP:
       return {
         ...state,
         loading: false,
         errors: {},
+        dialog: new SigninDialog.LoginOpen()
       };
     default:
       return state;

@@ -13,17 +13,12 @@ import { WithLogin } from 'types/Teacher';
 import SigninBar from './SigninBar';
 import * as Signin from '../Signin';
 import { AppState, User } from 'types/AppState';
-import {
-  openLogin,
-  openSignup,
-  closeSignin,
-} from 'actions/Signin';
+import { openLogin, openSignup, closeSignin } from 'actions/Signin';
 import { Action } from 'types/Action';
 
-interface ChildProps extends WithLogin {
-}
+interface ChildProps extends WithLogin {}
 
-const styles = createStyles(({
+const styles = createStyles({
   root: { height: '100%' },
   grow: { flex: 1 },
   homeLink: { textDecoration: 'none' },
@@ -31,7 +26,7 @@ const styles = createStyles(({
     paddingTop: 64,
     height: '100%'
   }
-}));
+});
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -44,7 +39,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onClickLogin: () => dispatch(openLogin()),
     onClickSignup: () => dispatch(openSignup()),
-    onCloseSignin: () => dispatch(closeSignin()),
+    onCloseSignin: () => dispatch(closeSignin())
   };
 };
 
@@ -60,7 +55,10 @@ interface Props extends RouteComponentProps<{}>, WithStyles<typeof styles> {
 }
 
 export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)((props: Props) => {
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )((props: Props) => {
     const {
       classes,
       user,
@@ -73,27 +71,20 @@ export default withStyles(styles)(
       ...others
     } = props;
 
+    // tslint:disable-next-line:no-console
+    console.log(user);
     return (
       <div className={classes.root}>
-        <AppBar color="default" >
+        <AppBar color="default">
           <Toolbar>
             <div className={classes.grow}>
-              <NavLink
-                to="/"
-                className={classes.homeLink}
-              >
-                <Typography
-                  variant="display1"
-                >
+              <NavLink to="/" className={classes.homeLink}>
+                <Typography variant="display1">
                   <b>{`Celluloid`}</b>
                 </Typography>
               </NavLink>
             </div>
-            <Button
-              color="secondary"
-            >
-              {`fr`}
-            </Button>
+            <Button color="secondary">{`fr`}</Button>
             <Button>{`À propos`}</Button>
             <SigninBar
               user={user}
@@ -102,18 +93,10 @@ export default withStyles(styles)(
               onClickLogout={onClickLogout}
             />
           </Toolbar>
-        </AppBar >
-        <SigninDialog
-          onCancel={onCloseSignin}
-          state={signinDialog}
-        />
-        <div
-          className={classes.content}
-        >
-          <Content
-            teacher={user}
-            {...others}
-          />
+        </AppBar>
+        <SigninDialog onCancel={onCloseSignin} state={signinDialog} />
+        <div className={classes.content}>
+          <Content teacher={user} {...others} />
         </div>
       </div>
     );

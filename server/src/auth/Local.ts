@@ -7,11 +7,11 @@ import * as UserStore from 'store/UserStore';
 import { sendConfirmationCode } from './Utils';
 
 passport.serializeUser(({ id }, done) => {
-  done(null, id);
+  return done(null, id);
 });
 
 passport.deserializeUser((id, done) => {
-  UserStore.getById(id)
+  return UserStore.getById(id)
     .then(result => {
       if (result) {
         return done(null, result);
@@ -33,7 +33,7 @@ function verifySignup(): VerifyFunctionWithRequest {
   return (req, email, password, done) =>
     UserStore.create(req.body.username, email, password)
       .then(user => {
-        return sendConfirmationCode(user.code, user);
+        return sendConfirmationCode(user);
       })
       .then(user => done(null, user))
       .catch(error => done(error));

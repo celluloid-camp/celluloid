@@ -2,7 +2,8 @@ import * as SigninDialog from 'components/Signin';
 
 import {
   SigninErrors,
-  TeacherRecord
+  TeacherRecord,
+  TeacherCredentials
 } from '../../../common/src/types/TeacherTypes';
 
 export type User = TeacherRecord;
@@ -11,7 +12,7 @@ export interface SigninState {
   loading: boolean;
   dialog: SigninDialog.DialogState;
   errors: SigninErrors;
-  email?: string;
+  credentials?: TeacherCredentials;
 }
 
 export interface AppState {

@@ -19,13 +19,13 @@ export class LoginOpen implements DialogStateInterface {
 }
 
 export class ResetPasswordOpen implements DialogStateInterface {
-  readonly kind = 'RequestNewPassword';
-  readonly title = 'Réinitialiser le mot de passe';
+  readonly kind = 'ResetPassword';
+  readonly title = 'Mot de passe perdu';
 }
 
 export class ConfirmResetPasswordOpen implements DialogStateInterface {
-  readonly kind = 'ConfirmNewPassword';
-  readonly title = 'Réinitialiser le mot de passe';
+  readonly kind = 'ConfirmResetPassword';
+  readonly title = 'Mot de passe perdu';
 }
 
 export class Closed implements DialogStateInterface {
@@ -40,3 +40,10 @@ export type DialogState
   | ResetPasswordOpen
   | ConfirmResetPasswordOpen
   | Closed;
+
+export type SigninComponent
+  = SignupOpen
+  | ConfirmSignupOpen
+  | LoginOpen
+  | ResetPasswordOpen
+  | ConfirmResetPasswordOpen;

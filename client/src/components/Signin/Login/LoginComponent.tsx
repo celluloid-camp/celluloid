@@ -2,35 +2,44 @@ import * as React from 'react';
 import { AnyAction } from 'redux';
 
 import { Action } from 'types/Action';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
 
-import { SigninErrors, TeacherCredentials } from '../../../../../common/src/types/TeacherTypes';
+import {
+  SigninErrors,
+  TeacherCredentials
+} from '../../../../../common/src/types/TeacherTypes';
+import { withStyles, WithStyles } from '@material-ui/core';
 import SigninAction from '../SigninAction';
+import SigninAltAction from '../SigninAltAction';
+import SigninError from '../SigninError';
+import { dialogStyles } from '../DialogStyles';
 
-interface Props {
+interface Props extends WithStyles<typeof dialogStyles> {
   credentials: TeacherCredentials;
   errors: SigninErrors;
   onChange(name: string, value: string): void;
+  onClickResetPassword(): Action<null>;
   onClickSignup(): Action<null>;
   onSubmit(): Promise<AnyAction>;
 }
 
-export default ({
-  credentials,
-  errors,
-  onChange,
-  onSubmit,
-  onClickSignup
-}: Props) => (
+export default withStyles(dialogStyles)(
+  ({
+    classes,
+    credentials,
+    errors,
+    onChange,
+    onClickResetPassword,
+    onClickSignup,
+    onSubmit
+  }: Props) => (
     <div>
       <TextField
         label="Email"
         required={true}
         value={credentials.email}
-        error={errors && errors.email ? true : false}
-        style={{ display: 'flex', flex: 1 }}
+        className={classes.input}
+        error={errors.email ? true : false}
         onChange={event => onChange('email', event.target.value)}
         helperText={errors && errors.email}
       />
@@ -39,53 +48,22 @@ export default ({
         required={true}
         value={credentials.password}
         type="password"
-        error={errors && errors.password ? true : false}
-        style={{ display: 'flex', flex: 1 }}
+        className={classes.input}
+        error={errors.password ? true : false}
         onChange={event => onChange('password', event.target.value)}
         helperText={errors && errors.password}
       />
-      <div
-        style={{
-          justifyContent: 'center',
-          display: 'flex',
-          paddingTop: 16,
-          flexWrap: 'wrap',
-        }}
-      >
-        {errors && errors.server &&
-          <Typography
-            style={{
-              color: 'red',
-              fontWeight: 'bold'
-            }}
-          >
-            {errors.server}
-          </Typography>
-        }
-      </div>
-      <div
-        style={{
-          justifyContent: 'center',
-          paddingBottom: 16,
-          display: 'flex',
-          flexWrap: 'wrap'
-        }}
-      >
-        <Button
-          color="primary"
-        >
-          {`Mot de passe oublié`}
-        </Button>
-        <Button
-          onClick={onClickSignup}
-          color="primary"
-        >
-          {`Inscription`}
-        </Button>
-      </div>
-      <SigninAction
-        onSubmit={onSubmit}
-        actionName="Se connecter"
+      {errors.server && <SigninError error={errors.server} />}
+      <SigninAltAction
+        actionName="Mot de passe oublié ?"
+        onSubmit={onClickResetPassword}
       />
+      <SigninAltAction
+        heading="Pas encore de compte ?"
+        actionName="S'inscrire"
+        onSubmit={onClickSignup}
+      />
+      <SigninAction onSubmit={onSubmit} actionName="Se connecter" />
     </div>
-  );
+  )
+);

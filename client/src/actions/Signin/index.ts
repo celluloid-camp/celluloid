@@ -18,3 +18,4 @@ Action<null> {
 export * from './LoginActions';
 export * from './SignupActions';
 export * from './UserActions';
+export * from './ResetPasswordActions';

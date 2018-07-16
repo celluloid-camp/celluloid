@@ -15,7 +15,10 @@ import ProjectsService from 'services/ProjectsService';
 
 import { WithLogin } from 'types/Teacher';
 
-import { NewProjectData, DisplayProjectData } from '../../common/src/types/ProjectTypes';
+import {
+  NewProjectData,
+  DisplayProjectData
+} from '../../common/src/types/ProjectTypes';
 import TagData from '../../common/src/types/TagTypes';
 import { YouTubeVideo } from 'types/YouTubeVideo';
 
@@ -29,15 +32,14 @@ const decorate = withStyles(({ palette, spacing }) => ({
     textAlign: 'center' as 'center',
     marginLeft: 'auto' as 'auto',
     marginRight: 'auto' as 'auto',
+    height: '100%'
   },
   block: {
     padding: spacing.unit * 6
   }
 }));
 
-interface Props extends WithLogin, WithStyles<'center' | 'block'> {
-
-}
+interface Props extends WithLogin, WithStyles<'center' | 'block'> {}
 
 interface State {
   newProjectDialogOpen: boolean;
@@ -49,9 +51,8 @@ interface State {
   error?: string;
 }
 
-const Home = decorate<WithLogin>(
+export default decorate<WithLogin>(
   class extends React.Component<Props, State> {
-
     state = {
       newProjectDialogOpen: false,
       newProjectVideoUrl: '',
@@ -94,9 +95,9 @@ const Home = decorate<WithLogin>(
       const showNewProjectDialog = () => {
         try {
           const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
-          const videoId = parsedVideoUrl.hostname.endsWith('youtu.be') ?
-            parsedVideoUrl.pathname.replace(/\//, '') :
-            parsedVideoUrl.searchParams.get('v');
+          const videoId = parsedVideoUrl.hostname.endsWith('youtu.be')
+            ? parsedVideoUrl.pathname.replace(/\//, '')
+            : parsedVideoUrl.searchParams.get('v');
 
           if (videoId) {
             YouTubeService.getVideoNameById(videoId)
@@ -130,10 +131,12 @@ const Home = decorate<WithLogin>(
             newProjectDialogOpen: false,
             videoError: `Ceci n'est pas un lien YouTube valide`
           });
-
         }
       };
-      const closeNewProjectDialog = (send: boolean, newProject: NewProjectData) => {
+      const closeNewProjectDialog = (
+        send: boolean,
+        newProject: NewProjectData
+      ) => {
         return new Promise((resolve, reject) => {
           if (send) {
             ProjectsService.create(newProject)
@@ -141,7 +144,6 @@ const Home = decorate<WithLogin>(
                 this.setState({ newProjectDialogOpen: false });
                 this.loadContent();
                 resolve();
-
               })
               .catch(error => {
                 reject(error);
@@ -153,7 +155,9 @@ const Home = decorate<WithLogin>(
         });
       };
 
-      const handleVideoUrlChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const handleVideoUrlChanged = (
+        event: React.ChangeEvent<HTMLInputElement>
+      ) => {
         this.setState({ newProjectVideoUrl: event.target.value });
       };
 
@@ -168,26 +172,19 @@ const Home = decorate<WithLogin>(
               alignItems="stretch"
               className={classes.block}
             >
-              <Grid item={true} sm={12} lg={3}>
-                <Grid container={true} spacing={24} direction="column">
-                  <Grid item={true}>
-                    <Typography variant="headline" gutterBottom={true}>
-                      <b>
-                        {`Votre outil pédagogique numérique pour l'analyse de video`}
-                      </b>
-                    </Typography>
-                  </Grid>
-                  <Grid item={true}>
-                    <Typography variant="subheading" gutterBottom={true}>
-                      {`Celluloid est une plateforme collaborative pour les enseignants et les élèves.`}
-                      <br />
-                      <b>{`Créez-vous une séquence de cours`}</b>
-                      {` ou trouvez en une déjà construite.`}
-                    </Typography>
-                  </Grid>
-                </Grid>
+              <Grid item={true} md={12} lg={3}>
+                <Typography variant="headline" gutterBottom={true}>
+                  <b>{`Apprendre ensemble avec une vidéo`}</b>
+                </Typography>
+                <Typography variant="subheading" gutterBottom={true}>
+                  {`Partagez une vidéo Youtube avec vos élèves, vos` +
+                    ` étudiant.e.s ou un groupe en formation : créez` +
+                    ` votre projet pédagogique, annotez les images,` +
+                    ` posez des questions et répondez à celles des` +
+                    ` participant.e.s.`}
+                </Typography>
               </Grid>
-              <Grid item={true} xs={12} sm={6} className={classes.center}>
+              <Grid item={true} xs={12} md={6} className={classes.center}>
                 <Grid
                   container={true}
                   spacing={24}
@@ -195,62 +192,47 @@ const Home = decorate<WithLogin>(
                   justify="space-between"
                 >
                   <Grid item={true}>
-                    <img height={100} src={teacherIcon} alt="students icon" />
+                    <img height={100} src={teacherIcon} alt="teacher icon" />
                   </Grid>
                   <Grid item={true}>
-                    <Typography variant="title" gutterBottom={true}>
-                      {`Créer un nouveau projet`}
-                    </Typography>
-                    <Divider />
+                    <TextField
+                      style={{
+                        width: 384
+                      }}
+                      label="Ajouter un lien vers une vidéo YouTube..."
+                      onChange={handleVideoUrlChanged}
+                      value={this.state.newProjectVideoUrl}
+                      error={this.state.videoError ? true : false}
+                      fullWidth={true}
+                      helperText={this.state.videoError}
+                    />
                   </Grid>
                   <Grid item={true}>
-                    <Typography variant="subheading">
-                      {`Autour d'une video de votre choix, construisez une séquence de cours complète pour vos élèves`}
-                    </Typography>
-                  </Grid>
-                  <Grid item={true}>
-                    <Grid
-                      container={true}
-                      direction="row"
-                      alignContent="center"
-                      alignItems="flex-end"
-                      justify="center"
+                    <Button
+                      variant="raised"
+                      color="primary"
+                      onClick={showNewProjectDialog}
                     >
-                      <Grid item={true}>
-                        <TextField
-                          style={{
-                            width: 384
-                          }}
-                          label="Ajouter un lien vers une vidéo YouTube..."
-                          onChange={handleVideoUrlChanged}
-                          value={this.state.newProjectVideoUrl}
-                          error={this.state.videoError ? true : false}
-                          fullWidth={true}
-                          helperText={this.state.videoError}
-                        />
-                      </Grid>
-                      <Grid item={true}>
-                        <Button
-                          variant="raised"
-                          color="primary"
-                          onClick={showNewProjectDialog}
-                        >
-                          {`NOUVEAU PROJET`}
-                        </Button>
-                        {this.state.video &&
-                          <NewProject
-                            onClose={closeNewProjectDialog}
-                            isOpen={this.state.newProjectDialogOpen}
-                            video={this.state.video}
-                            tags={this.state.tags}
-                          />
-                        }
-                      </Grid>
-                    </Grid>
+                      {`NOUVEAU PROJET`}
+                    </Button>
+                    {this.state.video && (
+                      <NewProject
+                        onClose={closeNewProjectDialog}
+                        isOpen={this.state.newProjectDialogOpen}
+                        video={this.state.video}
+                        tags={this.state.tags}
+                      />
+                    )}
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item={true} xs={12} sm={6} lg={3} className={classes.center}>
+              <Grid
+                item={true}
+                xs={12}
+                sm={6}
+                lg={3}
+                className={classes.center}
+              >
                 <Grid
                   container={true}
                   spacing={24}
@@ -261,34 +243,9 @@ const Home = decorate<WithLogin>(
                     <img height={100} src={studentsIcon} alt="students icon" />
                   </Grid>
                   <Grid item={true}>
-                    <Typography variant="title" gutterBottom={true}>
-                      {`Rejoindre un projet`}
-                    </Typography>
-                    <Divider />
-                  </Grid>
-                  <Grid item={true}>
-                    <Typography variant="subheading">
-                      {`Vous souhaitez annoter et participer à une séquence organisée par votre
-                  professeur`}
-                    </Typography>
-                  </Grid>
-                  <Grid item={true}>
-                    <Grid
-                      container={true}
-                      direction="row"
-                      alignContent="center"
-                      alignItems="flex-end"
-                      justify="center"
-                    >
-                      <Grid item={true}>
-                        <Button
-                          variant="raised"
-                          color="primary"
-                        >
-                          {`REJOINDRE UN PROJET`}
-                        </Button>
-                      </Grid>
-                    </Grid>
+                    <Button variant="raised" color="primary">
+                      {`REJOINDRE UN PROJET`}
+                    </Button>
                   </Grid>
                 </Grid>
               </Grid>
@@ -301,5 +258,3 @@ const Home = decorate<WithLogin>(
     }
   }
 );
-
-export default Home;

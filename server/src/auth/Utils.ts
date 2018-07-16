@@ -14,74 +14,54 @@ export function generateConfirmationCode() {
   return `${first}${second}`;
 }
 
-export function sendConfirmationCode(code, user) {
-  const href = `https://www.celluloid.camp/user/confirm?email=${user.email}`;
-  const subject =
-     `Bienvenue sur celluloid, ${user.username} !`;
+export function sendConfirmationCode(user) {
+  const subject = `Bienvenue sur Celluloid, ${user.username} !`;
   const text =
-     `Bonjour ${user.username},` +
-     `Voici votre code de confirmation : ${code}\n\n` +
-     `Ce code est valable 24 heures.\n\n` +
-     `Veuillez le saisir dans le formulaire prévu à cet effet.\n\n` +
-    //  `Vous pouvez le retrouver à ` +
-    //  `l'adresse suivante : ${href}\n\n` +
-     `L'équipe Celluloid vous souhaite la bienvenue !`;
+    `Bonjour ${user.username},\n\n` +
+    `Voici votre code de confirmation : ${user.code}\n\n` +
+    `Ce code est valable pendant 1 heure.\n\n` +
+    `Veuillez le saisir dans le formulaire prévu à cet effet.\n\n` +
+    `L'équipe Celluloid vous souhaite la bienvenue !`;
   const html =
-     `<h3>Bonjour <b>${user.username},</b></h3>` +
-     `<p>Voici votre code de confirmation : <b>${code}</b></p>` +
-     `<p>Ce code est valable 24 heures.</p>` +
-     `<pVeuillez le saisir dans le formulaire prévu à cet effet.</p>` +
-    //  `<p>Vous pouvez également le retrouver en ` +
-    //  `<a href="${href}">cliquant sur ce lien.</a></p>` +
-    //  `<p>Si ce lien ne fonctionne pas, rendez-vous à `+
-    //  `l'adresse suivante : ${href}</p>` +
-     `<p><b>L'équipe Celluloid vous souhaite la bienvenue !</b></p>`;
+    `<h3>Bonjour <b>${user.username},</b></h3>` +
+    `<p>Voici votre code de confirmation : <b>${user.code}</b></p>` +
+    `<p>Ce code est valable pendant 1 heure.</p>` +
+    `<p>Veuillez le saisir dans le formulaire prévu à cet effet.</p>` +
+    `<p><b>L'équipe Celluloid vous souhaite la bienvenue !</b></p>`;
 
-  return sendMail(
-     user.email,
-     subject,
-     text,
-     html
-  ).then(() => Promise.resolve(user));
+  return sendMail(user.email, subject, text, html).then(() =>
+    Promise.resolve(user)
+  );
 }
 
-export function sendPasswordReset(code, user) {
-  const subject =
-     `Réinitialisation de votre mot de passe Celluloid, ${user.username} !`;
-  const href = `https://www.celluloid.camp/user/reset-password?email=${user.email}`;
+export function sendPasswordReset(user) {
+  const subject = `${
+    user.username
+  } : réinitialisation de votre mot de passe Celluloid`;
   const text =
-     `Bonjour ${user.username},` +
-     `Une demande de réinitialisation de mot de passe ` +
-     `pour l'adresse email ${user.email}\n\n` +
-     `Voici votre code de confirmaton: ${code}\n\n` +
-     `Ce code est valable 24 heures.\n\n` +
-     `Veuillez le saisir dans le formulaire prévu à cet effet.\n\n` +
-    //  `Vous pouvez également le retrouver à ` +
-    //  `l'adresse suivante : ${href}\n\n` +
-     `Si vous n'êtes pas à l'origine de cette demande, ` +
-     `veuillez simplement ignorer ce mail.\n\n` +
-     `Cordialement,\n\n` +
-     `L'équipe Celluloid`;
+    `Bonjour ${user.username},\n\n` +
+    `Nous avons reçu Une demande de réinitialisation de mot de passe ` +
+    `pour l'adresse email ${user.email}\n\n` +
+    `Voici votre code de confirmation: ${user.code}\n\n` +
+    `Ce code sera valable pendant 1 heure.\n\n` +
+    `Veuillez le saisir dans le formulaire prévu à cet effet.\n\n` +
+    `Si vous n'êtes pas à l'origine de cette demande, ` +
+    `veuillez simplement ignorer ce mail.\n\n` +
+    `Cordialement,\n\n` +
+    `L'équipe Celluloid`;
   const html =
-     `<h3>Bonjour <b>${user.username},</b></h3>` +
-     `<p>Une demande de réinitialisation de mot de passe ` +
-     `pour l'adresse email ${user.email}</p>` +
-     `<p>Voici votre code de confirmation : <b>${code}</b></p>` +
-     `<p>Ce code est valable 24 heures.</p>` +
-     `<pVeuillez le saisir dans le formulaire prévu à cet effet.</p>` +
-    //  `<p>Vous pouvez également le retrouver en ` +
-    //  `<a href="${href}">cliquant sur ce lien.</a></p>` +
-    //  `<p>Si ce lien ne fonctionne pas, rendez-vous à `+
-    //  `l'adresse suivante : ${href}</p>` +
-     `<p>Si vous n'êtes pas à l'origine de cette demande, ` +
-     `veuillez simplement ignorer ce mail.</p>` +
-     `<p>Cordialement,</p>` +
-     `<p><b>L'équipe Celluloid</b></p>`;
+    `<h3>Bonjour <b>${user.username},</b></h3>` +
+    `<p>Nous avons reçu une demande de réinitialisation de mot de passe ` +
+    `pour l'adresse email ${user.email}</p>` +
+    `<p>Voici votre code de confirmation : <b>${user.code}</b></p>` +
+    `<p>Ce code sera valable pendant 1 heure.</p>` +
+    `<p>Veuillez le saisir dans le formulaire prévu à cet effet.</p>` +
+    `<p><b/>Si vous n'êtes pas à l'origine de cette demande, ` +
+    `veuillez simplement ignorer ce mail.</b></p>` +
+    `<p>Cordialement,</p>` +
+    `<p><b>L'équipe Celluloid</b></p>`;
 
-  return sendMail(
-     user.email,
-     subject,
-     text,
-     html
-  ).then(() => Promise.resolve(user));
+  return sendMail(user.email, subject, text, html).then(() =>
+    Promise.resolve(user)
+  );
 }

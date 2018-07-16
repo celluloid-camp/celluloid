@@ -9,7 +9,7 @@ export interface AnnotationData {
 
 export interface AnnotationRecord extends AnnotationData {
   projectId: string;
-  teacherId: string;
+  userId: string;
   id: string;
   createdAt: Date;
   updatedAt: Date;

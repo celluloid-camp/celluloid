@@ -3,7 +3,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
 import Login from './LoginComponent';
-import { openSignup, doLoginThunk } from 'actions/Signin';
+import { openSignup, doLoginThunk, openResetPassword } from 'actions/Signin';
 import { Action } from 'types/Action';
 import { AppState } from 'types/AppState';
 
@@ -12,6 +12,7 @@ import { TeacherCredentials, SigninErrors } from '../../../../../common/src/type
 interface Props {
   errors: SigninErrors;
   onClickSignup(): Action<null>;
+  onClickResetPassword(): Action<null>;
   onSubmit(credentials: TeacherCredentials): Promise<AnyAction>;
 }
 
@@ -19,7 +20,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onSubmit: (credentials: TeacherCredentials) =>
       doLoginThunk(credentials)(dispatch),
-    onClickSignup: () => dispatch(openSignup())
+    onClickSignup: () => dispatch(openSignup()),
+    onClickResetPassword: () => dispatch(openResetPassword())
   };
 };
 
@@ -48,6 +50,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         <Login
           credentials={this.state}
           errors={this.props.errors}
+          onClickResetPassword={this.props.onClickResetPassword}
           onClickSignup={this.props.onClickSignup}
           onSubmit={() => this.props.onSubmit(this.state)}
           onChange={onChange}

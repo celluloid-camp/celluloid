@@ -1,15 +1,21 @@
 import * as React from 'react';
-import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  withStyles,
+  WithStyles,
+  Theme
+} from '@material-ui/core/styles';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import { AnyAction } from 'redux';
 
-const styles = createStyles({
-
-  dialogActionsRoot: {
-    justifyContent: 'space-around'
-  }
-});
+const styles = ({ spacing }: Theme) =>
+  createStyles({
+    dialogActionsRoot: {
+      marginTop: spacing.unit * 2,
+      justifyContent: 'space-around'
+    }
+  });
 
 interface Props extends WithStyles<typeof styles> {
   actionName: string;
@@ -24,11 +30,15 @@ export default withStyles(styles)(
       }}
     >
       <Button
-        onClick={onSubmit}
+        type="submit"
+        onClick={event => {
+          event.preventDefault();
+          onSubmit();
+        }}
         color="secondary"
-        variant="raised"
       >
         {actionName}
       </Button>
     </DialogActions>
-  ));
+  )
+);

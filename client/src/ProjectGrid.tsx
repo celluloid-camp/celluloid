@@ -8,7 +8,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
-// import Button from '@material-ui/core/IconButton';
 
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import { DisplayProjectData } from '../../common/src/types/ProjectTypes';
@@ -63,7 +62,7 @@ const ProjectThumbnail = withStyles(styles)(
         title,
         objective,
         publishedAt,
-        author,
+        user,
         tags
       } = this.props;
       return (
@@ -156,7 +155,7 @@ const ProjectThumbnail = withStyles(styles)(
                 </Grid>
                 <Grid item={true} xs={12}>
                   <Typography style={{ paddingTop: 24 }}>
-                    {author.username}
+                    {user.username}
                   </Typography>
                   <Typography variant="caption">
                     {new Date(publishedAt).toLocaleDateString()}

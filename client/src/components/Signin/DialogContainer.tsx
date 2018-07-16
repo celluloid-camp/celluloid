@@ -1,12 +1,14 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { AppState } from 'types/AppState';
 
 import { DialogState } from './DialogTypes';
 import SigninDialog from './DialogComponent';
 import Login from './Login';
 import Signup from './Signup';
 import ConfirmSignup from './ConfirmSignup';
-import { AppState } from 'types/AppState';
-import { connect } from 'react-redux';
+import ResetPassword from './ResetPassword';
+import ConfirmResetPassword from './ConfirmResetPassword';
 
 interface Props {
   state: DialogState;
@@ -22,6 +24,10 @@ const getComponent = (state: DialogState) => {
       return Login;
     case 'ConfirmSignup':
       return ConfirmSignup;
+    case 'ResetPassword':
+      return ResetPassword;
+    case 'ConfirmResetPassword':
+      return ConfirmResetPassword;
     default:
       return undefined;
   }

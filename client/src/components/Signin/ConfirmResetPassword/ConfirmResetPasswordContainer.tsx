@@ -2,27 +2,26 @@ import * as React from 'react';
 import { AnyAction, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
+import ConfirmResetPassword from './ConfirmResetPasswordComponent';
+import { doConfirmResetPasswordThunk } from 'actions/Signin';
 import { Action } from 'types/Action';
-import { doSignupThunk, openLogin } from 'actions/Signin';
 import { AppState } from 'types/AppState';
-import Signup from './SignupComponent';
 
 import {
-  TeacherSignupData,
+  TeacherConfirmResetPasswordData,
   SigninErrors
 } from '../../../../../common/src/types/TeacherTypes';
 
 interface Props {
   errors: SigninErrors;
-  onClickLogin(): Action<null>;
-  onSubmit(data: TeacherSignupData): Promise<AnyAction>;
+  onClickSignup(): Action<null>;
+  onSubmit(data: TeacherConfirmResetPasswordData): Promise<AnyAction>;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onSubmit: (data: TeacherSignupData): Promise<AnyAction> =>
-      doSignupThunk(data)(dispatch),
-    onClickLogin: () => dispatch(openLogin())
+    onSubmit: (data: TeacherConfirmResetPasswordData) =>
+      doConfirmResetPasswordThunk(data)(dispatch)
   };
 };
 
@@ -32,7 +31,7 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-interface State extends TeacherSignupData {
+interface State extends TeacherConfirmResetPasswordData {
   confirmPassword: string;
 }
 
@@ -42,8 +41,8 @@ export default connect(
 )(
   class extends React.Component<Props, State> {
     state = {
-      username: '',
       email: '',
+      code: '',
       password: '',
       confirmPassword: ''
     } as State;
@@ -62,11 +61,10 @@ export default connect(
           : 'Les mots de passe ne correspondent pas';
 
       return (
-        <Signup
+        <ConfirmResetPassword
           data={this.state}
           errors={this.props.errors}
           confirmPasswordError={confirmPasswordError}
-          onClickLogin={this.props.onClickLogin}
           onSubmit={() => this.props.onSubmit(this.state)}
           onChange={onChange}
         />

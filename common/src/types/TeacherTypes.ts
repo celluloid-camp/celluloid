@@ -9,7 +9,7 @@ export interface SigninErrors {
   server?: string;
 }
 
-export interface SigninValidation {
+export interface SigninResult {
   success: boolean;
   errors: SigninErrors;
 }
@@ -33,6 +33,14 @@ export interface TeacherConfirmData {
   code: string;
 }
 
+export interface TeacherCredentials {
+  email: string;
+  password: string;
+}
+
+export interface TeacherConfirmResetPasswordData extends TeacherConfirmData,
+                                                         TeacherCredentials {}
+
 export interface ConfirmSignupErrors {
   email: string;
   code: string;
@@ -41,9 +49,4 @@ export interface ConfirmSignupErrors {
 export interface ConfirmSignupValidation {
   success: boolean;
   errors?: ConfirmSignupErrors;
-}
-
-export interface TeacherCredentials {
-  email: string;
-  password: string;
 }
