@@ -41,7 +41,6 @@ function validateSignup(payload) {
     result.success = false;
     result.errors.password = 'InvalidPasswordFormat';
   }
-z
   return result;
 }
 
