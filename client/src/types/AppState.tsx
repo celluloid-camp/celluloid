@@ -10,7 +10,7 @@ export type User = TeacherRecord;
 
 export interface SigninState {
   loading: boolean;
-  dialog: SigninDialog.DialogState;
+  dialog: SigninDialog.SigninState;
   errors: SigninErrors;
   credentials?: TeacherCredentials;
 }

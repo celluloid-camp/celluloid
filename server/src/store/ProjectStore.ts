@@ -1,6 +1,6 @@
 import builder, { getExactlyOne } from 'common/Postgres';
 
-import { ProjectData, NewProjectData } from '../../../common/src/types/ProjectTypes';
+import { ProjectData, NewProjectData, ProjectShareData } from '../../../common/src/types/ProjectTypes';
 import { TeacherData, TeacherRecord } from '../../../common/src/types/TeacherTypes';
 import { QueryBuilder } from 'knex';
 
@@ -96,13 +96,13 @@ export function update(projectId: string, props: ProjectData) {
     .then(getExactlyOne);
 }
 
-// export function shareById(projectId: string, shareData: ShareData) {
-//   return builder('Project')
-//     .update({
-//       shared: true,
-//       shareName,
-//       sharePassword,
-//       shareExpiresAt,
-//       shareMaxUsers
-//     })
-// }
+export function shareById(projectId: string, data: ProjectShareData) {
+  return builder('Project')
+    .update({
+      shared: true,
+      ...data
+    })
+    .returning('*')
+    .where('projectId', projectId)
+    .then(getExactlyOne);
+}

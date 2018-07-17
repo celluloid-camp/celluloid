@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import * as classNames from 'classnames';
-import { ProjectData } from '../../common/src/types/ProjectTypes';
+import { ProjectData } from '../../../../../../common/src/types/ProjectTypes';
 import { RouteComponentProps } from 'react-router';
 
 import ProjectsService from 'services/ProjectsService';
@@ -27,13 +27,13 @@ import Fullscreen from 'react-full-screen';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import { AnnotationRecord, AnnotationData } from '../../common/src/types/AnnotationTypes';
+import { AnnotationRecord, AnnotationData } from '../../../../../../common/src/types/AnnotationTypes';
 import { formatDuration } from 'utils/DurationUtils';
 import { WithLogin } from 'types/Teacher';
-import Annotation from 'Annotation';
-import AnnotationHints from 'AnnotationHints';
-import * as AnnotationUtils from 'AnnotationUtils';
-import Palette from 'Palette';
+import Annotation from './components/Annotation';
+import AnnotationHints from './components/AnnotationHints';
+import * as AnnotationUtils from 'utils/AnnotationUtils';
+import Palette from 'utils/PaletteUtils';
 
 interface ProjectParams {
   projectId: string;

@@ -20,7 +20,7 @@ export interface ProjectData extends NewProjectData {
   views?: number;
   shares?: number;
   userId: string;
-  publishedAt: string;
+  publishedAt: Date;
   shared: boolean;
   shareName?: string;
   shareExpiresAt: string;
@@ -28,4 +28,11 @@ export interface ProjectData extends NewProjectData {
 
 export interface DisplayProjectData extends ProjectData {
   user: TeacherData;
+}
+
+export interface ProjectShareData {
+  sharePassword: string;
+  shareExpiresAt: Date;
+  shareName: string;
+  shareMaxUsers: number;
 }

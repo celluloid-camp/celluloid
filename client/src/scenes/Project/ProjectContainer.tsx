@@ -6,15 +6,15 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import Chip from '@material-ui/core/Chip';
-import Video from 'Video';
+import Video from './scenes/Video';
 
-import { ProjectData } from '../../common/src/types/ProjectTypes';
+import { ProjectData } from '../../../../common/src/types/ProjectTypes';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import ProjectsService from 'services/ProjectsService';
 import { WithLogin } from 'types/Teacher';
-import ShareProject from 'ShareProject';
+import ShareProject from './components/Share';
 
 import ShareIcon from '@material-ui/icons/Share';
 import { WithStyles, withStyles } from '@material-ui/core/styles';

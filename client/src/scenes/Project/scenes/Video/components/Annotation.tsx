@@ -13,12 +13,12 @@ import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Palette from 'Palette';
+import Palette from 'utils/PaletteUtils';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { AnnotationData, AnnotationRecord } from '../../common/src/types/AnnotationTypes';
+import { AnnotationData, AnnotationRecord } from '../../../../../../../common/src/types/AnnotationTypes';
 import { formatDuration } from 'utils/DurationUtils';
 
 import { Range } from 'rc-slider';
@@ -27,8 +27,8 @@ import 'rc-slider/assets/index.css';
 import AnnotationsService from 'services/ProjectsService';
 import { WithLogin, getTeacherColor } from 'types/Teacher';
 
-const caretStart = require('./img/caret-start.png');
-const caretStop = require('./img/caret-stop.png');
+const caretStart = require('images/caret-start.png');
+const caretStop = require('images/caret-stop.png');
 
 interface Props extends WithLogin {
   annotation?: AnnotationRecord;

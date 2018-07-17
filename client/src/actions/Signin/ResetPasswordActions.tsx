@@ -8,7 +8,7 @@ import {
   TeacherConfirmResetPasswordData
 } from '../../../../common/src/types/TeacherTypes';
 import { Dispatch } from 'redux';
-import { triggerSigninLoading, doLoginThunk } from 'actions/Signin';
+import { triggerSigninLoading, doLoginThunk } from '.';
 
 export function openResetPassword(): Action<null> {
   return {

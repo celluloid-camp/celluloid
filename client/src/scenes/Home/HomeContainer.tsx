@@ -8,8 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 
-import ProjectGrid from 'ProjectGrid';
-import NewProject from 'NewProject';
+import ProjectGrid from './components/ProjectGrid';
+import NewProject from './components/NewProject';
 import TagsService from 'services/TagsService';
 import ProjectsService from 'services/ProjectsService';
 
@@ -18,16 +18,16 @@ import { WithLogin } from 'types/Teacher';
 import {
   NewProjectData,
   DisplayProjectData
-} from '../../common/src/types/ProjectTypes';
-import TagData from '../../common/src/types/TagTypes';
+} from '../../../../common/src/types/ProjectTypes';
+import TagData from '../../../../common/src/types/TagTypes';
 import { YouTubeVideo } from 'types/YouTubeVideo';
 
 import YouTubeService from 'services/YoutubeService';
 
-const studentsIcon = require('./img/students.svg');
-const teacherIcon = require('./img/teacher.svg');
+const studentsIcon = require('images/students.svg');
+const teacherIcon = require('images/teacher.svg');
 
-const decorate = withStyles(({ palette, spacing }) => ({
+const decorate = withStyles(({ spacing }) => ({
   center: {
     textAlign: 'center' as 'center',
     marginLeft: 'auto' as 'auto',

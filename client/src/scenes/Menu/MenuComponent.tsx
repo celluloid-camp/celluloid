@@ -8,15 +8,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
-import SigninDialog from '../Signin';
+import SigninDialog, { SigninState } from 'components/Signin';
 import { WithLogin } from 'types/Teacher';
-import SigninBar from './SigninBar';
-import * as Signin from '../Signin';
+import SigninBar from './components/SigninBar';
 import { AppState, User } from 'types/AppState';
 import { openLogin, openSignup, closeSignin } from 'actions/Signin';
 import { Action } from 'types/Action';
 
-interface ChildProps extends WithLogin {}
+interface ChildProps extends WithLogin { }
 
 const styles = createStyles({
   root: { height: '100%' },
@@ -45,7 +44,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 interface Props extends RouteComponentProps<{}>, WithStyles<typeof styles> {
   user?: User;
-  signinDialog: Signin.DialogState;
+  signinDialog: SigninState;
 
   Content: React.ComponentType<ChildProps>;
   onClickLogin(): Action<null>;

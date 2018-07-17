@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Palette from 'Palette';
+import Palette from 'utils/PaletteUtils';
 
 const styles = createStyles({
   root: {

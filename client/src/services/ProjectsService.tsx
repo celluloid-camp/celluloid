@@ -1,5 +1,4 @@
 import { NewProjectData } from '../../../common/src/types/ProjectTypes';
-
 import { AnnotationData } from '../../../common/src/types/AnnotationTypes';
 
 export default class Projects {

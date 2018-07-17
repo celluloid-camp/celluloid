@@ -2,8 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'types/AppState';
 
-import { DialogState } from './DialogTypes';
-import SigninDialog from './DialogComponent';
+import { SigninState } from './SigninTypes';
+import Dialog from './DialogComponent';
 import Login from './Login';
 import Signup from './Signup';
 import ConfirmSignup from './ConfirmSignup';
@@ -11,12 +11,12 @@ import ResetPassword from './ResetPassword';
 import ConfirmResetPassword from './ConfirmResetPassword';
 
 interface Props {
-  state: DialogState;
+  state: SigninState;
   onCancel: Function;
   loading: boolean;
 }
 
-const getComponent = (state: DialogState) => {
+const getComponent = (state: SigninState) => {
   switch (state.kind) {
     case 'Signup':
       return Signup;
@@ -41,10 +41,10 @@ export default connect(mapStateToProps)(class extends React.Component<Props> {
   render() {
     if (this.props.state.kind !== 'None') {
       return (
-        <SigninDialog
+        <Dialog
           loading={this.props.loading}
           open={true}
-          title={this.props.state.title}
+          title={this.props.state.name}
           onCancel={this.props.onCancel}
           Content={getComponent(this.props.state)}
         />
