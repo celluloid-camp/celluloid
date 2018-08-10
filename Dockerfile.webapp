@@ -1,16 +1,15 @@
 FROM node:latest
-RUN mkdir -p /usr/src/app/client
-WORKDIR /usr/src/app/client
-COPY client/package.json /usr/src/app/client
-COPY client/yarn.lock /usr/src/app/client
-RUN yarn
 WORKDIR /usr/src/app
-COPY package.json /usr/src/app
-COPY yarn.lock /usr/src/app
+RUN mkdir -p packages/{commons,client,server}
+COPY package.json ./
+COPY packages/commons/package.json packages/commons/
+COPY packages/server/package.json packages/server/
+COPY packages/client/package.json packages/client/
+COPY yarn.lock ./
 RUN yarn
-COPY . /usr/src/app
-RUN yarn build
+COPY . ./
 ENV NODE_ENV=production
+RUN yarn build
 ENV CELLULOID_LISTEN_PORT=8000
 EXPOSE 8000
 CMD [ "yarn", "start"]

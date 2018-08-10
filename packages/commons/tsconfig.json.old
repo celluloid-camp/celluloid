@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es2017"],
+    "declaration": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "src"
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
+

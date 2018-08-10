@@ -1,11 +1,9 @@
 .git
 .gitignore
 .env
-node_modules
-client/build
-client/node_modules
-client/.yarnclean
-dist/
+node_modules/
+/packages/*/dist/
+/packages/*/build/
 .yarnclean
 yarn-error.log*
 yarn-debug.log*

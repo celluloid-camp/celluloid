@@ -1,0 +1,25 @@
+{
+  "name": "celluloid",
+  "author": "Erwan Queffélec <erwan.queffelec@gmail.com>",
+  "license": "MIT",
+  "description": "Celluloid helps students and teacher to interact by annotating online educational videos",
+  "repository": "http://github.com/celluloid-edu/celluloid",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "watch": "yarn build-commons && concurrently \"yarn watch-server\" \"yarn watch-client\"",
+    "watch-client": "(cd packages/client && yarn start)",
+    "watch-server": "(cd packages/server && yarn watch)",
+    "build-client": "(cd packages/client && yarn build)",
+    "build-server": "(cd packages/server && yarn build)",
+    "build-commons": "(cd packages/commons && yarn build)",
+    "build": "yarn build-commons && yarn build-client && yarn build-server",
+    "deploy": "./bin/deploy",
+    "start": "(cd packages/server && yarn start)"
+  },
+  "devDependencies": {
+    "lerna": "^2.10.2"
+  }
+}

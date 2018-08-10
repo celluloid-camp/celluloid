@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es2017", "dom"],
+    "moduleResolution": "node",
+    "traceResolution": false,
+    "isolatedModules": false,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
