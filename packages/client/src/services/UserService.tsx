@@ -2,7 +2,8 @@ import {
   TeacherSignupData,
   TeacherCredentials,
   TeacherConfirmData,
-  TeacherConfirmResetPasswordData
+  TeacherConfirmResetPasswordData,
+  StudentSignupData
 } from '@celluloid/commons';
 
 import * as Constants from './Constants';
@@ -37,6 +38,29 @@ export default class {
     };
 
     return fetch(`/api/users/signup`, {
+      method: 'POST',
+      headers: new Headers(headers),
+      credentials: 'include',
+      body: JSON.stringify(data)
+    }).then(response => {
+      if (response.status === 201) {
+        return response.json();
+      } else if (response.status === 400) {
+        return response.json();
+      } else if (response.status === 409) {
+        return response.json();
+      }
+      throw new Error(Constants.ERR_UNAVAILABLE);
+    });
+  }
+
+  static studentSignup(data: StudentSignupData) {
+    const headers = {
+      Accepts: 'application/json',
+      'Content-type': 'application/json'
+    };
+
+    return fetch(`/api/users/student-signup`, {
       method: 'POST',
       headers: new Headers(headers),
       credentials: 'include',

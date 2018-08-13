@@ -2,18 +2,17 @@ import { isLoggedIn } from 'auth/Utils';
 import * as express from 'express';
 import * as AnnotationStore from 'store/AnnotationStore';
 import * as ProjectStore from 'store/ProjectStore';
-import { TeacherServerRecord } from 'types/UserTypes';
 import { AnnotationData, AnnotationRecord } from '@celluloid/commons';
-import { ProjectData } from '@celluloid/commons';
+import { ProjectData, UserRecord } from '@celluloid/commons';
 
 const router = express.Router({ mergeParams: true });
 
 router.get('/', (req, res) => {
   const projectId = req.params.projectId;
-  const user = req.user as TeacherServerRecord;
+  const user = req.user as UserRecord;
 
-  ProjectStore.getOne(projectId, user)
-    .then(() => AnnotationStore.getAll(projectId, user))
+  ProjectStore.selectOneById(projectId, user)
+    .then(() => AnnotationStore.selectAll(projectId, user))
     .then((annotations: AnnotationRecord[]) =>
       res.status(200).json(annotations))
     .catch((error: Error) =>
@@ -26,9 +25,9 @@ router.get('/', (req, res) => {
 router.post('/', isLoggedIn, (req, res) => {
   const projectId = req.params.projectId;
   const annotation = req.body as AnnotationData;
-  const user = req.user as TeacherServerRecord;
+  const user = req.user as UserRecord;
 
-  ProjectStore.getOne(projectId, user)
+  ProjectStore.selectOneById(projectId, user)
     .then((project: ProjectData) =>
       project.userId !== user.id && !project.collaborative
         ? Promise.reject(new Error('ProjectNotCollaborative'))
@@ -55,9 +54,9 @@ router.post('/', isLoggedIn, (req, res) => {
 router.put('/:annotationId', isLoggedIn, (req, res) => {
   const annotationId = req.params.annotationId;
   const updated = req.body;
-  const user = req.user as TeacherServerRecord;
+  const user = req.user as UserRecord;
 
-  AnnotationStore.getOne(annotationId, user)
+  AnnotationStore.selectOne(annotationId, user)
     .then((old: AnnotationRecord) =>
       old.userId !== user.id
         ? Promise.reject(new Error('UserNotAnnotationOwner'))
@@ -80,9 +79,9 @@ router.put('/:annotationId', isLoggedIn, (req, res) => {
 
 router.delete('/:annotationId', isLoggedIn, (req, res) => {
   const annotationId = req.params.annotationId;
-  const user = req.user as TeacherServerRecord;
+  const user = req.user as UserRecord;
 
-  AnnotationStore.getOne(annotationId, user)
+  AnnotationStore.selectOne(annotationId, user)
     .then((old: AnnotationRecord) =>
       old.userId !== user.id
         ? Promise.reject(new Error('UserNotAnnotationOwner'))

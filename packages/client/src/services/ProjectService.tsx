@@ -96,7 +96,9 @@ export default class Projects {
       credentials: 'include',
     }).then(response => {
       if (response.status === 204) {
-        return response.json();
+        // tslint:disable-next-line:no-console
+        console.log('DELETED !!!!');
+        return Promise.resolve();
       } else if (response.status === 404) {
         throw new Error(Constants.ERR_PROJECT_NOT_FOUND);
       } else if (response.status === 401) {

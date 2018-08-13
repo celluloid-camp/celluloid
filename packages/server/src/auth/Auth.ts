@@ -1,11 +1,11 @@
-
 import * as bcrypt from 'bcrypt';
 import * as passport from 'passport';
 import { IStrategyOptionsWithRequest, Strategy, VerifyFunctionWithRequest } from 'passport-local';
 import * as UserStore from 'store/UserStore';
+import * as ProjectStore from 'store/ProjectStore';
 
 import { sendConfirmationCode } from './Utils';
-import { TeacherRecord } from '@celluloid/commons';
+import { TeacherRecord, UserRecord } from '@celluloid/commons';
 import { TeacherServerRecord } from 'types/UserTypes';
 
 passport.serializeUser(({ id }, done) => {
@@ -35,12 +35,38 @@ const options = {
   usernameField: 'email'
 } as IStrategyOptionsWithRequest;
 
-function verifySignup(): VerifyFunctionWithRequest {
-  return (req, email, password, done) =>
-    UserStore.create(req.body.username, email, password)
+function verifyStudentSignup(): VerifyFunctionWithRequest {
+  return (req, email, password, done) => {
+    console.log(`Signup student ${req.body.username}`, password, req);
+    return ProjectStore.selectOneByShareName(req.body.projectShareName)
+      .then(result => {
+        if (result) {
+          if (result.sharePassword === req.body.projectSharePassword) {
+            return UserStore.createStudent(
+              req.body.username,
+              req.body.passwordHint,
+              password);
+          }
+          return Promise.reject(new Error('IncorrectProjectPassword'));
+        }
+        return Promise.reject(new Error('ProjectNotFound'));
+      })
+      .then((user: UserRecord) => Promise.resolve(done(null, user)))
+      .catch((error: Error) => {
+        console.log(error);
+        return Promise.resolve(done(error));
+      });
+  };
+}
+
+function verifyTeacherSignup(): VerifyFunctionWithRequest {
+  return (req, email, password, done) => {
+    console.log(`Signup teacher ${req.body.username}`, password, req);
+    return UserStore.createTeacher(req.body.username, email, password)
       .then((user: TeacherServerRecord) => sendConfirmationCode(user))
       .then((user: TeacherRecord) => Promise.resolve(done(null, user)))
       .catch((error: Error) => Promise.resolve(done(error)));
+  };
 }
 
 const teacherLogin = new Strategy(options, (_, email, password, done) => {
@@ -66,9 +92,11 @@ const teacherLogin = new Strategy(options, (_, email, password, done) => {
     .catch((error: Error) => Promise.resolve(done(error)));
 });
 
-const teacherSignup = new Strategy(options, verifySignup());
+const teacherSignup = new Strategy(options, verifyTeacherSignup());
+const studentSignup = new Strategy(options, verifyStudentSignup());
 
 passport.use('teacher-login', teacherLogin);
 passport.use('teacher-signup', teacherSignup);
+passport.use('student-signup', studentSignup);
 
 export = passport;

@@ -1,11 +1,11 @@
 import builder, { getExactlyOne } from 'utils/Postgres';
 
 import { ProjectData, NewProjectData, ProjectShareData } from '@celluloid/commons';
-import { TeacherData, TeacherRecord } from '@celluloid/commons';
+import { UserRecord } from '@celluloid/commons';
 import { QueryBuilder } from 'knex';
 
 export const orIsAuthor =
-  (nested: QueryBuilder, user?: TeacherRecord) =>
+  (nested: QueryBuilder, user?: UserRecord) =>
     user ?
       nested.orWhere('Project.userId', '=', user.id)
       : nested;
@@ -18,7 +18,7 @@ export const filterNull = (prop: string) =>
     return obj;
   };
 
-export function isOwner(projectId: string, user: TeacherRecord) {
+export function isOwner(projectId: string, user: UserRecord) {
   return builder.first('id')
     .from('Project')
     .where('id', projectId)
@@ -26,7 +26,7 @@ export function isOwner(projectId: string, user: TeacherRecord) {
     .then((row: ProjectData) => row ? true : false);
 }
 
-export function getAll(user: TeacherData) {
+export function selectAll(user: UserRecord) {
   return builder
     .select(
       builder.raw('"Project".*'),
@@ -42,7 +42,14 @@ export function getAll(user: TeacherData) {
     .map(filterNull('tags'));
 }
 
-export function getOne(projectId: string, user: TeacherRecord) {
+export function selectOneByShareName(shareName: string) {
+  return builder
+    .first('*')
+    .from('Project')
+    .where('shareName', shareName);
+}
+
+export function selectOneById(projectId: string, user: UserRecord) {
   return builder
     .first(
       builder.raw('"Project".*'),
@@ -72,7 +79,7 @@ export function getOne(projectId: string, user: TeacherRecord) {
     });
 }
 
-export function create(project: NewProjectData, user: TeacherRecord) {
+export function insert(project: NewProjectData, user: UserRecord) {
   const { tags, ...props } = project;
   return builder('Project')
     .insert({

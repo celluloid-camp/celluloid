@@ -9,6 +9,7 @@ import Signup from './Signup';
 import ConfirmSignup from './ConfirmSignup';
 import ResetPassword from './ResetPassword';
 import ConfirmResetPassword from './ConfirmResetPassword';
+import StudentSignup from './StudentSignup';
 
 interface Props {
   state: SigninState;
@@ -20,6 +21,8 @@ const getComponent = (state: SigninState) => {
   switch (state.kind) {
     case 'Signup':
       return Signup;
+    case 'StudentSignup':
+      return StudentSignup;
     case 'Login':
       return Login;
     case 'ConfirmSignup':

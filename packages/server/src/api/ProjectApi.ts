@@ -4,15 +4,14 @@ import { isLoggedIn } from 'auth/Utils';
 import * as ProjectStore from 'store/ProjectStore';
 
 import AnnotationsApi from './AnnotationApi';
-import { TeacherServerRecord } from 'types/UserTypes';
-import { ProjectData } from '@celluloid/commons';
+import { UserRecord, ProjectData } from '@celluloid/commons';
 
 const router = Router({ mergeParams: true });
 
 router.use('/:projectId/annotations', AnnotationsApi);
 
 router.get('/', (req, res) => {
-  return ProjectStore.getAll(req.user as TeacherServerRecord)
+  return ProjectStore.selectAll(req.user as UserRecord)
     .then((result: ProjectData[]) => {
       return res.json(result);
     })
@@ -25,7 +24,7 @@ router.get('/', (req, res) => {
 
 function isOwner(req: Request, res: Response, next: NextFunction) {
   const projectId = req.params.projectId;
-  const user = req.user as TeacherServerRecord;
+  const user = req.user as UserRecord;
 
   ProjectStore.isOwner(projectId, user)
     .then((result: boolean) =>
@@ -41,9 +40,9 @@ function isOwner(req: Request, res: Response, next: NextFunction) {
 
 router.get('/:projectId', (req, res) => {
   const projectId = req.params.projectId;
-  const user = req.user as TeacherServerRecord;
+  const user = req.user as UserRecord;
 
-  ProjectStore.getOne(projectId, user)
+  ProjectStore.selectOneById(projectId, user)
     .then((project: ProjectData) => {
       return res.json(project);
     })
@@ -59,9 +58,9 @@ router.get('/:projectId', (req, res) => {
 });
 
 router.post('/', isLoggedIn, (req, res) => {
-  const user = req.user as TeacherServerRecord;
+  const user = req.user as UserRecord;
   const project = req.body as ProjectData;
-  ProjectStore.create(project, user)
+  ProjectStore.insert(project, user)
     .then(result => {
       console.log(result);
       res.status(201).json(result);

@@ -47,27 +47,26 @@ export function failConfirmSignup(errors: SigninErrors): Action<SigninErrors> {
   };
 }
 
-export const doSignupThunk = (data: TeacherSignupData) => (
-  dispatch: Dispatch
-) => {
-  dispatch(triggerSigninLoading());
-  return UserService.signup(data)
-    .then((result: SigninResult) => {
-      if (!result.success) {
-        return dispatch(failSignup(result.errors));
-      } else {
-        return dispatch(
-          openConfirmSignup({
-            email: data.email,
-            password: data.password
-          })
-        );
-      }
-    })
-    .catch(() => {
-      return dispatch(failSignup({ server: 'RequestFailed' }));
-    });
-};
+export const doSignupThunk = (data: TeacherSignupData) =>
+  (dispatch: Dispatch) => {
+    dispatch(triggerSigninLoading());
+    return UserService.signup(data)
+      .then((result: SigninResult) => {
+        if (!result.success) {
+          return dispatch(failSignup(result.errors));
+        } else {
+          return dispatch(
+            openConfirmSignup({
+              email: data.email,
+              password: data.password
+            })
+          );
+        }
+      })
+      .catch(() => {
+        return dispatch(failSignup({ server: 'RequestFailed' }));
+      });
+  };
 
 export const doConfirmSignupThunk = (
   data: TeacherConfirmData,

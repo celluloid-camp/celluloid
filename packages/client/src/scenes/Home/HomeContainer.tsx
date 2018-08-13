@@ -22,6 +22,10 @@ import {
 import { YoutubeVideo } from 'types/YoutubeTypes';
 
 import YouTubeService from 'services/YoutubeService';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { openStudentSignup } from '@celluloid/client/src/actions/Signin';
+import { Action } from 'types/ActionTypes';
 
 const studentsIcon = require('images/students.svg');
 const teacherIcon = require('images/teacher.svg');
@@ -38,7 +42,9 @@ const styles = ({ spacing }: Theme) => createStyles({
   }
 });
 
-interface Props extends WithUser, WithStyles<typeof styles> {}
+interface Props extends WithUser, WithStyles<typeof styles> {
+  onClickJoinProject(): Action<null>;
+}
 
 interface State {
   newProjectDialogOpen: boolean;
@@ -50,7 +56,14 @@ interface State {
   error?: string;
 }
 
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    onClickJoinProject: () => dispatch(openStudentSignup())
+  };
+};
+
 export default withStyles(styles)(
+  connect(null, mapDispatchToProps)(
   class extends React.Component<Props, State> {
     state = {
       newProjectDialogOpen: false,
@@ -90,7 +103,7 @@ export default withStyles(styles)(
     }
 
     render() {
-      const classes = this.props.classes;
+      const { onClickJoinProject, classes } = this.props;
 
       const showNewProjectDialog = () => {
         try {
@@ -214,7 +227,7 @@ export default withStyles(styles)(
                       color="primary"
                       onClick={showNewProjectDialog}
                     >
-                      {`NOUVEAU PROJET`}
+                      {`Nouveau projet`}
                     </Button>
                     {this.state.video && (
                       <NewProject
@@ -244,8 +257,12 @@ export default withStyles(styles)(
                     <img height={100} src={studentsIcon} alt="students icon" />
                   </Grid>
                   <Grid item={true}>
-                    <Button variant="raised" color="primary">
-                      {`REJOINDRE UN PROJET`}
+                    <Button
+                      variant="raised"
+                      color="primary"
+                      onClick={() => onClickJoinProject()}
+                    >
+                      {`Rejoindre un projet`}
                     </Button>
                   </Grid>
                 </Grid>
@@ -258,4 +275,4 @@ export default withStyles(styles)(
       );
     }
   }
-);
+));

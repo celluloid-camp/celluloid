@@ -7,6 +7,9 @@ export interface SigninErrors {
   confirmPassword?: string;
   code?: string;
   server?: string;
+  projectShareName?: string;
+  projectSharePassword?: string;
+  passwordHint?: string;
 }
 
 export interface SigninResult {
@@ -67,4 +70,16 @@ export interface ConfirmSignupErrors {
 export interface ConfirmSignupValidation {
   success: boolean;
   errors?: ConfirmSignupErrors;
+}
+
+type UserRole
+  = 'Admin'
+  | 'Teacher'
+  | 'Student'
+  ;
+
+export interface UserRecord {
+  id: string;
+  username: string;
+  role: UserRole;
 }

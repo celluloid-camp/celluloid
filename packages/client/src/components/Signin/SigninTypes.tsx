@@ -28,6 +28,16 @@ export class ConfirmResetPasswordOpen implements SigninStateInterface {
   readonly name = 'Mot de passe perdu';
 }
 
+export class StudentSignupOpen implements SigninStateInterface {
+  readonly kind = 'StudentSignup';
+  readonly name = 'Rejoindre un projet';
+}
+
+export class StudentLoginOpen implements SigninStateInterface {
+  readonly kind = 'StudentLogin';
+  readonly name = 'Connexion';
+}
+
 export class Closed implements SigninStateInterface {
   readonly kind = 'None';
   readonly name = '';
@@ -39,6 +49,8 @@ export type SigninState
   | LoginOpen
   | ResetPasswordOpen
   | ConfirmResetPasswordOpen
+  | StudentSignupOpen
+  | StudentLoginOpen
   | Closed;
 
 export type SigninComponent
@@ -46,4 +58,6 @@ export type SigninComponent
   | ConfirmSignupOpen
   | LoginOpen
   | ResetPasswordOpen
+  | StudentSignupOpen
+  | StudentLoginOpen
   | ConfirmResetPasswordOpen;

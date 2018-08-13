@@ -25,6 +25,12 @@ export default (state = initialState, action: AnyAction) => {
         errors: {},
         dialog: new SigninDialog.SignupOpen(),
       };
+    case ActionType.OPEN_STUDENT_SIGNUP:
+      return {
+        loading: false,
+        errors: {},
+        dialog: new SigninDialog.StudentSignupOpen(),
+      };
     case ActionType.OPEN_CONFIRM_SIGNUP:
       return {
         loading: false,
@@ -58,6 +64,7 @@ export default (state = initialState, action: AnyAction) => {
     case ActionType.FAIL_LOGIN:
     case ActionType.FAIL_SIGNUP:
     case ActionType.FAIL_CONFIRM_SIGNUP:
+    case ActionType.FAIL_STUDENT_SIGNUP:
       return {
         ...state,
         loading: false,

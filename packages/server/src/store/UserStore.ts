@@ -7,7 +7,26 @@ function hashPassword(password: string) {
   return bcrypt.hashSync(password, salt);
 }
 
-export function create(
+export function createStudent(
+  username: string,
+  passwordHint: string,
+  password: string,
+) {
+  console.log(username, passwordHint, password)
+  return builder('User')
+    .insert({
+      id: builder.raw('uuid_generate_v4()'),
+      passwordHint,
+      password: hashPassword(password),
+      username,
+      confirmed: false,
+      role: 'Student'
+    })
+    .returning('*')
+    .then(getExactlyOne);
+}
+
+export function createTeacher(
   username: string,
   email: string,
   password: string
@@ -20,7 +39,8 @@ export function create(
       username,
       code: generateConfirmationCode(),
       codeGeneratedAt: builder.raw('NOW()'),
-      confirmed: false
+      confirmed: false,
+      role: 'Teacher'
     })
     .returning('*')
     .then(getExactlyOne);

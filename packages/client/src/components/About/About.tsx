@@ -17,7 +17,7 @@ export default () => (
       <b>A propos de de Celluloïd</b>
     </Typography>
     <Typography variant="subheading" gutterBottom={true}>
-      Le développement de la plateforme *Celluloïd* s’inscrit dans le
+      Le développement de la plateforme <b>Celluloïd</b> s’inscrit dans le
       cadre d’un projet de recherche porté par Michaël Bourgatte et
       Laurent Tessier au sein de l’Atelier du Numérique de l’Institut Catholique de Paris.
     </Typography>
@@ -27,7 +27,7 @@ export default () => (
     </Typography>
     <Typography variant="subheading" gutterBottom={true}>
       Celluloïd est un projet Open Source, l’ensemble du code est accessible
-      librement <a href="https://github.com/celluloid-edu/">sur github</a>
+      librement <a href="https://github.com/celluloid-edu/">sur GitHub</a>
     </Typography>
     <div
       style={{

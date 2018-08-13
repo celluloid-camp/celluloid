@@ -1,4 +1,4 @@
-import * as TeacherAuth from 'auth/Auth';
+import * as Auth from 'auth/Auth';
 import {
   isLoggedIn,
   sendConfirmationCode,
@@ -14,7 +14,8 @@ import {
   TeacherConfirmResetPasswordData,
   TeacherCredentials,
   TeacherRecord,
-  TeacherSignupData
+  TeacherSignupData,
+  StudentSignupData
 } from '@celluloid/commons';
 import { TeacherServerRecord } from 'types/UserTypes';
 
@@ -24,7 +25,7 @@ function validateSignup(payload: TeacherSignupData) {
   const result = { success: true, errors: {} } as SigninResult;
 
   if (!payload || typeof payload.username !== 'string' ||
-    payload.password.trim().length < 1) {
+    payload.username.trim().length === 0) {
     result.success = false;
     result.errors.username = `UsernameMissing`;
   }
@@ -113,18 +114,77 @@ function validateLogin(payload: TeacherCredentials) {
   return result;
 }
 
+function validateStudentSignup(payload: StudentSignupData) {
+  const result = { success: true, errors: {} } as SigninResult;
+
+  if (!payload || typeof payload.projectShareName !== 'string' ||
+    payload.projectShareName.trim().length === 0) {
+    result.success = false;
+    result.errors.username = `ShareNameMissing`;
+  }
+
+  if (!payload || typeof payload.projectSharePassword !== 'string' ||
+    payload.projectSharePassword.trim().length === 0) {
+    result.success = false;
+    result.errors.username = `SharePasswordMissing`;
+  }
+
+  if (!payload || typeof payload.username !== 'string' ||
+    payload.username.trim().length === 0) {
+    result.success = false;
+    result.errors.username = `UsernameMissing`;
+  }
+
+  if (!payload || typeof payload.password !== 'string' ||
+    payload.password.trim().length < 8) {
+    result.success = false;
+    result.errors.password = 'InvalidPasswordFormat';
+  }
+
+  if (!payload || typeof payload.passwordHint !== 'string' ||
+    payload.passwordHint.trim().length === 0) {
+    result.success = false;
+    result.errors.passwordHint = 'PasswordHintMissing';
+  }
+
+  return result;
+}
+
+router.post('/student-signup', (req, res, next) => {
+  const data = req.body;
+  const result = validateStudentSignup(data);
+
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+
+  return Auth.authenticate('student-sfddfsignup', error => {
+    if (error) {
+      console.error(`Failed to sign student up with email ${data.username}:`, error);
+      if (error.code === '23505' && error.constraint === 'User_username_key') {
+        return res.status(409).json({
+          success: false,
+          errors: { username: 'UsernameAlreadyExists' }
+        });
+      } else {
+        return res.status(500).send();
+      }
+    } else {
+      console.log(`New signup from student with username ${req.body.username}`, result);
+      return res.status(201).json(result);
+    }
+  })(req, res, next);
+});
+
 router.post('/signup', (req, res, next) => {
   const result = validateSignup(req.body);
 
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return TeacherAuth.authenticate('teacher-signup', error => {
+  return Auth.authenticate('teacher-signup', error => {
     if (error) {
-      console.error(
-        `Failed to sign user up` + ` with email ${req.body.email}`,
-        error
-      );
+      console.error(`Failed to sign user up with email ${req.body.email}:`, error);
       if (error.code === '23505' && error.constraint === 'User_username_key') {
         return res.status(409).json({
           success: false,
@@ -141,15 +201,10 @@ router.post('/signup', (req, res, next) => {
             errors: { email: 'EmailAlreadyExists' }
           });
       } else {
-        return res
-          .status(500)
-          .json({
-            success: false,
-            errors: { server: error.message }
-          });
+        return res.status(500).send();
       }
     } else {
-      console.log(`New signup from user with email ${req.body.email}`, result);
+      console.log(`New signup from teacher with email ${req.body.email}`, result);
       return res.status(201).json(result);
     }
   })(req, res, next);
@@ -161,7 +216,7 @@ router.post('/login', (req, res, next) => {
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return TeacherAuth.authenticate('teacher-login', (error, user, info) => {
+  return Auth.authenticate('teacher-login', (error, user, info) => {
     if (error) {
       result.success = false;
       result.errors = { server: error.message };
@@ -339,13 +394,7 @@ const resendCode = (sender: (user: TeacherRecord) =>
           ` with email ${payload.email}`,
           error
         );
-        return res
-          .status(500)
-          .json({
-            success: true,
-            errors: { server: 'RequestFailed' }
-          });
-
+        return res.status(500).send();
       });
   };
 

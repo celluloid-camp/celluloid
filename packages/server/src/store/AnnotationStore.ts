@@ -1,13 +1,12 @@
 
 import builder, { getExactlyOne } from 'utils/Postgres';
 import * as ProjectStore from './ProjectStore';
-import { TeacherRecord } from '@celluloid/commons';
+import { UserRecord } from '@celluloid/commons';
 import { AnnotationRecord, AnnotationData } from '@celluloid/commons';
 
 import { QueryBuilder } from 'knex';
-import { TeacherServerRecord } from 'types/UserTypes';
 
-export function getAll(projectId: string, user?: TeacherRecord) {
+export function selectAll(projectId: string, user?: UserRecord) {
   return builder
     .select(
       builder.raw('"Annotation".*'),
@@ -29,7 +28,7 @@ export function getAll(projectId: string, user?: TeacherRecord) {
     .orderBy('Annotation.startTime', 'asc');
 }
 
-export function getOne(annotationId: string, user?: TeacherServerRecord) {
+export function selectOne(annotationId: string, user?: UserRecord) {
   return builder.first()
     .from('Annotation')
     .innerJoin('Project', 'Project.id', 'Annotation.projectId')
@@ -45,7 +44,7 @@ export function getOne(annotationId: string, user?: TeacherServerRecord) {
 
 export function create(
   annotation: AnnotationData,
-  user: TeacherRecord,
+  user: UserRecord,
   projectId: string
 ) {
   return builder('Annotation')

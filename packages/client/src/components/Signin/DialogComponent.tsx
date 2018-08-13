@@ -18,6 +18,7 @@ import ResetPassword from './ResetPassword';
 import ConfirmSignup from './ConfirmSignup';
 import Signup from './Signup';
 import Login from './Login';
+import StudentSignup from './StudentSignup';
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -47,6 +48,7 @@ interface Props extends WithStyles<typeof styles> {
   Content?:
     | typeof Login
     | typeof Signup
+    | typeof StudentSignup
     | typeof ConfirmSignup
     | typeof ResetPassword
     | typeof ConfirmResetPassword;
