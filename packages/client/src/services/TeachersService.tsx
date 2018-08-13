@@ -5,6 +5,8 @@ import {
   TeacherConfirmResetPasswordData
 } from '@celluloid/commons';
 
+import * as Constants from './Constants';
+
 export default class {
   static login(credentials: TeacherCredentials) {
     const headers = {
@@ -24,7 +26,7 @@ export default class {
       } else if (response.status === 401) {
         return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status}`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -46,10 +48,8 @@ export default class {
         return response.json();
       } else if (response.status === 409) {
         return response.json();
-      } else if (response.status === 500) {
-        return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status}`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -72,7 +72,7 @@ export default class {
       } else if (response.status === 401) {
         return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status}`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -95,7 +95,7 @@ export default class {
       } else if (response.status === 401) {
         return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status}`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -118,7 +118,7 @@ export default class {
       } else if (response.status === 401) {
         return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status}`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -141,7 +141,7 @@ export default class {
       } else if (response.status === 401) {
         return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status}`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -160,7 +160,7 @@ export default class {
       } else if (response.status === 401) {
         return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status}`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 

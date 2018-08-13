@@ -22,6 +22,7 @@
     "passport-local": "^1.0.0",
     "pg": "^7.4.0",
     "ramda": "^0.25.0",
+    "unfurl.js": "^1.1.6",
     "validator": "^10.2.0"
   },
   "scripts": {
@@ -30,8 +31,8 @@
     "start": "node --use-strict dist/index.js"
   },
   "devDependencies": {
-    "@celluloid/commons": "^0.1.0",
     "@celluloid/client": "^0.1.0",
+    "@celluloid/commons": "^0.1.0",
     "@types/bcrypt": "^2.0.0",
     "@types/compression": "^0.0.36",
     "@types/cookie-parser": "^1.4.1",

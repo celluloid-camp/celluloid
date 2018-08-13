@@ -49,9 +49,9 @@ export const doLogoutThunk = () => (dispatch: Dispatch) => {
   return TeachersService
     .logout()
     .then(() => {
-      dispatch(succeedCurrentUser());
+      return dispatch(succeedCurrentUser());
     })
     .catch(error => {
-      dispatch(failLogout(error.message));
+      return dispatch(failLogout(error.message));
     });
 };

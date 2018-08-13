@@ -80,18 +80,19 @@ export default decorate<WithLogin>(
         });
     }
 
-    componentWillMount() {
+    componentDidMount() {
       this.loadContent();
     }
 
-    componentWillReceiveProps(newProps: Props) {
-      if (newProps.teacher !== this.props.teacher) {
+    componentDidUpdate(prevProps: Props) {
+      if (prevProps.teacher !== this.props.teacher) {
         this.loadContent();
       }
     }
 
     render() {
       const classes = this.props.classes;
+
       const showNewProjectDialog = () => {
         try {
           const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
@@ -133,6 +134,7 @@ export default decorate<WithLogin>(
           });
         }
       };
+
       const closeNewProjectDialog = (
         send: boolean,
         newProject: NewProjectData

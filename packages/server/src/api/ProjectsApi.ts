@@ -7,7 +7,7 @@ import AnnotationsApi from './AnnotationsApi';
 import { TeacherServerRecord } from 'types/TeacherTypes';
 import { ProjectData } from '@celluloid/commons';
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.use('/:projectId/annotations', AnnotationsApi);
 
@@ -18,8 +18,8 @@ router.get('/', (req, res) => {
     })
     .catch((error: Error) => {
       // tslint:disable-next-line:no-console
-      console.error('Failed to fetch projects from database', error);
-      return res.status(500).json({ error: error.message });
+      console.error('Failed to fetch projects from database:', error);
+      return res.status(500).send();
     });
 });
 
@@ -35,7 +35,7 @@ function isOwner(req: Request, res: Response, next: NextFunction) {
           error: 'ProjectOwnershipRequired'
         }))
     .catch(() =>
-      res.status(500).json({ error: 'ProjectFetchFailed' })
+      res.status(500).send()
     );
 }
 
@@ -45,43 +45,50 @@ router.get('/:projectId', (req, res) => {
 
   ProjectStore.getOne(projectId, user)
     .then((project: ProjectData) => {
-      res.json(project);
+      return res.json(project);
     })
     .catch((error: Error) => {
       // tslint:disable-next-line:no-console
       console.error(`Failed to fetch project ${projectId}:`, error);
       if (error.message === 'ProjectNotFound') {
-        res.status(404).json({ error: error.message });
+        return res.status(404).json({ error: error.message });
       } else {
-        res.status(500).json({ error: error.message });
+        return res.status(500).send();
       }
     });
 });
-
-router.put(
-  '/:projectId', isLoggedIn, isOwner,
-  (req, res) => {
-    ProjectStore.update(req.body, req.params.projectId)
-      .then(result => res.status(200).json(result))
-      .catch(error => {
-        // tslint:disable-next-line:no-console
-        console.error('Failed to update project', error);
-        return res.status(500).json(
-          { error: 'ProjectUpdateFailed' });
-      });
-  });
 
 router.post('/', isLoggedIn, (req, res) => {
   const user = req.user as TeacherServerRecord;
   const project = req.body as ProjectData;
   ProjectStore.create(project, user)
     .then(result => {
-      res.status(201).json(result[0]);
+      console.log(result);
+      res.status(201).json(result);
     })
     .catch((error: Error) => {
       // tslint:disable-next-line:no-console
-      console.error('Failed to create project', error);
-      res.status(500).json({ error: 'ProjectInsertionFailed' });
+      console.error('Failed to create project:', error);
+      return res.status(500).send();
+    });
+});
+
+router.put('/:projectId', isLoggedIn, isOwner, (req, res) => {
+  ProjectStore.update(req.body, req.params.projectId)
+    .then(result => res.status(200).json(result))
+    .catch(error => {
+      // tslint:disable-next-line:no-console
+      console.error('Failed to update project:', error);
+      return res.status(500).send();
+    });
+});
+
+router.delete('/:projectId', isLoggedIn, isOwner, (req, res) => {
+  ProjectStore.del(req.params.projectId)
+    .then(result => res.status(204).send())
+    .catch(error => {
+      console.error('Failed to delete project:', error);
+      return res.status(500).send();
     });
 });
 

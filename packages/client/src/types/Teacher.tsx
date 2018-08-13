@@ -12,11 +12,12 @@ export interface WithTeacher {
 
 export function getTeacherInitials(teacher: TeacherData): string {
   return teacher.username
-      .split(' ')
-      .map(part => part.substring(0, 1))
-      .join();
+    .split(/\s+/)
+    .map(part => part.substring(0, 1))
+    .join('')
+    .substring(0, 2);
 }
 
 export function getTeacherColor(id: string): string {
-  return randomColor({seed: id, luminosity: 'bright'});
+  return randomColor({ seed: id, luminosity: 'bright' });
 }

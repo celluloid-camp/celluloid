@@ -5,7 +5,7 @@ import { TeacherData, TeacherRecord } from '@celluloid/commons';
 import { QueryBuilder } from 'knex';
 
 export const orIsAuthor =
-  (nested: QueryBuilder, user: TeacherRecord) =>
+  (nested: QueryBuilder, user?: TeacherRecord) =>
     user ?
       nested.orWhere('Project.userId', '=', user.id)
       : nested;
@@ -94,6 +94,12 @@ export function update(projectId: string, props: ProjectData) {
     .returning('*')
     .where('projectId', projectId)
     .then(getExactlyOne);
+}
+
+export function del(projectId: string) {
+  return builder('Project')
+    .where('projectId', projectId)
+    .del();
 }
 
 export function shareById(projectId: string, data: ProjectShareData) {

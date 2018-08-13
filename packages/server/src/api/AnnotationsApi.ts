@@ -6,9 +6,9 @@ import { TeacherServerRecord } from 'types/TeacherTypes';
 import { AnnotationData, AnnotationRecord } from '@celluloid/commons';
 import { ProjectData } from '@celluloid/commons';
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.get('/', isLoggedIn, (req, res) => {
+router.get('/', (req, res) => {
   const projectId = req.params.projectId;
   const user = req.user as TeacherServerRecord;
 
@@ -19,7 +19,7 @@ router.get('/', isLoggedIn, (req, res) => {
     .catch((error: Error) =>
       error.message === 'ProjectNotFound'
         ? res.status(404).json({ error: error.message })
-        : res.status(500).json({ error: error.message })
+        : res.status(500).send()
     );
 });
 
@@ -34,15 +34,20 @@ router.post('/', isLoggedIn, (req, res) => {
         ? Promise.reject(new Error('ProjectNotCollaborative'))
         : Promise.resolve()
     )
-    .then(AnnotationStore.create(annotation, user, projectId))
-    .then(res.status(201).json)
+    .then(() => AnnotationStore.create(annotation, user, projectId))
+    .then(result => {
+      console.log('result:', result);
+      res.status(201).json(result);
+    })
     .catch((error: Error) => {
       // tslint:disable-next-line:no-console
-      console.error('Failed to create annotation', error);
+      console.error('Failed to create annotation:', error);
       if (error.message === 'ProjectNotFound') {
-        res.status(404).json({ error: error.message });
+        return res.status(404).json({ error: error.message });
       } else if (error.message === 'ProjectNotCollaborative') {
-        res.status(500).json({ error: error.message });
+        return res.status(403).json({ error: error.message });
+      } else {
+        return res.status(500).send();
       }
     });
 });
@@ -58,17 +63,43 @@ router.put('/:annotationId', isLoggedIn, (req, res) => {
         ? Promise.reject(new Error('UserNotAnnotationOwner'))
         : Promise.resolve()
     )
-    .then(AnnotationStore.update(annotationId, updated))
-    .then(res.status(200).json)
+    .then(() => AnnotationStore.update(annotationId, updated))
+    .then(result => res.status(200).json(result))
     .catch((error: Error) => {
       // tslint:disable-next-line:no-console
       console.error('Failed to update annotation', error);
       if (error.message === 'AnnotationNotFound') {
         res.status(404).json({ error: error.message });
+      } else if (error.message === 'UserNotAnnotationOwner') {
+        return res.status(403).json({ error: error.message });
       } else {
-        res.status(500).json({ error: 'AnnotationUpdateError' });
+        res.status(500).send();
       }
     });
 });
 
+router.delete('/:annotationId', isLoggedIn, (req, res) => {
+  const annotationId = req.params.annotationId;
+  const user = req.user as TeacherServerRecord;
+
+  AnnotationStore.getOne(annotationId, user)
+    .then((old: AnnotationRecord) =>
+      old.userId !== user.id
+        ? Promise.reject(new Error('UserNotAnnotationOwner'))
+        : Promise.resolve()
+    )
+    .then(() => AnnotationStore.del(annotationId))
+    .then(() => res.status(204).send())
+    .catch((error: Error) => {
+      // tslint:disable-next-line:no-console
+      console.error('Failed to delete annotation', error);
+      if (error.message === 'AnnotationNotFound') {
+        res.status(404).json({ error: error.message });
+      } else if (error.message === 'UserNotAnnotationOwner') {
+        return res.status(403).json({ error: error.message });
+      } else {
+        res.status(500).send();
+      }
+    });
+});
 export default router;

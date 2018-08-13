@@ -11,6 +11,7 @@ import { fetchCurrentUserThunk, doLogoutThunk } from 'actions/Signin/UserActions
 
 interface Props extends RouteComponentProps<{}> {
   onMount(): Promise<AnyAction>;
+  onClickLogout(): Promise<AnyAction>;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -24,7 +25,7 @@ export const withMenuContainer = <P extends WithLogin>(Content: React.ComponentT
   withRouter(
     connect(null, mapDispatchToProps)(
       class extends React.Component<Props> {
-        componentWillMount() {
+        componentDidMount() {
           this.props.onMount();
         }
 
@@ -32,7 +33,7 @@ export const withMenuContainer = <P extends WithLogin>(Content: React.ComponentT
           return (
             <Menu
               Content={Content}
-              onClickLogout={this.props.onMount}
+              onClickLogout={this.props.onClickLogout}
               {...this.props}
             />
           );

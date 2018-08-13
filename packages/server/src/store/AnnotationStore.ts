@@ -1,5 +1,5 @@
 
-import builder from 'common/Postgres';
+import builder, { getExactlyOne } from 'common/Postgres';
 import * as ProjectStore from './ProjectStore';
 import { TeacherRecord } from '@celluloid/commons';
 import { AnnotationRecord, AnnotationData } from '@celluloid/commons';
@@ -7,7 +7,7 @@ import { AnnotationRecord, AnnotationData } from '@celluloid/commons';
 import { QueryBuilder } from 'knex';
 import { TeacherServerRecord } from 'types/TeacherTypes';
 
-export function getAll(projectId: string, user: TeacherRecord) {
+export function getAll(projectId: string, user?: TeacherRecord) {
   return builder
     .select(
       builder.raw('"Annotation".*'),
@@ -18,12 +18,18 @@ export function getAll(projectId: string, user: TeacherRecord) {
         `'username', "User"."username"` +
         ') as "teacher"'))
     .from('Annotation')
+    .innerJoin('Project', 'Project.id', 'Annotation.projectId')
     .innerJoin('User', 'User.id', 'Annotation.userId')
     .where('Annotation.projectId', projectId)
+    .andWhere((nested: QueryBuilder) => {
+      nested.where('Project.public', true);
+      nested.modify(ProjectStore.orIsAuthor, user);
+      return nested;
+    })
     .orderBy('Annotation.startTime', 'asc');
 }
 
-export function getOne(annotationId: string, user: TeacherServerRecord) {
+export function getOne(annotationId: string, user?: TeacherServerRecord) {
   return builder.first()
     .from('Annotation')
     .innerJoin('Project', 'Project.id', 'Annotation.projectId')
@@ -37,29 +43,26 @@ export function getOne(annotationId: string, user: TeacherServerRecord) {
       Promise.reject(new Error('AnnotationNotFound')));
 }
 
-export const create = (
+export function create(
   annotation: AnnotationData,
   user: TeacherRecord,
   projectId: string
-) => () =>
-    builder('Annotation')
-      .insert({
-        'id': builder.raw('uuid_generate_v4()'),
-        'text': annotation.text,
-        'startTime': annotation.startTime,
-        'stopTime': annotation.stopTime,
-        'pause': annotation.pause,
-        'userId': user.id,
-        'projectId': projectId
-      })
-      .returning('*')
-      .then((rows: AnnotationRecord[]) => rows[0])
-      .catch((error: Error) => {
-        console.error('Failed to create annotation', error);
-        Promise.resolve(new Error('AnnotationInsertionError'));
-      });
+) {
+  return builder('Annotation')
+    .insert({
+      id: builder.raw('uuid_generate_v4()'),
+      text: annotation.text,
+      startTime: annotation.startTime,
+      stopTime: annotation.stopTime,
+      pause: annotation.pause,
+      userId: user.id,
+      projectId: projectId
+    })
+    .returning('*')
+    .then(getExactlyOne);
+}
 
-export const update = (id: string, data: AnnotationData) => () => {
+export function update(id: string, data: AnnotationData) {
   return builder('Annotation')
     .update({
       text: data.text,
@@ -69,4 +72,10 @@ export const update = (id: string, data: AnnotationData) => () => {
     })
     .returning('*')
     .where('id', id);
-};
+}
+
+export function del(id: string) {
+  return builder('Annotation')
+    .where('id', id)
+    .del();
+}

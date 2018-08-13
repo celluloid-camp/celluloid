@@ -15,7 +15,6 @@ const styles = createStyles({
   },
   hint: {
     cursor: 'pointer' as 'pointer',
-    opacity: 0,
     position: 'absolute' as 'absolute',
     zIndex: 6,
     top: 0,
@@ -23,7 +22,7 @@ const styles = createStyles({
     minWidth: 10,
     margin: 0,
     padding: 0,
-    borderRadius: 8,
+    borderRadius: 2,
     backgroundColor: 'white',
     transition: 'all 0.5s ease',
     '&:hover': {
@@ -77,6 +76,7 @@ export default
                 visible ? classes.visible : classes.hidden
               )}
               style={{
+                color: 'white',
                 top: visible ? index * 24 : 0,
                 left: getAnnotationPosition(annotation),
                 width: getAnnotationWidth(annotation),

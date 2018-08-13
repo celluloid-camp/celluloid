@@ -1,5 +1,6 @@
 import { NewProjectData } from '@celluloid/commons';
 import { AnnotationData } from '@celluloid/commons';
+import * as Constants from './Constants';
 
 export default class Projects {
   static fetch() {
@@ -15,7 +16,7 @@ export default class Projects {
       if (response.status === 200) {
         return response.json();
       }
-      throw new Error(`Could not perform request (error ${response.status})`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -32,9 +33,9 @@ export default class Projects {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 404) {
-        throw new Error(`Désolé ! Ce projet est introuvable... Peut-être a-t-il été supprimé ou privatisé ?`);
+        throw new Error(Constants.ERR_PROJECT_NOT_FOUND);
       }
-      throw new Error(`Désolé ! La requête a échouée... Veuillez réessayer plus tard ou bien nous contacter`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -54,13 +55,13 @@ export default class Projects {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 404) {
-        throw new Error(`Le projet est introuvable`);
+        throw new Error(Constants.ERR_PROJECT_NOT_FOUND);
       } else if (response.status === 401) {
-        throw new Error(`Veuillez vous reconnecter`);
+        throw new Error(Constants.ERR_NOT_LOGGED_IN);
       } else if (response.status === 403) {
-        throw new Error(`Vous n'êtes pas autorisé à annoter ce projet`);
+        throw new Error(Constants.ERR_UPDATE_ANNOTATION_AUTH);
       }
-      throw new Error(`La requête a échouée`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -79,15 +80,31 @@ export default class Projects {
       if (response.status === 201) {
         return response.json();
       } else if (response.status === 404) {
-        throw new Error(`Désolé ! Ce projet est introuvable... Peut-être a-t-il été supprimé ou privatisé ?`);
-      } else if (response.status === 404) {
-        throw new Error(`Le projet est introuvable`);
+        throw new Error(Constants.ERR_PROJECT_NOT_FOUND);
       } else if (response.status === 401) {
-        throw new Error(`Veuillez vous reconnecter`);
+        throw new Error(Constants.ERR_NOT_LOGGED_IN);
       } else if (response.status === 403) {
-        throw new Error(`Vous n'êtes pas autorisé à annoter ce projet`);
+        throw new Error(Constants.ERR_CREATE_ANNOTATION_AUTH);
       }
-      throw new Error(`Désolé ! La requête a échouée... Veuillez réessayer plus tard ou bien nous contacter`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
+    });
+  }
+
+  static deleteAnnotation(projectId: string, annotationId: string) {
+    return fetch(`/api/projects/${projectId}/annotations/${annotationId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    }).then(response => {
+      if (response.status === 204) {
+        return response.json();
+      } else if (response.status === 404) {
+        throw new Error(Constants.ERR_PROJECT_NOT_FOUND);
+      } else if (response.status === 401) {
+        throw new Error(Constants.ERR_NOT_LOGGED_IN);
+      } else if (response.status === 403) {
+        throw new Error(Constants.ERR_DELETE_ANNOTATION_AUTH);
+      }
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -104,9 +121,9 @@ export default class Projects {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 404) {
-        throw new Error(`Désolé ! Ce projet est introuvable... Peut-être a-t-il été supprimé ou privatisé ?`);
+        throw new Error(Constants.ERR_PROJECT_NOT_FOUND);
       }
-      throw new Error(`Désolé ! La requête a échouée... Veuillez réessayer plus tard ou bien nous contacter`);
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 
@@ -124,9 +141,7 @@ export default class Projects {
       if (response.status === 201) {
         return response.json();
       }
-      throw new Error(
-        `Désolé ! La création du projet a échouée... Veuillez réessayer plus tard ou bien nous contacter`
-      );
+      throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
 }

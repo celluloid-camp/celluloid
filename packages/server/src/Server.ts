@@ -6,7 +6,9 @@ dotenv.config({path: path.resolve(rootDir, '.env')});
 import ProjectsApi from 'api/ProjectsApi';
 import TagsApi from 'api/TagsApi';
 import TeachersApi from 'api/TeachersApi';
-import * as passport from 'auth/Local';
+import UnfurlApi from 'api/UnfurlApi';
+
+import * as passport from 'auth/Auth';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import * as express from 'express';
@@ -31,9 +33,10 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/api/projects/', ProjectsApi);
-app.use('/api/teachers/', TeachersApi);
+app.use('/api/projects', ProjectsApi);
+app.use('/api/teachers', TeachersApi);
 app.use('/api/tags', TagsApi);
+app.use('/api/unfurl', UnfurlApi);
 
 app.get('/elb-status', (req, res) => {
   return res.status(200).send();

@@ -1,4 +1,4 @@
-import * as auth from 'auth/Local';
+import * as TeacherAuth from 'auth/Auth';
 import {
   isLoggedIn,
   sendConfirmationCode,
@@ -119,7 +119,7 @@ router.post('/signup', (req, res, next) => {
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return auth.authenticate('local-signup', error => {
+  return TeacherAuth.authenticate('teacher-signup', error => {
     if (error) {
       console.error(
         `Failed to sign user up` + ` with email ${req.body.email}`,
@@ -161,7 +161,7 @@ router.post('/login', (req, res, next) => {
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return auth.authenticate('local-login', (error, user, info) => {
+  return TeacherAuth.authenticate('teacher-login', (error, user, info) => {
     if (error) {
       result.success = false;
       result.errors = { server: error.message };

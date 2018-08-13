@@ -43,7 +43,7 @@ function verifySignup(): VerifyFunctionWithRequest {
       .catch((error: Error) => Promise.resolve(done(error)));
 }
 
-const loginStrategy = new Strategy(options, (_, email, password, done) => {
+const teacherLogin = new Strategy(options, (_, email, password, done) => {
   return UserStore.getByEmail(email)
     .then((user: TeacherServerRecord) => {
       if (user) {
@@ -66,9 +66,9 @@ const loginStrategy = new Strategy(options, (_, email, password, done) => {
     .catch((error: Error) => Promise.resolve(done(error)));
 });
 
-const signupStrategy = new Strategy(options, verifySignup());
+const teacherSignup = new Strategy(options, verifySignup());
 
-passport.use('local-login', loginStrategy);
-passport.use('local-signup', signupStrategy);
+passport.use('teacher-login', teacherLogin);
+passport.use('teacher-signup', teacherSignup);
 
 export = passport;
