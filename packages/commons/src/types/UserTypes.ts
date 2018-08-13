@@ -38,6 +38,24 @@ export interface TeacherCredentials {
   password: string;
 }
 
+export interface StudentData {
+  username: string;
+}
+
+export interface StudentRecord extends StudentData {
+  id: string;
+}
+
+export interface StudentCredentials extends StudentData {
+  password: string;
+}
+
+export interface StudentSignupData extends StudentCredentials {
+  passwordHint: string;
+  projectShareName: string;
+  projectSharePassword: string;
+}
+
 export interface TeacherConfirmResetPasswordData extends TeacherConfirmData,
                                                          TeacherCredentials {}
 

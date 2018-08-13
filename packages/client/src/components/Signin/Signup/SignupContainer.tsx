@@ -2,9 +2,9 @@ import * as React from 'react';
 import { AnyAction, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
-import { Action } from 'types/Action';
+import { Action } from 'types/ActionTypes';
 import { doSignupThunk, openLogin } from 'actions/Signin';
-import { AppState } from 'types/AppState';
+import { AppState } from 'types/StateTypes';
 import Signup from './SignupComponent';
 
 import {

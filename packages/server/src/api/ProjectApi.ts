@@ -3,8 +3,8 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { isLoggedIn } from 'auth/Utils';
 import * as ProjectStore from 'store/ProjectStore';
 
-import AnnotationsApi from './AnnotationsApi';
-import { TeacherServerRecord } from 'types/TeacherTypes';
+import AnnotationsApi from './AnnotationApi';
+import { TeacherServerRecord } from 'types/UserTypes';
 import { ProjectData } from '@celluloid/commons';
 
 const router = Router({ mergeParams: true });

@@ -22,7 +22,7 @@ import {
   AnnotationData,
   ProjectData
 } from '@celluloid/commons';
-import { WithLogin } from 'types/Teacher';
+import { WithUser } from 'types/UserTypes';
 import Annotation from './components/Annotation';
 import AnnotationHints from './components/AnnotationHints';
 import * as AnnotationUtils from 'utils/AnnotationUtils';
@@ -34,11 +34,10 @@ interface ProjectParams {
   projectId: string;
 }
 
-interface Props
-  extends
+interface Props extends
   RouteComponentProps<ProjectParams>,
-  WithLogin,
-  WithStyles<typeof videoStyles> {
+  WithStyles<typeof videoStyles>,
+  WithUser {
   annotations: Set<AnnotationRecord>;
   project?: ProjectData;
   onChange: Function;
@@ -152,13 +151,13 @@ const Video = withStyles(videoStyles)(
     render() {
       const onUserAction = this.resetFadeOutTimer.bind(this);
 
-      const onVideoLoad = (event: { target: Player }) => {
+      const onPlayerReady = (event: { target: Player }) => {
         const player = event.target;
         this.refreshTimer = setInterval(this.refreshPlayer.bind(this), 1000);
         this.setState({ player });
       };
 
-      const onVideoStateChange = (event: { target: Player, data: number }) => {
+      const onPlayerStateChange = (event: { target: Player, data: number }) => {
         const state = event.data as PlayerState;
         switch (state) {
           case PlayerState.PLAYING:
@@ -201,7 +200,14 @@ const Video = withStyles(videoStyles)(
 
       const classes = this.props.classes;
 
-      const seek = this.seek.bind(this);
+      const onSeek = this.seek.bind(this);
+
+      const onAnnotationSeek = (position: number) => {
+        if (this.state.player) {
+          this.state.player.pauseVideo();
+          onSeek(position);
+        }
+      };
 
       const controlsOpacity = this.state.userActive || this.state.showHints ?
         classes.visible : classes.hidden;
@@ -235,8 +241,8 @@ const Video = withStyles(videoStyles)(
                     }
                   }}
                   className={classes.videoIframe}
-                  onReady={onVideoLoad}
-                  onStateChange={onVideoStateChange}
+                  onReady={onPlayerReady}
+                  onStateChange={onPlayerStateChange}
                 />
                 <div
                   className={classes.glassPane}
@@ -257,7 +263,7 @@ const Video = withStyles(videoStyles)(
                             key={annotation.id}
                           >
                             <Annotation
-                              teacher={annotation.teacher}
+                              user={annotation.teacher}
                               annotation={annotation}
                               video={{
                                 position: this.state.position,
@@ -265,23 +271,23 @@ const Video = withStyles(videoStyles)(
                               }}
                               projectId={this.props.match.params.projectId}
                               onSave={onAnnotationChange}
-                              onSeek={seek}
+                              onSeek={onAnnotationSeek}
                               onCancel={() => null}
                             />
                           </Collapse>
                         )
                       }
-                      {this.props.teacher && this.state.isAddingAnnotation &&
+                      {this.props.user && this.state.isAddingAnnotation &&
                         <Collapse
                           appear={true}
                           key="new"
                           in={this.state.isAddingAnnotation}
                         >
                           <Annotation
-                            teacher={{
-                              id: this.props.teacher.id,
-                              email: this.props.teacher.email,
-                              username: this.props.teacher.username
+                            user={{
+                              id: this.props.user.id,
+                              email: this.props.user.email,
+                              username: this.props.user.username
                             }}
                             video={{
                               position: this.state.position,
@@ -289,7 +295,7 @@ const Video = withStyles(videoStyles)(
                             }}
                             projectId={this.props.match.params.projectId}
                             onSave={onAnnotationChange}
-                            onSeek={seek}
+                            onSeek={onAnnotationSeek}
                             onCancel={onCancelAddAnnotation}
                           />
                         </Collapse>
@@ -297,7 +303,7 @@ const Video = withStyles(videoStyles)(
                     </TransitionGroup>
                   </div>
                 }
-                {this.props.teacher && !this.state.isAddingAnnotation &&
+                {this.props.user && !this.state.isAddingAnnotation &&
                   <Zoom
                     appear={true}
                     in={!this.state.isAddingAnnotation}
@@ -333,7 +339,7 @@ const Video = withStyles(videoStyles)(
                         showHints: false
                       });
                       this.refreshPlayer();
-                      seek(annotation.startTime);
+                      onSeek(annotation.startTime);
                     }}
                   />
                 </div>
@@ -350,7 +356,7 @@ const Video = withStyles(videoStyles)(
                     onSeekChange={value => {
                       this.setState({ position: value });
                     }}
-                    onSeekAfterChange={value => seek(value)}
+                    onSeekAfterChange={value => onSeek(value)}
                     onToggleFullscreen={() => this.setState(prevState => ({
                       ...prevState,
                       fullscreen: !prevState.fullscreen

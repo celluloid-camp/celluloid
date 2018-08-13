@@ -3,9 +3,9 @@ import * as dotenv from 'dotenv';
 const rootDir = path.resolve(__dirname, '..', '..', '..');
 dotenv.config({path: path.resolve(rootDir, '.env')});
 
-import ProjectsApi from 'api/ProjectsApi';
-import TagsApi from 'api/TagsApi';
-import TeachersApi from 'api/TeachersApi';
+import ProjectsApi from 'api/ProjectApi';
+import TagsApi from 'api/TagApi';
+import UsersApi from 'api/UserApi';
 import UnfurlApi from 'api/UnfurlApi';
 
 import * as passport from 'auth/Auth';
@@ -13,7 +13,7 @@ import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as session from 'express-session';
-import { nocache } from 'common/NoCache';
+import { nocache } from 'utils/NoCache';
 
 require('cookie-parser');
 
@@ -34,7 +34,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/projects', ProjectsApi);
-app.use('/api/teachers', TeachersApi);
+app.use('/api/users', UsersApi);
 app.use('/api/tags', TagsApi);
 app.use('/api/unfurl', UnfurlApi);
 

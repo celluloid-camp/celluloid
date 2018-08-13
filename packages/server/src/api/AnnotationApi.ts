@@ -2,7 +2,7 @@ import { isLoggedIn } from 'auth/Utils';
 import * as express from 'express';
 import * as AnnotationStore from 'store/AnnotationStore';
 import * as ProjectStore from 'store/ProjectStore';
-import { TeacherServerRecord } from 'types/TeacherTypes';
+import { TeacherServerRecord } from 'types/UserTypes';
 import { AnnotationData, AnnotationRecord } from '@celluloid/commons';
 import { ProjectData } from '@celluloid/commons';
 

@@ -5,8 +5,8 @@ import { IStrategyOptionsWithRequest, Strategy, VerifyFunctionWithRequest } from
 import * as UserStore from 'store/UserStore';
 
 import { sendConfirmationCode } from './Utils';
-import { TeacherRecord } from '@celluloid/commons/dist/types/TeacherTypes';
-import { TeacherServerRecord } from 'types/TeacherTypes';
+import { TeacherRecord } from '@celluloid/commons';
+import { TeacherServerRecord } from 'types/UserTypes';
 
 passport.serializeUser(({ id }, done) => {
   return Promise.resolve(done(null, id));

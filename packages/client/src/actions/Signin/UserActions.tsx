@@ -1,7 +1,6 @@
-import ActionType from 'types/ActionType';
-import { Action } from 'types/Action';
+import { Action, ActionType } from 'types/ActionTypes';
 import { TeacherRecord } from '@celluloid/commons';
-import TeachersService from 'services/TeachersService';
+import UserService from 'services/UserService';
 import { Dispatch } from 'redux';
 
 export function failCurrentUser(error: string):
@@ -31,7 +30,7 @@ export function failLogout(error: string):
 }
 
 export const fetchCurrentUserThunk = () => (dispatch: Dispatch) => {
-  return TeachersService
+  return UserService
     .me()
     .then(result => {
       if (result.teacher) {
@@ -46,7 +45,7 @@ export const fetchCurrentUserThunk = () => (dispatch: Dispatch) => {
 };
 
 export const doLogoutThunk = () => (dispatch: Dispatch) => {
-  return TeachersService
+  return UserService
     .logout()
     .then(() => {
       return dispatch(succeedCurrentUser());

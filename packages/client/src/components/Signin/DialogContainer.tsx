@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { AppState } from 'types/AppState';
+import { AppState } from 'types/StateTypes';
 
 import { SigninState } from './SigninTypes';
 import Dialog from './DialogComponent';

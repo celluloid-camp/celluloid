@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import builder, { getExactlyOne } from 'common/Postgres';
+import builder, { getExactlyOne } from 'utils/Postgres';
 
 const router = express.Router();
 

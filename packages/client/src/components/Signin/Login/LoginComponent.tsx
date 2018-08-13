@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AnyAction } from 'redux';
 
-import { Action } from 'types/Action';
+import { Action } from 'types/ActionTypes';
 import TextField from '@material-ui/core/TextField';
 
 import {

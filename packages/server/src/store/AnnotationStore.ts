@@ -1,11 +1,11 @@
 
-import builder, { getExactlyOne } from 'common/Postgres';
+import builder, { getExactlyOne } from 'utils/Postgres';
 import * as ProjectStore from './ProjectStore';
 import { TeacherRecord } from '@celluloid/commons';
 import { AnnotationRecord, AnnotationData } from '@celluloid/commons';
 
 import { QueryBuilder } from 'knex';
-import { TeacherServerRecord } from 'types/TeacherTypes';
+import { TeacherServerRecord } from 'types/UserTypes';
 
 export function getAll(projectId: string, user?: TeacherRecord) {
   return builder

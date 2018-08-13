@@ -13,7 +13,7 @@ export default class {
       Accepts: 'application/json',
       'Content-type': 'application/json'
     };
-    return fetch(`/api/teachers/login`, {
+    return fetch(`/api/users/login`, {
       method: 'POST',
       headers: new Headers(headers),
       credentials: 'include',
@@ -36,7 +36,7 @@ export default class {
       'Content-type': 'application/json'
     };
 
-    return fetch(`/api/teachers/signup`, {
+    return fetch(`/api/users/signup`, {
       method: 'POST',
       headers: new Headers(headers),
       credentials: 'include',
@@ -59,7 +59,7 @@ export default class {
       'Content-type': 'application/json'
     };
 
-    return fetch(`/api/teachers/confirm-signup`, {
+    return fetch(`/api/users/confirm-signup`, {
       method: 'POST',
       headers: new Headers(headers),
       credentials: 'include',
@@ -82,7 +82,7 @@ export default class {
       'Content-type': 'application/json'
     };
 
-    return fetch(`/api/teachers/reset-password`, {
+    return fetch(`/api/users/reset-password`, {
       method: 'POST',
       headers: new Headers(headers),
       credentials: 'include',
@@ -105,7 +105,7 @@ export default class {
       'Content-type': 'application/json'
     };
 
-    return fetch(`/api/teachers/confirm-reset-password`, {
+    return fetch(`/api/users/confirm-reset-password`, {
       method: 'POST',
       headers: new Headers(headers),
       credentials: 'include',
@@ -128,7 +128,7 @@ export default class {
       'Content-type': 'application/json'
     };
 
-    return fetch(`/api/teachers/resend-code`, {
+    return fetch(`/api/users/resend-code`, {
       method: 'POST',
       headers: new Headers(headers),
       credentials: 'include',
@@ -150,7 +150,7 @@ export default class {
       Accepts: 'application/json'
     };
 
-    return fetch(`/api/teachers/me`, {
+    return fetch(`/api/users/me`, {
       method: 'GET',
       headers: new Headers(headers),
       credentials: 'include'
@@ -165,7 +165,7 @@ export default class {
   }
 
   static logout() {
-    return fetch(`/api/teachers/logout`, {
+    return fetch(`/api/users/logout`, {
       method: 'PUT',
       credentials: 'include'
     });

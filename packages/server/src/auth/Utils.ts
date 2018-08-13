@@ -1,6 +1,6 @@
-import { sendMail } from 'common/Mailer';
+import { sendMail } from 'utils/Mailer';
 import { Response, Request, NextFunction } from 'express';
-import { TeacherServerRecord } from 'types/TeacherTypes';
+import { TeacherServerRecord } from 'types/UserTypes';
 
 export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
   if (!req.user) {

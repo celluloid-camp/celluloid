@@ -15,8 +15,8 @@ import {
   TeacherCredentials,
   TeacherRecord,
   TeacherSignupData
-} from '@celluloid/commons/src/types/TeacherTypes';
-import { TeacherServerRecord } from 'types/TeacherTypes';
+} from '@celluloid/commons';
+import { TeacherServerRecord } from 'types/UserTypes';
 
 const router = Router();
 

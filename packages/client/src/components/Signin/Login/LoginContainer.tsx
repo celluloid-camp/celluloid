@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 
 import Login from './LoginComponent';
 import { openSignup, doLoginThunk, openResetPassword } from 'actions/Signin';
-import { Action } from 'types/Action';
-import { AppState } from 'types/AppState';
+import { Action } from 'types/ActionTypes';
+import { AppState } from 'types/StateTypes';
 
 import { TeacherCredentials, SigninErrors } from '@celluloid/commons';
 

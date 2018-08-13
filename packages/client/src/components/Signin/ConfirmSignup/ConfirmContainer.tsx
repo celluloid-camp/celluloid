@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import ConfirmSignup from './ConfirmComponent';
 import { doConfirmSignupThunk, doResendCodeThunk } from 'actions/Signin';
-import { AppState } from 'types/AppState';
+import { AppState } from 'types/StateTypes';
 
 import {
   SigninErrors,

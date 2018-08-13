@@ -8,7 +8,7 @@ import {
   SigninErrors,
   TeacherSignupData
 } from '@celluloid/commons';
-import { Action } from 'types/Action';
+import { Action } from 'types/ActionTypes';
 import SigninAction from '../SigninAction';
 import SigninAltAction from '../SigninAltAction';
 import SigninError from '../SigninError';

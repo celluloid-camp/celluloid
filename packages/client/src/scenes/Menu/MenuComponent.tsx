@@ -9,14 +9,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import SigninDialog, { SigninState } from 'components/Signin';
-import { WithLogin } from 'types/Teacher';
+import { WithUser } from 'types/UserTypes';
 import SigninBar from './components/SigninBar';
-import { AppState, User } from 'types/AppState';
+import { AppState, User } from 'types/StateTypes';
 import { openLogin, openSignup, closeSignin } from 'actions/Signin';
-import { Action } from 'types/Action';
+import { Action } from 'types/ActionTypes';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 
-interface ChildProps extends WithLogin { }
+interface ChildProps extends WithUser {}
 
 const styles = (theme: Theme) => createStyles({
   root: { height: '100%' },
@@ -111,7 +111,7 @@ export default withStyles(styles)(
         </AppBar>
         <SigninDialog onCancel={onCloseSignin} state={signinDialog} />
         <div className={classes.content}>
-          <Content teacher={user} {...others} />
+          <Content user={user} {...others} />
         </div>
         <div className={classes.footer}>
             <Typography variant="caption">

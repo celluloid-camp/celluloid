@@ -1,15 +1,14 @@
-import { Action } from 'types/Action';
-import ActionType from 'types/ActionType';
+import { Action, ActionType } from 'types/ActionTypes';
 
 export function closeSignin():
-Action<null> {
+  Action<null> {
   return {
     type: ActionType.CLOSE_SIGNIN,
   };
 }
 
 export function triggerSigninLoading():
-Action<null> {
+  Action<null> {
   return {
     type: ActionType.TRIGGER_SIGNIN_LOADING
   };

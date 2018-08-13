@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { WithLogin } from 'types/Teacher';
+import { WithUser } from 'types/UserTypes';
 
 import Menu from './MenuComponent';
 import { fetchCurrentUserThunk, doLogoutThunk } from 'actions/Signin/UserActions';
@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-export const withMenuContainer = <P extends WithLogin>(Content: React.ComponentType<P>) => (
+export const withMenuContainer = <P extends WithUser>(Content: React.ComponentType<P>) => (
   withRouter(
     connect(null, mapDispatchToProps)(
       class extends React.Component<Props> {

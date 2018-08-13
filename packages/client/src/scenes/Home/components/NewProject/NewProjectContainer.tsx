@@ -1,25 +1,26 @@
 import * as React from 'react';
-
-import Button from '@material-ui/core/Button';
-import Dialog, { DialogProps } from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Chip from '@material-ui/core/Chip';
-import Switch from '@material-ui/core/Switch';
-import Avatar from '@material-ui/core/Avatar/Avatar';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import MenuItem from '@material-ui/core/MenuItem';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  ListItemAvatar,
+  Chip,
+  Switch,
+  Avatar,
+  Grid,
+  Paper,
+  MenuItem
+} from '@material-ui/core';
+import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
@@ -32,21 +33,14 @@ import * as Autosuggest from 'react-autosuggest';
 const parse = require('autosuggest-highlight/parse');
 const match = require('autosuggest-highlight/match');
 
-import { levelLabel, levelsCount } from 'types/Levels';
+import { levelLabel, levelsCount } from 'types/LevelTypes';
 
 import { TagData, NewProjectData } from '@celluloid/commons';
-import { YouTubeVideo } from 'types/YouTubeVideo';
+import { YoutubeVideo } from 'types/YoutubeTypes';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };
 
-interface Props {
-  video: YouTubeVideo;
-  isOpen: boolean;
-  tags: TagData[];
-  onClose(send: boolean, value: NewProjectData): Promise<{}>;
-}
-
-const decorate = withStyles(({ palette, spacing }) => ({
+const styles = ({ spacing }: Theme) => createStyles({
   avatar: {
     border: '1px solid #757575',
     backgroundColor: '#fefefe'
@@ -71,12 +65,17 @@ const decorate = withStyles(({ palette, spacing }) => ({
     padding: 0,
     listStyleType: 'none',
   },
-}));
+});
 
-const NewProject = decorate<Props>(
-  class extends React.Component<Props & DialogProps
-    & WithStyles<'avatar' | 'container' | 'suggestionsContainerOpen' |
-    'suggestion' | 'input' | 'suggestionsList'>> {
+interface Props extends WithStyles<typeof styles> {
+  video: YoutubeVideo;
+  isOpen: boolean;
+  tags: TagData[];
+  onClose(send: boolean, value: NewProjectData): Promise<{}>;
+}
+
+export default withStyles(styles)(
+  class extends React.Component<Props> {
 
     state = {
       videoTitle: '',
@@ -98,7 +97,7 @@ const NewProject = decorate<Props>(
     };
 
     render() {
-      const { fullScreen, video, isOpen } = this.props;
+      const { video, isOpen } = this.props;
 
       const onClose = (send: boolean) => (event: React.MouseEvent<HTMLElement>) => {
         const project = {
@@ -266,9 +265,9 @@ const NewProject = decorate<Props>(
 
       return (
         <Dialog
-          fullScreen={fullScreen}
           open={isOpen}
           fullWidth={true}
+          scroll="body"
         >
           <DialogTitle style={{ textAlign: 'center' }}>
             <span style={{ position: 'absolute', right: 16, top: 8 }}>
@@ -303,7 +302,9 @@ const NewProject = decorate<Props>(
               </Typography>
             </div>
             <TextField
+              required={true}
               label="Titre"
+              fullWidth={true}
               helperText="Le titre permet de référencer votre séquence sur la plate-forme"
               onChange={event => {
                 this.setState({ title: event.target.value });
@@ -311,6 +312,7 @@ const NewProject = decorate<Props>(
             />
             <TextField
               label="Description"
+              fullWidth={true}
               helperText="Décrivez brièvement le contenu de la vidéo"
               multiline={true}
               onChange={event => {
@@ -318,7 +320,9 @@ const NewProject = decorate<Props>(
               }}
             />
             <TextField
+              required={true}
               label="Objectif"
+              fullWidth={true}
               helperText="Rédigez un objectif global pour ce projet"
               multiline={true}
               onChange={event => {
@@ -647,5 +651,3 @@ const NewProject = decorate<Props>(
     }
   }
 );
-
-export default NewProject;

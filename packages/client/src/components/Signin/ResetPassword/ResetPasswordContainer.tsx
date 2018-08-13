@@ -3,7 +3,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
 import ResetPassword from './ResetPasswordComponent';
-import { AppState } from 'types/AppState';
+import { AppState } from 'types/StateTypes';
 
 import { SigninErrors } from '@celluloid/commons';
 import { doResetPasswordThunk } from 'actions/Signin/ResetPasswordActions';

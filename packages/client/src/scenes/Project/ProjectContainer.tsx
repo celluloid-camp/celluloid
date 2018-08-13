@@ -11,8 +11,8 @@ import { ProjectData, AnnotationRecord } from '@celluloid/commons';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import ProjectsService from 'services/ProjectsService';
-import { WithLogin } from 'types/Teacher';
+import ProjectsService from 'services/ProjectService';
+import { WithUser } from 'types/UserTypes';
 import ShareProject from './components/Share';
 
 import ShareIcon from '@material-ui/icons/Share';
@@ -48,9 +48,8 @@ interface ProjectParams {
 
 interface Props extends
   RouteComponentProps<ProjectParams>,
-  WithLogin,
-  WithStyles<typeof styles> {
-}
+  WithUser,
+  WithStyles<typeof styles> {}
 
 interface State {
   annotations: Set<AnnotationRecord>;
@@ -68,7 +67,7 @@ const Project = withRouter(withStyles(styles)(
     } as State;
 
     componentDidUpdate(prevProps: Props) {
-      if (prevProps.teacher !== this.props.teacher) {
+      if (prevProps.user !== this.props.user) {
         this.load();
       }
     }
@@ -228,14 +227,14 @@ const Project = withRouter(withStyles(styles)(
                   <Typography>
                     <i style={{ verticalAlign: 'middle' }} className="material-icons">face</i>
                     &nbsp;
-                      {`vu par ${this.state.project.views} personnes`}
+                      {`${this.state.project.views} participants`}
                   </Typography>
                 </Grid>
                 <Grid item={true}>
                   <Typography>
                     <i style={{ verticalAlign: 'middle' }} className="material-icons">edit</i>
                     &nbsp;
-                      {`annoté par ${this.state.project.shares} personnes`}
+                      {`${this.state.project.shares} annotations`}
                   </Typography>
                 </Grid>
               </Grid>

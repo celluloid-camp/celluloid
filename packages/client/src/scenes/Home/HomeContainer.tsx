@@ -1,8 +1,7 @@
 import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
-import { WithStyles } from '@material-ui/core/styles/withStyles';
+import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
@@ -10,24 +9,24 @@ import TextField from '@material-ui/core/TextField';
 
 import ProjectGrid from './components/ProjectGrid';
 import NewProject from './components/NewProject';
-import TagsService from 'services/TagsService';
-import ProjectsService from 'services/ProjectsService';
+import TagsService from 'services/TagService';
+import ProjectsService from 'services/ProjectService';
 
-import { WithLogin } from 'types/Teacher';
+import { WithUser } from 'types/UserTypes';
 
 import {
   NewProjectData,
   DisplayProjectData,
   TagData
- } from '@celluloid/commons';
-import { YouTubeVideo } from 'types/YouTubeVideo';
+} from '@celluloid/commons';
+import { YoutubeVideo } from 'types/YoutubeTypes';
 
 import YouTubeService from 'services/YoutubeService';
 
 const studentsIcon = require('images/students.svg');
 const teacherIcon = require('images/teacher.svg');
 
-const decorate = withStyles(({ spacing }) => ({
+const styles = ({ spacing }: Theme) => createStyles({
   center: {
     textAlign: 'center' as 'center',
     marginLeft: 'auto' as 'auto',
@@ -37,21 +36,21 @@ const decorate = withStyles(({ spacing }) => ({
   block: {
     padding: spacing.unit * 6
   }
-}));
+});
 
-interface Props extends WithLogin, WithStyles<'center' | 'block'> {}
+interface Props extends WithUser, WithStyles<typeof styles> {}
 
 interface State {
   newProjectDialogOpen: boolean;
   newProjectVideoUrl: string;
-  video?: YouTubeVideo;
+  video?: YoutubeVideo;
   tags: TagData[];
   projects: DisplayProjectData[];
   videoError?: string;
   error?: string;
 }
 
-export default decorate<WithLogin>(
+export default withStyles(styles)(
   class extends React.Component<Props, State> {
     state = {
       newProjectDialogOpen: false,
@@ -63,7 +62,7 @@ export default decorate<WithLogin>(
       video: undefined
     } as State;
 
-    loadContent() {
+    load() {
       ProjectsService.fetch()
         .then((projects: DisplayProjectData[]) => {
           this.setState({ projects, error: undefined });
@@ -81,12 +80,12 @@ export default decorate<WithLogin>(
     }
 
     componentDidMount() {
-      this.loadContent();
+      this.load();
     }
 
     componentDidUpdate(prevProps: Props) {
-      if (prevProps.teacher !== this.props.teacher) {
-        this.loadContent();
+      if (prevProps.user !== this.props.user) {
+        this.load();
       }
     }
 
@@ -144,7 +143,7 @@ export default decorate<WithLogin>(
             ProjectsService.create(newProject)
               .then((project: DisplayProjectData) => {
                 this.setState({ newProjectDialogOpen: false });
-                this.loadContent();
+                this.load();
                 resolve();
               })
               .catch(error => {

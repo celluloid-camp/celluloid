@@ -1,7 +1,5 @@
-import { Action } from 'types/Action';
-import ActionType from 'types/ActionType';
-
-import TeachersService from 'services/TeachersService';
+import { Action, ActionType } from 'types/ActionTypes';
+import UserService from 'services/UserService';
 import {
   SigninResult,
   SigninErrors,
@@ -49,7 +47,7 @@ export function failConfirmResetPassword(
 
 export const doResetPasswordThunk = (email: string) => (dispatch: Dispatch) => {
   dispatch(triggerSigninLoading());
-  return TeachersService.resetPassword(email)
+  return UserService.resetPassword(email)
     .then((result: SigninResult) => {
       if (!result.success) {
         return dispatch(failResetPassword(result.errors));
@@ -66,7 +64,7 @@ export const doConfirmResetPasswordThunk = (
   data: TeacherConfirmResetPasswordData
 ) => (dispatch: Dispatch) => {
   dispatch(triggerSigninLoading());
-  return TeachersService.confirmResetPassword(data)
+  return UserService.confirmResetPassword(data)
     .then((result: SigninResult) => {
       if (!result.success) {
         return dispatch(failConfirmResetPassword(result.errors));

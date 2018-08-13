@@ -1,7 +1,6 @@
 import { Dispatch } from 'redux';
-import TeachersService from 'services/TeachersService';
-import { Action } from 'types/Action';
-import ActionType from 'types/ActionType';
+import UserService from 'services/UserService';
+import { Action, ActionType } from 'types/ActionTypes';
 
 import {
   SigninErrors,
@@ -32,7 +31,7 @@ export function failLogin(errors: SigninErrors):
 export const doLoginThunk = (credentials: TeacherCredentials) =>
   (dispatch: Dispatch) => {
     dispatch(triggerSigninLoading());
-    return TeachersService
+    return UserService
       .login(credentials)
       .then((result: SigninResult) => {
         if (!result.success) {

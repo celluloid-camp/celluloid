@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import { getTeacherColor } from 'types/Teacher';
+import { getUserColor } from 'types/UserTypes';
 
 import { AnnotationRecord } from '@celluloid/commons';
 import * as AnnotationUtils from 'utils/AnnotationUtils';
@@ -83,8 +83,8 @@ export default
                 backgroundColor:
                   AnnotationUtils.visible(annotation, position) ?
                     'white' :
-                    getTeacherColor(annotation.userId),
-                border: `2px solid ${getTeacherColor(annotation.userId)}`
+                    getUserColor(annotation.userId),
+                border: `2px solid ${getUserColor(annotation.userId)}`
               }}
               onClick={onClick(annotation)}
             />

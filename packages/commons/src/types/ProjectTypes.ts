@@ -1,6 +1,6 @@
 import { TagData } from './TagTypes';
 import { NewProjectData } from './ProjectTypes';
-import { TeacherData } from './TeacherTypes';
+import { TeacherData } from './UserTypes';
 
 export interface NewProjectData {
   videoId: string;

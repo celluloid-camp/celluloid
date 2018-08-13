@@ -1,6 +1,6 @@
 import { generateConfirmationCode } from 'auth/Utils';
 import * as bcrypt from 'bcrypt';
-import builder, { getExactlyOne } from 'common/Postgres';
+import builder, { getExactlyOne } from 'utils/Postgres';
 
 function hashPassword(password: string) {
   const salt = bcrypt.genSaltSync();

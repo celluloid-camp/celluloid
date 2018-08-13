@@ -1,7 +1,6 @@
-import { Action } from 'types/Action';
-import ActionType from 'types/ActionType';
+import { Action, ActionType } from 'types/ActionTypes';
 
-import TeachersService from 'services/TeachersService';
+import UserService from 'services/UserService';
 import {
   TeacherRecord,
   SigninErrors,
@@ -52,7 +51,7 @@ export const doSignupThunk = (data: TeacherSignupData) => (
   dispatch: Dispatch
 ) => {
   dispatch(triggerSigninLoading());
-  return TeachersService.signup(data)
+  return UserService.signup(data)
     .then((result: SigninResult) => {
       if (!result.success) {
         return dispatch(failSignup(result.errors));
@@ -75,7 +74,7 @@ export const doConfirmSignupThunk = (
   credentials?: TeacherCredentials
 ) => (dispatch: Dispatch) => {
   dispatch(triggerSigninLoading());
-  return TeachersService.confirmSignup(data)
+  return UserService.confirmSignup(data)
     .then((result: SigninResult) => {
       if (!result.success) {
         return dispatch(failConfirmSignup(result.errors));
@@ -93,7 +92,7 @@ export const doConfirmSignupThunk = (
 
 export const doResendCodeThunk = (email: string) => (dispatch: Dispatch) => {
   dispatch(triggerSigninLoading());
-  return TeachersService.resendCode(email)
+  return UserService.resendCode(email)
     .then((result: SigninResult) => {
       if (!result.success) {
         return dispatch(failConfirmSignup(result.errors));

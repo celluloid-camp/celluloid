@@ -1,4 +1,4 @@
-const ActionType = {
+export const ActionType = {
   OPEN_LOGIN: 'OPEN_LOGIN',
   SUCCEED_LOGIN: 'SUCCEED_LOGIN',
   FAIL_LOGIN: 'FAIL_LOGIN',
@@ -24,4 +24,10 @@ const ActionType = {
   FAIL_LOGOUT: 'FAIL_LOGOUT'
 };
 
-export default ActionType;
+import { Action as ReduxAction } from 'redux';
+
+export interface Action<T> extends ReduxAction {
+  type: string;
+  payload?: T;
+  error?: boolean;
+}

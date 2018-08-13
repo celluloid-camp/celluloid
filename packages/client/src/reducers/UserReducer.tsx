@@ -1,4 +1,4 @@
-import ActionType from 'types/ActionType';
+import { ActionType } from 'types/ActionTypes';
 import { AnyAction } from 'redux';
 
 const initialState = null;

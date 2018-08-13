@@ -1,4 +1,4 @@
-import builder, { getExactlyOne } from 'common/Postgres';
+import builder, { getExactlyOne } from 'utils/Postgres';
 
 import { ProjectData, NewProjectData, ProjectShareData } from '@celluloid/commons';
 import { TeacherData, TeacherRecord } from '@celluloid/commons';

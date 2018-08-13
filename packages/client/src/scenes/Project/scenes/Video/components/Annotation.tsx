@@ -10,8 +10,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import { AnnotationData, AnnotationRecord } from '@celluloid/commons';
 import { formatDuration } from 'utils/DurationUtils';
-import ProjectsService from 'services/ProjectsService';
-import { WithLogin, getTeacherColor, getTeacherInitials } from 'types/Teacher';
+import ProjectsService from 'services/ProjectService';
+import { WithUser, getUserColor, getUserInitials } from 'types/UserTypes';
 import AnnotationContent from './AnnotationContent';
 import AnnotationControls from './AnnotationControls';
 
@@ -64,7 +64,7 @@ const styles = (theme: Theme) => createStyles({
   }
 });
 
-interface Props extends WithLogin, WithStyles<typeof styles> {
+interface Props extends WithUser, WithStyles<typeof styles> {
   annotation?: AnnotationRecord;
   video: {
     position: number;
@@ -81,7 +81,7 @@ interface State {
   annotation: AnnotationData;
   startError?: string;
   isEditing: boolean;
-  user: {
+  author: {
     id: string;
     email: string;
     username: string;
@@ -96,19 +96,19 @@ function maxAnnotationDuration(startTime: number, duration: number) {
   return (stopTime < duration ? stopTime : duration);
 }
 
-function init({ annotation, teacher, video }: Props): State {
+function init({ annotation, user, video }: Props): State {
   if (annotation) {
     return {
       focused: false,
       isEditing: false,
-      user: annotation.teacher,
+      author: annotation.teacher,
       annotation: annotation
     };
   } else {
     return {
       focused: true,
       isEditing: true,
-      user: teacher,
+      author: user,
       annotation: {
         text: '',
         startTime: video.position,
@@ -129,7 +129,7 @@ export default withStyles(styles)(
     render() {
       const {
         classes,
-        teacher,
+        user,
         projectId,
         video,
         onSeek,
@@ -139,20 +139,20 @@ export default withStyles(styles)(
 
       const {
         error,
-        user,
+        author,
         annotation,
         focused,
         isEditing
       } = this.state;
 
-      const avatarLabel = getTeacherInitials(user);
+      const avatarLabel = getUserInitials(author);
 
       const formattedStart = formatDuration(annotation.startTime);
 
       const formattedStop = formatDuration(annotation.stopTime);
 
-      const canEdit = teacher
-        && teacher.id === user.id
+      const canEdit = user
+        && user.id === author.id
         && focused
         && !isEditing;
 
@@ -228,7 +228,7 @@ export default withStyles(styles)(
             <Avatar
               style={{
                 margin: 10,
-                backgroundColor: getTeacherColor(user.id)
+                backgroundColor: getUserColor(author.id)
               }}
             >
               {avatarLabel}
@@ -280,7 +280,7 @@ export default withStyles(styles)(
                 </Collapse> :
                 <>
                   <Typography className={classes.username}>
-                    {`${user.username} | `}
+                    {`${author.username} | `}
                     <span className={classes.timings}>
                       {`${formattedStart} - ${formattedStop}`}
                     </span>
