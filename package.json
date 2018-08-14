@@ -9,9 +9,10 @@
     "packages/*"
   ],
   "scripts": {
-    "watch": "yarn build-commons && concurrently \"yarn watch-server\" \"yarn watch-client\"",
+    "watch": "yarn build-commons && concurrently \"yarn watch-commons\" \"yarn watch-server\" \"yarn watch-client\"",
     "watch-client": "(cd packages/client && yarn start)",
     "watch-server": "(cd packages/server && yarn watch)",
+    "watch-commons": "(cd packages/commons && yarn watch)",
     "build-client": "(cd packages/client && yarn build)",
     "build-server": "(cd packages/server && yarn build)",
     "build-commons": "(cd packages/commons && yarn build)",

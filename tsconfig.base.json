@@ -16,12 +16,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "baseUrl": "./packages",
-    "paths": {
-      "@celluloid/*": [
-        "./*/src"
-      ]
-    }
+    "emitDecoratorMetadata": true
   }
 }
