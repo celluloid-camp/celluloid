@@ -6,12 +6,8 @@ node_modules
 # testing
 /coverage
 
-# production
-/build
-/dist
-
-# client
-/packages/client/build
+# build directories
+/packages/*/build
 /packages/*/dist
 
 # misc
