@@ -1,15 +1,11 @@
+import { SigninErrors, TeacherConfirmResetPasswordData } from '@celluloid/types';
+import { WithStyles, withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import DialogButtons from 'components/DialogButtons';
+import DialogError from 'components/DialogError';
 import * as React from 'react';
 import { AnyAction } from 'redux';
 
-import TextField from '@material-ui/core/TextField';
-
-import {
-  SigninErrors,
-  TeacherConfirmResetPasswordData
-} from '@celluloid/commons';
-import { withStyles, WithStyles } from '@material-ui/core';
-import SigninAction from '../SigninAction';
-import SigninError from '../SigninError';
 import { dialogStyles } from '../DialogStyles';
 
 interface Props extends WithStyles<typeof dialogStyles> {
@@ -31,13 +27,13 @@ export default withStyles(dialogStyles)(
   }: Props) => (
     <div>
       <TextField
-        label="Email"
+        label="Email ou nom complet"
         required={true}
-        value={data.email}
+        value={data.login}
         className={classes.input}
         error={errors.email ? true : false}
-        onChange={event => onChange('email', event.target.value)}
-        helperText={errors && errors.email}
+        onChange={event => onChange('login', event.target.value)}
+        helperText={errors && errors.login}
       />
       <TextField
         label="Code de confirmation"
@@ -69,8 +65,8 @@ export default withStyles(dialogStyles)(
         onChange={event => onChange('confirmPassword', event.target.value)}
         helperText={confirmPasswordError}
       />
-      {errors.server && <SigninError error={errors.server} />}
-      <SigninAction onSubmit={onSubmit} actionName="Mettre à jour" />
+      {errors.server && <DialogError error={errors.server} />}
+      <DialogButtons onSubmit={onSubmit} actionName="Mettre à jour" />
     </div>
   )
 );

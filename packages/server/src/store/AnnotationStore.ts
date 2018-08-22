@@ -1,55 +1,57 @@
-
-import builder, { getExactlyOne } from 'utils/Postgres';
+import { database, getExactlyOne } from 'backends/Database';
 import * as ProjectStore from './ProjectStore';
-import { UserRecord } from '@celluloid/commons';
-import { AnnotationRecord, AnnotationData } from '@celluloid/commons';
+import { UserRecord } from '@celluloid/types';
+import { AnnotationRecord, AnnotationData } from '@celluloid/types';
 
 import { QueryBuilder } from 'knex';
 
-export function selectAll(projectId: string, user?: UserRecord) {
-  return builder
+export function selectByProject(projectId: string, user?: UserRecord) {
+  return database
     .select(
-      builder.raw('"Annotation".*'),
-      builder.raw(
+      database.raw('"Annotation".*'),
+      database.raw(
         'json_build_object(' +
         `'id', "User"."id",` +
         `'email', "User"."email",` +
-        `'username', "User"."username"` +
-        ') as "teacher"'))
+        `'username', "User"."username",` +
+        `'role', "User"."role"` +
+        ') as "user"'))
     .from('Annotation')
     .innerJoin('Project', 'Project.id', 'Annotation.projectId')
     .innerJoin('User', 'User.id', 'Annotation.userId')
     .where('Annotation.projectId', projectId)
     .andWhere((nested: QueryBuilder) => {
       nested.where('Project.public', true);
-      nested.modify(ProjectStore.orIsAuthor, user);
+      nested.modify(ProjectStore.orIsOwner, user);
+      nested.modify(ProjectStore.orIsMember, user);
       return nested;
     })
     .orderBy('Annotation.startTime', 'asc');
 }
 
 export function selectOne(annotationId: string, user?: UserRecord) {
-  return builder.first()
+  return database.first()
     .from('Annotation')
     .innerJoin('Project', 'Project.id', 'Annotation.projectId')
     .where('Annotation.id', annotationId)
     .andWhere((nested: QueryBuilder) => {
       nested.where('Project.public', true);
-      nested.modify(ProjectStore.orIsAuthor, user);
+      nested.modify(ProjectStore.orIsOwner, user);
+      nested.modify(ProjectStore.orIsMember, user);
       return nested;
     })
     .then((row?: AnnotationRecord) => row ? Promise.resolve(row) :
       Promise.reject(new Error('AnnotationNotFound')));
 }
 
-export function create(
+export function insert(
   annotation: AnnotationData,
   user: UserRecord,
   projectId: string
 ) {
-  return builder('Annotation')
+  return database('Annotation')
     .insert({
-      id: builder.raw('uuid_generate_v4()'),
+      id: database.raw('uuid_generate_v4()'),
       text: annotation.text,
       startTime: annotation.startTime,
       stopTime: annotation.stopTime,
@@ -62,7 +64,7 @@ export function create(
 }
 
 export function update(id: string, data: AnnotationData) {
-  return builder('Annotation')
+  return database('Annotation')
     .update({
       text: data.text,
       startTime: data.startTime,
@@ -70,11 +72,12 @@ export function update(id: string, data: AnnotationData) {
       pause: data.pause
     })
     .returning('*')
-    .where('id', id);
+    .where('id', id)
+    .then(getExactlyOne);
 }
 
 export function del(id: string) {
-  return builder('Annotation')
+  return database('Annotation')
     .where('id', id)
     .del();
 }

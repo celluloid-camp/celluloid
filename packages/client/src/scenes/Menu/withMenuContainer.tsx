@@ -1,15 +1,14 @@
+import {
+  doLogoutThunk,
+  fetchCurrentUserThunk
+} from 'actions/Signin/UserActions';
 import * as React from 'react';
-import { Dispatch, AnyAction } from 'redux';
 import { connect } from 'react-redux';
-
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-
-import { WithUser } from 'types/UserTypes';
+import { AnyAction, Dispatch } from 'redux';
 
 import Menu from './MenuComponent';
-import { fetchCurrentUserThunk, doLogoutThunk } from 'actions/Signin/UserActions';
 
-interface Props extends RouteComponentProps<{}> {
+interface Props {
   onMount(): Promise<AnyAction>;
   onClickLogout(): Promise<AnyAction>;
 }
@@ -21,24 +20,21 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-export const withMenuContainer = <P extends WithUser>(Content: React.ComponentType<P>) => (
-  withRouter(
-    connect(null, mapDispatchToProps)(
-      class extends React.Component<Props> {
-        componentDidMount() {
-          this.props.onMount();
-        }
-
-        render() {
-          return (
-            <Menu
-              Content={Content}
-              onClickLogout={this.props.onClickLogout}
-              {...this.props}
-            />
-          );
-        }
+export const withMenuContainer = (Content: React.ComponentType) => (
+  connect(null, mapDispatchToProps)(
+    class extends React.Component<Props> {
+      componentDidMount() {
+        this.props.onMount();
       }
-    )
+
+      render() {
+        return (
+          <Menu
+            Content={Content}
+            onClickLogout={this.props.onClickLogout}
+          />
+        );
+      }
+    }
   )
 );

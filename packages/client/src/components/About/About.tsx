@@ -1,5 +1,6 @@
+import { Grid, Typography } from '@material-ui/core';
 import * as React from 'react';
-import { Typography, Grid } from '@material-ui/core';
+
 const logoIcp = require('./images/logo-icp.jpg');
 const logoFsm = require('./images/logo-fsm.jpg');
 const logoLp = require('./images/logo-lp.png');
@@ -13,11 +14,11 @@ export default () => (
       margin: '0 auto'
     }}
   >
-    <Typography variant="headline" gutterBottom={true}>
-      <b>A propos de de Celluloïd</b>
+    <Typography variant="display3" gutterBottom={true}>
+      {`À propos`}
     </Typography>
     <Typography variant="subheading" gutterBottom={true}>
-      Le développement de la plateforme <b>Celluloïd</b> s’inscrit dans le
+      Le développement de la plateforme <b>Celluloid</b> s’inscrit dans le
       cadre d’un projet de recherche porté par Michaël Bourgatte et
       Laurent Tessier au sein de l’Atelier du Numérique de l’Institut Catholique de Paris.
     </Typography>
@@ -26,7 +27,7 @@ export default () => (
       a bénéficié du soutien de la Fondation Saint Matthieu.
     </Typography>
     <Typography variant="subheading" gutterBottom={true}>
-      Celluloïd est un projet Open Source, l’ensemble du code est accessible
+      Celluloid est un projet Open Source, l’ensemble du code est accessible
       librement <a href="https://github.com/celluloid-edu/">sur GitHub</a>
     </Typography>
     <div
@@ -37,22 +38,22 @@ export default () => (
     >
       <Grid container={true} spacing={40} direction="row" justify="center">
         <Grid item={true}>
-          <a href="https://www.icp.fr/">
+          <a href="https://www.icp.fr/" target="_blank">
             <img src={logoIcp} height="100px" alt="Institut Catholique de Paris" />
           </a>
         </Grid>
         <Grid item={true}>
-          <a href="https://fondation-st-matthieu.org/">
+          <a href="https://fondation-st-matthieu.org/" target="_blank">
             <img src={logoFsm} height="100px" alt="Fondation Saint-Matthieu" />
           </a>
         </Grid>
         <Grid item={true}>
-          <a href="https://www.lapaillasse.org/">
+          <a href="https://www.lapaillasse.org/" target="_blank">
             <img src={logoLp} height="100px" alt="La Paillasse" />
           </a>
         </Grid>
         <Grid item={true}>
-          <a href="https://celluloid.hypotheses.org">
+          <a href="https://celluloid.hypotheses.org" target="_blank">
             <img src={logoBlog} height="100px" alt="Le blog Celluloid" />
           </a>
         </Grid>

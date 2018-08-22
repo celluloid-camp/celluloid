@@ -1,94 +1,206 @@
-import { Router, Request, Response, NextFunction } from 'express';
-
-import { isLoggedIn } from 'auth/Utils';
+import { ProjectCreateData, ProjectGraphRecord, UserRecord } from '@celluloid/types';
+import { isLoggedIn, isProjectOwner } from 'auth/Utils';
+import { Router } from 'express';
 import * as ProjectStore from 'store/ProjectStore';
 
 import AnnotationsApi from './AnnotationApi';
-import { UserRecord, ProjectData } from '@celluloid/commons';
 
 const router = Router({ mergeParams: true });
 
 router.use('/:projectId/annotations', AnnotationsApi);
 
-router.get('/', (req, res) => {
-  return ProjectStore.selectAll(req.user as UserRecord)
-    .then((result: ProjectData[]) => {
-      return res.json(result);
-    })
-    .catch((error: Error) => {
-      // tslint:disable-next-line:no-console
-      console.error('Failed to fetch projects from database:', error);
-      return res.status(500).send();
-    });
-});
-
-function isOwner(req: Request, res: Response, next: NextFunction) {
-  const projectId = req.params.projectId;
-  const user = req.user as UserRecord;
-
-  ProjectStore.isOwner(projectId, user)
-    .then((result: boolean) =>
-      result ?
-        next() :
-        res.status(403).json({
-          error: 'ProjectOwnershipRequired'
-        }))
-    .catch(() =>
-      res.status(500).send()
-    );
-}
-
-router.get('/:projectId', (req, res) => {
-  const projectId = req.params.projectId;
-  const user = req.user as UserRecord;
-
-  ProjectStore.selectOneById(projectId, user)
-    .then((project: ProjectData) => {
-      return res.json(project);
-    })
-    .catch((error: Error) => {
-      // tslint:disable-next-line:no-console
-      console.error(`Failed to fetch project ${projectId}:`, error);
-      if (error.message === 'ProjectNotFound') {
-        return res.status(404).json({ error: error.message });
-      } else {
+router.get(
+  '/',
+  (req, res) => {
+    return ProjectStore.selectAll(req.user as UserRecord)
+      .then((result: ProjectGraphRecord[]) => {
+        return res.json(result);
+      })
+      .catch((error: Error) => {
+        // tslint:disable-next-line:no-console
+        console.error('Failed to fetch projects from database:', error);
         return res.status(500).send();
-      }
-    });
-});
+      });
+  });
 
-router.post('/', isLoggedIn, (req, res) => {
-  const user = req.user as UserRecord;
-  const project = req.body as ProjectData;
-  ProjectStore.insert(project, user)
-    .then(result => {
-      console.log(result);
-      res.status(201).json(result);
-    })
-    .catch((error: Error) => {
-      // tslint:disable-next-line:no-console
-      console.error('Failed to create project:', error);
-      return res.status(500).send();
-    });
-});
+router.get(
+  '/:projectId',
+  (req, res) => {
+    const projectId = req.params.projectId;
+    const user = req.user as UserRecord;
 
-router.put('/:projectId', isLoggedIn, isOwner, (req, res) => {
-  ProjectStore.update(req.body, req.params.projectId)
-    .then(result => res.status(200).json(result))
-    .catch(error => {
-      // tslint:disable-next-line:no-console
-      console.error('Failed to update project:', error);
-      return res.status(500).send();
-    });
-});
+    ProjectStore.selectOne(projectId, user)
+      .then((project: ProjectGraphRecord) => {
+        return res.json(project);
+      })
+      .catch((error: Error) => {
+        // tslint:disable-next-line:no-console
+        console.error(`Failed to fetch project ${projectId}:`, error);
+        if (error.message === 'ProjectNotFound') {
+          return res.status(404).json({ error: error.message });
+        } else {
+          return res.status(500).send();
+        }
+      });
+  });
 
-router.delete('/:projectId', isLoggedIn, isOwner, (req, res) => {
-  ProjectStore.del(req.params.projectId)
-    .then(result => res.status(204).send())
-    .catch(error => {
-      console.error('Failed to delete project:', error);
-      return res.status(500).send();
-    });
-});
+router.post(
+  '/',
+  isLoggedIn,
+  (req, res) => {
+    const user = req.user as UserRecord;
+    const project = req.body as ProjectCreateData;
+
+    ProjectStore.insert(project, user)
+      .then(result => {
+        console.log(result);
+        res.status(201).json(result);
+      })
+      .catch((error: Error) => {
+        // tslint:disable-next-line:no-console
+        console.error('Failed to create project:', error);
+        return res.status(500).send();
+      });
+  });
+
+router.put(
+  '/:projectId',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    ProjectStore.update(req.body, req.params.projectId)
+      .then(result => res.status(200).json(result))
+      .catch(error => {
+        // tslint:disable-next-line:no-console
+        console.error('Failed to update project:', error);
+        return res.status(500).send();
+      });
+  });
+
+router.delete(
+  '/:projectId',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    ProjectStore.del(req.params.projectId)
+      .then(() => res.status(204).send())
+      .catch(error => {
+        console.error('Failed to delete project:', error);
+        return res.status(500).send();
+      });
+  });
+
+router.get(
+  '/:projectId/members',
+  (req, res) => {
+    const projectId = req.params.projectId;
+    const user = req.user;
+
+    ProjectStore.selectOne(projectId, user)
+      .then((project: ProjectGraphRecord) =>
+          project.collaborative || (user && user.id  === project.userId)
+          ? ProjectStore.selectProjectMembers(projectId)
+          : Promise.resolve([])
+      )
+      .then(members => res.status(200).json(members))
+      .catch(error => {
+        console.error('Failed to list project members:', error);
+        if (error.message === 'ProjectNotFound') {
+          return res.status(404).json({ error: error.message });
+        } else {
+          return res.status(500).send();
+        }
+      });
+  });
+
+router.put(
+  '/:projectId/share',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    const projectId = req.params.projectId;
+    ProjectStore.shareById(projectId, req.body)
+      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(project => res.status(200).json(project))
+      .catch(error => {
+        console.error(`Failed to share project with id ${projectId}:`, error);
+        return res.status(500).send();
+      });
+  });
+
+router.delete(
+  '/:projectId/share',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    const projectId = req.params.projectId;
+    ProjectStore.unshareById(projectId)
+      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(project => res.status(200).json(project))
+      .catch(error => {
+        console.error(`Failed to unshare project with id ${projectId}:`, error);
+        return res.status(500).send();
+      });
+  });
+
+router.put(
+  '/:projectId/public',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    const projectId = req.params.projectId;
+    ProjectStore.setPublicById(projectId, true)
+      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(project => res.status(200).json(project))
+      .catch(error => {
+        console.error(`Failed to set project public with id ${projectId}:`, error);
+        return res.status(500).send();
+      });
+  });
+
+router.delete(
+  '/:projectId/public',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    const projectId = req.params.projectId;
+    ProjectStore.setPublicById(projectId, false)
+      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(project => res.status(200).json(project))
+      .catch(error => {
+        console.error(`Failed to unset public on project with id ${projectId}:`, error);
+        return res.status(500).send();
+      });
+  });
+
+router.put(
+  '/:projectId/collaborative',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    const projectId = req.params.projectId;
+    return ProjectStore.setCollaborativeById(projectId, true)
+      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(project => res.status(200).json(project))
+      .catch(error => {
+        console.error(`Failed to unset collaborative on project with id ${projectId}:`, error);
+        return res.status(500).send();
+      });
+  });
+
+router.delete(
+  '/:projectId/collaborative',
+  isLoggedIn,
+  isProjectOwner,
+  (req, res) => {
+    const projectId = req.params.projectId;
+    return ProjectStore.setCollaborativeById(projectId, false)
+      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(project => res.status(200).json(project))
+      .catch(error => {
+        console.error(`Failed to unset collaborative on project with id ${projectId}:`, error);
+        return res.status(500).send();
+      });
+  });
 
 export default router;

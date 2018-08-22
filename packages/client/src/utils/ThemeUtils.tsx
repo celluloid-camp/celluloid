@@ -1,11 +1,21 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import Palette from './PaletteUtils';
+import { deepOrange, green } from '@material-ui/core/colors';
 
-const Theme = createMuiTheme({
+const themeConfig = {
   palette: {
-    primary: { main: Palette.primary },
-    secondary: { main: Palette.secondary }
+    primary: { main: green['600'] },
+    secondary: deepOrange
   },
+};
+
+const Bright = createMuiTheme(themeConfig);
+
+const Dark = createMuiTheme({
+  ...themeConfig,
+  palette: {
+    ...themeConfig.palette,
+    type: 'dark'
+  }
 });
 
-export default Theme;
+export { Bright, Dark };

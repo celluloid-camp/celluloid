@@ -1,16 +1,16 @@
-import { Action, ActionType } from 'types/ActionTypes';
-
-import UserService from 'services/UserService';
 import {
-  TeacherRecord,
+  Credentials,
   SigninErrors,
   SigninResult,
-  TeacherSignupData,
   TeacherConfirmData,
-  TeacherCredentials
-} from '@celluloid/commons';
+  TeacherRecord,
+  TeacherSignupData
+} from '@celluloid/types';
 import { Dispatch } from 'redux';
-import { triggerSigninLoading, doLoginThunk } from '.';
+import UserService from 'services/UserService';
+import { Action, ActionType } from 'types/ActionTypes';
+
+import { doLoginThunk, triggerSigninLoading } from '.';
 
 export function openSignup(): Action<null> {
   return {
@@ -26,8 +26,8 @@ export function failSignup(errors: SigninErrors): Action<SigninErrors> {
 }
 
 export function openConfirmSignup(
-  credentials?: TeacherCredentials
-): Action<TeacherCredentials> {
+  credentials?: Credentials
+): Action<Credentials> {
   return {
     type: ActionType.OPEN_CONFIRM_SIGNUP,
     payload: credentials
@@ -57,20 +57,18 @@ export const doSignupThunk = (data: TeacherSignupData) =>
         } else {
           return dispatch(
             openConfirmSignup({
-              email: data.email,
+              login: data.email,
               password: data.password
             })
           );
         }
       })
-      .catch(() => {
-        return dispatch(failSignup({ server: 'RequestFailed' }));
-      });
+      .catch(() => dispatch(failSignup({ server: 'RequestFailed' })));
   };
 
 export const doConfirmSignupThunk = (
   data: TeacherConfirmData,
-  credentials?: TeacherCredentials
+  credentials?: Credentials
 ) => (dispatch: Dispatch) => {
   dispatch(triggerSigninLoading());
   return UserService.confirmSignup(data)

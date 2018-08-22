@@ -1,30 +1,29 @@
-import * as React from 'react';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'react-redux';
-
-import ConfirmSignup from './ConfirmComponent';
+import {
+  Credentials,
+  SigninErrors,
+  TeacherConfirmData
+} from '@celluloid/types';
 import { doConfirmSignupThunk, doResendCodeThunk } from 'actions/Signin';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { AnyAction, Dispatch } from 'redux';
 import { AppState } from 'types/StateTypes';
 
-import {
-  SigninErrors,
-  TeacherConfirmData,
-  TeacherCredentials
-} from '@celluloid/commons';
+import ConfirmSignup from './ConfirmComponent';
 
 interface Props {
-  credentials?: TeacherCredentials;
+  credentials?: Credentials;
   errors: SigninErrors;
   onClickResend(email: string): Promise<AnyAction>;
   onSubmit(
     data: TeacherConfirmData,
-    credentials?: TeacherCredentials
+    credentials?: Credentials
   ): Promise<AnyAction>;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onSubmit: (data: TeacherConfirmData, credentials?: TeacherCredentials) =>
+    onSubmit: (data: TeacherConfirmData, credentials?: Credentials) =>
       doConfirmSignupThunk(data, credentials)(dispatch),
     onClickResend: (email: string) => doResendCodeThunk(email)(dispatch)
   };
@@ -39,13 +38,11 @@ const mapStateToProps = (state: AppState) => {
 
 class Confirm extends React.Component<Props, TeacherConfirmData> {
   state = {
-    email: this.props.credentials ? this.props.credentials.email : '',
+    login: this.props.credentials ? this.props.credentials.login : '',
     code: ''
   } as TeacherConfirmData;
 
   render() {
-    // tslint:disable-next-line:no-console
-    console.log(this.props.credentials);
     const onChange = (name: string, value: string) => {
       this.setState(state => ({
         ...state,
@@ -57,7 +54,7 @@ class Confirm extends React.Component<Props, TeacherConfirmData> {
       <ConfirmSignup
         data={this.state}
         errors={this.props.errors}
-        onClickResend={() => this.props.onClickResend(this.state.email)}
+        onClickResend={() => this.props.onClickResend(this.state.login)}
         onSubmit={() =>
           this.props.onSubmit(this.state, this.props.credentials)
         }

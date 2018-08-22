@@ -7,18 +7,18 @@ import { openSignup, doLoginThunk, openResetPassword } from 'actions/Signin';
 import { Action } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
-import { TeacherCredentials, SigninErrors } from '@celluloid/commons';
+import { Credentials, SigninErrors } from '@celluloid/types';
 
 interface Props {
   errors: SigninErrors;
   onClickSignup(): Action<null>;
   onClickResetPassword(): Action<null>;
-  onSubmit(credentials: TeacherCredentials): Promise<AnyAction>;
+  onSubmit(credentials: Credentials): Promise<AnyAction>;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onSubmit: (credentials: TeacherCredentials) =>
+    onSubmit: (credentials: Credentials) =>
       doLoginThunk(credentials)(dispatch),
     onClickSignup: () => dispatch(openSignup()),
     onClickResetPassword: () => dispatch(openResetPassword())
@@ -32,11 +32,11 @@ const mapStateToProps = (state: AppState) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  class extends React.Component<Props, TeacherCredentials> {
+  class extends React.Component<Props, Credentials> {
     state = {
-      email: '',
+      login: '',
       password: '',
-    } as TeacherCredentials;
+    } as Credentials;
 
     render() {
       const onChange = (name: string, value: string) => {

@@ -1,49 +1,78 @@
-import * as React from 'react';
-
-import Button from '@material-ui/core/Button';
-import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import TextField from '@material-ui/core/TextField';
-
-import ProjectGrid from './components/ProjectGrid';
-import NewProject from './components/NewProject';
-import TagsService from 'services/TagService';
-import ProjectsService from 'services/ProjectService';
-
-import { WithUser } from 'types/UserTypes';
-
 import {
-  NewProjectData,
-  DisplayProjectData,
-  TagData
-} from '@celluloid/commons';
-import { YoutubeVideo } from 'types/YoutubeTypes';
-
-import YouTubeService from 'services/YoutubeService';
+  ProjectCreateData,
+  ProjectGraphRecord,
+  ProjectRecord,
+  TagData,
+  UserRecord
+} from '@celluloid/types';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import { listProjectsThunk } from 'actions/ProjectActions';
+import { openStudentSignup } from 'actions/Signin';
+import classnames from 'classnames';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { openStudentSignup } from '@celluloid/client/src/actions/Signin';
-import { Action } from 'types/ActionTypes';
+import ProjectsService from 'services/ProjectService';
+import TagsService from 'services/TagService';
+import YouTubeService from 'services/YoutubeService';
+import { AsyncAction, EmptyAction } from 'types/ActionTypes';
+import { AppState } from 'types/StateTypes';
+import { YoutubeVideo } from 'types/YoutubeTypes';
 
-const studentsIcon = require('images/students.svg');
-const teacherIcon = require('images/teacher.svg');
+import NewProject from './components/NewProject';
+import ProjectGrid from './components/ProjectGrid';
+import StudentsPict from './images/Students';
+import TeacherPict from './images/Teacher';
 
 const styles = ({ spacing }: Theme) => createStyles({
   center: {
-    textAlign: 'center' as 'center',
-    marginLeft: 'auto' as 'auto',
-    marginRight: 'auto' as 'auto',
-    height: '100%'
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   block: {
-    padding: spacing.unit * 6
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  gridWrapper: {
+    padding: spacing.unit * 2.5
+  },
+  grid: {
+    height: '100%',
+    padding: spacing.unit * 3,
+  },
+  formItem: {
+    marginTop: spacing.unit * 3,
+    display: 'flex',
+    justifyContent: 'flex-end',
+    flexDirection: 'column',
+    height: spacing.unit * 14,
+  },
+  title: {
+    height: spacing.unit * 11,
+    marginTop: spacing.unit,
+    marginBottom: spacing.unit
+  },
+  buttonWrapper: {
+    bottom: 0,
+    width: 300,
+    paddingTop: spacing.unit * 2,
+    paddingBottom: spacing.unit * 1
   }
 });
 
-interface Props extends WithUser, WithStyles<typeof styles> {
-  onClickJoinProject(): Action<null>;
+interface Props extends WithStyles<typeof styles> {
+  user?: UserRecord;
+  onClickJoinProject(): EmptyAction;
+  loadProjects(): AsyncAction<ProjectRecord[], string>;
 }
 
 interface State {
@@ -51,227 +80,256 @@ interface State {
   newProjectVideoUrl: string;
   video?: YoutubeVideo;
   tags: TagData[];
-  projects: DisplayProjectData[];
+  projects: ProjectGraphRecord[];
   videoError?: string;
   error?: string;
 }
 
+const mapStateToProps = (state: AppState) => {
+  return {
+    user: state.user,
+    projects: state.projectGrid
+  };
+};
+
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onClickJoinProject: () => dispatch(openStudentSignup())
+    onClickJoinProject: () => dispatch(openStudentSignup()),
+    loadProjects: () => listProjectsThunk()(dispatch),
+    // loadTags: () => listTagsThunk()(dispatch)
   };
 };
 
 export default withStyles(styles)(
-  connect(null, mapDispatchToProps)(
-  class extends React.Component<Props, State> {
-    state = {
-      newProjectDialogOpen: false,
-      newProjectVideoUrl: '',
-      tags: [] as TagData[],
-      projects: [] as DisplayProjectData[],
-      videoError: undefined,
-      error: undefined,
-      video: undefined
-    } as State;
+  connect(mapStateToProps, mapDispatchToProps)(
+    class extends React.Component<Props, State> {
+      state = {
+        newProjectDialogOpen: false,
+        newProjectVideoUrl: '',
+        tags: [] as TagData[],
+        projects: [] as ProjectGraphRecord[],
+        videoError: undefined,
+        error: undefined,
+        video: undefined
+      } as State;
 
-    load() {
-      ProjectsService.fetch()
-        .then((projects: DisplayProjectData[]) => {
-          this.setState({ projects, error: undefined });
-          TagsService.fetch()
-            .then((tags: TagData[]) => {
-              this.setState({ tags, error: undefined });
-            })
-            .catch((error: Error) => {
-              this.setState({ error: error.message });
-            });
-        })
-        .catch((error: Error) => {
-          this.setState({ error: error.message });
-        });
-    }
+      load() {
 
-    componentDidMount() {
-      this.load();
-    }
+        ProjectsService.list()
+          .then((projects: ProjectGraphRecord[]) => {
+            this.setState({ projects, error: undefined });
+            TagsService.list()
+              .then((tags: TagData[]) => {
+                this.setState({ tags, error: undefined });
+              })
+              .catch((error: Error) => {
+                this.setState({ error: error.message });
+              });
+          })
+          .catch((error: Error) => {
+            this.setState({ error: error.message });
+          });
+      }
 
-    componentDidUpdate(prevProps: Props) {
-      if (prevProps.user !== this.props.user) {
+      componentDidMount() {
         this.load();
       }
-    }
 
-    render() {
-      const { onClickJoinProject, classes } = this.props;
+      componentDidUpdate(prevProps: Props) {
+        if (prevProps.user !== this.props.user) {
+          this.load();
+        }
+      }
 
-      const showNewProjectDialog = () => {
-        try {
-          const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
-          const videoId = parsedVideoUrl.hostname.endsWith('youtu.be')
-            ? parsedVideoUrl.pathname.replace(/\//, '')
-            : parsedVideoUrl.searchParams.get('v');
+      render() {
+        const { onClickJoinProject, classes } = this.props;
 
-          if (videoId) {
-            YouTubeService.getVideoNameById(videoId)
-              .then((videoTitle: string) => {
-                this.setState({
-                  video: {
-                    id: videoId,
-                    title: videoTitle,
-                    thumbnailUrl: `http://img.youtube.com/vi/${videoId}/0.jpg`
-                  },
-                  newProjectDialogOpen: true
+        const showNewProjectDialog = () => {
+          try {
+            const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
+            const videoId = parsedVideoUrl.hostname.endsWith('youtu.be')
+              ? parsedVideoUrl.pathname.replace(/\//, '')
+              : parsedVideoUrl.searchParams.get('v');
+
+            if (videoId) {
+              YouTubeService.getVideoNameById(videoId)
+                .then((videoTitle: string) => {
+                  this.setState({
+                    video: {
+                      id: videoId,
+                      title: videoTitle,
+                      thumbnailUrl: `http://img.youtube.com/vi/${videoId}/0.jpg`
+                    },
+                    newProjectDialogOpen: true
+                  });
+                })
+                .catch(() => {
+                  this.setState({
+                    video: undefined,
+                    newProjectDialogOpen: false,
+                    videoError: `Ceci n'est pas un lien YouTube valide`
+                  });
                 });
-              })
-              .catch(() => {
-                this.setState({
-                  video: undefined,
-                  newProjectDialogOpen: false,
-                  videoError: `Ceci n'est pas un lien YouTube valide`
-                });
+            } else {
+              this.setState({
+                video: undefined,
+                newProjectDialogOpen: false,
+                videoError: `Ceci n'est pas un lien YouTube valide`
               });
-          } else {
+            }
+          } catch (err) {
             this.setState({
               video: undefined,
               newProjectDialogOpen: false,
               videoError: `Ceci n'est pas un lien YouTube valide`
             });
           }
-        } catch (err) {
-          this.setState({
-            video: undefined,
-            newProjectDialogOpen: false,
-            videoError: `Ceci n'est pas un lien YouTube valide`
+        };
+
+        const closeNewProjectDialog = (
+          send: boolean,
+          newProject: ProjectCreateData
+        ) => {
+          return new Promise((resolve, reject) => {
+            if (send) {
+              ProjectsService.create(newProject)
+                .then((project: ProjectGraphRecord) => {
+                  this.setState({ newProjectDialogOpen: false });
+                  this.load();
+                  resolve();
+                })
+                .catch(error => {
+                  reject(error);
+                });
+            } else {
+              this.setState({ newProjectDialogOpen: false });
+              resolve();
+            }
           });
-        }
-      };
+        };
 
-      const closeNewProjectDialog = (
-        send: boolean,
-        newProject: NewProjectData
-      ) => {
-        return new Promise((resolve, reject) => {
-          if (send) {
-            ProjectsService.create(newProject)
-              .then((project: DisplayProjectData) => {
-                this.setState({ newProjectDialogOpen: false });
-                this.load();
-                resolve();
-              })
-              .catch(error => {
-                reject(error);
-              });
-          } else {
-            this.setState({ newProjectDialogOpen: false });
-            resolve();
-          }
-        });
-      };
+        const handleVideoUrlChanged = (
+          event: React.ChangeEvent<HTMLInputElement>
+        ) => {
+          this.setState({ newProjectVideoUrl: event.target.value });
+        };
 
-      const handleVideoUrlChanged = (
-        event: React.ChangeEvent<HTMLInputElement>
-      ) => {
-        this.setState({ newProjectVideoUrl: event.target.value });
-      };
-
-      return (
-        <div>
-          <div style={{ padding: 20 }}>
-            <Grid
-              container={true}
-              spacing={40}
-              direction="row"
-              justify="space-around"
-              alignItems="stretch"
-              className={classes.block}
-            >
-              <Grid item={true} md={12} lg={3}>
-                <Typography variant="headline" gutterBottom={true}>
-                  <b>{`Apprendre ensemble avec une vidéo`}</b>
-                </Typography>
-                <Typography variant="subheading" gutterBottom={true}>
-                  {`Partagez une vidéo Youtube avec vos élèves, vos` +
-                    ` étudiant.e.s ou un groupe en formation : créez` +
-                    ` votre projet pédagogique, annotez les images,` +
-                    ` posez des questions et répondez à celles des` +
-                    ` participant.e.s.`}
-                </Typography>
-              </Grid>
-              <Grid item={true} xs={12} md={6} className={classes.center}>
-                <Grid
-                  container={true}
-                  spacing={24}
-                  direction="column"
-                  justify="space-between"
-                >
-                  <Grid item={true}>
-                    <img height={100} src={teacherIcon} alt="teacher icon" />
-                  </Grid>
-                  <Grid item={true}>
-                    <TextField
-                      style={{
-                        width: 384
-                      }}
-                      label="Ajouter un lien vers une vidéo YouTube..."
-                      onChange={handleVideoUrlChanged}
-                      value={this.state.newProjectVideoUrl}
-                      error={this.state.videoError ? true : false}
-                      fullWidth={true}
-                      helperText={this.state.videoError}
-                    />
-                  </Grid>
-                  <Grid item={true}>
-                    <Button
-                      variant="raised"
-                      color="primary"
-                      onClick={showNewProjectDialog}
-                    >
-                      {`Nouveau projet`}
-                    </Button>
-                    {this.state.video && (
-                      <NewProject
-                        onClose={closeNewProjectDialog}
-                        isOpen={this.state.newProjectDialogOpen}
-                        video={this.state.video}
-                        tags={this.state.tags}
-                      />
-                    )}
-                  </Grid>
-                </Grid>
-              </Grid>
+        return (
+          <>
+            <div style={{ padding: 20 }}>
               <Grid
-                item={true}
-                xs={12}
-                sm={6}
-                lg={3}
-                className={classes.center}
+                container={true}
+                spacing={40}
+                direction="row"
+                justify="center"
+                alignItems="stretch"
+                alignContent="stretch"
+                className={classes.grid}
               >
                 <Grid
-                  container={true}
-                  spacing={24}
-                  direction="column"
-                  justify="space-between"
+                  item={true}
+                  sm={12}
+                  lg={4}
+                  xl={3}
                 >
-                  <Grid item={true}>
-                    <img height={100} src={studentsIcon} alt="students icon" />
-                  </Grid>
-                  <Grid item={true}>
-                    <Button
-                      variant="raised"
-                      color="primary"
-                      onClick={() => onClickJoinProject()}
+                  <Typography variant="display2" color="primary" gutterBottom={true}>
+                    {`Apprendre ensemble avec une vidéo`}
+                  </Typography>
+                  <Typography variant="subheading" gutterBottom={true}>
+                    {`Partagez une vidéo Youtube avec vos élèves, vos` +
+                      ` étudiant.e.s ou un groupe en formation : créez` +
+                      ` votre projet pédagogique, annotez les images,` +
+                      ` posez des questions et répondez à celles des` +
+                      ` participant.e.s.`}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item={true}
+                  sm={12}
+                  lg={4}
+                  xl={6}
+                  className={classes.center}
+                >
+                  <div className={classes.block}>
+                    <Typography
+                      variant="display1"
+                      className={classes.title}
                     >
-                      {`Rejoindre un projet`}
-                    </Button>
-                  </Grid>
+                      {`Enseignants et formateurs`}
+                    </Typography>
+                    <TeacherPict />
+                    <div
+                      className={classes.formItem}
+                    >
+                      <div>
+                        <TextField
+                          style={{
+                            width: 300
+                          }}
+                          label="Ajouter un lien vers une vidéo YouTube..."
+                          onChange={handleVideoUrlChanged}
+                          value={this.state.newProjectVideoUrl}
+                          error={this.state.videoError ? true : false}
+                          helperText={this.state.videoError}
+                        />
+                      </div>
+                      <div className={classes.buttonWrapper}>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          onClick={showNewProjectDialog}
+                          fullWidth={true}
+                        >
+                          {`Nouveau projet`}
+                        </Button>
+                      </div>
+                      <div>
+                        {this.state.video &&
+                          <NewProject
+                            onClose={closeNewProjectDialog}
+                            isOpen={this.state.newProjectDialogOpen}
+                            video={this.state.video}
+                            tags={this.state.tags}
+                          />
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </Grid>
+                <Grid
+                  item={true}
+                  sm={12}
+                  lg={4}
+                  xl={3}
+                  className={classes.center}
+                >
+                  <div className={classes.block}>
+                    <Typography
+                      variant="display1"
+                      className={classes.title}
+                    >
+                      {`Élèves et étudiants`}
+                    </Typography>
+                    <StudentsPict />
+                    <div className={classnames(classes.formItem, classes.buttonWrapper)}>
+                      <Button
+                        variant="raised"
+                        color="primary"
+                        fullWidth={true}
+                        onClick={() => onClickJoinProject()}
+                      >
+                        {`Rejoindre un projet`}
+                      </Button>
+                    </div>
+                  </div>
                 </Grid>
               </Grid>
-            </Grid>
-          </div>
+            </div>
           <Divider />
-          <ProjectGrid projects={this.state.projects} />
-        </div>
+          <div style={{ padding: 20 }}>
+            <ProjectGrid projects={this.state.projects} />
+          </div>
+        </>
       );
     }
   }

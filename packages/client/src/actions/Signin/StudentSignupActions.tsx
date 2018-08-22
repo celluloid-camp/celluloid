@@ -1,16 +1,9 @@
+import { SigninErrors, SigninResult, StudentRecord, StudentSignupData } from '@celluloid/types';
+import { Dispatch } from 'redux';
+import UserService from 'services/UserService';
 import { Action, ActionType } from 'types/ActionTypes';
 
-import UserService from 'services/UserService';
-
-import {
-  StudentRecord,
-  SigninErrors,
-  SigninResult,
-  StudentSignupData,
-} from '@celluloid/commons';
-
-import { Dispatch } from 'redux';
-import { triggerSigninLoading } from '.';
+import { doLoginThunk, triggerSigninLoading } from '.';
 
 export function openStudentSignup(): Action<null> {
   return {
@@ -20,14 +13,14 @@ export function openStudentSignup(): Action<null> {
 
 export function failStudentSignup(errors: SigninErrors) {
   return {
-    type: ActionType.FAIL_SIGNUP,
+    type: ActionType.FAIL_STUDENT_SIGNUP,
     payload: errors
   };
 }
 
 export function succeedStudentSignup(): Action<StudentRecord> {
   return {
-    type: ActionType.SUCCEED_SIGNUP
+    type: ActionType.SUCCEED_STUDENT_SIGNUP
   };
 }
 
@@ -39,8 +32,11 @@ export const doStudentSignupThunk = (data: StudentSignupData) =>
         if (!result.success) {
           return dispatch(failStudentSignup(result.errors));
         } else {
-          // doLoginThunk(credentials)(dispatch);
+          doLoginThunk({
+            login: data.username,
+            password: data.password
+          })(dispatch);
           return dispatch(succeedStudentSignup());
         }
-      });
+      }).catch(() => dispatch(failStudentSignup({server: 'RequestFailed'})));
   };

@@ -9,14 +9,18 @@
     "packages/*"
   ],
   "scripts": {
-    "watch": "yarn build-commons && concurrently \"yarn watch-commons\" \"yarn watch-server\" \"yarn watch-client\"",
-    "watch-client": "(cd packages/client && yarn start)",
+    "watch": "yarn build-libs && concurrently \"yarn watch-types\" \"yarn watch-validators\" \"yarn watch-server\" \"yarn watch-client\"",
+    "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
+    "watch-client": "(cd packages/client && yarn watch)",
     "watch-server": "(cd packages/server && yarn watch)",
-    "watch-commons": "(cd packages/commons && yarn watch)",
+    "watch-types": "(cd packages/types && yarn watch)",
+    "watch-validators": "(cd packages/validators && yarn watch)",
     "build-client": "(cd packages/client && yarn build)",
     "build-server": "(cd packages/server && yarn build)",
-    "build-commons": "(cd packages/commons && yarn build)",
-    "build": "yarn build-commons && yarn build-client && yarn build-server",
+    "build-types": "(cd packages/types && yarn build)",
+    "build-validators": "(cd packages/validators && yarn build)",
+    "build-libs": "yarn build-types && yarn build-validators",
+    "build": "yarn build-libs && yarn build-client && yarn build-server",
     "deploy": "./bin/deploy",
     "start": "(cd packages/server && yarn start)"
   },

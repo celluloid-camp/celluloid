@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import { DisplayProjectData } from '@celluloid/commons';
+import { ProjectGraphRecord } from '@celluloid/types';
 import ProjectThumbnail from './ProjectThumbnail';
 import { TransitionGroup } from 'react-transition-group';
 import Grow from '@material-ui/core/Grow';
 
 interface Props {
-  projects: DisplayProjectData[];
+  projects: ProjectGraphRecord[];
 }
 export default ({ projects }: Props) => (
 
@@ -21,7 +21,7 @@ export default ({ projects }: Props) => (
         component={null}
         appear={true}
       >
-        {projects.map((project: DisplayProjectData) =>
+        {projects.map((project: ProjectGraphRecord) =>
           <Grow
             in={true}
             appear={true}

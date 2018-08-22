@@ -1,15 +1,11 @@
+import { Credentials, SigninErrors, SigninResult } from '@celluloid/types';
 import { Dispatch } from 'redux';
 import UserService from 'services/UserService';
 import { Action, ActionType } from 'types/ActionTypes';
 
-import {
-  SigninErrors,
-  SigninResult,
-  TeacherCredentials
-} from '@celluloid/commons';
-import { fetchCurrentUserThunk } from './UserActions';
-import { openConfirmSignup } from './SignupActions';
 import { triggerSigninLoading } from '.';
+import { openConfirmSignup } from './SignupActions';
+import { fetchCurrentUserThunk } from './UserActions';
 
 export function openLogin(): Action<null> {
   return {
@@ -17,7 +13,7 @@ export function openLogin(): Action<null> {
   };
 }
 
-export function succeedLogin(): Action<null> {
+export function succeedLogin(): Action<void> {
   return {
     type: ActionType.SUCCEED_LOGIN,
   };
@@ -25,10 +21,13 @@ export function succeedLogin(): Action<null> {
 
 export function failLogin(errors: SigninErrors):
   Action<SigninErrors> {
-  return { type: ActionType.FAIL_LOGIN, payload: errors, error: true };
+  return {
+    type: ActionType.FAIL_LOGIN,
+    payload: errors, error: true
+  };
 }
 
-export const doLoginThunk = (credentials: TeacherCredentials) =>
+export const doLoginThunk = (credentials: Credentials) =>
   (dispatch: Dispatch) => {
     dispatch(triggerSigninLoading());
     return UserService

@@ -4,7 +4,7 @@ import {
   SigninResult,
   SigninErrors,
   TeacherConfirmResetPasswordData
-} from '@celluloid/commons';
+} from '@celluloid/types';
 import { Dispatch } from 'redux';
 import { triggerSigninLoading, doLoginThunk } from '.';
 
@@ -70,7 +70,7 @@ export const doConfirmResetPasswordThunk = (
         return dispatch(failConfirmResetPassword(result.errors));
       } else {
         doLoginThunk({
-          email: data.email,
+          login: data.login,
           password: data.password
         })(dispatch);
         return dispatch(succeedResetPassword());

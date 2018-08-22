@@ -1,15 +1,15 @@
 import {
   TeacherSignupData,
-  TeacherCredentials,
+  Credentials,
   TeacherConfirmData,
   TeacherConfirmResetPasswordData,
   StudentSignupData
-} from '@celluloid/commons';
+} from '@celluloid/types';
 
 import * as Constants from './Constants';
 
 export default class {
-  static login(credentials: TeacherCredentials) {
+  static login(credentials: Credentials) {
     const headers = {
       Accepts: 'application/json',
       'Content-type': 'application/json'

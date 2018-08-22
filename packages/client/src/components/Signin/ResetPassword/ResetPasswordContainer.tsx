@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import ResetPassword from './ResetPasswordComponent';
 import { AppState } from 'types/StateTypes';
 
-import { SigninErrors } from '@celluloid/commons';
+import { SigninErrors } from '@celluloid/types';
 import { doResetPasswordThunk } from 'actions/Signin/ResetPasswordActions';
 
 interface Props {
@@ -29,21 +29,21 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  class extends React.Component<Props, { email: string }> {
-    state = { email: '' };
+  class extends React.Component<Props, { login: string }> {
+    state = { login: '' };
 
     render() {
       const onChange = (value: string) => {
         this.setState({
-          email: value
+          login: value
         });
       };
 
       return (
         <ResetPassword
-          email={this.state.email}
+          login={this.state.login}
           errors={this.props.errors}
-          onSubmit={() => this.props.onSubmit(this.state.email)}
+          onSubmit={() => this.props.onSubmit(this.state.login)}
           onChange={onChange}
         />
       );

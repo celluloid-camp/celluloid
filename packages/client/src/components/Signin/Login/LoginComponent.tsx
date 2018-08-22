@@ -1,21 +1,17 @@
+import { Credentials, SigninErrors } from '@celluloid/types';
+import { WithStyles, withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import DialogAltButtons from 'components/DialogAltButtons';
+import DialogButtons from 'components/DialogButtons';
+import SigninError from 'components/DialogError';
 import * as React from 'react';
 import { AnyAction } from 'redux';
-
 import { Action } from 'types/ActionTypes';
-import TextField from '@material-ui/core/TextField';
 
-import {
-  SigninErrors,
-  TeacherCredentials
-} from '@celluloid/commons';
-import { withStyles, WithStyles } from '@material-ui/core';
-import SigninAction from '../SigninAction';
-import SigninAltAction from '../SigninAltAction';
-import SigninError from '../SigninError';
 import { dialogStyles } from '../DialogStyles';
 
 interface Props extends WithStyles<typeof dialogStyles> {
-  credentials: TeacherCredentials;
+  credentials: Credentials;
   errors: SigninErrors;
   onChange(name: string, value: string): void;
   onClickResetPassword(): Action<null>;
@@ -35,13 +31,13 @@ export default withStyles(dialogStyles)(
   }: Props) => (
     <div>
       <TextField
-        label="Email"
+        label="Nom complet ou email"
         required={true}
-        value={credentials.email}
+        value={credentials.login}
         className={classes.input}
-        error={errors.email ? true : false}
-        onChange={event => onChange('email', event.target.value)}
-        helperText={errors && errors.email}
+        error={errors.login ? true : false}
+        onChange={event => onChange('login', event.target.value)}
+        helperText={errors && errors.login}
       />
       <TextField
         label="Mot de passe"
@@ -54,16 +50,16 @@ export default withStyles(dialogStyles)(
         helperText={errors && errors.password}
       />
       {errors.server && <SigninError error={errors.server} />}
-      <SigninAltAction
+      <DialogAltButtons
         actionName="Mot de passe oublié ?"
         onSubmit={onClickResetPassword}
       />
-      <SigninAltAction
+      <DialogAltButtons
         heading="Pas encore de compte ?"
         actionName="S'inscrire"
         onSubmit={onClickSignup}
       />
-      <SigninAction onSubmit={onSubmit} actionName="Se connecter" />
+      <DialogButtons onSubmit={onSubmit} actionName="Se connecter" />
     </div>
   )
 );

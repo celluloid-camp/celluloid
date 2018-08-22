@@ -1,27 +1,35 @@
-import * as path from 'path';
-import * as dotenv from 'dotenv';
-const rootDir = path.resolve(__dirname, '..', '..', '..');
-dotenv.config({path: path.resolve(rootDir, '.env')});
+import 'Config';
 
 import ProjectsApi from 'api/ProjectApi';
 import TagsApi from 'api/TagApi';
-import UsersApi from 'api/UserApi';
 import UnfurlApi from 'api/UnfurlApi';
-
-import * as passport from 'auth/Auth';
+import UsersApi from 'api/UserApi';
+import {
+  deserializeUser,
+  loginStrategy,
+  serializeUser,
+  SigninStrategy,
+  studentSignupStrategy,
+  teacherSignupStrategy
+} from 'auth/Auth';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as session from 'express-session';
-import { nocache } from 'utils/NoCache';
+import { nocache } from 'http/NoCache';
+import * as passport from 'passport';
+import { clientApp, clientDir } from 'Paths';
 
 require('cookie-parser');
 
-const clientBuild = path.resolve(rootDir, 'packages', 'client', 'build');
-
+passport.serializeUser(serializeUser);
+passport.deserializeUser(deserializeUser);
+passport.use(SigninStrategy.LOGIN, loginStrategy);
+passport.use(SigninStrategy.TEACHER_SIGNUP, teacherSignupStrategy);
+passport.use(SigninStrategy.STUDENT_SIGNUP, studentSignupStrategy);
 const app = express();
 
-app.use(express.static(clientBuild));
+app.use(express.static(clientDir));
 app.use(bodyParser.json());
 app.use(compression());
 app.use(
@@ -38,15 +46,11 @@ app.use('/api/users', UsersApi);
 app.use('/api/tags', TagsApi);
 app.use('/api/unfurl', UnfurlApi);
 
-app.get('/elb-status', (req, res) => {
-  return res.status(200).send();
-});
+app.get('/elb-status', (_, res) => res.status(200).send());
 
 app.use('/service-worker.js', nocache());
 
-app.get('/*', (req, res) => {
-  return res.sendFile(path.resolve(clientBuild, 'index.html'));
-});
+app.get('/*', (_, res) => res.sendFile(clientApp));
 
 app.listen(process.env.CELLULOID_LISTEN_PORT, () => {
   console.log(

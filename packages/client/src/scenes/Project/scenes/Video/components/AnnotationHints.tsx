@@ -1,10 +1,8 @@
-import * as React from 'react';
+import { AnnotationRecord } from '@celluloid/types';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 import * as classNames from 'classnames';
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import { getUserColor } from 'types/UserTypes';
-
-import { AnnotationRecord } from '@celluloid/commons';
-import * as AnnotationUtils from 'utils/AnnotationUtils';
+import * as React from 'react';
+import { getUserColor } from 'utils/UserUtils';
 
 const styles = createStyles({
   visible: {
@@ -49,16 +47,15 @@ export default
   withStyles(styles)((props: Props) => {
     const {
       duration,
-      position,
       annotations,
       visible,
       onClick,
       classes,
     } = props;
 
-    const getAnnotationPosition = (annotation: AnnotationRecord) =>
+    const getHintStartPosition = (annotation: AnnotationRecord) =>
       `${(annotation.startTime * 100 / duration)}%`;
-    const getAnnotationWidth = (annotation: AnnotationRecord) =>
+    const getHintWidth = (annotation: AnnotationRecord) =>
       `${((annotation.stopTime - annotation.startTime) * 100
         / duration
       )}%`;
@@ -68,27 +65,27 @@ export default
         className={classes.container}
       >
         {Array.from(annotations)
-          .map((annotation, index) =>
-            <div
-              key={annotation.id}
-              className={classNames(
-                classes.hint,
-                visible ? classes.visible : classes.hidden
-              )}
-              style={{
-                color: 'white',
-                top: visible ? index * 24 : 0,
-                left: getAnnotationPosition(annotation),
-                width: getAnnotationWidth(annotation),
-                backgroundColor:
-                  AnnotationUtils.visible(annotation, position) ?
-                    'white' :
-                    getUserColor(annotation.userId),
-                border: `2px solid ${getUserColor(annotation.userId)}`
-              }}
-              onClick={onClick(annotation)}
-            />
-          )}
+          .map((annotation, index) => {
+            return (
+              <div
+                key={annotation.id}
+                className={classNames(
+                  classes.hint,
+                  visible ? classes.visible : classes.hidden
+                )}
+                style={{
+                  color: 'white',
+                  top: visible ? index * 24 : 0,
+                  left: getHintStartPosition(annotation),
+                  width: getHintWidth(annotation),
+                  backgroundColor: getUserColor(annotation.user),
+                  border: `2px solid ${getUserColor(annotation.user)}`
+                }}
+                onClick={() => onClick(annotation)}
+              />
+            );
+          })
+        }
       </div>
     );
   });

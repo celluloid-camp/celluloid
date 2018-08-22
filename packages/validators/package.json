@@ -1,0 +1,19 @@
+{
+  "name": "@celluloid/validators",
+  "main": "build/index.js",
+  "version": "0.1.0",
+  "description": "Validation library for Celluloid client and server types",
+  "repository": "http://github.com/celluloid-edu/celluloid",
+  "author": "Erwan Queffélec <erwan.queffelec@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf build",
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@celluloid/types": "^0.1.0",
+    "typescript": "^3.0.1",
+    "validators": "^0.3.1"
+  }
+}

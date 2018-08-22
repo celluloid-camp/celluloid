@@ -1,17 +1,13 @@
+import { SigninErrors, StudentSignupData } from '@celluloid/types';
+import { WithStyles, withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import DialogAltButtons from 'components/DialogAltButtons';
+import DialogButtons from 'components/DialogButtons';
+import DialogError from 'components/DialogError';
 import * as React from 'react';
 import { AnyAction } from 'redux';
-import { withStyles, WithStyles } from '@material-ui/core';
-
-import TextField from '@material-ui/core/TextField';
-
-import {
-  SigninErrors,
-  StudentSignupData
-} from '@celluloid/commons';
 import { Action } from 'types/ActionTypes';
-import SigninAction from '../SigninAction';
-import SigninAltAction from '../SigninAltAction';
-import SigninError from '../SigninError';
+
 import { dialogStyles } from '../DialogStyles';
 
 interface Props extends WithStyles<typeof dialogStyles> {
@@ -82,13 +78,13 @@ export default withStyles(dialogStyles)(
           'Attention, cette réponse sert de mot de passe et ne peut être récupérée'
         }
       />
-      {errors.server && <SigninError error={errors.server} />}
-      <SigninAltAction
+      {errors.server && <DialogError error={errors.server} />}
+      <DialogAltButtons
         heading="Déjà un compte ?"
         actionName="Se connecter"
         onSubmit={onClickLogin}
       />
-      <SigninAction onSubmit={onSubmit} actionName="Rejoindre" />
+      <DialogButtons onSubmit={onSubmit} actionName="Rejoindre" />
     </div>
   )
 );

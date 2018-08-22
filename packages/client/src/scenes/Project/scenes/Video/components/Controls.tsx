@@ -1,18 +1,18 @@
-import * as React from 'react';
-import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
+import 'rc-slider/assets/index.css';
+
+import { deepOrange } from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import Slider from 'rc-slider';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-
 import AnnotationIcon from '@material-ui/icons/Comment';
-import PlayIcon from '@material-ui/icons/PlayArrow';
-import PauseIcon from '@material-ui/icons/Pause';
 import FullScreenEnterIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
-
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayIcon from '@material-ui/icons/PlayArrow';
+import Slider from 'rc-slider';
+import * as React from 'react';
 import { formatDuration } from 'utils/DurationUtils';
-import Palette from 'utils/PaletteUtils';
 
 const styles = createStyles({
   controls: {
@@ -22,12 +22,14 @@ const styles = createStyles({
     bottom: 0,
     margin: 0,
     padding: 0,
-    paddingRight: 130
   },
   icon: {
     height: 32,
     width: 32
   },
+  slider: {
+    paddingTop: 6
+  }
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -36,27 +38,24 @@ interface Props extends WithStyles<typeof styles> {
   position: number;
   show: boolean;
   fullscreen: boolean;
-  onSeekChange(position: number): void;
-  onSeekAfterChange(position: number): void;
+  onSeek(position: number, pause: boolean): void;
   onTogglePlayPause(): void;
   onToggleFullscreen(): void;
-  onToggleAnnotationHints(): void;
+  onToggleHints(): void;
 }
 
 export default withStyles(styles)(({
-  classes,
   playing,
   duration,
   position,
   show,
   fullscreen,
-  onSeekChange,
-  onSeekAfterChange,
   onTogglePlayPause,
   onToggleFullscreen,
-  onToggleAnnotationHints
+  onToggleHints,
+  onSeek,
+  classes,
 }: Props) => (
-
     <Grid
       container={true}
       direction="row"
@@ -65,9 +64,7 @@ export default withStyles(styles)(({
       alignItems="center"
       className={classes.controls}
     >
-      <Grid
-        item={true}
-      >
+      <Grid item={true}>
         <IconButton
           color="inherit"
           onClick={() => onTogglePlayPause()}
@@ -79,47 +76,69 @@ export default withStyles(styles)(({
           }
         </IconButton>
       </Grid>
-      <Grid
-        item={true}
-        style={{ flexGrow: 1 }}
-      >
-        <Grid
-          container={true}
-          direction="column"
-        >
-          <Grid
-            item={true}
-            style={{ flexGrow: 1 }}
-          >
-            <Slider
-              min={0}
-              max={duration}
-              value={position}
-              trackStyle={[{ backgroundColor: Palette.secondary }]}
-              handleStyle={{
-                borderColor: Palette.secondary
-              }}
-              onChange={value => onSeekChange(value)}
-              onAfterChange={value => {
-                onSeekAfterChange(value);
-              }}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid
-        item={true}
-      >
+      <Grid item={true}>
         <Typography
           style={{ color: 'white' }}
           variant="caption"
         >
-          {`${formatDuration(position)} / ${formatDuration(duration)}`}
+          {formatDuration(position)}
         </Typography>
       </Grid>
-      <Grid
-        item={true}
-      >
+      <Grid item={true} style={{ flexGrow: 1 }}>
+        <Grid
+          container={true}
+          direction="column"
+        >
+          <Grid item={true} style={{ flexGrow: 1 }}>
+            <Slider
+              className={classes.slider}
+              min={0}
+              max={duration}
+              value={position}
+              trackStyle={[{
+                border: 0,
+                borderRadius: 0,
+                backgroundColor: deepOrange[600],
+                height: 2
+              }]}
+              railStyle={{
+                height: 2,
+                borderRadius: 0,
+                backgroundColor: deepOrange['100'],
+                border: 0
+              }}
+              handleStyle={[{
+                transitionProperty: 'all',
+                marginLeft: -6,
+                border: 0,
+                height: 12, width: 12,
+                backgroundColor: deepOrange[500]
+              }]}
+              onChange={value =>
+                onSeek(value, false)
+              }
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item={true}>
+        <Typography
+          style={{ color: 'white' }}
+          variant="caption"
+        >
+          {formatDuration(duration)}
+        </Typography>
+      </Grid>
+      <Grid item={true}>
+        <IconButton
+          color={!show ? 'primary' : 'secondary'}
+          onClick={() => onToggleHints()}
+          classes={{ root: classes.icon }}
+        >
+          <AnnotationIcon />
+        </IconButton>
+      </Grid>
+      <Grid item={true}>
         <IconButton
           color="inherit"
           onClick={() => onToggleFullscreen()}
@@ -129,17 +148,6 @@ export default withStyles(styles)(({
             <FullscreenExitIcon /> :
             <FullScreenEnterIcon />
           }
-        </IconButton>
-      </Grid>
-      <Grid
-        item={true}
-      >
-        <IconButton
-          color={show ? 'primary' : 'secondary'}
-          onClick={() => onToggleAnnotationHints()}
-          classes={{ root: classes.icon }}
-        >
-          <AnnotationIcon />
         </IconButton>
       </Grid>
     </Grid>

@@ -1,19 +1,24 @@
+import { TeacherRecord, UserRecord } from '@celluloid/types';
 import * as bcrypt from 'bcrypt';
-import * as passport from 'passport';
-import { IStrategyOptionsWithRequest, Strategy, VerifyFunctionWithRequest } from 'passport-local';
-import * as UserStore from 'store/UserStore';
+import { Strategy } from 'passport-local';
 import * as ProjectStore from 'store/ProjectStore';
+import * as UserStore from 'store/UserStore';
+import { TeacherServerRecord, UserServerRecord } from 'types/UserTypes';
 
 import { sendConfirmationCode } from './Utils';
-import { TeacherRecord, UserRecord } from '@celluloid/commons';
-import { TeacherServerRecord } from 'types/UserTypes';
 
-passport.serializeUser(({ id }, done) => {
+export enum SigninStrategy {
+  LOGIN = 'login',
+  TEACHER_SIGNUP = 'teacher-signup',
+  STUDENT_SIGNUP = 'student-signup'
+}
+
+export const serializeUser = ({ id }, done) => {
   return Promise.resolve(done(null, id));
-});
+};
 
-passport.deserializeUser((id: string, done) => {
-  return UserStore.getById(id)
+export const deserializeUser = (id: string, done) => {
+  return UserStore.selectOne(id)
     .then((result: TeacherRecord) => {
       if (result) {
         return Promise.resolve(done(null, result));
@@ -28,75 +33,82 @@ passport.deserializeUser((id: string, done) => {
     .catch((error: Error) =>
       Promise.resolve(done(error))
     );
-});
+};
 
-const options = {
-  passReqToCallback: true,
-  usernameField: 'email'
-} as IStrategyOptionsWithRequest;
+const signStudentUp = (req, username, password, done) => {
+  const {
+    projectShareName,
+    projectSharePassword,
+    passwordHint
+  } = req.body;
 
-function verifyStudentSignup(): VerifyFunctionWithRequest {
-  return (req, email, password, done) => {
-    console.log(`Signup student ${req.body.username}`, password, req);
-    return ProjectStore.selectOneByShareName(req.body.projectShareName)
-      .then(result => {
-        if (result) {
-          if (result.sharePassword === req.body.projectSharePassword) {
-            return UserStore.createStudent(
-              req.body.username,
-              req.body.passwordHint,
-              password);
-          }
-          return Promise.reject(new Error('IncorrectProjectPassword'));
-        }
-        return Promise.reject(new Error('ProjectNotFound'));
-      })
-      .then((user: UserRecord) => Promise.resolve(done(null, user)))
-      .catch((error: Error) => {
-        console.log(error);
-        return Promise.resolve(done(error));
-      });
-  };
-}
-
-function verifyTeacherSignup(): VerifyFunctionWithRequest {
-  return (req, email, password, done) => {
-    console.log(`Signup teacher ${req.body.username}`, password, req);
-    return UserStore.createTeacher(req.body.username, email, password)
-      .then((user: TeacherServerRecord) => sendConfirmationCode(user))
-      .then((user: TeacherRecord) => Promise.resolve(done(null, user)))
-      .catch((error: Error) => Promise.resolve(done(error)));
-  };
-}
-
-const teacherLogin = new Strategy(options, (_, email, password, done) => {
-  return UserStore.getByEmail(email)
-    .then((user: TeacherServerRecord) => {
-      if (user) {
-        if (!bcrypt.compareSync(password, user.password)) {
-          console.error(
-            `Login failed for user ${user.email}: bad password`
+  return ProjectStore.selectOneByShareName(projectShareName)
+    .then(result => {
+      if (result) {
+        console.log(result);
+        if (bcrypt.compareSync(projectSharePassword, result.sharePassword)) {
+          return UserStore.createStudent(
+            username,
+            passwordHint,
+            password,
+            result.id
           );
-          return Promise.resolve(done(new Error('InvalidUser')));
-        } else if (!user.confirmed) {
-          console.error(
-            `Login failed: ${user.email} is not confirmed`
-          );
-          return Promise.resolve(done(new Error('UserNotConfirmed')));
         }
-        return Promise.resolve(done(null, user));
+        return Promise.reject(new Error('IncorrectProjectPassword'));
       }
-      console.error(`Login failed: ${email} does not exist`);
-      return Promise.resolve(done(new Error('InvalidUser')));
+      return Promise.reject(new Error('ProjectNotFound'));
+    })
+    .then((user: UserRecord) => Promise.resolve(done(null, user)))
+    .catch((error: Error) => {
+      console.error('Failed to signup student:', error);
+      return Promise.resolve(done(error));
+    });
+};
+
+const signTeacherUp = (req, email, password, done) => {
+  return UserStore.createTeacher(req.body.username, email, password)
+    .then((user: TeacherServerRecord) => sendConfirmationCode(user))
+    .then((user: TeacherRecord) => Promise.resolve(done(null, user)))
+    .catch((error: Error) => Promise.resolve(done(error)));
+};
+
+const logUserIn = (login, password, done) => {
+  return UserStore.selectOneByUsernameOrEmail(login)
+    .then((user: UserServerRecord) => {
+      if (!user) {
+        return Promise.resolve(done(new Error('InvalidUser')));
+      }
+      if (!bcrypt.compareSync(password, user.password)) {
+        console.error(
+          `Login failed for user ${user.username}: incorrect password`
+        );
+        return Promise.resolve(done(new Error('InvalidUser')));
+      }
+      if (!user.confirmed && user.role !== 'Student') {
+        console.error(
+          `Login failed: ${user.username} is not confirmed`
+        );
+        return Promise.resolve(done(new Error('UserNotConfirmed')));
+      }
+      return Promise.resolve(done(null, user));
     })
     .catch((error: Error) => Promise.resolve(done(error)));
-});
+};
 
-const teacherSignup = new Strategy(options, verifyTeacherSignup());
-const studentSignup = new Strategy(options, verifyStudentSignup());
+export const loginStrategy =
+  new Strategy(
+    { usernameField: 'login' },
+    logUserIn
+  );
 
-passport.use('teacher-login', teacherLogin);
-passport.use('teacher-signup', teacherSignup);
-passport.use('student-signup', studentSignup);
+export const teacherSignupStrategy =
+  new Strategy(
+    { passReqToCallback: true, usernameField: 'email' },
+    signTeacherUp
+  );
 
-export = passport;
+export const studentSignupStrategy =
+  new Strategy(
+    { passReqToCallback: true, usernameField: 'username' },
+    signStudentUp
+  );

@@ -1,6 +1,6 @@
-import { createStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, Theme } from '@material-ui/core';
 
-export const videoStyles = ({ spacing }: Theme) => createStyles({
+export const styles = ({ spacing }: Theme) => createStyles({
   hintBox: {
     overflowY: 'auto' as 'auto',
     overflowX: 'hidden' as 'hidden',
@@ -8,11 +8,11 @@ export const videoStyles = ({ spacing }: Theme) => createStyles({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     position: 'absolute' as 'absolute',
     transition: 'all 0.5s ease',
-    bottom: 56,
+    bottom: spacing.unit * 7,
     width: '100%'
   },
   hintBoxExpanded: {
-    height: 'calc(100% - 56px)'
+    height: `calc(100% - ${spacing.unit * 7}px)`
   },
   hintBoxCollapsed: {
     height: 0
@@ -44,8 +44,8 @@ export const videoStyles = ({ spacing }: Theme) => createStyles({
   annotationFrame: {
     overflowY: 'auto' as 'auto',
     overflowX: 'hidden' as 'hidden',
-    maxHeight: 'calc(100% - 56px)',
-    verticalAlign: 'middle' as 'middle',
+    maxHeight: `calc(100% - ${spacing.unit * 7}px)`,
+    verticalAlign: 'middle',
     textAlign: 'left' as 'left',
     color: 'white',
     transition: 'all 0.5s ease',
@@ -64,16 +64,15 @@ export const videoStyles = ({ spacing }: Theme) => createStyles({
     left: 0,
     right: 0,
     width: '100%',
-    height: 56,
+    height: spacing.unit * 7,
     zIndex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     transition: 'all 0.5s ease',
     padding: 0
   },
   annotateButton: {
-    right: 28,
-    bottom: 28,
-    transition: 'opacity 0.8s ease',
+    right: spacing.unit * 2,
+    bottom: spacing.unit * 9,
     position: 'absolute' as 'absolute',
     zIndex: 2
   },

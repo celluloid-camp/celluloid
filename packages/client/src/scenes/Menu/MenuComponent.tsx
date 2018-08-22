@@ -1,27 +1,34 @@
-import * as React from 'react';
-import { Dispatch, AnyAction } from 'redux';
-import { connect } from 'react-redux';
-import createStyles from '@material-ui/core/styles/createStyles';
-import { NavLink, Link, RouteComponentProps } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
-import SigninDialog, { SigninState } from 'components/Signin';
-import { WithUser } from 'types/UserTypes';
-import SigninBar from './components/SigninBar';
-import { AppState, User } from 'types/StateTypes';
-import { openLogin, openSignup, closeSignin } from 'actions/Signin';
-import { Action } from 'types/ActionTypes';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
+import createStyles from '@material-ui/core/styles/createStyles';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { closeSignin, openLogin, openSignup } from 'actions/Signin';
+import { getButtonLink } from 'components/ButtonLink';
+import SigninDialog, { SigninState } from 'components/Signin';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import { AnyAction, Dispatch } from 'redux';
+import { Action } from 'types/ActionTypes';
+import { AppState } from 'types/StateTypes';
 
-interface ChildProps extends WithUser {}
+import { UserRecord } from '@celluloid/types';
+import SigninBar from './components/SigninBar';
 
 const styles = (theme: Theme) => createStyles({
   root: { height: '100%' },
   grow: { flex: 1 },
-  homeLink: { textDecoration: 'none' },
+  homeLink: {
+    fontSize: theme.typography.display1.fontSize,
+    fontWeight: theme.typography.display1.fontWeight,
+    fontFamily: theme.typography.display1.fontFamily,
+    color: theme.typography.display1.color,
+    textTransform: 'none',
+    textDecoration: 'none'
+   },
   content: {
     paddingTop: 64,
     height: '100%'
@@ -53,11 +60,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-interface Props extends RouteComponentProps<{}>, WithStyles<typeof styles> {
-  user?: User;
+interface Props extends WithStyles<typeof styles> {
+  user?: UserRecord;
   signinDialog: SigninState;
-
-  Content: React.ComponentType<ChildProps>;
+  Content: React.ComponentType;
   onClickLogin(): Action<null>;
   onClickSignup(): Action<null>;
   onCloseSignin(): Action<null>;
@@ -77,27 +83,24 @@ export default withStyles(styles)(
       onClickLogout,
       onCloseSignin,
       Content,
-      signinDialog,
-      ...others
+      signinDialog
     } = props;
-
-    // tslint:disable-next-line:no-any
-    const AboutLink = (buttonProps: any) => <Link to="/about" {...buttonProps} />;
 
     return (
       <div className={classes.root}>
         <AppBar color="default">
           <Toolbar>
             <div className={classes.grow}>
-              <NavLink to="/" className={classes.homeLink}>
-                <Typography variant="display1">
-                  <b>{`Celluloid`}</b>
-                </Typography>
-              </NavLink>
+              <Button
+                component={getButtonLink('/')}
+                className={classes.homeLink}
+              >
+                <b>{`Celluloid`}</b>
+              </Button>
             </div>
             <Button color="secondary">{`fr`}</Button>
             <Button
-              component={AboutLink}
+              component={getButtonLink('/About')}
             >
               {`À propos`}
             </Button>
@@ -111,16 +114,16 @@ export default withStyles(styles)(
         </AppBar>
         <SigninDialog onCancel={onCloseSignin} state={signinDialog} />
         <div className={classes.content}>
-          <Content user={user} {...others} />
+          <Content />
         </div>
         <div className={classes.footer}>
-            <Typography variant="caption">
-              {`© 2018 Institut Catholique de Paris`}
-            </Typography>
+          <Typography variant="caption">
+            {`© 2018 Institut Catholique de Paris`}
+          </Typography>
           <NavLink to="/terms-and-conditions" className={classes.footerLink}>
             {`Conditions Générales d'utilisation`}
           </NavLink>
-            {` - `}
+          {` - `}
           <NavLink to="/legal-notice" className={classes.footerLink}>
             {`Mentions Légales`}
           </NavLink>

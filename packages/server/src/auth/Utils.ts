@@ -1,12 +1,110 @@
-import { sendMail } from 'utils/Mailer';
-import { Response, Request, NextFunction } from 'express';
+import { UserRecord } from '@celluloid/types';
+import { sendMail } from 'backends/Email';
+import * as bcrypt from 'bcrypt';
+import { paramCase } from 'change-case';
+import { NextFunction, Request, Response } from 'express';
+import * as ProjectStore from 'store/ProjectStore';
 import { TeacherServerRecord } from 'types/UserTypes';
 
-export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
+export function hashPassword(password: string) {
+  const salt = bcrypt.genSaltSync();
+  return bcrypt.hashSync(password, salt);
+}
+
+export function isLoggedIn(
+  req: Request,
+  res: Response,
+  next: NextFunction) {
   if (!req.user) {
-    return Promise.resolve(res.status(401).json({}));
+    return Promise.resolve(res.status(401).json({
+      error: 'LoginRequired'
+    }));
   }
   return Promise.resolve(next());
+}
+
+export function isTeacher(
+  req: Request,
+  res: Response,
+  next: NextFunction) {
+  if (!req.user || req.user.role !== 'Teacher') {
+    return Promise.resolve(res.status(403).json({
+      error: 'TeacherRoleRequired'
+    }));
+  }
+  return Promise.resolve(next());
+}
+
+export function isProjectOwner(
+  req: Request,
+  res: Response,
+  next: NextFunction) {
+  const projectId = req.params.projectId;
+  const user = req.user as UserRecord;
+
+  return ProjectStore.isOwner(projectId, user)
+    .then((result: boolean) => {
+      if (result) {
+        next();
+        return Promise.resolve();
+      }
+      res.status(403).json({
+        error: 'ProjectOwnershipRequired'
+      });
+      return Promise.resolve();
+    })
+    .catch(error => {
+      console.error('Failed to check project ownership:', error);
+      return Promise.resolve(res.status(500).send());
+    });
+}
+
+export function isProjectMember(
+  req: Request,
+  res: Response,
+  next: NextFunction) {
+  const projectId = req.params.projectId;
+  const user = req.user as UserRecord;
+  ProjectStore.isMember(projectId, user)
+    .then((result: boolean) => {
+      if (result) {
+        next();
+        return Promise.resolve();
+      }
+      res.status(403).json({
+        error: 'ProjectMembershipRequired'
+      });
+      return Promise.resolve();
+    })
+    .catch(error => {
+      console.error('Failed to check project membership:', error);
+      return Promise.resolve(res.status(500).send());
+    });
+}
+
+export function isProjectOwnerOrMember(
+  req: Request,
+  res: Response,
+  next: NextFunction) {
+
+  const projectId = req.params.projectId;
+  const user = req.user as UserRecord;
+
+  ProjectStore.isOwnerOrMember(projectId, user)
+    .then((result: boolean) => {
+      if (result) {
+        next();
+        return Promise.resolve();
+      }
+      res.status(403).json({
+        error: 'ProjectOwnershipOrMembershipRequired'
+      });
+      return Promise.resolve();
+    })
+    .catch(error => {
+      console.error('Failed project ownership/membership test:', error);
+      return Promise.resolve(res.status(500).send());
+    });
 }
 
 export function generateConfirmationCode() {
@@ -14,6 +112,30 @@ export function generateConfirmationCode() {
   const first = code();
   const second = code();
   return `${first}${second}`;
+}
+
+export function generateUniqueShareName(title: string) {
+  const compare = (a: string, b: string) =>
+    b.length - a.length;
+
+  const construct = (result, str) => {
+    if (!!str) {
+      if (result.join().length < 12) {
+        result = [...result, str];
+      }
+    }
+    return result;
+  };
+
+  const prefix = paramCase(title)
+    .split(/-/)
+    .sort(compare)
+    .reduce(construct, [])
+    .join('-');
+
+  const suffix = generateConfirmationCode();
+
+  return `${prefix}-${suffix}`;
 }
 
 export function sendConfirmationCode(user: TeacherServerRecord) {
@@ -39,10 +161,10 @@ export function sendConfirmationCode(user: TeacherServerRecord) {
 export function sendPasswordReset(user: TeacherServerRecord) {
   const subject = `${
     user.username
-  } : réinitialisation de votre mot de passe Celluloid`;
+    } : réinitialisation de votre mot de passe Celluloid`;
   const text =
     `Bonjour ${user.username},\n\n` +
-    `Nous avons reçu Une demande de réinitialisation de mot de passe ` +
+    `Nous avons reçu une demande de réinitialisation de mot de passe ` +
     `pour l'adresse email ${user.email}\n\n` +
     `Voici votre code de confirmation: ${user.code}\n\n` +
     `Ce code sera valable pendant 1 heure.\n\n` +

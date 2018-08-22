@@ -1,18 +1,15 @@
+import { SigninErrors } from '@celluloid/types';
+import { WithStyles, withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import DialogButtons from 'components/DialogButtons';
+import SigninError from 'components/DialogError';
 import * as React from 'react';
 import { AnyAction } from 'redux';
 
-import TextField from '@material-ui/core/TextField';
-
-import {
-  SigninErrors
-} from '@celluloid/commons';
-import { withStyles, WithStyles } from '@material-ui/core';
-import SigninAction from '../SigninAction';
-import SigninError from '../SigninError';
 import { dialogStyles } from '../DialogStyles';
 
 interface Props extends WithStyles<typeof dialogStyles> {
-  email: string;
+  login: string;
   errors: SigninErrors;
   onChange(value: string): void;
   onSubmit(): Promise<AnyAction>;
@@ -21,23 +18,23 @@ interface Props extends WithStyles<typeof dialogStyles> {
 export default withStyles(dialogStyles)(
   ({
     classes,
-    email,
+    login,
     errors,
     onChange,
     onSubmit,
   }: Props) => (
     <div>
       <TextField
-        label="Email"
+        label="Email ou nom complet"
         required={true}
-        value={email}
+        value={login}
         className={classes.input}
-        error={errors.email ? true : false}
+        error={errors.login ? true : false}
         onChange={event => onChange(event.target.value)}
-        helperText={errors && errors.email}
+        helperText={errors && errors.login}
       />
       {errors.server && <SigninError error={errors.server} />}
-      <SigninAction onSubmit={onSubmit} actionName="Changer le mot de passe" />
+      <DialogButtons onSubmit={onSubmit} actionName="Changer le mot de passe" />
     </div>
   )
 );

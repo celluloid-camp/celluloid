@@ -6,10 +6,10 @@ const isProduction = process.env.NODE_ENV === 'production';
 const basePath = path.resolve(__dirname, './');
 const rootPath = path.resolve(basePath, '../../');
 const srcPath = path.resolve(basePath, './src');
-const distPath = path.resolve(basePath, './dist');
+const buildPath = path.resolve(basePath, './build');
 
 const output = {
-  path: distPath,
+  path: buildPath,
   filename: 'index.js',
   chunkFilename: '[id].[chunkhash].js',
 };
@@ -25,7 +25,7 @@ const rules = [
     test: /\.ts$/,
     exclude: /node_modules/,
     include: srcPath,
-    use: ['babel-loader', 'ts-loader'],
+    use: ['babel-loader', 'ts-loader', 'source-map-loader'],
   },
 ];
 

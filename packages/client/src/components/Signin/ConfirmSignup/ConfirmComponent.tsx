@@ -1,16 +1,12 @@
+import { SigninErrors, TeacherConfirmData } from '@celluloid/types';
+import { WithStyles, withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import DialogAltButtons from 'components/DialogAltButtons';
+import DialogButtons from 'components/DialogButtons';
+import SigninError from 'components/DialogError';
 import * as React from 'react';
 import { AnyAction } from 'redux';
-import { withStyles, WithStyles } from '@material-ui/core';
 
-import TextField from '@material-ui/core/TextField';
-
-import {
-  SigninErrors,
-  TeacherConfirmData
-} from '@celluloid/commons';
-import SigninAction from '../SigninAction';
-import SigninAltAction from '../SigninAltAction';
-import SigninError from '../SigninError';
 import { dialogStyles } from '../DialogStyles';
 
 interface Props extends WithStyles<typeof dialogStyles> {
@@ -25,13 +21,13 @@ export default withStyles(dialogStyles)(
   ({ classes, data, errors, onChange, onClickResend, onSubmit }: Props) => (
     <div>
       <TextField
-        label="Email"
+        label="Email ou nom complet"
         required={true}
-        value={data.email}
+        value={data.login}
         className={classes.input}
-        error={errors.email ? true : false}
-        onChange={event => onChange('email', event.target.value)}
-        helperText={errors.email}
+        error={errors.login ? true : false}
+        onChange={event => onChange('login', event.target.value)}
+        helperText={errors.login}
       />
       <TextField
         label="Code de confirmation"
@@ -45,11 +41,11 @@ export default withStyles(dialogStyles)(
         }
       />
       {errors.server && <SigninError error={errors.server} />}
-      <SigninAltAction
+      <DialogAltButtons
         actionName="Envoyer un nouveau code"
         onSubmit={onClickResend}
       />
-      <SigninAction onSubmit={onSubmit} actionName="Confirmer l'inscription" />
+      <DialogButtons onSubmit={onSubmit} actionName="Confirmer l'inscription" />
     </div>
   )
 );

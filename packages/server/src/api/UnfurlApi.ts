@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { isLoggedIn } from 'auth/Utils';
-import { UnfurlData } from '@celluloid/commons';
+import { UnfurlData } from '@celluloid/types';
 
 import * as unfurl from 'unfurl.js';
 

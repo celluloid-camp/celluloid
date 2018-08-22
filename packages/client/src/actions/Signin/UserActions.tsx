@@ -1,12 +1,12 @@
 import { Action, ActionType } from 'types/ActionTypes';
-import { TeacherRecord } from '@celluloid/commons';
+import { TeacherRecord } from '@celluloid/types';
 import UserService from 'services/UserService';
 import { Dispatch } from 'redux';
 
 export function failCurrentUser(error: string):
   Action<string> {
   return {
-    type: ActionType.FAIL_CURRENT_USER,
+    type: ActionType.FAIL_GET_CURRENT_USER,
     payload: error,
     error: true,
   };
@@ -15,7 +15,7 @@ export function failCurrentUser(error: string):
 export function succeedCurrentUser(user?: TeacherRecord):
   Action<TeacherRecord> {
   return {
-    type: ActionType.SUCCEED_CURRENT_USER,
+    type: ActionType.SUCCEED_GET_CURRENT_USER,
     payload: user
   };
 }

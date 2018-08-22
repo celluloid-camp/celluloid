@@ -1,8 +1,9 @@
 FROM node:latest
 WORKDIR /usr/src/app
-RUN mkdir -p packages/{commons,client,server}
+RUN mkdir -p packages/{types,validators,client,server}
 COPY package.json ./
-COPY packages/commons/package.json packages/commons/
+COPY packages/types/package.json packages/types/
+COPY packages/validators/package.json packages/validators/
 COPY packages/server/package.json packages/server/
 COPY packages/client/package.json packages/client/
 COPY yarn.lock ./

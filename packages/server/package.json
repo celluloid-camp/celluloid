@@ -4,9 +4,10 @@
   "description": "Celluloid backend",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "author": "Erwan Queffélec <erwan.queffelec@gmail.com",
-  "main": "dist/index.js",
+  "main": "build/index.js",
   "license": "MIT",
   "dependencies": {
+    "@celluloid/client": "^0.1.0",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.2",
     "compression": "^1.7.2",
@@ -26,13 +27,14 @@
     "validator": "^10.2.0"
   },
   "scripts": {
-    "build": "yarn run webpack-cli --config webpack-server.config.js --colors",
-    "watch": "yarn build && concurrently \"yarn build --watch\" \"nodemon --use-strict dist/index.js\"",
-    "start": "node --use-strict dist/index.js"
+    "clean": "rm -rf build",
+    "build": "NODE_ENV='development' yarn run webpack-cli --config webpack-server.config.js --colors",
+    "watch": "concurrently \"yarn build --watch\" \"nodemon --use-strict build/index.js\"",
+    "start": "node --use-strict build/index.js"
   },
   "devDependencies": {
-    "@celluloid/client": "^0.1.0",
-    "@celluloid/commons": "^0.1.0",
+    "@celluloid/types": "^0.1.0",
+    "@celluloid/validators": "^0.1.0",
     "@types/bcrypt": "^2.0.0",
     "@types/compression": "^0.0.36",
     "@types/cookie-parser": "^1.4.1",
@@ -51,16 +53,11 @@
     "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.2",
     "concurrently": "^3.5.0",
-    "eslint": "^4.1.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-react": "^7.1.0",
     "nodemon": "^1.11.0",
     "ts-loader": "^4.3.0",
     "tslint": "^5.10.0",
     "tslint-react": "^3.6.0",
-    "typescript": "^2.6.2",
+    "typescript": "^3.1.0-dev.20180821",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",
     "webpack-node-externals": "^1.7.2"

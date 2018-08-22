@@ -35,7 +35,7 @@ const match = require('autosuggest-highlight/match');
 
 import { levelLabel, levelsCount } from 'types/LevelTypes';
 
-import { TagData, NewProjectData } from '@celluloid/commons';
+import { TagData, ProjectCreateData } from '@celluloid/types';
 import { YoutubeVideo } from 'types/YoutubeTypes';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };
@@ -71,7 +71,7 @@ interface Props extends WithStyles<typeof styles> {
   video: YoutubeVideo;
   isOpen: boolean;
   tags: TagData[];
-  onClose(send: boolean, value: NewProjectData): Promise<{}>;
+  onClose(send: boolean, value: ProjectCreateData): Promise<{}>;
 }
 
 export default withStyles(styles)(

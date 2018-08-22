@@ -1,17 +1,13 @@
+import { SigninErrors, TeacherSignupData } from '@celluloid/types';
+import { WithStyles, withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import DialogAltButtons from 'components/DialogAltButtons';
+import DialogButtons from 'components/DialogButtons';
+import DialogError from 'components/DialogError';
 import * as React from 'react';
 import { AnyAction } from 'redux';
-import { withStyles, WithStyles } from '@material-ui/core';
-
-import TextField from '@material-ui/core/TextField';
-
-import {
-  SigninErrors,
-  TeacherSignupData
-} from '@celluloid/commons';
 import { Action } from 'types/ActionTypes';
-import SigninAction from '../SigninAction';
-import SigninAltAction from '../SigninAltAction';
-import SigninError from '../SigninError';
+
 import { dialogStyles } from '../DialogStyles';
 
 interface Props extends WithStyles<typeof dialogStyles> {
@@ -71,13 +67,13 @@ export default withStyles(dialogStyles)(
         onChange={event => onChange('confirmPassword', event.target.value)}
         helperText={confirmPasswordError}
       />
-      {errors.server && <SigninError error={errors.server} />}
-      <SigninAltAction
+      {errors.server && <DialogError error={errors.server} />}
+      <DialogAltButtons
         heading="Déjà un compte ?"
         actionName="Se connecter"
         onSubmit={onClickLogin}
       />
-      <SigninAction onSubmit={onSubmit} actionName="S'inscrire" />
+      <DialogButtons onSubmit={onSubmit} actionName="S'inscrire" />
     </div>
   )
 );

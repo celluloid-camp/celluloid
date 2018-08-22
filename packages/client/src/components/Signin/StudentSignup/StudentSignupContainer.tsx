@@ -10,7 +10,7 @@ import StudentSignup from './StudentSignupComponent';
 import {
   StudentSignupData,
   SigninErrors
-} from '@celluloid/commons';
+} from '@celluloid/types';
 
 interface Props {
   errors: SigninErrors;

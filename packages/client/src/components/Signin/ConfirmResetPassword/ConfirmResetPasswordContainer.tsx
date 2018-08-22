@@ -10,7 +10,7 @@ import { AppState } from 'types/StateTypes';
 import {
   TeacherConfirmResetPasswordData,
   SigninErrors
-} from '@celluloid/commons';
+} from '@celluloid/types';
 
 interface Props {
   errors: SigninErrors;
@@ -37,7 +37,7 @@ interface State extends TeacherConfirmResetPasswordData {
 
 class Confirm extends React.Component<Props, State> {
   state = {
-    email: '',
+    login: '',
     code: '',
     password: '',
     confirmPassword: ''

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Typography } from '@material-ui/core';
+import * as React from 'react';
 
 export default () => (
   <div
@@ -9,36 +9,42 @@ export default () => (
       margin: '0 auto'
     }}
   >
-    <Typography variant="display2" gutterBottom={true}>
+    <Typography variant="display3" gutterBottom={true}>
       Conditions Générales d'Utilisation
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
       Article 1. Définitions
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
-        <b>Celluloïd :</b> désigne la plateforme en ligne hébergée à l’adresse Celluloïd.camp et
-        permettant l’annotation collaborative de vidéos à des fins pédagogiques.
+        <b>Celluloid :</b> désigne la plateforme en ligne hébergée à l’adress <a
+          href="celluloid.camp"
+        >
+          celluloid.camp
+        </a> et permettant l’annotation collaborative de vidéos à des fins pédagogiques.
       </p>
       <p>
         <b>Vous :</b> désigne le créateur d’un projet pédagogique utilisant la plateforme
-        Celluloïd, cosignataire des CGU.
+        Celluloid, cosignataire des CGU.
       </p>
       <p>
         <b>Conditions Générales d’Utilisation (CGU) :</b> désignent le présent contrat conclu
-        entre Celluloïd et Vous, permettant d’utiliser la Plateforme Celluloïd.
+        entre Celluloid et Vous, permettant d’utiliser la Plateforme Celluloid.
       </p>
       <p>
-        <b>Plateforme :</b> renvoie aux fonctionnalités fournies depuis le site internet
-        Celluloïd.camp
+        <b>Plateforme :</b> renvoie aux fonctionnalités fournies depuis le site internet <a
+          href="celluloid.camp"
+        >
+          celluloid.camp
+        </a>
       </p>
       <p>
         <b>Contenu(s) :</b> désigne(nt) les créations et interactions que des tiers ou Vous
-        avez mises en ligne sur la plateforme internet Celluloïd.camp
+        avez mises en ligne sur la plateforme internet <a href="celluloid.camp">celluloid.camp</a>
       </p>
       <p>
         <b>Partenaire(s) :</b> désigne(nt) les centres de formation, les entreprises et les
-        associations participant dans le cadre de Celluloïd.
+        associations participant dans le cadre de Celluloid.
       </p>
       <p>
         <b>Profil utilisateur :</b> renvoie aux informations que Vous avez remplies dans le
@@ -46,7 +52,7 @@ export default () => (
       </p>
       <p>
         <b>Projet :</b> désigne les idées, les prototypes ou tous types de créations
-        intellectuelles auxquelles vous contribuez dans le cadre de Celluloïd.
+        intellectuelles auxquelles vous contribuez dans le cadre de Celluloid.
       </p>
       <p>
         <b>Projet Partenaire :</b> désigne un projet, porté par un Partenaire, qui vous est
@@ -60,7 +66,7 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 2. Objet
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Les CGU ont pour objet de définir les modalités et conditions d’utilisation de
         la Plateforme, ainsi que de définir Vos droits et obligations quant aux
@@ -68,7 +74,7 @@ export default () => (
       </p>
       <p>
         Les CGU sont notamment accessibles et imprimables à tout moment par un lien direct en bas de
-        la page d’accueil du site internet <a href="https://www.celluloid.camp/">www.celluloid.camp</a>.
+        la page d’accueil du site internet <a href="celluloid.camp">celluloid.camp</a>.
       </p>
       <p>
         Les CGU
@@ -81,7 +87,7 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 3. Accès au site et aux Services
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Les Services sont accessibles, sous réserve des restrictions prévues sur le site
         à toute personne physique disposant de la pleine capacité juridique pour
@@ -93,7 +99,7 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 4. Acceptation des conditions générales
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         L’acceptation des CGU est matérialisée par une case à cocher dans le formulaire
         d’inscription. Cette acceptation ne peut être que pleine et entière. Toute
@@ -139,36 +145,36 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 5. Services gratuits
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         La Plateforme vous est fournie à titre gratuit.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
-        Article 6. Données
+      Article 6. Données
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Sous réserve des dispositions prévues à l’article 13 (données personnelles) et
         de la Charte de Confidentialité, Vous reconnaissez et acceptez expressément que
         les données recueillies par la Plateforme et sur les équipements informatiques
-        de Celluloïd font foi de la réalité des opérations intervenues dans le cadre de
+        de Celluloid font foi de la réalité des opérations intervenues dans le cadre de
         Votre utilisation de la Plateforme.
       </p>
       <p>
         Ces données vous seront accessibles depuis l’espace personnel.
       </p>
       <p>
-        Toutefois, et en conformité avec la loi, Celluloïd est tenu de garder pendant
+        Toutefois, et en conformité avec la loi, Celluloid est tenu de garder pendant
         une période de 5 ans ces données à des fins de preuves judiciaires. Ces données
         ne seront remises qu’après la production d’une mesure d’instruction délivrée par
         une autorité judiciaire compétente.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
-        Article 7. Vos Obligations
+      Article 7. Vos Obligations
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Sans préjudice des autres obligations prévues aux présentes, Vous vous engagez à
         respecter les obligations suivantes :
@@ -202,8 +208,8 @@ export default () => (
           soit.
         </li>
         <li>
-          à fournir à Celluloïd toutes les informations nécessaires à la bonne exécution
-          de la Plateforme et à coopérer activement avec Celluloïd en vue de la bonne
+          à fournir à Celluloid toutes les informations nécessaires à la bonne exécution
+          de la Plateforme et à coopérer activement avec Celluloid en vue de la bonne
           exécution des CGU.
         </li>
         <li>
@@ -213,7 +219,7 @@ export default () => (
           diffusés sur la Plateforme.
         </li>
         <li>
-          à garantir à Celluloïd de disposer l’autorisation de la diffusion de ces
+          à garantir à Celluloid de disposer l’autorisation de la diffusion de ces
           Contenus.
         </li>
         <li>
@@ -221,7 +227,7 @@ export default () => (
           public, aux bonnes mœurs ou aux droits de tiers, n’enfreignent aucune
           disposition législative ou règlementaire et plus généralement, ne soient
           aucunement susceptibles de mettre en jeu la responsabilité civile ou pénale de
-          Celluloïd.
+          Celluloid.
         </li>
       </ul>
       <p>
@@ -245,7 +251,7 @@ export default () => (
         </li>
         <li>
           des Contenus nuisibles aux systèmes informatiques de tiers (tels que virus,
-          vers, chevaux de Troie, etc.),
+          vers, chevaux de Troie…),
         </li>
         <li>
           et plus généralement des Contenus susceptibles de porter atteinte aux droits
@@ -257,23 +263,23 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 8. Vos Garanties
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
-        Vous garantissez Celluloïd contre toutes plaintes, réclamations, actions et/ou
-        revendications quelconques que Celluloïd pourrait subir du fait d’une violation
+        Vous garantissez Celluloid contre toutes plaintes, réclamations, actions et/ou
+        revendications quelconques que Celluloid pourrait subir du fait d’une violation
         de l’une quelconque de ses obligations ou garanties aux termes des CGU que vous
         auriez occasionnée.
       </p>
       <p>
-        Vous vous engagez à indemniser Celluloïd de tout préjudice subi et à lui payer
-        tous les frais, charges et/ou condamnations que Celluloïd aurait à supporter de
+        Vous vous engagez à indemniser Celluloid de tout préjudice subi et à lui payer
+        tous les frais, charges et/ou condamnations que Celluloid aurait à supporter de
         ce fait.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
-        Article 9. Comportements prohibés
+      Article 9. Comportements prohibés
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Il est strictement interdit d’utiliser la Plateforme aux fins suivantes :
       </p>
@@ -309,12 +315,12 @@ export default () => (
       <p>
         Sont également strictement interdits : (i) tous comportements de nature à
         interrompre, suspendre, ralentir ou empêcher la continuité des Services, (ii)
-        toutes intrusions ou tentatives d’intrusions dans les systèmes de Celluloïd,
+        toutes intrusions ou tentatives d’intrusions dans les systèmes de Celluloid,
         (iii) tous détournements des ressources système du site, (iv) toutes actions de
         nature à imposer une charge disproportionnée sur les infrastructures de ce
         dernier, (v) toutes atteintes aux mesures de sécurité et d’authentification,
         (vi) tous actes de nature à porter atteinte aux droits et intérêts financiers,
-        commerciaux ou moraux de Celluloïd ou des usagers de son site, et enfin plus
+        commerciaux ou moraux de Celluloid ou des usagers de son site, et enfin plus
         généralement (vii) tout manquement aux présentes conditions générales.
       </p>
       <p>
@@ -324,59 +330,59 @@ export default () => (
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
-        Article 10. Sanctions des manquements
+      Article 10. Sanctions des manquements
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         En cas de manquement à l’une quelconque des dispositions des CGU ou plus
-        généralement, d’infraction aux lois et règlements en vigueur, Celluloïd se
+        généralement, d’infraction aux lois et règlements en vigueur, Celluloid se
         réserve le droit de prendre toute mesure appropriée et notamment de :
       </p>
       <p>
         (i) suspendre ou résilier Votre accès à la Plateforme, (ii) supprimer tout
         Contenu mis en ligne sur la Plateforme, (iii) publier sur le site tout message
-        d’information que Celluloïd jugera utile, (iv) avertir toute autorité concernée,
+        d’information que Celluloid jugera utile, (iv) avertir toute autorité concernée,
         (v) engager toute action judiciaire.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
-      Article 11. Responsabilité et garantie de Celluloïd
+      Article 11. Responsabilité et garantie de Celluloid
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
-        Celluloïd s’engage à fournir la Plateforme avec diligence et selon les règles de
+        Celluloid s’engage à fournir la Plateforme avec diligence et selon les règles de
         l’art, étant précisé qu’il pèse sur elle une obligation de moyens, à l’exclusion
         de toute obligation de résultat, ce que Vous reconnaissez et acceptez
         expressément.
       </p>
       <p>
-        Celluloïd n’a pas de connaissance préalable des Contenus que Vous mettez en
+        Celluloid n’a pas de connaissance préalable des Contenus que Vous mettez en
         ligne dans le cadre de l’utilisation de la Plateforme, sur lesquels elle
         n’effectue aucune modération, sélection, vérification ou contrôle d’aucune sorte
         et à l’égard desquels elle n’intervient qu’en tant que prestataire
         d’hébergement.
       </p>
       <p>
-        En conséquence, Celluloïd ne peut être tenue pour responsable des Contenus, dont
+        En conséquence, Celluloid ne peut être tenue pour responsable des Contenus, dont
         les auteurs sont des tiers, toute réclamation éventuelle devant être dirigée en
         premier lieu vers l’auteur des Contenus en question.
       </p>
       <p>
         Les Contenus préjudiciables à un tiers peuvent faire l’objet d’une notification
-        à Celluloïd selon les modalités prévues par l’article 6 I 5 de la loi n°
+        à Celluloid selon les modalités prévues par l’article 6 I 5 de la loi n°
         2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique.
       </p>
       <p>
-        Celluloïd s’engage à procéder régulièrement à des contrôles afin de vérifier le
-        fonctionnement et l’accessibilité de la Plateforme. A ce titre, Celluloïd se
+        Celluloid s’engage à procéder régulièrement à des contrôles afin de vérifier le
+        fonctionnement et l’accessibilité de la Plateforme. A ce titre, Celluloid se
         réserve la faculté d’interrompre momentanément l’accès à la Plateforme pour des
-        raisons de maintenance. De même, Celluloïd ne saurait être tenue responsable des
+        raisons de maintenance. De même, Celluloid ne saurait être tenue responsable des
         difficultés ou impossibilités momentanées d’accès à la Plateforme qui auraient
         pour origine des circonstances qui lui sont extérieures, la force majeure, ou
         encore qui seraient dues à des perturbations des réseaux de télécommunication.
       </p>
       <p>
-        Celluloïd ne Vous garantit pas (i) que la PLateforme, soumis à une recherche
+        Celluloid ne Vous garantit pas (i) que la PLateforme, soumis à une recherche
         constante pour en améliorer notamment la performance et l’efficacité, sera
         totalement exempts d’erreurs, de vices ou défauts, (ii) que La Plateforme, étant
         standard et nullement proposés à votre seule intention en fonction de vos
@@ -385,29 +391,29 @@ export default () => (
       </p>
       <p>
         En tout état de cause, la responsabilité susceptible d’être encourue par
-        Celluloïd au titre des présentes est expressément limitée à vos seuls dommages
+        Celluloid au titre des présentes est expressément limitée à vos seuls dommages
         directs.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
       Article 12. Propriété intellectuelle
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Les systèmes, logiciels, structures, infrastructures, bases de données et
         contenus de toute nature (textes, images, visuels, musiques, logos, marques,
-        base de données, etc …) exploités par Celluloïd au sein du site sont protégés
+        base de données…) exploités par Celluloid au sein du site sont protégés
         par tous droits de propriété intellectuelle ou droits des producteurs de bases
-        de données en vigueur. Le Code source de la Plateforme Celluloïd est disponible
-        à l’adresse suivante : https://github.com/celluloid-edu
+        de données en vigueur. Le code source de la Plateforme Celluloid est disponible
+        à l’adresse suivante : <a href="github.com/celluloid-edu">github.com/celluloid.edu</a>
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
       Article 13. Données à caractère personnel
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
-        Celluloïd pratique une politique de protection des données personnelles dont les
+        Celluloid pratique une politique de protection des données personnelles dont les
         caractéristiques sont explicitées dans le document intitulé « Charte de
         confidentialité », dont Vous êtes expressément invité(e) à prendre connaissance
         sur la Plateforme.
@@ -416,21 +422,21 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 14. Liens et sites tiers
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
-        Celluloïd ne pourra en aucun cas être tenue pour responsable de la disponibilité
+        Celluloid ne pourra en aucun cas être tenue pour responsable de la disponibilité
         technique de sites internet ou d’applications mobiles exploités par des tiers (y
         compris ses éventuels partenaires) auxquels vous pourrez accéder par
         l'intermédiaire de la Plateforme.
       </p>
       <p>
-        Celluloïd n'endosse aucune responsabilité au titre des contenus, publicités,
+        Celluloid n'endosse aucune responsabilité au titre des contenus, publicités,
         produits et/ou services disponibles sur de tels sites et applications mobiles
         tiers dont il est rappelé qu’ils sont régis par leurs propres conditions
         d’utilisation.
       </p>
       <p>
-        Celluloïd ne peut être tenu pour responsable des transactions intervenues entre
+        Celluloid ne peut être tenu pour responsable des transactions intervenues entre
         un quelconque annonceur, professionnel ou commerçant (y compris ses éventuels
         partenaires) et Vous-même, même si Vous seriez orienté par l'intermédiaire du
         site et ne saurait en aucun cas être partie à quelques litiges éventuels que ce
@@ -440,22 +446,22 @@ export default () => (
       </p>
       <p>
         Dans l’hypothèse d’un signalement fait par un Utilisateur ou par un tiers, d’une
-        violation d’un droit d’auteur ou des CGU, Celluloïd peut retirer sans préavis un
+        violation d’un droit d’auteur ou des CGU, Celluloid peut retirer sans préavis un
         Contenu que vous auriez posté.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
       Article 15. Durée, désinscription
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Votre inscription à la Plateforme est pour la durée du projet que vous menez
-        dans le cadre de Celluloïd. Votre déchéance de personnel de structures
+        dans le cadre de Celluloid. Votre déchéance de personnel de structures
         Partenaires entraîne la résiliation automatique de votre Compte Utilisateur.
       </p>
       <p>
-        Vous pouvez vous désincrire/désabonner ? de La Plateforme à tout moment, en
-        adressant une demande à cet effet à Celluloïd par email, aux coordonnées
+        Vous pouvez vous désincrire de La Plateforme à tout moment, en
+        adressant une demande à cet effet à Celluloid par email, aux coordonnées
         mentionnées à l’article 2.
       </p>
       <p>
@@ -466,9 +472,9 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 16. Modifications
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
-        Celluloïd se réserve la faculté de modifier à tout moment les CGU en vous en
+        Celluloid se réserve la faculté de modifier à tout moment les CGU en vous en
         informant par tout moyen utile. Toute utilisation faite après la modification
         des CGU entraîne la présomption de Votre acceptation de ces modifications.
       </p>
@@ -476,7 +482,7 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 17. Langue
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Dans l’hypothèse d’une traduction des présentes CGU dans une ou plusieurs
         langues, la langue d’interprétation sera la langue française en cas de
@@ -487,7 +493,7 @@ export default () => (
     <Typography variant="display1" gutterBottom={true}>
       Article 18. Loi applicable et juridiction
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div" style={{ textAlign: 'justify' }}>
       <p>
         Les CGU sont régies par la loi française.
       </p>

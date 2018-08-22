@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Typography } from '@material-ui/core';
+import * as React from 'react';
 
 export default () => (
   <div
@@ -14,8 +14,11 @@ export default () => (
     </Typography>
     <Typography style={{ textAlign: 'justify' }}>
       <p>
-        En accédant ou en utilisant le Site Web, celluloid.camp,
-        exploité par l'Institut Catholique de Paris, ("ICP"),
+        En accédant ou en utilisant le Site Web, <a
+          href="celluloid.camp"
+        >
+          celluloid.camp
+        </a>, exploité par l'Institut Catholique de Paris, ("ICP"),
         vous acceptez les termes des Règles de confidentialité en
         ligne présentées ci-après. Si vous n'êtes pas d'accord avec
         ces termes, veuillez ne plus utiliser ou accéder à ce site.
@@ -56,14 +59,13 @@ export default () => (
         Celluloid est un projet open source, partagé ici : <a
           href="https://github.com/celluloid-edu"
         >
-          https://github.com/celluloid-edu
-        </a>
-        Les contenus du site internet Celluloid ainsi que leur structuration
+          github.com/celluloid-edu
+        </a>. Les contenus du site internet Celluloid ainsi que leur structuration
         en catégories et thématiques font l’objet d’une licence <a
           href="https://opensource.org/licenses/MIT"
         >
           MIT
-        </a>
+        </a>.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>
@@ -96,7 +98,7 @@ export default () => (
         utilisées pour enregistrer vos coordonnées afin de pouvoir vous l'envoyer.
       </p>
       <p>
-        Le site celluloid.camp est enregistré à la CNIL sous le <b color="red">numéro ???????</b>.
+        Le site celluloid.camp est enregistré à la CNIL sous le <b style={{color: 'red'}}>numéro ???????</b>.
       </p>
     </Typography>
     <Typography variant="display1" gutterBottom={true}>

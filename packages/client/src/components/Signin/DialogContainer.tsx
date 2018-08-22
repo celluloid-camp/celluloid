@@ -2,19 +2,19 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'types/StateTypes';
 
-import { SigninState } from './SigninTypes';
+import ConfirmResetPassword from './ConfirmResetPassword';
+import ConfirmSignup from './ConfirmSignup';
 import Dialog from './DialogComponent';
 import Login from './Login';
-import Signup from './Signup';
-import ConfirmSignup from './ConfirmSignup';
 import ResetPassword from './ResetPassword';
-import ConfirmResetPassword from './ConfirmResetPassword';
+import { SigninState } from './SigninTypes';
+import Signup from './Signup';
 import StudentSignup from './StudentSignup';
 
 interface Props {
   state: SigninState;
-  onCancel: Function;
   loading: boolean;
+  onCancel(): void;
 }
 
 const getComponent = (state: SigninState) => {

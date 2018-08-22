@@ -1,16 +1,21 @@
-import * as React from 'react';
-
-import { withStyles, createStyles, WithStyles, Theme, Grid, Grow } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import Chip from '@material-ui/core/Chip';
-
+import VisibilityChip from '@celluloid/client/src/components/VisibilityChip';
+import { ProjectGraphRecord } from '@celluloid/types';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  createStyles,
+  Grid,
+  Grow,
+  Theme,
+  Typography,
+  WithStyles,
+  withStyles
+} from '@material-ui/core';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
-
-import { DisplayProjectData } from '@celluloid/commons';
+import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 const styles = ({ palette, spacing }: Theme) => createStyles({
   thumbnailCard: {
@@ -38,7 +43,7 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
   }
 });
 
-interface Props extends WithStyles<typeof styles>, DisplayProjectData { }
+interface Props extends WithStyles<typeof styles>, ProjectGraphRecord { }
 
 export default withStyles(styles)(({
   classes,
@@ -86,18 +91,14 @@ export default withStyles(styles)(({
                 <PlayIcon style={{ width: 56, height: 56, color: 'white' }} />
               </div>
               <div className={classes.visibilityContainer}>
-                {otherProps.public &&
-                  <Chip
-                    className={classes.visibilityChip}
-                    label="public"
-                  />
-                }
-                {collaborative &&
-                  <Chip
-                    className={classes.visibilityChip}
-                    label="collaboratif"
-                  />
-                }
+                <VisibilityChip
+                  show={otherProps.public}
+                  label="public"
+                />
+                <VisibilityChip
+                  show={collaborative}
+                  label="collaboratif"
+                />
               </div>
               <div
                 style={{

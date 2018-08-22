@@ -1,22 +1,25 @@
+import { Bright } from '@celluloid/client/src/utils/ThemeUtils';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import App from 'App';
+import ResetScroll from 'components/ResetScroll';
+import { ConnectedRouter } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
+import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from 'App';
-import registerServiceWorker from 'registerServiceWorker';
-import Theme from 'utils/ThemeUtils';
-import { BrowserRouter as Router } from 'react-router-dom';
-import ResetScroll from 'components/ResetScroll';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
-import store from 'store';
+import registerServiceWorker from 'registerServiceWorker';
+import { createAppStore } from 'store';
+
+const history = createBrowserHistory();
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router>
+  <Provider store={createAppStore(history)}>
+    <ConnectedRouter history={history}>
       <ResetScroll>
-        <MuiThemeProvider theme={Theme}>
+        <MuiThemeProvider theme={Bright}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <React.Fragment>
               <CssBaseline />
@@ -25,7 +28,7 @@ ReactDOM.render(
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </ResetScroll>
-    </Router>
+    </ConnectedRouter>
   </Provider>,
   document.getElementById('root') as HTMLElement
 );

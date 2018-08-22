@@ -1,3 +1,1 @@
-import AnnotationContent from './AnnotationContentContainer';
-
-export default AnnotationContent;
+export { default } from './AnnotationContentContainer';

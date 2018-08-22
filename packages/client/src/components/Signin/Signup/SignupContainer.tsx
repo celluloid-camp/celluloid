@@ -1,16 +1,12 @@
-import * as React from 'react';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'react-redux';
-
-import { Action } from 'types/ActionTypes';
+import { SigninErrors, TeacherSignupData } from '@celluloid/types';
 import { doSignupThunk, openLogin } from 'actions/Signin';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { AnyAction, Dispatch } from 'redux';
+import { Action } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
-import Signup from './SignupComponent';
 
-import {
-  TeacherSignupData,
-  SigninErrors
-} from '@celluloid/commons';
+import Signup from './SignupComponent';
 
 interface Props {
   errors: SigninErrors;
@@ -39,38 +35,36 @@ interface State extends TeacherSignupData {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(
-  class extends React.Component<Props, State> {
-    state = {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    } as State;
+)(class extends React.Component<Props, State> {
+  state = {
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  } as State;
 
-    render() {
-      const onChange = (name: string, value: string) => {
-        this.setState(state => ({
-          ...state,
-          [name]: value
-        }));
-      };
+  render() {
+    const onChange = (name: string, value: string) => {
+      this.setState(state => ({
+        ...state,
+        [name]: value
+      }));
+    };
 
-      const confirmPasswordError =
-        this.state.confirmPassword === this.state.password
-          ? undefined
-          : 'Les mots de passe ne correspondent pas';
+    const confirmPasswordError =
+      this.state.confirmPassword === this.state.password
+        ? undefined
+        : 'Les mots de passe ne correspondent pas';
 
-      return (
-        <Signup
-          data={this.state}
-          errors={this.props.errors}
-          confirmPasswordError={confirmPasswordError}
-          onClickLogin={this.props.onClickLogin}
-          onSubmit={() => this.props.onSubmit(this.state)}
-          onChange={onChange}
-        />
-      );
-    }
+    return (
+      <Signup
+        data={this.state}
+        errors={this.props.errors}
+        confirmPasswordError={confirmPasswordError}
+        onClickLogin={this.props.onClickLogin}
+        onSubmit={() => this.props.onSubmit(this.state)}
+        onChange={onChange}
+      />
+    );
   }
-);
+});
