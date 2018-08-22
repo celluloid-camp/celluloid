@@ -1,6 +1,7 @@
 import { Action as ReduxAction } from 'redux';
 
 export enum ActionType {
+  APPLICATION_UPDATED = 'APPLICATION_UPDATED',
   OPEN_LOGIN = 'OPEN_LOGIN',
   SUCCEED_LOGIN = 'SUCCEED_LOGIN',
   FAIL_LOGIN = 'FAIL_LOGIN',

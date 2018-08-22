@@ -1,3 +1,6 @@
+import { applicationUpdated } from '@celluloid/client/src/actions/AppActions';
+import { Store } from 'redux';
+
 // tslint:disable:no-console
 // In production, we register a service worker to serve assets from local cache.
 
@@ -11,15 +14,15 @@
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
-    // [::1] is the IPv6 localhost address.
-    window.location.hostname === '[::1]' ||
-    // 127.0.0.1/8 is considered localhost for IPv4.
-    window.location.hostname.match(
-      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-    )
+  // [::1] is the IPv6 localhost address.
+  window.location.hostname === '[::1]' ||
+  // 127.0.0.1/8 is considered localhost for IPv4.
+  window.location.hostname.match(
+    /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+  )
 );
 
-export default function register() {
+export default function register(store: Store) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(
@@ -38,25 +41,25 @@ export default function register() {
 
       if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
-        checkValidServiceWorker(swUrl);
+        checkValidServiceWorker(swUrl, store);
 
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
         navigator.serviceWorker.ready.then(() => {
           console.log(
             'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit https://goo.gl/SC7cgQ'
+            'worker. To learn more, visit https://goo.gl/SC7cgQ'
           );
         });
       } else {
         // Is not local host. Just register service worker
-        registerValidSW(swUrl);
+        registerValidSW(swUrl, store);
       }
     });
   }
 }
 
-function registerValidSW(swUrl: string) {
+function registerValidSW(swUrl: string, store: Store) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
@@ -70,7 +73,7 @@ function registerValidSW(swUrl: string) {
                 // the fresh content will have been added to the cache.
                 // It's the perfect time to display a 'New content is
                 // available; please refresh.' message in your web app.
-                console.log('New content is available; please refresh.');
+                store.dispatch(applicationUpdated());
               } else {
                 // At this point, everything has been precached.
                 // It's the perfect time to display a
@@ -83,11 +86,12 @@ function registerValidSW(swUrl: string) {
       };
     })
     .catch(error => {
+      alert('ServiceWorkerError');
       console.error('Error during service worker registration:', error);
     });
 }
 
-function checkValidServiceWorker(swUrl: string) {
+function checkValidServiceWorker(swUrl: string, store: Store) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
     .then(response => {
@@ -104,10 +108,11 @@ function checkValidServiceWorker(swUrl: string) {
         });
       } else {
         // Service worker found. Proceed as normal.
-        registerValidSW(swUrl);
+        registerValidSW(swUrl, store);
       }
     })
     .catch(() => {
+
       console.log(
         'No internet connection found. App is running in offline mode.'
       );

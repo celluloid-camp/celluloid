@@ -3,6 +3,7 @@ import About from 'components/About';
 import LegalNotice from 'components/LegalNotice';
 import NotFound from 'components/NotFound';
 import TermsAndConditions from 'components/TermsAndConditions';
+import UpdateIndicator from 'components/UpdateIndicator';
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Home from 'scenes/Home';
@@ -22,6 +23,8 @@ export default withStyles(styles)(
   class extends React.Component<WithStyles<typeof styles>> {
     render() {
       return (
+        <>
+        <UpdateIndicator/>
         <Switch>
           <Route
             exact={true}
@@ -53,6 +56,7 @@ export default withStyles(styles)(
           />
           <Route component={NotFound} />
         </Switch>
+        </>
       );
     }
   });

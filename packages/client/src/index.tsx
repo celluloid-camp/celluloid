@@ -35,8 +35,7 @@ const render = (Component: React.ComponentType) => {
   );
 };
 render(App);
-registerServiceWorker();
-store.dispatch({type: 'APPLICATION_UPDATED'});
+registerServiceWorker(store);
 
 if (process.env.NODE_ENV !== 'production' && module.hot) {
   module.hot.accept('./App', () => {

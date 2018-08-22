@@ -81,4 +81,5 @@ export interface AppState extends RouterState {
   projectGrid: ProjectGridState;
   user?: UserRecord;
   signin: SigninState;
+  updated: boolean;
 }
