@@ -14,22 +14,33 @@ import registerServiceWorker from 'registerServiceWorker';
 import { createAppStore } from 'store';
 
 const history = createBrowserHistory();
-
-ReactDOM.render(
-  <Provider store={createAppStore(history)}>
-    <ConnectedRouter history={history}>
-      <ResetScroll>
-        <MuiThemeProvider theme={Bright}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <React.Fragment>
-              <CssBaseline />
-              <App />
-            </React.Fragment>
-          </MuiPickersUtilsProvider>
-        </MuiThemeProvider>
-      </ResetScroll>
-    </ConnectedRouter>
-  </Provider>,
-  document.getElementById('root') as HTMLElement
-);
+const store = createAppStore(history);
+const render = (Component: React.ComponentType) => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <ResetScroll>
+          <MuiThemeProvider theme={Bright}>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <React.Fragment>
+                <CssBaseline />
+                <Component />
+              </React.Fragment>
+            </MuiPickersUtilsProvider>
+          </MuiThemeProvider>
+        </ResetScroll>
+      </ConnectedRouter>
+    </Provider>,
+    document.getElementById('root') as HTMLElement
+  );
+};
+render(App);
 registerServiceWorker();
+store.dispatch({type: 'APPLICATION_UPDATED'});
+
+if (process.env.NODE_ENV !== 'production' && module.hot) {
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default;
+    render(NextApp);
+  });
+}

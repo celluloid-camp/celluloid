@@ -10,7 +10,7 @@ const config = {
 };
 
 export const database = Knex({
-  debug: true,
+  debug: process.env.NODE_ENV !== 'production',
   client: 'pg',
   connection: config,
   pool: {
