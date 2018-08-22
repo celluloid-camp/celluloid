@@ -28,8 +28,8 @@
   },
   "scripts": {
     "clean": "rm -rf build",
-    "build": "NODE_ENV='development' yarn run webpack-cli --config webpack-server.config.js --colors",
-    "watch": "concurrently \"yarn build --watch\" \"nodemon --use-strict build/index.js\"",
+    "build": "yarn run webpack-cli --config webpack-server.config.js --colors",
+    "watch": "concurrently \"yarn build --watch --mode=development\" \"nodemon --use-strict build/index.js\"",
     "start": "node --use-strict build/index.js"
   },
   "devDependencies": {

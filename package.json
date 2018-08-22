@@ -16,7 +16,7 @@
     "watch-types": "(cd packages/types && yarn watch)",
     "watch-validators": "(cd packages/validators && yarn watch)",
     "build-client": "(cd packages/client && yarn build)",
-    "build-server": "(cd packages/server && yarn build)",
+    "build-server": "(cd packages/server && yarn build --mode=production)",
     "build-types": "(cd packages/types && yarn build)",
     "build-validators": "(cd packages/validators && yarn build)",
     "build-libs": "yarn build-types && yarn build-validators",
