@@ -56,8 +56,8 @@ function init({ annotation, video }: Props): State {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  error: state.projectPage.video.annotationError,
-  annotation: state.projectPage.video.focusedAnnotation
+  error: state.project.video.annotationError,
+  annotation: state.project.video.focusedAnnotation
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

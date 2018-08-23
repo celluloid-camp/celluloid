@@ -65,6 +65,12 @@ export enum ComponentStatus {
   READY
 }
 
+export interface HomeState {
+  status: ComponentStatus;
+  error?: string;
+  projects: Set<ProjectGraphRecord>;
+}
+
 export interface ProjectGridState {
   status: ComponentStatus;
   projectList: Set<ProjectRecord>;
@@ -77,8 +83,8 @@ export interface SharingState {
 
 export interface AppState extends RouterState {
   sharing: SharingState;
-  projectPage: ProjectPageState;
-  projectGrid: ProjectGridState;
+  project: ProjectPageState;
+  home: HomeState;
   user?: UserRecord;
   signin: SigninState;
   updated: boolean;

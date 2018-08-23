@@ -36,6 +36,9 @@ const styles = ({ spacing }: Theme) => createStyles({
     padding: 0,
     paddingBottom: spacing.unit * 2
   },
+  listItem: {
+    padding: 0,
+  },
   listHeader: {
     height: spacing.unit * 5,
     textAlign: 'left',
@@ -141,6 +144,7 @@ export default withStyles(styles)(({
       }
       <List
         dense={true}
+        className={classes.list}
         subheader={
           <ListSubheader
             className={classes.listHeader}
@@ -151,7 +155,7 @@ export default withStyles(styles)(({
         }
       >
         {Array.from(members).map((member: Member) => (
-          <ListItem key={member.id} className={classes.list}>
+          <ListItem key={member.id} className={classes.listItem}>
             <ListItemAvatar>
               <UserAvatar user={member} />
             </ListItemAvatar>

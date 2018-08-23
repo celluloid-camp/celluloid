@@ -147,13 +147,13 @@ export function update(projectId: string, props: ProjectRecord) {
   return database('Project')
     .update(props)
     .returning('*')
-    .where('projectId', projectId)
+    .where('id', projectId)
     .then(getExactlyOne);
 }
 
 export function del(projectId: string) {
   return database('Project')
-    .where('projectId', projectId)
+    .where('id', projectId)
     .del();
 }
 

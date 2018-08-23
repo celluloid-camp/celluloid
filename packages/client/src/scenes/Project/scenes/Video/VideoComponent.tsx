@@ -48,8 +48,8 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  editing: state.projectPage.video.editing,
-  focusedAnnotation: state.projectPage.video.focusedAnnotation
+  editing: state.project.video.editing,
+  focusedAnnotation: state.project.video.focusedAnnotation
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

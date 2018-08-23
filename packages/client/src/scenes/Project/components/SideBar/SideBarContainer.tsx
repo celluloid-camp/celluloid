@@ -36,14 +36,14 @@ interface Props {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  setPublicLoading: state.projectPage.details.setPublicLoading,
-  setCollaborativeLoading: state.projectPage.details.setCollaborativeLoading,
-  unshareLoading: state.projectPage.details.unshareLoading,
-  deleteLoading: state.projectPage.details.deleteLoading,
-  setPublicError: state.projectPage.details.setPublicError,
-  setCollaborativeError: state.projectPage.details.setCollaborativeError,
-  unshareError: state.projectPage.details.unshareError,
-  deleteError: state.projectPage.details.deleteError,
+  setPublicLoading: state.project.details.setPublicLoading,
+  setCollaborativeLoading: state.project.details.setCollaborativeLoading,
+  unshareLoading: state.project.details.unshareLoading,
+  deleteLoading: state.project.details.deleteLoading,
+  setPublicError: state.project.details.setPublicError,
+  setCollaborativeError: state.project.details.setCollaborativeError,
+  unshareError: state.project.details.unshareError,
+  deleteError: state.project.details.deleteError,
   user: state.user
 });
 

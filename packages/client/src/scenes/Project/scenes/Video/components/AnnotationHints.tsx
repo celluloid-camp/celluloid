@@ -1,5 +1,5 @@
 import { AnnotationRecord } from '@celluloid/types';
-import { createStyles, WithStyles, withStyles } from '@material-ui/core';
+import { createStyles, Paper, WithStyles, withStyles } from '@material-ui/core';
 import * as classNames from 'classnames';
 import * as React from 'react';
 import { getUserColor } from 'utils/UserUtils';
@@ -12,7 +12,7 @@ const styles = createStyles({
     opacity: 0,
   },
   hint: {
-    cursor: 'pointer' as 'pointer',
+    cursor: 'pointer',
     position: 'absolute' as 'absolute',
     zIndex: 6,
     top: 0,
@@ -22,9 +22,9 @@ const styles = createStyles({
     padding: 0,
     borderRadius: 2,
     backgroundColor: 'white',
-    transition: 'all 0.5s ease',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      border: '2px solid white !important'
+      filter: 'brightness(85%)'
     }
   },
   container: {
@@ -67,7 +67,7 @@ export default
         {Array.from(annotations)
           .map((annotation, index) => {
             return (
-              <div
+              <Paper
                 key={annotation.id}
                 className={classNames(
                   classes.hint,

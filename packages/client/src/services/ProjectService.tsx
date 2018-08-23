@@ -169,13 +169,13 @@ export default class Projects {
       'Accepts': 'application/json',
       'Content-type': 'application/json'
     };
-    return fetch(`/api/projects/${projectId}/share`, {
+    return fetch(`/api/projects/${projectId}`, {
       method: 'DELETE',
       headers: new Headers(headers),
       credentials: 'include',
     }).then(response => {
       if (response.status === 204 || response.status === 400) {
-        return response.json();
+        return Promise.resolve();
       } else if (response.status === 401) {
         throw new Error(Constants.ERR_NOT_LOGGED_IN);
       } else if (response.status === 403) {

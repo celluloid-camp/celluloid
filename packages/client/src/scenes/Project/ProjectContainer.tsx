@@ -1,11 +1,11 @@
 import { AnnotationRecord, ProjectGraphRecord, UserRecord } from '@celluloid/types';
-import { loadProjectThunk } from 'actions/ProjectActions';
+import { clearProject, loadProjectThunk } from 'actions/ProjectActions';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 import AnnotationService from 'services/AnnotationService';
-import { AsyncAction } from 'types/ActionTypes';
+import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { ProjectRouteParams } from 'types/ProjectTypes';
 import { AppState } from 'types/StateTypes';
 
@@ -18,6 +18,7 @@ interface Props extends
   error?: string;
   loadProject(projectId: string):
     AsyncAction<ProjectGraphRecord, string>;
+  clearProject(): EmptyAction;
 }
 
 interface State {
@@ -27,13 +28,15 @@ interface State {
 
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
-  project: state.projectPage.details.project,
-  error: state.projectPage.details.error
+  project: state.project.details.project,
+  error: state.project.details.error
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   loadProject: (projectId: string) =>
-    loadProjectThunk(projectId)(dispatch)
+    loadProjectThunk(projectId)(dispatch),
+  clearProject: () =>
+    dispatch(clearProject())
 });
 
 export default withRouter(
@@ -54,6 +57,10 @@ export default withRouter(
 
     componentDidMount() {
       this.load();
+    }
+
+    componentWillUnmount() {
+      this.props.clearProject();
     }
 
     load() {

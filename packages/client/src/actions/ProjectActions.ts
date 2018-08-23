@@ -22,6 +22,9 @@ export const succeedListProjects = (projects: ProjectRecord[]) =>
 export const failListProjects = (error: string) =>
   createErrorAction(ActionType.FAIL_LIST_PROJECTS, error);
 
+export const clearProject = () =>
+  createEmptyAction(ActionType.CLEAR_PROJECT);
+
 export const succeedLoadProject = (project: ProjectGraphRecord) =>
   createAction(ActionType.SUCCEED_LOAD_PROJECT, project);
 

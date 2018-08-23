@@ -33,7 +33,7 @@ interface State {
 
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
-  annotations: state.projectPage.video.annotations
+  annotations: state.project.video.annotations
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

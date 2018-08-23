@@ -19,6 +19,8 @@ const initialState = {
 export default (state = initialState, {type, payload}: AnyAction):
   ProjectDetailsState => {
   switch (type) {
+    case ActionType.CLEAR_PROJECT:
+      return initialState;
     case ActionType.FAIL_LOAD_PROJECT:
       return {
         ...initialState,

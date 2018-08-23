@@ -18,6 +18,8 @@ const initialState = {
 export default (state = initialState, { type, payload }: AnyAction):
   VideoState => {
   switch (type) {
+    case ActionType.CLEAR_PROJECT:
+      return initialState;
     case ActionType.TRIGGER_LIST_ANNOTATIONS_LOADING:
       return {
         ...initialState,

@@ -18,7 +18,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import ProjectsService from 'services/ProjectService';
-import TagsService from 'services/TagService';
 import YouTubeService from 'services/YoutubeService';
 import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
@@ -71,6 +70,8 @@ const styles = ({ spacing }: Theme) => createStyles({
 
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
+  projects: Set<ProjectGraphRecord>;
+  error?: string;
   onClickJoinProject(): EmptyAction;
   loadProjects(): AsyncAction<ProjectRecord[], string>;
 }
@@ -80,15 +81,14 @@ interface State {
   newProjectVideoUrl: string;
   video?: YoutubeVideo;
   tags: TagData[];
-  projects: ProjectGraphRecord[];
   videoError?: string;
-  error?: string;
 }
 
 const mapStateToProps = (state: AppState) => {
   return {
     user: state.user,
-    projects: state.projectGrid
+    projects: state.home.projects,
+    error: state.home.error
   };
 };
 
@@ -114,21 +114,7 @@ export default withStyles(styles)(
       } as State;
 
       load() {
-
-        ProjectsService.list()
-          .then((projects: ProjectGraphRecord[]) => {
-            this.setState({ projects, error: undefined });
-            TagsService.list()
-              .then((tags: TagData[]) => {
-                this.setState({ tags, error: undefined });
-              })
-              .catch((error: Error) => {
-                this.setState({ error: error.message });
-              });
-          })
-          .catch((error: Error) => {
-            this.setState({ error: error.message });
-          });
+        this.props.loadProjects();
       }
 
       componentDidMount() {
@@ -142,7 +128,7 @@ export default withStyles(styles)(
       }
 
       render() {
-        const { onClickJoinProject, classes } = this.props;
+        const { onClickJoinProject, projects, classes } = this.props;
 
         const showNewProjectDialog = () => {
           try {
@@ -327,7 +313,7 @@ export default withStyles(styles)(
             </div>
           <Divider />
           <div style={{ padding: 20 }}>
-            <ProjectGrid projects={this.state.projects} />
+            <ProjectGrid projects={projects} />
           </div>
         </>
       );

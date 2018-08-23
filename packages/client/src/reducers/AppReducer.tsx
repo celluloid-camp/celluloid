@@ -1,6 +1,7 @@
 import { AnyAction, combineReducers } from 'redux';
 import { ActionType } from 'types/ActionTypes';
 
+import home from './HomeReducer';
 import details from './ProjectReducer';
 import sharing from './SharingReducer';
 import signin from './SigninReducer';
@@ -20,10 +21,11 @@ const appReducer = combineReducers({
   signin,
   user,
   sharing,
-  projectPage : combineReducers({
+  project : combineReducers({
     video,
     details
   }),
+  home,
   updated : updatedReducer
 });
 

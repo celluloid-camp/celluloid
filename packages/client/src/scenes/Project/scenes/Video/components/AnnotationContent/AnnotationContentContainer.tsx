@@ -66,7 +66,7 @@ function parseText(text: string): State {
 
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
-  error: state.projectPage.video.annotationError
+  error: state.project.video.annotationError
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
