@@ -8,7 +8,7 @@ export const styles = ({ palette, spacing }: Theme) => createStyles({
     width: '100%',
     height: '100%',
     textAlign: 'center' as 'center',
-    backgroundColor: palette.background.default
+    backgroundColor: palette.grey['900']
   },
   video: {
     height: '100%',
