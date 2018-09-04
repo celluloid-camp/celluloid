@@ -1,7 +1,17 @@
 import 'rc-slider/assets/index.css';
 
-import { AnnotationRecord, ProjectGraphRecord, UserRecord } from '@celluloid/types';
-import { Button, Grow, WithStyles, withStyles, Zoom } from '@material-ui/core';
+import {
+  AnnotationRecord,
+  ProjectGraphRecord,
+  UserRecord
+} from '@celluloid/types';
+import {
+  Button,
+  Grow,
+  WithStyles,
+  withStyles,
+  Zoom
+} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { triggerAddAnnotation } from 'actions/AnnotationsActions';
 import classnames from 'classnames';
@@ -13,8 +23,11 @@ import YouTube from 'react-youtube';
 import { Dispatch } from 'redux';
 import { EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
-import { PlayerChangeEvent, PlayerReadyEvent } from 'types/YoutubeTypes';
-import { isOwner } from 'utils/ProjectUtils';
+import {
+  PlayerChangeEvent,
+  PlayerReadyEvent
+} from 'types/YoutubeTypes';
+import { canAnnotate } from 'utils/ProjectUtils';
 
 import AnnotationContent from './components/AnnotationContent';
 import AnnotationEditor from './components/AnnotationEditor';
@@ -25,9 +38,9 @@ import { styles } from './VideoStyles';
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
   project: ProjectGraphRecord;
-  annotations: Set<AnnotationRecord>;
+  annotations: AnnotationRecord[];
   focusedAnnotation?: AnnotationRecord;
-  visibleAnnotations: Set<AnnotationRecord>;
+  visibleAnnotations: AnnotationRecord[];
   position: number;
   duration: number;
   playing: boolean;
@@ -44,7 +57,7 @@ interface Props extends WithStyles<typeof styles> {
   onToggleHints(): void;
   onClickHint(annotation: AnnotationRecord): void;
   onClickAnnotate(): EmptyAction;
-  onSeek(position: number, pause: boolean): void;
+  onSeek(position: number, pause: boolean, seekAhead: boolean): void;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -171,11 +184,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 </TransitionGroup>
               </div>
             }
-            {(user && isOwner(project, user)) &&
+            {(user && canAnnotate(project, user)) &&
               <Zoom
                 appear={true}
                 exit={true}
-                in={!editing && !showHints && showControls}
+                in={!editing && !showHints && !focusedAnnotation && showControls}
               >
                 <Button
                   color="secondary"
@@ -206,12 +219,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               ])}
             >
               <Controls
-                show={showHints}
+                user={user}
+                annotations={annotations}
                 position={position}
                 duration={duration}
                 fullscreen={fullscreen}
                 playing={playing}
-                onSeek={value => onSeek(value, false)}
+                onSeek={onSeek}
                 onToggleFullscreen={onToggleFullscreen}
                 onTogglePlayPause={onTogglePlayPause}
                 onToggleHints={onToggleHints}

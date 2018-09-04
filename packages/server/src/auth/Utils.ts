@@ -59,30 +59,7 @@ export function isProjectOwner(
     });
 }
 
-export function isProjectMember(
-  req: Request,
-  res: Response,
-  next: NextFunction) {
-  const projectId = req.params.projectId;
-  const user = req.user as UserRecord;
-  ProjectStore.isMember(projectId, user)
-    .then((result: boolean) => {
-      if (result) {
-        next();
-        return Promise.resolve();
-      }
-      res.status(403).json({
-        error: 'ProjectMembershipRequired'
-      });
-      return Promise.resolve();
-    })
-    .catch(error => {
-      console.error('Failed to check project membership:', error);
-      return Promise.resolve(res.status(500).send());
-    });
-}
-
-export function isProjectOwnerOrMember(
+export function isProjectOwnerOrCollaborativeMember(
   req: Request,
   res: Response,
   next: NextFunction) {
@@ -90,7 +67,7 @@ export function isProjectOwnerOrMember(
   const projectId = req.params.projectId;
   const user = req.user as UserRecord;
 
-  ProjectStore.isOwnerOrMember(projectId, user)
+  ProjectStore.isOwnerOrCollaborativeMember(projectId, user)
     .then((result: boolean) => {
       if (result) {
         next();

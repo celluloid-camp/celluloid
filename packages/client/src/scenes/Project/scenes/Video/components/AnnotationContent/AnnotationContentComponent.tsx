@@ -1,7 +1,12 @@
-import { UnfurlData, UserRecord } from '@celluloid/types';
+import { AnnotationRecord, UnfurlData } from '@celluloid/types';
 import { Collapse, Fade, Grow, IconButton } from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
-import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles
+} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -10,11 +15,15 @@ import UserAvatar from 'components/UserAvatar';
 import * as React from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
+import CommentsList from '../CommentsList';
+
 const styles = ({ spacing, typography, transitions, palette }: Theme) => createStyles({
-  annotationWrapper: {
+  wrapper: {
     paddingLeft: spacing.unit,
     paddingTop: spacing.unit,
     paddingBottom: spacing.unit,
+  },
+  annotation: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start'
@@ -39,7 +48,6 @@ const styles = ({ spacing, typography, transitions, palette }: Theme) => createS
   },
   text: {
     ...typography.caption,
-    color: palette.text.disabled,
     '& a:any-link': {
       color: '#42a6f5'
     },
@@ -51,41 +59,32 @@ const styles = ({ spacing, typography, transitions, palette }: Theme) => createS
     minHeight: 15
   },
   media: {
-    marginTop: spacing.unit,
-    marginBottom: spacing.unit,
     height: 0,
     paddingTop: '56.25%'
   },
   title: {
-    ...typography.subheading,
-  },
-  subheader: {
-    ...typography.caption,
-    color: palette.text.disabled
+    padding: spacing.unit * 2,
   },
   card: {
     maxWidth: 320,
     cursor: 'pointer',
     margin: spacing.unit,
     marginLeft: 0,
-    paddingLeft: spacing.unit,
-    borderLeft: `${spacing.unit / 2}px solid rgba(100, 100, 100, 0.4)`
+    backgroundColor: 'rgba(70, 70, 70, 0.4)'
   },
   timings: {
     ...typography.caption,
     display: 'inline'
   },
-  actionZone: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: 6 + 48 + 6 + 48 + 6,
-    padding: 6,
-  },
   actionWrapper: {
-    marginTop: 6,
-    marginBottom: 6,
-    marginRight: spacing.unit * 2
+    marginTop: spacing.unit * 0.75,
+    marginBottom: spacing.unit * 0.75,
+    marginRight: spacing.unit * 2,
+    minWidth: spacing.unit * 12
   },
+  description: {
+    padding: spacing.unit * 2
+  }
 });
 
 interface Link {
@@ -94,7 +93,7 @@ interface Link {
 }
 
 interface Props extends WithStyles<typeof styles> {
-  user: UserRecord;
+  annotation: AnnotationRecord;
   formattedStartTime: string;
   formattedStopTime: string;
   richText: string;
@@ -110,7 +109,7 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 export default withStyles(styles)(({
-  user,
+  annotation,
   formattedStartTime,
   formattedStopTime,
   richText,
@@ -123,88 +122,92 @@ export default withStyles(styles)(({
   onClickDelete,
   classes
 }: Props) => (
-    <div
-      className={classes.annotationWrapper}
-      onMouseEnter={() => onHover(true)}
-      onMouseLeave={() => onHover(false)}
-    >
-      <UserAvatar user={user} />
+    <div className={classes.wrapper}>
       <div
-        className={classes.content}
-        onClick={() => onFocus()}
+        className={classes.annotation}
+        onMouseEnter={() => onHover(true)}
+        onMouseLeave={() => onHover(false)}
       >
-        <Typography>
-          {`${user.username} | `}
-          <span className={classes.timings}>
-            {`${formattedStartTime} - ${formattedStopTime}`}
-          </span>
-        </Typography>
-        <Fade
-          in={!focused}
-          appear={true}
-          {...(focused ? { timeout: 1000 } : {})}
+        <UserAvatar user={annotation.user} />
+        <div
+          className={classes.content}
+          onClick={() => onFocus()}
         >
-          <div>
-            {!focused &&
-              <Typography
-                className={classes.text}
-                noWrap={true}
-                gutterBottom={true}
-              >
-                <span dangerouslySetInnerHTML={{ __html: richText }} />
-              </Typography>
-            }
-          </div>
-        </Fade>
-        <Collapse in={focused} appear={true} style={{ transformOrigin: 'center top' }}>
-          <div className={classnames(classes.fade, focused ? classes.visible : classes.hidden)}>
-            {focused &&
-              <Typography
-                className={classnames(classes.text, classes.preWrap)}
-                gutterBottom={true}
-              >
-                <span dangerouslySetInnerHTML={{ __html: richText }} />
-              </Typography>
-            }
-          </div>
-        </Collapse>
-        <TransitionGroup appear={true}>
-          {focused && previews
-            .map(preview => (
-              preview.data &&
-              <Collapse in={true} key={preview.url} appear={true}>
-                <div
-                  onClick={() => window.open(preview.url, '_blank')}
-                  key={preview.url}
-                  className={classes.card}
+          <Typography>
+            {`${annotation.user.username} | `}
+            <span className={classes.timings}>
+              {`${formattedStartTime} - ${formattedStopTime}`}
+            </span>
+          </Typography>
+          <Fade
+            in={!focused}
+            appear={true}
+            {...(focused ? { timeout: 1000 } : {})}
+          >
+            <div>
+              {!focused &&
+                <Typography
+                  className={classes.text}
+                  noWrap={true}
+                  gutterBottom={true}
                 >
-                  <Typography className={classes.subheader}>
-                    {preview.data.website}
-                  </Typography>
-                  <Typography className={classes.title}>
-                    {preview.data.title}
-                  </Typography>
-                  {preview.data.imageUrl &&
-                    <CardMedia
-                      className={classes.media}
-                      image={preview.data.imageUrl}
-                      title={preview.data.title}
-                    />
-                  }
-                  {preview.data.description &&
-                    <Typography className={classes.text}>
-                      {preview.data.description}
-                    </Typography>
-                  }
-                </div>
-              </Collapse>
-            ))}
-        </TransitionGroup>
-      </div>
-      <Grow in={showActions} appear={true}>
+                  <span dangerouslySetInnerHTML={{ __html: richText }} />
+                </Typography>
+              }
+            </div>
+          </Fade>
+          <Collapse in={focused} appear={true}>
+            <div className={classnames(classes.fade, focused ? classes.visible : classes.hidden)}>
+              {focused &&
+                <Typography
+                  className={classnames(classes.text, classes.preWrap)}
+                  gutterBottom={true}
+                >
+                  <span dangerouslySetInnerHTML={{ __html: richText }} />
+                </Typography>
+              }
+            </div>
+          </Collapse>
+          <TransitionGroup appear={true}>
+            {focused && previews
+              .map(preview => (
+                preview.data &&
+                <Collapse in={true} key={preview.url} appear={true}>
+                  <div
+                    onClick={() => window.open(preview.url, '_blank')}
+                    key={preview.url}
+                    className={classes.card}
+                  >
+                    <div className={classes.title}>
+                      <Typography variant="caption">
+                        {preview.data.website}
+                      </Typography>
+                      <Typography variant="subheading">
+                        {preview.data.title}
+                      </Typography>
+                    </div>
+                    {preview.data.imageUrl &&
+                      <CardMedia
+                        className={classes.media}
+                        image={preview.data.imageUrl}
+                        title={preview.data.title}
+                      />
+                    }
+                    {preview.data.description &&
+                      <div className={classes.description}>
+                      <Typography className={classes.text}>
+                        {preview.data.description}
+                      </Typography>
+                      </div>
+                    }
+                  </div>
+                </Collapse>
+              ))}
+          </TransitionGroup>
+        </div>
         <div className={classes.actionWrapper}>
-          {showActions &&
-            <>
+          <Grow in={showActions} appear={true}>
+            <div>
               <IconButton
                 color="primary"
                 onClick={(event) => {
@@ -223,9 +226,12 @@ export default withStyles(styles)(({
               >
                 <DeleteIcon />
               </IconButton>
-            </>
-          }
+            </div>
+          </Grow>
         </div>
-      </Grow>
+      </div>
+      <Collapse in={focused} appear={true}>
+        <CommentsList annotation={annotation} />
+      </Collapse>
     </div>
   ));

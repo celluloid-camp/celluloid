@@ -1,14 +1,18 @@
 import {
+  AnnotationRecord,
+  UnfurlData,
+  UserRecord
+} from '@celluloid/types';
+import {
   deleteAnnotationThunk,
   triggerEditAnnotation,
   triggerFocusAnnotation
-} from '@celluloid/client/src/actions/AnnotationsActions';
-import { Action, AsyncAction } from '@celluloid/client/src/types/ActionTypes';
-import { AnnotationRecord, UnfurlData, UserRecord } from '@celluloid/types';
+} from 'actions/AnnotationsActions';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as UnfurlService from 'services/UnfurlService';
+import { Action, AsyncAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 import { canEditAnnotation } from 'utils/AnnotationUtils';
 import { formatDuration } from 'utils/DurationUtils';
@@ -41,7 +45,7 @@ interface Props {
   onClickEdit(annotation: AnnotationRecord):
     Action<AnnotationRecord>;
   onClickDelete(projectId: string, annotation: AnnotationRecord):
-    AsyncAction<null, string>;
+    AsyncAction<AnnotationRecord, string>;
   onFocus(annotationRecord: AnnotationRecord):
     Action<AnnotationRecord>;
 }
@@ -148,7 +152,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
       return (
         <AnnotationContentComponent
-          user={annotation.user}
+          annotation={annotation}
           formattedStartTime={formattedStart}
           formattedStopTime={formattedStop}
           richText={richText}

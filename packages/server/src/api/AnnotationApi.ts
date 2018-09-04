@@ -1,19 +1,38 @@
-import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
+import {
+  AnnotationData,
+  AnnotationRecord,
+  UserRecord
+} from '@celluloid/types';
 import { isProjectOwner, isTeacher } from 'auth/Utils';
 import * as express from 'express';
 import * as AnnotationStore from 'store/AnnotationStore';
+import * as CommentStore from 'store/CommentStore';
 import * as ProjectStore from 'store/ProjectStore';
 
+import CommentApi from './CommentApi';
+
 const router = express.Router({ mergeParams: true });
+
+router.use('/:annotationId/comments', CommentApi);
+
+function fetchComments(annotation: AnnotationRecord, user: UserRecord) {
+  return CommentStore.selectByAnnotation(annotation.id, user)
+    .then(comments => Promise.resolve({ ...annotation, comments } as AnnotationRecord));
+}
 
 router.get('/', (req, res) => {
   const projectId = req.params.projectId;
   const user = req.user as UserRecord;
 
-  ProjectStore.selectOne(projectId, user)
+  return ProjectStore.selectOne(projectId, user)
     .then(() => AnnotationStore.selectByProject(projectId, user))
     .then((annotations: AnnotationRecord[]) =>
-      res.status(200).json(annotations))
+      Promise.all(annotations.map(annotation =>
+        fetchComments(annotation, user)
+      )))
+    .then(annotations => {
+      return res.status(200).json(annotations);
+    })
     .catch((error: Error) => {
       console.error('Failed to list annotations:', error);
       if (error.message === 'ProjectNotFound') {
@@ -30,7 +49,9 @@ router.post('/', isTeacher, isProjectOwner, (req, res) => {
   const user = req.user as UserRecord;
 
   AnnotationStore.insert(annotation, user, projectId)
+    .then(result => fetchComments(result, user))
     .then(result => {
+      console.log(result);
       res.status(201).json(result);
     })
     .catch((error: Error) => {
@@ -50,7 +71,8 @@ router.put('/:annotationId', isTeacher, (req, res) => {
         ? Promise.reject(new Error('UserNotAnnotationOwner'))
         : Promise.resolve()
     )
-    .then(() => AnnotationStore.update(annotationId, updated))
+    .then(() => AnnotationStore.update(annotationId, updated, user))
+    .then(result => fetchComments(result, user))
     .then(result => res.status(200).json(result))
     .catch((error: Error) => {
       console.error('Failed to update annotation:', error);
@@ -87,4 +109,5 @@ router.delete('/:annotationId', isTeacher, (req, res) => {
       }
     });
 });
+
 export default router;

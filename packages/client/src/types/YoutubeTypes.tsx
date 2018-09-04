@@ -9,7 +9,7 @@ export interface Player {
   getDuration(): number;
   playVideo(): void;
   pauseVideo(): void;
-  seekTo(position: number): void;
+  seekTo(position: number, allowSeekAhead: boolean): void;
 }
 
 export interface PlayerReadyEvent {
@@ -21,7 +21,7 @@ export interface PlayerChangeEvent {
   data: number;
 }
 
-export enum PlayerState {
+export enum PlayerEventData {
   UNSTARTED = -1,
   ENDED = 0,
   PLAYING = 1,

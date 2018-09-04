@@ -1,20 +1,36 @@
-import { getUserColor, getUserInitials } from 'utils/UserUtils';
 import { UserRecord } from '@celluloid/types';
-import { Avatar } from '@material-ui/core';
+import {
+  Avatar,
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles
+} from '@material-ui/core';
 import * as React from 'react';
+import { getUserColor, getUserInitials } from 'utils/UserUtils';
 
-interface Props {
+const styles = ({ spacing }: Theme) => createStyles({
+  small: {
+    height: spacing.unit * 4,
+    width: spacing.unit * 4,
+    fontSize: '13px'
+  }
+});
+
+interface Props extends WithStyles<typeof styles> {
   user: UserRecord;
   noMargin?: boolean;
+  small?: boolean;
 }
 
-export default ({ user, noMargin }: Props) => (
+export default withStyles(styles)(({ user, noMargin, small, classes }: Props) => (
   <Avatar
+    className={small ? classes.small : undefined}
     style={{
-      margin: noMargin ? 0 : 10,
+      margin: noMargin ? 0 : small ? 4 : 10,
       backgroundColor: getUserColor(user)
     }}
   >
     {getUserInitials(user)}
   </Avatar>
-);
+));

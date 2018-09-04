@@ -8,22 +8,22 @@ export function isOwner(
 }
 
 export function isMember(
-  members: Set<UserRecord>,
+  project: ProjectGraphRecord,
   user: UserRecord
 ) {
-  return members.has(user);
+  return new Set(project.members).has(user);
 }
 
-export function isOwnerOrMember(
+export function canAnnotate(
   project: ProjectGraphRecord,
-  members: Set<UserRecord>,
   user: UserRecord
 ) {
   return isOwner(project, user)
-    || isMember(members, user);
+    || (
+      project.collaborative
+      && isMember(project, user)
+    );
 }
-
-export const canComment = isOwnerOrMember;
 export const canShare = isOwner;
 export const canDelete = isOwner;
 export const canEdit = isOwner;

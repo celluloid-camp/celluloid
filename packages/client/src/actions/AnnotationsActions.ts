@@ -39,8 +39,11 @@ export const triggerUpsertAnnotationLoading = (annotation?: AnnotationRecord) =>
 export const failUpsertAnnotation = (error: string) =>
   createErrorAction(ActionType.FAIL_UPSERT_ANNOTATION, error);
 
-export const succeedUpsertAnnotation = (annotation: AnnotationRecord) =>
-  createAction(ActionType.SUCCEED_UPSERT_ANNOTATION, annotation);
+export const succeedAddAnnotation = (annotation: AnnotationRecord) =>
+  createAction(ActionType.SUCCEED_ADD_ANNOTATION, annotation);
+
+export const succeedUpdateAnnotation = (annotation: AnnotationRecord) =>
+  createAction(ActionType.SUCCEED_UPDATE_ANNOTATION, annotation);
 
 export const triggerDeleteAnnotationLoading = (annotation: AnnotationRecord) =>
   createAction(ActionType.TRIGGER_DELETE_ANNOTATION_LOADING, annotation);
@@ -48,8 +51,8 @@ export const triggerDeleteAnnotationLoading = (annotation: AnnotationRecord) =>
 export const failDeleteAnnotation = (error: string) =>
   createErrorAction(ActionType.FAIL_DELETE_ANNOTATION, error);
 
-export const succeedDeleteAnnotation = () =>
-  createEmptyAction(ActionType.SUCCEED_DELETE_ANNOTATION);
+export const succeedDeleteAnnotation = (annotation: AnnotationRecord) =>
+  createAction(ActionType.SUCCEED_DELETE_ANNOTATION, annotation);
 
 export const listAnnotationsThunk =
   (projectId: string) =>
@@ -66,8 +69,7 @@ export const createAnnotationThunk =
       dispatch(triggerUpsertAnnotationLoading());
       return AnnotationService.create(projectId, data)
         .then(annotation => {
-          listAnnotationsThunk(projectId);
-          return dispatch(succeedUpsertAnnotation(annotation));
+          return dispatch(succeedAddAnnotation(annotation));
         })
         .catch(error => dispatch(failUpsertAnnotation(error)));
     };
@@ -78,20 +80,18 @@ export const updateAnnotationThunk =
       dispatch(triggerUpsertAnnotationLoading(record));
       return AnnotationService.update(projectId, record.id, record)
         .then(annotation => {
-          listAnnotationsThunk(projectId);
-          return dispatch(succeedUpsertAnnotation(annotation));
+          return dispatch(succeedUpdateAnnotation(annotation));
         })
         .catch(error => dispatch(failUpsertAnnotation(error)));
     };
 
 export const deleteAnnotationThunk =
   (projectId: string, annotation: AnnotationRecord) =>
-    (dispatch: Dispatch): AsyncAction<null, string> => {
+    (dispatch: Dispatch): AsyncAction<AnnotationRecord, string> => {
       dispatch(triggerDeleteAnnotationLoading(annotation));
       return AnnotationService.delete(projectId, annotation.id)
         .then(() => {
-          listAnnotationsThunk(projectId);
-          return dispatch(succeedDeleteAnnotation());
+          return dispatch(succeedDeleteAnnotation(annotation));
         })
         .catch(error => dispatch(failDeleteAnnotation(error)));
     };

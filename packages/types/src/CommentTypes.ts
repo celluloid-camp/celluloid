@@ -5,6 +5,6 @@ export interface CommentRecord {
   annotationId: string;
   userId: string;
   text: string;
-  createdAt: string;
+  createdAt: Date;
   user: UserRecord;
 }

@@ -17,6 +17,7 @@ import * as compression from 'compression';
 import * as express from 'express';
 import * as session from 'express-session';
 import { nocache } from 'http/NoCache';
+import { createStore } from 'http/SessionStore';
 import * as passport from 'passport';
 import { clientApp, clientDir } from 'Paths';
 
@@ -34,6 +35,13 @@ app.use(bodyParser.json());
 app.use(compression());
 app.use(
   session({
+    store: createStore(),
+    cookie: {
+      secure: process.env.NODE_ENV === 'production'
+        ? true
+        : false,
+      maxAge: 30 * 24 * 3600 * 1000
+    },
     secret: process.env.CELLULOID_JWT_SECRET as string,
     resave: false,
     saveUninitialized: true

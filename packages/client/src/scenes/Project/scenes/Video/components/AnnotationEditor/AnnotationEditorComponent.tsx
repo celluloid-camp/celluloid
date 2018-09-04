@@ -4,11 +4,8 @@ import {
   Button,
   Checkbox,
   createStyles,
-  Fade,
   FormControlLabel,
-  FormHelperText,
   IconButton,
-  Input,
   Theme,
   Typography,
   WithStyles,
@@ -17,10 +14,11 @@ import {
 import { deepOrange } from '@material-ui/core/colors';
 import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from '@material-ui/icons/Clear';
-import classnames from 'classnames';
 import { Range } from 'rc-slider';
 import * as React from 'react';
 import { formatDuration } from 'utils/DurationUtils';
+
+import TransparentInput from '../TransparentInput';
 
 const caretStart = require('images/caret-start.png');
 const caretStop = require('images/caret-stop.png');
@@ -65,37 +63,6 @@ const styles = (theme: Theme) => createStyles({
     padding: 0,
     borderRadius: '50%'
   },
-  inputWrapper: {
-    paddingTop: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-    display: 'flex',
-    flex: 1,
-    borderRadius: 2,
-    position: 'relative',
-    transition: 'all 0.1s ease-out'
-  },
-  inputOk: {
-    marginBottom: 0,
-  },
-  inputError: {
-    marginBottom: theme.spacing.unit * 2
-  },
-  inputRoot: {
-    fontSize: theme.typography.body1.fontSize,
-    backgroundColor: 'rgba(100, 100, 100, 0.2)',
-    color: 'inherit',
-  },
-  inputInput: {
-    paddingLeft: theme.spacing.unit,
-    paddingRight: theme.spacing.unit,
-    marginRight: theme.spacing.unit * 2,
-    boxSizing: 'border-box'
-  },
-  inputHelper: {
-    position: 'absolute',
-    left: theme.spacing.unit,
-    bottom: -theme.spacing.unit,
-  }
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -107,7 +74,7 @@ interface Props extends WithStyles<typeof styles> {
   error?: string;
   onTextChange(text: string): void;
   onCheckPauseChange(value: boolean): void;
-  onTimingChange(value: number, isStart: boolean): void;
+  onTimingChange(value: number, isStart: boolean, seekAhead: boolean): void;
   onClickSave(): void;
   onClickCancel(): void;
 }
@@ -181,42 +148,19 @@ export default withStyles(styles)(({
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <div
-          className={classnames(
-            error ? classes.inputError : classes.inputOk,
-            classes.inputWrapper
-          )}
-        >
-          <Input
-            multiline={true}
-            disableUnderline={true}
-            autoFocus={true}
-            placeholder="Saisissez votre annotation…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-            value={text}
-            error={Boolean(error)}
-            fullWidth={true}
-            onChange={event => onTextChange(event.target.value)}
-          />
-          <Fade in={Boolean(error)} appear={true}>
-            <FormHelperText
-              className={classes.inputHelper}
-              error={true}
-            >
-              {error}
-            </FormHelperText>
-          </Fade>
-        </div>
+        <TransparentInput
+          text={text}
+          error={error}
+          onChange={onTextChange}
+          placeholder="Saisissez votre annotation…"
+        />
         <div className={classes.timeline}>
           <TimingControl
             onBack={() =>
-              onTimingChange(Math.max(0, startTime - 1), true)
+              onTimingChange(Math.max(0, startTime - 1), true, true)
             }
             onForward={() =>
-              onTimingChange(Math.min(stopTime, startTime + 1), true)
+              onTimingChange(Math.min(stopTime, startTime + 1), true, true)
             }
             position={startTime}
             classes={classes}
@@ -226,11 +170,18 @@ export default withStyles(styles)(({
               min={0}
               max={duration}
               value={[startTime, stopTime]}
+              onChange={values => {
+                if (startTime !== values[0]) {
+                  onTimingChange(values[0], true, false);
+                } else if (stopTime !== values[1]) {
+                  onTimingChange(values[1], false, false);
+                }
+              }}
               onAfterChange={values => {
                 if (startTime !== values[0]) {
-                  onTimingChange(values[0], true);
+                  onTimingChange(values[0], true, true);
                 } else if (stopTime !== values[1]) {
-                  onTimingChange(values[1], false);
+                  onTimingChange(values[1], false, true);
                 }
               }}
               trackStyle={[{
@@ -261,10 +212,10 @@ export default withStyles(styles)(({
           </div>
           <TimingControl
             onBack={() =>
-              onTimingChange(Math.max(startTime, stopTime - 1), false)
+              onTimingChange(Math.max(startTime, stopTime - 1), false, true)
             }
             onForward={() =>
-              onTimingChange(Math.min(stopTime + 1, duration), false)
+              onTimingChange(Math.min(stopTime + 1, duration), false, true)
             }
             position={stopTime}
             classes={classes}

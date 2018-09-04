@@ -20,8 +20,7 @@ export interface SigninState {
 export interface VideoState {
   status: ComponentStatus;
   loadingError?: boolean;
-  annotations: Set<AnnotationRecord>;
-  comments: Set<CommentRecord>;
+  annotations: AnnotationRecord[];
   editing: boolean;
   annotationError?: string;
   focusedAnnotation?: AnnotationRecord;
@@ -47,7 +46,13 @@ export interface ProjectDetailsState {
   deleteError?: string;
 }
 
-export interface ProjectPageState {
+export interface PlayerState {
+  seeking: boolean;
+  seekTarget: number;
+}
+
+export interface ProjectState {
+  player: PlayerState;
   video: VideoState;
   details: ProjectDetailsState;
 }
@@ -83,7 +88,7 @@ export interface SharingState {
 
 export interface AppState extends RouterState {
   sharing: SharingState;
-  project: ProjectPageState;
+  project: ProjectState;
   home: HomeState;
   user?: UserRecord;
   signin: SigninState;

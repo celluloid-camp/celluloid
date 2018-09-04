@@ -1,3 +1,4 @@
+import { CommentRecord } from './CommentTypes';
 import { UserRecord } from './UserTypes';
 
 export interface AnnotationData {
@@ -12,4 +13,5 @@ export interface AnnotationRecord extends AnnotationData {
   userId: string;
   id: string;
   user: UserRecord;
+  comments: CommentRecord[];
 }

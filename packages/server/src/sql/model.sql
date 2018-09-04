@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 9.6.6
--- Dumped by pg_dump version 10.4
+-- Dumped by pg_dump version 10.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -64,7 +64,11 @@ CREATE TABLE public."Annotation" (
 --
 
 CREATE TABLE public."Comment" (
-    "annotationId" uuid NOT NULL
+    id uuid NOT NULL,
+    "annotationId" uuid NOT NULL,
+    "userId" uuid NOT NULL,
+    text text NOT NULL,
+    "createdAt" timestamp without time zone NOT NULL
 );
 
 
@@ -88,19 +92,17 @@ CREATE TABLE public."Project" (
     title text NOT NULL,
     description text NOT NULL,
     assignments text[],
-    views integer NOT NULL,
-    shares integer NOT NULL,
     "publishedAt" timestamp without time zone NOT NULL,
     objective text NOT NULL,
     "levelStart" integer NOT NULL,
     "levelEnd" integer NOT NULL,
     public boolean NOT NULL,
     collaborative boolean NOT NULL,
-    "langId" character(3) NOT NULL,
     "userId" uuid NOT NULL,
     shared boolean DEFAULT false NOT NULL,
     "shareName" text,
-    "shareExpiresAt" timestamp without time zone
+    "shareExpiresAt" timestamp without time zone,
+    "sharePassword" text
 );
 
 
@@ -111,8 +113,7 @@ CREATE TABLE public."Project" (
 CREATE TABLE public."Tag" (
     id uuid NOT NULL,
     name text NOT NULL,
-    featured boolean NOT NULL,
-    "langId" character(3) NOT NULL
+    featured boolean NOT NULL
 );
 
 
@@ -134,11 +135,23 @@ CREATE TABLE public."User" (
     id uuid NOT NULL,
     email text,
     password text NOT NULL,
-    confirmed boolean,
+    confirmed boolean DEFAULT false NOT NULL,
     code character(6),
     "codeGeneratedAt" timestamp without time zone,
-    username text,
-    role public."UserRole" DEFAULT 'Teacher'::public."UserRole"
+    username text NOT NULL,
+    role public."UserRole" DEFAULT 'Teacher'::public."UserRole" NOT NULL,
+    "passwordHint" text,
+    CONSTRAINT "Project_check_userValid" CHECK ((((role = ANY (ARRAY['Teacher'::public."UserRole", 'Admin'::public."UserRole"])) AND (email IS NOT NULL)) OR ((role = 'Student'::public."UserRole") AND ("passwordHint" IS NOT NULL))))
+);
+
+
+--
+-- Name: UserToProject; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."UserToProject" (
+    "userId" uuid NOT NULL,
+    "projectId" uuid NOT NULL
 );
 
 
@@ -164,6 +177,14 @@ ALTER TABLE ONLY public."Language"
 
 ALTER TABLE ONLY public."Project"
     ADD CONSTRAINT "Project_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Project Project_shareName_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Project"
+    ADD CONSTRAINT "Project_shareName_unique" UNIQUE ("shareName");
 
 
 --
@@ -238,11 +259,11 @@ ALTER TABLE ONLY public."Comment"
 
 
 --
--- Name: Project Project_langId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: Comment Comment_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."Project"
-    ADD CONSTRAINT "Project_langId_fkey" FOREIGN KEY ("langId") REFERENCES public."Language"(id);
+ALTER TABLE ONLY public."Comment"
+    ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id);
 
 
 --
@@ -270,11 +291,19 @@ ALTER TABLE ONLY public."TagToProject"
 
 
 --
--- Name: Tag Tag_langId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: UserToProject UserToProject_projectId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."Tag"
-    ADD CONSTRAINT "Tag_langId_fkey" FOREIGN KEY ("langId") REFERENCES public."Language"(id);
+ALTER TABLE ONLY public."UserToProject"
+    ADD CONSTRAINT "UserToProject_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public."Project"(id);
+
+
+--
+-- Name: UserToProject UserToProject_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."UserToProject"
+    ADD CONSTRAINT "UserToProject_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id);
 
 
 --

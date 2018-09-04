@@ -1,16 +1,28 @@
-import { ProjectCreateData, ProjectRecord, ProjectShareData, UserRecord } from '@celluloid/types';
+import {
+  ProjectCreateData,
+  ProjectRecord,
+  ProjectShareData,
+  UserRecord
+} from '@celluloid/types';
 import { generateUniqueShareName, hashPassword } from 'auth/Utils';
-import { database, filterNull, getExactlyOne, hasConflictedOn } from 'backends/Database';
+import {
+  database,
+  filterNull,
+  getExactlyOne,
+  hasConflictedOn
+} from 'backends/Database';
 import { QueryBuilder } from 'knex';
 
-export const orIsMember =
+export const orIsCollaborativeMember =
   (nested: QueryBuilder, user?: UserRecord) =>
     user
-      ? nested.orWhereIn(
-        'Project.id',
-        database.select('projectId')
-          .from('UserToProject')
-          .where('userId', user.id))
+      ? nested
+        .orWhereIn(
+          'Project.id',
+          database.select('projectId')
+            .from('UserToProject')
+            .where('userId', user.id))
+        .andWhere('Project.collaborative', true)
       : nested;
 
 export const orIsOwner =
@@ -27,11 +39,10 @@ function filterUserProps({ id, username, role }: UserRecord) {
   };
 }
 
-// comment on annotations
-export function isOwnerOrMember(projectId: string, user: UserRecord) {
+export function isOwnerOrCollaborativeMember(projectId: string, user: UserRecord) {
   return Promise.all([
     isOwner(projectId, user),
-    isMember(projectId, user)
+    isCollaborativeMember(projectId, user)
   ])
     .then(([owner, member]: boolean[]) => owner || member);
 }
@@ -45,11 +56,13 @@ export function isOwner(projectId: string, user: UserRecord) {
     .then((row: string) => row ? true : false);
 }
 
-export function isMember(projectId: string, user: UserRecord) {
+export function isCollaborativeMember(projectId: string, user: UserRecord) {
   return database.first('projectId')
     .from('UserToProject')
-    .where('projectId', projectId)
-    .andWhere('userId', user.id)
+    .innerJoin('Project', 'Project.id', 'UserToProject.projectId')
+    .where('UserToProject.projectId', projectId)
+    .andWhere('UserToProject.userId', user.id)
+    .andWhere('Project.collaborative', true)
     .then((row: string) => row ? true : false);
 }
 
@@ -65,7 +78,7 @@ export function selectAll(user: UserRecord) {
     .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
     .where('Project.public', true)
     .modify(orIsOwner, user)
-    .modify(orIsMember, user)
+    .modify(orIsCollaborativeMember, user)
     .groupBy('Project.id', 'User.id')
     .map(filterNull('tags'))
     .map(row => ({
@@ -93,7 +106,7 @@ export function selectOne(projectId: string, user: UserRecord) {
     .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
     .where((nested: QueryBuilder) => {
       nested.where('Project.public', true);
-      nested.modify(orIsMember, user);
+      nested.modify(orIsCollaborativeMember, user);
       nested.modify(orIsOwner, user);
     })
     .andWhere('Project.id', projectId)

@@ -1,11 +1,19 @@
-import { AnnotationRecord, ProjectGraphRecord, UserRecord } from '@celluloid/types';
+import {
+  AnnotationRecord,
+  ProjectGraphRecord,
+  UserRecord
+} from '@celluloid/types';
 import { listAnnotationsThunk } from 'actions/AnnotationsActions';
+import {
+  playerNotifySeek,
+  playerRequestSeek
+} from 'actions/PlayerActions';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AsyncAction } from 'types/ActionTypes';
+import { Action, AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
-import { Player, PlayerState } from 'types/YoutubeTypes';
+import { Player, PlayerEventData } from 'types/YoutubeTypes';
 import * as AnnotationUtils from 'utils/AnnotationUtils';
 
 import VideoComponent from './VideoComponent';
@@ -14,10 +22,13 @@ const FADE_TIMEOUT = 3000;
 
 interface Props {
   user?: UserRecord;
-  annotations: Set<AnnotationRecord>;
+  annotations: AnnotationRecord[];
   project: ProjectGraphRecord;
-  reloadAnnotations(projectId: string):
+  seeking: boolean;
+  load(projectId: string):
     AsyncAction<AnnotationRecord[], string>;
+  notifySeek(): EmptyAction;
+  requestSeek(seekTarget: number): Action<number>;
 }
 
 interface State {
@@ -28,17 +39,22 @@ interface State {
   fullscreen: boolean;
   showControls: boolean;
   showHints: boolean;
-  visibleAnnotations: Set<AnnotationRecord>;
+  visibleAnnotations: AnnotationRecord[];
 }
 
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
-  annotations: state.project.video.annotations
+  annotations: state.project.video.annotations,
+  seeking: state.project.player.seeking,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reloadAnnotations: (projectId: string) =>
-    listAnnotationsThunk(projectId)(dispatch)
+  load: (projectId: string) =>
+    listAnnotationsThunk(projectId)(dispatch),
+  notifySeek: () =>
+    dispatch(playerNotifySeek()),
+  requestSeek: (seekTarget: number) =>
+    dispatch(playerRequestSeek(seekTarget))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
@@ -52,13 +68,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       fullscreen: false,
       showControls: true,
       showHints: false,
-      visibleAnnotations: new Set(),
+      visibleAnnotations: [],
       annotating: false
     } as State;
 
     componentDidMount() {
       this.resetFadeOutTimer();
-      this.props.reloadAnnotations(this.props.project.id);
+      this.props.load(this.props.project.id);
+    }
+
+    componentDidUpdate(prevProps: Props) {
+      if (prevProps.user !== this.props.user) {
+        this.props.load(this.props.project.id);
+      }
     }
 
     componentWillUnmount() {
@@ -71,7 +93,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       if (player) {
         const annotations = this.props.annotations;
         const position = player.getCurrentTime();
-        const visibleAnnotations = Array.from(annotations)
+        const visibleAnnotations = annotations
           .filter(annotation =>
             AnnotationUtils.visible(annotation, position)
           );
@@ -80,14 +102,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             && annotation.startTime >= position - 0.10
             && annotation.startTime < position + 0.10) {
             player.pauseVideo();
-            player.seekTo(position + 0.10);
+            player.seekTo(position + 0.10, true);
           }
         });
-
-        this.setState({
-          visibleAnnotations: new Set(visibleAnnotations),
-          position: position,
-        });
+        if (!this.props.seeking) {
+          this.setState({
+            visibleAnnotations,
+            position: position,
+          });
+        }
       }
     }
 
@@ -103,13 +126,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       this.setState({ showControls: false });
     }
 
-    seek(value: number, pause: boolean) {
+    seek(value: number, pause: boolean, seekAhead: boolean) {
+      this.setState({ position: value });
       const player = this.state.player;
       if (player) {
         if (pause) {
           player.pauseVideo();
         }
-        player.seekTo(value);
+        player.seekTo(value, seekAhead);
+        this.props.requestSeek(value);
       }
     }
 
@@ -143,11 +168,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       const onPlayerStateChange = (event: { target: Player, data: number }) => {
-        const state = event.data as PlayerState;
+        const state = event.data as PlayerEventData;
         switch (state) {
-          case PlayerState.PLAYING:
+          case PlayerEventData.PLAYING:
             this.setState({ playing: true });
+            this.props.notifySeek();
             break;
+          case PlayerEventData.BUFFERING:
+          case PlayerEventData.CUED:
+          case PlayerEventData.ENDED:
+          case PlayerEventData.UNSTARTED:
+          case PlayerEventData.PAUSED:
           default:
             this.setState({ playing: false });
         }
@@ -184,33 +215,33 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         this.setState({
           showHints: false
         });
-        this.seek(annotation.startTime, false);
+        this.seek(annotation.startTime, false, true);
       };
 
       const onSeek = this.seek.bind(this);
 
       return (
-          <VideoComponent
-            user={user}
-            project={project}
-            annotations={annotations}
-            visibleAnnotations={visibleAnnotations}
-            position={position}
-            duration={duration}
-            playing={playing}
-            fullscreen={fullscreen}
-            showControls={showControls}
-            showHints={showHints}
-            onUserAction={onUserAction}
-            onPlayerReady={onPlayerReady}
-            onPlayerStateChange={onPlayerStateChange}
-            onFullscreenChange={onFullscreenChange}
-            onTogglePlayPause={onTogglePlayPause}
-            onToggleFullscreen={onToggleFullscreen}
-            onToggleHints={onToggleHints}
-            onClickHint={onClickHint}
-            onSeek={onSeek}
-          />
+        <VideoComponent
+          user={user}
+          project={project}
+          annotations={annotations}
+          visibleAnnotations={visibleAnnotations}
+          position={position}
+          duration={duration}
+          playing={playing}
+          fullscreen={fullscreen}
+          showControls={showControls}
+          showHints={showHints}
+          onUserAction={onUserAction}
+          onPlayerReady={onPlayerReady}
+          onPlayerStateChange={onPlayerStateChange}
+          onFullscreenChange={onFullscreenChange}
+          onTogglePlayPause={onTogglePlayPause}
+          onToggleFullscreen={onToggleFullscreen}
+          onToggleHints={onToggleHints}
+          onClickHint={onClickHint}
+          onSeek={onSeek}
+        />
       );
     }
   });

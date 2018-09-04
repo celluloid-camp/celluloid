@@ -1,10 +1,17 @@
 import { AnnotationRecord } from '@celluloid/types';
-import { createStyles, Paper, WithStyles, withStyles } from '@material-ui/core';
+import {
+  createStyles,
+  Paper,
+  Theme,
+  Typography,
+  WithStyles,
+  withStyles
+} from '@material-ui/core';
 import * as classNames from 'classnames';
 import * as React from 'react';
 import { getUserColor } from 'utils/UserUtils';
 
-const styles = createStyles({
+const styles = (theme: Theme) => createStyles({
   visible: {
     opacity: 1
   },
@@ -15,7 +22,6 @@ const styles = createStyles({
     cursor: 'pointer',
     position: 'absolute' as 'absolute',
     zIndex: 6,
-    top: 0,
     height: 10,
     minWidth: 10,
     margin: 0,
@@ -33,12 +39,17 @@ const styles = createStyles({
     height: 'calc(100% - 48px)',
     width: 'calc(100% - 48px)',
   },
+  title: {
+    color: theme.palette.text.disabled,
+    top: 0,
+    left: 0,
+  }
 });
 
 interface Props extends WithStyles<typeof styles> {
   duration: number;
   position: number;
-  annotations: Set<AnnotationRecord>;
+  annotations: AnnotationRecord[];
   visible: boolean;
   onClick: Function;
 }
@@ -64,8 +75,13 @@ export default
       <div
         className={classes.container}
       >
-        {Array.from(annotations)
-          .map((annotation, index) => {
+        <Typography className={classes.title} align="left" variant="headline">
+          {annotations.length > 0
+            ? `${annotations.length} annotations`
+            : `Aucune annotation`
+          }
+        </Typography>
+        {annotations.map((annotation, index) => {
             return (
               <Paper
                 key={annotation.id}
@@ -75,7 +91,7 @@ export default
                 )}
                 style={{
                   color: 'white',
-                  top: visible ? index * 24 : 0,
+                  top: visible ? 48 + (index * 24) : 0,
                   left: getHintStartPosition(annotation),
                   width: getHintWidth(annotation),
                   backgroundColor: getUserColor(annotation.user),

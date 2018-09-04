@@ -7,7 +7,11 @@ import {
   validateStudentSignup
 } from '@celluloid/validators';
 import { SigninStrategy } from 'auth/Auth';
-import { isLoggedIn, sendConfirmationCode, sendPasswordReset } from 'auth/Utils';
+import {
+  isLoggedIn,
+  sendConfirmationCode,
+  sendPasswordReset
+} from 'auth/Utils';
 import { hasConflictedOn } from 'backends/Database';
 import { Request, Response, Router } from 'express';
 import { authenticate } from 'passport';
@@ -110,36 +114,40 @@ router.post('/confirm-signup', (req, res) => {
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return UserStore.selectOneByUsernameOrEmail(payload.email)
+  return UserStore.selectOneByUsernameOrEmail(payload.login)
     .then((user: TeacherServerRecord) => {
       if (!user) {
         console.error(`Failed to confirm signup: user`
-          + ` with email ${payload.email} not found`);
+          + ` with email ${payload.login} not found`);
         return res.status(401).json({
           success: false,
           errors: { server: 'InvalidUser' }
         });
       } else {
         if (compareCodes(user.code, payload.code)) {
-          return UserStore.confirmByEmail(payload.email)
+          return UserStore.confirmByEmail(payload.login)
             .then(() => res.status(200).json(result))
             .catch((error: Error) => {
               console.error(
                 `Failed to confirm signup for user` +
-                ` with email ${payload.email}:`,
+                ` with email ${payload.login}:`,
                 error
               );
               return res.status(500).send();
             });
         } else {
           console.error(`Failed to confirm signup for user with email`
-            + ` ${payload.email}: received code ${payload.code}, expected ${user.code}`);
+            + ` ${payload.login}: received code ${payload.code}, expected ${user.code}`);
           return res.status(401).json({
             success: false, errors: { server: 'InvalidUser' }
           });
         }
       }
-    });
+    })
+    .catch(error => {
+      console.error(`Failed to confirm signup:`, error);
+      return res.status(500).send();
+    }) ;
 });
 
 router.post('/confirm-reset-password', (req, res) => {
@@ -172,14 +180,18 @@ router.post('/confirm-reset-password', (req, res) => {
               return res.status(500).send();
             });
         } else {
-          console.error(`Failed to reset password for user with email ${payload.email}:`
+          console.error(`Failed to confirm password reset for user with email ${payload.email}:`
             + ` received code ${payload.code}, expected ${user.code}`);
           return res.status(401).json({
             success: false, errors: { server: 'InvalidUser' }
           });
         }
       }
-    });
+    })
+    .catch(error => {
+      console.error(`Failed to confirm password reset:`, error);
+      return res.status(500).send();
+    }) ;
 });
 
 const resendCode = (sender: (user: TeacherRecord) =>
@@ -211,7 +223,6 @@ const resendCode = (sender: (user: TeacherRecord) =>
         }
       })
       .catch((error: Error) => {
-        // tslint:disable-next-line:no-console
         console.error(
           `Failed to resend authorization code for user `
           + ` with email ${payload.email}`,

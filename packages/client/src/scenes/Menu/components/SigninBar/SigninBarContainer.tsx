@@ -41,7 +41,7 @@ export default class extends React.Component<Props, State> {
       <SigninBarComponent
         user={user}
         onClickLogin={onClickLogin}
-        onClickLogout={onClickLogout}
+        onClickLogout={() => { closeMenu(); onClickLogout(); }}
         onClickSignup={onClickSignup}
         onClickAvatar={openMenu}
         onCloseMenu={closeMenu}

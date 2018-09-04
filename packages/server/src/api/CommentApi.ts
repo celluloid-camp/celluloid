@@ -1,12 +1,15 @@
-import * as express from 'express';
-import { isLoggedIn, isProjectMember, isProjectOwnerOrMember } from 'auth/Utils';
-import * as CommentStore from 'store/CommentStore';
-import * as AnnotationStore from 'store/AnnotationStore';
 import { CommentRecord } from '@celluloid/types';
+import {
+  isLoggedIn,
+  isProjectOwnerOrCollaborativeMember
+} from 'auth/Utils';
+import * as express from 'express';
+import * as AnnotationStore from 'store/AnnotationStore';
+import * as CommentStore from 'store/CommentStore';
 
-const router = express.Router({mergeParams: true});
+const router = express.Router({ mergeParams: true });
 
-router.get('/', isLoggedIn, isProjectOwnerOrMember, (req, res) => {
+router.get('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
   const annotationId = req.params.annotationId;
   const user = req.user;
 
@@ -17,14 +20,14 @@ router.get('/', isLoggedIn, isProjectOwnerOrMember, (req, res) => {
     .catch((error: Error) => {
       console.error('Failed to list comments:', error);
       if (error.message === 'AnnotationNotFound') {
-        res.status(404).json({error: error.message});
+        res.status(404).json({ error: error.message });
       } else {
         res.status(500).send();
       }
     });
 });
 
-router.post('/', isLoggedIn, isProjectMember, (req, res) => {
+router.post('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
   const annotationId = req.params.annotationId;
   const user = req.user;
   const comment = req.body.text;
@@ -37,14 +40,14 @@ router.post('/', isLoggedIn, isProjectMember, (req, res) => {
     .catch((error: Error) => {
       console.error('Failed to create comment:', error);
       if (error.message === 'AnnotationNotFound') {
-        res.status(404).json({error: error.message});
+        res.status(404).json({ error: error.message });
       } else {
         res.status(500).send();
       }
     });
 });
 
-router.put('/:commentId', isLoggedIn, isProjectMember, (req, res) => {
+router.put('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
   const commentId = req.params.commentId;
   const updated = req.body;
   const user = req.user;
@@ -55,34 +58,42 @@ router.put('/:commentId', isLoggedIn, isProjectMember, (req, res) => {
         ? Promise.reject(new Error('UserNotCommentOwner'))
         : Promise.resolve()
     )
-    .then(() => CommentStore.update(commentId, updated))
+    .then(() => CommentStore.update(commentId, updated.text))
+    .then(result => res.status(200).json(result))
     .catch((error: Error) => {
       console.error('Failed to update comment:', error);
       if (error.message === 'CommentNotFound') {
-        res.status(404).json({error: error.message});
+        res.status(404).json({ error: error.message });
+      } else if (error.message === 'UserNotCommentOwner') {
+        res.status(403).send({ error: error.message });
       } else {
         res.status(500).send();
       }
     });
 });
 
-router.delete('/:commentid', isLoggedIn, isProjectMember, (req, res) => {
+router.delete('/:commentid', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
   const commentId = req.params.commentId;
   const user = req.user;
 
   CommentStore.selectOne(commentId)
     .then((comment: CommentRecord) =>
       comment.userId !== user.id
-        ? Promise.reject(new Error('User'))
+        ? Promise.reject(new Error('UserNotCommentOwner'))
         : Promise.resolve()
     )
     .then(() => CommentStore.del(commentId))
+    .then(() => res.status(204).send())
     .catch((error: Error) => {
       console.error('Failed to delete comment:', error);
       if (error.message === 'CommentNotFound') {
-        res.status(404).json({error: error.message});
+        res.status(404).json({ error: error.message });
+      } else if (error.message === 'UserNotCommentOwner') {
+        res.status(403).send({ error: error.message });
       } else {
         res.status(500).send();
       }
     });
 });
+
+export default router;

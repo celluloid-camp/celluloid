@@ -94,11 +94,12 @@ export function selectOne(id: string) {
     .where('id', id);
 }
 
-export function selectOneByUsernameOrEmail(userNameOrEmail: string) {
+export function selectOneByUsernameOrEmail(login: string) {
+  console.log('login::', login);
   return database('User')
     .first()
-    .where('email', userNameOrEmail)
-    .orWhere('username', userNameOrEmail);
+    .where('email', login)
+    .orWhere('username', login);
 }
 
 function withTransaction(query: QueryBuilder, transaction?: Transaction) {

@@ -1,16 +1,20 @@
-import { AnnotationRecord, ProjectGraphRecord } from '@celluloid/types';
-import { Grid, WithStyles, withStyles, MuiThemeProvider } from '@material-ui/core';
+import { ProjectGraphRecord } from '@celluloid/types';
+import {
+  Grid,
+  MuiThemeProvider,
+  WithStyles,
+  withStyles
+} from '@material-ui/core';
 import ProjectSummary from 'components/ProjectSummary';
 import * as React from 'react';
+import { Dark } from 'utils/ThemeUtils';
 
 import SideBar from './components/SideBar';
 import { styles } from './ProjectStyles';
 import Video from './scenes/Video';
-import { Dark } from 'utils/ThemeUtils';
 
 interface Props extends WithStyles<typeof styles> {
   project?: ProjectGraphRecord;
-  annotations: Set<AnnotationRecord>;
   onVideoChange(): void;
 }
 

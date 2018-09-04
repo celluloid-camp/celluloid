@@ -1,5 +1,11 @@
-import { maxAnnotationDuration } from '@celluloid/client/src/utils/AnnotationUtils';
-import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
+import {
+  maxAnnotationDuration
+} from '@celluloid/client/src/utils/AnnotationUtils';
+import {
+  AnnotationData,
+  AnnotationRecord,
+  UserRecord
+} from '@celluloid/types';
 import {
   createAnnotationThunk,
   triggerCancelAnnotation,
@@ -22,7 +28,7 @@ interface Props {
     position: number;
     duration: number;
   };
-  onSeek(position: number, pause: boolean): void;
+  onSeek(position: number, pause: boolean, seekAhead: boolean): void;
   onCreate(projectId: string, data: AnnotationData):
     AsyncAction<AnnotationRecord, string>;
   onUpdate(projectId: string, record: AnnotationRecord):
@@ -97,7 +103,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       const onTimingChange = (
-        position: number, isStart: boolean
+        position: number, isStart: boolean, seekAhead: boolean
       ) => {
         const state = this.state as State;
         if (isStart) {
@@ -106,7 +112,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           state.annotation.stopTime = position;
         }
         this.setState(state);
-        onSeek(position, true);
+        onSeek(position, true, true);
       };
 
       const onClickSave = () => {

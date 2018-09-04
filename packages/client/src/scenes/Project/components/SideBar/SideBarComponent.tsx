@@ -1,8 +1,3 @@
-import ButtonProgress from '@celluloid/client/src/components/ButtonProgress';
-import DialogError from '@celluloid/client/src/components/DialogError';
-import LabeledProgressSwitch from '@celluloid/client/src/components/LabeledProgressSwitch';
-import VisibilityChip from '@celluloid/client/src/components/VisibilityChip';
-import { isOwner } from '@celluloid/client/src/utils/ProjectUtils';
 import { ProjectGraphRecord, UserRecord } from '@celluloid/types';
 import {
   createStyles,
@@ -16,9 +11,15 @@ import {
   withStyles
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ShareIcon from '@material-ui/icons/Share';
+import ButtonProgress from 'components/ButtonProgress';
+import DialogError from 'components/DialogError';
+import LabeledProgressSwitch from 'components/LabeledProgressSwitch';
 import UserAvatar from 'components/UserAvatar';
+import VisibilityChip from 'components/VisibilityChip';
 import * as React from 'react';
 import { AsyncAction } from 'types/ActionTypes';
+import { isOwner } from 'utils/ProjectUtils';
 
 import ShareDialog from './components/ShareDialog';
 
@@ -118,16 +119,6 @@ export default withStyles(styles)(({
                 onClickSetCollaborative(project.id, !project.collaborative)
               }
             />
-            <LabeledProgressSwitch
-              label="partagé"
-              checked={project.shared}
-              loading={unshareLoading}
-              error={unshareError}
-              onChange={() => onClickShare()}
-            />
-            <ShareDialog
-              project={project}
-            />
           </>
         ) : (
           <div className={classes.chips}>
@@ -141,6 +132,24 @@ export default withStyles(styles)(({
             />
           </div>
         )
+      }
+      {(user && isOwner(project, user)) &&
+        <div className={classes.button}>
+          <ButtonProgress
+            variant="raised"
+            color="primary"
+            size="small"
+            fullWidth={true}
+            loading={unshareLoading}
+            onClick={onClickShare}
+          >
+            <ShareIcon fontSize="inherit" className={classes.buttonIcon} />
+            {`partager`}
+          </ButtonProgress>
+          <ShareDialog
+            project={project}
+          />
+        </div>
       }
       <List
         dense={true}

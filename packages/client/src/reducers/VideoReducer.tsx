@@ -1,11 +1,12 @@
 import { ActionType } from '@celluloid/client/src/types/ActionTypes';
+import { AnnotationRecord } from '@celluloid/types';
+import * as R from 'ramda';
 import { AnyAction } from 'redux';
 import { ComponentStatus, VideoState } from 'types/StateTypes';
 
 const initialState = {
   status: ComponentStatus.LOADING,
-  annotations: new Set(),
-  comments: new Set(),
+  annotations: [],
   editing: false,
   focusedAnnotation: undefined,
   upsertAnnotationLoading: false,
@@ -14,6 +15,11 @@ const initialState = {
   upsertCommentLoading: false,
   deleteCommentLoading: false
 } as VideoState;
+
+const sortAnnotations = R.compose<AnnotationRecord[], AnnotationRecord[], AnnotationRecord[]>(
+  R.sortBy(R.prop('createdAt')),
+  R.sortBy(R.prop('startTime'))
+);
 
 export default (state = initialState, { type, payload }: AnyAction):
   VideoState => {
@@ -43,8 +49,8 @@ export default (state = initialState, { type, payload }: AnyAction):
         ...state,
         focusedAnnotation:
           state.focusedAnnotation !== payload
-          ? payload
-          : undefined,
+            ? payload
+            : undefined,
       };
     case ActionType.TRIGGER_BLUR_ANNOTATION:
       return {
@@ -79,9 +85,29 @@ export default (state = initialState, { type, payload }: AnyAction):
         upsertAnnotationLoading: false,
         annotationError: payload,
       };
-    case ActionType.SUCCEED_UPSERT_ANNOTATION:
+    case ActionType.SUCCEED_UPDATE_ANNOTATION:
       return {
         ...state,
+        annotations: sortAnnotations(
+          [...R.filter((elem: AnnotationRecord) =>
+            elem.id !== payload.id)(
+              state.annotations
+            ),
+            payload
+          ]
+        ),
+        focusedAnnotation: payload,
+        upsertAnnotationLoading: false,
+        editing: false,
+        annotationError: undefined,
+      };
+    case ActionType.SUCCEED_ADD_ANNOTATION:
+      return {
+        ...state,
+        annotations: sortAnnotations([
+          ...state.annotations,
+          payload
+        ]),
         focusedAnnotation: payload,
         upsertAnnotationLoading: false,
         editing: false,
@@ -102,6 +128,10 @@ export default (state = initialState, { type, payload }: AnyAction):
     case ActionType.SUCCEED_DELETE_ANNOTATION:
       return {
         ...state,
+        annotations: sortAnnotations(
+          R.filter((elem: AnnotationRecord) =>
+            elem.id !== payload.id)(state.annotations)
+        ),
         deleteAnnotationLoading: false,
         annotationError: undefined,
         focusedAnnotation: undefined,
@@ -120,6 +150,7 @@ export default (state = initialState, { type, payload }: AnyAction):
     case ActionType.SUCCEED_DELETE_COMMENT:
       return {
         ...state,
+
         deleteAnnotationLoading: false,
         commentError: undefined,
         focusedComment: undefined,
@@ -135,21 +166,13 @@ export default (state = initialState, { type, payload }: AnyAction):
         upsertCommentLoading: false,
         commentError: payload
       };
-    case ActionType.SUCCEED_UPSERT_COMMENT:
+    case ActionType.SUCCEED_UPDATE_COMMENT:
       return {
         ...state,
         upsertCommentLoading: false,
         commentError: undefined,
         focusedComment: undefined
       };
-    case ActionType.TRIGGER_LIST_COMMENTS_LOADING:
-    case ActionType.FAIL_LIST_COMMENTS:
-    case ActionType.SUCCEED_LIST_COMMENTS:
-    case ActionType.TRIGGER_FOCUS_COMMENT:
-    case ActionType.TRIGGER_BLUR_COMMENT:
-    case ActionType.TRIGGER_ADD_COMMENT:
-    case ActionType.TRIGGER_CANCEL_COMMENT:
-    case ActionType.TRIGGER_EDIT_COMMENT:
     default:
       return state;
   }
