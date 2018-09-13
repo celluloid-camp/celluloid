@@ -10,8 +10,10 @@ const getExpiresAt = (session) => {
 
 class PostgresStore extends Store {
   closed: boolean;
-  pruneInterval: number;
-  pruneTimer: number;
+  // tslint:disable-next-line:no-any
+  pruneInterval: any;
+  // tslint:disable-next-line:no-any
+  pruneTimer: any;
   ttl: number;
 
   constructor(pruneInterval?: number) {

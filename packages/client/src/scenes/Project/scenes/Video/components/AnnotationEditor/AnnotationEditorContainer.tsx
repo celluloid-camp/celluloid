@@ -122,6 +122,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             ...annotation
           });
         } else {
+          // tslint:disable-next-line:no-console
+          console.log('CREATE annotation');
           onCreate(projectId, annotation);
         }
       };

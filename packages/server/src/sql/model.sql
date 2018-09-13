@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.6
+-- Dumped from database version 10.5
 -- Dumped by pg_dump version 10.5
 
 SET statement_timeout = 0;
@@ -107,6 +107,17 @@ CREATE TABLE public."Project" (
 
 
 --
+-- Name: Session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."Session" (
+    sid text NOT NULL,
+    session text NOT NULL,
+    "expiresAt" timestamp without time zone NOT NULL
+);
+
+
+--
 -- Name: Tag; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -188,6 +199,14 @@ ALTER TABLE ONLY public."Project"
 
 
 --
+-- Name: Session Session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Session"
+    ADD CONSTRAINT "Session_pkey" PRIMARY KEY (sid);
+
+
+--
 -- Name: Tag Subjects_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -239,7 +258,7 @@ CREATE UNIQUE INDEX "TagToProjectTagIdProjectIdUnique" ON public."TagToProject" 
 --
 
 ALTER TABLE ONLY public."Annotation"
-    ADD CONSTRAINT "Annotation_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public."Project"(id);
+    ADD CONSTRAINT "Annotation_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public."Project"(id) ON DELETE CASCADE;
 
 
 --
@@ -247,7 +266,7 @@ ALTER TABLE ONLY public."Annotation"
 --
 
 ALTER TABLE ONLY public."Annotation"
-    ADD CONSTRAINT "Annotation_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id);
+    ADD CONSTRAINT "Annotation_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON DELETE CASCADE;
 
 
 --
@@ -255,7 +274,7 @@ ALTER TABLE ONLY public."Annotation"
 --
 
 ALTER TABLE ONLY public."Comment"
-    ADD CONSTRAINT "Comment_annotationId_fkey" FOREIGN KEY ("annotationId") REFERENCES public."Annotation"(id);
+    ADD CONSTRAINT "Comment_annotationId_fkey" FOREIGN KEY ("annotationId") REFERENCES public."Annotation"(id) ON DELETE CASCADE;
 
 
 --
@@ -263,7 +282,7 @@ ALTER TABLE ONLY public."Comment"
 --
 
 ALTER TABLE ONLY public."Comment"
-    ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id);
+    ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON DELETE CASCADE;
 
 
 --
@@ -271,7 +290,7 @@ ALTER TABLE ONLY public."Comment"
 --
 
 ALTER TABLE ONLY public."Project"
-    ADD CONSTRAINT "Project_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id);
+    ADD CONSTRAINT "Project_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON DELETE CASCADE;
 
 
 --
@@ -279,7 +298,7 @@ ALTER TABLE ONLY public."Project"
 --
 
 ALTER TABLE ONLY public."TagToProject"
-    ADD CONSTRAINT "TagToProject_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public."Project"(id);
+    ADD CONSTRAINT "TagToProject_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public."Project"(id) ON DELETE CASCADE;
 
 
 --
@@ -287,7 +306,7 @@ ALTER TABLE ONLY public."TagToProject"
 --
 
 ALTER TABLE ONLY public."TagToProject"
-    ADD CONSTRAINT "TagToProject_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES public."Tag"(id);
+    ADD CONSTRAINT "TagToProject_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES public."Tag"(id) ON DELETE CASCADE;
 
 
 --
@@ -295,7 +314,7 @@ ALTER TABLE ONLY public."TagToProject"
 --
 
 ALTER TABLE ONLY public."UserToProject"
-    ADD CONSTRAINT "UserToProject_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public."Project"(id);
+    ADD CONSTRAINT "UserToProject_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public."Project"(id) ON DELETE CASCADE;
 
 
 --
@@ -303,7 +322,7 @@ ALTER TABLE ONLY public."UserToProject"
 --
 
 ALTER TABLE ONLY public."UserToProject"
-    ADD CONSTRAINT "UserToProject_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id);
+    ADD CONSTRAINT "UserToProject_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON DELETE CASCADE;
 
 
 --

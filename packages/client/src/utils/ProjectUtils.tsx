@@ -21,7 +21,6 @@ export function canAnnotate(
   return isOwner(project, user)
     || (
       project.collaborative
-      && isMember(project, user)
     );
 }
 export const canShare = isOwner;

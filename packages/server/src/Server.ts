@@ -37,9 +37,7 @@ app.use(
   session({
     store: createStore(),
     cookie: {
-      secure: process.env.NODE_ENV === 'production'
-        ? true
-        : false,
+      secure: false,
       maxAge: 30 * 24 * 3600 * 1000
     },
     secret: process.env.CELLULOID_JWT_SECRET as string,
