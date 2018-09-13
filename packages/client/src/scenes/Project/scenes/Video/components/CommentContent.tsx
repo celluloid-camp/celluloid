@@ -5,9 +5,11 @@ import { AsyncAction } from '@celluloid/client/src/types/ActionTypes';
 import {
   canEditComment
 } from '@celluloid/client/src/utils/AnnotationUtils';
+import { isOwner } from '@celluloid/client/src/utils/ProjectUtils';
 import {
   AnnotationRecord,
   CommentRecord,
+  ProjectGraphRecord,
   UserRecord
 } from '@celluloid/types';
 import {
@@ -75,6 +77,7 @@ interface State {
 interface Props
   extends WithStyles<typeof styles> {
   user?: UserRecord;
+  project: ProjectGraphRecord;
   comment: CommentRecord;
   annotation: AnnotationRecord;
   onClickEdit(): void;
@@ -98,6 +101,7 @@ export default connect(null, mapDispatchToProps)(
         const {
           classes,
           user,
+          project,
           comment,
           annotation,
           onClickEdit,
@@ -105,7 +109,10 @@ export default connect(null, mapDispatchToProps)(
         } = this.props;
 
         const { hovering } = this.state;
-        const showActions = user && canEditComment(comment, user) && hovering;
+        const showActions =
+          user
+          && (canEditComment(comment, user) || isOwner(project, user))
+          && hovering;
 
         const onHover = (hoverChange: boolean) => {
           this.setState({ hovering: hoverChange });
@@ -145,13 +152,13 @@ export default connect(null, mapDispatchToProps)(
                     </IconButton>
                     <IconButton
                       className={classes.button}
+                      onClick={() =>
+                        onClickDelete(annotation.projectId, annotation.id, comment)
+                      }
                     >
                       <DeleteIcon
                         className={classes.icon}
                         color="disabled"
-                        onClick={() =>
-                          onClickDelete(annotation.projectId, annotation.id, comment)
-                        }
                       />
                     </IconButton>
                   </>

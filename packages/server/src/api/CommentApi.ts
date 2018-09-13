@@ -34,15 +34,13 @@ router.post('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => 
 
   AnnotationStore.selectOne(annotationId, user)
     .then(() => CommentStore.insert(annotationId, comment, user))
-    .then(result => {
-      res.status(201).json(result);
-    })
+    .then(result => res.status(201).json(result))
     .catch((error: Error) => {
       console.error('Failed to create comment:', error);
       if (error.message === 'AnnotationNotFound') {
-        res.status(404).json({ error: error.message });
+        return res.status(404).json({ error: error.message });
       } else {
-        res.status(500).send();
+        return res.status(500).send();
       }
     });
 });
@@ -63,16 +61,16 @@ router.put('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req,
     .catch((error: Error) => {
       console.error('Failed to update comment:', error);
       if (error.message === 'CommentNotFound') {
-        res.status(404).json({ error: error.message });
+        return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotCommentOwner') {
-        res.status(403).send({ error: error.message });
+        return res.status(403).send({ error: error.message });
       } else {
-        res.status(500).send();
+        return res.status(500).send();
       }
     });
 });
 
-router.delete('/:commentid', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
+router.delete('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
   const commentId = req.params.commentId;
   const user = req.user;
 
@@ -87,11 +85,11 @@ router.delete('/:commentid', isLoggedIn, isProjectOwnerOrCollaborativeMember, (r
     .catch((error: Error) => {
       console.error('Failed to delete comment:', error);
       if (error.message === 'CommentNotFound') {
-        res.status(404).json({ error: error.message });
+        return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotCommentOwner') {
-        res.status(403).send({ error: error.message });
+        return res.status(403).send({ error: error.message });
       } else {
-        res.status(500).send();
+        return res.status(500).send();
       }
     });
 });

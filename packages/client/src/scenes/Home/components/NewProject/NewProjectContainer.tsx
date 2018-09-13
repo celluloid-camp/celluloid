@@ -1,42 +1,44 @@
-import * as React from 'react';
+import 'rc-slider/assets/index.css';
+
+import { ProjectCreateData, TagData } from '@celluloid/types';
 import {
+  Avatar,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
-  Typography,
+  Grid,
   IconButton,
   List,
   ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
   ListItemAvatar,
-  Chip,
-  Switch,
-  Avatar,
-  Grid,
+  ListItemSecondaryAction,
+  ListItemText,
+  MenuItem,
   Paper,
-  MenuItem
+  Switch,
+  TextField,
+  Typography
 } from '@material-ui/core';
-import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
-
-import CloseIcon from '@material-ui/icons/Close';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles
+} from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
-
 import { Range } from 'rc-slider';
-import 'rc-slider/assets/index.css';
-
+import * as React from 'react';
 import * as Autosuggest from 'react-autosuggest';
+import { levelLabel, levelsCount } from 'types/LevelTypes';
+import { YoutubeVideo } from 'types/YoutubeTypes';
+
 const parse = require('autosuggest-highlight/parse');
 const match = require('autosuggest-highlight/match');
-
-import { levelLabel, levelsCount } from 'types/LevelTypes';
-
-import { TagData, ProjectCreateData } from '@celluloid/types';
-import { YoutubeVideo } from 'types/YoutubeTypes';
 
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<TagData> };
 
@@ -303,9 +305,9 @@ export default withStyles(styles)(
             </div>
             <TextField
               required={true}
-              label="Titre"
+              label=""
               fullWidth={true}
-              helperText="Le titre permet de référencer votre séquence sur la plate-forme"
+              helperText="Donnez un titre à votre projet"
               onChange={event => {
                 this.setState({ title: event.target.value });
               }}
@@ -323,7 +325,7 @@ export default withStyles(styles)(
               required={true}
               label="Objectif"
               fullWidth={true}
-              helperText="Rédigez un objectif global pour ce projet"
+              helperText="Fixez l'objectif pédagogique du projet"
               multiline={true}
               onChange={event => {
                 this.setState({ objective: event.target.value });
@@ -333,7 +335,7 @@ export default withStyles(styles)(
               {`Activités proposées`}
             </Typography>
             <Typography variant="subheading">
-              {`Listez les différentes questions et actions à remplir, relatives à l'ensemble de la vidéo`}
+              {`Listez les différentes activités que vous proposez au partcipants`}
             </Typography>
             <List>
               {this.state.assignments.map((assignment, index) =>
@@ -407,10 +409,10 @@ export default withStyles(styles)(
               </ListItem>
             </List>
             <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
-              {`Matière `}
+              {`Domaine(s)`}
             </Typography>
             <Typography variant="subheading">
-              {`Indiquez le domaine ou la matière dont traite votre séquence`}
+              {`Choisissez un ou plusieurs domaine(s) correspondant à votre projet`}
             </Typography>
             <div
               style={{
@@ -495,7 +497,7 @@ export default withStyles(styles)(
               {`Niveau `}
             </Typography>
             <Typography variant="subheading">
-              {`Veuillez préciser à quels niveaux de scolarité s'adresse cette séquence`}
+              {`Veuillez préciser à quel(s) niveau(x) s'adresse ce projet`}
             </Typography>
             <div
               style={{
@@ -581,15 +583,14 @@ export default withStyles(styles)(
                   gutterBottom={true}
                   style={{ paddingTop: 12 }}
                 >
-                  {`Cela signifie que vous partagez cette séquence`
-                    + ` avec tous les utilisateurs de la plateforme`
-                    + ` Celluloid. Les annotations des élève ne peuvent pas`
-                    + ` êtres vues. C'est vous qui êtes administrateur de`
-                    + ` cette visibilité.`}
+                  {`Rendre un projet public signifie que tous les utilisateurs`
+                    + ` de la plateforme pourront le consulter, mais ils ne pourront`
+                    + ` pas y participer, ni voir les annotations`}
                 </Typography>
                 <Typography gutterBottom={true}>
-                  {`Votre projet sera libre de droit et de`
-                    + ` réutilisation sur la plateforme`}
+                  {`Rendre un projet collaboratif signifie que les personnes que vous`
+                    + ` invitez pourront annoter la vidéo. Si le projet n’est pas `
+                    + ` collaboratif, vous seul.e pourrez annoter la vidéo`}
                 </Typography>
               </Grid>
             </Grid>

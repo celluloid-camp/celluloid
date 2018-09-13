@@ -1,3 +1,4 @@
+import { AppState } from '@celluloid/client/src/types/StateTypes';
 import {
   AnnotationRecord,
   CommentRecord,
@@ -15,13 +16,14 @@ import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from '@material-ui/icons/Clear';
 import {
   createCommentThunk,
+  triggerAddComment,
   updateCommentThunk
 } from 'actions/CommentActions';
 import UserAvatar from 'components/UserAvatar';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AsyncAction } from 'types/ActionTypes';
+import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 
 import TransparentInput from './TransparentInput';
 
@@ -61,6 +63,8 @@ interface Props extends WithStyles<typeof styles> {
   user: UserRecord;
   annotation: AnnotationRecord;
   comment?: CommentRecord;
+  editing: boolean;
+  onChange(): EmptyAction;
   onClickAdd(annotation: AnnotationRecord, text: string):
     AsyncAction<CommentRecord, string>;
   onClickUpdate(annotation: AnnotationRecord, comment: CommentRecord):
@@ -80,18 +84,31 @@ const init = ({ comment }: Props) => {
   }
 };
 
+const mapStateToProps = (state: AppState) => ({
+  editing: state.project.video.commenting
+});
+
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onChange: () => dispatch(triggerAddComment()),
   onClickAdd: (annotation: AnnotationRecord, text: string) =>
     createCommentThunk(annotation.projectId, annotation.id, text)(dispatch),
   onClickUpdate: (annotation: AnnotationRecord, comment: CommentRecord) =>
     updateCommentThunk(annotation.projectId, annotation.id, comment)(dispatch)
 });
 
-export default connect(null, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(
     class extends React.Component<Props, State> {
 
       state = init(this.props);
+
+      static getDerivedStateFromProps(props: Props, state: State) {
+        if (!props.editing) {
+          return init(props);
+        } else {
+          return null;
+        }
+      }
 
       render() {
         const {
@@ -99,6 +116,7 @@ export default connect(null, mapDispatchToProps)(
           user,
           annotation,
           comment,
+          onChange,
           onClickUpdate,
           onClickAdd,
           onClickCancel
@@ -106,6 +124,9 @@ export default connect(null, mapDispatchToProps)(
         const { text } = this.state;
 
         const onTextChange = (value: string) => {
+          if (this.state.text === '') {
+            onChange();
+          }
           this.setState({
             text: value
           });

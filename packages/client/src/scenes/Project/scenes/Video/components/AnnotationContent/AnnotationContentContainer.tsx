@@ -1,5 +1,7 @@
+import { isOwner } from '@celluloid/client/src/utils/ProjectUtils';
 import {
   AnnotationRecord,
+  ProjectGraphRecord,
   UnfurlData,
   UserRecord
 } from '@celluloid/types';
@@ -39,7 +41,7 @@ interface State {
 interface Props {
   user?: UserRecord;
   error?: string;
-  projectId: string;
+  project: ProjectGraphRecord;
   annotation: AnnotationRecord;
   focused: boolean;
   onClickEdit(annotation: AnnotationRecord):
@@ -125,7 +127,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     render() {
       const {
         user,
-        projectId,
+        project,
         annotation,
         focused,
         onFocus,
@@ -148,11 +150,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
       const showActions = user
         && (focused || hovering)
-        && canEditAnnotation(annotation, user) || false;
+        && (isOwner(project, user) || canEditAnnotation(annotation, user)) || false;
 
       return (
         <AnnotationContentComponent
           annotation={annotation}
+          project={project}
           formattedStartTime={formattedStart}
           formattedStopTime={formattedStop}
           richText={richText}
@@ -163,7 +166,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           showActions={showActions}
           onHover={onHover}
           onFocus={() => onFocus(annotation)}
-          onClickDelete={() => onClickDelete(projectId, annotation)}
+          onClickDelete={() => onClickDelete(project.id, annotation)}
           onClickEdit={() => onClickEdit(annotation)}
         />
       );

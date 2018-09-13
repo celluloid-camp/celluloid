@@ -1,40 +1,52 @@
 import {
+  triggerCancelEditComment,
+  triggerEditComment
+} from '@celluloid/client/src/actions/CommentActions';
+import { AppState } from '@celluloid/client/src/types/StateTypes';
+import {
   AnnotationRecord,
   CommentRecord,
+  ProjectGraphRecord,
   UserRecord
 } from '@celluloid/types';
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { Action, EmptyAction } from 'types/ActionTypes';
 
 import CommentContent from './CommentContent';
 import CommentEditor from './CommentEditor';
 
-interface State {
-  editing: boolean;
-}
-
 interface Props {
   user?: UserRecord;
   annotation: AnnotationRecord;
+  project: ProjectGraphRecord;
   comment: CommentRecord;
+  editing: boolean;
+  focused?: CommentRecord;
+  onClickCancel(): EmptyAction;
+  onClickEdit(comment: CommentRecord): Action<CommentRecord>;
 }
 
-export default (
-  class extends React.Component<Props, State> {
-    state = {
-      editing: false
-    };
+const mapStateToProps = (state: AppState) => ({
+  editing: state.project.video.commenting,
+  focused: state.project.video.focusedComment
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onClickCancel: () => dispatch(triggerCancelEditComment()),
+  onClickEdit: (comment: CommentRecord) => dispatch(triggerEditComment(comment))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  class extends React.Component<Props> {
 
     render() {
-      const { comment, user, annotation } = this.props;
-      const { editing } = this.state;
+      const { comment, user, annotation, project, onClickCancel, onClickEdit } = this.props;
 
-      const onClickEdit = () => {
-        this.setState({ editing: true });
-      };
-
-      const onClickCancel = () => {
-        this.setState({ editing: false });
-      };
+      const editing = this.props.editing
+        && this.props.focused
+        && this.props.focused.id === comment.id;
 
       if (editing && user) {
         return (
@@ -49,9 +61,10 @@ export default (
         return (
           <CommentContent
             user={user}
+            project={project}
             annotation={annotation}
             comment={comment}
-            onClickEdit={onClickEdit}
+            onClickEdit={() => onClickEdit(comment)}
           />
         );
       }

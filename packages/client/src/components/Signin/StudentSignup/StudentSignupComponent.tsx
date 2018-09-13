@@ -49,7 +49,7 @@ export default withStyles(dialogStyles)(
       />
       <TextField
         error={errors.email ? true : false}
-        label="Nom complet"
+        label="Nom complet ou pseudo"
         value={data.username}
         required={true}
         className={classes.input}

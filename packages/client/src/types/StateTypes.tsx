@@ -22,6 +22,7 @@ export interface VideoState {
   loadingError?: boolean;
   annotations: AnnotationRecord[];
   editing: boolean;
+  commenting: boolean;
   annotationError?: string;
   focusedAnnotation?: AnnotationRecord;
   upsertAnnotationLoading: boolean;

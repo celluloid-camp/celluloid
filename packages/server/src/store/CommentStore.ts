@@ -55,7 +55,7 @@ export function insert(annotationId: string, text: string, user: UserRecord) {
       text,
       createdAt: database.raw('NOW()')
     })
-    .returning('*')
+    .returning('id')
     .then(getExactlyOne)
     .then(id => selectOne(id));
 }

@@ -171,10 +171,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                       >
                         <div>
                           <AnnotationContent
+                            project={project}
                             focused={
                               annotation.id === focusedAnnotationId
                             }
-                            projectId={project.id}
                             annotation={annotation}
                           />
                         </div>

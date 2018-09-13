@@ -1,7 +1,6 @@
 import { UserRecord } from '@celluloid/types';
 import {
   ClickAwayListener,
-  Divider,
   Grow,
   IconButton,
   MenuItem,
@@ -53,8 +52,6 @@ export default ({
             <Paper style={{marginRight: 0, marginTop: 12}}>
               <ClickAwayListener onClickAway={onCloseMenu}>
                 <MenuList>
-                  <MenuItem onClick={onCloseMenu}>Profil</MenuItem>
-                  <Divider />
                   <MenuItem onClick={onClickLogout}>Déconnexion</MenuItem>
                 </MenuList>
               </ClickAwayListener>

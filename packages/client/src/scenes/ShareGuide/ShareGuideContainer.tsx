@@ -1,6 +1,13 @@
 import LoadingBig from '@celluloid/client/src/components/LoadingBig';
 import { ProjectGraphRecord } from '@celluloid/types';
-import { createStyles, Paper, Theme, Typography, WithStyles, withStyles } from '@material-ui/core';
+import {
+  createStyles,
+  Paper,
+  Theme,
+  Typography,
+  WithStyles,
+  withStyles
+} from '@material-ui/core';
 import NotFound from 'components/NotFound';
 import ProjectSummary from 'components/ProjectSummary';
 import ShareCredentials from 'components/ShareCredentials';
@@ -133,7 +140,7 @@ export default withRouter(withStyles(styles)(
         }, {
           title: (
             <span>
-              {`Entrez le nom et le mot de passe du projet`}
+              {`Entrez le code et le mot de passe du projet`}
             </span>
           ),
           body: (

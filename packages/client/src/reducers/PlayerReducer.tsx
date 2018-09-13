@@ -7,8 +7,6 @@ const initialState = {
 } as PlayerState;
 
 export default (state = initialState, { type, payload }: AnyAction): PlayerState => {
-  // tslint:disable-next-line:no-console
-  console.log(type);
   switch (type) {
     case ActionType.PLAYER_NOTIFY_SEEK:
       return {

@@ -32,12 +32,11 @@ const styles = ({ spacing, typography, palette }: Theme) => createStyles({
 interface Props extends WithStyles<typeof styles> {
   annotation: AnnotationRecord;
   user?: UserRecord;
-  project?: ProjectGraphRecord;
+  project: ProjectGraphRecord;
 }
 
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
-  project: state.project.details.project
 });
 
 export default connect(mapStateToProps)(
@@ -56,6 +55,7 @@ export default connect(mapStateToProps)(
         {annotation.comments.map(comment => (
           <Comment
             user={user}
+            project={project}
             annotation={annotation}
             comment={comment}
             key={comment.id}

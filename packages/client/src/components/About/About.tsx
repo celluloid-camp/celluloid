@@ -27,7 +27,8 @@ export default () => (
       a bénéficié du soutien de la Fondation Saint Matthieu.
     </Typography>
     <Typography variant="subheading" gutterBottom={true}>
-      Celluloid est un projet Open Source, l’ensemble du code est accessible
+      Celluloid est un projet Open Source développé par Erwan Queffélec
+      dans le cadre d'un partenariat avec La Paillasse, l’ensemble du code est accessible
       librement <a href="https://github.com/celluloid-edu/">sur GitHub</a>
     </Typography>
     <div

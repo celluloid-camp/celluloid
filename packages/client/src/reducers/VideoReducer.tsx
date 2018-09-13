@@ -1,5 +1,5 @@
 import { ActionType } from '@celluloid/client/src/types/ActionTypes';
-import { AnnotationRecord } from '@celluloid/types';
+import { AnnotationRecord, CommentRecord } from '@celluloid/types';
 import * as R from 'ramda';
 import { AnyAction } from 'redux';
 import { ComponentStatus, VideoState } from 'types/StateTypes';
@@ -8,6 +8,7 @@ const initialState = {
   status: ComponentStatus.LOADING,
   annotations: [],
   editing: false,
+  commenting: false,
   focusedAnnotation: undefined,
   upsertAnnotationLoading: false,
   deleteAnnotationLoading: false,
@@ -17,9 +18,72 @@ const initialState = {
 } as VideoState;
 
 const sortAnnotations = R.compose<AnnotationRecord[], AnnotationRecord[], AnnotationRecord[]>(
-  R.sortBy(R.prop('createdAt')),
-  R.sortBy(R.prop('startTime'))
+  R.sort(R.ascend(R.prop('startTime'))),
+  R.sort(R.ascend(R.prop('id')))
 );
+
+const filterOutAnnotation = (annotation: AnnotationRecord, annotations: AnnotationRecord[]) => {
+  return (
+    R.filter((elem: AnnotationRecord) =>
+      elem.id !== annotation.id)(annotations)
+  );
+};
+
+const sortComments = R.compose<CommentRecord[], CommentRecord[], CommentRecord[]>(
+  R.sort(R.ascend(R.prop('createdAt'))),
+  R.sort(R.ascend(R.prop('id')))
+);
+
+const filterOutComment = (comment: CommentRecord, comments: CommentRecord[]) => {
+  return (
+    R.filter((elem: CommentRecord) =>
+      elem.id !== comment.id)(comments)
+  );
+};
+
+const findById = R.converge(
+  R.find,
+  [R.pipe(R.nthArg(0), R.propEq('id')), R.nthArg(1)]
+);
+
+const deleteComment = (comment: CommentRecord, annotations: AnnotationRecord[]) => {
+  const annotation = findById(comment.annotationId, annotations);
+
+  return [
+    ...filterOutAnnotation(annotation, annotations), {
+      ...annotation,
+      comments: sortComments(filterOutComment(comment, annotation.comments))
+    }
+  ];
+};
+
+const addComment = (comment: CommentRecord, annotations: AnnotationRecord[]) => {
+  const annotation = findById(comment.annotationId, annotations);
+
+  return [
+    ...filterOutAnnotation(annotation, annotations), {
+      ...annotation,
+      comments: sortComments([
+        ...annotation.comments,
+        comment
+      ])
+    }
+  ];
+};
+
+const updateComment = (comment: CommentRecord, annotations: AnnotationRecord[]) => {
+  const annotation = findById(comment.annotationId, annotations);
+
+  return [
+      ...filterOutAnnotation(annotation, annotations), {
+        ...annotation,
+        comments: sortComments([
+          ...filterOutComment(comment, annotation.comments),
+          comment
+        ])
+      }
+    ];
+};
 
 export default (state = initialState, { type, payload }: AnyAction):
   VideoState => {
@@ -128,10 +192,7 @@ export default (state = initialState, { type, payload }: AnyAction):
     case ActionType.SUCCEED_DELETE_ANNOTATION:
       return {
         ...state,
-        annotations: sortAnnotations(
-          R.filter((elem: AnnotationRecord) =>
-            elem.id !== payload.id)(state.annotations)
-        ),
+        annotations: sortAnnotations(filterOutAnnotation(payload, state.annotations)),
         deleteAnnotationLoading: false,
         annotationError: undefined,
         focusedAnnotation: undefined,
@@ -150,7 +211,7 @@ export default (state = initialState, { type, payload }: AnyAction):
     case ActionType.SUCCEED_DELETE_COMMENT:
       return {
         ...state,
-
+        annotations: deleteComment(payload, state.annotations),
         deleteAnnotationLoading: false,
         commentError: undefined,
         focusedComment: undefined,
@@ -169,9 +230,38 @@ export default (state = initialState, { type, payload }: AnyAction):
     case ActionType.SUCCEED_UPDATE_COMMENT:
       return {
         ...state,
+        annotations: updateComment(payload, state.annotations),
+        commenting: false,
         upsertCommentLoading: false,
         commentError: undefined,
         focusedComment: undefined
+      };
+    case ActionType.SUCCEED_ADD_COMMENT:
+      return {
+        ...state,
+        annotations: addComment(payload, state.annotations),
+        commenting: false,
+        upsertCommentLoading: false,
+        commentError: undefined,
+        focusedComment: undefined
+      };
+    case ActionType.TRIGGER_ADD_COMMENT:
+      return {
+        ...state,
+        focusedComment: undefined,
+        commenting: true
+      };
+    case ActionType.TRIGGER_CANCEL_EDIT_COMMENT:
+      return {
+        ...state,
+        focusedComment: undefined,
+        commenting: false
+      };
+    case ActionType.TRIGGER_EDIT_COMMENT:
+      return {
+        ...state,
+        focusedComment: payload,
+        commenting: true,
       };
     default:
       return state;

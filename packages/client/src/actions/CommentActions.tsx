@@ -5,6 +5,7 @@ import {
   ActionType,
   AsyncAction,
   createAction,
+  createEmptyAction,
   createErrorAction
 } from 'types/ActionTypes';
 
@@ -28,6 +29,15 @@ export const failDeleteComment = (error: string) =>
 
 export const succeedDeleteComment = (comment: CommentRecord) =>
   createAction(ActionType.SUCCEED_DELETE_COMMENT, comment);
+
+export const triggerEditComment = (comment: CommentRecord) =>
+  createAction(ActionType.TRIGGER_EDIT_COMMENT, comment);
+
+export const triggerAddComment = () =>
+  createEmptyAction(ActionType.TRIGGER_ADD_COMMENT);
+
+export const triggerCancelEditComment = () =>
+  createEmptyAction(ActionType.TRIGGER_CANCEL_EDIT_COMMENT);
 
 export const deleteCommentThunk =
   (projectId: string, annotationId: string, comment: CommentRecord) =>

@@ -1,4 +1,8 @@
-import { AnnotationRecord, UnfurlData } from '@celluloid/types';
+import {
+  AnnotationRecord,
+  ProjectGraphRecord,
+  UnfurlData
+} from '@celluloid/types';
 import { Collapse, Fade, Grow, IconButton } from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
 import {
@@ -94,6 +98,7 @@ interface Link {
 
 interface Props extends WithStyles<typeof styles> {
   annotation: AnnotationRecord;
+  project: ProjectGraphRecord;
   formattedStartTime: string;
   formattedStopTime: string;
   richText: string;
@@ -110,6 +115,7 @@ interface Props extends WithStyles<typeof styles> {
 
 export default withStyles(styles)(({
   annotation,
+  project,
   formattedStartTime,
   formattedStopTime,
   richText,
@@ -231,7 +237,7 @@ export default withStyles(styles)(({
         </div>
       </div>
       <Collapse in={focused} appear={true}>
-        <CommentsList annotation={annotation} />
+        <CommentsList project={project} annotation={annotation} />
       </Collapse>
     </div>
   ));
