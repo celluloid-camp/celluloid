@@ -587,11 +587,6 @@ export default withStyles(styles)(
                     + ` de la plateforme pourront le consulter, mais ils ne pourront`
                     + ` pas y participer, ni voir les annotations`}
                 </Typography>
-                <Typography gutterBottom={true}>
-                  {`Rendre un projet collaboratif signifie que les personnes que vous`
-                    + ` invitez pourront annoter la vidéo. Si le projet n’est pas `
-                    + ` collaboratif, vous seul.e pourrez annoter la vidéo`}
-                </Typography>
               </Grid>
             </Grid>
             <Grid
@@ -623,10 +618,9 @@ export default withStyles(styles)(
                   gutterBottom={true}
                   style={{ paddingTop: 12 }}
                 >
-                  {`Cela signifie que les personnes invitées à annoter`
-                    + ` la vidéo pourront voir les annotations de`
-                    + ` chacun des participants du projet`}
-
+                  {`Rendre un projet collaboratif signifie que les personnes que vous`
+                    + ` invitez pourront annoter la vidéo. Si le projet n’est pas `
+                    + ` collaboratif, vous seul.e pourrez annoter la vidéo`}
                 </Typography>
               </Grid>
             </Grid>

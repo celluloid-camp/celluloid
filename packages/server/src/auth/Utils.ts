@@ -28,6 +28,7 @@ export function isTeacher(
   res: Response,
   next: NextFunction) {
   if (!req.user || req.user.role !== 'Teacher') {
+    console.error('User is must be a teacher');
     return Promise.resolve(res.status(403).json({
       error: 'TeacherRoleRequired'
     }));
@@ -48,6 +49,7 @@ export function isProjectOwner(
         next();
         return Promise.resolve();
       }
+      console.error('User must be project owner');
       res.status(403).json({
         error: 'ProjectOwnershipRequired'
       });
@@ -73,6 +75,7 @@ export function isProjectOwnerOrCollaborativeMember(
         next();
         return Promise.resolve();
       }
+      console.error('User must be project owner or collaborator');
       res.status(403).json({
         error: 'ProjectOwnershipOrMembershipRequired'
       });

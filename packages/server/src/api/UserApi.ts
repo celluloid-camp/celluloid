@@ -93,7 +93,7 @@ router.post('/login', (req, res, next) => {
     } else {
       return req.login(user, err => {
         if (err) {
-          console.error(`failed to login user with login ${user.username}`);
+          console.error(`Failed to login user with login ${user.username}`);
           return res.status(500).send();
         } else {
           return res.status(200).json(result);

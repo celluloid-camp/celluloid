@@ -1,4 +1,8 @@
-import { ProjectCreateData, ProjectGraphRecord, UserRecord } from '@celluloid/types';
+import {
+  ProjectCreateData,
+  ProjectGraphRecord,
+  UserRecord
+} from '@celluloid/types';
 import { isLoggedIn, isProjectOwner } from 'auth/Utils';
 import { Router } from 'express';
 import * as ProjectStore from 'store/ProjectStore';
@@ -97,11 +101,18 @@ router.get(
     const user = req.user;
 
     ProjectStore.selectOne(projectId, user)
-      .then((project: ProjectGraphRecord) =>
-          project.collaborative || (user && user.id  === project.userId)
-          ? ProjectStore.selectProjectMembers(projectId)
-          : Promise.resolve([])
-      )
+      .then((project: ProjectGraphRecord) => {
+        if (project.collaborative || (user && user.id === project.userId)) {
+          return ProjectStore.selectProjectMembers(projectId);
+        } else if (user) {
+          return ProjectStore.isMember(projectId, user)
+            .then(member => member
+              ? Promise.resolve([user])
+              : Promise.resolve([]));
+        } else {
+          return Promise.resolve([]);
+        }
+      })
       .then(members => res.status(200).json(members))
       .catch(error => {
         console.error('Failed to list project members:', error);
