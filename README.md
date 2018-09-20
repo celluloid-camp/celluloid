@@ -2,6 +2,7 @@
 ## What is it?
 
 [![Gitter chat](https://badges.gitter.im/celluloid-camp.png)](https://gitter.im/celluloid-camp)
+[![Build Status](https://travis-ci.com/3rwww1/celluloid.svg?branch=master)](https://travis-ci.com/3rwww1/celluloid)
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
