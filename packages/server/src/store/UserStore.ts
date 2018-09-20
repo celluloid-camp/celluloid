@@ -95,7 +95,6 @@ export function selectOne(id: string) {
 }
 
 export function selectOneByUsernameOrEmail(login: string) {
-  console.log('login::', login);
   return database('User')
     .first()
     .where('email', login)

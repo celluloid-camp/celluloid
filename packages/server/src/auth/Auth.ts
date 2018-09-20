@@ -73,7 +73,6 @@ const signTeacherUp = (req, email, password, done) => {
 };
 
 const logUserIn = (login, password, done) => {
-  console.log('credentials:', login, password);
   return UserStore.selectOneByUsernameOrEmail(login)
     .then((user: UserServerRecord) => {
       if (!user) {

@@ -25,6 +25,17 @@ export const orIsCollaborativeMember =
         .andWhere('Project.collaborative', true)
       : nested;
 
+export const orIsMember =
+  (nested: QueryBuilder, user?: UserRecord) =>
+    user
+      ? nested
+        .orWhereIn(
+          'Project.id',
+          database.select('projectId')
+            .from('UserToProject')
+            .where('userId', user.id))
+      : nested;
+
 export const orIsOwner =
   (nested: QueryBuilder, user?: UserRecord) =>
     user
@@ -56,6 +67,14 @@ export function isOwner(projectId: string, user: UserRecord) {
     .then((row: string) => row ? true : false);
 }
 
+export function isMember(projectId: string, user: UserRecord) {
+  return database.first('projectId')
+    .from('UserToProject')
+    .where('UserToProject.projectId', projectId)
+    .andWhere('UserToProject.userId', user.id)
+    .then((row: string) => row ? true : false);
+}
+
 export function isCollaborativeMember(projectId: string, user: UserRecord) {
   return database.first('projectId')
     .from('UserToProject')
@@ -78,7 +97,7 @@ export function selectAll(user: UserRecord) {
     .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
     .where('Project.public', true)
     .modify(orIsOwner, user)
-    .modify(orIsCollaborativeMember, user)
+    .modify(orIsMember, user)
     .groupBy('Project.id', 'User.id')
     .map(filterNull('tags'))
     .map(row => ({
@@ -106,7 +125,7 @@ export function selectOne(projectId: string, user: UserRecord) {
     .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
     .where((nested: QueryBuilder) => {
       nested.where('Project.public', true);
-      nested.modify(orIsCollaborativeMember, user);
+      nested.modify(orIsMember, user);
       nested.modify(orIsOwner, user);
     })
     .andWhere('Project.id', projectId)

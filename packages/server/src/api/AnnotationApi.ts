@@ -3,7 +3,7 @@ import {
   AnnotationRecord,
   UserRecord
 } from '@celluloid/types';
-import { isProjectOwner, isTeacher } from 'auth/Utils';
+import { isProjectOwnerOrCollaborativeMember } from 'auth/Utils';
 import * as express from 'express';
 import * as AnnotationStore from 'store/AnnotationStore';
 import * as CommentStore from 'store/CommentStore';
@@ -43,7 +43,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/', isTeacher, isProjectOwner, (req, res) => {
+router.post('/', isProjectOwnerOrCollaborativeMember, (req, res) => {
   const projectId = req.params.projectId;
   const annotation = req.body as AnnotationData;
   const user = req.user as UserRecord;
@@ -51,8 +51,7 @@ router.post('/', isTeacher, isProjectOwner, (req, res) => {
   AnnotationStore.insert(annotation, user, projectId)
     .then(result => fetchComments(result, user))
     .then(result => {
-      console.log(result);
-      res.status(201).json(result);
+      return res.status(201).json(result);
     })
     .catch((error: Error) => {
       console.error('Failed to create annotation:', error);
@@ -60,7 +59,7 @@ router.post('/', isTeacher, isProjectOwner, (req, res) => {
     });
 });
 
-router.put('/:annotationId', isTeacher, (req, res) => {
+router.put('/:annotationId', isProjectOwnerOrCollaborativeMember, (req, res) => {
   const annotationId = req.params.annotationId;
   const updated = req.body;
   const user = req.user as UserRecord;
@@ -77,16 +76,16 @@ router.put('/:annotationId', isTeacher, (req, res) => {
     .catch((error: Error) => {
       console.error('Failed to update annotation:', error);
       if (error.message === 'AnnotationNotFound') {
-        res.status(404).json({ error: error.message });
+        return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotAnnotationOwner') {
         return res.status(403).json({ error: error.message });
       } else {
-        res.status(500).send();
+        return res.status(500).send();
       }
     });
 });
 
-router.delete('/:annotationId', isTeacher, (req, res) => {
+router.delete('/:annotationId', isProjectOwnerOrCollaborativeMember, (req, res) => {
   const annotationId = req.params.annotationId;
   const user = req.user as UserRecord;
 
@@ -101,11 +100,11 @@ router.delete('/:annotationId', isTeacher, (req, res) => {
     .catch((error: Error) => {
       console.error('Failed to delete annotation:', error);
       if (error.message === 'AnnotationNotFound') {
-        res.status(404).json({ error: error.message });
+        return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotAnnotationOwner') {
         return res.status(403).json({ error: error.message });
       } else {
-        res.status(500).send();
+        return res.status(500).send();
       }
     });
 });
