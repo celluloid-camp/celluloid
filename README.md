@@ -10,7 +10,7 @@ collect their answers, answer their questions.
 
 ## Demo
 
-Go to www.celluloid.camp, create an account and click where you think you should!
+Head to www.celluloid.camp, create an account and click where you think you should!
 
 We'd appreciate your feedback about the application UX and design, as well as bug reports - don't hesitate to [report an issue!](https://github.com/celluloid-camp/celluloid/issues)
 
@@ -43,7 +43,9 @@ To deploy and install Celluloid, knowing your way around the command-line is req
 
 You'll need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 9.6 or later.
 
-For development purpose, you can use this [docker image](https://hub.docker.com/_/postgres/). Then : 
+For development purpose, you can use this [docker image](https://hub.docker.com/_/postgres/). 
+
+Then: 
 
 1. [create a user](https://www.postgresql.org/docs/current/static/app-createuser.html) for celluloid
 2. [create a database](https://www.postgresql.org/docs/current/static/manage-ag-createdb.html) owned by this user. You can follow [this tutorial](https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e) to get setup quickly.
@@ -111,7 +113,7 @@ Open a terminal at the root of your repository, then run
 
 **We are actively looking for motivated contributors!**.
 
-Do not hesitate to open a pull request, [contact us on gitter](https://gitter.im) or [report a bug](https://github.com/celluloid-camp/celluloid/issues), 
+Do not hesitate to open a pull request, [contact us on gitter](https://gitter.im) or [report a bug!](https://github.com/celluloid-camp/celluloid/issues)
 
 ## Roadmap
 
@@ -127,7 +129,7 @@ Before contributing to the development of Celluloid, you should get familiar wit
 - everywhere: [TypeScript](https://www.typescriptlang.org/)
 - frontend: [React](https://reactjs.org/), [Redux](https://redux.js.org/) and [Material UI](https://material-ui.com/)
 - backend: [node.js](https://nodejs.org/en/), [Express](https://expressjs.com/) and [knex](https://knexjs.org/)
-- storage: [PostgreSQL](https://www.postgresql.org/
+- storage: [PostgreSQL](https://www.postgresql.org/)
 
 ## File structure
 
