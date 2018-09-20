@@ -23,7 +23,7 @@ Celluloid was born from a research project lead by **Michaël Bourgatte** and **
 two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/). 
 Their work focus on educational science and digital humanities.
 
-Celluloid is maintained by [Erwan Queffélec](https://github.com/3rwww1), and **we are actively looking for contributors and mainteners**. 
+Celluloid is maintained by [Erwan Queffélec](https://github.com/3rwww1), and **we are actively looking for contributors and maintainers**. 
 Don't hesitate to [drop us a line on gitter!](https://gitter.im/celluloid-camp)
 
 # Setup
