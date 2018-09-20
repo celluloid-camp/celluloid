@@ -1,9 +1,8 @@
-# Celluloid
-## What is it?
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Celluloid [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/celluloid-camp/celluloid.svg?branch=master)](https://travis-ci.com/celluloid-camp/celluloid)
 [![Gitter chat](https://badges.gitter.im/celluloid-camp.png)](https://gitter.im/celluloid-camp)
+## What is it?
+
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
