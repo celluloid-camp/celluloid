@@ -29,7 +29,7 @@ export default () => (
     <Typography variant="subheading" gutterBottom={true}>
       Celluloid est un projet Open Source développé par Erwan Queffélec
       dans le cadre d'un partenariat avec La Paillasse, l’ensemble du code est accessible
-      librement <a href="https://github.com/celluloid-edu/">sur GitHub</a>
+      librement <a href="https://github.com/celluloid-camp/">sur GitHub</a>
     </Typography>
     <div
       style={{
