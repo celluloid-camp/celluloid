@@ -1,5 +1,6 @@
-import * as Constants from './Constants';
 import { TagData } from '@celluloid/types';
+
+import * as Constants from './Constants';
 
 export default class Tags {
   static list() {
@@ -27,7 +28,8 @@ export default class Tags {
     return fetch('/api/tags', {
       method: 'POST',
       headers: new Headers(headers),
-      credentials: 'include'
+      credentials: 'include',
+      body: JSON.stringify(tag)
     }).then(response => {
       if (response.status === 201 || response.status === 400) {
         return response.json();

@@ -3,8 +3,8 @@ import {
   CommentRecord,
   Credentials,
   ProjectGraphRecord,
-  ProjectRecord,
   SigninErrors,
+  TagData,
   UserRecord
 } from '@celluloid/types';
 import * as SigninDialog from 'components/Signin';
@@ -74,12 +74,7 @@ export enum ComponentStatus {
 export interface HomeState {
   status: ComponentStatus;
   error?: string;
-  projects: Set<ProjectGraphRecord>;
-}
-
-export interface ProjectGridState {
-  status: ComponentStatus;
-  projectList: Set<ProjectRecord>;
+  projects: ProjectGraphRecord[];
 }
 
 export interface SharingState {
@@ -88,6 +83,7 @@ export interface SharingState {
 }
 
 export interface AppState extends RouterState {
+  tags: TagData[];
   sharing: SharingState;
   project: ProjectState;
   home: HomeState;

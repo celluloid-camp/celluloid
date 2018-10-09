@@ -5,7 +5,7 @@ import { ComponentStatus, HomeState } from 'types/StateTypes';
 const initialState = {
   status: ComponentStatus.LOADING,
   error: undefined,
-  projects: new Set()
+  projects: []
 } as HomeState;
 
 export default (state = initialState, {type, payload}: AnyAction):
@@ -15,13 +15,13 @@ export default (state = initialState, {type, payload}: AnyAction):
         return {
           status: ComponentStatus.READY,
           error: undefined,
-          projects: new Set(payload)
+          projects: payload
         };
       case ActionType.FAIL_LIST_PROJECTS:
         return {
           status: ComponentStatus.ERROR,
           error: payload,
-          projects: new Set()
+          projects: []
         };
       default:
         return state;

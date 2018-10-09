@@ -34,7 +34,9 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import { Range } from 'rc-slider';
 import * as React from 'react';
 import * as Autosuggest from 'react-autosuggest';
+import { connect } from 'react-redux';
 import { levelLabel, levelsCount } from 'types/LevelTypes';
+import { AppState } from 'types/StateTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
 
 const parse = require('autosuggest-highlight/parse');
@@ -76,7 +78,11 @@ interface Props extends WithStyles<typeof styles> {
   onClose(send: boolean, value: ProjectCreateData): Promise<{}>;
 }
 
-export default withStyles(styles)(
+const mapStateToProps = (state: AppState) => ({
+  tags: state.tags
+});
+
+export default connect(mapStateToProps)(withStyles(styles)(
   class extends React.Component<Props> {
 
     state = {
@@ -645,4 +651,4 @@ export default withStyles(styles)(
       );
     }
   }
-);
+));

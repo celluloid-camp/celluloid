@@ -1,17 +1,22 @@
 import {
+  listProjectsThunk
+} from '@celluloid/client/src/actions/ProjectActions';
+import {
   ProjectCreateData,
   ProjectGraphRecord,
-  ProjectRecord,
-  TagData,
   UserRecord
 } from '@celluloid/types';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
-import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles
+} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { listProjectsThunk } from 'actions/ProjectActions';
 import { openStudentSignup } from 'actions/Signin';
 import classnames from 'classnames';
 import * as React from 'react';
@@ -70,24 +75,21 @@ const styles = ({ spacing }: Theme) => createStyles({
 
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
-  projects: Set<ProjectGraphRecord>;
   error?: string;
   onClickJoinProject(): EmptyAction;
-  loadProjects(): AsyncAction<ProjectRecord[], string>;
+  onNewProjectCreated(): AsyncAction<ProjectGraphRecord[], string>;
 }
 
 interface State {
   newProjectDialogOpen: boolean;
   newProjectVideoUrl: string;
   video?: YoutubeVideo;
-  tags: TagData[];
   videoError?: string;
 }
 
 const mapStateToProps = (state: AppState) => {
   return {
     user: state.user,
-    projects: state.home.projects,
     error: state.home.error
   };
 };
@@ -95,8 +97,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onClickJoinProject: () => dispatch(openStudentSignup()),
-    loadProjects: () => listProjectsThunk()(dispatch),
-    // loadTags: () => listTagsThunk()(dispatch)
+    onNewProjectCreated: () => listProjectsThunk()(dispatch)
   };
 };
 
@@ -106,29 +107,12 @@ export default withStyles(styles)(
       state = {
         newProjectDialogOpen: false,
         newProjectVideoUrl: '',
-        tags: [] as TagData[],
-        projects: [] as ProjectGraphRecord[],
         videoError: undefined,
-        error: undefined,
         video: undefined
       } as State;
 
-      load() {
-        this.props.loadProjects();
-      }
-
-      componentDidMount() {
-        this.load();
-      }
-
-      componentDidUpdate(prevProps: Props) {
-        if (prevProps.user !== this.props.user) {
-          this.load();
-        }
-      }
-
       render() {
-        const { onClickJoinProject, projects, classes } = this.props;
+        const { onClickJoinProject, classes } = this.props;
 
         const showNewProjectDialog = () => {
           try {
@@ -179,9 +163,9 @@ export default withStyles(styles)(
           return new Promise((resolve, reject) => {
             if (send) {
               ProjectsService.create(newProject)
-                .then((project: ProjectGraphRecord) => {
+                .then(() => {
+                  this.props.onNewProjectCreated();
                   this.setState({ newProjectDialogOpen: false });
-                  this.load();
                   resolve();
                 })
                 .catch(error => {
@@ -275,7 +259,6 @@ export default withStyles(styles)(
                             onClose={closeNewProjectDialog}
                             isOpen={this.state.newProjectDialogOpen}
                             video={this.state.video}
-                            tags={this.state.tags}
                           />
                         }
                       </div>
@@ -311,12 +294,12 @@ export default withStyles(styles)(
                 </Grid>
               </Grid>
             </div>
-          <Divider />
-          <div style={{ padding: 20 }}>
-            <ProjectGrid projects={projects} />
-          </div>
-        </>
-      );
+            <Divider />
+            <div style={{ padding: 20 }}>
+              <ProjectGrid />
+            </div>
+          </>
+        );
+      }
     }
-  }
-));
+  ));
