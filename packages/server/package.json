@@ -15,7 +15,7 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
-    "hoist-non-react-statics": "^2.5.0",
+    "hoist-non-react-statics": "^3.0.0",
     "knex": "^0.15.2",
     "nodemailer": "^4.6.7",
     "nodemailer-smtp-transport": "^2.7.4",
