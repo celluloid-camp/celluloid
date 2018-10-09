@@ -13,6 +13,8 @@ import {
 } from 'backends/Database';
 import { QueryBuilder } from 'knex';
 
+import { tagProject } from './TagStore';
+
 export const orIsCollaborativeMember =
   (nested: QueryBuilder, user?: UserRecord) =>
     user
@@ -170,9 +172,16 @@ export function insert(project: ProjectCreateData, user: UserRecord) {
           }
         }
         throw error;
-      }
-      );
-  return query(0);
+      });
+  return query(0)
+    .then(record =>
+      Promise.all(project.tags.map(tag =>
+        tagProject(tag.id, record.id)
+      ))
+        .then(() =>
+          Promise.resolve({ tags, ...record })
+        )
+    );
 }
 
 export function update(projectId: string, props: ProjectRecord) {

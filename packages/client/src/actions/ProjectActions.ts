@@ -1,7 +1,6 @@
 import {
   ProjectCreateData,
   ProjectGraphRecord,
-  ProjectRecord,
   ProjectShareData,
   ProjectUpdateData
 } from '@celluloid/types';
@@ -16,7 +15,7 @@ import {
   createErrorAction
 } from 'types/ActionTypes';
 
-export const succeedListProjects = (projects: ProjectRecord[]) =>
+export const succeedListProjects = (projects: ProjectGraphRecord[]) =>
   createAction(ActionType.SUCCEED_LIST_PROJECTS, projects);
 
 export const failListProjects = (error: string) =>
@@ -92,7 +91,7 @@ export const failUnshareProject = (project: ProjectGraphRecord) =>
   createAction(ActionType.FAIL_UNSHARE_PROJECT, project);
 
 export const listProjectsThunk =
-  () => (dispatch: Dispatch): AsyncAction<ProjectRecord[], string> => {
+  () => (dispatch: Dispatch): AsyncAction<ProjectGraphRecord[], string> => {
     return ProjectService.list()
       .then(projectList => {
         return dispatch(succeedListProjects(projectList));

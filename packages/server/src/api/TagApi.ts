@@ -1,6 +1,6 @@
+import { isTeacher } from 'auth/Utils';
 import * as express from 'express';
 import * as TagStore from 'store/TagStore';
-import { isTeacher } from 'auth/Utils';
 
 const router = express.Router();
 

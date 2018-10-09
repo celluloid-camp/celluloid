@@ -57,8 +57,7 @@ router.post(
 
     ProjectStore.insert(project, user)
       .then(result => {
-        console.log(result);
-        res.status(201).json(result);
+        return res.status(201).json(result);
       })
       .catch((error: Error) => {
         // tslint:disable-next-line:no-console

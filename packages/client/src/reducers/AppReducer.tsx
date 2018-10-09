@@ -6,6 +6,7 @@ import player from './PlayerReducer';
 import details from './ProjectReducer';
 import sharing from './SharingReducer';
 import signin from './SigninReducer';
+import tags from './TagsReducer';
 import user from './UserReducer';
 import video from './VideoReducer';
 
@@ -28,7 +29,8 @@ const appReducer = combineReducers({
     player
   }),
   home,
-  updated : updatedReducer
+  updated : updatedReducer,
+  tags
 });
 
 export default appReducer;

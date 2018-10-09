@@ -1,4 +1,8 @@
-import { createStyles, WithStyles, withStyles } from '@material-ui/core';
+import {
+  createStyles,
+  WithStyles,
+  withStyles
+} from '@material-ui/core';
 import About from 'components/About';
 import LegalNotice from 'components/LegalNotice';
 import NotFound from 'components/NotFound';
@@ -19,44 +23,49 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(
-  class extends React.Component<WithStyles<typeof styles>> {
-    render() {
-      return (
-        <>
-        <UpdateIndicator/>
-        <Switch>
-          <Route
-            exact={true}
-            path="/"
-            component={withMenu(Home)}
-          />
-          <Route
-            exact={true}
-            path="/about"
-            component={withMenu(About)}
-          />
-          <Route
-            exact={true}
-            path="/legal-notice"
-            component={withMenu(LegalNotice)}
-          />
-          <Route
-            exact={true}
-            path="/terms-and-conditions"
-            component={withMenu(TermsAndConditions)}
-          />
-          <Route
-            path="/projects/:projectId"
-            component={withMenu(Project)}
-          />
-          <Route
-            path="/shares/:projectId"
-            component={withMenu(ShareGuide)}
-          />
-          <Route component={NotFound} />
-        </Switch>
-        </>
-      );
+interface Props extends WithStyles<typeof styles> {
+}
+
+export default
+  withStyles(styles)(
+    class extends React.Component<Props> {
+      render() {
+        return (
+          <>
+            <UpdateIndicator />
+            <Switch>
+              <Route
+                exact={true}
+                path="/"
+                component={withMenu(Home)}
+              />
+              <Route
+                exact={true}
+                path="/about"
+                component={withMenu(About)}
+              />
+              <Route
+                exact={true}
+                path="/legal-notice"
+                component={withMenu(LegalNotice)}
+              />
+              <Route
+                exact={true}
+                path="/terms-and-conditions"
+                component={withMenu(TermsAndConditions)}
+              />
+              <Route
+                path="/projects/:projectId"
+                component={withMenu(Project)}
+              />
+              <Route
+                path="/shares/:projectId"
+                component={withMenu(ShareGuide)}
+              />
+              <Route component={NotFound} />
+            </Switch>
+          </>
+        );
+      }
     }
-  });
+  );
