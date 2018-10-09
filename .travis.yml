@@ -8,11 +8,6 @@ install:
 - yarn
 script:
 - yarn build
-deploy:
-  provider: script
-  script: bash docker_push
-  on:
-    branch: master
 env:
   global:
     secure: STBioS8ako8dopt7cYXX4qLu/wffNoT8AxA3s1FLv7AL15w0mmOqfskehCmrGZaQcimbdSS0+NtEhI3nzcySIux2lbf5QYfDUqZceY1Fk5x0/i3zjnQF6igBANXtUjbP488EalrBDjmnaFHwI2BtDPu3NYdLH3TZBKxwJiwckmpR3cJNj+a98Wbh32psGnYPLzL7jH0wW/SB9/5Js8xnR6IsMy60ysnmw7vXrY5QAtV2DdK8KmDCkOQAHb+x2xVmqpE4SWwtGMl0b2o+MAM41sQoFUYghj+8m0xsyXVFLMMgWQV1H9c3SiBb7MQQ7haYmu71LU33IK08trkXDBf5q+caEUO4sZ8MFs1NpPOyeFaJCkp5HT7LZ7Ta5yhLTUDp9wC8HL8KdSDTnfYqCOB9pYFAL0ztYhF+WU7YrmGFAwFB3t4U1HKsZ9pPtLuL8LBI8HRgdvRfFXTd6zTs3VCtTvHxR4UJsbHhjcw/PmJTUBCl1J92w1j+ikZDpqgQb7pQJxL9wWaQGAWbgivFJqeB5PbkRC7Njdm+l0T0zhGonE4mskCmr4yr6bpjJxMoqA8sUvr1+jdpuDdIzU56wTwmUIhurfvjbV1QPzO30kC4zXwe55LIWmCo6wgHxo0WcfRYAhLV9Y/Hh6PbJRSNll54IJU2Q0k4io9BU6SpCEi0k6Q=
