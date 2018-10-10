@@ -3,8 +3,8 @@ import * as smtp from 'nodemailer-smtp-transport';
 
 const transport = mailer.createTransport(smtp({
   host: process.env.CELLULOID_SMTP_HOST,
-  port: 465,
-  secure: true,
+  port: parseInt(process.env.CELLULOID_SMTP_PORT),
+  secure: process.env.CELLULOID_SMTP_TLS === 'true',
   auth: {
     user: process.env.CELLULOID_SMTP_USER,
     pass: process.env.CELLULOID_SMTP_PASSWORD
