@@ -3,7 +3,7 @@ import {
   ProjectGraphRecord,
   UserRecord
 } from '@celluloid/types';
-import { isLoggedIn, isProjectOwner } from 'auth/Utils';
+import { isProjectOwner, isTeacher } from 'auth/Utils';
 import { Router } from 'express';
 import * as ProjectStore from 'store/ProjectStore';
 
@@ -50,7 +50,7 @@ router.get(
 
 router.post(
   '/',
-  isLoggedIn,
+  isTeacher,
   (req, res) => {
     const user = req.user as UserRecord;
     const project = req.body as ProjectCreateData;
@@ -68,7 +68,7 @@ router.post(
 
 router.put(
   '/:projectId',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     ProjectStore.update(req.body, req.params.projectId)
@@ -82,7 +82,7 @@ router.put(
 
 router.delete(
   '/:projectId',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     ProjectStore.del(req.params.projectId)
@@ -125,7 +125,7 @@ router.get(
 
 router.put(
   '/:projectId/share',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     const projectId = req.params.projectId;
@@ -140,7 +140,7 @@ router.put(
 
 router.delete(
   '/:projectId/share',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     const projectId = req.params.projectId;
@@ -155,7 +155,7 @@ router.delete(
 
 router.put(
   '/:projectId/public',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     const projectId = req.params.projectId;
@@ -170,7 +170,7 @@ router.put(
 
 router.delete(
   '/:projectId/public',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     const projectId = req.params.projectId;
@@ -185,7 +185,7 @@ router.delete(
 
 router.put(
   '/:projectId/collaborative',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     const projectId = req.params.projectId;
@@ -200,7 +200,7 @@ router.put(
 
 router.delete(
   '/:projectId/collaborative',
-  isLoggedIn,
+  isTeacher,
   isProjectOwner,
   (req, res) => {
     const projectId = req.params.projectId;
