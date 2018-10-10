@@ -42,7 +42,7 @@ To deploy and install Celluloid, knowing your way around the command-line is req
 - install the latest version of [nodejs](https://nodejs.org/en/)
 - install the latest version of [Yarn](https://yarnpkg.com/en/) and use it instead of NPM. The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html) so it needs yarn to leverage [Yarn workspace](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/)
 
-### Databsse
+### Database
 
 You'll need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 9.6 or later.
 
