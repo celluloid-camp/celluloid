@@ -42,14 +42,14 @@ export default withStyles(styles)(({
 }: Props) => {
 
   const {
-    size: progressSize,
-    sizeClass: progressClassName
+    sizePx,
+    sizeClass
   } = (() => {
     switch (size) {
       case 'small':
-        return { size: 20, sizeClass: classes.sizeSmall };
+        return { sizePx: 20, sizeClass: classes.sizeSmall };
       default:
-        return { size: 24, sizeClass: classes.sizeDefault };
+        return { sizePx: 24, sizeClass: classes.sizeDefault };
     }
   })();
 
@@ -65,9 +65,9 @@ export default withStyles(styles)(({
       </Button>
       {loading &&
         <CircularProgress
-          size={progressSize}
+          size={sizePx}
           color={color}
-          className={classnames(classes.progress, progressClassName)}
+          className={classnames(classes.progress, sizeClass)}
         />
       }
     </div>
