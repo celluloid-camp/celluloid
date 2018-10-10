@@ -1,4 +1,7 @@
 import {
+  loadVideoThunk
+} from '@celluloid/client/src/actions/HomeActions';
+import {
   listProjectsThunk
 } from '@celluloid/client/src/actions/ProjectActions';
 import {
@@ -23,7 +26,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import ProjectsService from 'services/ProjectService';
-import YouTubeService from 'services/YoutubeService';
 import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
@@ -75,29 +77,31 @@ const styles = ({ spacing }: Theme) => createStyles({
 
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
-  error?: string;
+  errors: {
+    video?: string,
+    projects?: string
+  };
   onClickJoinProject(): EmptyAction;
+  onClickNewProject(url: string): AsyncAction<YoutubeVideo, string>;
   onNewProjectCreated(): AsyncAction<ProjectGraphRecord[], string>;
 }
 
 interface State {
-  newProjectDialogOpen: boolean;
   newProjectVideoUrl: string;
-  video?: YoutubeVideo;
-  videoError?: string;
 }
 
 const mapStateToProps = (state: AppState) => {
   return {
     user: state.user,
-    error: state.home.error
+    errors: state.home.errors,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onClickJoinProject: () => dispatch(openStudentSignup()),
-    onNewProjectCreated: () => listProjectsThunk()(dispatch)
+    onNewProjectCreated: () => listProjectsThunk()(dispatch),
+    onClickNewProject: (url: string) => loadVideoThunk(url)(dispatch)
   };
 };
 
@@ -105,56 +109,11 @@ export default withStyles(styles)(
   connect(mapStateToProps, mapDispatchToProps)(
     class extends React.Component<Props, State> {
       state = {
-        newProjectDialogOpen: false,
         newProjectVideoUrl: '',
-        videoError: undefined,
-        video: undefined
       } as State;
 
       render() {
         const { onClickJoinProject, classes } = this.props;
-
-        const showNewProjectDialog = () => {
-          try {
-            const parsedVideoUrl = new URL(this.state.newProjectVideoUrl);
-            const videoId = parsedVideoUrl.hostname.endsWith('youtu.be')
-              ? parsedVideoUrl.pathname.replace(/\//, '')
-              : parsedVideoUrl.searchParams.get('v');
-
-            if (videoId) {
-              YouTubeService.getVideoNameById(videoId)
-                .then((videoTitle: string) => {
-                  this.setState({
-                    video: {
-                      id: videoId,
-                      title: videoTitle,
-                      thumbnailUrl: `http://img.youtube.com/vi/${videoId}/0.jpg`
-                    },
-                    newProjectDialogOpen: true
-                  });
-                })
-                .catch(() => {
-                  this.setState({
-                    video: undefined,
-                    newProjectDialogOpen: false,
-                    videoError: `Ceci n'est pas un lien YouTube valide`
-                  });
-                });
-            } else {
-              this.setState({
-                video: undefined,
-                newProjectDialogOpen: false,
-                videoError: `Ceci n'est pas un lien YouTube valide`
-              });
-            }
-          } catch (err) {
-            this.setState({
-              video: undefined,
-              newProjectDialogOpen: false,
-              videoError: `Ceci n'est pas un lien YouTube valide`
-            });
-          }
-        };
 
         const closeNewProjectDialog = (
           send: boolean,
@@ -165,14 +124,12 @@ export default withStyles(styles)(
               ProjectsService.create(newProject)
                 .then(() => {
                   this.props.onNewProjectCreated();
-                  this.setState({ newProjectDialogOpen: false });
                   resolve();
                 })
                 .catch(error => {
                   reject(error);
                 });
             } else {
-              this.setState({ newProjectDialogOpen: false });
               resolve();
             }
           });
@@ -239,29 +196,23 @@ export default withStyles(styles)(
                           label="Ajouter un lien vers une vidéo YouTube..."
                           onChange={handleVideoUrlChanged}
                           value={this.state.newProjectVideoUrl}
-                          error={this.state.videoError ? true : false}
-                          helperText={this.state.videoError}
+                          error={!!this.props.errors.video}
+                          helperText={this.props.errors.video}
                         />
                       </div>
                       <div className={classes.buttonWrapper}>
                         <Button
                           variant="raised"
                           color="primary"
-                          onClick={showNewProjectDialog}
+                          onClick={() => this.props.onClickNewProject(this.state.newProjectVideoUrl)}
                           fullWidth={true}
                         >
                           {`Nouveau projet`}
                         </Button>
                       </div>
-                      <div>
-                        {this.state.video &&
-                          <NewProject
-                            onClose={closeNewProjectDialog}
-                            isOpen={this.state.newProjectDialogOpen}
-                            video={this.state.video}
-                          />
-                        }
-                      </div>
+                      <NewProject
+                        onClose={closeNewProjectDialog}
+                      />
                     </div>
                   </div>
                 </Grid>
