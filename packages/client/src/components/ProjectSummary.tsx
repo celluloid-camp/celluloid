@@ -1,5 +1,12 @@
 import { ProjectGraphRecord } from '@celluloid/types';
-import { createStyles, Theme, Typography, WithStyles, withStyles } from '@material-ui/core';
+import {
+  Chip,
+  createStyles,
+  Theme,
+  Typography,
+  WithStyles,
+  withStyles
+} from '@material-ui/core';
 import * as React from 'react';
 
 const styles = ({ spacing }: Theme) => createStyles({
@@ -10,6 +17,17 @@ const styles = ({ spacing }: Theme) => createStyles({
     margin: 0,
     padding: 0,
     paddingLeft: spacing.unit * 2 + 2
+  },
+  tagList: {
+    padding: 0,
+    margin: 0,
+    display: 'flex',
+    justifyContent: 'left',
+    flexWrap: 'wrap',
+  },
+  tag: {
+    marginRight: 4,
+    marginBottom: 4
   },
 });
 
@@ -26,6 +44,17 @@ export default withStyles(styles)(({ project, classes }: Props) => (
     >
       {project.title}
     </Typography>
+    {project.tags.length > 0 &&
+      <div className={classes.tagList}>
+        {project.tags.map((tag, index) =>
+          <Chip
+            className={classes.tag}
+            key={index}
+            label={tag.name}
+          />
+        )}
+      </div>
+    }
     <Typography
       align="justify"
       gutterBottom={true}
