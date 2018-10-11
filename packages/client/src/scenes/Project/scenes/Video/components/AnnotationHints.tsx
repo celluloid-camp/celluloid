@@ -75,7 +75,7 @@ export default
       <div
         className={classes.container}
       >
-        <Typography className={classes.title} align="left" variant="headline">
+        <Typography className={classes.title} align="left" variant="h5">
           {annotations.length > 0
             ? `${annotations.length} annotations`
             : `Aucune annotation`

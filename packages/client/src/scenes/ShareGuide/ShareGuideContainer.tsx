@@ -44,7 +44,7 @@ const styles = (theme: Theme) => createStyles({
     border: `1px solid ${theme.palette.divider}`,
   },
   stepNumber: {
-    ...theme.typography.subheading,
+    ...theme.typography.subtitle1,
     border: `1px solid ${theme.palette.divider}`,
     lineHeight: `${theme.spacing.unit * 5}px`,
     borderRadius: theme.spacing.unit * 2.5,
@@ -54,7 +54,7 @@ const styles = (theme: Theme) => createStyles({
     height: theme.spacing.unit * 5
   },
   stepTitle: {
-    ...theme.typography.subheading,
+    ...theme.typography.subtitle1,
     lineHeight: `${theme.spacing.unit * 5}px`,
   },
   stepBody: {
@@ -176,7 +176,7 @@ export default withRouter(withStyles(styles)(
                 {`Fiche pédagogique`}
               </Typography>
               <ProjectSummary project={project} />
-              <Typography variant="display2" gutterBottom={true}>
+              <Typography variant="h3" gutterBottom={true}>
                 {`Comment utiliser Celluloid ?`}
               </Typography>
               <div style={{ paddingTop: 16 }}>

@@ -1,11 +1,12 @@
 import 'rc-slider/assets/index.css';
 
-import { ProjectCreateData, TagData } from '@celluloid/types';
+import { createProjectThunk } from '@celluloid/client/src/actions/ProjectActions';
+import { AsyncAction, EmptyAction } from '@celluloid/client/src/types/ActionTypes';
+import { ProjectCreateData, ProjectGraphRecord, TagData } from '@celluloid/types';
 import {
   Avatar,
   Button,
   Chip,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
@@ -19,52 +20,26 @@ import {
   ListItemText,
   Switch,
   TextField,
-  Theme,
   Typography,
-  WithStyles,
-  withStyles,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
+import { discardNewVideo } from 'actions/HomeActions';
+import TagSearchBox from 'components/TagSearchBox/TagSearchBox';
 import { Range } from 'rc-slider';
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { levelLabel, levelsCount } from 'types/LevelTypes';
 import { AppState } from 'types/StateTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
 
-const styles = ({ spacing }: Theme) => createStyles({
-  avatar: {
-    border: '1px solid #757575',
-    backgroundColor: '#fefefe'
-  },
-  container: {
-    flexGrow: 1,
-    position: 'relative' as 'relative',
-  },
-  suggestionsContainerOpen: {
-    position: 'absolute' as 'absolute',
-    marginTop: spacing.unit,
-    marginBottom: spacing.unit * 3,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
-  suggestion: {
-    display: 'block',
-  },
-  suggestionsList: {
-    margin: 0,
-    padding: 0,
-    listStyleType: 'none',
-  },
-});
-
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   video?: YoutubeVideo;
   tags: TagData[];
-  onClose(send: boolean, value: ProjectCreateData): Promise<{}>;
+  onSubmit(project: ProjectCreateData): AsyncAction<ProjectGraphRecord, string>;
+  onCancel(): EmptyAction;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -72,92 +47,82 @@ const mapStateToProps = (state: AppState) => ({
   video: state.home.video
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(
-  class extends React.Component<Props> {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onCancel: () => dispatch(discardNewVideo()),
+  onSubmit: (project: ProjectCreateData) =>
+    createProjectThunk(project)(dispatch)
+});
 
-    state = {
-      videoTitle: '',
+interface State {
+  project: ProjectCreateData;
+  error?: string;
+  nextAssignment: string;
+}
+
+function initState(): State {
+  return {
+    project: {
+      videoId: '',
       title: '',
       description: '',
       objective: '',
-      assignments: [] as string[],
-      views: 0,
-      shares: 0,
+      assignments: [],
       levelStart: 0,
       levelEnd: levelsCount - 1,
-      nextAssignment: '',
-      searchTag: '',
       public: false,
       collaborative: false,
-      tags: new Set<TagData>(),
-      error: undefined,
-      suggestions: []
-    };
+      tags: [],
+    },
+    nextAssignment: '',
+    error: undefined,
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  class extends React.Component<Props, State> {
+
+    state = initState();
 
     render() {
+
+      const { project, nextAssignment } = this.state;
+
+      const { video, tags, onSubmit, onCancel } = this.props;
+
+      const tagSelection = new Set<TagData>(project.tags);
+
       const onTagSelected = (tag: TagData) => {
-        const state = this.state;
-        if (state.tags.has(tag)) {
-          state.tags.delete(tag);
+
+        if (tagSelection.has(tag)) {
+          tagSelection.delete(tag);
         } else {
-          state.tags.add(tag);
+          tagSelection.add(tag);
         }
-        this.setState(state);
+        this.setState(prevState => ({
+          ...prevState,
+          project: {
+            ...prevState.project,
+            tags: Array.from(tagSelection),
+          }
+        }));
       };
 
-      const { video, tags, classes } = this.props;
       if (video) {
-
-        const onClose = (send: boolean) => (event: React.MouseEvent<HTMLElement>) => {
-          const project = {
-            videoId: video.id,
-            title: this.state.title,
-            description: this.state.description,
-            objective: this.state.objective,
-            assignments: this.state.assignments,
-            levelStart: this.state.levelStart,
-            levelEnd: this.state.levelEnd,
-            tags: Array.from(this.state.tags),
-            public: this.state.public,
-            collaborative: this.state.collaborative
-          };
-          this.props.onClose(send, project)
-            .then(() => {
-              this.setState({
-                videoTitle: '',
-                title: '',
-                description: '',
-                objective: '',
-                assignments: [] as string[],
-                views: 0,
-                shares: 0,
-                levelStart: 0,
-                levelEnd: levelsCount - 1,
-                nextAssignment: '',
-                searchTag: '',
-                public: false,
-                collaborative: false,
-                tags: new Set<TagData>(),
-                error: undefined,
-                suggestions: []
-              });
-            })
-            .catch(error => {
-              this.setState({ error: error.message });
-            });
-        };
-
-
 
         return (
           <Dialog
-            open={!!video}
+            open={true}
             fullWidth={true}
+            onClose={() => onCancel()}
             scroll="body"
           >
             <DialogTitle style={{ textAlign: 'center' }}>
               <span style={{ position: 'absolute', right: 16, top: 8 }}>
-                <IconButton onClick={onClose(false)}><CloseIcon /></IconButton>
+                <IconButton
+                  onClick={() => onCancel()}
+                >
+                  <CloseIcon />
+                </IconButton>
               </span>
               {'Nouveau projet'}
             </DialogTitle>
@@ -167,9 +132,9 @@ export default connect(mapStateToProps)(withStyles(styles)(
                   width: '100%',
                   height: 256,
                   backgroundImage: `url(${video.thumbnailUrl})`,
-                  backgroundPosition: 'center' as 'center',
-                  backgroundAttachment: 'contain' as 'contain',
-                  backgroundRepeat: 'no-repeat' as 'no-repeat'
+                  backgroundPosition: 'center',
+                  backgroundAttachment: 'contain',
+                  backgroundRepeat: 'no-repeat'
                 }}
               />
               <div
@@ -181,7 +146,7 @@ export default connect(mapStateToProps)(withStyles(styles)(
                 }}
               >
                 <Typography
-                  variant="title"
+                  variant="h6"
                   gutterBottom={true}
                 >
                   {video.title}
@@ -189,12 +154,20 @@ export default connect(mapStateToProps)(withStyles(styles)(
               </div>
               <TextField
                 required={true}
-                label=""
+                label="Titre"
                 fullWidth={true}
                 helperText="Donnez un titre à votre projet"
                 onChange={event => {
-                  this.setState({ title: event.target.value });
+                  const value = event.target.value;
+                  this.setState(prevState => ({
+                    ...prevState,
+                    project: {
+                      ...prevState.project,
+                      title: value
+                    }
+                  }));
                 }}
+                value={project.title}
               />
               <TextField
                 label="Description"
@@ -202,8 +175,16 @@ export default connect(mapStateToProps)(withStyles(styles)(
                 helperText="Décrivez brièvement le contenu de la vidéo"
                 multiline={true}
                 onChange={event => {
-                  this.setState({ description: event.target.value });
+                  const value = event.target.value;
+                  this.setState(prevState => ({
+                    ...prevState,
+                    project: {
+                      ...prevState.project,
+                      description: value
+                    }
+                  }));
                 }}
+                value={project.description}
               />
               <TextField
                 required={true}
@@ -212,17 +193,25 @@ export default connect(mapStateToProps)(withStyles(styles)(
                 helperText="Fixez l'objectif pédagogique du projet"
                 multiline={true}
                 onChange={event => {
-                  this.setState({ objective: event.target.value });
+                  const value = event.target.value;
+                  this.setState(prevState => ({
+                    ...prevState,
+                    project: {
+                      ...prevState.project,
+                      objective: value
+                    }
+                  }));
                 }}
+                value={project.objective}
               />
-              <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+              <Typography variant="h6" style={{ paddingTop: 36 }} gutterBottom={true}>
                 {`Activités proposées`}
               </Typography>
-              <Typography variant="subheading">
+              <Typography variant="subtitle1">
                 {`Listez les différentes activités que vous proposez au partcipants`}
               </Typography>
               <List>
-                {this.state.assignments.map((assignment, index) =>
+                {project.assignments.map((assignment, index) =>
                   <ListItem key={index}>
                     <ListItemAvatar>
                       <Avatar
@@ -238,11 +227,14 @@ export default connect(mapStateToProps)(withStyles(styles)(
                     <ListItemSecondaryAction>
                       <IconButton
                         onClick={() => {
-                          const assignments = this.state.assignments;
-                          assignments.splice(index, 1);
-                          this.setState({
-                            assignments
-                          });
+                          project.assignments.splice(index, 1);
+                          this.setState(prevState => ({
+                            ...prevState,
+                            project: {
+                              ...prevState.project,
+                              assignments: project.assignments
+                            }
+                          }));
                         }}
                       >
                         <RemoveIcon />
@@ -261,7 +253,7 @@ export default connect(mapStateToProps)(withStyles(styles)(
                         fontSize: '12pt',
                       }}
                     >
-                      {this.state.assignments.length + 1}
+                      {project.assignments.length + 1}
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
@@ -269,7 +261,7 @@ export default connect(mapStateToProps)(withStyles(styles)(
                       <TextField
                         label="Ajouter une activité"
                         style={{ display: 'flex', flex: 1 }}
-                        value={this.state.nextAssignment}
+                        value={nextAssignment}
                         onChange={event => {
                           this.setState({ nextAssignment: event.target.value });
                         }}
@@ -279,12 +271,17 @@ export default connect(mapStateToProps)(withStyles(styles)(
                   <ListItemSecondaryAction>
                     <IconButton
                       onClick={() => {
-                        const assignments = this.state.assignments;
-                        assignments.push(this.state.nextAssignment);
-                        this.setState({
-                          assignments,
+                        this.setState(prevState => ({
+                          ...prevState,
+                          project: {
+                            ...prevState.project,
+                            assignments: [
+                              ...project.assignments,
+                              nextAssignment
+                            ]
+                          },
                           nextAssignment: ''
-                        });
+                        }));
                       }}
                     >
                       <AddIcon />
@@ -292,10 +289,10 @@ export default connect(mapStateToProps)(withStyles(styles)(
                   </ListItemSecondaryAction>
                 </ListItem>
               </List>
-              <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+              <Typography variant="h6" style={{ paddingTop: 36 }} gutterBottom={true}>
                 {`Domaine(s)`}
               </Typography>
-              <Typography variant="subheading">
+              <Typography variant="subtitle1">
                 {`Choisissez un ou plusieurs domaine(s) correspondant à votre projet`}
               </Typography>
               <div
@@ -307,29 +304,39 @@ export default connect(mapStateToProps)(withStyles(styles)(
                 }}
               >
                 {
-                  this.props.tags
-                    .filter(tag => tag.featured || this.state.tags.has(tag))
+                  tags
+                    .filter(tag => tag.featured || tagSelection.has(tag))
                     .map(tag =>
                       <Chip
                         onClick={() => {
-                          const state = this.state;
-                          if (state.tags.has(tag)) {
-                            state.tags.delete(tag);
+                          if (tagSelection.has(tag)) {
+                            tagSelection.delete(tag);
                           } else {
-                            state.tags.add(tag);
+                            tagSelection.add(tag);
                           }
-                          this.setState(state);
+                          this.setState(prevState => ({
+                            ...prevState,
+                            project: {
+                              ...prevState.project,
+                              tags: Array.from(tagSelection)
+                            }
+                          }));
                         }}
                         onDelete={
-                          this.state.tags.has(tag) ?
+                          tagSelection.has(tag) ?
                             () => {
-                              const state = this.state;
-                              if (state.tags.has(tag)) {
-                                state.tags.delete(tag);
+                              if (tagSelection.has(tag)) {
+                                tagSelection.delete(tag);
                               } else {
-                                state.tags.add(tag);
+                                tagSelection.add(tag);
                               }
-                              this.setState(state);
+                              this.setState(prevState => ({
+                                ...prevState,
+                                project: {
+                                  ...prevState.project,
+                                  tags: Array.from(tagSelection)
+                                }
+                              }));
                             } : undefined
                         }
                         key={tag.id}
@@ -359,11 +366,15 @@ export default connect(mapStateToProps)(withStyles(styles)(
                   flexWrap: 'wrap'
                 }}
               >
+                <TagSearchBox
+                  tags={this.props.tags}
+                  onTagSelected={onTagSelected}
+                />
               </div>
-              <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+              <Typography variant="h6" style={{ paddingTop: 36 }} gutterBottom={true}>
                 {`Niveau `}
               </Typography>
-              <Typography variant="subheading">
+              <Typography variant="subtitle1">
                 {`Veuillez préciser à quel(s) niveau(x) s'adresse ce projet`}
               </Typography>
               <div
@@ -385,7 +396,7 @@ export default connect(mapStateToProps)(withStyles(styles)(
                     variant="caption"
                     style={{ textAlign: 'center' }}
                   >
-                    {levelLabel(this.state.levelStart)}
+                    {levelLabel(project.levelStart)}
                   </Typography>
                 </div>
                 <div
@@ -401,16 +412,23 @@ export default connect(mapStateToProps)(withStyles(styles)(
                     variant="caption"
                     style={{ textAlign: 'center' }}
                   >
-                    {levelLabel(this.state.levelEnd)}
+                    {levelLabel(project.levelEnd)}
                   </Typography>
                 </div>
                 <div style={{ paddingTop: 32 }}>
                   <Range
                     min={0}
                     max={levelsCount - 1}
-                    value={[this.state.levelStart, this.state.levelEnd]}
+                    value={[project.levelStart, project.levelEnd]}
                     onChange={values => {
-                      this.setState({ levelStart: values[0], levelEnd: values[1] });
+                      this.setState(prevState => ({
+                        ...prevState,
+                        project: {
+                          ...prevState.project,
+                          levelStart: values[0],
+                          levelEnd: values[1]
+                        }
+                      }));
                     }}
                     trackStyle={[{ backgroundColor: 'orange' }]}
                     handleStyle={[{ borderColor: 'orange' }, { borderColor: 'orange' }]}
@@ -418,7 +436,7 @@ export default connect(mapStateToProps)(withStyles(styles)(
                   />
                 </div>
               </div>
-              <Typography variant="title" style={{ paddingTop: 36 }} gutterBottom={true}>
+              <Typography variant="h6" style={{ paddingTop: 36 }} gutterBottom={true}>
                 {`Partage`}
               </Typography>
               <Grid
@@ -428,7 +446,7 @@ export default connect(mapStateToProps)(withStyles(styles)(
               >
                 <Grid item={true} xs={2}>
                   <Typography
-                    variant="subheading"
+                    variant="subtitle1"
                     style={{ paddingTop: 12, textAlign: 'right' }}
                   >
                     {`Public`}
@@ -439,9 +457,15 @@ export default connect(mapStateToProps)(withStyles(styles)(
                   xs={2}
                 >
                   <Switch
-                    checked={this.state.public}
-                    onChange={(event, value) => {
-                      this.setState({ public: value });
+                    checked={project.public}
+                    onChange={(_, value) => {
+                      this.setState(prevState => ({
+                        ...prevState,
+                        project: {
+                          ...prevState.project,
+                          public: value
+                        }
+                      }));
                     }}
                   />
                 </Grid>
@@ -463,7 +487,7 @@ export default connect(mapStateToProps)(withStyles(styles)(
               >
                 <Grid item={true} xs={2}>
                   <Typography
-                    variant="subheading"
+                    variant="subtitle1"
                     style={{ paddingTop: 12, textAlign: 'right' }}
                   >
                     {`Collaboratif`}
@@ -474,9 +498,15 @@ export default connect(mapStateToProps)(withStyles(styles)(
                   xs={2}
                 >
                   <Switch
-                    checked={this.state.collaborative}
-                    onChange={(event, value) => {
-                      this.setState({ collaborative: value });
+                    checked={project.collaborative}
+                    onChange={(_, value) => {
+                      this.setState(prevState => ({
+                        ...prevState,
+                        project: {
+                          ...prevState.project,
+                          collaborative: value,
+                        }
+                      }));
                     }}
                   />
                 </Grid>
@@ -501,9 +531,9 @@ export default connect(mapStateToProps)(withStyles(styles)(
             </DialogContent>
             <DialogActions style={{ textAlign: 'center' }}>
               <Button
-                onClick={onClose(true)}
+                onClick={() => onSubmit({ ...project, videoId: video.id })}
                 color="primary"
-                variant="raised"
+                variant="contained"
               >
                 {`Enregistrer`}
               </Button>
@@ -515,4 +545,4 @@ export default connect(mapStateToProps)(withStyles(styles)(
       }
     }
   }
-));
+);

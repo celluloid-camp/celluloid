@@ -39,7 +39,7 @@ export default withStyles(styles)(({ project, classes }: Props) => (
   <>
     <Typography
       align="left"
-      variant="display2"
+      variant="h3"
       gutterBottom={true}
     >
       {project.title}
@@ -58,14 +58,14 @@ export default withStyles(styles)(({ project, classes }: Props) => (
     <Typography
       align="justify"
       gutterBottom={true}
-      variant="subheading"
+      variant="subtitle1"
     >
       <b>{project.description}</b>
     </Typography>
     <Typography
       align="left"
       gutterBottom={true}
-      variant="display1"
+      variant="h4"
       color="primary"
       className={classes.section}
     >
@@ -74,7 +74,7 @@ export default withStyles(styles)(({ project, classes }: Props) => (
     <Typography
       align="justify"
       gutterBottom={true}
-      variant="subheading"
+      variant="subtitle1"
     >
       {project.objective}
     </Typography>
@@ -84,7 +84,7 @@ export default withStyles(styles)(({ project, classes }: Props) => (
         <Typography
           align="left"
           gutterBottom={true}
-          variant="display1"
+          variant="h4"
           color="primary"
           className={classes.section}
         >
@@ -93,7 +93,7 @@ export default withStyles(styles)(({ project, classes }: Props) => (
         <Typography
           align="left"
           gutterBottom={true}
-          variant="subheading"
+          variant="subtitle1"
         >
           <ol className={classes.questions}>
             {project.assignments.map((assignment, index) =>

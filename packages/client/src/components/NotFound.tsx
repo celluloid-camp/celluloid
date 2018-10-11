@@ -26,7 +26,7 @@ export default withStyles(styles)(
   ({ classes }: WithStyles<typeof styles>) => (
     <Paper className={classes.paper}>
       <div className={classes.body}>
-        <Typography variant="display1" gutterBottom={true}>
+        <Typography variant="h4" gutterBottom={true}>
           {`Page introuvable :(`}
         </Typography>
         <Typography>

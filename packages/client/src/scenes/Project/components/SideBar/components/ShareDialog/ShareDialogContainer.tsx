@@ -139,7 +139,7 @@ export default withStyles(styles)(
             </ DialogContent>
             <DialogActions>
               <Button
-                variant="raised"
+                variant="contained"
                 color="secondary"
                 onClick={() => onCancel()}
               >
@@ -147,7 +147,7 @@ export default withStyles(styles)(
                 {`Annuler`}
               </Button>
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 onClick={() => onSubmit(project.id, this.state)}
               >

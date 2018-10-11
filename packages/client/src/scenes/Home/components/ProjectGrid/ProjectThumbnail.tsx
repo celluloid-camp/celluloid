@@ -11,7 +11,7 @@ import {
   Theme,
   Typography,
   WithStyles,
-  withStyles
+  withStyles,
 } from '@material-ui/core';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import { push } from 'connected-react-router';
@@ -173,7 +173,7 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                 <div className={classes.titleWrapper}>
                   <Typography
                     className={classes.title}
-                    variant="title"
+                    variant="h6"
                   >
                     {title}
                   </Typography>
@@ -190,7 +190,7 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                   }}
                 >
                   <Grid item={true} xs={12}>
-                    <Typography variant="subheading" gutterBottom={true}>
+                    <Typography variant="subtitle1" gutterBottom={true}>
                       <b>{objective}</b>
                     </Typography>
                   </Grid>
