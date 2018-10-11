@@ -1,4 +1,4 @@
-# Celluloid 
+# Celluloid
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/celluloid-camp/celluloid.svg?branch=master)](https://travis-ci.com/celluloid-camp/celluloid)
 [![Gitter chat](https://badges.gitter.im/celluloid-camp.png)](https://gitter.im/celluloid-camp)
@@ -8,8 +8,8 @@
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
-Find a YouTube video, choose an educational objective, annotate the video, share it with your students, 
-collect their answers, answer their questions.  
+Find a YouTube video, choose an educational objective, annotate the video, share it with your students,
+collect their answers, answer their questions.
 
 ## Demo
 
@@ -19,11 +19,11 @@ We'd appreciate your feedback about the application UX and design, as well as bu
 
 ## Who's behind it?
 
-Celluloid was born from a research project lead by **Michaël Bourgatte** and **Laurent Tessier**, 
-two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/). 
+Celluloid was born from a research project lead by **Michaël Bourgatte** and **Laurent Tessier**,
+two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/).
 Their work focus on educational science and digital humanities.
 
-Celluloid is maintained by [Erwan Queffélec](https://github.com/3rwww1), and **we are actively looking for contributors and maintainers**. 
+Celluloid is maintained by [Erwan Queffélec](https://github.com/3rwww1), and **we are actively looking for contributors and maintainers**.
 Don't hesitate to [drop us a line on gitter!](https://gitter.im/celluloid-camp)
 
 # Setup
@@ -34,9 +34,9 @@ Don't hesitate to [drop us a line on gitter!](https://gitter.im/celluloid-camp)
 
 Celluloid was designed to run on a Linux server.
 
-To deploy and install Celluloid, knowing your way around the command-line is required. **Using an OSX or Linux workstation is highly recommended**. 
+To deploy and install Celluloid, knowing your way around the command-line is required. **Using an OSX or Linux workstation is highly recommended**.
 
-### Tools 
+### Tools
 
 - install the latest and greatest version of [git](https://git-scm.com/) (obviously)
 - install the latest version of [nodejs](https://nodejs.org/en/)
@@ -46,16 +46,16 @@ To deploy and install Celluloid, knowing your way around the command-line is req
 
 You'll need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 9.6 or later.
 
-For development purpose, you can use this [docker image](https://hub.docker.com/_/postgres/). 
+For development purpose, you can use this [docker image](https://hub.docker.com/_/postgres/).
 
-Then: 
+Then:
 
 1. [create a user](https://www.postgresql.org/docs/current/static/app-createuser.html) for celluloid
 2. [create a database](https://www.postgresql.org/docs/current/static/manage-ag-createdb.html) owned by this user. You can follow [this tutorial](https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e) to get setup quickly.
 
 ### Emails
 
-A working SMTP server is required to send account confirmation emails. 
+A working SMTP server is required to send account confirmation emails.
 
 For development purpose, you could use your email account SMTP credentials, for instance [gmail](https://support.google.com/a/answer/176600?hl=en), or a dedicated service, such as [mailtrap](https://mailtrap.io/register/signup)
 
@@ -79,10 +79,11 @@ Open the newly created .env file with your favorite text editor and replace the 
 
 ### Database provisioning
 
-Make sure your PostgreSQL server is up. In a terminal, at the root of the repository, run
+Make sure your PostgreSQL server is up. In a terminal, go to the `bin` directory and run the `create_schema` script:
 
-    ./bin/create_schema.sh
-    
+    cd bin
+    ./create_schema.sh
+
 If this fails, you most certainly got your PostgreSQL server configuration or your `.env` file wrong.
 
 ### Running the app in development mode
@@ -101,7 +102,7 @@ At the root of your repository, run
 
     yarn build
     yarn start
-    
+
 You should be able to access your app at http://localhost:3001
 
 ### Building and starting the app as a docker container
@@ -136,7 +137,7 @@ Before contributing to the development of Celluloid, you should get familiar wit
 
 ## File structure
 
-The project is organized as a monorepo with 4 distinct packages residing in the `packages` directory. 
+The project is organized as a monorepo with 4 distinct packages residing in the `packages` directory.
 
 All paths are relative to the root of the repository.
 
