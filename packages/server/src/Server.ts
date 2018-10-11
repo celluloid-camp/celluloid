@@ -37,8 +37,10 @@ app.use(
   session({
     store: createStore(),
     cookie: {
-      secure: false,
-      maxAge: 30 * 24 * 3600 * 1000
+      domain: process.env.CELLULOID_HTTP_DOMAIN ? process.env.CELLULOID_HTTP_DOMAIN: undefined,
+      secure: process.env.CELLULOID_HTTP_SECURE === 'true',
+      maxAge: 30 * 24 * 3600 * 1000,
+      httpOnly: true
     },
     secret: process.env.CELLULOID_JWT_SECRET as string,
     resave: false,
