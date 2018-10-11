@@ -12316,15 +12316,15 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.0.1.tgz#43738f29585d3a87575520a4b93ab6026ef11fdb"
-  integrity sha512-zQIMOmC+372pC/CCVLqnQ0zSBiY7HHodU7mpQdjiZddek4GMj31I3dUJ7gAs9o65X7mnRma6OokOkc6f9jjfBg==
-
 typescript@^3.1.0-dev.20180821:
   version "3.1.0-dev.20180821"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.0-dev.20180821.tgz#56d44d584900d663a076f16059d56f4e6d7618c3"
   integrity sha512-yc+X82TiXdqKmiASbg4XCgExu5L5BU7HwJneOd0MtZ97PyWBzaK9SKWoaYyzvCIscck4A03Nm8xX59G6iS3f0Q==
+
+typescript@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.2.tgz#c03a5d16f30bb60ad8bb6fe8e7cb212eedeec950"
+  integrity sha512-gOoGJWbNnFAfP9FlrSV63LYD5DJqYJHG5ky1kOXSl3pCImn4rqWy/flyq1BRd4iChQsoCqjbQaqtmXO4yCVPCA==
 
 ua-parser-js@^0.7.18:
   version "0.7.18"
