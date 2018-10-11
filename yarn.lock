@@ -447,10 +447,10 @@
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.36.tgz#1ddaf3211c7cd7046fcaefe68c713469ccfc9504"
   integrity sha512-LAeBECPU9IG+K0pRdGl2L9lxanb0CKgue0IGpdn9nmpmKefDrCglrYwkxFYoQxCtY0w/mTxpJaQ4VAChcSIN+A==
 
-"@types/randomcolor@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@types/randomcolor/-/randomcolor-0.4.3.tgz#66bf69fdf43ea7b73ae4c378f660442c8e236e93"
-  integrity sha1-Zr9p/fQ+p7c65MN49mBELI4jbpM=
+"@types/randomcolor@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@types/randomcolor/-/randomcolor-0.5.0.tgz#8fd8e56014cf182c966cdb78f1995f47ec5b91db"
+  integrity sha512-odex88/brECZgiSzp6i9rYiNaWAacn862VY358HFiDbxfIUhbbB+6y3Ah7WlXx9g9qNdJGTLZde9blfCSFch4Q==
 
 "@types/range-parser@*":
   version "1.2.2"
