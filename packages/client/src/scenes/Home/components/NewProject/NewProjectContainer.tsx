@@ -5,6 +5,7 @@ import {
   Avatar,
   Button,
   Chip,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
@@ -20,14 +21,11 @@ import {
   Paper,
   Switch,
   TextField,
-  Typography
-} from '@material-ui/core';
-import {
-  createStyles,
   Theme,
+  Typography,
   WithStyles,
-  withStyles
-} from '@material-ui/core/styles';
+  withStyles,
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
