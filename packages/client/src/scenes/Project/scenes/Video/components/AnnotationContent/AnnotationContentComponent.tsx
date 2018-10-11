@@ -188,7 +188,7 @@ export default withStyles(styles)(({
                       <Typography variant="caption">
                         {preview.data.website}
                       </Typography>
-                      <Typography variant="subheading">
+                      <Typography variant="subtitle1">
                         {preview.data.title}
                       </Typography>
                     </div>

@@ -5,17 +5,19 @@ import {
   AsyncAction,
   createAction,
   createEmptyAction,
-  createErrorAction
+  createErrorAction,
 } from 'types/ActionTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
 
 function getVideoId(url: string): Promise<string> {
-  const parsed = new URL(url);
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(url);
 
-  const id = parsed.hostname.endsWith('youtu.be')
-    ? parsed.pathname.replace(/\//, '')
-    : parsed.searchParams.get('v');
-  return id ? Promise.resolve(id) : Promise.reject();
+    const id = parsed.hostname.endsWith('youtu.be')
+      ? parsed.pathname.replace(/\//, '')
+      : parsed.searchParams.get('v');
+    return id ? resolve(id) : reject();
+  });
 }
 
 export const failLoadVideo = (error: string) =>

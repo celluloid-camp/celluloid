@@ -1,23 +1,10 @@
-import {
-  loadVideoThunk
-} from '@celluloid/client/src/actions/HomeActions';
-import {
-  listProjectsThunk
-} from '@celluloid/client/src/actions/ProjectActions';
-import {
-  ProjectCreateData,
-  ProjectGraphRecord,
-  UserRecord
-} from '@celluloid/types';
+import { loadVideoThunk } from '@celluloid/client/src/actions/HomeActions';
+import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
+import { ProjectGraphRecord, UserRecord } from '@celluloid/types';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
-import {
-  createStyles,
-  Theme,
-  WithStyles,
-  withStyles
-} from '@material-ui/core/styles';
+import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { openStudentSignup } from 'actions/Signin';
@@ -25,7 +12,6 @@ import classnames from 'classnames';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import ProjectsService from 'services/ProjectService';
 import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
@@ -115,26 +101,6 @@ export default withStyles(styles)(
       render() {
         const { onClickJoinProject, classes } = this.props;
 
-        const closeNewProjectDialog = (
-          send: boolean,
-          newProject: ProjectCreateData
-        ) => {
-          return new Promise((resolve, reject) => {
-            if (send) {
-              ProjectsService.create(newProject)
-                .then(() => {
-                  this.props.onNewProjectCreated();
-                  resolve();
-                })
-                .catch(error => {
-                  reject(error);
-                });
-            } else {
-              resolve();
-            }
-          });
-        };
-
         const handleVideoUrlChanged = (
           event: React.ChangeEvent<HTMLInputElement>
         ) => {
@@ -159,10 +125,10 @@ export default withStyles(styles)(
                   lg={4}
                   xl={3}
                 >
-                  <Typography variant="display2" color="primary" gutterBottom={true}>
+                  <Typography variant="h3" color="primary" gutterBottom={true}>
                     {`Apprendre ensemble avec une vidéo`}
                   </Typography>
-                  <Typography variant="subheading" gutterBottom={true}>
+                  <Typography variant="subtitle1" gutterBottom={true}>
                     {`Partagez une vidéo Youtube avec vos élèves, vos` +
                       ` étudiant.e.s ou un groupe en formation : créez` +
                       ` votre projet pédagogique, annotez les images,` +
@@ -179,7 +145,7 @@ export default withStyles(styles)(
                 >
                   <div className={classes.block}>
                     <Typography
-                      variant="display1"
+                      variant="h4"
                       className={classes.title}
                     >
                       {`Enseignants et formateurs`}
@@ -202,7 +168,7 @@ export default withStyles(styles)(
                       </div>
                       <div className={classes.buttonWrapper}>
                         <Button
-                          variant="raised"
+                          variant="contained"
                           color="primary"
                           onClick={() => this.props.onClickNewProject(this.state.newProjectVideoUrl)}
                           fullWidth={true}
@@ -210,9 +176,7 @@ export default withStyles(styles)(
                           {`Nouveau projet`}
                         </Button>
                       </div>
-                      <NewProject
-                        onClose={closeNewProjectDialog}
-                      />
+                      <NewProject />
                     </div>
                   </div>
                 </Grid>
@@ -225,7 +189,7 @@ export default withStyles(styles)(
                 >
                   <div className={classes.block}>
                     <Typography
-                      variant="display1"
+                      variant="h4"
                       className={classes.title}
                     >
                       {`Élèves et étudiants`}
@@ -233,7 +197,7 @@ export default withStyles(styles)(
                     <StudentsPict />
                     <div className={classnames(classes.formItem, classes.buttonWrapper)}>
                       <Button
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         fullWidth={true}
                         onClick={() => onClickJoinProject()}
