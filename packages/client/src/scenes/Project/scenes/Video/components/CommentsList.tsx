@@ -18,7 +18,7 @@ import { canAnnotate } from 'utils/ProjectUtils';
 import Comment from './Comment';
 import CommentEditor from './CommentEditor';
 
-const styles = ({ spacing, palette }: Theme) => createStyles({
+const styles = ({ spacing, typography, palette }: Theme) => createStyles({
   root: {
     paddingLeft: spacing.unit * 8.5,
     paddingRight: spacing.unit * 7
