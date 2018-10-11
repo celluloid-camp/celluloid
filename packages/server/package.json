@@ -35,7 +35,7 @@
   "devDependencies": {
     "@celluloid/types": "^0.1.0",
     "@celluloid/validators": "^0.1.0",
-    "@types/bcrypt": "^2.0.0",
+    "@types/bcrypt": "^3.0.0",
     "@types/compression": "^0.0.36",
     "@types/cookie-parser": "^1.4.1",
     "@types/dotenv": "^4.0.2",
