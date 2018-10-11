@@ -203,10 +203,10 @@
   resolved "https://registry.yarnpkg.com/@types/autosuggest-highlight/-/autosuggest-highlight-3.1.0.tgz#62045417c2f6d841f9f12e715336218e4db0fcb1"
   integrity sha512-rJWvrDFKf2NkB3CkeJPcnX3oD0XAQriJOhYC5DUwiK6X/KTM96e1rW+1/PgI0U4tL6GQ2K7dvoiYFhMnAaNLUw==
 
-"@types/bcrypt@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@types/bcrypt/-/bcrypt-2.0.0.tgz#74cccef82026341fd786cf2eb9c912c7f9107c55"
-  integrity sha512-/r/ihQBlYMUYHqcFXix76I3OLYTaUcU8xV2agtB2hCds2rfJI56UyKu0e2LkAW2/4HHmQKmQRFXqM8D6y3Tc5g==
+"@types/bcrypt@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/bcrypt/-/bcrypt-3.0.0.tgz#851489a9065a067cb7f3c9cbe4ce9bed8bba0876"
+  integrity sha512-nohgNyv+1ViVcubKBh0+XiNJ3dO8nYu///9aJ4cgSqv70gBL+94SNy/iC2NLzKPT2Zt/QavrOkBVbZRLZmw6NQ==
 
 "@types/bluebird@*":
   version "3.5.23"
