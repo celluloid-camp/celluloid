@@ -17,16 +17,16 @@ export default () => (
     <Typography variant="display3" gutterBottom={true}>
       {`À propos`}
     </Typography>
-    <Typography variant="subheading" gutterBottom={true}>
+    <Typography variant="subtitle1" gutterBottom={true}>
       Le développement de la plateforme <b>Celluloid</b> s’inscrit dans le
       cadre d’un projet de recherche porté par Michaël Bourgatte et
       Laurent Tessier au sein de l’Atelier du Numérique de l’Institut Catholique de Paris.
     </Typography>
-    <Typography variant="subheading" gutterBottom={true}>
+    <Typography variant="subtitle1" gutterBottom={true}>
       Le développement de cette plateforme d’annotation vidéo à vocation pédagogique
       a bénéficié du soutien de la Fondation Saint Matthieu.
     </Typography>
-    <Typography variant="subheading" gutterBottom={true}>
+    <Typography variant="subtitle1" gutterBottom={true}>
       Celluloid est un projet Open Source développé par Erwan Queffélec
       dans le cadre d'un partenariat avec La Paillasse, l’ensemble du code est accessible
       librement <a href="https://github.com/celluloid-camp/">sur GitHub</a>

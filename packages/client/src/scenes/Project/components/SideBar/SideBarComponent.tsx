@@ -136,7 +136,7 @@ export default withStyles(styles)(({
       {(user && isOwner(project, user)) &&
         <div className={classes.button}>
           <ButtonProgress
-            variant="raised"
+            variant="contained"
             color="primary"
             size="small"
             fullWidth={true}
@@ -178,7 +178,7 @@ export default withStyles(styles)(({
       {(user && isOwner(project, user)) &&
         <div className={classes.button}>
           <ButtonProgress
-            variant="raised"
+            variant="contained"
             color="secondary"
             size="small"
             fullWidth={true}

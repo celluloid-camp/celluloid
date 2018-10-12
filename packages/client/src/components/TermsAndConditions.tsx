@@ -12,7 +12,7 @@ export default () => (
     <Typography variant="display3" gutterBottom={true}>
       Conditions Générales d'Utilisation
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 1. Définitions
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -63,7 +63,7 @@ export default () => (
         Projet.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 2. Objet
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -84,7 +84,7 @@ export default () => (
         Partenaires prévalent sur les CGU.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 3. Accès au site et aux Services
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -96,7 +96,7 @@ export default () => (
         son représentant légal.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 4. Acceptation des conditions générales
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -142,7 +142,7 @@ export default () => (
         identifiant et de Votre mot de passe.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 5. Services gratuits
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -150,7 +150,7 @@ export default () => (
         La Plateforme vous est fournie à titre gratuit.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 6. Données
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -171,7 +171,7 @@ export default () => (
         une autorité judiciaire compétente.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 7. Vos Obligations
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -260,7 +260,7 @@ export default () => (
         </li>
       </ul>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 8. Vos Garanties
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -276,7 +276,7 @@ export default () => (
         ce fait.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 9. Comportements prohibés
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -329,7 +329,7 @@ export default () => (
         et/ou partagées.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 10. Sanctions des manquements
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -345,7 +345,7 @@ export default () => (
         (v) engager toute action judiciaire.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 11. Responsabilité et garantie de Celluloid
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -395,7 +395,7 @@ export default () => (
         directs.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 12. Propriété intellectuelle
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -408,7 +408,7 @@ export default () => (
         à l’adresse suivante : <a href="github.com/celluloid-edu">github.com/celluloid.edu</a>
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 13. Données à caractère personnel
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -419,7 +419,7 @@ export default () => (
         sur la Plateforme.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 14. Liens et sites tiers
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -450,7 +450,7 @@ export default () => (
         Contenu que vous auriez posté.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 15. Durée, désinscription
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -469,7 +469,7 @@ export default () => (
         automatique du Compte de l’Utilisateur.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 16. Modifications
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -479,7 +479,7 @@ export default () => (
         des CGU entraîne la présomption de Votre acceptation de ces modifications.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 17. Langue
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>
@@ -490,7 +490,7 @@ export default () => (
         disposition.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Article 18. Loi applicable et juridiction
     </Typography>
     <Typography component="div" style={{ textAlign: 'justify' }}>

@@ -68,7 +68,7 @@ export default () => (
         </a>.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Protections des données personnelles
     </Typography>
     <Typography style={{ textAlign: 'justify' }}>
@@ -101,7 +101,7 @@ export default () => (
         Le site celluloid.camp est enregistré à la CNIL sous le <b style={{color: 'red'}}>numéro ???????</b>.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Mise à jour de vos informations personnelles
     </Typography>
     <Typography style={{ textAlign: 'justify' }}>
@@ -120,7 +120,7 @@ export default () => (
         ou par courriel : <b style={{ color: 'red' }}>courriel celluloid</b>
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Utilisation des "Cookies"
     </Typography>
     <Typography style={{ textAlign: 'justify' }}>
@@ -147,7 +147,7 @@ export default () => (
         les refuser.
       </p>
     </Typography>
-    <Typography variant="display1" gutterBottom={true}>
+    <Typography variant="h4" gutterBottom={true}>
       Responsabilité des vidéos et des projets créés dans Celluloid
     </Typography>
     <Typography style={{ textAlign: 'justify' }}>

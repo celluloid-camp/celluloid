@@ -1,3 +1,4 @@
+import { YoutubeVideo } from '@celluloid/client/src/types/YoutubeTypes';
 import {
   AnnotationRecord,
   CommentRecord,
@@ -72,9 +73,12 @@ export enum ComponentStatus {
 }
 
 export interface HomeState {
-  status: ComponentStatus;
-  error?: string;
+  errors: {
+    projects?: string,
+    video?: string,
+  };
   projects: ProjectGraphRecord[];
+  video?: YoutubeVideo;
 }
 
 export interface SharingState {
