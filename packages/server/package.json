@@ -52,7 +52,7 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.2",
-    "concurrently": "^3.5.0",
+    "concurrently": "^4.0.0",
     "nodemon": "^1.11.0",
     "ts-loader": "^5.0.0",
     "tslint": "^5.10.0",
