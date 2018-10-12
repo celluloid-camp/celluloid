@@ -1,8 +1,9 @@
+import { discardNewVideo } from '@celluloid/client/src/actions/HomeActions';
 import {
   ProjectCreateData,
   ProjectGraphRecord,
   ProjectShareData,
-  ProjectUpdateData
+  ProjectUpdateData,
 } from '@celluloid/types';
 import { push } from 'connected-react-router';
 import { Dispatch } from 'redux';
@@ -12,7 +13,7 @@ import {
   AsyncAction,
   createAction,
   createEmptyAction,
-  createErrorAction
+  createErrorAction,
 } from 'types/ActionTypes';
 
 export const succeedListProjects = (projects: ProjectGraphRecord[]) =>
@@ -120,6 +121,7 @@ export const createProjectThunk =
       return ProjectService.create(data)
         .then(project => {
           dispatch(push(`/projects/${project.id}`));
+          dispatch(discardNewVideo());
           return dispatch(succeedUpsertProject(project));
         })
         .catch(error => {

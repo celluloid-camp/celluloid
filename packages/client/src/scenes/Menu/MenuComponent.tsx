@@ -22,10 +22,10 @@ const styles = (theme: Theme) => createStyles({
   root: { height: '100%' },
   grow: { flex: 1 },
   homeLink: {
-    fontSize: theme.typography.display1.fontSize,
-    fontWeight: theme.typography.display1.fontWeight,
-    fontFamily: theme.typography.display1.fontFamily,
-    color: theme.typography.display1.color,
+    fontSize: theme.typography.h4.fontSize,
+    fontWeight: theme.typography.h4.fontWeight,
+    fontFamily: theme.typography.h4.fontFamily,
+    color: theme.typography.h4.color,
     textTransform: 'none',
     textDecoration: 'none'
    },
