@@ -50,7 +50,7 @@
     "@types/ramda": "^0.25.35",
     "@types/validator": "^9.4.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.3",
+    "babel-eslint": "^10.0.0",
     "babel-loader": "^7.1.2",
     "concurrently": "^4.0.0",
     "nodemon": "^1.11.0",
