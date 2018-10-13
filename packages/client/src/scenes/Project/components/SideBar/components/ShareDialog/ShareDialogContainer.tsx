@@ -8,7 +8,7 @@ import {
   Theme,
   Typography,
   WithStyles,
-  withStyles
+  withStyles,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Clear';
 import PrintIcon from '@material-ui/icons/Print';
@@ -20,8 +20,8 @@ import ShareCredentials from 'components/ShareCredentials';
 import * as passwordGenerator from 'password-generator';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { AnyAction, Dispatch } from 'redux';
-import { Action, EmptyAction } from 'types/ActionTypes';
+import { Dispatch } from 'redux';
+import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState, SharingStatus } from 'types/StateTypes';
 
 const styles = ({ spacing }: Theme) => createStyles({
@@ -47,7 +47,7 @@ interface Props extends WithStyles<typeof styles> {
   status: SharingStatus;
   onCancel(): EmptyAction;
   onSubmit(projectId: string, data: ProjectShareData):
-    Promise<Action<string | ProjectGraphRecord>>;
+    AsyncAction<ProjectGraphRecord, string>;
 }
 
 function pass() {
@@ -61,7 +61,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   onCancel: () => dispatch(cancelShareProject()),
-  onSubmit: (projectId: string, data: ProjectShareData): Promise<AnyAction> =>
+  onSubmit: (projectId: string, data: ProjectShareData) =>
     shareProjectThunk(projectId, data)(dispatch)
 });
 

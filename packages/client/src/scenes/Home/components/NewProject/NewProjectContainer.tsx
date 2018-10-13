@@ -1,7 +1,8 @@
 import 'rc-slider/assets/index.css';
 
 import { createProjectThunk } from '@celluloid/client/src/actions/ProjectActions';
-import { AsyncAction, EmptyAction } from '@celluloid/client/src/types/ActionTypes';
+import { createTagThunk } from '@celluloid/client/src/actions/TagActions';
+import { Action, AsyncAction, EmptyAction } from '@celluloid/client/src/types/ActionTypes';
 import { ProjectCreateData, ProjectGraphRecord, TagData } from '@celluloid/types';
 import {
   Avatar,
@@ -34,12 +35,14 @@ import { Dispatch } from 'redux';
 import { levelLabel, levelsCount } from 'types/LevelTypes';
 import { AppState } from 'types/StateTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
+import * as R from 'ramda';
 
 interface Props {
   video?: YoutubeVideo;
   tags: TagData[];
   onSubmit(project: ProjectCreateData): AsyncAction<ProjectGraphRecord, string>;
   onCancel(): EmptyAction;
+  onNewTag(name: string): AsyncAction<TagData, string>;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -50,7 +53,9 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   onCancel: () => dispatch(discardNewVideo()),
   onSubmit: (project: ProjectCreateData) =>
-    createProjectThunk(project)(dispatch)
+    createProjectThunk(project)(dispatch),
+  onNewTag: (name: string) =>
+    createTagThunk(name)(dispatch)
 });
 
 interface State {
@@ -78,6 +83,10 @@ function initState(): State {
   };
 }
 
+function tagCreationSucceeded(result: Action<string | TagData>): result is Action<TagData> {
+  return !result.error;
+}
+
 export default connect(mapStateToProps, mapDispatchToProps)(
   class extends React.Component<Props, State> {
 
@@ -87,28 +96,44 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
       const { project, nextAssignment } = this.state;
 
-      const { video, tags, onSubmit, onCancel } = this.props;
+      const { video, tags, onSubmit, onCancel, onNewTag } = this.props;
 
-      const tagSelection = new Set<TagData>(project.tags);
+      const featuredTags = R.filter((elem: TagData) => elem.featured)(tags);
+
+      const displayedTags = R.union(featuredTags, project.tags);
+
+      const isTagSelected = (tag: TagData) =>
+        R.find((elem: TagData) =>
+          R.equals(elem, tag)
+        )(project.tags);
+
+      const removeTag = (tag: TagData) =>
+        R.filter((elem: TagData) =>
+          !R.equals(elem, tag)
+        )(project.tags);
 
       const onTagSelected = (tag: TagData) => {
-
-        if (tagSelection.has(tag)) {
-          tagSelection.delete(tag);
-        } else {
-          tagSelection.add(tag);
-        }
         this.setState(prevState => ({
           ...prevState,
           project: {
             ...prevState.project,
-            tags: Array.from(tagSelection),
+            tags: isTagSelected(tag)
+              ? removeTag(tag)
+              : [...project.tags, tag]
           }
         }));
       };
 
-      if (video) {
+      const onTagCreationRequested = (name: string) => {
+        onNewTag(name)
+          .then(result => {
+            if (tagCreationSucceeded(result)) {
+              onTagSelected(result.payload);
+            }
+          });
+      };
 
+      if (video) {
         return (
           <Dialog
             open={true}
@@ -290,10 +315,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 </ListItem>
               </List>
               <Typography variant="h6" style={{ paddingTop: 36 }} gutterBottom={true}>
-                {`Domaine(s)`}
+                {`Domaines`}
               </Typography>
               <Typography variant="subtitle1">
-                {`Choisissez un ou plusieurs domaine(s) correspondant à votre projet`}
+                {`Choisissez un ou plusieurs domaines correspondant à votre projet`}
               </Typography>
               <div
                 style={{
@@ -303,61 +328,20 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                   flexWrap: 'wrap'
                 }}
               >
-                {
-                  tags
-                    .filter(tag => tag.featured || tagSelection.has(tag))
-                    .map(tag =>
-                      <Chip
-                        onClick={() => {
-                          if (tagSelection.has(tag)) {
-                            tagSelection.delete(tag);
-                          } else {
-                            tagSelection.add(tag);
-                          }
-                          this.setState(prevState => ({
-                            ...prevState,
-                            project: {
-                              ...prevState.project,
-                              tags: Array.from(tagSelection)
-                            }
-                          }));
-                        }}
-                        onDelete={
-                          tagSelection.has(tag) ?
-                            () => {
-                              if (tagSelection.has(tag)) {
-                                tagSelection.delete(tag);
-                              } else {
-                                tagSelection.add(tag);
-                              }
-                              this.setState(prevState => ({
-                                ...prevState,
-                                project: {
-                                  ...prevState.project,
-                                  tags: Array.from(tagSelection)
-                                }
-                              }));
-                            } : undefined
-                        }
-                        key={tag.id}
-                        label={tag.name}
-                        style={{
-                          margin: 4
-                        }}
-                      />
-                    )
-                }
-              </div>
-              <div
-                style={{
-                  justifyContent: 'center',
-                  display: 'flex',
-                  flexWrap: 'wrap'
-                }}
-              >
-                <Typography>
-                  Ou bien recherchez ou ajoutez un domaine
-              </Typography>
+                {displayedTags.map(tag =>
+                  <Chip
+                    onClick={() => onTagSelected(tag)}
+                    onDelete={isTagSelected(tag)
+                      ? (() => onTagSelected(tag))
+                      : undefined
+                    }
+                    key={tag.id}
+                    label={tag.name}
+                    style={{
+                      margin: 4
+                    }}
+                  />
+                )}
               </div>
               <div
                 style={{
@@ -367,15 +351,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 }}
               >
                 <TagSearchBox
-                  tags={this.props.tags}
                   onTagSelected={onTagSelected}
+                  onTagCreationRequested={onTagCreationRequested}
+                  creationEnabled={true}
+                  label="Recherchez ou ajoutez un autre domaine..."
                 />
               </div>
               <Typography variant="h6" style={{ paddingTop: 36 }} gutterBottom={true}>
                 {`Niveau `}
               </Typography>
               <Typography variant="subtitle1">
-                {`Veuillez préciser à quel(s) niveau(x) s'adresse ce projet`}
+                {`Veuillez préciser à quels niveaux s'adresse ce projet`}
               </Typography>
               <div
                 style={{
