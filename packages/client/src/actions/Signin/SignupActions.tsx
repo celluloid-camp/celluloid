@@ -3,49 +3,32 @@ import {
   SigninErrors,
   SigninResult,
   TeacherConfirmData,
-  TeacherRecord,
-  TeacherSignupData
+  TeacherSignupData,
 } from '@celluloid/types';
 import { Dispatch } from 'redux';
 import UserService from 'services/UserService';
-import { Action, ActionType } from 'types/ActionTypes';
+import {
+  ActionType,
+  createEmptyAction,
+  createErrorAction,
+  createOptionalAction,
+} from 'types/ActionTypes';
 
 import { doLoginThunk, triggerSigninLoading } from '.';
 
-export function openSignup(): Action<null> {
-  return {
-    type: ActionType.OPEN_SIGNUP
-  };
-}
+export const openSignup = () => createEmptyAction(ActionType.OPEN_SIGNUP);
 
-export function failSignup(errors: SigninErrors): Action<SigninErrors> {
-  return {
-    type: ActionType.FAIL_SIGNUP,
-    payload: errors
-  };
-}
+export const failSignup = (errors: SigninErrors) =>
+  createErrorAction(ActionType.FAIL_SIGNUP, errors);
 
-export function openConfirmSignup(
-  credentials?: Credentials
-): Action<Credentials> {
-  return {
-    type: ActionType.OPEN_CONFIRM_SIGNUP,
-    payload: credentials
-  };
-}
+export const openConfirmSignup = (credentials?: Credentials) =>
+  createOptionalAction(ActionType.OPEN_CONFIRM_SIGNUP, credentials);
 
-export function succeedSignup(): Action<TeacherRecord> {
-  return {
-    type: ActionType.SUCCEED_SIGNUP
-  };
-}
+export const succeedSignup = () =>
+  createEmptyAction(ActionType.SUCCEED_SIGNUP);
 
-export function failConfirmSignup(errors: SigninErrors): Action<SigninErrors> {
-  return {
-    type: ActionType.FAIL_CONFIRM_SIGNUP,
-    payload: errors
-  };
-}
+export const failConfirmSignup = (errors: SigninErrors) =>
+  createErrorAction(ActionType.FAIL_CONFIRM_SIGNUP, errors);
 
 export const doSignupThunk = (data: TeacherSignupData) =>
   (dispatch: Dispatch) => {

@@ -1,33 +1,16 @@
-import { Action, ActionType } from 'types/ActionTypes';
 import { TeacherRecord } from '@celluloid/types';
-import UserService from 'services/UserService';
 import { Dispatch } from 'redux';
+import UserService from 'services/UserService';
+import { Action, ActionType, createErrorAction, createOptionalAction } from 'types/ActionTypes';
 
-export function failCurrentUser(error: string):
-  Action<string> {
-  return {
-    type: ActionType.FAIL_GET_CURRENT_USER,
-    payload: error,
-    error: true,
-  };
-}
+export const failCurrentUser = (error: string): Action<string> =>
+  createErrorAction(ActionType.FAIL_GET_CURRENT_USER, error);
 
-export function succeedCurrentUser(user?: TeacherRecord):
-  Action<TeacherRecord> {
-  return {
-    type: ActionType.SUCCEED_GET_CURRENT_USER,
-    payload: user
-  };
-}
+export const succeedCurrentUser = (user?: TeacherRecord): Action<TeacherRecord> =>
+  createOptionalAction(ActionType.SUCCEED_GET_CURRENT_USER, user);
 
-export function failLogout(error: string):
-  Action<string> {
-  return {
-    type: ActionType.FAIL_LOGOUT,
-    payload: error,
-    error: true
-  };
-}
+export const failLogout = (error: string): Action<string> =>
+  createOptionalAction(ActionType.FAIL_LOGOUT, error);
 
 export const fetchCurrentUserThunk = () => (dispatch: Dispatch) => {
   return UserService

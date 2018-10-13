@@ -120,24 +120,29 @@ export enum ActionType {
 export interface Action<T> extends ReduxAction {
   type: ActionType;
   payload?: T;
-  error?: boolean;
+  error: boolean;
 }
 
 export interface EmptyAction extends Action<null> { }
 
-export type AsyncAction<S, E> = Promise<Action<S | E>>;
+export type AsyncAction<S, E> = Promise<Required<Action<S | E>>>;
 
 export function createAction<P>(type: ActionType, payload: P):
+  Required<Action<P>> {
+  return { type, payload, error: false };
+}
+
+export function createOptionalAction<P>(type: ActionType, payload?: P):
   Action<P> {
-  return { type, payload };
+  return { type, payload, error: false };
 }
 
 export function createEmptyAction(type: ActionType):
   EmptyAction {
-  return { type };
+  return { type, error: false };
 }
 
 export function createErrorAction<P>(type: ActionType, payload: P):
-  Action<P> {
+  Required<Action<P>> {
   return { type, payload, error: true };
 }

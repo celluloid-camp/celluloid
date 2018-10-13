@@ -1,18 +1,8 @@
-import { Action, ActionType } from 'types/ActionTypes';
+import { ActionType, createEmptyAction } from 'types/ActionTypes';
 
-export function closeSignin():
-  Action<null> {
-  return {
-    type: ActionType.CLOSE_SIGNIN,
-  };
-}
+export const closeSignin = () => createEmptyAction(ActionType.CLOSE_SIGNIN);
 
-export function triggerSigninLoading():
-  Action<null> {
-  return {
-    type: ActionType.TRIGGER_SIGNIN_LOADING
-  };
-}
+export const triggerSigninLoading = () => createEmptyAction(ActionType.TRIGGER_SIGNIN_LOADING);
 
 export * from './LoginActions';
 export * from './SignupActions';

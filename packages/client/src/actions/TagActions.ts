@@ -27,9 +27,9 @@ export const failInsertTag = (error: string) =>
 export const succeedInsertTag = (tag: TagData) =>
   createAction(ActionType.SUCCEED_INSERT_TAG, tag);
 
-export const insertTagThunk =
-  (data: TagData) => (dispatch: Dispatch): AsyncAction<TagData, string> => {
-    return TagService.post(data)
+export const createTagThunk =
+  (name: string) => (dispatch: Dispatch): AsyncAction<TagData, string> => {
+    return TagService.post(name)
       .then(tag => {
         return dispatch(succeedInsertTag(tag));
       })
@@ -41,10 +41,10 @@ export const insertTagThunk =
 export const listTagsThunk =
   () => (dispatch: Dispatch): AsyncAction<TagData[], string> => {
     return TagService.list()
-    .then(tags => {
-      return dispatch(succeedListTags(tags));
-    })
-    .catch(error => {
-      return dispatch(failListTags(error.message));
-    });
+      .then(tags => {
+        return dispatch(succeedListTags(tags));
+      })
+      .catch(error => {
+        return dispatch(failListTags(error.message));
+      });
   };

@@ -1,28 +1,18 @@
-import { SigninErrors, SigninResult, StudentRecord, StudentSignupData } from '@celluloid/types';
+import { SigninErrors, SigninResult, StudentSignupData } from '@celluloid/types';
 import { Dispatch } from 'redux';
 import UserService from 'services/UserService';
-import { Action, ActionType } from 'types/ActionTypes';
+import { ActionType, createEmptyAction, createErrorAction, EmptyAction } from 'types/ActionTypes';
 
 import { doLoginThunk, triggerSigninLoading } from '.';
 
-export function openStudentSignup(): Action<null> {
-  return {
-    type: ActionType.OPEN_STUDENT_SIGNUP
-  };
-}
+export const openStudentSignup = (): EmptyAction =>
+  createEmptyAction(ActionType.OPEN_STUDENT_SIGNUP);
 
-export function failStudentSignup(errors: SigninErrors) {
-  return {
-    type: ActionType.FAIL_STUDENT_SIGNUP,
-    payload: errors
-  };
-}
+export const failStudentSignup = (errors: SigninErrors) =>
+  createErrorAction(ActionType.FAIL_STUDENT_SIGNUP, errors);
 
-export function succeedStudentSignup(): Action<StudentRecord> {
-  return {
-    type: ActionType.SUCCEED_STUDENT_SIGNUP
-  };
-}
+export const succeedStudentSignup = (): EmptyAction =>
+  createEmptyAction(ActionType.SUCCEED_STUDENT_SIGNUP);
 
 export const doStudentSignupThunk = (data: StudentSignupData) =>
   (dispatch: Dispatch) => {
@@ -38,5 +28,5 @@ export const doStudentSignupThunk = (data: StudentSignupData) =>
           })(dispatch);
           return dispatch(succeedStudentSignup());
         }
-      }).catch(() => dispatch(failStudentSignup({server: 'RequestFailed'})));
+      }).catch(() => dispatch(failStudentSignup({ server: 'RequestFailed' })));
   };
