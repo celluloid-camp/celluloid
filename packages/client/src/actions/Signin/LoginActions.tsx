@@ -1,23 +1,15 @@
 import { Credentials, SigninErrors, SigninResult } from '@celluloid/types';
 import { Dispatch } from 'redux';
 import UserService from 'services/UserService';
-import { Action, ActionType } from 'types/ActionTypes';
+import { Action, ActionType, createEmptyAction } from 'types/ActionTypes';
 
 import { triggerSigninLoading } from '.';
 import { openConfirmSignup } from './SignupActions';
 import { fetchCurrentUserThunk } from './UserActions';
 
-export function openLogin(): Action<null> {
-  return {
-    type: ActionType.OPEN_LOGIN,
-  };
-}
+export const openLogin = () => createEmptyAction(ActionType.OPEN_LOGIN);
 
-export function succeedLogin(): Action<void> {
-  return {
-    type: ActionType.SUCCEED_LOGIN,
-  };
-}
+export const succeedLogin = () => createEmptyAction(ActionType.SUCCEED_LOGIN);
 
 export function failLogin(errors: SigninErrors):
   Action<SigninErrors> {

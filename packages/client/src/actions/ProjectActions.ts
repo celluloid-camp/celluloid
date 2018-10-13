@@ -79,8 +79,8 @@ export const triggerDeleteProjectLoading = () =>
 export const failDeleteProject = (error: string) =>
   createErrorAction(ActionType.FAIL_DELETE_PROJECT, error);
 
-export const succeedDeleteProject = () =>
-  createEmptyAction(ActionType.SUCCEED_DELETE_PROJECT);
+export const succeedDeleteProject = (projectId: string) =>
+  createAction(ActionType.SUCCEED_DELETE_PROJECT, projectId);
 
 export const triggerUnshareProjectLoading = () =>
   createEmptyAction(ActionType.TRIGGER_UNSHARE_PROJECT_LOADING);
@@ -144,12 +144,12 @@ export const updateProjectThunk =
 
 export const deleteProjectThunk =
   (projectId: string) =>
-    (dispatch: Dispatch): AsyncAction<null, string> => {
+    (dispatch: Dispatch): AsyncAction<string, string> => {
       dispatch(triggerDeleteProjectLoading());
       return ProjectService.delete(projectId)
         .then(() => {
           dispatch(push('/'));
-          return dispatch(succeedDeleteProject());
+          return dispatch(succeedDeleteProject(projectId));
         })
         .catch(error => {
           return dispatch(failDeleteProject(error.message));

@@ -1,49 +1,22 @@
-import { Action, ActionType } from 'types/ActionTypes';
-import UserService from 'services/UserService';
-import {
-  SigninResult,
-  SigninErrors,
-  TeacherConfirmResetPasswordData
-} from '@celluloid/types';
+import { SigninErrors, SigninResult, TeacherConfirmResetPasswordData } from '@celluloid/types';
 import { Dispatch } from 'redux';
-import { triggerSigninLoading, doLoginThunk } from '.';
+import UserService from 'services/UserService';
+import { ActionType, createAction, createEmptyAction, createErrorAction } from 'types/ActionTypes';
 
-export function openResetPassword(): Action<null> {
-  return {
-    type: ActionType.OPEN_RESET_PASSWORD
-  };
-}
+import { doLoginThunk, triggerSigninLoading } from '.';
 
-export function succeedResetPassword(): Action<null> {
-  return {
-    type: ActionType.SUCCEED_RESET_PASSWORD
-  };
-}
+export const openResetPassword = () => createEmptyAction(ActionType.OPEN_RESET_PASSWORD);
 
-export function openConfirmResetPassword(
-  email?: string
-): Action<string | undefined> {
-  return {
-    type: ActionType.OPEN_CONFIRM_RESET_PASSWORD,
-    payload: email
-  };
-}
+export const succeedResetPassword = () => createEmptyAction(ActionType.SUCCEED_RESET_PASSWORD);
 
-export function failResetPassword(errors: SigninErrors): Action<SigninErrors> {
-  return {
-    type: ActionType.FAIL_RESET_PASSWORD,
-    payload: errors
-  };
-}
+export const openConfirmResetPassword = (email: string) =>
+  createAction(ActionType.OPEN_CONFIRM_RESET_PASSWORD, email);
 
-export function failConfirmResetPassword(
-  errors: SigninErrors
-): Action<SigninErrors> {
-  return {
-    type: ActionType.FAIL_CONFIRM_RESET_PASSWORD,
-    payload: errors
-  };
-}
+export const failResetPassword = (errors: SigninErrors) =>
+  createErrorAction(ActionType.FAIL_RESET_PASSWORD, errors);
+
+export const failConfirmResetPassword = (errors: SigninErrors) =>
+  createErrorAction(ActionType.FAIL_CONFIRM_RESET_PASSWORD, errors);
 
 export const doResetPasswordThunk = (email: string) => (dispatch: Dispatch) => {
   dispatch(triggerSigninLoading());
