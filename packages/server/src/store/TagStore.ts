@@ -1,17 +1,16 @@
 import { database, getExactlyOne } from 'backends/Database';
-import { TagData } from '@celluloid/types';
 
 export function selectAll() {
   return database.select()
     .from('Tag');
 }
 
-export function insert(tag: TagData) {
+export function insert(name: string) {
   return database('Tag')
     .insert({
       'id': database.raw('uuid_generate_v4()'),
-      'name': tag.name,
-      'featured': tag.featured
+      'name': name,
+      'featured': false
     })
     .returning('*')
     .then(getExactlyOne);

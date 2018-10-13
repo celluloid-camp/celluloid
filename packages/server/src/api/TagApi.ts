@@ -14,8 +14,11 @@ router.get('/', (_, res) => {
 });
 
 router.post('/', isTeacher, (req, res) => {
-  return TagStore.insert(req.body)
-    .then(result => res.status(201).json(result))
+  const { name } = req.body;
+  return TagStore.insert(name)
+    .then(result =>
+      res.status(201).json(result)
+    )
     .catch(error => {
       console.error('Failed to add new tag:', error);
       return res.status(500).send();
