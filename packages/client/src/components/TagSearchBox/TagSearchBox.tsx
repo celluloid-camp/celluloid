@@ -17,7 +17,7 @@ import {
   RenderSuggestionsContainerParams,
   SuggestionSelectedEventData,
 } from 'react-autosuggest';
-import { AppState } from '@celluloid/client/src/types/StateTypes';
+import { AppState } from 'types/StateTypes';
 import { connect } from 'react-redux';
 
 const parse = require('autosuggest-highlight/parse');
