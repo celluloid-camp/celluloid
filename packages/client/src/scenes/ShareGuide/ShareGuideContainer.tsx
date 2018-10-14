@@ -120,8 +120,11 @@ export default withRouter(withStyles(styles)(
       const href = window.location.host;
       const protocol = window.location.protocol;
       const { project, error } = this.state;
-      const password =
-        queryString.parse(this.props.location.search).p;
+      const parsedUrl =
+        queryString.parse(this.props.location.search);
+      const password = typeof parsedUrl.p === 'string'
+        ? parsedUrl.p
+        : undefined;
 
       if (project && password) {
         const steps = [{
