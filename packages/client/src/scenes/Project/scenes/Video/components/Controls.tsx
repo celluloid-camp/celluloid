@@ -37,6 +37,7 @@ const styles = ({ spacing }: Theme) => createStyles({
     padding: 0,
   },
   icon: {
+    padding: 0,
     height: 32,
     width: 32
   },

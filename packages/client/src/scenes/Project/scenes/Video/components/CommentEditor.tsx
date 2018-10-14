@@ -34,11 +34,9 @@ const styles = (theme: Theme) => createStyles({
     width: theme.spacing.unit * 8
   },
   button: {
+    padding: 0,
     width: 32,
     height: 32
-  },
-  icon: {
-    fontSize: 20
   },
   content: {
     flex: '1 1 auto',
@@ -152,18 +150,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                       color="secondary"
                       onClick={() => onClickCancel()}
                     >
-                      <CancelIcon
-                        className={classes.icon}
-                      />
+                      <CancelIcon fontSize="small" />
                     </IconButton>
                     <IconButton
                       className={classes.button}
                       color="primary"
-                      onClick={() => onClickUpdate(annotation, {...comment, text })}
+                      onClick={() => onClickUpdate(annotation, { ...comment, text })}
                     >
-                      <CheckIcon
-                        className={classes.icon}
-                      />
+                      <CheckIcon fontSize="small" />
                     </IconButton>
                   </>
                 )
@@ -173,9 +167,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                     color="primary"
                     onClick={() => onClickAdd(annotation, text)}
                   >
-                    <AddIcon
-                      className={classes.icon}
-                    />
+                    <AddIcon fontSize="small" />
                   </IconButton>
                 )
               }
