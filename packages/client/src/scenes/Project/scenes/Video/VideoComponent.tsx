@@ -188,7 +188,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               <Zoom
                 appear={true}
                 exit={true}
-                in={!editing && !showHints && !focusedAnnotation && showControls}
+                in={!editing && !showHints && showControls}
               >
                 <Button
                   color="secondary"
