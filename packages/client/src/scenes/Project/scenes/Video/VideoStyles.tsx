@@ -44,7 +44,7 @@ export const styles = ({ spacing }: Theme) => createStyles({
   annotationFrame: {
     overflowY: 'auto' as 'auto',
     overflowX: 'hidden' as 'hidden',
-    maxHeight: `calc(100% - ${spacing.unit * 7}px)`,
+    maxHeight: `calc(100% - ${spacing.unit * 18}px)`,
     verticalAlign: 'middle',
     textAlign: 'left' as 'left',
     color: 'white',
