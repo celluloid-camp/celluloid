@@ -22,10 +22,11 @@
     "@types/react-autosuggest": "^9.3.2",
     "@types/react-dom": "^16.0.3",
     "@types/react-redux": "^6.0.0",
-    "@types/react-router-dom": "^4.2.3",
+    "@types/react-router-dom": "^4.3.1",
     "@types/react-transition-group": "^2.0.9",
     "@types/react-youtube": "^7.4.0",
     "@types/recompose": "^0.27.0",
+    "@types/webpack-env": "^1.13.6",
     "autosuggest-highlight": "^3.1.1",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
@@ -36,7 +37,7 @@
     "get-urls": "^8.0.0",
     "i18next": "^11.3.6",
     "linkify-urls": "^2.0.0",
-    "material-ui-pickers": "^1.0.0-rc.9",
+    "material-ui-pickers": "^1.0.0-rc.17",
     "moment-duration-format": "^2.2.2",
     "password-generator": "^2.2.0",
     "prop-types": "^15.6.2",
@@ -52,7 +53,8 @@
     "react-i18next": "^8.0.0",
     "react-markdown": "^4.0.0",
     "react-redux": "^5.0.6",
-    "react-router-dom": "^4.2.2",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "react-scripts-ts": "3.1.0",
     "react-transition-group": "^2.3.1",
     "react-youtube": "^7.5.0",
@@ -71,8 +73,5 @@
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
-  },
-  "dependencies": {
-    "@types/webpack-env": "^1.13.6"
   }
 }
