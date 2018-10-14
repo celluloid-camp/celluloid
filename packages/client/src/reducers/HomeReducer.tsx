@@ -6,14 +6,41 @@ const initialState = {
   errors: {
     video: undefined,
     projects: undefined,
+    createProject: undefined
   },
   projects: [],
-  video: undefined
+  video: undefined,
+  createProjectLoading: false
 } as HomeState;
 
 export default (state = initialState, { type, payload }: AnyAction):
   HomeState => {
   switch (type) {
+    case ActionType.SUCCEED_UPSERT_PROJECT:
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          video: undefined,
+          createProject: undefined
+        },
+        video: undefined,
+        createProjectLoading: false,
+      };
+    case ActionType.FAIL_UPSERT_PROJECT:
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          createProject: payload
+        },
+        createProjectLoading: false
+      };
+    case ActionType.TRIGGER_UPSERT_PROJECT_LOADING:
+      return {
+        ...state,
+        createProjectLoading: true
+      };
     case ActionType.FAIL_LOAD_VIDEO:
       return {
         ...state,

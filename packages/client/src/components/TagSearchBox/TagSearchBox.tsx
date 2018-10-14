@@ -1,5 +1,15 @@
 import { TagData } from '@celluloid/types';
-import { createStyles, MenuItem, Paper, TextField, Theme, WithStyles, withStyles } from '@material-ui/core';
+import {
+  createStyles,
+  MenuItem,
+  Paper,
+  TextField,
+  Theme,
+  WithStyles,
+  withStyles,
+  InputAdornment
+} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import * as React from 'react';
 import * as Autosuggest from 'react-autosuggest';
 import {
@@ -75,8 +85,15 @@ function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
 
   return (
     <TextField
+      variant="outlined"
       fullWidth={true}
+      margin="normal"
       InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SearchIcon />
+          </InputAdornment>
+        ),
         inputRef: ref,
         classes: {
           input: classes.input
@@ -135,17 +152,12 @@ function getSuggestionValue(suggestion: Suggestion): string {
 }
 
 const styles = ({ spacing }: Theme) => createStyles({
-  avatar: {
-    border: '1px solid #757575',
-    backgroundColor: '#fefefe'
-  },
   container: {
     flexGrow: 1,
-    position: 'relative' as 'relative',
+    position: 'relative',
   },
   suggestionsContainerOpen: {
-    position: 'absolute' as 'absolute',
-    marginTop: spacing.unit,
+    position: 'absolute',
     marginBottom: spacing.unit * 3,
     left: 0,
     right: 0,

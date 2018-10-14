@@ -11,7 +11,6 @@ import {
   WithStyles,
   withStyles
 } from '@material-ui/core';
-import { deepOrange } from '@material-ui/core/colors';
 import AnnotationIcon from '@material-ui/icons/Comment';
 import FullScreenEnterIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
@@ -22,6 +21,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'types/StateTypes';
 import { formatDuration } from 'utils/DurationUtils';
+import { sliderTrackStyle, sliderRailStyle, sliderHandleStyle } from '@celluloid/client/src/utils/SliderUtils';
 
 const styles = ({ spacing }: Theme) => createStyles({
   badge: {
@@ -130,25 +130,9 @@ export default connect(mapStateToProps)(
                     min={0}
                     max={duration}
                     value={seeking ? seekTarget : position}
-                    trackStyle={[{
-                      border: 0,
-                      borderRadius: 0,
-                      backgroundColor: deepOrange[600],
-                      height: 2
-                    }]}
-                    railStyle={{
-                      height: 2,
-                      borderRadius: 0,
-                      backgroundColor: deepOrange['100'],
-                      border: 0
-                    }}
-                    handleStyle={[{
-                      transitionProperty: 'all',
-                      marginLeft: -6,
-                      border: 0,
-                      height: 12, width: 12,
-                      backgroundColor: deepOrange[500]
-                    }]}
+                    trackStyle={sliderTrackStyle}
+                    railStyle={sliderRailStyle}
+                    handleStyle={[sliderHandleStyle]}
                     onChange={value => {
                       onSeek(value, false, false);
                     }}

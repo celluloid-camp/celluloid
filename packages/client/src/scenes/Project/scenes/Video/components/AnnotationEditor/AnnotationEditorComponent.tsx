@@ -11,7 +11,6 @@ import {
   WithStyles,
   withStyles
 } from '@material-ui/core';
-import { deepOrange } from '@material-ui/core/colors';
 import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from '@material-ui/icons/Clear';
 import { Range } from 'rc-slider';
@@ -19,6 +18,7 @@ import * as React from 'react';
 import { formatDuration } from 'utils/DurationUtils';
 
 import TransparentInput from '../TransparentInput';
+import { sliderRailStyle, sliderTrackStyle } from '@celluloid/client/src/utils/SliderUtils';
 
 const caretStart = require('images/caret-start.png');
 const caretStop = require('images/caret-stop.png');
@@ -184,18 +184,8 @@ export default withStyles(styles)(({
                   onTimingChange(values[1], false, true);
                 }
               }}
-              trackStyle={[{
-                border: 0,
-                borderRadius: 0,
-                backgroundColor: deepOrange[500],
-                height: 2
-              }]}
-              railStyle={{
-                height: 2,
-                borderRadius: 0,
-                backgroundColor: deepOrange['100'],
-                border: 0
-              }}
+              trackStyle={sliderTrackStyle}
+              railStyle={sliderRailStyle}
               handleStyle={[{
                 ...handleStyles,
                 marginTop: -11,
