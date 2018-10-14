@@ -11,7 +11,6 @@ import {
   withStyles
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ShareIcon from '@material-ui/icons/Share';
 import ButtonProgress from 'components/ButtonProgress';
 import DialogError from 'components/DialogError';
 import LabeledProgressSwitch from 'components/LabeledProgressSwitch';
@@ -20,6 +19,7 @@ import VisibilityChip from 'components/VisibilityChip';
 import * as React from 'react';
 import { AsyncAction } from 'types/ActionTypes';
 import { isOwner } from 'utils/ProjectUtils';
+// import { isOwner, isMember } from 'utils/ProjectUtils';
 
 import ShareDialog from './components/ShareDialog';
 
@@ -134,6 +134,20 @@ export default withStyles(styles)(({
         )
       }
       {(user && isOwner(project, user)) &&
+        <>
+          <LabeledProgressSwitch
+            label="partagé"
+            checked={project.shared}
+            loading={unshareLoading}
+            error={unshareError}
+            onChange={() => onClickShare()}
+          />
+          <ShareDialog
+            project={project}
+          />
+        </>
+      }
+      {/* {(user && !isOwner(project, user) && !isMember(project, user) && project.shared) &&
         <div className={classes.button}>
           <ButtonProgress
             variant="contained"
@@ -144,13 +158,10 @@ export default withStyles(styles)(({
             onClick={onClickShare}
           >
             <ShareIcon fontSize="inherit" className={classes.buttonIcon} />
-            {`partager`}
+            {`rejoindre`}
           </ButtonProgress>
-          <ShareDialog
-            project={project}
-          />
         </div>
-      }
+      } */}
       <List
         dense={true}
         className={classes.list}
