@@ -136,7 +136,7 @@ export default withStyles(styles)(
               </Typography>
               </div>
               {error && <DialogError error={error} />}
-            </ DialogContent>
+            </DialogContent>
             <DialogActions>
               <Button
                 variant="contained"

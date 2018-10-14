@@ -76,9 +76,11 @@ export interface HomeState {
   errors: {
     projects?: string,
     video?: string,
+    createProject?: string;
   };
   projects: ProjectGraphRecord[];
   video?: YoutubeVideo;
+  createProjectLoading: boolean;
 }
 
 export interface SharingState {

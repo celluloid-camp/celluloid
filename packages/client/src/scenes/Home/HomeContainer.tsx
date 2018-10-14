@@ -58,6 +58,9 @@ const styles = ({ spacing }: Theme) => createStyles({
     width: 300,
     paddingTop: spacing.unit * 2,
     paddingBottom: spacing.unit * 1
+  },
+  description: {
+    lineHeight: 1.5
   }
 });
 
@@ -128,7 +131,11 @@ export default withStyles(styles)(
                   <Typography variant="h3" color="primary" gutterBottom={true}>
                     {`Apprendre ensemble avec une vidéo`}
                   </Typography>
-                  <Typography variant="subtitle1" gutterBottom={true}>
+                  <Typography
+                    variant="subtitle1"
+                    className={classes.description}
+                    gutterBottom={true}
+                  >
                     {`Partagez une vidéo Youtube avec vos élèves, vos` +
                       ` étudiant.e.s ou un groupe en formation : créez` +
                       ` votre projet pédagogique, annotez les images,` +
