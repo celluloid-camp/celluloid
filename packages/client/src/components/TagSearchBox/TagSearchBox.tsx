@@ -87,7 +87,6 @@ function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
     <TextField
       variant="outlined"
       fullWidth={true}
-      margin="normal"
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
@@ -205,7 +204,7 @@ export default withStyles(styles)(
         const onSuggestionFetchRequested = ({ value }: Autosuggest.SuggestionsFetchRequestedParams): void => {
           const inputValue = value.trim();
           const inputLength = inputValue.length;
-          const hasInput = inputValue.length !== 0;
+          const hasInput = inputValue.length > 0;
 
           const existingTags = hasInput ? tags.filter(tag =>
             tag.name.toLowerCase().slice(0, inputLength) === inputValue.toLowerCase()
