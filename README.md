@@ -75,7 +75,7 @@ In a terminal, at the root of the repository, run
 
     cp sample.env .env
 
-Open the newly created .env file with your favorite text editor and replace the content between `<>` with the values that work for you.
+Open the newly created .env file with your favorite text editor and set the values that'll work for you.
 
 ### Database provisioning
 
