@@ -1,11 +1,5 @@
-import {
-  listProjectsThunk
-} from '@celluloid/client/src/actions/ProjectActions';
-import {
-  ProjectGraphRecord,
-  TagData,
-  UserRecord
-} from '@celluloid/types';
+import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
+import { ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 import { listTagsThunk } from 'actions/TagActions';
@@ -65,17 +59,25 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       const sorted = sort(projects);
 
       return (
-        <div style={{ padding: 20 }}>
-          <Grid container={true} spacing={40} direction="row">
-            <TransitionGroup component={null} appear={true}>
-              {sorted.map((project: ProjectGraphRecord) =>
-                <Grow in={true} appear={true} key={project.id}>
-                  <ProjectThumbnail {...project} />
-                </Grow>
-              )}
-            </TransitionGroup>
-          </Grid>
-        </div>
+        <>
+          {/* <Toolbar>
+            <TextField
+              variant="outlined"
+              placeholder="Rechercher..."
+            />
+          </Toolbar> */}
+          <div style={{ padding: 20 }}>
+            <Grid container={true} spacing={40} direction="row">
+              <TransitionGroup component={null} appear={true}>
+                {sorted.map((project: ProjectGraphRecord) =>
+                  <Grow in={true} appear={true} key={project.id}>
+                    <ProjectThumbnail {...project} />
+                  </Grow>
+                )}
+              </TransitionGroup>
+            </Grid>
+          </div>
+        </>
       );
     }
   }
