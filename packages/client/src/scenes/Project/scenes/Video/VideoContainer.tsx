@@ -1,13 +1,7 @@
-import {
-  AnnotationRecord,
-  ProjectGraphRecord,
-  UserRecord
-} from '@celluloid/types';
-import { listAnnotationsThunk } from 'actions/AnnotationsActions';
-import {
-  playerNotifySeek,
-  playerRequestSeek
-} from 'actions/PlayerActions';
+import { AnnotationRecord, ProjectGraphRecord, UserRecord } from '@celluloid/types';
+import { listAnnotationsThunk, triggerBlurAnnotation } from 'actions/AnnotationsActions';
+import { playerNotifySeek, playerRequestSeek } from 'actions/PlayerActions';
+import * as R from 'ramda';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -25,10 +19,12 @@ interface Props {
   annotations: AnnotationRecord[];
   project: ProjectGraphRecord;
   seeking: boolean;
+  focusedAnnotation?: AnnotationRecord;
   load(projectId: string):
     AsyncAction<AnnotationRecord[], string>;
   notifySeek(): EmptyAction;
   requestSeek(seekTarget: number): Action<number>;
+  blurAnnotation(): EmptyAction;
 }
 
 interface State {
@@ -46,6 +42,7 @@ const mapStateToProps = (state: AppState) => ({
   user: state.user,
   annotations: state.project.video.annotations,
   seeking: state.project.player.seeking,
+  focusedAnnotation: state.project.video.focusedAnnotation
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -54,7 +51,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   notifySeek: () =>
     dispatch(playerNotifySeek()),
   requestSeek: (seekTarget: number) =>
-    dispatch(playerRequestSeek(seekTarget))
+    dispatch(playerRequestSeek(seekTarget)),
+  blurAnnotation: () =>
+    dispatch(triggerBlurAnnotation())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
@@ -90,8 +89,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
     refreshPlayer() {
       const { player } = this.state;
+
       if (player) {
         const annotations = this.props.annotations;
+        const focusedAnnotation = this.props.focusedAnnotation;
         const position = player.getCurrentTime();
         const visibleAnnotations = annotations
           .filter(annotation =>
@@ -105,6 +106,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             player.seekTo(position + 0.10, true);
           }
         });
+
+        const isFocusedAnnotationPredicate = (elem: AnnotationRecord) =>
+          !!focusedAnnotation && elem.id === focusedAnnotation.id;
+        const isFocusedHidden =
+          !R.find(isFocusedAnnotationPredicate, visibleAnnotations);
+
+        if (isFocusedHidden) {
+          this.props.blurAnnotation();
+        }
         if (!this.props.seeking) {
           this.setState({
             visibleAnnotations,

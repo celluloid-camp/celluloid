@@ -6,7 +6,7 @@ import {
   AsyncAction,
   createAction,
   createEmptyAction,
-  createErrorAction
+  createErrorAction,
 } from 'types/ActionTypes';
 
 export const triggerListAnnotationsLoading = () =>
@@ -21,8 +21,8 @@ export const failListAnnotations = (error: string) =>
 export const triggerFocusAnnotation = (annotation: AnnotationRecord) =>
   createAction(ActionType.TRIGGER_FOCUS_ANNOTATION, annotation);
 
-export const triggerBlurAnnotation = (annotation: AnnotationRecord) =>
-  createAction(ActionType.TRIGGER_BLUR_ANNOTATION, annotation);
+export const triggerBlurAnnotation = () =>
+  createEmptyAction(ActionType.TRIGGER_BLUR_ANNOTATION);
 
 export const triggerCancelAnnotation = (annotation?: AnnotationRecord) =>
   createAction(ActionType.TRIGGER_CANCEL_ANNOTATION, annotation);
