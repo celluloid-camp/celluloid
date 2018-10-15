@@ -72,6 +72,7 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
   title: {
     overflow: 'hidden',
     color: 'white',
+    lineHeight: 1.25
   },
   titleWrapper: {
     overflow: 'hidden',
@@ -79,7 +80,7 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     height: spacing.unit * 9,
-    padding: spacing.unit * 1.5,
+    padding: spacing.unit * 1,
     position: 'absolute',
     zIndex: 3,
     bottom: 0,

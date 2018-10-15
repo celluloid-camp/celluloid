@@ -21,7 +21,7 @@ import ProjectGrid from './components/ProjectGrid';
 import StudentsPict from './images/Students';
 import TeacherPict from './images/Teacher';
 
-const styles = ({ spacing }: Theme) => createStyles({
+const styles = ({ spacing, palette }: Theme) => createStyles({
   center: {
     textAlign: 'center',
     marginLeft: 'auto',
@@ -51,7 +51,8 @@ const styles = ({ spacing }: Theme) => createStyles({
   title: {
     height: spacing.unit * 11,
     marginTop: spacing.unit,
-    marginBottom: spacing.unit
+    marginBottom: spacing.unit,
+    color: palette.grey[600]
   },
   buttonWrapper: {
     bottom: 0,
@@ -166,7 +167,8 @@ export default withStyles(styles)(
                           style={{
                             width: 300
                           }}
-                          label="Ajouter un lien vers une vidéo YouTube..."
+                          variant="outlined"
+                          placeholder="Ajouter un lien vers une vidéo YouTube..."
                           onChange={handleVideoUrlChanged}
                           value={this.state.newProjectVideoUrl}
                           error={!!this.props.errors.video}

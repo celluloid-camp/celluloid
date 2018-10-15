@@ -1,3 +1,4 @@
+import { UserRecord } from '@celluloid/types';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
@@ -15,20 +16,19 @@ import { AnyAction, Dispatch } from 'redux';
 import { Action } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
-import { UserRecord } from '@celluloid/types';
 import SigninBar from './components/SigninBar';
 
 const styles = (theme: Theme) => createStyles({
   root: { height: '100%' },
   grow: { flex: 1 },
   homeLink: {
+    color: theme.palette.grey[600],
     fontSize: theme.typography.h4.fontSize,
     fontWeight: theme.typography.h4.fontWeight,
     fontFamily: theme.typography.h4.fontFamily,
-    color: theme.typography.h4.color,
     textTransform: 'none',
     textDecoration: 'none'
-   },
+  },
   content: {
     paddingTop: 64,
     height: '100%'
@@ -38,8 +38,12 @@ const styles = (theme: Theme) => createStyles({
     textAlign: 'center',
     marginBottom: 72
   },
+  copyright: {
+    color: theme.palette.grey[600]
+  },
   footerLink: {
     ...theme.typography.caption,
+    color: theme.palette.grey[600],
     display: 'inline',
     textDecoration: 'underline'
   }
@@ -117,7 +121,7 @@ export default withStyles(styles)(
           <Content />
         </div>
         <div className={classes.footer}>
-          <Typography variant="caption">
+          <Typography variant="caption" className={classes.copyright}>
             {`© 2018 Institut Catholique de Paris`}
           </Typography>
           <NavLink to="/terms-and-conditions" className={classes.footerLink}>
