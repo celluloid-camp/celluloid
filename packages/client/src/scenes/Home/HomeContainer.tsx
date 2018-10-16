@@ -130,7 +130,7 @@ export default withStyles(styles)(
                   xl={3}
                 >
                   <Typography variant="h3" color="primary" gutterBottom={true}>
-                    {`Apprendre ensemble avec une vidéo`}
+                    {`Apprendre ensemble avec une`}&nbsp;{`vidéo`}
                   </Typography>
                   <Typography
                     variant="subtitle1"

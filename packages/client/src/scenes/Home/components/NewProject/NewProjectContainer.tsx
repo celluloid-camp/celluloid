@@ -382,7 +382,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 <TagSearchBox
                   onTagSelected={onTagSelected}
                   onTagCreationRequested={onTagCreationRequested}
-                  creationEnabled={true}
                   label="Recherchez ou ajoutez un autre domaine..."
                 />
                 <Typography variant="h6" className={classes.sectionTitle} gutterBottom={true}>

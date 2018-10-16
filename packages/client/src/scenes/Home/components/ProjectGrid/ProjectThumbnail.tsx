@@ -91,6 +91,7 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
 });
 
 interface Props extends WithStyles<typeof styles>, ProjectGraphRecord {
+  showPublic: boolean;
   openProject(projectId: string): AnyAction;
 }
 
@@ -121,6 +122,7 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
         user,
         tags,
         openProject,
+        showPublic,
         ...otherProps
       } = this.props;
 
@@ -162,10 +164,12 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                   <PlayIcon className={classes.icon} />
                 </div>
                 <div className={classes.visibilityContainer}>
-                  <VisibilityChip
-                    show={otherProps.public}
-                    label="public"
-                  />
+                  {showPublic &&
+                    <VisibilityChip
+                      show={otherProps.public}
+                      label="public"
+                    />
+                  }
                   <VisibilityChip
                     show={collaborative}
                     label="collaboratif"

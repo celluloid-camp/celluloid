@@ -1,5 +1,7 @@
 import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
+import TagSearchBox from '@celluloid/client/src/components/TagSearchBox/TagSearchBox';
 import { ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
+import { Toolbar, Chip, Typography, Theme, createStyles, WithStyles, withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 import { listTagsThunk } from 'actions/TagActions';
@@ -12,13 +14,36 @@ import { AsyncAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
 import ProjectThumbnail from './ProjectThumbnail';
+import { isOwner, isMember } from '@celluloid/client/src/utils/ProjectUtils';
 
-interface Props {
+const projectMatchesTag = (project: ProjectGraphRecord) =>
+  (tag: TagData) =>
+    !!R.find((elem: TagData) => R.equals(elem, tag))(project.tags);
+
+const styles = (theme: Theme) => createStyles({
+  grid: {
+    paddingLeft: (theme.spacing.unit * 5) / 2,
+    paddingRight: (theme.spacing.unit * 5) / 2,
+  },
+  tags: {
+    paddingBottom: theme.spacing.unit * 2
+  },
+  sectionTitle: {
+    paddingTop: theme.spacing.unit * 4,
+    paddingBottom: theme.spacing.unit
+  }
+});
+
+interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
   projects: ProjectGraphRecord[];
   tags: TagData[];
   loadProjects(): AsyncAction<ProjectGraphRecord[], string>;
   loadTags(): AsyncAction<TagData[], string>;
+}
+
+interface State {
+  selectedTags: TagData[];
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -33,7 +58,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  class extends React.Component<Props> {
+  withStyles(styles)(class extends React.Component<Props, State> {
+    state = {
+      selectedTags: []
+    };
+
     load() {
       this.props.loadProjects();
       this.props.loadTags();
@@ -50,35 +79,123 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     }
 
     render() {
-      const { projects } = this.props;
+      const { projects, tags, user, classes } = this.props;
+
+      const { selectedTags } = this.state;
 
       const sort = R.sortWith([
         R.descend(R.prop('publishedAt'))
       ]);
 
-      const sorted = sort(projects);
+      const filtered = selectedTags.length > 0
+        ? R.filter((project: ProjectGraphRecord) => {
+          const matchesTag = projectMatchesTag(project);
+          return selectedTags.reduce(
+            (acc, tag) => matchesTag(tag),
+            true
+          );
+        })(projects)
+        : projects;
+
+      const sorted = sort(filtered) as ProjectGraphRecord[];
+
+      const userProjects = R.filter((project: ProjectGraphRecord) =>
+        !!user && (isOwner(project, user) || isMember(project, user))
+      )(sorted);
+
+      const publicProjects = R.difference(sorted, userProjects);
+
+      const isTagSelected = (tag: TagData) =>
+        R.find((elem: TagData) =>
+          R.equals(elem, tag)
+        )(selectedTags);
+
+      const removeTag = (tag: TagData) =>
+        R.filter((elem: TagData) =>
+          !R.equals(elem, tag)
+        )(selectedTags);
+
+      const onTagSelected = (tag: TagData) => {
+        this.setState(state => ({
+          selectedTags: isTagSelected(tag)
+            ? removeTag(tag)
+            : [...state.selectedTags, tag]
+        }));
+      };
 
       return (
         <>
-          {/* <Toolbar>
-            <TextField
-              variant="outlined"
-              placeholder="Rechercher..."
+          <Toolbar>
+            <div className={classes.tags}>
+              {tags.map(tag =>
+                <Chip
+                  onClick={() => onTagSelected(tag)}
+                  onDelete={isTagSelected(tag)
+                    ? (() => onTagSelected(tag))
+                    : undefined
+                  }
+                  key={tag.id}
+                  label={tag.name}
+                  style={{
+                    margin: 4
+                  }}
+                />
+              )}
+            </div>
+          </Toolbar>
+          <Toolbar>
+            <TagSearchBox
+              prefix="Domaine: "
+              onTagSelected={onTagSelected}
+              label="Rechercher un projet..."
             />
-          </Toolbar> */}
-          <div style={{ padding: 20 }}>
-            <Grid container={true} spacing={40} direction="row">
-              <TransitionGroup component={null} appear={true}>
-                {sorted.map((project: ProjectGraphRecord) =>
-                  <Grow in={true} appear={true} key={project.id}>
-                    <ProjectThumbnail {...project} />
-                  </Grow>
-                )}
-              </TransitionGroup>
-            </Grid>
+          </Toolbar>
+          <div className={classes.grid}>
+            {userProjects.length > 0 &&
+              <>
+                <Typography
+                  gutterBottom={true}
+                  color="primary"
+                  variant="h4"
+                  className={classes.sectionTitle}
+                >
+                  {`Mes projets`}
+                </Typography>
+                <Grid container={true} spacing={40} direction="row">
+                  <TransitionGroup component={null} appear={true}>
+                    {sorted.map((project: ProjectGraphRecord) =>
+                      <Grow in={true} appear={true} key={project.id}>
+                        <ProjectThumbnail showPublic={true} {...project} />
+                      </Grow>
+                    )}
+                  </TransitionGroup>
+                </Grid>
+              </>
+            }
+            {publicProjects.length > 0 &&
+              <>
+                <Typography
+                  gutterBottom={true}
+                  color="primary"
+                  variant="h4"
+                  className={classes.sectionTitle}
+                >
+                  {`Projets publics`}
+                </Typography>
+                <Grid container={true} spacing={40} direction="row">
+                  <TransitionGroup component={null} appear={true}>
+                    {sorted.map((project: ProjectGraphRecord) =>
+                      <Grow in={true} appear={true} key={project.id}>
+                        <ProjectThumbnail showPublic={false} {...project} />
+                      </Grow>
+                    )}
+                  </TransitionGroup>
+                </Grid>
+              </>
+            }
           </div>
         </>
       );
     }
-  }
+  })
 );
