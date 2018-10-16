@@ -18,8 +18,9 @@ import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
+import Truncate from 'react-truncate';
 
-const styles = ({ palette, spacing }: Theme) => createStyles({
+const styles = ({ palette, spacing, typography }: Theme) => createStyles({
   card: {
     height: '100%',
     '& a:any-link': {
@@ -67,15 +68,14 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
   icon: {
     width: spacing.unit * 7,
     height: spacing.unit * 7,
-    color: 'white'
+    color: palette.grey[100]
   },
   title: {
-    overflow: 'hidden',
-    color: 'white',
-    lineHeight: 1.25
+    position: 'relative',
+    color: palette.grey[100],
+    lineHeight: 1.25,
   },
   titleWrapper: {
-    overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -87,6 +87,20 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
     right: 0,
     left: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.7)'
+  },
+  objective: {
+    height: spacing.unit * 8,
+    ...typography.subtitle1,
+    fontWeight: 400,
+    color: palette.grey[800],
+    lineHeight: 1.25,
+  },
+  username: {
+    paddingTop: spacing.unit * 3,
+    color: palette.grey[700]
+  },
+  publishedAt: {
+    color: palette.grey[600]
   }
 });
 
@@ -180,7 +194,9 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                     className={classes.title}
                     variant="h6"
                   >
-                    {title}
+                    <Truncate lines={2} trimWhitespace={true}>
+                      {title}
+                    </Truncate>
                   </Typography>
                 </div>
               </CardMedia>
@@ -190,20 +206,27 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                   direction="column"
                   justify="space-between"
                   alignItems="stretch"
-                  style={{
-                    height: '100%'
-                  }}
                 >
                   <Grid item={true} xs={12}>
-                    <Typography variant="subtitle1" gutterBottom={true}>
-                      <b>{objective}</b>
+                    <Typography
+                      gutterBottom={true}
+                      className={classes.objective}
+                    >
+                      <Truncate lines={3} trimWhitespace={true}>
+                        <b>{objective}</b>
+                      </Truncate>
                     </Typography>
                   </Grid>
                   <Grid item={true} xs={12}>
-                    <Typography style={{ paddingTop: 24 }}>
+                    <Typography
+                      className={classes.username}
+                    >
                       {user.username}
                     </Typography>
-                    <Typography variant="caption">
+                    <Typography
+                      variant="caption"
+                      className={classes.publishedAt}
+                    >
                       {new Date(publishedAt).toLocaleDateString()}
                     </Typography>
                   </Grid>
