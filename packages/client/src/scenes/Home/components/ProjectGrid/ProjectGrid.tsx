@@ -167,14 +167,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           <div className={classes.grid}>
             {userProjects.length > 0 &&
               <>
-                <Typography
-                  gutterBottom={true}
-                  color="primary"
-                  variant="h4"
-                  className={classes.sectionTitle}
-                >
-                  {`Mes projets`}
-                </Typography>
+                <Fade in={userProjects.length > 0} appear={true}>
+                  <Typography
+                    gutterBottom={true}
+                    color="primary"
+                    variant="h4"
+                    className={classes.sectionTitle}
+                  >
+                    {`Mes projets`}
+                  </Typography>
+                </Fade>
                 <Grid container={true} spacing={40} direction="row">
                   <TransitionGroup component={null} appear={true}>
                     {sorted.map((project: ProjectGraphRecord) =>
@@ -188,14 +190,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             }
             {publicProjects.length > 0 &&
               <>
-                <Typography
-                  gutterBottom={true}
-                  color="primary"
-                  variant="h4"
-                  className={classes.sectionTitle}
-                >
-                  {`Projets publics`}
-                </Typography>
+                <Fade in={publicProjects.length > 0} appear={true}>
+                  <Typography
+                    gutterBottom={true}
+                    color="primary"
+                    variant="h4"
+                    className={classes.sectionTitle}
+                  >
+                    {`Projets publics`}
+                  </Typography>
+                </Fade>
                 <Grid container={true} spacing={40} direction="row">
                   <TransitionGroup component={null} appear={true}>
                     {sorted.map((project: ProjectGraphRecord) =>

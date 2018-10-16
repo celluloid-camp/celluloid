@@ -238,8 +238,6 @@ export default withStyles(styles)(
 
         const onSuggestionClearRequested = () => this.setState({ suggestions: [] });
 
-        const shouldRenderSuggestions = () => search.length > 0;
-
         const inputProps = {
           placeholder: label,
           classes: classes,
@@ -259,7 +257,6 @@ export default withStyles(styles)(
             renderInputComponent={renderInputComponent}
             suggestions={suggestions}
             onSuggestionsFetchRequested={onSuggestionFetchRequested}
-            shouldRenderSuggestions={shouldRenderSuggestions}
             renderSuggestionsContainer={renderSuggestionsContainer}
             getSuggestionValue={getSuggestionValue}
             renderSuggestion={renderSuggestion}
