@@ -2,7 +2,6 @@ import { loadVideoThunk } from '@celluloid/client/src/actions/HomeActions';
 import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
 import { ProjectGraphRecord, UserRecord } from '@celluloid/types';
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -218,7 +217,6 @@ export default withStyles(styles)(
                 </Grid>
               </Grid>
             </div>
-            <Divider />
             <div style={{ padding: 20 }}>
               <ProjectGrid />
             </div>

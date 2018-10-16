@@ -18,7 +18,7 @@ import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
-import Truncate from 'react-truncate';
+import Shiitake from 'shiitake';
 
 const styles = ({ palette, spacing, typography }: Theme) => createStyles({
   card: {
@@ -80,7 +80,7 @@ const styles = ({ palette, spacing, typography }: Theme) => createStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     height: spacing.unit * 9,
-    padding: spacing.unit * 1,
+    padding: spacing.unit * 2,
     position: 'absolute',
     zIndex: 3,
     bottom: 0,
@@ -91,7 +91,7 @@ const styles = ({ palette, spacing, typography }: Theme) => createStyles({
   objective: {
     height: spacing.unit * 8,
     ...typography.subtitle1,
-    fontWeight: 400,
+    fontWeight: 500,
     color: palette.grey[800],
     lineHeight: 1.25,
   },
@@ -194,9 +194,9 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                     className={classes.title}
                     variant="h6"
                   >
-                    <Truncate lines={2} trimWhitespace={true}>
+                    <Shiitake lines={2}>
                       {title}
-                    </Truncate>
+                    </Shiitake>
                   </Typography>
                 </div>
               </CardMedia>
@@ -212,9 +212,9 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                       gutterBottom={true}
                       className={classes.objective}
                     >
-                      <Truncate lines={3} trimWhitespace={true}>
-                        <b>{objective}</b>
-                      </Truncate>
+                      <Shiitake lines={3}>
+                        {objective}
+                      </Shiitake>
                     </Typography>
                   </Grid>
                   <Grid item={true} xs={12}>

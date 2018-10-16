@@ -1090,13 +1090,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-truncate@^2.3.3":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@types/react-truncate/-/react-truncate-2.3.3.tgz#76dcea6a4a34db17c981dbe8e7515ae2b09fc997"
-  integrity sha512-wtbubWJSvT+A3zzacmxpXE1nkHKX0nybSXfwNTdHtBfwJEzm1Caau9AGAS6R7uBuYw0sHcK/DoqRALfSOexLew==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-youtube@^7.4.0":
   version "7.4.2"
   resolved "https://registry.yarnpkg.com/@types/react-youtube/-/react-youtube-7.4.2.tgz#878dfa39d436bc4da6f70ecc0207810690d3396f"
@@ -10538,11 +10531,6 @@ react-transition-group@^2.5.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-truncate@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-truncate/-/react-truncate-2.4.0.tgz#3cf5ff09ab86f93e3c078d359f4de6d75aa60510"
-  integrity sha512-3QW11/COYwi6iPUaunUhl06DW5NJBJD1WkmxW5YxqqUu6kvP+msB3jfoLg8WRbu57JqgebjVW8Lknw6T5/QZdA==
-
 react-youtube@^7.5.0:
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/react-youtube/-/react-youtube-7.6.0.tgz#ea4b7a9396f635b9f2a9f03bfe2a39b93cbdd59d"
@@ -11418,6 +11406,13 @@ shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
+
+shiitake@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/shiitake/-/shiitake-2.2.4.tgz#b3a90c40caf991dfa93c96f42a84b4fb98de0c28"
+  integrity sha512-KrW0eYEtyXzW18op4X0IbcudZEcxQe6xMJXs1YQ8a6qxQy0OUFtAlQY3dxdYWUO7zvCxEvUfRyPCaz4IethJYw==
+  dependencies:
+    prop-types "^15.5.8"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
