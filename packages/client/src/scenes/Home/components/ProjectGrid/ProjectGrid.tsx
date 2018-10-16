@@ -1,7 +1,7 @@
 import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
 import TagSearchBox from '@celluloid/client/src/components/TagSearchBox/TagSearchBox';
 import { ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
-import { Toolbar, Chip, Typography, Theme, createStyles, WithStyles, withStyles } from '@material-ui/core';
+import { Toolbar, Chip, Typography, Theme, createStyles, WithStyles, withStyles, Fade } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 import { listTagsThunk } from 'actions/TagActions';
@@ -12,6 +12,7 @@ import { TransitionGroup } from 'react-transition-group';
 import { Dispatch } from 'redux';
 import { AsyncAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
+import classNames from 'classnames';
 
 import ProjectThumbnail from './ProjectThumbnail';
 import { isOwner, isMember } from '@celluloid/client/src/utils/ProjectUtils';
@@ -31,6 +32,14 @@ const styles = (theme: Theme) => createStyles({
   sectionTitle: {
     paddingTop: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit
+  },
+  noProjects: {
+    fontWeight: 'bold',
+    color: theme.palette.grey[300]
+  },
+  error: {
+    fontWeight: 'bold',
+    color: theme.palette.error.light
   }
 });
 
@@ -38,6 +47,7 @@ interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
   projects: ProjectGraphRecord[];
   tags: TagData[];
+  error?: string;
   loadProjects(): AsyncAction<ProjectGraphRecord[], string>;
   loadTags(): AsyncAction<TagData[], string>;
 }
@@ -49,7 +59,8 @@ interface State {
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
   projects: state.home.projects,
-  tags: state.tags
+  tags: state.tags,
+  error: state.home.errors.projects
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -79,7 +90,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     }
 
     render() {
-      const { projects, tags, user, classes } = this.props;
+      const { projects, tags, user, error, classes } = this.props;
 
       const { selectedTags } = this.state;
 
@@ -122,6 +133,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             : [...state.selectedTags, tag]
         }));
       };
+
+      const noProjects =
+        !error && publicProjects.length === 0 && userProjects.length === 0;
 
       return (
         <>
@@ -192,6 +206,30 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                   </TransitionGroup>
                 </Grid>
               </>
+            }
+            {noProjects &&
+              <Fade in={noProjects} appear={true}>
+                <Typography
+                  variant="h3"
+                  align="center"
+                  gutterBottom={true}
+                  className={classNames(classes.sectionTitle, classes.noProjects)}
+                >
+                  {`Aucun projet ne correspond à votre recherche.`}
+                </Typography>
+              </Fade>
+            }
+            {error &&
+              <Fade in={!!error} appear={true}>
+                <Typography
+                  variant="h4"
+                  align="center"
+                  gutterBottom={true}
+                  className={classNames(classes.sectionTitle, classes.error)}
+                >
+                  {`Erreur de chargement : ${error.toLowerCase()} :-(`}
+                </Typography>
+              </Fade>
             }
           </div>
         </>
