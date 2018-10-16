@@ -18,32 +18,33 @@ import { AppState } from 'types/StateTypes';
 
 import SigninBar from './components/SigninBar';
 
-const styles = (theme: Theme) => createStyles({
+const styles = ({ typography, spacing, palette }: Theme) => createStyles({
   root: { height: '100%' },
   grow: { flex: 1 },
   homeLink: {
-    color: theme.palette.grey[600],
-    fontSize: theme.typography.h4.fontSize,
-    fontWeight: theme.typography.h4.fontWeight,
-    fontFamily: theme.typography.h4.fontFamily,
+    color: palette.grey[600],
+    fontSize: typography.h4.fontSize,
+    fontWeight: typography.h4.fontWeight,
+    fontFamily: typography.h4.fontFamily,
     textTransform: 'none',
     textDecoration: 'none'
   },
   content: {
-    paddingTop: 64,
+    paddingTop: spacing.unit * 8,
     height: '100%'
   },
   footer: {
+    paddingTop: spacing.unit * 3,
     width: '100%',
     textAlign: 'center',
-    marginBottom: 72
+    marginBottom: spacing.unit * 9
   },
   copyright: {
-    color: theme.palette.grey[600]
+    color: palette.grey[600]
   },
   footerLink: {
-    ...theme.typography.caption,
-    color: theme.palette.grey[600],
+    ...typography.caption,
+    color: palette.grey[600],
     display: 'inline',
     textDecoration: 'underline'
   }

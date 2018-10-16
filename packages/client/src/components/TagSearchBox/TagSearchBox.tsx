@@ -90,7 +90,7 @@ function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <SearchIcon />
+            <SearchIcon color="disabled" />
           </InputAdornment>
         ),
         inputRef: ref,
@@ -180,8 +180,8 @@ interface State {
 interface Props extends WithStyles<typeof styles> {
   tags: TagData[];
   label: string;
-  creationEnabled: boolean;
-  onTagCreationRequested(tagName: string): void;
+  prefix?: string;
+  onTagCreationRequested?(tagName: string): void;
   onTagSelected(tag: TagData): void;
 }
 
@@ -198,7 +198,7 @@ export default withStyles(styles)(
       };
 
       render() {
-        const { classes, tags, label, creationEnabled, onTagCreationRequested, onTagSelected } = this.props;
+        const { classes, tags, label, onTagCreationRequested, onTagSelected } = this.props;
         const { suggestions, search } = this.state;
 
         const onSuggestionFetchRequested = ({ value }: Autosuggest.SuggestionsFetchRequestedParams): void => {
@@ -212,7 +212,7 @@ export default withStyles(styles)(
 
           const fullMatch = existingTags.length === 1 && existingTags[0].name.toLowerCase() === value.toLowerCase();
           this.setState({
-            suggestions: creationEnabled && !fullMatch && hasInput
+            suggestions: onTagCreationRequested && !fullMatch && hasInput
               ? [...existingTags, newTag(inputValue)]
               : existingTags
           });
@@ -224,7 +224,7 @@ export default withStyles(styles)(
         ): void => {
           if (isExistingTag(suggestion)) {
             onTagSelected(suggestion.data);
-          } else {
+          } else if (onTagCreationRequested) {
             onTagCreationRequested(suggestion.name);
           }
           this.setState({ search: '', suggestions: [] });
