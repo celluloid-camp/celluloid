@@ -147,7 +147,7 @@ export function insert(project: ProjectCreateData, user: UserRecord) {
           if (retry < INSERT_RETRY_COUNT) {
             return query(retry + 1);
           } else {
-            console.log('Failed to insert project: unique share name generation failed');
+            console.warn('Failed to insert project: unique share name generation failed');
           }
         }
         throw error;

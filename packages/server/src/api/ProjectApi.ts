@@ -35,10 +35,7 @@ router.get(
             )
         ))
       )
-      .then((result: ProjectGraphRecord[]) => {
-        console.log(result.map(proj => proj.members));
-        return res.json(result);
-      })
+      .then((result: ProjectGraphRecord[]) => res.json(result))
       .catch((error: Error) => {
         // tslint:disable-next-line:no-console
         console.error('Failed to fetch projects from database:', error);
