@@ -1,6 +1,5 @@
 import { loadVideoThunk } from '@celluloid/client/src/actions/HomeActions';
-import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
-import { ProjectGraphRecord, UserRecord } from '@celluloid/types';
+import { UserRecord } from '@celluloid/types';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
@@ -72,7 +71,6 @@ interface Props extends WithStyles<typeof styles> {
   };
   onClickJoinProject(): EmptyAction;
   onClickNewProject(url: string): AsyncAction<YoutubeVideo, string>;
-  onNewProjectCreated(): AsyncAction<ProjectGraphRecord[], string>;
 }
 
 interface State {
@@ -89,7 +87,6 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onClickJoinProject: () => dispatch(openStudentSignup()),
-    onNewProjectCreated: () => listProjectsThunk()(dispatch),
     onClickNewProject: (url: string) => loadVideoThunk(url)(dispatch)
   };
 };
