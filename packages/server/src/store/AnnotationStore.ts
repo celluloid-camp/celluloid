@@ -1,8 +1,4 @@
-import {
-  AnnotationData,
-  AnnotationRecord,
-  UserRecord
-} from '@celluloid/types';
+import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
 import { database, getExactlyOne } from 'backends/Database';
 import { QueryBuilder } from 'knex';
 
@@ -25,7 +21,7 @@ export function selectByProject(projectId: string, user?: UserRecord) {
     .where('Annotation.projectId', projectId)
     .andWhere((nested: QueryBuilder) => {
       nested.modify(ProjectStore.orIsOwner, user);
-      nested.modify(ProjectStore.orIsCollaborativeMember, user);
+      nested.modify(ProjectStore.orIsMember, user);
       return nested;
     })
     .orderBy('Annotation.startTime', 'asc');
@@ -48,7 +44,7 @@ export function selectOne(annotationId: string, user?: UserRecord) {
     .where('Annotation.id', annotationId)
     .andWhere((nested: QueryBuilder) => {
       nested.modify(ProjectStore.orIsOwner, user);
-      nested.modify(ProjectStore.orIsCollaborativeMember, user);
+      nested.modify(ProjectStore.orIsMember, user);
       return nested;
     })
     .first()
