@@ -109,10 +109,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
         const isFocusedAnnotationPredicate = (elem: AnnotationRecord) =>
           !!focusedAnnotation && elem.id === focusedAnnotation.id;
-        const isFocusedHidden =
-          !R.find(isFocusedAnnotationPredicate, visibleAnnotations);
+        const shouldBlur =
+          !R.find(isFocusedAnnotationPredicate, visibleAnnotations) && focusedAnnotation;
 
-        if (isFocusedHidden) {
+        if (shouldBlur) {
           this.props.blurAnnotation();
         }
         if (!this.props.seeking) {
