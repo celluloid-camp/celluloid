@@ -1,10 +1,21 @@
 import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
 import TagSearchBox from '@celluloid/client/src/components/TagSearchBox/TagSearchBox';
+import { isMember, isOwner } from '@celluloid/client/src/utils/ProjectUtils';
 import { ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
-import { Toolbar, Chip, Typography, Theme, createStyles, WithStyles, withStyles, Fade } from '@material-ui/core';
+import {
+  Chip,
+  createStyles,
+  Fade,
+  Theme,
+  Toolbar,
+  Typography,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 import { listTagsThunk } from 'actions/TagActions';
+import classNames from 'classnames';
 import * as R from 'ramda';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -12,10 +23,8 @@ import { TransitionGroup } from 'react-transition-group';
 import { Dispatch } from 'redux';
 import { AsyncAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
-import classNames from 'classnames';
 
 import ProjectThumbnail from './ProjectThumbnail';
-import { isOwner, isMember } from '@celluloid/client/src/utils/ProjectUtils';
 
 const projectMatchesTag = (project: ProjectGraphRecord) =>
   (tag: TagData) =>
@@ -179,7 +188,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 </Fade>
                 <Grid container={true} spacing={40} direction="row">
                   <TransitionGroup component={null} appear={true}>
-                    {sorted.map((project: ProjectGraphRecord) =>
+                    {userProjects.map((project: ProjectGraphRecord) =>
                       <Grow in={true} appear={true} key={project.id}>
                         <ProjectThumbnail showPublic={true} {...project} />
                       </Grow>
@@ -202,7 +211,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 </Fade>
                 <Grid container={true} spacing={40} direction="row">
                   <TransitionGroup component={null} appear={true}>
-                    {sorted.map((project: ProjectGraphRecord) =>
+                    {publicProjects.map((project: ProjectGraphRecord) =>
                       <Grow in={true} appear={true} key={project.id}>
                         <ProjectThumbnail showPublic={false} {...project} />
                       </Grow>
