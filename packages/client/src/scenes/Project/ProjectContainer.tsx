@@ -1,5 +1,6 @@
 import { ProjectGraphRecord, UserRecord } from '@celluloid/types';
 import { clearProject, loadProjectThunk } from 'actions/ProjectActions';
+import * as R from 'ramda';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -40,7 +41,7 @@ export default withRouter(
   )(class extends React.Component<Props> {
 
     componentDidUpdate(prevProps: Props) {
-      if (prevProps.user !== this.props.user) {
+      if (!R.equals(this.props.user, prevProps.user)) {
         this.load();
       }
     }
