@@ -77,7 +77,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     }
 
     componentDidUpdate(prevProps: Props) {
-      if (prevProps.user !== this.props.user) {
+      if (!R.equals(this.props.user, prevProps.user)) {
         this.props.load(this.props.project.id);
       }
     }
