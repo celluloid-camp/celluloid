@@ -1,10 +1,4 @@
-import {
-  createStyles,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles
-} from '@material-ui/core';
+import { createStyles, Theme, Typography, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
 const styles = ({ spacing }: Theme) => createStyles({
@@ -28,16 +22,8 @@ export default withStyles(styles)(
         <Typography variant="caption" gutterBottom={true}>
           {`Code du projet`}
         </Typography>
-        <Typography variant="body2" gutterBottom={true}>
-          {name}
-        </Typography>
-      </div>
-      <div className={classes.shareInfo}>
-        <Typography variant="caption" gutterBottom={true}>
-          {`Mot de passe`}
-        </Typography>
         <Typography variant="body2" gutterBottom={true} className={classes.password}>
-          {password}
+          {`${name}-${password}`}
         </Typography>
       </div>
     </>

@@ -2,7 +2,7 @@ import { createStyles, Theme, Typography, WithStyles, withStyles } from '@materi
 import classnames from 'classnames';
 import * as React from 'react';
 
-const styles = ({ palette, spacing }: Theme) => createStyles({
+const styles = ({ spacing }: Theme) => createStyles({
   center: {
     justifyContent: 'center'
   },
@@ -14,13 +14,10 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
   },
   root: {
     display: 'flex',
+    flexWrap: 'wrap',
     paddingTop: spacing.unit,
-    paddingBottom: spacing.unit,
-    flexWrap: 'wrap'
+    paddingBottom: spacing.unit * 2
   },
-  message: {
-    color: palette.error.main,
-  }
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -53,7 +50,7 @@ export default withStyles(styles)(({
     >
       <Typography
         align={align}
-        className={classes.message}
+        color="error"
         variant={small ? 'caption' : 'body2'}
       >
         {error}
