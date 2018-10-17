@@ -10,7 +10,7 @@ import {
   serializeUser,
   SigninStrategy,
   studentSignupStrategy,
-  teacherSignupStrategy
+  teacherSignupStrategy,
 } from 'auth/Auth';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
@@ -37,7 +37,9 @@ app.use(
   session({
     store: createStore(),
     cookie: {
-      domain: process.env.CELLULOID_HTTP_DOMAIN ? process.env.CELLULOID_HTTP_DOMAIN: undefined,
+      domain: process.env.CELLULOID_HTTP_DOMAIN
+        ? process.env.CELLULOID_HTTP_DOMAIN
+        : undefined,
       secure: process.env.CELLULOID_HTTP_SECURE === 'true',
       maxAge: 30 * 24 * 3600 * 1000,
       httpOnly: true
