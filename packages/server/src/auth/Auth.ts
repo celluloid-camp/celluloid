@@ -45,7 +45,6 @@ const signStudentUp = (req, username, password, done) => {
   return ProjectStore.selectOneByShareName(projectShareName)
     .then(result => {
       if (result) {
-        console.log(result);
         if (bcrypt.compareSync(projectSharePassword, result.sharePassword)) {
           return UserStore.createStudent(
             username,

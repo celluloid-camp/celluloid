@@ -1,15 +1,9 @@
-import {
-  maxAnnotationDuration
-} from '@celluloid/client/src/utils/AnnotationUtils';
-import {
-  AnnotationData,
-  AnnotationRecord,
-  UserRecord
-} from '@celluloid/types';
+import { maxAnnotationDuration } from '@celluloid/client/src/utils/AnnotationUtils';
+import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
 import {
   createAnnotationThunk,
   triggerCancelAnnotation,
-  updateAnnotationThunk
+  updateAnnotationThunk,
 } from 'actions/AnnotationsActions';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -122,8 +116,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             ...annotation
           });
         } else {
-          // tslint:disable-next-line:no-console
-          console.log('CREATE annotation');
           onCreate(projectId, annotation);
         }
       };

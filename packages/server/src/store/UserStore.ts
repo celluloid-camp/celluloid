@@ -22,11 +22,9 @@ export function createStudent(
         })
         .returning('*')
         .then(getExactlyOne)
-        .then(student => {
-          console.log(student);
-          return joinProject(student.id, projectId, transaction)
-            .then(() => Promise.resolve(student));
-        })
+        .then(student => joinProject(student.id, projectId, transaction)
+          .then(() => Promise.resolve(student))
+        )
         .then(transaction.commit)
         .catch(transaction.rollback)
     );
