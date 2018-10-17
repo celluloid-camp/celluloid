@@ -6,7 +6,7 @@ import {
   Theme,
   Typography,
   WithStyles,
-  withStyles
+  withStyles,
 } from '@material-ui/core';
 import DialogError from 'components/DialogError';
 import * as React from 'react';
@@ -46,6 +46,7 @@ export default withStyles(styles)(({
         variant="body2"
         align="right"
         gutterBottom={true}
+        component="div"
       >
         {loading &&
           <CircularProgress
