@@ -194,7 +194,7 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                     className={classes.title}
                     variant="h6"
                   >
-                    <Shiitake lines={2}>
+                    <Shiitake lines={2} tagName="span">
                       {title}
                     </Shiitake>
                   </Typography>
@@ -212,7 +212,7 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                       gutterBottom={true}
                       className={classes.objective}
                     >
-                      <Shiitake lines={3}>
+                      <Shiitake lines={3} tagName="span">
                         {objective}
                       </Shiitake>
                     </Typography>
