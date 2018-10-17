@@ -4,14 +4,10 @@ import {
   validateConfirmSignup,
   validateLogin,
   validateSignup,
-  validateStudentSignup
+  validateStudentSignup,
 } from '@celluloid/validators';
 import { SigninStrategy } from 'auth/Auth';
-import {
-  isLoggedIn,
-  sendConfirmationCode,
-  sendPasswordReset
-} from 'auth/Utils';
+import { isLoggedIn, sendConfirmationCode, sendPasswordReset } from 'auth/Utils';
 import { hasConflictedOn } from 'backends/Database';
 import { Request, Response, Router } from 'express';
 import { authenticate } from 'passport';
@@ -147,7 +143,7 @@ router.post('/confirm-signup', (req, res) => {
     .catch(error => {
       console.error(`Failed to confirm signup:`, error);
       return res.status(500).send();
-    }) ;
+    });
 });
 
 router.post('/confirm-reset-password', (req, res) => {
@@ -191,7 +187,7 @@ router.post('/confirm-reset-password', (req, res) => {
     .catch(error => {
       console.error(`Failed to confirm password reset:`, error);
       return res.status(500).send();
-    }) ;
+    });
 });
 
 const resendCode = (sender: (user: TeacherRecord) =>
@@ -244,9 +240,9 @@ router.get('/me', isLoggedIn, (req, res) => {
   if (req.user) {
     return res.status(200).json({
       teacher: {
-        email: req.user.email,
         username: req.user.username,
-        id: req.user.id
+        id: req.user.id,
+        role: req.user.role
       }
     });
   } else {
