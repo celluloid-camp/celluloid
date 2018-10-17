@@ -1,15 +1,12 @@
 import { SigninErrors, TeacherConfirmData } from '@celluloid/types';
-import { WithStyles, withStyles } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { TextField } from '@material-ui/core';
 import DialogAltButtons from 'components/DialogAltButtons';
 import DialogButtons from 'components/DialogButtons';
 import SigninError from 'components/DialogError';
 import * as React from 'react';
 import { AnyAction } from 'redux';
 
-import { dialogStyles } from '../DialogStyles';
-
-interface Props extends WithStyles<typeof dialogStyles> {
+interface Props {
   data: TeacherConfirmData;
   errors: SigninErrors;
   onChange(name: string, value: string): void;
@@ -17,23 +14,30 @@ interface Props extends WithStyles<typeof dialogStyles> {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default withStyles(dialogStyles)(
-  ({ classes, data, errors, onChange, onClickResend, onSubmit }: Props) => (
+export default ({
+  data,
+  errors,
+  onChange,
+  onClickResend,
+  onSubmit
+}: Props) => (
     <div>
       <TextField
+        margin="dense"
+        fullWidth={true}
         label="Email ou nom complet"
         required={true}
         value={data.login}
-        className={classes.input}
         error={errors.login ? true : false}
         onChange={event => onChange('login', event.target.value)}
         helperText={errors.login}
       />
       <TextField
+        margin="dense"
+        fullWidth={true}
         label="Code de confirmation"
         required={true}
         value={data.code}
-        className={classes.input}
         error={errors.code ? true : false}
         onChange={event => onChange('code', event.target.value)}
         helperText={
@@ -47,5 +51,4 @@ export default withStyles(dialogStyles)(
       />
       <DialogButtons onSubmit={onSubmit} actionName="Confirmer l'inscription" />
     </div>
-  )
-);
+  );

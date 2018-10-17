@@ -5,7 +5,7 @@ import {
   LinearProgress,
   Theme,
   WithStyles,
-  withStyles
+  withStyles,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import * as React from 'react';

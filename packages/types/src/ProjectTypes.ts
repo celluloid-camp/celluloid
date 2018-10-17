@@ -43,6 +43,5 @@ export interface ProjectGraphRecord extends ProjectRecord {
 export interface ProjectShareData {
   sharePassword: string;
   // shareExpiresAt: Date;
-  // d
   // shareMaxUsers: number;
 }

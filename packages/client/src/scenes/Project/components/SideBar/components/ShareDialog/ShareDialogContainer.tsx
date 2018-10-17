@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Clear';
 import PrintIcon from '@material-ui/icons/Print';
+import ShareIcon from '@material-ui/icons/Share';
 import WarningIcon from '@material-ui/icons/Warning';
 import { cancelShareProject, shareProjectThunk } from 'actions/ProjectActions';
 import DialogError from 'components/DialogError';
@@ -111,7 +112,7 @@ export default withStyles(styles)(
                   className={classes.icons}
                 />
                 <Typography gutterBottom={true}>
-                  <b>{`Conservez bien ce mot de passe.`}</b>
+                  <b>{`Conservez bien ce code.`}</b>
                   {` L'application ne pourra plus l'afficher une fois`
                     + ` cette fenêtre fermée. En cas de perte, il faudra`
                     + ` en créer un nouveau.`}
@@ -151,8 +152,8 @@ export default withStyles(styles)(
                 color="primary"
                 onClick={() => onSubmit(project.id, this.state)}
               >
-                <CancelIcon fontSize="inherit" style={{ marginRight: 16 }} />
-                {`Partage`}
+                <ShareIcon fontSize="inherit" style={{ marginRight: 16 }} />
+                {`Partager`}
               </Button>
             </DialogActions>
           </Dialog >

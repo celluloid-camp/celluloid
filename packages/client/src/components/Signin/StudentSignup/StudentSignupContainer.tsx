@@ -1,16 +1,12 @@
-import * as React from 'react';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'react-redux';
-
-import { Action } from 'types/ActionTypes';
+import { SigninErrors, StudentSignupData } from '@celluloid/types';
 import { doStudentSignupThunk, openLogin } from 'actions/Signin';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { AnyAction, Dispatch } from 'redux';
+import { Action } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
-import StudentSignup from './StudentSignupComponent';
 
-import {
-  StudentSignupData,
-  SigninErrors
-} from '@celluloid/types';
+import StudentSignup from './StudentSignupComponent';
 
 interface Props {
   errors: SigninErrors;
@@ -38,8 +34,7 @@ export default connect(
 )(
   class extends React.Component<Props, StudentSignupData> {
     state = {
-      projectShareName: '',
-      projectSharePassword: '',
+      shareCode: '',
       username: '',
       password: '',
       passwordHint: 'Quel est le nom de ton livre préféré ?'

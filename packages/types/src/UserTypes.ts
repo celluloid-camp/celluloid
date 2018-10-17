@@ -8,8 +8,7 @@ export interface SigninErrors {
   confirmPassword?: string;
   code?: string;
   server?: string;
-  projectShareName?: string;
-  projectSharePassword?: string;
+  shareCode?: string;
   passwordHint?: string;
 }
 
@@ -54,8 +53,7 @@ export interface StudentSignupData {
   username: string;
   password: string;
   passwordHint: string;
-  projectShareName: string;
-  projectSharePassword: string;
+  shareCode: string;
 }
 
 export interface TeacherConfirmResetPasswordData extends TeacherConfirmData {

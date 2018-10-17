@@ -1,13 +1,12 @@
-import * as validator from 'validator';
-
 import {
-  TeacherSignupData,
-  SigninResult,
-  TeacherConfirmResetPasswordData,
-  TeacherConfirmData,
   Credentials,
-  StudentSignupData
+  SigninResult,
+  StudentSignupData,
+  TeacherConfirmData,
+  TeacherConfirmResetPasswordData,
+  TeacherSignupData,
 } from '@celluloid/types';
+import * as validator from 'validator';
 
 export function validateSignup(payload: TeacherSignupData) {
   const result = { success: true, errors: {} } as SigninResult;
@@ -105,16 +104,10 @@ export function validateLogin(payload: Credentials) {
 export function validateStudentSignup(payload: StudentSignupData) {
   const result = { success: true, errors: {} } as SigninResult;
 
-  if (!payload || typeof payload.projectShareName !== 'string' ||
-    payload.projectShareName.trim().length === 0) {
+  if (!payload || typeof payload.shareCode !== 'string' ||
+    payload.shareCode.trim().length === 0) {
     result.success = false;
-    result.errors.username = `MissingShareName`;
-  }
-
-  if (!payload || typeof payload.projectSharePassword !== 'string' ||
-    payload.projectSharePassword.trim().length === 0) {
-    result.success = false;
-    result.errors.username = `MissingSharePassword`;
+    result.errors.shareCode = `MissingShareCode`;
   }
 
   if (!payload || typeof payload.username !== 'string' ||
