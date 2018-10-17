@@ -94,13 +94,13 @@ export function generateConfirmationCode() {
   return `${first}${second}`;
 }
 
-export function generateUniqueShareName(title: string) {
+export function generateUniqueShareName(title: string, count: number) {
   const compare = (a: string, b: string) =>
     b.length - a.length;
 
   const construct = (result, str) => {
     if (!!str) {
-      if (result.join().length < 12) {
+      if (result.join().length < 6) {
         result = [...result, str];
       }
     }
@@ -113,9 +113,7 @@ export function generateUniqueShareName(title: string) {
     .reduce(construct, [])
     .join('-');
 
-  const suffix = generateConfirmationCode();
-
-  return `${prefix}-${suffix}`;
+  return `${prefix}${count ? count : ''}`;
 }
 
 export function sendConfirmationCode(user: TeacherServerRecord) {

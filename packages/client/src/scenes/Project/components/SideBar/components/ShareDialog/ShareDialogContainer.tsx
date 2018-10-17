@@ -69,7 +69,7 @@ export default withStyles(styles)(
   connect(mapStateToProps, mapDispatchToProps)(
     class extends React.Component<Props, ProjectShareData> {
       state = {
-        sharePassword: `${pass()}-${pass()}-${pass()}`,
+        sharePassword: `${pass()}-${pass()}`,
       } as ProjectShareData;
 
       render() {
