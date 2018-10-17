@@ -79,10 +79,12 @@ export function selectAll(user: UserRecord) {
     .modify(orIsMember, user)
     .groupBy('Project.id', 'User.id')
     .map(filterNull('tags'))
-    .map(row => ({
-      user: filterUserProps(row.user),
-      ...row
-    }));
+    .map(row => {
+      return ({
+        ...row,
+        user: filterUserProps(row.user),
+      });
+    });
 }
 
 export function selectOneByShareName(shareName: string) {

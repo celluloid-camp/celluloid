@@ -1,8 +1,4 @@
-import {
-  ProjectCreateData,
-  ProjectGraphRecord,
-  UserRecord
-} from '@celluloid/types';
+import { ProjectCreateData, ProjectGraphRecord, ProjectRecord, UserRecord } from '@celluloid/types';
 import { isProjectOwner, isTeacher } from 'auth/Utils';
 import { Router } from 'express';
 import * as ProjectStore from 'store/ProjectStore';
@@ -13,11 +9,34 @@ const router = Router({ mergeParams: true });
 
 router.use('/:projectId/annotations', AnnotationsApi);
 
+function fetchMembers(project: ProjectRecord, user?: UserRecord):
+  PromiseLike<UserRecord[]> {
+  if (project.collaborative || (user && user.id === project.userId)) {
+    return ProjectStore.selectProjectMembers(project.id);
+  } else if (user) {
+    return ProjectStore.isMember(project.id, user)
+      .then(member => member
+        ? Promise.resolve([user])
+        : Promise.resolve([]));
+  } else {
+    return Promise.resolve([]);
+  }
+}
+
 router.get(
   '/',
   (req, res) => {
     return ProjectStore.selectAll(req.user as UserRecord)
+      .then((projects: ProjectGraphRecord[]) =>
+        Promise.all(projects.map(project =>
+          fetchMembers(project, req.user)
+            .then((members: UserRecord[]) =>
+              ({ ...project, members })
+            )
+        ))
+      )
       .then((result: ProjectGraphRecord[]) => {
+        console.log(result.map(proj => proj.members));
         return res.json(result);
       })
       .catch((error: Error) => {
@@ -100,18 +119,9 @@ router.get(
     const user = req.user;
 
     ProjectStore.selectOne(projectId, user)
-      .then((project: ProjectGraphRecord) => {
-        if (project.collaborative || (user && user.id === project.userId)) {
-          return ProjectStore.selectProjectMembers(projectId);
-        } else if (user) {
-          return ProjectStore.isMember(projectId, user)
-            .then(member => member
-              ? Promise.resolve([user])
-              : Promise.resolve([]));
-        } else {
-          return Promise.resolve([]);
-        }
-      })
+      .then((project: ProjectGraphRecord) =>
+        fetchMembers(project, req.user)
+      )
       .then(members => res.status(200).json(members))
       .catch(error => {
         console.error('Failed to list project members:', error);

@@ -12,9 +12,9 @@ export function isMember(
   project: ProjectGraphRecord,
   user: UserRecord
 ) {
-  return R.filter((elem: UserRecord) =>
+  return !!R.find((elem: UserRecord) =>
     elem.id === user.id
-  )(project.members).length === 1;
+  )(project.members);
 }
 
 export function canAnnotate(
