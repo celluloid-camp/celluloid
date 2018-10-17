@@ -129,7 +129,7 @@ export function selectOne(projectId: string, user: UserRecord) {
 }
 
 export function insert(project: ProjectCreateData, user: UserRecord) {
-  const INSERT_RETRY_COUNT = 5;
+  const INSERT_RETRY_COUNT = 20;
   const { tags, ...props } = project;
   const query = (retry: number) =>
     database('Project')
@@ -138,7 +138,7 @@ export function insert(project: ProjectCreateData, user: UserRecord) {
         id: database.raw('uuid_generate_v4()'),
         userId: user.id,
         publishedAt: database.raw('NOW()'),
-        shareName: generateUniqueShareName(props.title)
+        shareName: generateUniqueShareName(props.title, retry)
       })
       .returning('*')
       .then(getExactlyOne)
