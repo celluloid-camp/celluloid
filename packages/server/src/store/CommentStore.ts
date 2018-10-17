@@ -22,7 +22,7 @@ export function selectByAnnotation(annotationId: string, user: UserRecord) {
     .andWhere((nested: QueryBuilder) => {
       nested.where('User.id', user.id);
       nested.modify(ProjectStore.orIsOwner, user);
-      nested.modify(ProjectStore.orIsCollaborativeMember, user);
+      nested.modify(ProjectStore.orIsMember, user);
       return nested;
     })
     .orderBy('Comment.createdAt', 'asc');

@@ -1,31 +1,9 @@
-import {
-  ProjectCreateData,
-  ProjectRecord,
-  ProjectShareData,
-  UserRecord
-} from '@celluloid/types';
+import { ProjectCreateData, ProjectRecord, ProjectShareData, UserRecord } from '@celluloid/types';
 import { generateUniqueShareName, hashPassword } from 'auth/Utils';
-import {
-  database,
-  filterNull,
-  getExactlyOne,
-  hasConflictedOn
-} from 'backends/Database';
+import { database, filterNull, getExactlyOne, hasConflictedOn } from 'backends/Database';
 import { QueryBuilder } from 'knex';
 
 import { tagProject } from './TagStore';
-
-export const orIsCollaborativeMember =
-  (nested: QueryBuilder, user?: UserRecord) =>
-    user
-      ? nested
-        .orWhereIn(
-          'Project.id',
-          database.select('projectId')
-            .from('UserToProject')
-            .where('userId', user.id))
-        .andWhere('Project.collaborative', true)
-      : nested;
 
 export const orIsMember =
   (nested: QueryBuilder, user?: UserRecord) =>
@@ -60,7 +38,6 @@ export function isOwnerOrCollaborativeMember(projectId: string, user: UserRecord
     .then(([owner, member]: boolean[]) => owner || member);
 }
 
-// delete project or change details
 export function isOwner(projectId: string, user: UserRecord) {
   return database.first('id')
     .from('Project')
@@ -220,7 +197,7 @@ export function unshareById(projectId: string) {
     .then(getExactlyOne);
 }
 
-function selectProjectMembersBase(projectId: string) {
+export function selectProjectMembers(projectId: string) {
   return database
     .select(
       'User.id',
@@ -229,11 +206,7 @@ function selectProjectMembersBase(projectId: string) {
     )
     .from('UserToProject')
     .innerJoin('User', 'User.id', 'UserToProject.userId')
-    .where('UserToProject.projectId', projectId);
-}
-
-export function selectProjectMembers(projectId: string) {
-  return selectProjectMembersBase(projectId)
+    .where('UserToProject.projectId', projectId)
     .map(filterUserProps);
 }
 
