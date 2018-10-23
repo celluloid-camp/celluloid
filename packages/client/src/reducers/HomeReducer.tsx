@@ -1,4 +1,4 @@
-import { ActionType } from '@celluloid/client/src/types/ActionTypes';
+import { ActionType } from 'types/ActionTypes';
 import { AnyAction } from 'redux';
 import { HomeState } from 'types/StateTypes';
 

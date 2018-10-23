@@ -1,4 +1,4 @@
-import { AppState } from '@celluloid/client/src/types/StateTypes';
+import { AppState } from 'types/StateTypes';
 import {
   AnnotationRecord,
   CommentRecord,

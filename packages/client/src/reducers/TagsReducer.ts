@@ -1,4 +1,4 @@
-import { ActionType } from '@celluloid/client/src/types/ActionTypes';
+import { ActionType } from 'types/ActionTypes';
 import { TagData } from '@celluloid/types';
 import * as R from 'ramda';
 import { AnyAction } from 'redux';

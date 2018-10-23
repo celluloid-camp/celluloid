@@ -1,4 +1,4 @@
-import { maxAnnotationDuration } from '@celluloid/client/src/utils/AnnotationUtils';
+import { maxAnnotationDuration } from 'utils/AnnotationUtils';
 import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
 import {
   createAnnotationThunk,

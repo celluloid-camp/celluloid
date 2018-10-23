@@ -13,7 +13,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { AnyAction, Dispatch } from 'redux';
-import { Action } from 'types/ActionTypes';
+import { EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
 import SigninBar from './components/SigninBar';
@@ -50,6 +50,16 @@ const styles = ({ typography, spacing, palette }: Theme) => createStyles({
   }
 });
 
+interface Props extends WithStyles<typeof styles> {
+  user?: UserRecord;
+  signinDialog: SigninState;
+  Content: React.ComponentType;
+  onClickLogin(): EmptyAction;
+  onClickSignup(): EmptyAction;
+  onCloseSignin(): EmptyAction;
+  onClickLogout(): Promise<AnyAction>;
+}
+
 const mapStateToProps = (state: AppState) => {
   return {
     user: state.user,
@@ -64,16 +74,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     onCloseSignin: () => dispatch(closeSignin())
   };
 };
-
-interface Props extends WithStyles<typeof styles> {
-  user?: UserRecord;
-  signinDialog: SigninState;
-  Content: React.ComponentType;
-  onClickLogin(): Action<null>;
-  onClickSignup(): Action<null>;
-  onCloseSignin(): Action<null>;
-  onClickLogout(): Promise<AnyAction>;
-}
 
 export default withStyles(styles)(
   connect(

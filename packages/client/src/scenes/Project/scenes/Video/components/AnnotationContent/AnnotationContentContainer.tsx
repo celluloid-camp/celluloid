@@ -1,4 +1,4 @@
-import { isOwner } from '@celluloid/client/src/utils/ProjectUtils';
+import { isOwner } from 'utils/ProjectUtils';
 import {
   AnnotationRecord,
   ProjectGraphRecord,

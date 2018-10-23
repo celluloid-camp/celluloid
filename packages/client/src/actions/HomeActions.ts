@@ -1,3 +1,5 @@
+import { openSignup } from 'actions/Signin';
+import { UserRecord } from '@celluloid/types';
 import { Dispatch } from 'redux';
 import YoutubeService from 'services/YoutubeService';
 import {
@@ -26,18 +28,21 @@ export const failLoadVideo = (error: string) =>
 export const succeedLoadVideo = (video: YoutubeVideo) =>
   createAction(ActionType.SUCCEED_LOAD_VIDEO, video);
 
-export const loadVideoThunk = (url: string) => (dispatch: Dispatch):
+export const loadVideoThunk = (url: string, user?: UserRecord) => (dispatch: Dispatch):
   AsyncAction<YoutubeVideo, string> => {
   return getVideoId(url)
     .then(id =>
       YoutubeService.getVideoNameById(id)
-        .then((videoTitle: string) =>
-          dispatch(succeedLoadVideo({
+        .then((videoTitle: string) => {
+          if (!user || user.role !== 'Teacher') {
+            dispatch(openSignup());
+          }
+          return dispatch(succeedLoadVideo({
             id,
             title: videoTitle,
             thumbnailUrl: `http://img.youtube.com/vi/${id}/0.jpg`
-          }))
-        )
+          }));
+        })
     )
     .catch(() => dispatch(failLoadVideo('InvalidLink')));
 };

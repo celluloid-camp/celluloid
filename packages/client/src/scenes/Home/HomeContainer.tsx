@@ -1,4 +1,4 @@
-import { loadVideoThunk } from '@celluloid/client/src/actions/HomeActions';
+import { loadVideoThunk } from 'actions/HomeActions';
 import { UserRecord } from '@celluloid/types';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -66,11 +66,11 @@ const styles = ({ spacing, palette }: Theme) => createStyles({
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
   errors: {
-    video?: string,
-    projects?: string
+    video?: string;
+    projects?: string;
   };
   onClickJoinProject(): EmptyAction;
-  onClickNewProject(url: string): AsyncAction<YoutubeVideo, string>;
+  onClickNewProject(url: string, user?: UserRecord): AsyncAction<YoutubeVideo, string>;
 }
 
 interface State {
@@ -87,7 +87,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onClickJoinProject: () => dispatch(openStudentSignup()),
-    onClickNewProject: (url: string) => loadVideoThunk(url)(dispatch)
+    onClickNewProject: (url: string, user?: UserRecord) => loadVideoThunk(url, user)(dispatch)
   };
 };
 
@@ -99,7 +99,7 @@ export default withStyles(styles)(
       } as State;
 
       render() {
-        const { onClickJoinProject, classes } = this.props;
+        const { onClickJoinProject, user, classes } = this.props;
 
         const handleVideoUrlChanged = (
           event: React.ChangeEvent<HTMLInputElement>
@@ -175,7 +175,7 @@ export default withStyles(styles)(
                         <Button
                           variant="contained"
                           color="primary"
-                          onClick={() => this.props.onClickNewProject(this.state.newProjectVideoUrl)}
+                          onClick={() => this.props.onClickNewProject(this.state.newProjectVideoUrl, user)}
                           fullWidth={true}
                         >
                           {`Nouveau projet`}

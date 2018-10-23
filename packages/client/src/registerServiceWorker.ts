@@ -1,4 +1,4 @@
-import { applicationUpdated } from '@celluloid/client/src/actions/AppActions';
+import { applicationUpdated } from 'actions/AppActions';
 import { Store } from 'redux';
 
 // tslint:disable:no-console

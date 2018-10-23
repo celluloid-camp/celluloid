@@ -1,4 +1,6 @@
-import { SigninErrors, TeacherSignupData } from '@celluloid/types';
+import { YoutubeVideo } from 'types/YoutubeTypes';
+import { SigninErrors, TeacherSignupData, UserRecord } from '@celluloid/types';
+import { Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import DialogAltButtons from 'components/DialogAltButtons';
 import DialogButtons from 'components/DialogButtons';
@@ -8,6 +10,8 @@ import { AnyAction } from 'redux';
 import { Action } from 'types/ActionTypes';
 
 interface Props {
+  user?: UserRecord;
+  video?: YoutubeVideo;
   data: TeacherSignupData;
   errors: SigninErrors;
   confirmPasswordError?: string;
@@ -18,6 +22,8 @@ interface Props {
 
 export default ({
   data,
+  user,
+  video,
   errors,
   confirmPasswordError,
   onChange,
@@ -25,6 +31,16 @@ export default ({
   onClickLogin
 }: Props) => (
     <div>
+      {(video && user) &&
+        <Typography gutterBottom={true} variant="subtitle2" color="primary">
+          {`Pour continuer, vous devez renseigner un email et un mot de passe`}
+        </Typography>
+      }
+      {(video && !user) &&
+        <Typography gutterBottom={true} variant="subtitle2" color="primary">
+          {`Pour continuer, vous devez vous inscrire ou vous connecter`}
+        </Typography>
+      }
       <TextField
         margin="dense"
         fullWidth={true}
@@ -67,11 +83,13 @@ export default ({
         helperText={confirmPasswordError}
       />
       {errors.server && <DialogError error={errors.server} />}
-      <DialogAltButtons
-        heading="Déjà un compte ?"
-        actionName="Se connecter"
-        onSubmit={onClickLogin}
-      />
+      {!user &&
+        <DialogAltButtons
+          heading="Déjà un compte ?"
+          actionName="Se connecter"
+          onSubmit={onClickLogin}
+        />
+      }
       <DialogButtons onSubmit={onSubmit} actionName="S'inscrire" />
     </div>
   );

@@ -1,4 +1,4 @@
-import VisibilityChip from '@celluloid/client/src/components/VisibilityChip';
+import VisibilityChip from 'components/VisibilityChip';
 import { ProjectGraphRecord } from '@celluloid/types';
 import {
   Card,

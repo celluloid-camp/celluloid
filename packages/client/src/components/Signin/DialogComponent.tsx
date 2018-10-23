@@ -1,4 +1,4 @@
-import DialogHeader from '@celluloid/client/src/components/DialogHeader';
+import DialogHeader from 'components/DialogHeader';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';

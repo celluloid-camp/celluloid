@@ -1,4 +1,4 @@
-import { discardNewVideo } from '@celluloid/client/src/actions/HomeActions';
+import { discardNewVideo } from 'actions/HomeActions';
 import {
   ProjectCreateData,
   ProjectGraphRecord,

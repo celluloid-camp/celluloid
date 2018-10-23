@@ -1,8 +1,8 @@
 import {
   triggerCancelEditComment,
   triggerEditComment
-} from '@celluloid/client/src/actions/CommentActions';
-import { AppState } from '@celluloid/client/src/types/StateTypes';
+} from 'actions/CommentActions';
+import { AppState } from 'types/StateTypes';
 import {
   AnnotationRecord,
   CommentRecord,
