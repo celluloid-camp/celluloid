@@ -1,13 +1,14 @@
-import LoadingBig from 'components/LoadingBig';
 import { ProjectGraphRecord } from '@celluloid/types';
 import {
+  Button,
   createStyles,
   Paper,
   Theme,
   Typography,
   WithStyles,
-  withStyles
+  withStyles,
 } from '@material-ui/core';
+import LoadingBig from 'components/LoadingBig';
 import NotFound from 'components/NotFound';
 import ProjectSummary from 'components/ProjectSummary';
 import ShareCredentials from 'components/ShareCredentials';
@@ -64,20 +65,17 @@ const styles = (theme: Theme) => createStyles({
   },
   paper: {
     padding: theme.spacing.unit * 4,
-    margin: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 2
-  },
-  notFoundPaper: {
-    margin: theme.spacing.unit * 4,
-  },
-  notFoundBody: {
-    padding: theme.spacing.unit * 4
-  },
-  notFoundButtonWrapper: {
-    padding: theme.spacing.unit * 2
   },
   password: {
     fontFamily: 'monospace'
+  },
+  button: {
+    marginBottom: theme.spacing.unit * 2
+  },
+  '@media print': {
+    button: {
+      display: 'none'
+    }
   }
 });
 
@@ -126,6 +124,8 @@ export default withRouter(withStyles(styles)(
         ? parsedUrl.p
         : undefined;
 
+      const onClickPrint = () => window.print();
+
       if (project && password) {
         const steps = [{
           title: (
@@ -143,7 +143,7 @@ export default withRouter(withStyles(styles)(
         }, {
           title: (
             <span>
-              {`Entrez le code et le mot de passe du projet`}
+              {`Entrez le code du projet`}
             </span>
           ),
           body: (
@@ -174,10 +174,20 @@ export default withRouter(withStyles(styles)(
 
         return (
           <>
+
             <Paper className={classes.paper}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={onClickPrint}
+                className={classes.button}
+              >
+                {`Imprimer`}
+              </Button>
               <Typography variant="display3" gutterBottom={true}>
                 {`Fiche pédagogique`}
               </Typography>
+
               <ProjectSummary project={project} />
               <Typography variant="h3" gutterBottom={true}>
                 {`Comment utiliser Celluloid ?`}
