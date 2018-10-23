@@ -1,11 +1,11 @@
 import {
   deleteCommentThunk
-} from '@celluloid/client/src/actions/CommentActions';
-import { AsyncAction } from '@celluloid/client/src/types/ActionTypes';
+} from 'actions/CommentActions';
+import { AsyncAction } from 'types/ActionTypes';
 import {
   canEditComment
-} from '@celluloid/client/src/utils/AnnotationUtils';
-import { isOwner } from '@celluloid/client/src/utils/ProjectUtils';
+} from 'utils/AnnotationUtils';
+import { isOwner } from 'utils/ProjectUtils';
 import {
   AnnotationRecord,
   CommentRecord,

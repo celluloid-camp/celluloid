@@ -1,7 +1,4 @@
-import {
-  doLogoutThunk,
-  fetchCurrentUserThunk
-} from 'actions/Signin/UserActions';
+import { doLogoutThunk, fetchCurrentUserThunk } from 'actions/Signin/UserActions';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';

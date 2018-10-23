@@ -1,18 +1,27 @@
 import 'rc-slider/assets/index.css';
 
-import { createProjectThunk } from '@celluloid/client/src/actions/ProjectActions';
-import { createTagThunk } from '@celluloid/client/src/actions/TagActions';
-import { Action, AsyncAction, EmptyAction } from '@celluloid/client/src/types/ActionTypes';
-import { ProjectCreateData, ProjectGraphRecord, TagData } from '@celluloid/types';
+import { createProjectThunk } from 'actions/ProjectActions';
+import { createTagThunk } from 'actions/TagActions';
+import DialogError from 'components/DialogError';
+import DialogHeader from 'components/DialogHeader';
+import { Action, AsyncAction, EmptyAction } from 'types/ActionTypes';
+import {
+  sliderHandleStyle,
+  sliderRailStyle,
+  sliderTrackStyle,
+} from 'utils/SliderUtils';
+import { ProjectCreateData, ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
 import {
   Avatar,
   Button,
   Chip,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   Grid,
   IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
@@ -20,17 +29,16 @@ import {
   ListItemText,
   Switch,
   TextField,
-  Typography,
   Theme,
-  withStyles,
+  Typography,
   WithStyles,
-  createStyles,
-  LinearProgress,
+  withStyles,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { discardNewVideo } from 'actions/HomeActions';
 import TagSearchBox from 'components/TagSearchBox/TagSearchBox';
+import * as R from 'ramda';
 import { Range } from 'rc-slider';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -38,10 +46,6 @@ import { Dispatch } from 'redux';
 import { levelLabel, levelsCount } from 'types/LevelTypes';
 import { AppState } from 'types/StateTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
-import * as R from 'ramda';
-import DialogHeader from '@celluloid/client/src/components/DialogHeader';
-import DialogError from '@celluloid/client/src/components/DialogError';
-import { sliderTrackStyle, sliderHandleStyle, sliderRailStyle } from '@celluloid/client/src/utils/SliderUtils';
 
 const styles = ({ spacing }: Theme) => createStyles({
   tagList: {
@@ -106,6 +110,7 @@ interface Props extends WithStyles<typeof styles> {
   tags: TagData[];
   loading: boolean;
   error?: string;
+  user?: UserRecord;
   onSubmit(project: ProjectCreateData): AsyncAction<ProjectGraphRecord, string>;
   onCancel(): EmptyAction;
   onNewTag(name: string): AsyncAction<TagData, string>;
@@ -115,7 +120,8 @@ const mapStateToProps = (state: AppState) => ({
   tags: state.tags,
   video: state.home.video,
   loading: state.home.createProjectLoading,
-  error: state.home.errors.createProject
+  error: state.home.errors.createProject,
+  user: state.user
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -169,6 +175,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           tags,
           loading,
           error,
+          user,
           onSubmit,
           onCancel,
           onNewTag
@@ -215,7 +222,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             });
         };
 
-        if (video) {
+        if (video && user && user.role !== 'Student') {
           return (
             <Dialog
               open={true}

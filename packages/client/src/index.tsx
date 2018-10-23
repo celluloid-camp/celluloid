@@ -1,4 +1,4 @@
-import { Bright } from '@celluloid/client/src/utils/ThemeUtils';
+import { Bright } from 'utils/ThemeUtils';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import App from 'App';

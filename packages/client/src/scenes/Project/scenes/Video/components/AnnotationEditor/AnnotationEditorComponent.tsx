@@ -18,7 +18,7 @@ import * as React from 'react';
 import { formatDuration } from 'utils/DurationUtils';
 
 import TransparentInput from '../TransparentInput';
-import { sliderRailStyle, sliderTrackStyle } from '@celluloid/client/src/utils/SliderUtils';
+import { sliderRailStyle, sliderTrackStyle } from 'utils/SliderUtils';
 
 const caretStart = require('images/caret-start.png');
 const caretStop = require('images/caret-stop.png');

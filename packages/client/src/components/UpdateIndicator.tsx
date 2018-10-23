@@ -1,4 +1,4 @@
-import { AppState } from '@celluloid/client/src/types/StateTypes';
+import { AppState } from 'types/StateTypes';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import * as React from 'react';

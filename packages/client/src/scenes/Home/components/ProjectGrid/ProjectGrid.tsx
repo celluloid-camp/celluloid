@@ -1,6 +1,6 @@
-import { listProjectsThunk } from '@celluloid/client/src/actions/ProjectActions';
-import TagSearchBox from '@celluloid/client/src/components/TagSearchBox/TagSearchBox';
-import { isMember, isOwner } from '@celluloid/client/src/utils/ProjectUtils';
+import { listProjectsThunk } from 'actions/ProjectActions';
+import TagSearchBox from 'components/TagSearchBox/TagSearchBox';
+import { isMember, isOwner } from 'utils/ProjectUtils';
 import { ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
 import {
   Chip,

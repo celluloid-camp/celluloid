@@ -1,4 +1,5 @@
-import { SigninErrors, TeacherSignupData } from '@celluloid/types';
+import { YoutubeVideo } from 'types/YoutubeTypes';
+import { SigninErrors, TeacherSignupData, UserRecord } from '@celluloid/types';
 import { doSignupThunk, openLogin } from 'actions/Signin';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -9,6 +10,8 @@ import { AppState } from 'types/StateTypes';
 import Signup from './SignupComponent';
 
 interface Props {
+  user?: UserRecord;
+  video?: YoutubeVideo;
   errors: SigninErrors;
   onClickLogin(): Action<null>;
   onSubmit(data: TeacherSignupData): Promise<AnyAction>;
@@ -24,6 +27,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 const mapStateToProps = (state: AppState) => {
   return {
+    user: state.user,
+    video: state.home.video,
     errors: state.signin.errors
   };
 };
@@ -37,7 +42,7 @@ export default connect(
   mapDispatchToProps
 )(class extends React.Component<Props, State> {
   state = {
-    username: '',
+    username: this.props.user ? this.props.user.username : '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -58,6 +63,8 @@ export default connect(
 
     return (
       <Signup
+        user={this.props.user}
+        video={this.props.video}
         data={this.state}
         errors={this.props.errors}
         confirmPasswordError={confirmPasswordError}

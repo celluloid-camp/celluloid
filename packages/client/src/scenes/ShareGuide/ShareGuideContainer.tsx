@@ -1,4 +1,4 @@
-import LoadingBig from '@celluloid/client/src/components/LoadingBig';
+import LoadingBig from 'components/LoadingBig';
 import { ProjectGraphRecord } from '@celluloid/types';
 import {
   createStyles,

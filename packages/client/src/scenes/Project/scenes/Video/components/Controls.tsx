@@ -21,7 +21,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'types/StateTypes';
 import { formatDuration } from 'utils/DurationUtils';
-import { sliderTrackStyle, sliderRailStyle, sliderHandleStyle } from '@celluloid/client/src/utils/SliderUtils';
+import { sliderTrackStyle, sliderRailStyle, sliderHandleStyle } from 'utils/SliderUtils';
 
 const styles = ({ spacing }: Theme) => createStyles({
   badge: {

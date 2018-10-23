@@ -1,4 +1,4 @@
-import { YoutubeVideo } from '@celluloid/client/src/types/YoutubeTypes';
+import { YoutubeVideo } from 'types/YoutubeTypes';
 import {
   AnnotationRecord,
   CommentRecord,
