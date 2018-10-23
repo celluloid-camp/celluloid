@@ -1,8 +1,4 @@
-import {
-  createStyles,
-  WithStyles,
-  withStyles
-} from '@material-ui/core';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 import About from 'components/About';
 import LegalNotice from 'components/LegalNotice';
 import NotFound from 'components/NotFound';
@@ -60,9 +56,9 @@ export default
               />
               <Route
                 path="/shares/:projectId"
-                component={withMenu(ShareGuide)}
+                component={ShareGuide}
               />
-              <Route component={NotFound} />
+              <Route component={withMenu(NotFound)} />
             </Switch>
           </>
         );
