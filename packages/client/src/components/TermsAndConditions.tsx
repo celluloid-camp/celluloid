@@ -9,13 +9,13 @@ export default () => (
       margin: '0 auto'
     }}
   >
-    <Typography variant="display3" gutterBottom={true}>
+    <Typography variant="h2" gutterBottom={true}>
       Conditions Générales d'Utilisation
     </Typography>
     <Typography variant="h4" gutterBottom={true}>
       Article 1. Définitions
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         <b>Celluloid :</b> désigne la plateforme en ligne hébergée à l’adress <a
           href="celluloid.camp"
@@ -66,7 +66,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 2. Objet
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Les CGU ont pour objet de définir les modalités et conditions d’utilisation de
         la Plateforme, ainsi que de définir Vos droits et obligations quant aux
@@ -87,7 +87,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 3. Accès au site et aux Services
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Les Services sont accessibles, sous réserve des restrictions prévues sur le site
         à toute personne physique disposant de la pleine capacité juridique pour
@@ -99,7 +99,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 4. Acceptation des conditions générales
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         L’acceptation des CGU est matérialisée par une case à cocher dans le formulaire
         d’inscription. Cette acceptation ne peut être que pleine et entière. Toute
@@ -145,7 +145,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 5. Services gratuits
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         La Plateforme vous est fournie à titre gratuit.
       </p>
@@ -153,7 +153,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 6. Données
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Sous réserve des dispositions prévues à l’article 13 (données personnelles) et
         de la Charte de Confidentialité, Vous reconnaissez et acceptez expressément que
@@ -174,7 +174,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 7. Vos Obligations
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Sans préjudice des autres obligations prévues aux présentes, Vous vous engagez à
         respecter les obligations suivantes :
@@ -263,7 +263,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 8. Vos Garanties
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Vous garantissez Celluloid contre toutes plaintes, réclamations, actions et/ou
         revendications quelconques que Celluloid pourrait subir du fait d’une violation
@@ -279,7 +279,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 9. Comportements prohibés
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Il est strictement interdit d’utiliser la Plateforme aux fins suivantes :
       </p>
@@ -332,7 +332,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 10. Sanctions des manquements
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         En cas de manquement à l’une quelconque des dispositions des CGU ou plus
         généralement, d’infraction aux lois et règlements en vigueur, Celluloid se
@@ -348,7 +348,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 11. Responsabilité et garantie de Celluloid
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Celluloid s’engage à fournir la Plateforme avec diligence et selon les règles de
         l’art, étant précisé qu’il pèse sur elle une obligation de moyens, à l’exclusion
@@ -398,7 +398,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 12. Propriété intellectuelle
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Les systèmes, logiciels, structures, infrastructures, bases de données et
         contenus de toute nature (textes, images, visuels, musiques, logos, marques,
@@ -411,7 +411,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 13. Données à caractère personnel
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Celluloid pratique une politique de protection des données personnelles dont les
         caractéristiques sont explicitées dans le document intitulé « Charte de
@@ -422,7 +422,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 14. Liens et sites tiers
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Celluloid ne pourra en aucun cas être tenue pour responsable de la disponibilité
         technique de sites internet ou d’applications mobiles exploités par des tiers (y
@@ -453,7 +453,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 15. Durée, désinscription
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Votre inscription à la Plateforme est pour la durée du projet que vous menez
         dans le cadre de Celluloid. Votre déchéance de personnel de structures
@@ -472,7 +472,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 16. Modifications
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Celluloid se réserve la faculté de modifier à tout moment les CGU en vous en
         informant par tout moyen utile. Toute utilisation faite après la modification
@@ -482,7 +482,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 17. Langue
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Dans l’hypothèse d’une traduction des présentes CGU dans une ou plusieurs
         langues, la langue d’interprétation sera la langue française en cas de
@@ -493,7 +493,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Article 18. Loi applicable et juridiction
     </Typography>
-    <Typography component="div" style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Les CGU sont régies par la loi française.
       </p>

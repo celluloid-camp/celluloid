@@ -29,11 +29,11 @@ export default class extends React.Component<Props, State> {
 
     const { menuAnchor } = this.state;
 
-    const openMenu = (element: EventTarget) => {
+    const onOpenUserMenu = (element: EventTarget) => {
       this.setState({ menuAnchor: element });
     };
 
-    const closeMenu = () => {
+    const onCloseUserMenu = () => {
       this.setState({ menuAnchor: undefined });
     };
 
@@ -41,10 +41,10 @@ export default class extends React.Component<Props, State> {
       <SigninBarComponent
         user={user}
         onClickLogin={onClickLogin}
-        onClickLogout={() => { closeMenu(); onClickLogout(); }}
+        onClickLogout={() => { onCloseUserMenu(); onClickLogout(); }}
         onClickSignup={onClickSignup}
-        onClickAvatar={openMenu}
-        onCloseMenu={closeMenu}
+        onOpenUserMenu={onOpenUserMenu}
+        onCloseUserMenu={onCloseUserMenu}
         menuAnchor={menuAnchor}
       />
     );

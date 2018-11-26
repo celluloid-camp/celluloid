@@ -25,6 +25,7 @@ import { AsyncAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
 import ProjectThumbnail from './ProjectThumbnail';
+import { WithI18n, withI18n } from 'react-i18next';
 
 const projectMatchesTag = (project: ProjectGraphRecord) =>
   (tag: TagData) =>
@@ -77,176 +78,178 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   loadProjects: () => listProjectsThunk()(dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(styles)(class extends React.Component<Props, State> {
-    state = {
-      selectedTags: []
-    };
-
-    load() {
-      this.props.loadProjects();
-      this.props.loadTags();
-    }
-
-    componentDidMount() {
-      this.load();
-    }
-
-    componentDidUpdate(prevProps: Props) {
-      if (!R.equals(prevProps.user, this.props.user)) {
-        this.load();
-      }
-    }
-
-    render() {
-      const { projects, tags, user, error, classes } = this.props;
-
-      const { selectedTags } = this.state;
-
-      const sort = R.sortWith([
-        R.descend(R.prop('publishedAt'))
-      ]);
-
-      const filtered = selectedTags.length > 0
-        ? R.filter((project: ProjectGraphRecord) => {
-          const matchesTag = projectMatchesTag(project);
-          return selectedTags.reduce(
-            (acc, tag) => matchesTag(tag),
-            true
-          );
-        })(projects)
-        : projects;
-
-      const sorted = sort(filtered) as ProjectGraphRecord[];
-
-      const userProjects = R.filter((project: ProjectGraphRecord) =>
-        !!user && (isOwner(project, user) || isMember(project, user))
-      )(sorted);
-
-      const publicProjects = R.difference(sorted, userProjects);
-
-      const isTagSelected = (tag: TagData) =>
-        R.find((elem: TagData) =>
-          R.equals(elem, tag)
-        )(selectedTags);
-
-      const removeTag = (tag: TagData) =>
-        R.filter((elem: TagData) =>
-          !R.equals(elem, tag)
-        )(selectedTags);
-
-      const onTagSelected = (tag: TagData) => {
-        this.setState(state => ({
-          selectedTags: isTagSelected(tag)
-            ? removeTag(tag)
-            : [...state.selectedTags, tag]
-        }));
+export default withStyles(styles)(
+  connect(mapStateToProps, mapDispatchToProps)(
+    withI18n()(class extends React.Component<Props & WithI18n, State> {
+      state = {
+        selectedTags: []
       };
 
-      const noProjects =
-        !error && publicProjects.length === 0 && userProjects.length === 0;
+      load() {
+        this.props.loadProjects();
+        this.props.loadTags();
+      }
 
-      return (
-        <>
-          <Toolbar>
-            <div className={classes.tags}>
-              {tags.map(tag =>
-                <Chip
-                  onClick={() => onTagSelected(tag)}
-                  onDelete={isTagSelected(tag)
-                    ? (() => onTagSelected(tag))
-                    : undefined
-                  }
-                  key={tag.id}
-                  label={tag.name}
-                  style={{
-                    margin: 4
-                  }}
-                />
-              )}
+      componentDidMount() {
+        this.load();
+      }
+
+      componentDidUpdate(prevProps: Props) {
+        if (!R.equals(prevProps.user, this.props.user)) {
+          this.load();
+        }
+      }
+
+      render() {
+        const { projects, tags, user, error, classes, t } = this.props;
+
+        const { selectedTags } = this.state;
+
+        const sort = R.sortWith([
+          R.descend(R.prop('publishedAt'))
+        ]);
+
+        const filtered = selectedTags.length > 0
+          ? R.filter((project: ProjectGraphRecord) => {
+            const matchesTag = projectMatchesTag(project);
+            return selectedTags.reduce(
+              (acc, tag) => matchesTag(tag),
+              true
+            );
+          })(projects)
+          : projects;
+
+        const sorted = sort(filtered) as ProjectGraphRecord[];
+
+        const userProjects = R.filter((project: ProjectGraphRecord) =>
+          !!user && (isOwner(project, user) || isMember(project, user))
+        )(sorted);
+
+        const publicProjects = R.difference(sorted, userProjects);
+
+        const isTagSelected = (tag: TagData) =>
+          R.find((elem: TagData) =>
+            R.equals(elem, tag)
+          )(selectedTags);
+
+        const removeTag = (tag: TagData) =>
+          R.filter((elem: TagData) =>
+            !R.equals(elem, tag)
+          )(selectedTags);
+
+        const onTagSelected = (tag: TagData) => {
+          this.setState(state => ({
+            selectedTags: isTagSelected(tag)
+              ? removeTag(tag)
+              : [...state.selectedTags, tag]
+          }));
+        };
+
+        const noProjects =
+          !error && publicProjects.length === 0 && userProjects.length === 0;
+
+        return (
+          <>
+            <Toolbar>
+              <div className={classes.tags}>
+                {tags.map(tag =>
+                  <Chip
+                    onClick={() => onTagSelected(tag)}
+                    onDelete={isTagSelected(tag)
+                      ? (() => onTagSelected(tag))
+                      : undefined
+                    }
+                    key={tag.id}
+                    label={tag.name}
+                    style={{
+                      margin: 4
+                    }}
+                  />
+                )}
+              </div>
+            </Toolbar>
+            <Toolbar>
+              <TagSearchBox
+                prefix={t('tagSearch.prefix')}
+                onTagSelected={onTagSelected}
+                label={t('home.searchProject')}
+              />
+            </Toolbar>
+            <div className={classes.grid}>
+              {userProjects.length > 0 &&
+                <>
+                  <Fade in={userProjects.length > 0} appear={true}>
+                    <Typography
+                      gutterBottom={true}
+                      color="primary"
+                      variant="h4"
+                      className={classes.sectionTitle}
+                    >
+                      {t('home.myProjects')}
+                    </Typography>
+                  </Fade>
+                  <Grid container={true} spacing={40} direction="row">
+                    <TransitionGroup component={null} appear={true}>
+                      {userProjects.map((project: ProjectGraphRecord) =>
+                        <Grow in={true} appear={true} key={project.id}>
+                          <ProjectThumbnail showPublic={true} {...project} />
+                        </Grow>
+                      )}
+                    </TransitionGroup>
+                  </Grid>
+                </>
+              }
+              {publicProjects.length > 0 &&
+                <>
+                  <Fade in={publicProjects.length > 0} appear={true}>
+                    <Typography
+                      gutterBottom={true}
+                      color="primary"
+                      variant="h4"
+                      className={classes.sectionTitle}
+                    >
+                      {t('home.publicProjects')}
+                    </Typography>
+                  </Fade>
+                  <Grid container={true} spacing={40} direction="row">
+                    <TransitionGroup component={null} appear={true}>
+                      {publicProjects.map((project: ProjectGraphRecord) =>
+                        <Grow in={true} appear={true} key={project.id}>
+                          <ProjectThumbnail showPublic={false} {...project} />
+                        </Grow>
+                      )}
+                    </TransitionGroup>
+                  </Grid>
+                </>
+              }
+              {noProjects &&
+                <Fade in={noProjects} appear={true}>
+                  <Typography
+                    variant="h3"
+                    align="center"
+                    gutterBottom={true}
+                    className={classNames(classes.sectionTitle, classes.noProjects)}
+                  >
+                    {t('home.emptySearchResult')}
+                  </Typography>
+                </Fade>
+              }
+              {error &&
+                <Fade in={!!error} appear={true}>
+                  <Typography
+                    variant="h4"
+                    align="center"
+                    gutterBottom={true}
+                    className={classNames(classes.sectionTitle, classes.error)}
+                  >
+                    {error}
+                  </Typography>
+                </Fade>
+              }
             </div>
-          </Toolbar>
-          <Toolbar>
-            <TagSearchBox
-              prefix="Domaine: "
-              onTagSelected={onTagSelected}
-              label="Rechercher un projet..."
-            />
-          </Toolbar>
-          <div className={classes.grid}>
-            {userProjects.length > 0 &&
-              <>
-                <Fade in={userProjects.length > 0} appear={true}>
-                  <Typography
-                    gutterBottom={true}
-                    color="primary"
-                    variant="h4"
-                    className={classes.sectionTitle}
-                  >
-                    {`Mes projets`}
-                  </Typography>
-                </Fade>
-                <Grid container={true} spacing={40} direction="row">
-                  <TransitionGroup component={null} appear={true}>
-                    {userProjects.map((project: ProjectGraphRecord) =>
-                      <Grow in={true} appear={true} key={project.id}>
-                        <ProjectThumbnail showPublic={true} {...project} />
-                      </Grow>
-                    )}
-                  </TransitionGroup>
-                </Grid>
-              </>
-            }
-            {publicProjects.length > 0 &&
-              <>
-                <Fade in={publicProjects.length > 0} appear={true}>
-                  <Typography
-                    gutterBottom={true}
-                    color="primary"
-                    variant="h4"
-                    className={classes.sectionTitle}
-                  >
-                    {`Projets publics`}
-                  </Typography>
-                </Fade>
-                <Grid container={true} spacing={40} direction="row">
-                  <TransitionGroup component={null} appear={true}>
-                    {publicProjects.map((project: ProjectGraphRecord) =>
-                      <Grow in={true} appear={true} key={project.id}>
-                        <ProjectThumbnail showPublic={false} {...project} />
-                      </Grow>
-                    )}
-                  </TransitionGroup>
-                </Grid>
-              </>
-            }
-            {noProjects &&
-              <Fade in={noProjects} appear={true}>
-                <Typography
-                  variant="h3"
-                  align="center"
-                  gutterBottom={true}
-                  className={classNames(classes.sectionTitle, classes.noProjects)}
-                >
-                  {`Aucun projet ne correspond à votre recherche.`}
-                </Typography>
-              </Fade>
-            }
-            {error &&
-              <Fade in={!!error} appear={true}>
-                <Typography
-                  variant="h4"
-                  align="center"
-                  gutterBottom={true}
-                  className={classNames(classes.sectionTitle, classes.error)}
-                >
-                  {`Erreur de chargement : ${error.toLowerCase()} :-(`}
-                </Typography>
-              </Fade>
-            }
-          </div>
-        </>
-      );
-    }
-  })
+          </>
+        );
+      }
+    })
+  )
 );

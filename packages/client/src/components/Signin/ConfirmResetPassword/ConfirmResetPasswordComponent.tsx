@@ -1,30 +1,32 @@
 import { SigninErrors, TeacherConfirmResetPasswordData } from '@celluloid/types';
+import { TextField } from '@material-ui/core';
 import DialogButtons from 'components/DialogButtons';
 import DialogError from 'components/DialogError';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 import { AnyAction } from 'redux';
-import { TextField } from '@material-ui/core';
 
 interface Props {
   data: TeacherConfirmResetPasswordData;
   errors: SigninErrors;
-  confirmPasswordError?: string;
+  confirmPasswordError: boolean;
   onChange(name: string, value: string): void;
   onSubmit(): Promise<AnyAction>;
 }
 
-export default ({
+export default withI18n()(({
   data,
   errors,
   confirmPasswordError,
   onChange,
   onSubmit,
-}: Props) => (
+  t
+}: Props & WithI18n) => (
     <div>
       <TextField
         fullWidth={true}
         margin="dense"
-        label="Email ou nom complet"
+        label={t('signin.login')}
         required={true}
         value={data.login}
         error={errors.email ? true : false}
@@ -34,19 +36,19 @@ export default ({
       <TextField
         fullWidth={true}
         margin="dense"
-        label="Code de confirmation"
+        label={t('signin.code')}
         required={true}
         value={data.code}
         error={errors.code ? true : false}
         onChange={event => onChange('code', event.target.value)}
         helperText={
-          errors.code ? errors.code : 'Ce code vous a été envoyé par email'
+          errors.code ? errors.code : t('signin.codeHelper')
         }
       />
       <TextField
         fullWidth={true}
         margin="dense"
-        label="Mot de passe"
+        label={t('signin.password')}
         required={true}
         value={data.password}
         type="password"
@@ -58,13 +60,16 @@ export default ({
         fullWidth={true}
         margin="dense"
         error={confirmPasswordError ? true : false}
-        label="Confirmer le mot de passe"
+        label={t('signin.confirmPassword')}
         type="password"
         required={true}
         onChange={event => onChange('confirmPassword', event.target.value)}
-        helperText={confirmPasswordError}
+        helperText={confirmPasswordError
+          ? t('signin.passwordMismatch')
+          : undefined
+        }
       />
       {errors.server && <DialogError error={errors.server} />}
-      <DialogButtons onSubmit={onSubmit} actionName="Mettre à jour" />
+      <DialogButtons onSubmit={onSubmit} actionName={t('signin.resetAction')} />
     </div>
-  );
+  ));

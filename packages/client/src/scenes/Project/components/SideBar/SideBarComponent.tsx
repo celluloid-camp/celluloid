@@ -19,9 +19,9 @@ import VisibilityChip from 'components/VisibilityChip';
 import * as React from 'react';
 import { AsyncAction } from 'types/ActionTypes';
 import { isOwner } from 'utils/ProjectUtils';
-// import { isOwner, isMember } from 'utils/ProjectUtils';
 
 import ShareDialog from './components/ShareDialog';
+import { withI18n, WithI18n } from 'react-i18next';
 
 const styles = ({ spacing }: Theme) => createStyles({
   button: {
@@ -79,7 +79,7 @@ interface Props extends WithStyles<typeof styles> {
   onClickDelete(projectId: string): AsyncAction<null, string>;
 }
 
-export default withStyles(styles)(({
+export default withStyles(styles)(withI18n()(({
   user,
   project,
   members,
@@ -95,14 +95,15 @@ export default withStyles(styles)(({
   onClickSetCollaborative,
   onClickShare,
   onClickDelete,
-  classes
-}: Props) => (
+  classes,
+  t
+}: Props & WithI18n) => (
     <>
       {(user && isOwner(project, user))
         ? (
           <>
             <LabeledProgressSwitch
-              label="public"
+              label={t('project.public')}
               checked={project.public}
               loading={setPublicLoading}
               error={setPublicError}
@@ -111,7 +112,7 @@ export default withStyles(styles)(({
               }
             />
             <LabeledProgressSwitch
-              label="collaboratif"
+              label={t('project.collaborative')}
               checked={project.collaborative}
               loading={setCollaborativeLoading}
               error={setCollaborativeError}
@@ -124,11 +125,11 @@ export default withStyles(styles)(({
           <div className={classes.chips}>
             <VisibilityChip
               show={project.public}
-              label="public"
+              label={t('project.public').toLowerCase()}
             />
             <VisibilityChip
               show={project.collaborative}
-              label="collaboratif"
+              label={t('project.collaborative').toLowerCase()}
             />
           </div>
         )
@@ -136,7 +137,7 @@ export default withStyles(styles)(({
       {(user && isOwner(project, user)) &&
         <>
           <LabeledProgressSwitch
-            label="partagé"
+            label={t('project.shared')}
             checked={project.shared}
             loading={unshareLoading}
             error={unshareError}
@@ -169,8 +170,7 @@ export default withStyles(styles)(({
           <ListSubheader
             className={classes.listHeader}
           >
-            {members.size}
-            {members.size > 1 ? ` participants` : ` participant`}
+            {t('project.members', { count: members.size })}
           </ListSubheader>
         }
       >
@@ -197,11 +197,11 @@ export default withStyles(styles)(({
             onClick={() => onClickDelete(project.id)}
           >
             <DeleteIcon fontSize="inherit" className={classes.buttonIcon} />
-            {`Supprimer`}
+            {t('deleteAction')}
           </ButtonProgress>
           {deleteError && <DialogError error={deleteError} />}
         </div>
       }
     </>
   )
-);
+));

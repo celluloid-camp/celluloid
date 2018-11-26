@@ -26,6 +26,7 @@ import { Dispatch } from 'redux';
 import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 
 import TransparentInput from './TransparentInput';
+import { withI18n, WithI18n } from 'react-i18next';
 
 const styles = (theme: Theme) => createStyles({
   buttons: {
@@ -94,87 +95,90 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateCommentThunk(annotation.projectId, annotation.id, comment)(dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(styles)(
-    class extends React.Component<Props, State> {
+export default withStyles(styles)(
+  connect(mapStateToProps, mapDispatchToProps)(
+    withI18n()(
+      class extends React.Component<Props & WithI18n, State> {
 
-      state = init(this.props);
+        state = init(this.props);
 
-      static getDerivedStateFromProps(props: Props, state: State) {
-        if (!props.editing) {
-          return init(props);
-        } else {
-          return null;
-        }
-      }
-
-      render() {
-        const {
-          classes,
-          user,
-          annotation,
-          comment,
-          onChange,
-          onClickUpdate,
-          onClickAdd,
-          onClickCancel
-        } = this.props;
-        const { text } = this.state;
-
-        const onTextChange = (value: string) => {
-          if (this.state.text === '') {
-            onChange();
+        static getDerivedStateFromProps(props: Props, state: State) {
+          if (!props.editing) {
+            return init(props);
+          } else {
+            return null;
           }
-          this.setState({
-            text: value
-          });
-        };
+        }
 
-        return (
-          <div className={classes.root}>
-            <UserAvatar user={user} small={true} />
-            <div className={classes.content}>
-              <TransparentInput
-                unpadded={true}
-                text={text}
-                onChange={onTextChange}
-                placeholder="Laissez un commentaire…"
-              />
-            </div>
-            <div className={classes.buttons}>
-              {comment
-                ? (
-                  <>
-                    <IconButton
-                      className={classes.button}
-                      color="secondary"
-                      onClick={() => onClickCancel()}
-                    >
-                      <CancelIcon fontSize="small" />
-                    </IconButton>
+        render() {
+          const {
+            classes,
+            user,
+            annotation,
+            comment,
+            onChange,
+            onClickUpdate,
+            onClickAdd,
+            onClickCancel,
+            t
+          } = this.props;
+          const { text } = this.state;
+
+          const onTextChange = (value: string) => {
+            if (this.state.text === '') {
+              onChange();
+            }
+            this.setState({
+              text: value
+            });
+          };
+
+          return (
+            <div className={classes.root}>
+              <UserAvatar user={user} small={true} />
+              <div className={classes.content}>
+                <TransparentInput
+                  unpadded={true}
+                  text={text}
+                  onChange={onTextChange}
+                  placeholder={t('annotation.commentPlaceholder')}
+                />
+              </div>
+              <div className={classes.buttons}>
+                {comment
+                  ? (
+                    <>
+                      <IconButton
+                        className={classes.button}
+                        color="secondary"
+                        onClick={() => onClickCancel()}
+                      >
+                        <CancelIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        className={classes.button}
+                        color="primary"
+                        onClick={() => onClickUpdate(annotation, { ...comment, text })}
+                      >
+                        <CheckIcon fontSize="small" />
+                      </IconButton>
+                    </>
+                  )
+                  : (
                     <IconButton
                       className={classes.button}
                       color="primary"
-                      onClick={() => onClickUpdate(annotation, { ...comment, text })}
+                      onClick={() => onClickAdd(annotation, text)}
                     >
-                      <CheckIcon fontSize="small" />
+                      <AddIcon fontSize="small" />
                     </IconButton>
-                  </>
-                )
-                : (
-                  <IconButton
-                    className={classes.button}
-                    color="primary"
-                    onClick={() => onClickAdd(annotation, text)}
-                  >
-                    <AddIcon fontSize="small" />
-                  </IconButton>
-                )
-              }
+                  )
+                }
+              </div>
             </div>
-          </div>
-        );
+          );
+        }
       }
-    }
+    )
   )
 );

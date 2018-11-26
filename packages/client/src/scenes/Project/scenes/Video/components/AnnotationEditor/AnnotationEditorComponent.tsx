@@ -19,6 +19,7 @@ import { formatDuration } from 'utils/DurationUtils';
 
 import TransparentInput from '../TransparentInput';
 import { sliderRailStyle, sliderTrackStyle } from 'utils/SliderUtils';
+import { withI18n, WithI18n } from 'react-i18next';
 
 const caretStart = require('images/caret-start.png');
 const caretStop = require('images/caret-stop.png');
@@ -122,7 +123,7 @@ const TimingControl = (props: TimingControlProps) => (
   </>
 );
 
-export default withStyles(styles)(({
+export default withStyles(styles)(withI18n()(({
   startTime,
   stopTime,
   pause,
@@ -135,7 +136,8 @@ export default withStyles(styles)(({
   onClickSave,
   onClickCancel,
   classes,
-}: Props) => {
+  t
+}: Props & WithI18n) => {
   const handleStyles = {
     border: 0,
     borderRadius: 0,
@@ -152,7 +154,7 @@ export default withStyles(styles)(({
           text={text}
           error={error}
           onChange={onTextChange}
-          placeholder="Saisissez votre annotation…"
+          placeholder={t('annotation.contentPlaceholder')}
         />
         <div className={classes.timeline}>
           <TimingControl
@@ -221,7 +223,7 @@ export default withStyles(styles)(({
                 }
               />
             }
-            label="mettre en pause ?"
+            label={t('annotation.pauseLabel')}
           />
           <IconButton
             color="secondary"
@@ -239,4 +241,4 @@ export default withStyles(styles)(({
       </div>
     </div>
   );
-});
+}));

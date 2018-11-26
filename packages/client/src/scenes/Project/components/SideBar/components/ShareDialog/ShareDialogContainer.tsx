@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState, SharingStatus } from 'types/StateTypes';
+import { withI18n, WithI18n } from 'react-i18next';
 
 const styles = ({ spacing }: Theme) => createStyles({
   icons: {
@@ -67,8 +68,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(
-    class extends React.Component<Props, ProjectShareData> {
+  connect(mapStateToProps, mapDispatchToProps)(withI18n()(
+    class extends React.Component<Props & WithI18n, ProjectShareData> {
       state = {
         sharePassword: `${pass()}-${pass()}`,
       } as ProjectShareData;
@@ -80,7 +81,8 @@ export default withStyles(styles)(
           onSubmit,
           status,
           error,
-          classes
+          classes,
+          t
         } = this.props;
 
         const { sharePassword } = this.state;
@@ -93,7 +95,7 @@ export default withStyles(styles)(
             onClose={() => onCancel()}
           >
             <DialogHeader
-              title="Partager"
+              title={t('shareAction')}
               onClose={() => onCancel()}
               loading={status === SharingStatus.LOADING}
             />
@@ -112,10 +114,8 @@ export default withStyles(styles)(
                   className={classes.icons}
                 />
                 <Typography gutterBottom={true}>
-                  <b>{`Conservez bien ce code.`}</b>
-                  {` L'application ne pourra plus l'afficher une fois`
-                    + ` cette fenêtre fermée. En cas de perte, il faudra`
-                    + ` en créer un nouveau.`}
+                  <b>{t('project.codeWarning.title')}</b>
+                  {t('project.codeWarning.description')}
                 </Typography>
               </div>
               <div
@@ -126,13 +126,12 @@ export default withStyles(styles)(
                   className={classes.icons}
                 />
                 <Typography gutterBottom={true}>
-                  {`Pour ouvrir une fiche pédagogique`
-                    + ` imprimable dans une nouvelle fenêtre, `}
+                  {t('project.share.dialog.description')}
                   <a
                     href={`/shares/${project.id}?p=${sharePassword}`}
                     target="_blank"
                   >
-                    {`cliquez ici`}
+                    {t('project.share.dialog.linkText')}
                   </a>.
               </Typography>
               </div>
@@ -145,7 +144,7 @@ export default withStyles(styles)(
                 onClick={() => onCancel()}
               >
                 <CancelIcon fontSize="inherit" style={{ marginRight: 16 }} />
-                {`Annuler`}
+                {t('cancelAction')}
               </Button>
               <Button
                 variant="contained"
@@ -153,11 +152,12 @@ export default withStyles(styles)(
                 onClick={() => onSubmit(project.id, this.state)}
               >
                 <ShareIcon fontSize="inherit" style={{ marginRight: 16 }} />
-                {`Partager`}
+                {t('shareAction')}
               </Button>
             </DialogActions>
           </Dialog >
         );
       }
     }
-  ));
+  ))
+);

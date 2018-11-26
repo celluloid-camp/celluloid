@@ -1,12 +1,13 @@
 import { Grid, Typography } from '@material-ui/core';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 
 const logoIcp = require('./images/logo-icp.jpg');
 const logoFsm = require('./images/logo-fsm.jpg');
 const logoLp = require('./images/logo-lp.png');
 const logoBlog = require('./images/logo-blog-celluloid.jpg');
 
-export default () => (
+export default withI18n()(({ t }: WithI18n) => (
   <div
     style={{
       padding: 48,
@@ -14,22 +15,17 @@ export default () => (
       margin: '0 auto'
     }}
   >
-    <Typography variant="display3" gutterBottom={true}>
-      {`À propos`}
+    <Typography variant="h2" gutterBottom={true}>
+      {t('about.title')}
     </Typography>
     <Typography variant="subtitle1" gutterBottom={true}>
-      Le développement de la plateforme <b>Celluloid</b> s’inscrit dans le
-      cadre d’un projet de recherche porté par Michaël Bourgatte et
-      Laurent Tessier au sein de l’Atelier du Numérique de l’Institut Catholique de Paris.
+      {t('about.intro.prefix')}<b>Celluloid</b>{t('about.intro.suffix')}
     </Typography>
     <Typography variant="subtitle1" gutterBottom={true}>
-      Le développement de cette plateforme d’annotation vidéo à vocation pédagogique
-      a bénéficié du soutien de la Fondation Saint Matthieu.
+      {t('about.support')}
     </Typography>
     <Typography variant="subtitle1" gutterBottom={true}>
-      Celluloid est un projet Open Source développé par Erwan Queffélec
-      dans le cadre d'un partenariat avec La Paillasse, l’ensemble du code est accessible
-      librement <a href="https://github.com/celluloid-camp/">sur GitHub</a>
+      {t('about.opensource.prefix')}<a href="https://github.com/celluloid-camp/">{t('about.opensource.github')}</a>
     </Typography>
     <div
       style={{
@@ -61,4 +57,4 @@ export default () => (
       </Grid>
     </div>
   </div>
-);
+));

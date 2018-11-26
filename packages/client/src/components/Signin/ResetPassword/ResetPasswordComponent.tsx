@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import DialogButtons from 'components/DialogButtons';
 import SigninError from 'components/DialogError';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 import { AnyAction } from 'redux';
 
 interface Props {
@@ -12,17 +13,18 @@ interface Props {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default ({
+export default withI18n()(({
   login,
   errors,
   onChange,
   onSubmit,
-}: Props) => (
+  t
+}: Props & WithI18n) => (
     <div>
       <TextField
         margin="dense"
         fullWidth={true}
-        label="Email ou nom complet"
+        label={t('signin.login')}
         required={true}
         value={login}
         error={errors.login ? true : false}
@@ -30,6 +32,9 @@ export default ({
         helperText={errors && errors.login}
       />
       {errors.server && <SigninError error={errors.server} />}
-      <DialogButtons onSubmit={onSubmit} actionName="Changer le mot de passe" />
+      <DialogButtons
+        onSubmit={onSubmit}
+        actionName={t('signin.changePasswordAction')}
+      />
     </div>
-  );
+  ));

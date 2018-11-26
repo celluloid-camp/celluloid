@@ -4,6 +4,7 @@ import DialogAltButtons from 'components/DialogAltButtons';
 import DialogButtons from 'components/DialogButtons';
 import SigninError from 'components/DialogError';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 import { AnyAction } from 'redux';
 import { Action } from 'types/ActionTypes';
 
@@ -16,19 +17,20 @@ interface Props {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default ({
+export default withI18n()(({
   credentials,
   errors,
   onChange,
   onClickResetPassword,
   onClickSignup,
-  onSubmit
-}: Props) => (
+  onSubmit,
+  t
+}: Props & WithI18n) => (
     <div>
       <TextField
         margin="dense"
         fullWidth={true}
-        label="Nom complet ou email"
+        label={t('signin.login')}
         required={true}
         id="username"
         value={credentials.login}
@@ -39,7 +41,7 @@ export default ({
       <TextField
         margin="dense"
         fullWidth={true}
-        label="Mot de passe"
+        label={t('signin.password')}
         required={true}
         value={credentials.password}
         type="password"
@@ -50,14 +52,17 @@ export default ({
       {errors.server && <SigninError error={errors.server} />}
 
       <DialogAltButtons
-        heading="Pas encore de compte ?"
-        actionName="S'inscrire"
+        heading={t('signin.notRegistered')}
+        actionName={t('signin.signupAction')}
         onSubmit={onClickSignup}
       />
       <DialogAltButtons
-        actionName="Mot de passe oublié"
+        actionName={t('signin.forgotPasswordAction')}
         onSubmit={onClickResetPassword}
       />
-      <DialogButtons onSubmit={onSubmit} actionName="Se connecter" />
+      <DialogButtons
+        onSubmit={onSubmit}
+        actionName={t('signin.loginAction')}
+      />
     </div>
-  );
+  ));

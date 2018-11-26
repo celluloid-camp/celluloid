@@ -5,6 +5,7 @@ import DialogAltButtons from 'components/DialogAltButtons';
 import DialogButtons from 'components/DialogButtons';
 import DialogError from 'components/DialogError';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 import { AnyAction } from 'redux';
 import { Action } from 'types/ActionTypes';
 
@@ -23,21 +24,22 @@ interface Props extends WithStyles<typeof styles> {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default withStyles(styles)(
+export default withStyles(styles)(withI18n()(
   ({
     classes,
     data,
     errors,
     onChange,
     onSubmit,
-    onClickLogin
-  }: Props) => (
+    onClickLogin,
+    t
+  }: Props & WithI18n) => (
       <>
         <TextField
           margin="dense"
           fullWidth={true}
           error={errors.username ? true : false}
-          label="Code du projet"
+          label={t('signin.projectCode')}
           value={data.shareCode}
           required={true}
           onChange={event => onChange('shareCode', event.target.value)}
@@ -47,7 +49,7 @@ export default withStyles(styles)(
           margin="dense"
           fullWidth={true}
           error={errors.email ? true : false}
-          label="Nom complet ou pseudo"
+          label={t('signin.username')}
           value={data.username}
           required={true}
           onChange={event => onChange('username', event.target.value)}
@@ -58,7 +60,7 @@ export default withStyles(styles)(
           margin="dense"
           fullWidth={true}
           error={errors.password ? true : false}
-          label="Question secrète"
+          label={t('signin.passwordHint')}
           value={data.passwordHint}
           required={true}
           onChange={event => onChange('passwordHint', event.target.value)}
@@ -68,20 +70,23 @@ export default withStyles(styles)(
           margin="dense"
           fullWidth={true}
           error={errors.password ? true : false}
-          label="Réponse à la question"
+          label={t('signin.secretAnswer')}
           value={data.password}
           required={true}
           onChange={event => onChange('password', event.target.value)}
-          helperText={errors.password ? errors.password : '8 caractères minimum'}
+          helperText={errors.password ? errors.password : ''}
         />
-        <DialogError error="Attention ! Cette réponse sert de mot de passe et ne pourra pas être récupérée !" />
+        <DialogError error={t('signin.rememberAnswer')} />
         {errors.server && <DialogError error={errors.server} />}
         <DialogAltButtons
-          heading="Déjà un compte ?"
-          actionName="Se connecter"
+          heading={t('signin.alreadyRegistered')}
+          actionName={t('signin.loginAction')}
           onSubmit={onClickLogin}
         />
-        <DialogButtons onSubmit={onSubmit} actionName="Rejoindre" />
+        <DialogButtons
+          onSubmit={onSubmit}
+          actionName={t('signin.joinAction')}
+        />
       </>
     )
-);
+));

@@ -9,10 +9,10 @@ export default () => (
       margin: '0 auto'
     }}
   >
-    <Typography variant="display3" gutterBottom={true}>
+    <Typography variant="h2" gutterBottom={true}>
       Mentions légales
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         En accédant ou en utilisant le Site Web, <a
           href="celluloid.camp"
@@ -71,7 +71,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Protections des données personnelles
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Dans certaines fonctionnalités et rubriques proposées sur ce site,
         telles que demande d'information, demande d'inscription,
@@ -98,13 +98,13 @@ export default () => (
         utilisées pour enregistrer vos coordonnées afin de pouvoir vous l'envoyer.
       </p>
       <p>
-        Le site celluloid.camp est enregistré à la CNIL sous le <b style={{color: 'red'}}>numéro ???????</b>.
+        Le site celluloid.camp est enregistré à la CNIL sous le numéro 1086038.
       </p>
     </Typography>
     <Typography variant="h4" gutterBottom={true}>
       Mise à jour de vos informations personnelles
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Vous êtes en droit d'accéder et de modifier vos informations personnelles
         et préférences en matière de confidentialité. Pour ce faire, envoyez un
@@ -117,13 +117,13 @@ export default () => (
         75270 PARIS Cedex 06
       </p>
       <p>
-        ou par courriel : <b style={{ color: 'red' }}>courriel celluloid</b>
+        ou par courriel : <a href="mailto:celluloid@icp.fr">celluloid@icp.fr</a>
       </p>
     </Typography>
     <Typography variant="h4" gutterBottom={true}>
       Utilisation des "Cookies"
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Lorsque vous visitez le site internet de l'Institut Catholique de Paris,
         vous pouvez l'explorer de manière anonyme et accéder à des informations
@@ -150,7 +150,7 @@ export default () => (
     <Typography variant="h4" gutterBottom={true}>
       Responsabilité des vidéos et des projets créés dans Celluloid
     </Typography>
-    <Typography style={{ textAlign: 'justify' }}>
+    <Typography component="div">
       <p>
         Celluloid est un projet à visée pédagogique. Les projets créés dans Celluloid
         associent un créateur de projet (qui peut par exemple être un enseignant) et des
