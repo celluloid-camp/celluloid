@@ -4,6 +4,7 @@ import DialogAltButtons from 'components/DialogAltButtons';
 import DialogButtons from 'components/DialogButtons';
 import SigninError from 'components/DialogError';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 import { AnyAction } from 'redux';
 
 interface Props {
@@ -14,41 +15,45 @@ interface Props {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default ({
+export default withI18n()(({
   data,
   errors,
   onChange,
   onClickResend,
-  onSubmit
-}: Props) => (
+  onSubmit,
+  t
+}: Props & WithI18n) => (
     <div>
       <TextField
         margin="dense"
         fullWidth={true}
-        label="Email ou nom complet"
+        label={t('signin.login')}
         required={true}
         value={data.login}
         error={errors.login ? true : false}
-        onChange={event => onChange('login', event.target.value)}
+        onChange={event => onChange('signin.login', event.target.value)}
         helperText={errors.login}
       />
       <TextField
         margin="dense"
         fullWidth={true}
-        label="Code de confirmation"
+        label={t('signin.code')}
         required={true}
         value={data.code}
         error={errors.code ? true : false}
         onChange={event => onChange('code', event.target.value)}
         helperText={
-          errors.code ? errors.code : 'Ce code vous a été envoyé par email'
+          errors.code ? errors.code : t('signin.codeHelper')
         }
       />
       {errors.server && <SigninError error={errors.server} />}
       <DialogAltButtons
-        actionName="Envoyer un nouveau code"
+        actionName={t('signin.resendCodeAction')}
         onSubmit={onClickResend}
       />
-      <DialogButtons onSubmit={onSubmit} actionName="Confirmer l'inscription" />
+      <DialogButtons
+        onSubmit={onSubmit}
+        actionName={t('signin.confirmSignupAction')}
+      />
     </div>
-  );
+  ));

@@ -13,6 +13,7 @@ import { AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
 import SideBarComponent from './SideBarComponent';
+import { WithI18n, withI18n } from 'react-i18next';
 
 interface Props {
   user?: UserRecord;
@@ -62,26 +63,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(class extends React.Component<Props> {
+)(withI18n()(class extends React.Component<Props & WithI18n> {
   render() {
     const {
       project,
       openShareDialog,
-      unshareProject
+      unshareProject,
+      t
     } = this.props;
 
-    const teachers = Array.from(project.members).filter(member =>
-      member.role === 'Teacher' || member.role === 'Admin'
-    ).map(teacher => ({ subtitle: 'Contributeur', ...teacher }));
-
-    const students = Array.from(project.members).filter(member =>
-      member.role === 'Student'
-    );
-
     const content = new Set([
-      { subtitle: 'Créateur', ...project.user },
-      ...teachers,
-      ...students
+      { subtitle: t('project.creatorRole'), ...project.user },
+      ...project.members
     ]);
 
     const onClickShare = () => {
@@ -100,4 +93,4 @@ export default connect(
       />
     );
   }
-});
+}));

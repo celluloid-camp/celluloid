@@ -11,6 +11,7 @@ import {
 import Button from '@material-ui/core/Button';
 import UserAvatar from 'components/UserAvatar';
 import * as React from 'react';
+import { withI18n, WithI18n } from 'react-i18next';
 
 interface Props {
   user?: UserRecord;
@@ -18,25 +19,26 @@ interface Props {
   onClickLogin(): void;
   onClickSignup(): void;
   onClickLogout(): void;
-  onClickAvatar(element: EventTarget): void;
-  onCloseMenu(): void;
+  onOpenUserMenu(element: EventTarget): void;
+  onCloseUserMenu(): void;
 }
 
-export default ({
+export default withI18n()(({
   user,
   menuAnchor,
   onClickLogin,
   onClickSignup,
   onClickLogout,
-  onClickAvatar,
-  onCloseMenu
-}: Props) =>
+  onOpenUserMenu,
+  onCloseUserMenu,
+  t
+}: Props & WithI18n) =>
   user ? (
     <div>
       <IconButton
-        onClick={event => onClickAvatar(event.target)}
+        onClick={event => onOpenUserMenu(event.target)}
       >
-        <UserAvatar user={user} noMargin={true}/>
+        <UserAvatar user={user} noMargin={true} />
       </IconButton>
       <Popper
         open={Boolean(menuAnchor)}
@@ -49,8 +51,8 @@ export default ({
             {...TransitionProps}
             style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
           >
-            <Paper style={{marginRight: 0, marginTop: 12}}>
-              <ClickAwayListener onClickAway={onCloseMenu}>
+            <Paper>
+              <ClickAwayListener onClickAway={onCloseUserMenu}>
                 <MenuList>
                   <MenuItem onClick={onClickLogout}>Déconnexion</MenuItem>
                 </MenuList>
@@ -65,13 +67,14 @@ export default ({
         <Button
           onClick={onClickSignup}
         >
-          {`Inscription`}
+          {t('menu.signup')}
         </Button>
         <Button
           onClick={onClickLogin}
           color="primary"
         >
-          {`Connexion`}
+          {t('menu.login')}
         </Button>
       </div>
-    );
+    )
+);

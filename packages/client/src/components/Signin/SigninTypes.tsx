@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+
 interface SigninStateInterface {
   readonly kind: string;
   readonly name: string;
@@ -5,37 +7,32 @@ interface SigninStateInterface {
 
 export class SignupOpen implements SigninStateInterface {
   readonly kind = 'Signup';
-  readonly name = 'Inscription';
+  readonly name = t('signin.signupTitle');
 }
 
 export class ConfirmSignupOpen implements SigninStateInterface {
   readonly kind = 'ConfirmSignup';
-  readonly name = 'Confirmation';
+  readonly name = t('signin.confirmSignupTitle');
 }
 
 export class LoginOpen implements SigninStateInterface {
   readonly kind = 'Login';
-  readonly name = 'Connexion';
+  readonly name = t('signin.loginTitle');
 }
 
 export class ResetPasswordOpen implements SigninStateInterface {
   readonly kind = 'ResetPassword';
-  readonly name = 'Mot de passe perdu';
+  readonly name = t('signin.forgotPasswordTitle');
 }
 
 export class ConfirmResetPasswordOpen implements SigninStateInterface {
   readonly kind = 'ConfirmResetPassword';
-  readonly name = 'Mot de passe perdu';
+  readonly name = t('signin.forgotPasswordTitle');
 }
 
 export class StudentSignupOpen implements SigninStateInterface {
   readonly kind = 'StudentSignup';
-  readonly name = 'Rejoindre un projet';
-}
-
-export class StudentLoginOpen implements SigninStateInterface {
-  readonly kind = 'StudentLogin';
-  readonly name = 'Connexion';
+  readonly name = t('signin.joinProjectTitle');
 }
 
 export class Closed implements SigninStateInterface {
@@ -50,7 +47,6 @@ export type SigninState
   | ResetPasswordOpen
   | ConfirmResetPasswordOpen
   | StudentSignupOpen
-  | StudentLoginOpen
   | Closed;
 
 export type SigninComponent
@@ -59,5 +55,4 @@ export type SigninComponent
   | LoginOpen
   | ResetPasswordOpen
   | StudentSignupOpen
-  | StudentLoginOpen
   | ConfirmResetPasswordOpen;

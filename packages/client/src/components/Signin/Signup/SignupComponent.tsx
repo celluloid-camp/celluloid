@@ -1,4 +1,3 @@
-import { YoutubeVideo } from 'types/YoutubeTypes';
 import { SigninErrors, TeacherSignupData, UserRecord } from '@celluloid/types';
 import { Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
@@ -6,21 +5,23 @@ import DialogAltButtons from 'components/DialogAltButtons';
 import DialogButtons from 'components/DialogButtons';
 import DialogError from 'components/DialogError';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 import { AnyAction } from 'redux';
 import { Action } from 'types/ActionTypes';
+import { YoutubeVideo } from 'types/YoutubeTypes';
 
 interface Props {
   user?: UserRecord;
   video?: YoutubeVideo;
   data: TeacherSignupData;
   errors: SigninErrors;
-  confirmPasswordError?: string;
+  confirmPasswordError: boolean;
   onChange(name: string, value: string): void;
   onClickLogin(): Action<null>;
   onSubmit(): Promise<AnyAction>;
 }
 
-export default ({
+export default withI18n()(({
   data,
   user,
   video,
@@ -28,24 +29,25 @@ export default ({
   confirmPasswordError,
   onChange,
   onSubmit,
-  onClickLogin
-}: Props) => (
+  onClickLogin,
+  t
+}: Props & WithI18n) => (
     <div>
       {(video && user) &&
         <Typography gutterBottom={true} variant="subtitle2" color="primary">
-          {`Pour continuer, vous devez renseigner un email et un mot de passe`}
+          {t('signin.upgradeAccountMessage')}
         </Typography>
       }
       {(video && !user) &&
         <Typography gutterBottom={true} variant="subtitle2" color="primary">
-          {`Pour continuer, vous devez vous inscrire ou vous connecter`}
+          {t('signin.singupOrLoginMessage')}
         </Typography>
       }
       <TextField
         margin="dense"
         fullWidth={true}
         error={errors.username ? true : false}
-        label="Nom complet"
+        label={t('signin.username')}
         value={data.username}
         required={true}
         onChange={event => onChange('username', event.target.value)}
@@ -55,7 +57,7 @@ export default ({
         margin="dense"
         fullWidth={true}
         error={errors.email ? true : false}
-        label="Email"
+        label={t('signin.email')}
         value={data.email}
         required={true}
         onChange={event => onChange('email', event.target.value)}
@@ -65,7 +67,7 @@ export default ({
         margin="dense"
         fullWidth={true}
         error={errors.password ? true : false}
-        label="Mot de passe"
+        label={t('signin.password')}
         value={data.password}
         type="password"
         required={true}
@@ -76,20 +78,26 @@ export default ({
         margin="dense"
         fullWidth={true}
         error={confirmPasswordError ? true : false}
-        label="Confirmer le mot de passe"
+        label={t('signin.confirmPassword')}
         type="password"
         required={true}
         onChange={event => onChange('confirmPassword', event.target.value)}
-        helperText={confirmPasswordError}
+        helperText={confirmPasswordError
+          ? t('signin.passwordMismatch')
+          : undefined
+        }
       />
       {errors.server && <DialogError error={errors.server} />}
       {!user &&
         <DialogAltButtons
-          heading="Déjà un compte ?"
-          actionName="Se connecter"
+          heading={t('signin.alreadyRegistered')}
+          actionName={t('signin.loginAction')}
           onSubmit={onClickLogin}
         />
       }
-      <DialogButtons onSubmit={onSubmit} actionName="S'inscrire" />
+      <DialogButtons
+        onSubmit={onSubmit}
+        actionName={t('signin.signupAction')}
+      />
     </div>
-  );
+  ));

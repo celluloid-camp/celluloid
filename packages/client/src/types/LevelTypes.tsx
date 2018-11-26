@@ -1,34 +1,34 @@
 enum Level {
-  CYCLE1,
-  CYCLE2,
-  CYCLE3,
-  COLLEGE,
-  LYCEE,
-  SUPERIEUR,
-  RECHERCHE
+  KINDERGARTEN,
+  ELEMENTARY_SCHOOL_1,
+  ELEMENTARY_SCHOOL_2,
+  MIDDLE_SCHOOL,
+  HIGH_SCHOOL,
+  HIGHER_EDUCATION,
+  RESEARCH
 }
 
 const levelLabel = (level: Level) => {
   switch (level) {
-    case Level.CYCLE1:
-      return 'Cycle 1';
-    case Level.CYCLE2:
-      return 'Cycle 2';
-    case Level.CYCLE3:
-      return 'Cycle 3';
-    case Level.COLLEGE:
-      return 'Collège';
-    case Level.LYCEE:
-      return 'Lycée';
-    case Level.SUPERIEUR:
-      return 'Supérieur';
-    case Level.RECHERCHE:
-      return 'Recherche';
+    case Level.KINDERGARTEN:
+      return 'levels.kindergarten';
+    case Level.ELEMENTARY_SCHOOL_1:
+      return 'levels.elementarySchool1';
+    case Level.ELEMENTARY_SCHOOL_2:
+      return 'levels.elementarySchool2';
+    case Level.MIDDLE_SCHOOL:
+      return 'levels.middleSchool';
+    case Level.HIGH_SCHOOL:
+      return 'levels.highSchool';
+    case Level.HIGHER_EDUCATION:
+      return 'levels.higherEducation';
+    case Level.RESEARCH:
+      return 'levels.research';
     default:
-      return 'N/A';
+      return '';
   }
 };
 
 const levelsCount = Object.keys(Level).length / 2;
 
-export {Level, levelLabel, levelsCount};
+export { Level, levelLabel, levelsCount };

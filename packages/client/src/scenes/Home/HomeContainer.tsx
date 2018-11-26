@@ -1,13 +1,14 @@
-import { loadVideoThunk } from 'actions/HomeActions';
 import { UserRecord } from '@celluloid/types';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import { loadVideoThunk } from 'actions/HomeActions';
 import { openStudentSignup } from 'actions/Signin';
 import classnames from 'classnames';
 import * as React from 'react';
+import { WithI18n, withI18n } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AsyncAction, EmptyAction } from 'types/ActionTypes';
@@ -63,7 +64,7 @@ const styles = ({ spacing, palette }: Theme) => createStyles({
   }
 });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props extends WithStyles<typeof styles>, WithI18n {
   user?: UserRecord;
   errors: {
     video?: string;
@@ -91,7 +92,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-export default withStyles(styles)(
+export default withI18n()(withStyles(styles)(
   connect(mapStateToProps, mapDispatchToProps)(
     class extends React.Component<Props, State> {
       state = {
@@ -99,7 +100,7 @@ export default withStyles(styles)(
       } as State;
 
       render() {
-        const { onClickJoinProject, user, classes } = this.props;
+        const { onClickJoinProject, user, classes, t } = this.props;
 
         const handleVideoUrlChanged = (
           event: React.ChangeEvent<HTMLInputElement>
@@ -126,18 +127,14 @@ export default withStyles(styles)(
                   xl={3}
                 >
                   <Typography variant="h3" color="primary" gutterBottom={true}>
-                    {`Apprendre ensemble avec une`}&nbsp;{`vidéo`}
+                    {t('home.title')}
                   </Typography>
                   <Typography
                     variant="subtitle1"
                     className={classes.description}
                     gutterBottom={true}
                   >
-                    {`Partagez une vidéo Youtube avec vos élèves, vos` +
-                      ` étudiant.e.s ou un groupe en formation : créez` +
-                      ` votre projet pédagogique, annotez les images,` +
-                      ` posez des questions et répondez à celles des` +
-                      ` participant.e.s.`}
+                    {t('home.description')}
                   </Typography>
                 </Grid>
                 <Grid
@@ -152,7 +149,7 @@ export default withStyles(styles)(
                       variant="h4"
                       className={classes.title}
                     >
-                      {`Enseignants et formateurs`}
+                      {t('home.teachers')}
                     </Typography>
                     <TeacherPict />
                     <div
@@ -164,7 +161,7 @@ export default withStyles(styles)(
                             width: 300
                           }}
                           variant="outlined"
-                          placeholder="Ajouter un lien vers une vidéo YouTube..."
+                          placeholder={t('home.addVideo')}
                           onChange={handleVideoUrlChanged}
                           value={this.state.newProjectVideoUrl}
                           error={!!this.props.errors.video}
@@ -178,7 +175,7 @@ export default withStyles(styles)(
                           onClick={() => this.props.onClickNewProject(this.state.newProjectVideoUrl, user)}
                           fullWidth={true}
                         >
-                          {`Nouveau projet`}
+                          {t('home.newProject')}
                         </Button>
                       </div>
                       <NewProject />
@@ -197,7 +194,7 @@ export default withStyles(styles)(
                       variant="h4"
                       className={classes.title}
                     >
-                      {`Élèves et étudiants`}
+                      {t('home.students')}
                     </Typography>
                     <StudentsPict />
                     <div className={classnames(classes.formItem, classes.buttonWrapper)}>
@@ -207,7 +204,7 @@ export default withStyles(styles)(
                         fullWidth={true}
                         onClick={() => onClickJoinProject()}
                       >
-                        {`Rejoindre un projet`}
+                        {t('home.joinProject')}
                       </Button>
                     </div>
                   </div>
@@ -221,4 +218,4 @@ export default withStyles(styles)(
         );
       }
     }
-  ));
+  )));

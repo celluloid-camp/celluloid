@@ -46,6 +46,7 @@ import { Dispatch } from 'redux';
 import { levelLabel, levelsCount } from 'types/LevelTypes';
 import { AppState } from 'types/StateTypes';
 import { YoutubeVideo } from 'types/YoutubeTypes';
+import { withI18n, WithI18n } from 'react-i18next';
 
 const styles = ({ spacing }: Theme) => createStyles({
   tagList: {
@@ -111,14 +112,15 @@ interface Props extends WithStyles<typeof styles> {
   loading: boolean;
   error?: string;
   user?: UserRecord;
-  onSubmit(project: ProjectCreateData): AsyncAction<ProjectGraphRecord, string>;
+  onSubmit(project: ProjectCreateData):
+    AsyncAction<ProjectGraphRecord, string>;
   onCancel(): EmptyAction;
   onNewTag(name: string): AsyncAction<TagData, string>;
 }
 
 const mapStateToProps = (state: AppState) => ({
-  tags: state.tags,
   video: state.home.video,
+  tags: state.tags,
   loading: state.home.createProjectLoading,
   error: state.home.errors.createProject,
   user: state.user
@@ -159,376 +161,375 @@ function tagCreationSucceeded(result: Action<string | TagData>): result is Actio
   return !result.error;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(styles)(
-    class extends React.Component<Props, State> {
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(
+  withI18n()(class extends React.Component<Props & WithI18n, State> {
 
-      state = initState();
+    state = initState();
 
-      render() {
+    render() {
 
-        const { project, nextAssignment } = this.state;
+      const { project, nextAssignment } = this.state;
 
-        const {
-          classes,
-          video,
-          tags,
-          loading,
-          error,
-          user,
-          onSubmit,
-          onCancel,
-          onNewTag
-        } = this.props;
+      const {
+        classes,
+        video,
+        tags,
+        loading,
+        error,
+        user,
+        onSubmit,
+        onCancel,
+        onNewTag,
+        t
+      } = this.props;
 
-        const setProject = (modified: Partial<ProjectCreateData>) => {
-          this.setState(state => ({
-            ...state,
-            project: {
-              ...state.project,
-              ...modified
+      const setProject = (modified: Partial<ProjectCreateData>) => {
+        this.setState(state => ({
+          ...state,
+          project: {
+            ...state.project,
+            ...modified
+          }
+        }));
+      };
+
+      const featuredTags = R.filter((elem: TagData) => elem.featured)(tags);
+
+      const displayedTags = R.union(featuredTags, project.tags);
+
+      const isTagSelected = (tag: TagData) =>
+        R.find((elem: TagData) =>
+          R.equals(elem, tag)
+        )(project.tags);
+
+      const removeTag = (tag: TagData) =>
+        R.filter((elem: TagData) =>
+          !R.equals(elem, tag)
+        )(project.tags);
+
+      const onTagSelected = (tag: TagData) => {
+        setProject({
+          tags: isTagSelected(tag)
+            ? removeTag(tag)
+            : [...project.tags, tag]
+        });
+      };
+
+      const onTagCreationRequested = (name: string) => {
+        onNewTag(name)
+          .then(result => {
+            if (tagCreationSucceeded(result)) {
+              onTagSelected(result.payload);
             }
-          }));
-        };
-
-        const featuredTags = R.filter((elem: TagData) => elem.featured)(tags);
-
-        const displayedTags = R.union(featuredTags, project.tags);
-
-        const isTagSelected = (tag: TagData) =>
-          R.find((elem: TagData) =>
-            R.equals(elem, tag)
-          )(project.tags);
-
-        const removeTag = (tag: TagData) =>
-          R.filter((elem: TagData) =>
-            !R.equals(elem, tag)
-          )(project.tags);
-
-        const onTagSelected = (tag: TagData) => {
-          setProject({
-            tags: isTagSelected(tag)
-              ? removeTag(tag)
-              : [...project.tags, tag]
           });
-        };
+      };
 
-        const onTagCreationRequested = (name: string) => {
-          onNewTag(name)
-            .then(result => {
-              if (tagCreationSucceeded(result)) {
-                onTagSelected(result.payload);
-              }
-            });
-        };
-
-        if (video && user && user.role !== 'Student') {
-          return (
-            <Dialog
-              open={true}
-              fullWidth={true}
+      if (video && user && user.role !== 'Student') {
+        return (
+          <Dialog
+            open={true}
+            fullWidth={true}
+            onClose={() => onCancel()}
+            scroll="body"
+          >
+            <DialogHeader
+              title={t('project.createTitle')}
               onClose={() => onCancel()}
-              scroll="body"
+              loading={loading}
             >
-              <DialogHeader
-                title="Nouveau projet"
-                onClose={() => onCancel()}
-                loading={loading}
+              <div
+                className={classes.image}
+                style={{
+                  backgroundImage: `url(${video.thumbnailUrl})`,
+                }}
               >
-                <div
-                  className={classes.image}
-                  style={{
-                    backgroundImage: `url(${video.thumbnailUrl})`,
-                  }}
-                >
-                  <div className={classes.videoTitleWrapper}>
-                    <Typography
-                      variant="h5"
-                      gutterBottom={true}
-                      className={classes.videoTitle}
-                    >
-                      {video.title}
-                    </Typography>
-                  </div>
+                <div className={classes.videoTitleWrapper}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom={true}
+                    className={classes.videoTitle}
+                  >
+                    {video.title}
+                  </Typography>
                 </div>
-              </DialogHeader>
-              <DialogContent className={classes.content}>
-                <TextField
-                  margin="normal"
-                  required={true}
-                  label="Titre"
-                  fullWidth={true}
-                  helperText="Donnez un titre à votre projet"
-                  onChange={event => {
-                    setProject({
-                      title: event.target.value
-                    });
-                  }}
-                  value={project.title}
-                />
-                <TextField
-                  margin="normal"
-                  label="Description"
-                  fullWidth={true}
-                  helperText="Décrivez brièvement le contenu de la vidéo"
-                  multiline={true}
-                  onChange={event => {
-                    setProject({
-                      description: event.target.value
-                    });
-                  }}
-                  value={project.description}
-                />
-                <TextField
-                  margin="normal"
-                  required={true}
-                  label="Objectif"
-                  fullWidth={true}
-                  helperText="Fixez l'objectif pédagogique du projet"
-                  multiline={true}
-                  onChange={event => {
-                    setProject({
-                      objective: event.target.value
-                    });
-                  }}
-                  value={project.objective}
-                />
-                <Typography variant="h6" className={classes.sectionTitle} gutterBottom={true}>
-                  {`Activités proposées`}
-                </Typography>
-                <Typography variant="subtitle1">
-                  {`Listez les différentes activités que vous proposez au partcipants`}
-                </Typography>
-                <List>
-                  {project.assignments.map((assignment, index) =>
-                    <ListItem key={index}>
-                      <ListItemAvatar>
-                        <Avatar>
-                          {index + 1}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText primary={assignment} />
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          onClick={() => {
-                            project.assignments.splice(index, 1);
-                            setProject({
-                              assignments: project.assignments
-                            });
-                          }}
-                        >
-                          <RemoveIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  )}
-                  <ListItem>
+              </div>
+            </DialogHeader>
+            <DialogContent className={classes.content}>
+              <TextField
+                margin="normal"
+                required={true}
+                label={t('project.title')}
+                fullWidth={true}
+                helperText={t('project.titleHelper')}
+                onChange={event => {
+                  setProject({
+                    title: event.target.value
+                  });
+                }}
+                value={project.title}
+              />
+              <TextField
+                margin="normal"
+                label={t('project.description')}
+                fullWidth={true}
+                helperText={t('project.descriptionHelper')}
+                multiline={true}
+                onChange={event => {
+                  setProject({
+                    description: event.target.value
+                  });
+                }}
+                value={project.description}
+              />
+              <TextField
+                margin="normal"
+                required={true}
+                label={t('project.objective')}
+                fullWidth={true}
+                helperText={t('project.objectiveHelper')}
+                multiline={true}
+                onChange={event => {
+                  setProject({
+                    objective: event.target.value
+                  });
+                }}
+                value={project.objective}
+              />
+              <Typography variant="h6" className={classes.sectionTitle} gutterBottom={true}>
+                {t('project.assignmentsSection')}
+              </Typography>
+              <Typography variant="subtitle1">
+                {t('project.assignmentsHelper')}
+              </Typography>
+              <List>
+                {project.assignments.map((assignment, index) =>
+                  <ListItem key={index}>
                     <ListItemAvatar>
                       <Avatar>
-                        {project.assignments.length + 1}
+                        {index + 1}
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText
-                      className={classes.assignmentInput}
-                      primary={
-                        <TextField
-                          variant="outlined"
-                          placeholder="Ajouter une activité"
-                          fullWidth={true}
-
-                          value={nextAssignment}
-                          onChange={event => {
-                            this.setState({ nextAssignment: event.target.value });
-                          }}
-                        />
-                      }
-                    />
+                    <ListItemText primary={assignment} />
                     <ListItemSecondaryAction>
                       <IconButton
                         onClick={() => {
-                          this.setState(prevState => ({
-                            ...prevState,
-                            project: {
-                              ...prevState.project,
-                              assignments: [
-                                ...project.assignments,
-                                nextAssignment
-                              ]
-                            },
-                            nextAssignment: ''
-                          }));
+                          project.assignments.splice(index, 1);
+                          setProject({
+                            assignments: project.assignments
+                          });
                         }}
                       >
-                        <AddIcon />
+                        <RemoveIcon />
                       </IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>
-                </List>
-                <Typography variant="h6" className={classes.sectionTitle} gutterBottom={true}>
-                  {`Domaines`}
-                </Typography>
-                <Typography variant="subtitle1">
-                  {`Choisissez un ou plusieurs domaines correspondant à votre projet`}
-                </Typography>
-                <div className={classes.tagList}>
-                  {displayedTags.map(tag =>
-                    <Chip
-                      onClick={() => onTagSelected(tag)}
-                      onDelete={isTagSelected(tag)
-                        ? (() => onTagSelected(tag))
-                        : undefined
-                      }
-                      key={tag.id}
-                      label={tag.name}
-                      style={{
-                        margin: 4
-                      }}
-                    />
-                  )}
-                </div>
-                <TagSearchBox
-                  onTagSelected={onTagSelected}
-                  onTagCreationRequested={onTagCreationRequested}
-                  label="Recherchez ou ajoutez un autre domaine..."
-                />
-                <Typography variant="h6" className={classes.sectionTitle} gutterBottom={true}>
-                  {`Niveau `}
-                </Typography>
-                <Typography variant="subtitle1">
-                  {`Veuillez préciser à quels niveaux s'adresse ce projet`}
-                </Typography>
-                <div className={classes.levels}>
-                  <Typography align="left" className={classes.levelLabel}>
-                    {levelLabel(project.levelStart)}
-                  </Typography>
-                  <div className={classes.levelSlider}>
-                    <Range
-                      min={0}
-                      max={levelsCount - 1}
-                      value={[project.levelStart, project.levelEnd]}
-                      onChange={values => {
-                        setProject({
-                          levelStart: values[0],
-                          levelEnd: values[1]
-                        });
-                      }}
-                      trackStyle={sliderTrackStyle}
-                      railStyle={sliderRailStyle}
-                      handleStyle={[sliderHandleStyle, sliderHandleStyle]}
-                      allowCross={false}
-                    />
-                  </div>
-                  <Typography align="right" className={classes.levelLabel}>
-                    {levelLabel(project.levelEnd)}
-                  </Typography>
-                </div>
-                <Typography variant="h6" style={{ paddingTop: 36 }} gutterBottom={true}>
-                  {`Partage`}
-                </Typography>
-                <Grid
-                  container={true}
-                  direction="row"
-                  alignItems="flex-start"
-                >
-                  <Grid item={true} xs={2}>
-                    <Typography
+                )}
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      {project.assignments.length + 1}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    className={classes.assignmentInput}
+                    primary={
+                      <TextField
+                        variant="outlined"
+                        placeholder={'project.assignmentPlaceholder'}
+                        fullWidth={true}
 
-                      variant="subtitle1"
-                      align="right"
-                      className={classes.switchLabel}
-                    >
-                      {`Public`}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item={true}
-                    xs={2}
-                  >
-                    <Switch
-                      checked={project.public}
-                      onChange={(_, value) => {
-                        setProject({
-                          public: value
-                        });
+                        value={nextAssignment}
+                        onChange={event => {
+                          this.setState({ nextAssignment: event.target.value });
+                        }}
+                      />
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      onClick={() => {
+                        this.setState(prevState => ({
+                          ...prevState,
+                          project: {
+                            ...prevState.project,
+                            assignments: [
+                              ...project.assignments,
+                              nextAssignment
+                            ]
+                          },
+                          nextAssignment: ''
+                        }));
                       }}
-                    />
-                  </Grid>
-                  <Grid item={true} xs={8}>
-                    <Typography
-                      gutterBottom={true}
-                      className={classes.switchLabel}
                     >
-                      {`Rendre un projet public signifie que tous les utilisateurs`
-                        + ` de la plateforme pourront le consulter, mais ils ne pourront`
-                        + ` pas y participer, ni voir les annotations`}
-                    </Typography>
-                  </Grid>
+                      <AddIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
+              <Typography variant="h6" className={classes.sectionTitle} gutterBottom={true}>
+                {t('project.tagsSection')}
+              </Typography>
+              <Typography variant="subtitle1">
+                {t('project.tagsHelper')}
+              </Typography>
+              <div className={classes.tagList}>
+                {displayedTags.map(tag =>
+                  <Chip
+                    onClick={() => onTagSelected(tag)}
+                    onDelete={isTagSelected(tag)
+                      ? (() => onTagSelected(tag))
+                      : undefined
+                    }
+                    key={tag.id}
+                    label={tag.name}
+                    style={{
+                      margin: 4
+                    }}
+                  />
+                )}
+              </div>
+              <TagSearchBox
+                onTagSelected={onTagSelected}
+                onTagCreationRequested={onTagCreationRequested}
+                label={t('project.tagsPlaceholder')}
+              />
+              <Typography variant="h6" className={classes.sectionTitle} gutterBottom={true}>
+                {t('project.levelsSection')}
+              </Typography>
+              <Typography variant="subtitle1">
+                {t('project.levelsHelper')}
+              </Typography>
+              <div className={classes.levels}>
+                <Typography align="left" className={classes.levelLabel}>
+                  {levelLabel(project.levelStart)}
+                </Typography>
+                <div className={classes.levelSlider}>
+                  <Range
+                    min={0}
+                    max={levelsCount - 1}
+                    value={[project.levelStart, project.levelEnd]}
+                    onChange={values => {
+                      setProject({
+                        levelStart: values[0],
+                        levelEnd: values[1]
+                      });
+                    }}
+                    trackStyle={sliderTrackStyle}
+                    railStyle={sliderRailStyle}
+                    handleStyle={[sliderHandleStyle, sliderHandleStyle]}
+                    allowCross={false}
+                  />
+                </div>
+                <Typography align="right" className={classes.levelLabel}>
+                  {levelLabel(project.levelEnd)}
+                </Typography>
+              </div>
+              <Typography
+                variant="h6"
+                className={classes.sectionTitle}
+                gutterBottom={true}
+              >
+                {t('project.visibilitySection')}
+              </Typography>
+              <Grid
+                container={true}
+                direction="row"
+                alignItems="flex-start"
+              >
+                <Grid item={true} xs={2}>
+                  <Typography
+
+                    variant="subtitle1"
+                    align="right"
+                    className={classes.switchLabel}
+                  >
+                    {t('project.public')}
+                  </Typography>
                 </Grid>
                 <Grid
-                  container={true}
-                  direction="row"
-                  alignItems="flex-start"
+                  item={true}
+                  xs={2}
                 >
-                  <Grid item={true} xs={2}>
-                    <Typography
-                      variant="subtitle1"
-                      align="right"
-                      className={classes.switchLabel}
-                    >
-                      {`Collaboratif`}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item={true}
-                    xs={2}
-                  >
-                    <Switch
-                      checked={project.collaborative}
-                      onChange={(_, value) => {
-                        setProject({
-                          collaborative: value
-                        });
-                      }}
-                    />
-                  </Grid>
-                  <Grid item={true} xs={8}>
-                    <Typography
-                      gutterBottom={true}
-                      className={classes.switchLabel}
-                    >
-                      {`Rendre un projet collaboratif signifie que les personnes que vous`
-                        + ` invitez pourront annoter la vidéo. Si le projet n’est pas `
-                        + ` collaboratif, vous seul.e pourrez annoter la vidéo`}
-                    </Typography>
-                  </Grid>
+                  <Switch
+                    checked={project.public}
+                    onChange={(_, value) => {
+                      setProject({
+                        public: value
+                      });
+                    }}
+                  />
                 </Grid>
-                {error && <DialogError error={error} />}
-              </DialogContent>
-              {loading &&
-                <LinearProgress variant="query" />
-              }
-              <DialogActions style={{ textAlign: 'center' }}>
-                <Button
-                  onClick={() => onCancel()}
-                  color="secondary"
-                  variant="contained"
+                <Grid item={true} xs={8}>
+                  <Typography
+                    gutterBottom={true}
+                    className={classes.switchLabel}
+                  >
+                    {t('project.publicHelper')}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid
+                container={true}
+                direction="row"
+                alignItems="flex-start"
+              >
+                <Grid item={true} xs={2}>
+                  <Typography
+                    variant="subtitle1"
+                    align="right"
+                    className={classes.switchLabel}
+                  >
+                    {t('project.collaborative')}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item={true}
+                  xs={2}
                 >
-                  {`Annuler`}
-                </Button>
-                <Button
-                  onClick={() => onSubmit({ ...project, videoId: video.id })}
-                  color="primary"
-                  variant="contained"
-                >
-                  {`Enregistrer`}
-                </Button>
-              </DialogActions>
-            </Dialog >
-          );
-        } else {
-          return <div />;
-        }
+                  <Switch
+                    checked={project.collaborative}
+                    onChange={(_, value) => {
+                      setProject({
+                        collaborative: value
+                      });
+                    }}
+                  />
+                </Grid>
+                <Grid item={true} xs={8}>
+                  <Typography
+                    gutterBottom={true}
+                    className={classes.switchLabel}
+                  >
+                    {t('project.collaborativeHelper')}
+                  </Typography>
+                </Grid>
+              </Grid>
+              {error && <DialogError error={error} />}
+            </DialogContent>
+            {loading &&
+              <LinearProgress variant="query" />
+            }
+            <DialogActions style={{ textAlign: 'center' }}>
+              <Button
+                onClick={() => onCancel()}
+                color="secondary"
+                variant="contained"
+              >
+                {t('project.cancelAction')}
+              </Button>
+              <Button
+                onClick={() => onSubmit({ ...project, videoId: video.id })}
+                color="primary"
+                variant="contained"
+              >
+                {t('project.createAction')}
+              </Button>
+            </DialogActions>
+          </Dialog >
+        );
+      } else {
+        return <div />;
       }
     }
-  )
-);
+  })
+));

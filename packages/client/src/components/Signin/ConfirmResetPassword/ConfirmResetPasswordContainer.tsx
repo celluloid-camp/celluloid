@@ -1,16 +1,12 @@
-import * as React from 'react';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'react-redux';
-
-import ConfirmResetPassword from './ConfirmResetPasswordComponent';
+import { SigninErrors, TeacherConfirmResetPasswordData } from '@celluloid/types';
 import { doConfirmResetPasswordThunk } from 'actions/Signin';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { AnyAction, Dispatch } from 'redux';
 import { Action } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
-import {
-  TeacherConfirmResetPasswordData,
-  SigninErrors
-} from '@celluloid/types';
+import ConfirmResetPassword from './ConfirmResetPasswordComponent';
 
 interface Props {
   errors: SigninErrors;
@@ -53,8 +49,8 @@ class Confirm extends React.Component<Props, State> {
 
     const confirmPasswordError =
       this.state.confirmPassword === this.state.password
-        ? undefined
-        : 'Les mots de passe ne correspondent pas';
+        ? false
+        : true;
 
     return (
       <ConfirmResetPassword

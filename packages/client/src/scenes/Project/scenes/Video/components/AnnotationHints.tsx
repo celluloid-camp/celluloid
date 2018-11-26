@@ -10,6 +10,7 @@ import {
 import * as classNames from 'classnames';
 import * as React from 'react';
 import { getUserColor } from 'utils/UserUtils';
+import { withI18n, WithI18n } from 'react-i18next';
 
 const styles = (theme: Theme) => createStyles({
   visible: {
@@ -20,7 +21,7 @@ const styles = (theme: Theme) => createStyles({
   },
   hint: {
     cursor: 'pointer',
-    position: 'absolute' as 'absolute',
+    position: 'absolute',
     zIndex: 6,
     height: 10,
     minWidth: 10,
@@ -34,10 +35,10 @@ const styles = (theme: Theme) => createStyles({
     }
   },
   container: {
-    position: 'relative' as 'relative',
+    position: 'relative',
     margin: 24,
-    height: 'calc(100% - 48px)',
-    width: 'calc(100% - 48px)',
+    height: `calc(100% - ${theme.spacing.unit * 6}px)`,
+    width: `calc(100% - ${theme.spacing.unit * 6}px)`,
   },
   title: {
     color: theme.palette.text.disabled,
@@ -55,13 +56,14 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 export default
-  withStyles(styles)((props: Props) => {
+  withStyles(styles)(withI18n()((props: Props & WithI18n) => {
     const {
       duration,
       annotations,
       visible,
       onClick,
       classes,
+      t
     } = props;
 
     const getHintStartPosition = (annotation: AnnotationRecord) =>
@@ -77,31 +79,31 @@ export default
       >
         <Typography className={classes.title} align="left" variant="h5">
           {annotations.length > 0
-            ? `${annotations.length} annotations`
-            : `Aucune annotation`
+            ? t('annotation.hintLabel', { count: annotations.length })
+            : t('annotation.hintLabelNone')
           }
         </Typography>
         {annotations.map((annotation, index) => {
-            return (
-              <Paper
-                key={annotation.id}
-                className={classNames(
-                  classes.hint,
-                  visible ? classes.visible : classes.hidden
-                )}
-                style={{
-                  color: 'white',
-                  top: visible ? 48 + (index * 24) : 0,
-                  left: getHintStartPosition(annotation),
-                  width: getHintWidth(annotation),
-                  backgroundColor: getUserColor(annotation.user),
-                  border: `2px solid ${getUserColor(annotation.user)}`
-                }}
-                onClick={() => onClick(annotation)}
-              />
-            );
-          })
+          return (
+            <Paper
+              key={annotation.id}
+              className={classNames(
+                classes.hint,
+                visible ? classes.visible : classes.hidden
+              )}
+              style={{
+                color: 'white',
+                top: visible ? 48 + (index * 24) : 0,
+                left: getHintStartPosition(annotation),
+                width: getHintWidth(annotation),
+                backgroundColor: getUserColor(annotation.user),
+                border: `2px solid ${getUserColor(annotation.user)}`
+              }}
+              onClick={() => onClick(annotation)}
+            />
+          );
+        })
         }
       </div>
     );
-  });
+  }));

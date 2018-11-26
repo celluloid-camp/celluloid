@@ -2,7 +2,7 @@
   "name": "celluloid",
   "author": "Erwan Queffélec <erwan.queffelec@gmail.com>",
   "license": "MIT",
-  "description": "Celluloid helps students and teacher to interact by annotating online educational videos",
+  "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "private": true,
   "workspaces": [

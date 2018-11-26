@@ -1,4 +1,3 @@
-import { YoutubeVideo } from 'types/YoutubeTypes';
 import { SigninErrors, TeacherSignupData, UserRecord } from '@celluloid/types';
 import { doSignupThunk, openLogin } from 'actions/Signin';
 import * as React from 'react';
@@ -6,6 +5,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { Action } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
+import { YoutubeVideo } from 'types/YoutubeTypes';
 
 import Signup from './SignupComponent';
 
@@ -58,8 +58,8 @@ export default connect(
 
     const confirmPasswordError =
       this.state.confirmPassword === this.state.password
-        ? undefined
-        : 'Les mots de passe ne correspondent pas';
+        ? false
+        : true;
 
     return (
       <Signup

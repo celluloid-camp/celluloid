@@ -19,6 +19,7 @@ import {
 } from 'react-autosuggest';
 import { AppState } from 'types/StateTypes';
 import { connect } from 'react-redux';
+import { WithI18n, withI18n } from 'react-i18next';
 
 const parse = require('autosuggest-highlight/parse');
 const match = require('autosuggest-highlight/match');
@@ -103,7 +104,10 @@ function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
   );
 }
 
-function renderSuggestion(suggestion: Suggestion, params: RenderSuggestionParams): JSX.Element {
+const renderSuggestion = (createLabel: string) => (
+  suggestion: Suggestion,
+  params: RenderSuggestionParams
+): JSX.Element => {
   const matches = match(suggestion.name, params.query);
   const parts = parse(suggestion.name, matches);
 
@@ -134,7 +138,7 @@ function renderSuggestion(suggestion: Suggestion, params: RenderSuggestionParams
       </div>
     </MenuItem>
   );
-}
+};
 
 function renderSuggestionsContainer(params: RenderSuggestionsContainerParams) {
   const { containerProps, children } = params;
@@ -189,16 +193,23 @@ const mapStateToProps = (state: AppState) => ({
   tags: state.tags
 });
 
-export default withStyles(styles)(
+export default (withStyles(styles)(
   connect(mapStateToProps)(
-    class extends React.Component<Props, State> {
+    withI18n()(class extends React.Component<Props & WithI18n, State> {
       state = {
         suggestions: [],
         search: ''
       };
 
       render() {
-        const { classes, tags, label, onTagCreationRequested, onTagSelected } = this.props;
+        const {
+          classes,
+          tags,
+          label,
+          onTagCreationRequested,
+          onTagSelected,
+          t
+        } = this.props;
         const { suggestions, search } = this.state;
 
         const onSuggestionFetchRequested = ({ value }: Autosuggest.SuggestionsFetchRequestedParams): void => {
@@ -259,12 +270,11 @@ export default withStyles(styles)(
             onSuggestionsFetchRequested={onSuggestionFetchRequested}
             renderSuggestionsContainer={renderSuggestionsContainer}
             getSuggestionValue={getSuggestionValue}
-            renderSuggestion={renderSuggestion}
+            renderSuggestion={renderSuggestion(t('tagSearch.createLabel'))}
             onSuggestionSelected={onSuggestionSelected}
             inputProps={inputProps}
           />
         );
       }
-    }
-  )
-);
+    })
+  )));

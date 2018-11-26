@@ -17,6 +17,7 @@ import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import ProjectService from 'services/ProjectService';
 import { ProjectRouteParams } from 'types/ProjectTypes';
+import { withI18n, WithI18n } from 'react-i18next';
 
 const styles = (theme: Theme) => createStyles({
   step: {
@@ -89,143 +90,144 @@ interface State {
 }
 
 export default withRouter(withStyles(styles)(
-  class extends React.Component<Props, State> {
-    state = {} as State;
+  withI18n()(
+    class extends React.Component<Props & WithI18n, State> {
+      state = {} as State;
 
-    componentDidMount() {
-      this.load();
-    }
+      componentDidMount() {
+        this.load();
+      }
 
-    load() {
-      const projectId = this.props.match.params.projectId;
-      ProjectService.get(projectId)
-        .then(project => {
-          this.setState({
-            project,
-            error: undefined
+      load() {
+        const projectId = this.props.match.params.projectId;
+        ProjectService.get(projectId)
+          .then(project => {
+            this.setState({
+              project,
+              error: undefined
+            });
+          })
+          .catch((error: Error) => {
+            this.setState({
+              error: error.message,
+              project: undefined,
+            });
           });
-        })
-        .catch((error: Error) => {
-          this.setState({
-            error: error.message,
-            project: undefined,
-          });
-        });
-    }
+      }
 
-    render() {
-      const { classes } = this.props;
-      const href = window.location.host;
-      const protocol = window.location.protocol;
-      const { project, error } = this.state;
-      const parsedUrl =
-        queryString.parse(this.props.location.search);
-      const password = typeof parsedUrl.p === 'string'
-        ? parsedUrl.p
-        : undefined;
+      render() {
+        const { classes, t } = this.props;
+        const href = window.location.host;
+        const protocol = window.location.protocol;
+        const { project, error } = this.state;
+        const parsedUrl =
+          queryString.parse(this.props.location.search);
+        const password = typeof parsedUrl.p === 'string'
+          ? parsedUrl.p
+          : undefined;
 
-      const onClickPrint = () => window.print();
+        const onClickPrint = () => window.print();
 
-      if (project && password) {
-        const steps = [{
-          title: (
-            <span>
-              {`Allez sur le site internet `}
-              <a href={`${protocol}//${href}`}>{href}</a>
-            </span>
-          )
-        }, {
-          title: (
-            <span>
-              {`Sur la page d'accueil, cliquez sur "rejoindre un projet"`}
-            </span>
-          )
-        }, {
-          title: (
-            <span>
-              {`Entrez le code du projet`}
-            </span>
-          ),
-          body: (
-            <ShareCredentials
-              name={project.shareName}
-              password={password}
-            />
-          )
-        }, {
-          title: (
-            <span>
-              {`Indiquez votre prénom et choisissez une couleur`}
-            </span>
-          )
-        }, {
-          title: (
-            <span>
-              {`Lisez bien les consignes et l'exercice`}
-            </span>
-          )
-        }, {
-          title: (
-            <span>
-              {`Réalisez l'exercice et annotez la vidéo au fil de la lecture`}
-            </span>
-          )
-        }];
+        if (project && password) {
+          const steps = [{
+            title: (
+              <span>
+                {t('project.share.guide.step1')}
+                <a href={`${protocol}//${href}`}>{href}</a>
+              </span>
+            )
+          }, {
+            title: (
+              <span>
+                {t('project.share.guide.step2')}
+              </span>
+            )
+          }, {
+            title: (
+              <span>
+                {t('project.share.guide.step3')}
+              </span>
+            ),
+            body: (
+              <ShareCredentials
+                name={project.shareName}
+                password={password}
+              />
+            )
+          }, {
+            title: (
+              <span>
+                {t('project.share.guide.step4')}
+              </span>
+            )
+          }, {
+            title: (
+              <span>
+                {t('project.share.guide.step5')}
+              </span>
+            )
+          }, {
+            title: (
+              <span>
+                {t('project.share.guide.step6')}
+              </span>
+            )
+          }];
 
-        return (
-          <>
+          return (
+            <>
+              <Paper className={classes.paper}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={onClickPrint}
+                  className={classes.button}
+                >
+                  {t('printAction')}
+                </Button>
+                <Typography variant="display3" gutterBottom={true}>
+                  {t('project.share.guide.title')}
+                </Typography>
 
-            <Paper className={classes.paper}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={onClickPrint}
-                className={classes.button}
-              >
-                {`Imprimer`}
-              </Button>
-              <Typography variant="display3" gutterBottom={true}>
-                {`Fiche pédagogique`}
-              </Typography>
-
-              <ProjectSummary project={project} />
-              <Typography variant="h3" gutterBottom={true}>
-                {`Comment utiliser Celluloid ?`}
-              </Typography>
-              <div style={{ paddingTop: 16 }}>
-                {steps.map((step, index) => {
-                  return (
-                    <div key={index} className={classes.step}>
-                      <div>
-                        <div className={classes.stepNumber}>
-                          {index + 1}
+                <ProjectSummary project={project} />
+                <Typography variant="h3" gutterBottom={true}>
+                  {t('project.share.guide.subtitle')}
+                </Typography>
+                <div style={{ paddingTop: 16 }}>
+                  {steps.map((step, index) => {
+                    return (
+                      <div key={index} className={classes.step}>
+                        <div>
+                          <div className={classes.stepNumber}>
+                            {index + 1}
+                          </div>
+                          <div className={classes.stepSeparator} />
                         </div>
-                        <div className={classes.stepSeparator} />
-                      </div>
-                      <div>
-                        <div className={classes.stepTitle}>
-                          {step.title}
-                        </div>
-                        <div className={classes.stepBody}>
-                          {step.body}
+                        <div>
+                          <div className={classes.stepTitle}>
+                            {step.title}
+                          </div>
+                          <div className={classes.stepBody}>
+                            {step.body}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Paper>
-          </>
-        );
-      } else if (error || !password) {
-        return (
-          <NotFound />
-        );
-      } else {
-        return (
-          <LoadingBig />
-        );
+                    );
+                  })}
+                </div>
+              </Paper>
+            </>
+          );
+        } else if (error || !password) {
+          return (
+            <NotFound />
+          );
+        } else {
+          return (
+            <LoadingBig />
+          );
+        }
       }
     }
-  }
-));
+  ))
+);
