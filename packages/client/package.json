@@ -40,7 +40,7 @@
     "i18next": "^12.0.0",
     "i18next-browser-languagedetector": "^2.2.3",
     "linkify-urls": "^2.0.0",
-    "material-ui-pickers": "^1.0.0-rc.17",
+    "material-ui-pickers": "^2.0.0",
     "moment-duration-format": "^2.2.2",
     "password-generator": "^2.2.0",
     "prop-types": "^15.6.2",

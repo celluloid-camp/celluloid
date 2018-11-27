@@ -7431,7 +7431,7 @@ jss@^9.3.3:
     symbol-observable "^1.1.0"
     warning "^3.0.0"
 
-keycode@^2.1.9:
+keycode@^2.1.9, keycode@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
   integrity sha1-PQr1bce4uOXLqNCpfxByBO7CKwQ=
@@ -7914,16 +7914,17 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-material-ui-pickers@^1.0.0-rc.17:
-  version "1.0.0-rc.17"
-  resolved "https://registry.yarnpkg.com/material-ui-pickers/-/material-ui-pickers-1.0.0-rc.17.tgz#9f0e732fbfadeac1dde3af7b760f3944bc2c86d7"
-  integrity sha512-mzNbMmqTkPhZqfb2nVQ1jBIOb0QUDTMVs6RnqTccCnqPJ8iea5d+P9KTnjyObkeE+Kt0+Fn7OX1+v/w3h0tbHg==
+material-ui-pickers@^2.0.0:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/material-ui-pickers/-/material-ui-pickers-2.0.2.tgz#56b9756254fefd32251ede03af2414ff21572cb5"
+  integrity sha512-c3reNpv4ytl1DdV2+zxRDKD3obL+TjrKlWtK4P4KxcbG/hja6zAO8wwwi578YjxvTDooX9Y1pzpvBwLCYu05zQ==
   dependencies:
-    "@babel/runtime" "^7.0.0"
-    classnames "^2.2.5"
+    classnames "^2.2.6"
+    keycode "^2.2.0"
     react-event-listener "^0.6.4"
     react-text-mask "=5.4.1"
     react-transition-group "^2.5.0"
+    tslib "^1.9.3"
 
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
@@ -12156,7 +12157,7 @@ tsconfig-paths@^3.1.1:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
+tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
