@@ -47,7 +47,7 @@
     "@types/passport-local": "^1.0.33",
     "@types/pg": "^7.4.1",
     "@types/ramda": "^0.25.35",
-    "@types/validator": "^9.4.0",
+    "@types/validator": "^10.0.0",
     "@babel/core": "^7.1.2",
     "babel-loader": "^8.0.0",
     "concurrently": "^4.0.0",
