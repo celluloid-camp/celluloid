@@ -43,7 +43,7 @@
     "@types/knex": "^0.14.15",
     "@types/nodemailer": "^4.6.2",
     "@types/nodemailer-smtp-transport": "^2.7.4",
-    "@types/passport": "^0.4.4",
+    "@types/passport": "^1.0.0",
     "@types/passport-local": "^1.0.33",
     "@types/pg": "^7.4.1",
     "@types/ramda": "^0.25.35",
