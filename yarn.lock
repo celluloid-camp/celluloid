@@ -124,6 +124,13 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@babel/runtime@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.3.1.tgz#574b03e8e8a9898eaf4a872a92ea20b7846f6f2a"
+  integrity sha512-7jGW8ppV0ant637pIqAcFfQDDH1orEPGJb8aXfUozuCU3QqX7rX4DA8iwrbPrR1hcH0FTTHz47yQnk+bl5xHQA==
+  dependencies:
+    regenerator-runtime "^0.12.0"
+
 "@babel/template@^7.1.0", "@babel/template@^7.1.2":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.1.2.tgz#090484a574fef5a2d2d7726a674eceda5c5b5644"
@@ -6027,10 +6034,12 @@ i18next-browser-languagedetector@^2.2.3:
   resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-2.2.3.tgz#4196a9964b6d51b76254706a267ba746c9ca19de"
   integrity sha512-sJZ2n9Vgax0vGer23hJMwyO3FRO7P0dq2DXZPXWE329g3snfJUcw+S24Mp3lqJaxL/0McDu4BD75ds6pzIfhhw==
 
-i18next@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-12.0.0.tgz#27c1494219dde0451a8d714d5bfc19bf055d51bb"
-  integrity sha512-Zy/nFpmBZxgmi6k9HkHbf+MwvAwiY5BDzNjNfvyLPKyalc2YBwwZtblESDlTKLDO8XSv23qYRY2uZcADDlRSjQ==
+i18next@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-15.0.0.tgz#26faacb69949c71328e10bcdb51afc7d7a1e326c"
+  integrity sha512-wcfFJC4pLDGhDMWaaInkyAWhVC8WEQERWJzB61Ai+9fkZ4CqeOKC9qIE5wjJnQmcWIAjJfyck5EGkitPkEcLGQ==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
 
 iconv-lite@0.4.19:
   version "0.4.19"
