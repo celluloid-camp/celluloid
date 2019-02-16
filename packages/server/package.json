@@ -22,7 +22,7 @@
     "passport-local": "^1.0.0",
     "pg": "^7.4.0",
     "ramda": "^0.25.0",
-    "unfurl.js": "^1.1.6",
+    "unfurl.js": "^3.0.0",
     "validator": "^10.2.0"
   },
   "scripts": {
