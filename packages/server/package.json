@@ -54,7 +54,7 @@
     "nodemon": "^1.11.0",
     "ts-loader": "^5.0.0",
     "tslint": "^5.10.0",
-    "tslint-react": "^3.6.0",
+    "tslint-react": "^4.0.0",
     "typescript": "^3.1.2",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",
