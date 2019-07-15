@@ -26,5 +26,10 @@
   },
   "devDependencies": {
     "lerna": "^3.0.0"
+  },
+  "dependencies": {
+    "js-yaml": "^3.13.1",
+    "lodash": "^4.17.13",
+    "mem": "^4.0.0"
   }
 }
