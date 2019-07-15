@@ -65,7 +65,7 @@ const styles = ({ spacing }: Theme) => createStyles({
   },
   levelSlider: {
     flexGrow: 1,
-    paddingTop: 6
+    paddingTop: 20
   },
   levelLabel: {
     fontWeight: 'bold',
@@ -335,7 +335,7 @@ export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(
                     primary={
                       <TextField
                         variant="outlined"
-                        placeholder={'project.assignmentPlaceholder'}
+                        placeholder={t('project.assignmentPlaceholder')}
                         fullWidth={true}
 
                         value={nextAssignment}
@@ -401,7 +401,7 @@ export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(
               </Typography>
               <div className={classes.levels}>
                 <Typography align="left" className={classes.levelLabel}>
-                  {levelLabel(project.levelStart)}
+                  {t(levelLabel(project.levelStart))}
                 </Typography>
                 <div className={classes.levelSlider}>
                   <Range
@@ -421,7 +421,7 @@ export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(
                   />
                 </div>
                 <Typography align="right" className={classes.levelLabel}>
-                  {levelLabel(project.levelEnd)}
+                  {t(levelLabel(project.levelEnd))}
                 </Typography>
               </div>
               <Typography

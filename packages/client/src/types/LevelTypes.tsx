@@ -11,7 +11,7 @@ enum Level {
 const levelLabel = (level: Level) => {
   switch (level) {
     case Level.KINDERGARTEN:
-      return 'levels.kindergarten';
+      return 'levels.kinderGarten';
     case Level.ELEMENTARY_SCHOOL_1:
       return 'levels.elementarySchool1';
     case Level.ELEMENTARY_SCHOOL_2:

@@ -95,6 +95,8 @@ export default {
   },
 
   project: {
+    createAction: 'Créer le projet',
+    cancelAction: 'Annuler',
     createTitle: 'Nouveau projet',
     objective: 'Objectif',
     assignments: 'Exercice',
