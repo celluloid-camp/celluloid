@@ -6,6 +6,7 @@ const logoIcp = require('./images/logo-icp.jpg');
 const logoFsm = require('./images/logo-fsm.jpg');
 const logoLp = require('./images/logo-lp.png');
 const logoBlog = require('./images/logo-blog-celluloid.jpg');
+const logoHN = require('./images/logo-huma-num.jpg');
 
 export default withI18n()(({ t }: WithI18n) => (
   <div
@@ -54,6 +55,12 @@ export default withI18n()(({ t }: WithI18n) => (
             <img src={logoBlog} height="100px" alt="Le blog Celluloid" />
           </a>
         </Grid>
+        <Grid item={true}>
+          <a href="https://www.huma-num.fr/" target="_blank">
+            <img src={logoHN} height="100px" alt="Le site de Huma-num" />
+          </a>
+        </Grid>
+
       </Grid>
     </div>
   </div>
