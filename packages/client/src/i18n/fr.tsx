@@ -99,7 +99,7 @@ export default {
     cancelAction: 'Annuler',
     createTitle: 'Nouveau projet',
     objective: 'Objectif',
-    assignments: 'Exercice',
+    assignment: 'Exercice',
     title: 'Titre',
     description: 'Description',
     public: 'Public',
@@ -131,8 +131,8 @@ export default {
     levelsSection: 'Niveau',
     visibilitySection: 'Partage',
 
-    assignmentPlaceholder: 'Ajouter une activité',
-    tagsPlaceholder: '"Recherchez ou ajoutez un autre domaine…',
+    assignmentPlaceholder: 'Ajoutez une activité',
+    tagsPlaceholder: 'Recherchez ou ajoutez un autre domaine…',
 
     codeWarning: {
       title: 'Conservez bien ce code.',
@@ -172,7 +172,7 @@ export default {
   annotation: {
     pauseLabel: 'mettre en pause ?',
     contentPlaceholder: 'Saisissez votre annotation…',
-    commentPlaceholade: 'Laissez un commentaire…',
+    commentPlaceholder: 'Laissez un commentaire…',
     hintLabel: '{{count}} annotation',
     hintLabel_plural: '{{count}} annotations',
     hintLabelNone: 'Aucune annotation',

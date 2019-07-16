@@ -96,7 +96,7 @@ export default {
     cancelAction: 'Cancel',
     createTitle: 'New project',
     objective: 'Objective',
-    assignments: 'Assignment',
+    assignment: 'Assignment',
     title: 'Title',
     description: 'Description',
     public: 'Public',
@@ -161,7 +161,7 @@ export default {
   annotation: {
     pauseLabel: 'pause video ?',
     contentPlaceholder: 'type in your annotation…',
-    commentPlaceholade: 'Leave a comment…',
+    commentPlaceholder: 'Leave a comment…',
     hintLabel: '{{count}} annotation',
     hintLabel_plural: '{{count}} annotations',
     hintLabelNone: 'No annotation at this time',
