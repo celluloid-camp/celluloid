@@ -11,3 +11,4 @@ export const ERR_CREATE_COMMENT_AUTH = `Vous n'avez plus de droit de commenter`;
 export const ERR_UPDATE_COMMENT_AUTH = `Vous n'avez plus de droit de modifier ce commentaire`;
 export const ERR_DELETE_COMMENT_AUTH = `Vous n'avez plus de droit de supprimer ce commentaire`;
 export const ERR_COMMENT_NOT_FOUND = `Ce commentaire n'existe plus`;
+export const ERR_ALREADY_EXISTING_PROJECT = 'Un projet avec le même titre existe déjà, veuillez renommer le projet';
