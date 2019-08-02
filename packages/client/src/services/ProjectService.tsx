@@ -74,7 +74,7 @@ export default class Projects {
       } else if (response.status === 401) {
         throw new Error(Constants.ERR_NOT_LOGGED_IN);
       }
-      throw new Error(Constants.ERR_UNAVAILABLE);
+      throw new Error(Constants.ERR_ALREADY_EXISTING_PROJECT);
     });
   }
 

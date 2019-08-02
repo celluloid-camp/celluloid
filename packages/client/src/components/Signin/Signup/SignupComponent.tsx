@@ -40,7 +40,7 @@ export default withI18n()(({
       }
       {(video && !user) &&
         <Typography gutterBottom={true} variant="subtitle2" color="primary">
-          {t('signin.singupOrLoginMessage')}
+          {t('signin.signupOrLoginMessage')}
         </Typography>
       }
       <TextField
