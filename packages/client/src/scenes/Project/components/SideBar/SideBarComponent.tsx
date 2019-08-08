@@ -20,6 +20,8 @@ import * as React from 'react';
 import { AsyncAction } from 'types/ActionTypes';
 import { isOwner } from 'utils/ProjectUtils';
 
+import ShareCredentials from 'components/ShareCredentials';
+
 import ShareDialog from './components/ShareDialog';
 import { withI18n, WithI18n } from 'react-i18next';
 
@@ -146,6 +148,22 @@ export default withStyles(styles)(withI18n()(({
           <ShareDialog
             project={project}
           />
+          {(project.shared) &&
+            <div className={classes.chips}>
+              <ShareCredentials
+                name={project.shareName}
+                password={project.sharePassword}
+              />
+              
+              {t('project.share.dialog.description')}
+              <a
+                href={`/shares/${project.id}?p=${project.sharePassword}`}
+                target="_blank"
+              >
+                {t('project.share.dialog.linkText')}
+              </a>.
+            </div>
+          }
         </>
       }
       {/* {(user && !isOwner(project, user) && !isMember(project, user) && project.shared) &&
