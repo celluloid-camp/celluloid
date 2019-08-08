@@ -1,5 +1,5 @@
 import { ProjectCreateData, ProjectRecord, ProjectShareData, UserRecord } from '@celluloid/types';
-import { generateUniqueShareName, hashPassword } from 'auth/Utils';
+import { generateUniqueShareName } from 'auth/Utils';
 import { database, filterNull, getExactlyOne, hasConflictedOn } from 'backends/Database';
 import { QueryBuilder } from 'knex';
 
@@ -181,7 +181,7 @@ export function shareById(projectId: string, data: ProjectShareData) {
   return database('Project')
     .update({
       shared: true,
-      sharePassword: hashPassword(data.sharePassword),
+      sharePassword: data.sharePassword,
     })
     .returning('*')
     .where('id', projectId)
