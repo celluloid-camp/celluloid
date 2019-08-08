@@ -32,6 +32,7 @@ export interface ProjectRecord extends ProjectCreateData {
   publishedAt: Date;
   shared: boolean;
   shareName: string;
+  sharePassword: string;
   shareExpiresAt: string;
 }
 
