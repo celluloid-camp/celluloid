@@ -135,10 +135,10 @@ export default {
     tagsPlaceholder: 'Recherchez ou ajoutez un autre domaine…',
 
     codeWarning: {
-      title: 'Conservez bien ce code.',
-      description: 'L\'application ne pourra plus l\'afficher une fois'
-        + ' cette fenêtre fermée. En cas de perte, il faudra'
-        + ' en créer un nouveau.'
+      title: 'Partagez ce code avec vos élèves. ',
+      description: 'Ce code sera disponible sur la page de projet'
+        + ' Vous pouvez le réinitialiser en partageant'
+        + ' à nouveau le projet.'
     },
 
     share: {

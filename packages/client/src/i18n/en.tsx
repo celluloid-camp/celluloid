@@ -127,14 +127,14 @@ export default {
     tagsPlaceholder: 'Search or create tag…',
 
     codeWarning: {
-      title: 'Make sure to remember this code.',
-      description: 'You won\t be able to recover it once this popup closes.'
-        + ' If you loose it, you will have the option to generate a new one.'
+      title: 'Share this code with your students. ',
+      description: 'This code will be available on the project page.'
+        + ' To reset it, just reshare the project.'
     },
 
     share: {
       dialog: {
-        description: 'To open printable instuctions in a new widow',
+        description: 'To open printable instructions in a new widow ',
         linkText: 'click here'
       },
       guide: {
