@@ -107,7 +107,8 @@ export default {
     shared: 'Partage',
     members: '{{ count }} participant',
     members_plural: '{{ count }} participants',
-
+    URL_title: 'URL de la vidéo',
+    videoUrlHelper: 'Lien vers la vidéo originale',
     titleHelper: 'Donnez un titre à votre projet',
     descriptionHelper: 'Décrivez brièvement le contenu de la vidéo',
     objectiveHelper: 'Fixez l\'objectif pédagogique du projet',
