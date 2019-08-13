@@ -104,7 +104,8 @@ export default {
     shared: 'Share',
     members: '{{ count }} attendees',
     members_plural: '{{ count }} attendees',
-
+    URL_title: 'Video URL',
+    videoUrlHelper: 'Link to the original video',
     titleHelper: 'Choose a meaningful title for your project',
     descriptionHelper: 'Briefly describe your video',
     objectiveHelper: 'Choose an educational objective',
