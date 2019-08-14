@@ -123,7 +123,12 @@ export default withStyles(styles)(
         gutterBottom={true}
         variant="subtitle1"
       >
-        <a href={`${projectURLBase}${project.videoId}`}>{t('project.videoUrlHelper')}</a>
+        <a
+         href={`${projectURLBase}${project.videoId}`}
+         target="_blank"
+        >
+          {t('project.videoUrlHelper')}
+        </a>
       </Typography>
     </>
 
