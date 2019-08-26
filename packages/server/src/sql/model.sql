@@ -151,8 +151,7 @@ CREATE TABLE public."User" (
     "codeGeneratedAt" timestamp without time zone,
     username text NOT NULL,
     role public."UserRole" DEFAULT 'Teacher'::public."UserRole" NOT NULL,
-    "passwordHint" text,
-    CONSTRAINT "Project_check_userValid" CHECK ((((role = ANY (ARRAY['Teacher'::public."UserRole", 'Admin'::public."UserRole"])) AND (email IS NOT NULL)) OR ((role = 'Student'::public."UserRole") AND ("passwordHint" IS NOT NULL))))
+    CONSTRAINT "Project_check_userValid" CHECK ((((role = ANY (ARRAY['Teacher'::public."UserRole", 'Admin'::public."UserRole"])) AND (email IS NOT NULL)) OR ((role = 'Student'::public."UserRole"))))
 );
 
 

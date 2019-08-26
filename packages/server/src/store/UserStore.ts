@@ -4,7 +4,6 @@ import { QueryBuilder, Transaction } from 'knex';
 
 export function createStudent(
   username: string,
-  passwordHint: string,
   password: string,
   projectId: string
 ) {
@@ -14,7 +13,6 @@ export function createStudent(
         .transacting(transaction)
         .insert({
           id: database.raw('uuid_generate_v4()'),
-          passwordHint,
           password: hashPassword(password),
           username,
           confirmed: false,

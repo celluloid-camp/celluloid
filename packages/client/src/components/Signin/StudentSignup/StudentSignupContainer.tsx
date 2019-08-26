@@ -38,8 +38,7 @@ export default withI18n()(connect(
     state = {
       shareCode: '',
       username: '',
-      password: '',
-      passwordHint: this.props.t('signin.defaultQuestion')
+      password: 'Cellulo1d'
     };
 
     render() {

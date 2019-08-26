@@ -57,8 +57,7 @@ export default {
     code: 'Code de confirmation',
     email: 'Adresse email',
     password: 'Mot de passe',
-    passwordHint: 'Question secrète',
-    secretAnswer: 'Réponse à la question',
+    secretAnswer: 'Mot de passe',
     projectCode: 'Code du projet',
     confirmPassword: 'Confirmer le mot de passe',
 
@@ -68,9 +67,8 @@ export default {
 
     notRegistered: 'Pas encore de compte ?',
     alreadyRegistered: 'Déjà un compte ?',
-    rememberAnswer: 'Attention ! Cette réponse sert de mot de passe'
-      + ' et ne pourra pas être récupérée !',
-    defaultQuestion: 'Quel est le nom de ton livre préféré ?',
+    rememberAnswer: 'Attention ! si vous êtes Etudiant/Elève'
+       + ' ne touchez pas au champ du mot de passe',
 
     resetAction: 'mettre à jour',
     resendCodeAction: 'Envoyer un nouveau code',
