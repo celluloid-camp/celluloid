@@ -122,11 +122,5 @@ export function validateStudentSignup(payload: StudentSignupData) {
     result.errors.password = 'InvalidPasswordFormat';
   }
 
-  if (!payload || typeof payload.passwordHint !== 'string' ||
-    payload.passwordHint.trim().length === 0) {
-    result.success = false;
-    result.errors.passwordHint = 'MissingPasswordHint';
-  }
-
   return result;
 }

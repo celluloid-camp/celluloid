@@ -55,7 +55,6 @@ export default {
     code: 'Confirmation code',
     email: 'Email address',
     password: 'Password',
-    passwordHint: 'Secret question',
     secretAnswer: 'Secret answer',
     projectCode: 'Project code',
     confirmPassword: 'Confirm password',
@@ -66,9 +65,8 @@ export default {
 
     notRegistered: 'Not registered?',
     alreadyRegistered: 'Already registered?',
-    rememberAnswer: 'Warning! This answer will act as your password'
-      + ' and cannot be recovered!',
-    defaultQuestion: 'What is the title of your favorite book ?',
+    rememberAnswer: 'Warning! if you are a pupils/students'
+      + ' do not changer the password field',
 
     resetAction: 'reset',
     resendCodeAction: 'resend code',
