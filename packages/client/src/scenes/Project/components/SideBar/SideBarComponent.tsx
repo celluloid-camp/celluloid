@@ -18,7 +18,7 @@ import UserAvatar from 'components/UserAvatar';
 import VisibilityChip from 'components/VisibilityChip';
 import * as React from 'react';
 import { AsyncAction } from 'types/ActionTypes';
-import { isOwner, isMember } from 'utils/ProjectUtils';
+import { isOwner } from 'utils/ProjectUtils';
 
 import ShareCredentials from 'components/ShareCredentials';
 
@@ -181,7 +181,7 @@ export default withStyles(styles)(withI18n()(({
           </ButtonProgress>
         </div>
       } */}
-       {(user && (isMember(project, user) || isOwner(project, user)))  &&
+       {(user && isOwner(project, user))  &&
         <List
           dense={true}
           className={classes.list}
