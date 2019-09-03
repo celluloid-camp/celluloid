@@ -9,7 +9,6 @@ export interface SigninErrors {
   code?: string;
   server?: string;
   shareCode?: string;
-  passwordHint?: string;
 }
 
 export interface SigninResult {
@@ -52,7 +51,6 @@ export interface StudentRecord extends StudentData {
 export interface StudentSignupData {
   username: string;
   password: string;
-  passwordHint: string;
   shareCode: string;
 }
 

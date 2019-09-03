@@ -37,8 +37,7 @@ export const deserializeUser = (id: string, done) => {
 
 const signStudentUp = (req, username, password, done) => {
     const {
-        shareCode,
-        passwordHint
+        shareCode
     } = req.body;
 
     const parts = shareCode.split('-');
@@ -56,7 +55,6 @@ const signStudentUp = (req, username, password, done) => {
                 if ((sharePassword == result.sharePassword)) {
                     return UserStore.createStudent(
                         username,
-                        passwordHint,
                         password,
                         result.id
                     );
