@@ -29,20 +29,21 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-export default withI18n()(connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default withI18n()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
 
 )(
   class extends React.Component<Props, StudentSignupData> {
     state = {
       shareCode: '',
       username: '',
-      password: 'Cellulo1d'
+      password: ''
     };
 
     render() {
-      const { errors, onClickLogin, onSubmit } = this.props;
+      const { errors, onClickLogin, onSubmit, } = this.props;
 
       const onChange = (name: string, value: string) => {
         this.setState(state => ({

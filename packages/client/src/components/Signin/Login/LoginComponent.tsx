@@ -2,7 +2,6 @@ import { Credentials, SigninErrors } from '@celluloid/types';
 import TextField from '@material-ui/core/TextField';
 import DialogAltButtons from 'components/DialogAltButtons';
 import DialogButtons from 'components/DialogButtons';
-import DialogError from 'components/DialogError';
 import SigninError from 'components/DialogError';
 import * as React from 'react';
 import { WithI18n, withI18n } from 'react-i18next';
@@ -39,7 +38,6 @@ export default withI18n()(({
         onChange={event => onChange('login', event.target.value)}
         helperText={errors && errors.login}
       />
-      <DialogError error={t('signin.rememberAnswer')} />
       <TextField
         margin="dense"
         fullWidth={true}

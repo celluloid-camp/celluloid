@@ -55,6 +55,18 @@ export default withStyles(styles)(withI18n()(
           onChange={event => onChange('username', event.target.value)}
           helperText={errors.username}
         />
+        
+        <TextField
+          margin="dense"
+          fullWidth={true}
+          error={errors.password ? true : false}
+          label={t('signin.lastName')}
+          value={data.password}
+          required={true}
+          onChange={event => onChange('password', event.target.value)}
+          helperText={errors.password ? errors.password : ''}
+        />
+        <DialogError error={t('signin.rememberlastName')} />
         {errors.server && <DialogError error={errors.server} />}
         <DialogAltButtons
           heading={t('signin.alreadyRegistered')}

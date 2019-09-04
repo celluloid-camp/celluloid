@@ -35,7 +35,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
   class extends React.Component<Props, Credentials> {
     state = {
       login: '',
-      password: 'Cellulo1d',
+      password: '',
     } as Credentials;
 
     render() {
