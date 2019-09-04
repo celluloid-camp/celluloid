@@ -154,7 +154,7 @@ export default withStyles(styles)(withI18n()(({
                 name={project.shareName}
                 password={project.sharePassword}
               />
-              
+
               {t('project.share.dialog.description')}
               <a
                 href={`/shares/${project.id}?p=${project.sharePassword}`}
@@ -181,18 +181,19 @@ export default withStyles(styles)(withI18n()(({
           </ButtonProgress>
         </div>
       } */}
-      <List
-        dense={true}
-        className={classes.list}
-        subheader={
+       {(user && isOwner(project, user))  &&
+        <List
+          dense={true}
+          className={classes.list}
+          subheader={
           <ListSubheader
             className={classes.listHeader}
           >
             {t('project.members', { count: members.size })}
           </ListSubheader>
         }
-      >
-        {Array.from(members).map((member: Member) => (
+        >
+          {Array.from(members).map((member: Member) => (
           <ListItem key={member.id} className={classes.listItem}>
             <ListItemAvatar>
               <UserAvatar user={member} />
@@ -203,7 +204,7 @@ export default withStyles(styles)(withI18n()(({
             />
           </ListItem>
         ))}
-      </List>
+        </List>}
       {(user && isOwner(project, user)) &&
         <div className={classes.button}>
           <ButtonProgress
