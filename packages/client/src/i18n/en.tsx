@@ -55,7 +55,7 @@ export default {
     code: 'Confirmation code',
     email: 'Email address',
     password: 'Password',
-    secretAnswer: 'Secret answer',
+    lastName: 'Last name',
     projectCode: 'Project code',
     confirmPassword: 'Confirm password',
 
@@ -65,8 +65,7 @@ export default {
 
     notRegistered: 'Not registered?',
     alreadyRegistered: 'Already registered?',
-    rememberAnswer: 'Warning! if you are a pupils/students'
-      + ' do not changer the password field',
+    rememberlastName: 'Your last name will serve as your login password',
 
     resetAction: 'reset',
     resendCodeAction: 'resend code',

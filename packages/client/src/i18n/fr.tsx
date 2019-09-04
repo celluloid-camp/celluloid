@@ -57,7 +57,7 @@ export default {
     code: 'Code de confirmation',
     email: 'Adresse email',
     password: 'Mot de passe',
-    secretAnswer: 'Mot de passe',
+    lastName: 'Nom de famille',
     projectCode: 'Code du projet',
     confirmPassword: 'Confirmer le mot de passe',
 
@@ -67,8 +67,7 @@ export default {
 
     notRegistered: 'Pas encore de compte ?',
     alreadyRegistered: 'Déjà un compte ?',
-    rememberAnswer: 'Attention ! si vous êtes Etudiant/Elève'
-       + ' ne touchez pas au champ du mot de passe',
+    rememberlastName: 'Votre nom de famille vous servira de mot de passe',
 
     resetAction: 'mettre à jour',
     resendCodeAction: 'Envoyer un nouveau code',
