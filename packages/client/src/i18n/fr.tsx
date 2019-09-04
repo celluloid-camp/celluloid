@@ -53,7 +53,7 @@ export default {
     joinProjectTitle: 'Rejoindre un projet',
 
     login: 'Email ou nom d\'utilisateur',
-    username: 'Nom complet ou pseudo',
+    username: 'Prenom ou pseudo',
     code: 'Code de confirmation',
     email: 'Adresse email',
     password: 'Mot de passe',

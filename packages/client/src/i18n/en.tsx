@@ -51,7 +51,7 @@ export default {
     joinProjectTitle: 'Join project',
 
     login: 'Email or username',
-    username: 'Username',
+    username: 'Fisrtname or Username',
     code: 'Confirmation code',
     email: 'Email address',
     password: 'Password',
