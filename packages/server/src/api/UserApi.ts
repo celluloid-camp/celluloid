@@ -153,30 +153,28 @@ router.post('/confirm-reset-password', (req, res) => {
   if (!result.success) {
     return res.status(400).json(result);
   }
-  return UserStore.selectOneByUsernameOrEmail(payload.email)
+  return UserStore.selectOneByUsernameOrEmail(payload.login)
     .then((user?: TeacherServerRecord) => {
       if (!user) {
-        console.error(`Failed to confirm password reset: user`
-          + ` with email ${payload.email} not found`);
+        console.error(`Failed to confirm password reset: user with email ${payload.login} not found`);
         return res.status(401).json({
           success: false, errors: { server: 'InvalidUser' }
         });
       } else {
         if (compareCodes(user.code, payload.code)) {
           return UserStore.updatePasswordByEmail(
-            payload.email.trim(),
+            payload.login.trim(),
             payload.password
           )
             .then(() => res.status(200).json(result))
             .catch((error: Error) => {
               console.error(
-                `Failed to confirm password reset for user`
-                + ` with email ${payload.email}`,
+                `Failed to confirm password reset for user with email ${payload.login}`,
                 error);
               return res.status(500).send();
             });
         } else {
-          console.error(`Failed to confirm password reset for user with email ${payload.email}:`
+          console.error(`Failed to confirm password reset for user with email ${payload.login}:`
             + ` received code ${payload.code}, expected ${user.code}`);
           return res.status(401).json({
             success: false, errors: { server: 'InvalidUser' }
