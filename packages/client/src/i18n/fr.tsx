@@ -15,6 +15,10 @@ export default {
       + ' votre projet pédagogique, annotez les images,'
       + ' posez des questions et répondez à celles des'
       + ' participant.e.s.',
+    tutoriel: {
+      prefix: 'Pour une bonne prise en main de l’application voici un lien pour le ',
+      suffix: 'tutoriel d’utilisation'
+    },
     teachers: 'Enseignants et formateurs',
     students: 'Élèves et étudiants',
     addVideo: 'Ajoutez un lien vers une vidéo YouTube...',

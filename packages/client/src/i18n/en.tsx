@@ -13,6 +13,10 @@ export default {
       + ' your pupils or your training groups: create your'
       + ' educational project, annotate the video frames,'
       + ' ask questions, provide the answers.',
+    tutoriel: {
+      prefix: 'For a good grip of the application here is a link for the ',
+      suffix: 'tutorial of use'
+    },
     teachers: 'Teachers & Trainers',
     students: 'Pupils & Students',
     addVideo: 'Add a link to a YouTube video...',
