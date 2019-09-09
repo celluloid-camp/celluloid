@@ -18,9 +18,9 @@ export default () => (
     <Typography component="div">
       <p>
         <b>Celluloid :</b> désigne la plateforme en ligne hébergée à l’adress <a
-          href="celluloid.camp"
+          href="https://celluloid.huma-num.fr"
         >
-          celluloid.camp
+          celluloid.huma-num.fr
         </a> et permettant l’annotation collaborative de vidéos à des fins pédagogiques.
       </p>
       <p>
@@ -33,14 +33,14 @@ export default () => (
       </p>
       <p>
         <b>Plateforme :</b> renvoie aux fonctionnalités fournies depuis le site internet <a
-          href="celluloid.camp"
+          href="https://celluloid.huma-num.fr"
         >
-          celluloid.camp
+          celluloid.huma-num.fr
         </a>
       </p>
       <p>
         <b>Contenu(s) :</b> désigne(nt) les créations et interactions que des tiers ou Vous
-        avez mises en ligne sur la plateforme internet <a href="celluloid.camp">celluloid.camp</a>
+        avez mises en ligne sur la plateforme internet <a href="https://celluloid.huma-num.fr">celluloid.huma-num.fr</a>
       </p>
       <p>
         <b>Partenaire(s) :</b> désigne(nt) les centres de formation, les entreprises et les
@@ -74,7 +74,7 @@ export default () => (
       </p>
       <p>
         Les CGU sont notamment accessibles et imprimables à tout moment par un lien direct en bas de
-        la page d’accueil du site internet <a href="celluloid.camp">celluloid.camp</a>.
+        la page d’accueil du site internet <a href="https://celluloid.huma-num.fr">celluloid.huma-num.fr</a>.
       </p>
       <p>
         Les CGU
