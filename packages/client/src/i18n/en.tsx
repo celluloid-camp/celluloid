@@ -37,7 +37,8 @@ export default {
       + ' from Fondation Saint Matthieu.',
     opensource: {
       prefix: 'Celluloid is an Open Source project crafted by Erwan'
-        + ' Queffélec, through a partnership with La Paillasse.'
+        + ' Queffélec with the participation of Souleymane Thiam and Guillaume Aichhorn'
+        + ' , through a partnership with La Paillasse.'
         + ' Its source code is freely available ',
       github: 'on GitHub'
     }

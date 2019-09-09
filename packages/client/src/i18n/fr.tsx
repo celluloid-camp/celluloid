@@ -39,7 +39,8 @@ export default {
       + ' Fondation Saint Matthieu.',
     opensource: {
       prefix: 'Celluloid est un projet Open Source développé par Erwan'
-        + ' Queffélec dans le cadre d\'un partenariat avec La Paillasse.'
+        + ' Queffélec avec la participation de Souleymane Thiam et de Guillaume Aichhorn'
+        + ' dans le cadre d\'un partenariat avec La Paillasse.'
         + ' L’ensemble du code est accessible librement ',
       github: 'sur GitHub'
     }

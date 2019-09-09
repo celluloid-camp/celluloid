@@ -15,9 +15,8 @@ export default () => (
     <Typography component="div">
       <p>
         En accédant ou en utilisant le Site Web, <a
-          href="celluloid.camp"
-        >
-          celluloid.camp
+          href="https://celluloid.huma-num.fr"
+        >celluloid.huma-num.fr
         </a>, exploité par l'Institut Catholique de Paris, ("ICP"),
         vous acceptez les termes des Règles de confidentialité en
         ligne présentées ci-après. Si vous n'êtes pas d'accord avec
@@ -30,7 +29,7 @@ export default () => (
         75270 PARIS Cedex 06
       </p>
       <p>
-        Les informations et documents présentés sur Celluloid.camp
+        Les informations et documents présentés sur <b>celluloid.huma-num.fr</b> 
         sont fournis sans aucune garantie expresse ou tacite ;
         le site peut présenter des erreurs techniques et typographiques
         ou autres inexactitudes, ce que vous reconnaissez
@@ -53,7 +52,10 @@ export default () => (
         <b>Directeurs de la publication :</b> Michael Bourgatte et Laurent Tessier
       </p>
       <p>
-        <b>Conception, réalisation et hébergement :</b> Erwan Quéffelec
+        <b>Conception :</b> Erwan Quéffelec
+      </p>
+      <p>
+        <b>Réalisation et hébergement :</b> Erwan Quéffelec, Souleymane Thiam et Guillaume Aichhorn
       </p>
       <p>
         Celluloid est un projet open source, partagé ici : <a
