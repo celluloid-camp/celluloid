@@ -16,8 +16,8 @@ export default {
       + ' posez des questions et répondez à celles des'
       + ' participant.e.s.',
     tutoriel: {
-      prefix: 'Pour une bonne prise en main de l’application voici un lien pour le ',
-      suffix: 'tutoriel d’utilisation'
+      prefix: 'Pour découvrir l’application, vous pouvez consulter le ',
+      suffix: 'tutoriel '
     },
     teachers: 'Enseignants et formateurs',
     students: 'Élèves et étudiants',
