@@ -14,8 +14,8 @@ export default {
       + ' educational project, annotate the video frames,'
       + ' ask questions, provide the answers.',
     tutoriel: {
-      prefix: 'For a good grip of the application here is a link for the ',
-      suffix: 'tutorial of use'
+      prefix: 'To discover the application, you can consult the ',
+      suffix: 'tutorial '
     },
     teachers: 'Teachers & Trainers',
     students: 'Pupils & Students',
