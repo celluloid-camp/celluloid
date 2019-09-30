@@ -1,6 +1,6 @@
 import { listProjectsThunk } from 'actions/ProjectActions';
 import TagSearchBox from 'components/TagSearchBox/TagSearchBox';
-import { isMember, isOwner } from 'utils/ProjectUtils';
+import { isMember, isOwner, isAdmin } from 'utils/ProjectUtils';
 import { ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
 import {
   Chip,
@@ -122,7 +122,7 @@ export default withStyles(styles)(
         const sorted = sort(filtered) as ProjectGraphRecord[];
 
         const userProjects = R.filter((project: ProjectGraphRecord) =>
-          !!user && (isOwner(project, user) || isMember(project, user))
+          !!user && (isOwner(project, user) || isMember(project, user) || isAdmin(user))
         )(sorted);
 
         const publicProjects = R.difference(sorted, userProjects);
