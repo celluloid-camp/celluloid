@@ -27,7 +27,7 @@ export function isTeacher(
   req: Request,
   res: Response,
   next: NextFunction) {
-  if (!req.user || req.user.role !== 'Teacher' ) {
+  if ((!req.user || req.user.role !== 'Teacher') && (!req.user || req.user.role !== 'Admin')) {
     console.error('User is must be a teacher');
     return Promise.resolve(res.status(403).json({
       error: 'TeacherRoleRequired'
