@@ -78,4 +78,5 @@ export interface UserRecord {
   id: string;
   username: string;
   role: UserRole;
+  email?: string;
 }

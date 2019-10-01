@@ -42,7 +42,7 @@ export default withStyles(styles)(({
             container={true}
             direction="row"
             alignItems="flex-start"
-            spacing={24}
+            spacing={16}
           >
             <Grid item={true} xs={12} md={8} lg={9}>
               <ProjectSummary project={project} />

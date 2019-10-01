@@ -166,7 +166,8 @@ export default withStyles(styles)(withI18n()(({
           }
         </>
       }
-     {/* {(user && !isOwner(project, user) && !isMember(project, user) && !isAdmin(user) && project.shared) &&
+      {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
+      && (user && !isAdmin(user)) && project.shared) &&
         <div className={classes.button}>
           <ButtonProgress
             variant="contained"
@@ -179,8 +180,8 @@ export default withStyles(styles)(withI18n()(({
             {`rejoindre`}
           </ButtonProgress>
         </div>
-      }*/} 
-       {((user && isAdmin(user)) || (user && isOwner(project, user))) &&
+      } */}
+       {(user && isOwner(project, user)) &&
         <List
           dense={true}
           className={classes.list}
@@ -199,11 +200,44 @@ export default withStyles(styles)(withI18n()(({
             </ListItemAvatar>
             <ListItemText
               primary={member.username}
-              secondary={member.subtitle}
+              secondary={member.subtitle} 
             />
           </ListItem>
         ))}
-        </List>}
+        </List>
+        }
+        
+        {(user && isAdmin(user)) &&
+        <List
+          dense={true}
+          className={classes.list}
+          subheader={
+          <ListSubheader
+            className={classes.listHeader}
+          >
+            {t('project.members', { count: members.size })}
+          </ListSubheader>
+        }
+        >
+          {Array.from(members).map((member: Member) => (
+        <div>
+          <ListItem key={member.id} className={classes.listItem}>
+            <ListItemAvatar>
+              <UserAvatar user={member} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={member.username}
+              secondary={member.subtitle} 
+            />
+            <ListItemText
+              primary={member.email}
+            /> 
+          </ListItem>
+        </div>
+        ))}
+        </List>
+        }
+        
       {((user && isOwner(project, user)) || (user && isAdmin(user))) &&
         <div className={classes.button}>
           <ButtonProgress
