@@ -220,7 +220,6 @@ export default withStyles(styles)(withI18n()(({
         }
         >
           {Array.from(members).map((member: Member) => (
-        <div>
           <ListItem key={member.id} className={classes.listItem}>
             <ListItemAvatar>
               <UserAvatar user={member} />
@@ -233,7 +232,6 @@ export default withStyles(styles)(withI18n()(({
               primary={member.email}
             /> 
           </ListItem>
-        </div>
         ))}
         </List>
         }
