@@ -15,7 +15,7 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
-    "knex": "^0.15.2",
+    "knex": "^0.20.0",
     "nodemailer": "^4.6.7",
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.4.0",
