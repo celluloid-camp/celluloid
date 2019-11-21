@@ -50,7 +50,7 @@
     "@types/validator": "^9.4.0",
     "@babel/core": "^7.1.2",
     "babel-loader": "^8.0.0",
-    "concurrently": "^4.0.0",
+    "concurrently": "^5.0.0",
     "nodemon": "^1.11.0",
     "ts-loader": "^5.0.0",
     "tslint": "^5.10.0",
