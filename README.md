@@ -13,7 +13,7 @@ collect their answers, answer their questions.
 
 ## Demo
 
-Head to www.celluloid.camp, create an account and click where you think you should!
+Head to https://celluloid.huma-num.fr/, create an account and click where you think you should!
 
 We'd appreciate your feedback about the application UX and design, as well as bug reports - don't hesitate to [report an issue!](https://github.com/celluloid-camp/celluloid/issues)
 
