@@ -22,9 +22,15 @@
     "build-libs": "yarn build-types && yarn build-validators",
     "build": "yarn build-libs && yarn build-client && yarn build-server",
     "deploy": "./bin/deploy",
-    "start": "(cd packages/server && yarn start)"
+    "start": "(cd packages/server && yarn start)",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "devDependencies": {
     "lerna": "^3.0.0"
+  },
+  "snyk": true,
+  "dependencies": {
+    "snyk": "^1.316.1"
   }
 }
