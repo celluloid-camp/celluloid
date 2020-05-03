@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { paramCase } from 'change-case';
 import { NextFunction, Request, Response } from 'express';
 import * as ProjectStore from 'store/ProjectStore';
-import { TeacherServerRecord } from 'types/UserTypes';
+import { TeacherServerRecord  } from 'types/UserTypes';
 
 export function hashPassword(password: string) {
   const salt = bcrypt.genSaltSync();
@@ -27,7 +27,7 @@ export function isTeacher(
   req: Request,
   res: Response,
   next: NextFunction) {
-  if (!req.user || req.user.role !== 'Teacher') {
+  if ((!req.user || req.user.role !== 'Teacher') && (!req.user || req.user.role !== 'Admin')) {
     console.error('User is must be a teacher');
     return Promise.resolve(res.status(403).json({
       error: 'TeacherRoleRequired'

@@ -18,7 +18,9 @@ import UserAvatar from 'components/UserAvatar';
 import VisibilityChip from 'components/VisibilityChip';
 import * as React from 'react';
 import { AsyncAction } from 'types/ActionTypes';
-import { isOwner } from 'utils/ProjectUtils';
+import { isOwner, isAdmin } from 'utils/ProjectUtils';
+
+import ShareCredentials from 'components/ShareCredentials';
 
 import ShareDialog from './components/ShareDialog';
 import { withI18n, WithI18n } from 'react-i18next';
@@ -146,9 +148,26 @@ export default withStyles(styles)(withI18n()(({
           <ShareDialog
             project={project}
           />
+          {(project.shared) &&
+            <div className={classes.chips}>
+              <ShareCredentials
+                name={project.shareName}
+                password={project.sharePassword}
+              />
+
+              {t('project.share.dialog.description')}
+              <a
+                href={`/shares/${project.id}?p=${project.sharePassword}`}
+                target="_blank"
+              >
+                {t('project.share.dialog.linkText')}
+              </a>.
+            </div>
+          }
         </>
       }
-      {/* {(user && !isOwner(project, user) && !isMember(project, user) && project.shared) &&
+      {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
+      && (user && !isAdmin(user)) && project.shared) &&
         <div className={classes.button}>
           <ButtonProgress
             variant="contained"
@@ -158,35 +177,66 @@ export default withStyles(styles)(withI18n()(({
             loading={unshareLoading}
             onClick={onClickShare}
           >
-            <ShareIcon fontSize="inherit" className={classes.buttonIcon} />
             {`rejoindre`}
           </ButtonProgress>
         </div>
       } */}
-      <List
-        dense={true}
-        className={classes.list}
-        subheader={
+       {(user && isOwner(project, user)) &&
+        <List
+          dense={true}
+          className={classes.list}
+          subheader={
           <ListSubheader
             className={classes.listHeader}
           >
             {t('project.members', { count: members.size })}
           </ListSubheader>
         }
-      >
-        {Array.from(members).map((member: Member) => (
+        >
+          {Array.from(members).map((member: Member) => (
           <ListItem key={member.id} className={classes.listItem}>
             <ListItemAvatar>
               <UserAvatar user={member} />
             </ListItemAvatar>
             <ListItemText
               primary={member.username}
-              secondary={member.subtitle}
+              secondary={member.subtitle} 
             />
           </ListItem>
         ))}
-      </List>
-      {(user && isOwner(project, user)) &&
+        </List>
+        }
+        
+        {(user && isAdmin(user)) &&
+        <List
+          dense={true}
+          className={classes.list}
+          subheader={
+          <ListSubheader
+            className={classes.listHeader}
+          >
+            {t('project.members', { count: members.size })}
+          </ListSubheader>
+        }
+        >
+          {Array.from(members).map((member: Member) => (
+          <ListItem key={member.id} className={classes.listItem}>
+            <ListItemAvatar>
+              <UserAvatar user={member} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={member.username}
+              secondary={member.subtitle} 
+            />
+            <ListItemText
+              primary={member.email}
+            /> 
+          </ListItem>
+        ))}
+        </List>
+        }
+        
+      {((user && isOwner(project, user)) || (user && isAdmin(user))) &&
         <div className={classes.button}>
           <ButtonProgress
             variant="contained"

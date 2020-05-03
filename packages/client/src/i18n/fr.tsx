@@ -15,6 +15,10 @@ export default {
       + ' votre projet pédagogique, annotez les images,'
       + ' posez des questions et répondez à celles des'
       + ' participant.e.s.',
+    tutoriel: {
+      prefix: 'Pour découvrir l’application, vous pouvez consulter le ',
+      suffix: 'tutoriel '
+    },
     teachers: 'Enseignants et formateurs',
     students: 'Élèves et étudiants',
     addVideo: 'Ajoutez un lien vers une vidéo YouTube...',
@@ -39,7 +43,8 @@ export default {
       + ' Fondation Saint Matthieu.',
     opensource: {
       prefix: 'Celluloid est un projet Open Source développé par Erwan'
-        + ' Queffélec dans le cadre d\'un partenariat avec La Paillasse.'
+        + ' Queffélec avec la participation de Souleymane Thiam et de Guillaume Aichhorn'
+        + ' dans le cadre d\'un partenariat avec La Paillasse.'
         + ' L’ensemble du code est accessible librement ',
       github: 'sur GitHub'
     }
@@ -53,12 +58,11 @@ export default {
     joinProjectTitle: 'Rejoindre un projet',
 
     login: 'Email ou nom d\'utilisateur',
-    username: 'Nom complet ou pseudo',
+    username: 'Prenom ou pseudo',
     code: 'Code de confirmation',
     email: 'Adresse email',
     password: 'Mot de passe',
-    passwordHint: 'Question secrète',
-    secretAnswer: 'Réponse à la question',
+    lastName: 'Nom de famille',
     projectCode: 'Code du projet',
     confirmPassword: 'Confirmer le mot de passe',
 
@@ -68,9 +72,7 @@ export default {
 
     notRegistered: 'Pas encore de compte ?',
     alreadyRegistered: 'Déjà un compte ?',
-    rememberAnswer: 'Attention ! Cette réponse sert de mot de passe'
-      + ' et ne pourra pas être récupérée !',
-    defaultQuestion: 'Quel est le nom de ton livre préféré ?',
+    rememberlastName: 'Votre nom de famille vous servira de mot de passe',
 
     resetAction: 'mettre à jour',
     resendCodeAction: 'Envoyer un nouveau code',
@@ -95,9 +97,11 @@ export default {
   },
 
   project: {
+    createAction: 'Créer le projet',
+    cancelAction: 'Annuler',
     createTitle: 'Nouveau projet',
     objective: 'Objectif',
-    assignments: 'Exercice',
+    assignment: 'Exercice',
     title: 'Titre',
     description: 'Description',
     public: 'Public',
@@ -105,7 +109,8 @@ export default {
     shared: 'Partage',
     members: '{{ count }} participant',
     members_plural: '{{ count }} participants',
-
+    URL_title: 'URL de la vidéo',
+    videoUrlHelper: 'Lien vers la vidéo originale',
     titleHelper: 'Donnez un titre à votre projet',
     descriptionHelper: 'Décrivez brièvement le contenu de la vidéo',
     objectiveHelper: 'Fixez l\'objectif pédagogique du projet',
@@ -129,14 +134,14 @@ export default {
     levelsSection: 'Niveau',
     visibilitySection: 'Partage',
 
-    assignmentPlaceholder: 'Ajouter une activité',
-    tagsPlaceholder: '"Recherchez ou ajoutez un autre domaine…',
+    assignmentPlaceholder: 'Ajoutez une activité',
+    tagsPlaceholder: 'Recherchez ou ajoutez un autre domaine…',
 
     codeWarning: {
-      title: 'Conservez bien ce code.',
-      description: 'L\'application ne pourra plus l\'afficher une fois'
-        + ' cette fenêtre fermée. En cas de perte, il faudra'
-        + ' en créer un nouveau.'
+      title: 'Partagez ce code avec vos élèves. ',
+      description: 'Ce code sera disponible sur la page de projet'
+        + ' Vous pouvez le réinitialiser en partageant'
+        + ' à nouveau le projet.'
     },
 
     share: {
@@ -170,7 +175,7 @@ export default {
   annotation: {
     pauseLabel: 'mettre en pause ?',
     contentPlaceholder: 'Saisissez votre annotation…',
-    commentPlaceholade: 'Laissez un commentaire…',
+    commentPlaceholder: 'Laissez un commentaire…',
     hintLabel: '{{count}} annotation',
     hintLabel_plural: '{{count}} annotations',
     hintLabelNone: 'Aucune annotation',

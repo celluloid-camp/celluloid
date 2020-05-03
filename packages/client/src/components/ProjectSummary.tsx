@@ -36,6 +36,7 @@ interface Props extends WithStyles<typeof styles> {
   project: ProjectGraphRecord;
 }
 
+const projectURLBase = 'http://www.youtube.com/watch?v=';
 export default withStyles(styles)(
   withI18n()(({ project, classes, t }: Props & WithI18n) => (
     <>
@@ -107,5 +108,28 @@ export default withStyles(styles)(
           </Typography>
         </>
       }
+      <Typography
+        align="left"
+        gutterBottom={true}
+        variant="h4"
+        color="primary"
+        className={classes.section}
+      >
+      {t('project.URL_title')}
+      </Typography>
+
+      <Typography
+        align="left"
+        gutterBottom={true}
+        variant="subtitle1"
+      >
+        <a
+         href={`${projectURLBase}${project.videoId}`}
+         target="_blank"
+        >
+          {t('project.videoUrlHelper')}
+        </a>
+      </Typography>
     </>
+
   )));

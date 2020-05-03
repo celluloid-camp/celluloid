@@ -8,6 +8,12 @@ export function isOwner(
   return user.id === project.userId;
 }
 
+export function isAdmin(
+  user: UserRecord
+) {
+  return user.role === 'Admin';
+}
+
 export function isMember(
   project: ProjectGraphRecord,
   user: UserRecord
@@ -21,9 +27,9 @@ export function canAnnotate(
   project: ProjectGraphRecord,
   user: UserRecord
 ) {
-  return isOwner(project, user) || isMember(project, user) && project.collaborative;
+  return isOwner(project, user) || isMember(project, user) || isAdmin(user) && project.collaborative;
 }
 
-export const canShare = isOwner;
-export const canDelete = isOwner;
+export const canShare = isOwner || isAdmin;
+export const canDelete = isOwner || isAdmin;
 export const canEdit = isOwner;
