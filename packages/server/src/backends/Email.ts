@@ -14,7 +14,7 @@ const transport = mailer.createTransport(smtp({
 export function sendMail(
   to: string, subject: string, text: string, html: string) {
   const mailOptions = {
-    from: 'Celluloid <no-reply@celluloid.camp>', to, subject, text, html
+    from: 'Celluloid <no-reply@celluloid.huma-num.fr>', to, subject, text, html
   };
 
   return new Promise((resolve, reject) => {

@@ -117,15 +117,9 @@ export function validateStudentSignup(payload: StudentSignupData) {
   }
 
   if (!payload || typeof payload.password !== 'string' ||
-    payload.password.trim().length < 8) {
+    payload.password.trim().length === 0) {
     result.success = false;
-    result.errors.password = 'InvalidPasswordFormat';
-  }
-
-  if (!payload || typeof payload.passwordHint !== 'string' ||
-    payload.passwordHint.trim().length === 0) {
-    result.success = false;
-    result.errors.passwordHint = 'MissingPasswordHint';
+    result.errors.password = 'MissingPassword';
   }
 
   return result;

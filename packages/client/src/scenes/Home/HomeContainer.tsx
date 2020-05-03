@@ -61,6 +61,9 @@ const styles = ({ spacing, palette }: Theme) => createStyles({
   },
   description: {
     lineHeight: 1.5
+  },
+  tutoriel: {
+    lineHeight: 1.5
   }
 });
 
@@ -135,6 +138,15 @@ export default withI18n()(withStyles(styles)(
                     gutterBottom={true}
                   >
                     {t('home.description')}
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    className={classes.tutoriel}
+                    gutterBottom={true}
+                  >
+                    {t('home.tutoriel.prefix')} 
+                    <a href="https://celluloid.hypotheses.org/1365" target="_blank">
+                    {t('home.tutoriel.suffix')}</a>
                   </Typography>
                 </Grid>
                 <Grid

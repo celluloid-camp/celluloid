@@ -13,6 +13,10 @@ export default {
       + ' your pupils or your training groups: create your'
       + ' educational project, annotate the video frames,'
       + ' ask questions, provide the answers.',
+    tutoriel: {
+      prefix: 'To discover the application, you can consult the ',
+      suffix: 'tutorial '
+    },
     teachers: 'Teachers & Trainers',
     students: 'Pupils & Students',
     addVideo: 'Add a link to a YouTube video...',
@@ -37,7 +41,8 @@ export default {
       + ' from Fondation Saint Matthieu.',
     opensource: {
       prefix: 'Celluloid is an Open Source project crafted by Erwan'
-        + ' Queffélec, through a partnership with La Paillasse.'
+        + ' Queffélec with the participation of Souleymane Thiam and Guillaume Aichhorn'
+        + ' , through a partnership with La Paillasse.'
         + ' Its source code is freely available ',
       github: 'on GitHub'
     }
@@ -51,12 +56,11 @@ export default {
     joinProjectTitle: 'Join project',
 
     login: 'Email or username',
-    username: 'Username',
+    username: 'Fisrtname or Username',
     code: 'Confirmation code',
     email: 'Email address',
     password: 'Password',
-    passwordHint: 'Secret question',
-    secretAnswer: 'Secret answer',
+    lastName: 'Last name',
     projectCode: 'Project code',
     confirmPassword: 'Confirm password',
 
@@ -66,9 +70,7 @@ export default {
 
     notRegistered: 'Not registered?',
     alreadyRegistered: 'Already registered?',
-    rememberAnswer: 'Warning! This answer will act as your password'
-      + ' and cannot be recovered!',
-    defaultQuestion: 'What is the title of your favorite book ?',
+    rememberlastName: 'Your last name will serve as your login password',
 
     resetAction: 'reset',
     resendCodeAction: 'resend code',
@@ -92,9 +94,11 @@ export default {
   },
 
   project: {
+    createAction: ' Create project',
+    cancelAction: 'Cancel',
     createTitle: 'New project',
     objective: 'Objective',
-    assignments: 'Assignment',
+    assignment: 'Assignment',
     title: 'Title',
     description: 'Description',
     public: 'Public',
@@ -102,7 +106,8 @@ export default {
     shared: 'Share',
     members: '{{ count }} attendees',
     members_plural: '{{ count }} attendees',
-
+    URL_title: 'Video URL',
+    videoUrlHelper: 'Link to the original video',
     titleHelper: 'Choose a meaningful title for your project',
     descriptionHelper: 'Briefly describe your video',
     objectiveHelper: 'Choose an educational objective',
@@ -125,14 +130,14 @@ export default {
     tagsPlaceholder: 'Search or create tag…',
 
     codeWarning: {
-      title: 'Make sure to remember this code.',
-      description: 'You won\t be able to recover it once this popup closes.'
-        + ' If you loose it, you will have the option to generate a new one.'
+      title: 'Share this code with your students. ',
+      description: 'This code will be available on the project page.'
+        + ' To reset it, just reshare the project.'
     },
 
     share: {
       dialog: {
-        description: 'To open printable instuctions in a new widow',
+        description: 'To open printable instructions in a new widow ',
         linkText: 'click here'
       },
       guide: {
@@ -159,7 +164,7 @@ export default {
   annotation: {
     pauseLabel: 'pause video ?',
     contentPlaceholder: 'type in your annotation…',
-    commentPlaceholade: 'Leave a comment…',
+    commentPlaceholder: 'Leave a comment…',
     hintLabel: '{{count}} annotation',
     hintLabel_plural: '{{count}} annotations',
     hintLabelNone: 'No annotation at this time',

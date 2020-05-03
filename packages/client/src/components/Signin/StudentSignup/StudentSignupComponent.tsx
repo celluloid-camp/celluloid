@@ -55,28 +55,18 @@ export default withStyles(styles)(withI18n()(
           onChange={event => onChange('username', event.target.value)}
           helperText={errors.username}
         />
-        <TextField
-          className={classes.question}
-          margin="dense"
-          fullWidth={true}
-          error={errors.password ? true : false}
-          label={t('signin.passwordHint')}
-          value={data.passwordHint}
-          required={true}
-          onChange={event => onChange('passwordHint', event.target.value)}
-          helperText={errors.passwordHint}
-        />
+        
         <TextField
           margin="dense"
           fullWidth={true}
           error={errors.password ? true : false}
-          label={t('signin.secretAnswer')}
+          label={t('signin.lastName')}
           value={data.password}
           required={true}
           onChange={event => onChange('password', event.target.value)}
           helperText={errors.password ? errors.password : ''}
         />
-        <DialogError error={t('signin.rememberAnswer')} />
+        <DialogError error={t('signin.rememberlastName')} />
         {errors.server && <DialogError error={errors.server} />}
         <DialogAltButtons
           heading={t('signin.alreadyRegistered')}

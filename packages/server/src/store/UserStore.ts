@@ -4,7 +4,6 @@ import { QueryBuilder, Transaction } from 'knex';
 
 export function createStudent(
   username: string,
-  passwordHint: string,
   password: string,
   projectId: string
 ) {
@@ -14,7 +13,6 @@ export function createStudent(
         .transacting(transaction)
         .insert({
           id: database.raw('uuid_generate_v4()'),
-          passwordHint,
           password: hashPassword(password),
           username,
           confirmed: false,
@@ -51,37 +49,40 @@ export function createTeacher(
 }
 
 export function updatePasswordByEmail(
-  email: string,
+  login: string,
   password: string
 ) {
   return database('User')
     .update({
       password: hashPassword(password)
     })
-    .where('email', email)
+    .where('email', login)
+    .orWhere('username', login)
     .returning('*')
     .then(getExactlyOne);
 }
 
-export function updateCodeByEmail(email: string) {
+export function updateCodeByEmail(login: string) {
   return database('User')
     .update({
       code: generateConfirmationCode(),
       codeGeneratedAt: database.raw('NOW()')
     })
-    .where('email', email)
+    .where('email', login)
+    .orWhere('username', login)
     .returning('*')
     .then(getExactlyOne);
 }
 
-export function confirmByEmail(email: string) {
+export function confirmByEmail(login: string) {
   return database('User')
     .update({
       code: null,
       codeGeneratedAt: null,
       confirmed: true
     })
-    .where('email', email)
+    .where('email', login)
+    .orWhere('username', login)
     .returning('*')
     .then(getExactlyOne);
 }
@@ -95,8 +96,8 @@ export function selectOne(id: string) {
 export function selectOneByUsernameOrEmail(login: string) {
   return database('User')
     .first()
-    .where('email', login)
-    .orWhere('username', login);
+    .where('username', login)
+    .orWhere('email', login);
 }
 
 function withTransaction(query: QueryBuilder, transaction?: Transaction) {

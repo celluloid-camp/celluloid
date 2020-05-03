@@ -12,3 +12,9 @@ export interface TeacherServerRecord extends UserServerRecord {
   codeExpiresAt?: Date;
   email: string;
 }
+
+export interface AdminServerRecord extends UserServerRecord {
+  code: string;
+  codeExpiresAt: Date;
+  email: string;
+}
