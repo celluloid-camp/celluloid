@@ -1,6 +1,6 @@
 import * as queryString from 'query-string';
 
-const apiKey = 'AIzaSyC05D7GssUCeNl1XmV18B3c5HhLCZOYDrc';
+const apiKey = '';
 const apiUrl = 'https://www.googleapis.com/youtube/v3/';
 
 class YouTubeApi {
