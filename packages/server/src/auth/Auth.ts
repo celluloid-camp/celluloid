@@ -7,6 +7,10 @@ import { TeacherServerRecord, UserServerRecord } from 'types/UserTypes';
 
 import { sendConfirmationCode } from './Utils';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('auth/Auth');
+
 export enum SigninStrategy {
     LOGIN = 'login',
     TEACHER_SIGNUP = 'teacher-signup',
@@ -23,7 +27,7 @@ export const deserializeUser = (id: string, done) => {
             if (result) {
                 return Promise.resolve(done(null, result));
             } else {
-                console.error(
+                log.error(
                     `Deserialize user failed: user with id` +
                     ` ${id} does not exist`
                 );
@@ -44,15 +48,10 @@ const signStudentUp = (req, username, password, done) => {
     const sharePassword = parts.slice(-2).join('-');
     const shareName = parts.slice(0, -1).slice(0, -1).join('-');
 
-    console.log(shareCode);
-    console.log(parts);
-    console.log(shareName);
-    console.log(sharePassword);
-
     return ProjectStore.selectOneByShareName(shareName)
         .then(result => {
             if (result) {
-                if ((sharePassword == result.sharePassword)) {
+                if ((sharePassword === result.sharePassword)) {
                     return UserStore.createStudent(
                         username,
                         password,
@@ -65,7 +64,7 @@ const signStudentUp = (req, username, password, done) => {
         })
         .then((user: UserRecord) => Promise.resolve(done(null, user)))
         .catch((error: Error) => {
-            console.error('Failed to signup student:', error);
+            log.error('Failed to signup student:', error);
             return Promise.resolve(done(error));
         });
 };
@@ -84,13 +83,13 @@ const logUserIn = (login, password, done) => {
                 return Promise.resolve(done(new Error('InvalidUser')));
             }
             if (!bcrypt.compareSync(password, user.password)) {
-                console.error(
+                log.error(
                     `Login failed for user ${user.username}: incorrect password`
                 );
                 return Promise.resolve(done(new Error('InvalidUser')));
             }
             if (!user.confirmed && user.role !== 'Student') {
-                console.error(
+                log.error(
                     `Login failed: ${user.username} is not confirmed`
                 );
                 return Promise.resolve(done(new Error('UserNotConfirmed')));

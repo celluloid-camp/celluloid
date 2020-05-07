@@ -4,6 +4,10 @@ import { UnfurlData } from '@celluloid/types';
 
 import * as unfurl from 'unfurl.js';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('api/UnfulApi');
+
 const router = express.Router();
 
 router.get('/', isLoggedIn, (req, res) => {
@@ -46,7 +50,7 @@ router.get('/', isLoggedIn, (req, res) => {
       }
     })
     .catch((error: Error) => {
-      console.error(`could not unfurl link: ${error.message}`);
+      log.error(`could not unfurl link: ${error.message}`);
       return res.status(500);
     });
 });

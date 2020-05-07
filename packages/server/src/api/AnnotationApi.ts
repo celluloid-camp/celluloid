@@ -11,6 +11,10 @@ import * as ProjectStore from 'store/ProjectStore';
 
 import CommentApi from './CommentApi';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('api/AnnotationApi');
+
 const router = express.Router({ mergeParams: true });
 
 router.use('/:annotationId/comments', CommentApi);
@@ -34,7 +38,7 @@ router.get('/', (req, res) => {
       return res.status(200).json(annotations);
     })
     .catch((error: Error) => {
-      console.error('Failed to list annotations:', error);
+      log.error('Failed to list annotations:', error);
       if (error.message === 'ProjectNotFound') {
         return res.status(404).json({ error: error.message });
       } else {
@@ -54,7 +58,7 @@ router.post('/', isProjectOwnerOrCollaborativeMember, (req, res) => {
       return res.status(201).json(result);
     })
     .catch((error: Error) => {
-      console.error('Failed to create annotation:', error);
+      log.error('Failed to create annotation:', error);
       return res.status(500).send();
     });
 });
@@ -74,7 +78,7 @@ router.put('/:annotationId', isProjectOwnerOrCollaborativeMember, (req, res) => 
     .then(result => fetchComments(result, user))
     .then(result => res.status(200).json(result))
     .catch((error: Error) => {
-      console.error('Failed to update annotation:', error);
+      log.error('Failed to update annotation:', error);
       if (error.message === 'AnnotationNotFound') {
         return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotAnnotationOwner') {
@@ -98,7 +102,7 @@ router.delete('/:annotationId', isProjectOwnerOrCollaborativeMember, (req, res) 
     .then(() => AnnotationStore.del(annotationId))
     .then(() => res.status(204).send())
     .catch((error: Error) => {
-      console.error('Failed to delete annotation:', error);
+      log.error('Failed to delete annotation:', error);
       if (error.message === 'AnnotationNotFound') {
         return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotAnnotationOwner') {

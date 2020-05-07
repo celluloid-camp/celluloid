@@ -4,6 +4,7 @@ import ProjectsApi from 'api/ProjectApi';
 import TagsApi from 'api/TagApi';
 import UnfurlApi from 'api/UnfurlApi';
 import UsersApi from 'api/UserApi';
+import { Logger } from 'backends/Logger';
 import {
   deserializeUser,
   loginStrategy,
@@ -20,6 +21,8 @@ import { nocache } from 'http/NoCache';
 import { createStore } from 'http/SessionStore';
 import * as passport from 'passport';
 import { clientApp, clientDir } from 'Paths';
+
+import * as expressPino from 'express-pino-logger';
 
 require('cookie-parser');
 
@@ -49,6 +52,7 @@ app.use(
     saveUninitialized: true
   })
 );
+app.use(expressPino(Logger));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/projects', ProjectsApi);
@@ -63,7 +67,7 @@ app.use('/service-worker.js', nocache());
 app.get('/*', (_, res) => res.sendFile(clientApp));
 
 app.listen(process.env.CELLULOID_LISTEN_PORT, () => {
-  console.log(
+  Logger.info(
     `HTTP server listening on port ${process.env.CELLULOID_LISTEN_PORT}` +
     ` in ${process.env.NODE_ENV} mode`
   );

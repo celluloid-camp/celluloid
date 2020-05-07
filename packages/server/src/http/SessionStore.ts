@@ -2,6 +2,10 @@ import { database } from 'backends/Database';
 import { Store } from 'express-session';
 import * as moment from 'moment';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('http/Session');
+
 const getExpiresAt = (session) => {
   return moment()
     .add(session.cookie.maxAge / 1000, 's')
@@ -44,7 +48,7 @@ class PostgresStore extends Store {
         }
       })
       .catch(error => {
-        console.error(`Failed to get session with sid [${sid}]:`, error);
+        log.error(`Failed to get session with sid [${sid}]:`, error);
         return Promise.resolve(callback(error));
       });
   }
@@ -72,13 +76,13 @@ class PostgresStore extends Store {
         }
       })
       .then(() => {
-        console.log(`Set session with sid [${sid}]`);
+        log.log(`Set session with sid [${sid}]`);
         if (callback) {
           return Promise.resolve(callback.apply(this, null));
         }
       })
       .catch(error => {
-        console.error(`Failed to set session with sid [${sid}]:`, error);
+        log.error(`Failed to set session with sid [${sid}]:`, error);
         if (callback) {
           return Promise.resolve(callback.apply(this, error));
         }
@@ -90,13 +94,13 @@ class PostgresStore extends Store {
       .del()
       .where('sid', sid)
       .then(() => {
-        console.log(`Destroyed session with sid [${sid}]`);
+        log.info(`Destroyed session with sid [${sid}]`);
         if (callback) {
           return Promise.resolve(callback.apply(this, null));
         }
       })
       .catch(error => {
-        console.error(`Failed to destroy session with sid [${sid}]:`, error);
+        log.error(`Failed to destroy session with sid [${sid}]:`, error);
         if (callback) {
           return Promise.resolve(callback.apply(this, error));
         }
@@ -115,7 +119,7 @@ class PostgresStore extends Store {
         }
       })
       .catch(error => {
-        console.error(`Failed to touch session with sid [${sid}]:`, error);
+        log.error(`Failed to touch session with sid [${sid}]:`, error);
         if (callback) {
           return Promise.resolve(callback.apply(this, error));
         }
@@ -127,10 +131,10 @@ class PostgresStore extends Store {
       .del()
       .where('expiresAt', '<', moment().toDate())
       .then(() => {
-        console.log('Sessions pruned');
+        log.info('Sessions pruned');
       })
       .catch(error => {
-        console.error('Failed to prune sessions:', error);
+        log.info('Failed to prune sessions:', error);
       });
   }
 

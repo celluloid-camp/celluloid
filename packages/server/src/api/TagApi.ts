@@ -2,13 +2,17 @@ import { isTeacher } from 'auth/Utils';
 import * as express from 'express';
 import * as TagStore from 'store/TagStore';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('api/Tag');
+
 const router = express.Router();
 
 router.get('/', (_, res) => {
   TagStore.selectAll()
     .then(result => res.status(200).json(result))
     .catch(error => {
-      console.error('Failed to fetch tags:', error);
+      log.error('Failed to fetch tags:', error);
       return res.status(500).send();
     });
 });
@@ -20,7 +24,7 @@ router.post('/', isTeacher, (req, res) => {
       res.status(201).json(result)
     )
     .catch(error => {
-      console.error('Failed to add new tag:', error);
+      log.error('Failed to add new tag:', error);
       return res.status(500).send();
     });
 });

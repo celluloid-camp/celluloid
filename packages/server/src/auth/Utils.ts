@@ -6,6 +6,10 @@ import { NextFunction, Request, Response } from 'express';
 import * as ProjectStore from 'store/ProjectStore';
 import { TeacherServerRecord  } from 'types/UserTypes';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('auth/Auth');
+
 export function hashPassword(password: string) {
   const salt = bcrypt.genSaltSync();
   return bcrypt.hashSync(password, salt);
@@ -28,7 +32,7 @@ export function isTeacher(
   res: Response,
   next: NextFunction) {
   if ((!req.user || req.user.role !== 'Teacher') && (!req.user || req.user.role !== 'Admin')) {
-    console.error('User is must be a teacher');
+    log.error('User is must be a teacher');
     return Promise.resolve(res.status(403).json({
       error: 'TeacherRoleRequired'
     }));
@@ -49,14 +53,14 @@ export function isProjectOwner(
         next();
         return Promise.resolve();
       }
-      console.error('User must be project owner');
+      log.error('User must be project owner');
       res.status(403).json({
         error: 'ProjectOwnershipRequired'
       });
       return Promise.resolve();
     })
     .catch(error => {
-      console.error('Failed to check project ownership:', error);
+      log.error('Failed to check project ownership:', error);
       return Promise.resolve(res.status(500).send());
     });
 }
@@ -75,14 +79,14 @@ export function isProjectOwnerOrCollaborativeMember(
         next();
         return Promise.resolve();
       }
-      console.error('User must be project owner or collaborator');
+      log.error('User must be project owner or collaborator');
       res.status(403).json({
         error: 'ProjectOwnershipOrMembershipRequired'
       });
       return Promise.resolve();
     })
     .catch(error => {
-      console.error('Failed project ownership/membership test:', error);
+      log.error('Failed project ownership/membership test:', error);
       return Promise.resolve(res.status(500).send());
     });
 }

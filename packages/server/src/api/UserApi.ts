@@ -14,6 +14,10 @@ import { authenticate } from 'passport';
 import * as UserStore from 'store/UserStore';
 import { TeacherServerRecord } from 'types/UserTypes';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('api/User');
+
 const router = Router();
 
 router.post('/student-signup', (req, res, next) => {
@@ -21,12 +25,12 @@ router.post('/student-signup', (req, res, next) => {
   const result = validateStudentSignup(payload);
 
   if (!result.success) {
-    console.error(`Failed student signup with data ${payload}: bad request:`, result);
+    log.error(`Failed student signup with data ${payload}: bad request:`, result);
     return res.status(400).json(result);
   }
   return authenticate(SigninStrategy.STUDENT_SIGNUP, error => {
     if (error) {
-      console.error(`Failed student signup with username ${payload.username}:`, error);
+      log.error(`Failed student signup with username ${payload.username}:`, error);
       if (hasConflictedOn(error, 'User', 'username')) {
         return res.status(409).json({
           success: false, errors: { username: 'UsernameAlreadyTaken' }
@@ -37,7 +41,7 @@ router.post('/student-signup', (req, res, next) => {
         return res.status(500).send();
       }
     } else {
-      console.log(`New signup for student with username ${payload.username}`, result);
+      log.info(`New signup for student with username ${payload.username}`, result);
       return res.status(201).json(result);
     }
   })(req, res, next);
@@ -48,12 +52,12 @@ router.post('/signup', (req, res, next) => {
   const result = validateSignup(payload);
 
   if (!result.success) {
-    console.error(`Failed user signup with data ${payload}: bad request:`, result);
+    log.error(`Failed user signup with data ${payload}: bad request:`, result);
     return res.status(400).json(result);
   }
   return authenticate(SigninStrategy.TEACHER_SIGNUP, error => {
     if (error) {
-      console.error(`Failed user signup with email ${payload.email}:`, error);
+      log.error(`Failed user signup with email ${payload.email}:`, error);
       if (hasConflictedOn(error, 'User', 'username')) {
         return res.status(409).json({
           success: false, errors: { username: 'UsernameAlreadyTaken' }
@@ -66,7 +70,7 @@ router.post('/signup', (req, res, next) => {
         return res.status(500).send();
       }
     } else {
-      console.log(`New signup from teacher with email ${payload.email}`, result);
+      log.log(`New signup from teacher with email ${payload.email}`, result);
       return res.status(201).json(result);
     }
   })(req, res, next);
@@ -77,19 +81,19 @@ router.post('/login', (req, res, next) => {
   const result = validateLogin(req.body);
 
   if (!result.success) {
-    console.error(`Failed user login with data ${payload}: bad request:`, result);
+    log.error(`Failed user login with data ${payload}: bad request:`, result);
     return res.status(400).json(result);
   }
   return authenticate(SigninStrategy.LOGIN, (error, user) => {
     if (error) {
-      console.error(`Failed user login with data ${payload}:`, error);
+      log.error(`Failed user login with data ${payload}:`, error);
       return res.status(401).json({
         success: false, errors: { server: error.message }
       });
     } else {
       return req.login(user, err => {
         if (err) {
-          console.error(`Failed to login user with login ${user.username}`);
+          log.error(`Failed to login user with login ${user.username}`);
           return res.status(500).send();
         } else {
           return res.status(200).json(result);
@@ -113,7 +117,7 @@ router.post('/confirm-signup', (req, res) => {
   return UserStore.selectOneByUsernameOrEmail(payload.login)
     .then((user: TeacherServerRecord) => {
       if (!user) {
-        console.error(`Failed to confirm signup: user`
+        log.error(`Failed to confirm signup: user`
           + ` with email ${payload.login} not found`);
         return res.status(401).json({
           success: false,
@@ -124,7 +128,7 @@ router.post('/confirm-signup', (req, res) => {
           return UserStore.confirmByEmail(payload.login)
             .then(() => res.status(200).json(result))
             .catch((error: Error) => {
-              console.error(
+              log.error(
                 `Failed to confirm signup for user` +
                 ` with email ${payload.login}:`,
                 error
@@ -132,7 +136,7 @@ router.post('/confirm-signup', (req, res) => {
               return res.status(500).send();
             });
         } else {
-          console.error(`Failed to confirm signup for user with email`
+          log.error(`Failed to confirm signup for user with email`
             + ` ${payload.login}: received code ${payload.code}, expected ${user.code}`);
           return res.status(401).json({
             success: false, errors: { server: 'InvalidUser' }
@@ -141,7 +145,7 @@ router.post('/confirm-signup', (req, res) => {
       }
     })
     .catch(error => {
-      console.error(`Failed to confirm signup:`, error);
+      log.error(`Failed to confirm signup:`, error);
       return res.status(500).send();
     });
 });
@@ -156,7 +160,7 @@ router.post('/confirm-reset-password', (req, res) => {
   return UserStore.selectOneByUsernameOrEmail(payload.login)
     .then((user?: TeacherServerRecord) => {
       if (!user) {
-        console.error(`Failed to confirm password reset: user with email ${payload.login} not found`);
+        log.error(`Failed to confirm password reset: user with email ${payload.login} not found`);
         return res.status(401).json({
           success: false, errors: { server: 'InvalidUser' }
         });
@@ -168,13 +172,13 @@ router.post('/confirm-reset-password', (req, res) => {
           )
             .then(() => res.status(200).json(result))
             .catch((error: Error) => {
-              console.error(
+              log.error(
                 `Failed to confirm password reset for user with email ${payload.login}`,
                 error);
               return res.status(500).send();
             });
         } else {
-          console.error(`Failed to confirm password reset for user with email ${payload.login}:`
+          log.error(`Failed to confirm password reset for user with email ${payload.login}:`
             + ` received code ${payload.code}, expected ${user.code}`);
           return res.status(401).json({
             success: false, errors: { server: 'InvalidUser' }
@@ -183,7 +187,7 @@ router.post('/confirm-reset-password', (req, res) => {
       }
     })
     .catch(error => {
-      console.error(`Failed to confirm password reset:`, error);
+      log.error(`Failed to confirm password reset:`, error);
       return res.status(500).send();
     });
 });
@@ -201,8 +205,7 @@ const resendCode = (sender: (user: TeacherRecord) =>
     return UserStore.selectOneByUsernameOrEmail(payload.email)
       .then((user?: TeacherServerRecord) => {
         if (!user) {
-          // tslint:disable-next-line:no-console
-          console.error(`Failed to resend authorization code:`
+          log.error(`Failed to resend authorization code:`
             + ` user with email ${payload.email} not found`);
           return res.status(401).json({
             success: false, errors: { server: 'InvalidUser' }
@@ -217,7 +220,7 @@ const resendCode = (sender: (user: TeacherRecord) =>
         }
       })
       .catch((error: Error) => {
-        console.error(
+        log.error(
           `Failed to resend authorization code for user `
           + ` with email ${payload.email}`,
           error
