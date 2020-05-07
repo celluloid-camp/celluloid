@@ -21,7 +21,7 @@
     "js-yaml": "^3.13.1",
     "knex": "^0.15.2",
     "lodash": "^4.17.13",
-    "mem": "^4.0.0",
+    "mem": "^6.0.0",
     "nodemailer": "^4.6.7",
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.4.0",
