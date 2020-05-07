@@ -36,7 +36,7 @@
     "classnames": "^2.2.6",
     "connected-react-router": "^4.3.0",
     "enzyme": "^3.3.0",
-    "get-urls": "^8.0.0",
+    "get-urls": "^9.0.0",
     "i18next": "^12.0.0",
     "i18next-browser-languagedetector": "^2.2.3",
     "linkify-urls": "^2.0.0",
