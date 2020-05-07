@@ -32,7 +32,7 @@
     "autosuggest-highlight": "^3.1.1",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
-    "change-case": "^3.0.2",
+    "change-case": "^4.0.0",
     "classnames": "^2.2.6",
     "connected-react-router": "^4.3.0",
     "enzyme": "^3.3.0",
