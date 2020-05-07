@@ -7,6 +7,10 @@ import * as express from 'express';
 import * as AnnotationStore from 'store/AnnotationStore';
 import * as CommentStore from 'store/CommentStore';
 
+import { logger } from 'backends/Logger';
+
+const log = logger('api/CommentApi');
+
 const router = express.Router({ mergeParams: true });
 
 router.get('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
@@ -18,7 +22,7 @@ router.get('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
     .then((comments: CommentRecord[]) =>
       res.status(200).json(comments))
     .catch((error: Error) => {
-      console.error('Failed to list comments:', error);
+      log.error('Failed to list comments:', error);
       if (error.message === 'AnnotationNotFound') {
         res.status(404).json({ error: error.message });
       } else {
@@ -36,7 +40,7 @@ router.post('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => 
     .then(() => CommentStore.insert(annotationId, comment, user))
     .then(result => res.status(201).json(result))
     .catch((error: Error) => {
-      console.error('Failed to create comment:', error);
+      log.error('Failed to create comment:', error);
       if (error.message === 'AnnotationNotFound') {
         return res.status(404).json({ error: error.message });
       } else {
@@ -59,7 +63,7 @@ router.put('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req,
     .then(() => CommentStore.update(commentId, updated.text))
     .then(result => res.status(200).json(result))
     .catch((error: Error) => {
-      console.error('Failed to update comment:', error);
+      log.error('Failed to update comment:', error);
       if (error.message === 'CommentNotFound') {
         return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotCommentOwner') {
@@ -83,7 +87,7 @@ router.delete('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (r
     .then(() => CommentStore.del(commentId))
     .then(() => res.status(204).send())
     .catch((error: Error) => {
-      console.error('Failed to delete comment:', error);
+      log.error('Failed to delete comment:', error);
       if (error.message === 'CommentNotFound') {
         return res.status(404).json({ error: error.message });
       } else if (error.message === 'UserNotCommentOwner') {

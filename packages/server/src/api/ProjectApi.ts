@@ -4,6 +4,9 @@ import { Router } from 'express';
 import * as ProjectStore from 'store/ProjectStore';
 
 import AnnotationsApi from './AnnotationApi';
+import { logger } from 'backends/Logger';
+
+const log = logger('api/CommentApi');
 
 const router = Router({ mergeParams: true });
 
@@ -37,8 +40,7 @@ router.get(
       )
       .then((result: ProjectGraphRecord[]) => res.json(result))
       .catch((error: Error) => {
-        // tslint:disable-next-line:no-console
-        console.error('Failed to fetch projects from database:', error);
+        log.error('Failed to fetch projects from database:', error);
         return res.status(500).send();
       });
   });
@@ -54,8 +56,7 @@ router.get(
         return res.json(project);
       })
       .catch((error: Error) => {
-        // tslint:disable-next-line:no-console
-        console.error(`Failed to fetch project ${projectId}:`, error);
+        log.error(`Failed to fetch project ${projectId}:`, error);
         if (error.message === 'ProjectNotFound') {
           return res.status(404).json({ error: error.message });
         } else {
@@ -76,8 +77,7 @@ router.post(
         return res.status(201).json(result);
       })
       .catch((error: Error) => {
-        // tslint:disable-next-line:no-console
-        console.error('Failed to create project:', error);
+        log.error('Failed to create project:', error);
         return res.status(500).send();
       });
   });
@@ -90,8 +90,7 @@ router.put(
     ProjectStore.update(req.body, req.params.projectId)
       .then(result => res.status(200).json(result))
       .catch(error => {
-        // tslint:disable-next-line:no-console
-        console.error('Failed to update project:', error);
+        log.error('Failed to update project:', error);
         return res.status(500).send();
       });
   });
@@ -104,7 +103,7 @@ router.delete(
     ProjectStore.del(req.params.projectId)
       .then(() => res.status(204).send())
       .catch(error => {
-        console.error('Failed to delete project:', error);
+        log.error('Failed to delete project:', error);
         return res.status(500).send();
       });
   });
@@ -121,7 +120,7 @@ router.get(
       )
       .then(members => res.status(200).json(members))
       .catch(error => {
-        console.error('Failed to list project members:', error);
+        log.error('Failed to list project members:', error);
         if (error.message === 'ProjectNotFound') {
           return res.status(404).json({ error: error.message });
         } else {
@@ -140,7 +139,7 @@ router.put(
       .then(() => ProjectStore.selectOne(projectId, req.user))
       .then(project => res.status(200).json(project))
       .catch(error => {
-        console.error(`Failed to share project with id ${projectId}:`, error);
+        log.error(`Failed to share project with id ${projectId}:`, error);
         return res.status(500).send();
       });
   });
@@ -155,7 +154,7 @@ router.delete(
       .then(() => ProjectStore.selectOne(projectId, req.user))
       .then(project => res.status(200).json(project))
       .catch(error => {
-        console.error(`Failed to unshare project with id ${projectId}:`, error);
+        log.error(`Failed to unshare project with id ${projectId}:`, error);
         return res.status(500).send();
       });
   });
@@ -170,7 +169,7 @@ router.put(
       .then(() => ProjectStore.selectOne(projectId, req.user))
       .then(project => res.status(200).json(project))
       .catch(error => {
-        console.error(`Failed to set project public with id ${projectId}:`, error);
+        log.error(`Failed to set project public with id ${projectId}:`, error);
         return res.status(500).send();
       });
   });
@@ -185,7 +184,7 @@ router.delete(
       .then(() => ProjectStore.selectOne(projectId, req.user))
       .then(project => res.status(200).json(project))
       .catch(error => {
-        console.error(`Failed to unset public on project with id ${projectId}:`, error);
+        log.error(`Failed to unset public on project with id ${projectId}:`, error);
         return res.status(500).send();
       });
   });
@@ -200,7 +199,7 @@ router.put(
       .then(() => ProjectStore.selectOne(projectId, req.user))
       .then(project => res.status(200).json(project))
       .catch(error => {
-        console.error(`Failed to unset collaborative on project with id ${projectId}:`, error);
+        log.error(`Failed to unset collaborative on project with id ${projectId}:`, error);
         return res.status(500).send();
       });
   });
@@ -215,7 +214,7 @@ router.delete(
       .then(() => ProjectStore.selectOne(projectId, req.user))
       .then(project => res.status(200).json(project))
       .catch(error => {
-        console.error(`Failed to unset collaborative on project with id ${projectId}:`, error);
+        log.error(`Failed to unset collaborative on project with id ${projectId}:`, error);
         return res.status(500).send();
       });
   });

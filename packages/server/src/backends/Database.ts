@@ -1,5 +1,8 @@
 import * as Knex from 'knex';
 import * as R from 'ramda';
+import { logger } from 'backends/Logger';
+
+const log = logger('Database');
 
 const config = {
   user: process.env.CELLULOID_PG_USER,
@@ -38,7 +41,7 @@ export function getExactlyOne(rows: any[]) {
   if (rows.length === 1) {
     return Promise.resolve(rows[0]);
   } else {
-    console.error(
+    log.error(
       'Update or insert result has less or more than one row',
       rows
     );
