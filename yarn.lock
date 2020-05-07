@@ -4515,7 +4515,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-html-element@^2.0.0:
+create-html-element@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/create-html-element/-/create-html-element-2.1.0.tgz#916b28a1f0bf716adfdee74abed05e7b66714bea"
   integrity sha512-ofbOpJh3GSDsyINuqppupKRUcQHnXSyvwvk0F5DlEtwKwb+thdFoJAtYczy7bIZWdsQjZfADUc38pF4gVd0o+Q==
@@ -8669,12 +8669,12 @@ liftoff@2.5.0:
     rechoir "^0.6.2"
     resolve "^1.1.7"
 
-linkify-urls@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/linkify-urls/-/linkify-urls-2.2.0.tgz#228886ed644d35f527fcdd1dc4dde33cb2525f1a"
-  integrity sha512-Zl71ZJPq1BrPmwlyEyZVTgzt1FzbMJnmxR9Oi/BcZLe2XG2UUhScj9TCn62yEfEf0za1t+yLji4jz96gXbb36A==
+linkify-urls@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/linkify-urls/-/linkify-urls-3.1.0.tgz#c94c963dc50e7c96eda408653e5c1b87a537cee4"
+  integrity sha512-WLBS5zng9FCiFT30j1QkjExDBp9wNw1oBpY4oS8vbOyIZZt6+JSymPir/xrWyS+Bu1ban3pj0nukJI7ctpCLWw==
   dependencies:
-    create-html-element "^2.0.0"
+    create-html-element "^2.1.0"
 
 load-json-file@^1.0.0:
   version "1.1.0"
