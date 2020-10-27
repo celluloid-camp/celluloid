@@ -51,7 +51,7 @@
     "react": "^16.4.0",
     "react-autosuggest": "^9.3.2",
     "react-dom": "^16.2.0",
-    "react-full-screen": "^0.2.2",
+    "react-full-screen": "^0.3.0",
     "react-i18next": "^8.1.2",
     "react-redux": "^5.0.6",
     "react-router": "^4.3.1",
