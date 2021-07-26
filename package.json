@@ -30,7 +30,7 @@
     "lerna": "^3.0.0"
   },
   "dependencies": {
-    "snyk": "^1.319.0"
+    "snyk": "^1.667.0"
   },
   "snyk": true
 }
