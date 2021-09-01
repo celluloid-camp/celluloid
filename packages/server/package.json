@@ -22,7 +22,7 @@
     "knex": "^0.15.2",
     "lodash": "^4.17.13",
     "mem": "^4.0.0",
-    "nodemailer": "^4.6.7",
+    "nodemailer": "^6.6.1",
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
@@ -30,7 +30,7 @@
     "pino": "^6.2.1",
     "ramda": "^0.25.0",
     "unfurl.js": "^1.1.6",
-    "validator": "^10.2.0"
+    "validator": "^13.6.0"
   },
   "scripts": {
     "clean": "rm -rf build",
