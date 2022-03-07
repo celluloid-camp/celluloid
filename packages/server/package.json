@@ -30,7 +30,7 @@
     "pino": "^6.2.1",
     "ramda": "^0.25.0",
     "unfurl.js": "^1.1.6",
-    "validator": "^10.2.0"
+    "validator": "^13.0.0"
   },
   "scripts": {
     "clean": "rm -rf build",
