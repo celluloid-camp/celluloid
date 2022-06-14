@@ -27,7 +27,7 @@
     "prepare": "yarn run snyk-protect"
   },
   "devDependencies": {
-    "lerna": "^3.0.0"
+    "lerna": "^5.1.2"
   },
   "dependencies": {
     "snyk": "^1.319.0"
