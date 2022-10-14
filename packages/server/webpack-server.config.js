@@ -15,9 +15,9 @@ const output = {
 };
 
 const plugins = [
-  new webpack.IgnorePlugin(/\.(css|less)$/),
+  new webpack.IgnorePlugin({resourceRegExp:/\.(css|less)$/}),
   new webpack.BannerPlugin('require("source-map-support").install();'),
-  new webpack.IgnorePlugin(/dtrace-provider/),
+  new webpack.IgnorePlugin({resourceRegExp:/dtrace-provider/}),
 ];
 
 const rules = [
@@ -31,7 +31,7 @@ const rules = [
 
 const webpackConfig = {
   mode: process.env.NODE_ENV,
-  devtool: isProduction ? 'source-map' : 'cheap-eval-source-map',
+  devtool: isProduction ? 'source-map' : 'cheap-source-map',
   context: srcPath,
   target: 'node',
   externals: [
@@ -51,10 +51,10 @@ const webpackConfig = {
     ],
   },
   node: {
-    console: false,
+    // console: false,
     global: false,
-    process: false,
-    Buffer: false,
+    // process: false,
+    // Buffer: false,
     __filename: false,
     __dirname: false,
   },
