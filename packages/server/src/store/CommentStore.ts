@@ -4,7 +4,7 @@ import { QueryBuilder } from 'knex';
 
 import * as ProjectStore from './ProjectStore';
 
-export function selectByAnnotation(annotationId: string, user: UserRecord) {
+export function selectByAnnotation(annotationId: string, user: Partial<UserRecord>) {
   return database.select(
     database.raw('"Comment".*'),
     database.raw(
@@ -46,7 +46,7 @@ export function selectOne(commentId: string) {
       Promise.reject(new Error('CommentNotFound')));
 }
 
-export function insert(annotationId: string, text: string, user: UserRecord) {
+export function insert(annotationId: string, text: string, user: Partial<UserRecord>) {
   return database('Comment')
     .insert({
       id: database.raw('uuid_generate_v4()'),

@@ -6,13 +6,29 @@ import * as ProjectStore from 'store/ProjectStore';
 import AnnotationsApi from './AnnotationApi';
 import { logger } from 'backends/Logger';
 
+import { Query, Params } from 'express-serve-static-core';
+
 const log = logger('api/CommentApi');
 
 const router = Router({ mergeParams: true });
 
 router.use('/:projectId/annotations', AnnotationsApi);
 
-function fetchMembers(project: ProjectRecord, user?: UserRecord):
+
+export interface TypedRequestBody<T> extends Express.Request {
+  body: T
+}
+
+export interface TypedRequestQuery<T extends Query> extends Express.Request {
+  query: T
+}
+
+export interface TypedRequestParams<T extends Params> extends Express.Request {
+  params: T
+}
+
+
+function fetchMembers(project: ProjectRecord, user?: Partial<UserRecord>):
   PromiseLike<UserRecord[]> {
   if (project.collaborative || (user && user.id === project.userId)) {
     return ProjectStore.selectProjectMembers(project.id);
@@ -86,7 +102,7 @@ router.put(
   '/:projectId',
   isTeacher,
   isProjectOwner,
-  (req, res) => {
+  (req:any, res) => {
     ProjectStore.update(req.body, req.params.projectId)
       .then(result => res.status(200).json(result))
       .catch(error => {

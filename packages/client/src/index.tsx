@@ -7,8 +7,8 @@ import { createBrowserHistory } from 'history';
 import en from 'i18n/en';
 import fr from 'i18n/fr';
 import * as i18next from 'i18next';
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+// import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+// import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { reactI18nextModule } from 'react-i18next';
@@ -45,12 +45,12 @@ const render = (Component: React.ComponentType) => {
       <ConnectedRouter history={history}>
         <ResetScroll>
           <MuiThemeProvider theme={Bright}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
+            {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
               <React.Fragment>
                 <CssBaseline />
                 <Component />
               </React.Fragment>
-            </MuiPickersUtilsProvider>
+            {/* </MuiPickersUtilsProvider> */}
           </MuiThemeProvider>
         </ResetScroll>
       </ConnectedRouter>

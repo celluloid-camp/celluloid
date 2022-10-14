@@ -9,6 +9,7 @@ import * as CommentStore from 'store/CommentStore';
 
 import { logger } from 'backends/Logger';
 
+
 const log = logger('api/CommentApi');
 
 const router = express.Router({ mergeParams: true });
@@ -49,7 +50,7 @@ router.post('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => 
     });
 });
 
-router.put('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
+router.put('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req:any, res) => {
   const commentId = req.params.commentId;
   const updated = req.body;
   const user = req.user;
@@ -74,7 +75,7 @@ router.put('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req,
     });
 });
 
-router.delete('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
+router.delete('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req:any, res) => {
   const commentId = req.params.commentId;
   const user = req.user;
 

@@ -1,8 +1,5 @@
 import * as queryString from 'query-string';
 
-const apiKey = '';
-const apiUrl = 'https://www.googleapis.com/youtube/v3/';
-
 class YouTubeApi {
   static getVideoNameById(id: string) {
 
@@ -11,12 +8,10 @@ class YouTubeApi {
     };
 
     const query = {
-      part: 'snippet',
       id,
-      key: apiKey
     };
 
-    const url = `${apiUrl}videos?${queryString.stringify(query)}`;
+    const url = `/api/video?${queryString.stringify(query)}`;
     return fetch(url, {
       method: 'GET',
       headers: new Headers(headers),
