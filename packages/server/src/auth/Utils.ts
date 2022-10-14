@@ -28,7 +28,7 @@ export function isLoggedIn(
 }
 
 export function isTeacher(
-  req: Request,
+  req:any,
   res: Response,
   next: NextFunction) {
   if ((!req.user || req.user.role !== 'Teacher') && (!req.user || req.user.role !== 'Admin')) {
