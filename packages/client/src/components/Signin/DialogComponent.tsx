@@ -50,7 +50,7 @@ export default withStyles(styles)((props: Props) => {
         onClose={onCancel}
       />
       <DialogContent className={classes.content}>
-        {Content && <Content />}
+        {Content && <Content  />}
       </DialogContent>
     </Dialog>
   );

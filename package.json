@@ -1,5 +1,6 @@
 {
   "name": "celluloid",
+  "version": "1.0.0",
   "author": "Erwan Queffélec <erwan.queffelec@gmail.com>",
   "license": "MIT",
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
@@ -22,15 +23,11 @@
     "build-libs": "yarn build-types && yarn build-validators",
     "build": "yarn build-libs && yarn build-client && yarn build-server",
     "deploy": "./bin/deploy",
-    "start": "(cd packages/server && yarn start)",
-    "snyk-protect": "snyk protect",
-    "prepare": "yarn run snyk-protect"
+    "start": "(cd packages/server && yarn start)"
   },
   "devDependencies": {
+    "cors-anywhere": "^0.4.4",
     "lerna": "^3.0.0"
   },
-  "dependencies": {
-    "snyk": "^1.319.0"
-  },
-  "snyk": true
+  "dependencies": {}
 }

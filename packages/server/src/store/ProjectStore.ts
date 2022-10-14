@@ -49,7 +49,7 @@ export function isOwner(projectId: string, user: UserRecord) {
     .then((row: string) => row ? true : false);
 }
 
-export function isMember(projectId: string, user: UserRecord) {
+export function isMember(projectId: string, user: Partial<UserRecord>) {
   return database.first('projectId')
     .from('UserToProject')
     .where('UserToProject.projectId', projectId)
@@ -97,7 +97,7 @@ export function selectOneByShareName(shareName: string) {
     .where('shareName', shareName);
 }
 
-export function selectOne(projectId: string, user: UserRecord) {
+export function selectOne(projectId: string, user: Partial<UserRecord>) {
   return database
     .first(
       database.raw('"Project".*'),

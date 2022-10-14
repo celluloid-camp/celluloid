@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@celluloid/client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "Erwan Queffélec <erwan.queffelec@gmail.com",
   "license": "MIT",
   "proxy": "http://localhost:3001",
@@ -29,6 +29,7 @@
     "@types/react-transition-group": "^2.0.9",
     "@types/react-youtube": "^7.4.0",
     "@types/webpack-env": "^1.13.6",
+    "@types/youtube-player": "^5.5.6",
     "autosuggest-highlight": "^3.1.1",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
@@ -58,7 +59,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "3.1.0",
     "react-transition-group": "^2.3.1",
-    "react-youtube": "^7.5.0",
+    "react-youtube": "^7.14.0",
     "redux": "^4.0.0",
     "redux-devtools-extension": "^2.13.5",
     "redux-thunk": "^2.3.0",
@@ -74,5 +75,8 @@
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
+  },
+  "dependencies": {
+    "@material-ui/pickers": "^3.3.10"
   }
 }
