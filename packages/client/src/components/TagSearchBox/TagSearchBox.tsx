@@ -52,37 +52,38 @@ function isExistingTag(suggestion: Suggestion): suggestion is ExistingTag {
 const TagAutosuggest = Autosuggest as { new(): Autosuggest<Suggestion> };
 
 function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
-  const {
-    classes,
-    ref,
-    height,
-    width,
-    form,
-    formAction,
-    formEncType,
-    formMethod,
-    formNoValidate,
-    formTarget,
-    min,
-    max,
-    required,
-    alt,
-    src,
-    accept,
-    capture,
-    checked,
-    crossOrigin,
-    list,
-    maxLength,
-    minLength,
-    multiple,
-    pattern,
-    readOnly,
-    size,
-    step,
-    defaultValue,
-    ...others
-  } = props;
+  // const {
+  //   // classes,
+  //   // ref,
+  //   height,
+  //   width,
+  //   form,
+  //   formAction,
+  //   formEncType,
+  //   formMethod,
+  //   formNoValidate,
+  //   formTarget,
+  //   min,
+  //   max,
+  //   required,
+  //   alt,
+  //   src,
+  //   accept,
+  //   capture,
+  //   checked,
+  //   crossOrigin,
+  //   list,
+  //   maxLength,
+  //   minLength,
+  //   multiple,
+  //   pattern,
+  //   readOnly,
+  //   size,
+  //   step,
+  //   defaultValue,
+  // } = props;
+
+  // ...others
 
   return (
     <TextField
@@ -94,11 +95,11 @@ function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
             <SearchIcon color="disabled" />
           </InputAdornment>
         ),
-        inputRef: ref,
+        // inputRef: ref,
         classes: {
-          input: classes.input
+          // input: classes.input
         },
-        ...others
+        // ...others
       }}
     />
   );

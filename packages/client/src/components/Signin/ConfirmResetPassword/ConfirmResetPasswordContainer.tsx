@@ -10,7 +10,7 @@ import ConfirmResetPassword from './ConfirmResetPasswordComponent';
 
 interface Props {
   errors: SigninErrors;
-  onClickSignup(): Action<null>;
+  onClickSignup?(): Action<null>;
   onSubmit(data: TeacherConfirmResetPasswordData): Promise<AnyAction>;
 }
 

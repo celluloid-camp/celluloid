@@ -16,6 +16,7 @@ import { TeacherServerRecord } from 'types/UserTypes';
 
 import { logger } from 'backends/Logger';
 
+
 const log = logger('api/User');
 
 const router = Router();
@@ -237,7 +238,7 @@ router.post('/resend-code', (req, res) => {
   return resendCode(sendConfirmationCode)(req, res);
 });
 
-router.get('/me', isLoggedIn, (req, res) => {
+router.get('/me', isLoggedIn, (req:any, res) => {
   if (req.user) {
     return res.status(200).json({
       teacher: {

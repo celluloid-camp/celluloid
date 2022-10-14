@@ -14,7 +14,7 @@ router.get('/', isLoggedIn, (req, res) => {
   const url = req.query.url;
   return unfurl(url)
     .then(raw => {
-      const parsedUrl = new URL(url);
+      const parsedUrl = new URL(url as string);
       const result = {
         faviconUrl: undefined,
         website: undefined,

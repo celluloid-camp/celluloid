@@ -23,10 +23,6 @@ import YouTube from 'react-youtube';
 import { Dispatch } from 'redux';
 import { EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
-import {
-  PlayerChangeEvent,
-  PlayerReadyEvent
-} from 'types/YoutubeTypes';
 import { canAnnotate } from 'utils/ProjectUtils';
 
 import AnnotationContent from './components/AnnotationContent';
@@ -34,6 +30,7 @@ import AnnotationEditor from './components/AnnotationEditor';
 import AnnotationHints from './components/AnnotationHints';
 import Controls from './components/Controls';
 import { styles } from './VideoStyles';
+import { YouTubePlayer } from 'youtube-player/dist/types';
 
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
@@ -49,8 +46,8 @@ interface Props extends WithStyles<typeof styles> {
   showControls: boolean;
   showHints: boolean;
   onUserAction(): void;
-  onPlayerReady(event: PlayerReadyEvent): void;
-  onPlayerStateChange(event: PlayerChangeEvent): void;
+  onPlayerReady(event:  { target: YouTubePlayer; }): void;
+  onPlayerStateChange(event: { target: YouTubePlayer; data: number; }): void;
   onFullscreenChange(newState: boolean): void;
   onTogglePlayPause(): void;
   onToggleFullscreen(): void;

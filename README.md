@@ -17,13 +17,24 @@ Head to https://celluloid.huma-num.fr/, create an account and click where you th
 
 We'd appreciate your feedback about the application UX and design, as well as bug reports - don't hesitate to [report an issue!](https://github.com/celluloid-camp/celluloid/issues)
 
+or run a local instance with :
+
+    docker run ghcr.io/celluloid-camp/celluloid:v1 \ 
+        -e CELLULOID_PG_HOST=localhost  \ 
+        -e CELLULOID_PG_PORT=5432  \ 
+        -e CELLULOID_PG_DATABASE=celluloid  \ 
+        -e CELLULOID_PG_USER=postgres  \ 
+        -e CELLULOID_PG_PASSWORD=root  \ 
+        -e CELLULOID_COOKIE_SECRET=XXX  \ 
+        -e CELLULOID_YOUTUBE_API=YOUTUBE_API_KEY  \ 
+
 ## Who's behind it?
 
 Celluloid was born from a research project lead by **Michaël Bourgatte** and **Laurent Tessier**,
 two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/).
 Their work focus on educational science and digital humanities.
 
-Celluloid is maintained by [Erwan Queffélec](https://github.com/3rwww1), and **we are actively looking for contributors and maintainers**.
+Celluloid is maintained by [Younes Benaomar](https://github.com/younes200), and **we are actively looking for contributors and maintainers**.
 Don't hesitate to [drop us a line on gitter!](https://gitter.im/celluloid-camp)
 
 # Setup
@@ -46,7 +57,10 @@ To deploy and install Celluloid, knowing your way around the command-line is req
 
 You'll need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 9.6 or later.
 
-For development purpose, you can use this [docker image](https://hub.docker.com/_/postgres/).
+For development purpose, you can use the provided Docker Compose [docker compose file](docker-compose.yml) and run the command: 
+
+    docker-compose up -d
+
 
 Then:
 

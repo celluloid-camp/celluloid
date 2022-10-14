@@ -4,6 +4,7 @@ import ProjectsApi from 'api/ProjectApi';
 import TagsApi from 'api/TagApi';
 import UnfurlApi from 'api/UnfurlApi';
 import UsersApi from 'api/UserApi';
+import VideosApi from 'api/VideoApi';
 import { Logger } from 'backends/Logger';
 import {
   deserializeUser,
@@ -59,6 +60,8 @@ app.use('/api/projects', ProjectsApi);
 app.use('/api/users', UsersApi);
 app.use('/api/tags', TagsApi);
 app.use('/api/unfurl', UnfurlApi);
+app.use('/api/video', VideosApi);
+
 
 app.get('/elb-status', (_, res) => res.status(200).send());
 

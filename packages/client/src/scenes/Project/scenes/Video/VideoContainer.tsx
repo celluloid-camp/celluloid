@@ -9,6 +9,7 @@ import { Action, AsyncAction, EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 import { Player, PlayerEventData } from 'types/YoutubeTypes';
 import * as AnnotationUtils from 'utils/AnnotationUtils';
+import { YouTubePlayer } from 'youtube-player/dist/types';
 
 import VideoComponent from './VideoComponent';
 
@@ -168,16 +169,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
       const onUserAction = this.resetFadeOutTimer.bind(this);
 
-      const onPlayerReady = (event: { target: Player }) => {
+      const onPlayerReady = (event:{ target: YouTubePlayer; }) => {
         this.refreshTimer = window.setInterval(
           this.refreshPlayer.bind(this), 200);
         this.setState({
+          // @ts-ignore
           player: event.target,
+          // @ts-ignore
           duration: event.target.getDuration()
         });
       };
 
-      const onPlayerStateChange = (event: { target: Player, data: number }) => {
+      const onPlayerStateChange = (event: { target: YouTubePlayer, data: number }) => {
         const state = event.data as PlayerEventData;
         switch (state) {
           case PlayerEventData.PLAYING:

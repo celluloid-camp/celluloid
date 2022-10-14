@@ -27,7 +27,7 @@ export function selectByProject(projectId: string, user?: UserRecord) {
     .orderBy('Annotation.startTime', 'asc');
 }
 
-export function selectOne(annotationId: string, user?: UserRecord) {
+export function selectOne(annotationId: string, user?: Partial<UserRecord>) {
   return database
     .select(
       database.raw('"Annotation".*'),
