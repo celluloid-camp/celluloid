@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "cors-anywhere": "^0.4.4",
-    "lerna": "^3.0.0"
+    "lerna": "^6.0.0"
   },
   "dependencies": {}
 }
