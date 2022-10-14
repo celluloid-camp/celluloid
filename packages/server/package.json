@@ -53,7 +53,7 @@
     "@types/nodemailer-smtp-transport": "^2.7.4",
     "@types/passport": "^1.0.0",
     "@types/passport-local": "^1.0.33",
-    "@types/pg": "^7.4.1",
+    "@types/pg": "^8.0.0",
     "@types/ramda": "^0.25.35",
     "@types/validator": "^9.4.0",
     "babel-loader": "^8.0.0",
