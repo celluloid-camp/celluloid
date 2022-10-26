@@ -103,7 +103,7 @@ router.put(
   isTeacher,
   isProjectOwner,
   (req:any, res) => {
-    ProjectStore.update(req.body, req.params.projectId)
+    ProjectStore.update(req.params.projectId, req.body)
       .then(result => res.status(200).json(result))
       .catch(error => {
         log.error('Failed to update project:', error);

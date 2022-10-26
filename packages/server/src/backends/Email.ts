@@ -17,7 +17,7 @@ export function sendMail(
     from: 'Celluloid <no-reply@celluloid.huma-num.fr>', to, subject, text, html
   };
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     transport.sendMail(mailOptions, (error, info) => {
       if (error) {
         log.error(

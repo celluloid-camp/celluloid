@@ -15,8 +15,6 @@ collect their answers, answer their questions.
 
 Head to https://celluloid.huma-num.fr/, create an account and click where you think you should!
 
-We'd appreciate your feedback about the application UX and design, as well as bug reports - don't hesitate to [report an issue!](https://github.com/celluloid-camp/celluloid/issues)
-
 or run a local instance with :
 
     docker run ghcr.io/celluloid-camp/celluloid:v1 \ 
@@ -27,6 +25,11 @@ or run a local instance with :
         -e CELLULOID_PG_PASSWORD=root  \ 
         -e CELLULOID_COOKIE_SECRET=XXX  \ 
         -e CELLULOID_YOUTUBE_API=YOUTUBE_API_KEY  \ 
+
+Or use [docker compose](stack.yml) to run the complete stack.
+
+
+We'd appreciate your feedback about the application UX and design, as well as bug reports - don't hesitate to [report an issue!](https://github.com/celluloid-camp/celluloid/issues)
 
 ## Who's behind it?
 
