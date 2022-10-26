@@ -1,4 +1,4 @@
-FROM node:15
+FROM node:16
 WORKDIR /usr/src/app
 RUN mkdir -p packages/{types,validators,client,server}
 COPY package.json ./
