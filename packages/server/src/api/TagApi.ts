@@ -1,8 +1,8 @@
-import { isTeacher } from 'auth/Utils';
 import * as express from 'express';
-import * as TagStore from 'store/TagStore';
 
-import { logger } from 'backends/Logger';
+import { isTeacher } from '../auth/Utils';
+import { logger } from '../backends/Logger';
+import * as TagStore from '../store/TagStore';
 
 const log = logger('api/Tag');
 

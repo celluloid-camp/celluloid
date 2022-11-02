@@ -1,4 +1,4 @@
-import { database, getExactlyOne } from 'backends/Database';
+import { database, getExactlyOne } from '../backends/Database';
 
 export function selectAll() {
   return database.select()

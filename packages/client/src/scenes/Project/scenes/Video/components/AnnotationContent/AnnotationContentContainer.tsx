@@ -54,7 +54,7 @@ interface Props {
 
 function parseText(text: string): State {
   const previews = Array
-    .from(getUrls(text))
+    .from(getUrls(text) as string[])
     .map((url: string) => {
       return {
         url,

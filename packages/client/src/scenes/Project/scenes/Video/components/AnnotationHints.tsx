@@ -7,7 +7,7 @@ import {
   WithStyles,
   withStyles
 } from '@material-ui/core';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import * as React from 'react';
 import { getUserColor } from 'utils/UserUtils';
 import { withI18n, WithI18n } from 'react-i18next';

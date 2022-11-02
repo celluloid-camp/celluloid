@@ -1,24 +1,36 @@
 import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { History } from 'history';
-import appReducer from 'reducers/AppReducer';
-import { applyMiddleware, createStore } from 'redux';
+import { createBrowserHistory, History } from 'history';
+import { applyMiddleware, compose, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunkMiddleware from 'redux-thunk';
+import createRootReducer from '../reducers'
 
-export const createAppStore = (history: History) => {
+
+
+export const history = createBrowserHistory()
+
+export default function createAppStore(preloadedState?: any) {
+  const composeEnhancer =
+  (process.env.NODE_ENV === 'development' &&
+    (window as any)?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
   const store = createStore(
-    connectRouter(history)(appReducer),
-    composeWithDevTools(
-      applyMiddleware(thunkMiddleware, routerMiddleware(history))
-    )
-  );
+    createRootReducer(history),
+    preloadedState,
+    composeEnhancer(
+      applyMiddleware(
+        routerMiddleware(history),
+      ),
+    ),
+  )
 
-  if (process.env.NODE_ENV !== 'production') {
-    if (module.hot) {
-      module.hot.accept('../reducers/AppReducer', () => {
-        store.replaceReducer(appReducer);
-      });
-    }
+  // Hot reloading
+  if (module.hot) {
+    // Enable Webpack hot module replacement for reducers
+    module.hot.accept('../reducers', () => {
+      store.replaceReducer(createRootReducer(history));
+    });
   }
-  return store;
-};
+
+  return store
+}

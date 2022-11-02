@@ -1,13 +1,13 @@
-import { CommentRecord } from '@celluloid/types';
+import { CommentRecord, UserRecord } from '@celluloid/types';
+import * as express from 'express';
+
 import {
   isLoggedIn,
   isProjectOwnerOrCollaborativeMember
-} from 'auth/Utils';
-import * as express from 'express';
-import * as AnnotationStore from 'store/AnnotationStore';
-import * as CommentStore from 'store/CommentStore';
-
-import { logger } from 'backends/Logger';
+} from '../auth/Utils';
+import { logger } from '../backends/Logger';
+import * as AnnotationStore from '../store/AnnotationStore';
+import * as CommentStore from '../store/CommentStore';
 
 
 const log = logger('api/CommentApi');
@@ -19,7 +19,7 @@ router.get('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
   const user = req.user;
 
   AnnotationStore.selectOne(annotationId, user)
-    .then(() => CommentStore.selectByAnnotation(annotationId, user))
+    .then(() => CommentStore.selectByAnnotation(annotationId, user as UserRecord))
     .then((comments: CommentRecord[]) =>
       res.status(200).json(comments))
     .catch((error: Error) => {
@@ -38,7 +38,7 @@ router.post('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => 
   const comment = req.body.text;
 
   AnnotationStore.selectOne(annotationId, user)
-    .then(() => CommentStore.insert(annotationId, comment, user))
+    .then(() => CommentStore.insert(annotationId, comment, user as UserRecord))
     .then(result => res.status(201).json(result))
     .catch((error: Error) => {
       log.error('Failed to create comment:', error);

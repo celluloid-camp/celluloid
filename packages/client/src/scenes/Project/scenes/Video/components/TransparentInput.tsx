@@ -1,14 +1,19 @@
 import {
   createStyles,
-  Fade,
+  Fade as FadeMUI,
   FormHelperText,
   Input,
   Theme,
   WithStyles,
   withStyles
 } from '@material-ui/core';
+import { FadeProps } from '@material-ui/core/Fade';
 import classnames from 'classnames';
-import * as React from 'react';
+import React from 'react';
+
+const Fade:React.FC<React.PropsWithChildren & FadeProps> = (props) => (
+  <FadeMUI {...props} />
+);
 
 const styles = (theme: Theme) => createStyles({
   padded: {

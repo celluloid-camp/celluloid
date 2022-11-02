@@ -27,7 +27,7 @@ export function canAnnotate(
   project: ProjectGraphRecord,
   user: UserRecord
 ) {
-  return isOwner(project, user) || isMember(project, user) || isAdmin(user) && project.collaborative;
+  return (isOwner(project, user) || isMember(project, user) || isAdmin(user)) && project.collaborative;
 }
 
 export const canShare = isOwner || isAdmin;

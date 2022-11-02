@@ -4,7 +4,7 @@ import {
   Button,
   ClickAwayListener,
   createStyles,
-  Grow,
+  Grow as GrowMUI,
   MenuItem,
   MenuList,
   Paper,
@@ -15,6 +15,7 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
+import { GrowProps } from '@material-ui/core/Grow';
 import { closeSignin, openLogin, openSignup } from 'actions/Signin';
 import { getButtonLink } from 'components/ButtonLink';
 import SigninDialog, { SigninState } from 'components/Signin';
@@ -27,6 +28,11 @@ import { EmptyAction } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
 
 import SigninBar from './components/SigninBar';
+
+
+const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+  <GrowMUI {...props} />
+);
 
 const styles = ({ typography, spacing, palette }: Theme) =>
   createStyles({
@@ -122,7 +128,7 @@ export default withStyles(styles)(
 
                         <g id="surface1">
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 fill="rgb(0%,29.019608%,0%)"
                                 d="m151.34375,14.52344l5.9375,0
                                 c0.35938,-1.75 2.17578,-3.11719 3.80078,-1.83594
@@ -141,7 +147,7 @@ export default withStyles(styles)(
                                 id="svg_1"
                             />
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 fill="rgb(32.941176%,50.196078%,100%)"
                                 d="m151.34375,14.61328
                                 c0,0.8086 -0.10156,2.10547 0.4375,2.77344
@@ -162,7 +168,7 @@ export default withStyles(styles)(
                                 id="svg_2"
                             />
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 fill="rgb(100%,77.254902%,0%)"
                                 d="m118.89063,25.47656l6.02734,0
                                 c0.08984,-1.9375 2.26953,-3.04297 3.80078,-1.82422
@@ -181,7 +187,7 @@ export default withStyles(styles)(
                                 id="svg_3"
                             />
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 fill="rgb(100%,69.803922%,76.470588%)"
                                 d="m140.49609,25.47656l6.02735,0
                                 c0.33984,-1.80468 2.16406,-3.12109 3.80078,-1.82422
@@ -200,7 +206,7 @@ export default withStyles(styles)(
                                 id="svg_4"
                             />
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 fill="#757575"
                                 d="m63.06641,18.54688
                                 c0.25781,0.55468 0.9414,0.76562 1.15234,1.3164
@@ -217,7 +223,7 @@ export default withStyles(styles)(
                                 id="svg_5"
                             />
                             <path
-                                fill-rule="nonzero"
+                                fillRule="nonzero"
                                 fill="#757575"
                                 d="m37.66406,16.76953
                                 c-0.93359,0.48047 -1.98437,0.76172 -2.97265,1.10938
@@ -234,7 +240,7 @@ export default withStyles(styles)(
                                 id="svg_6"
                             />
                             <path
-                                fill-rule="nonzero"
+                                fillRule="nonzero"
                                 fill="#757575"
                                 d="m45.73047,16.76953l-5.46875,1.96875
                                 c0.33984,0.45703 1.02344,0.78906 1.23828,1.32422
@@ -245,7 +251,7 @@ export default withStyles(styles)(
                                 id="svg_7"
                             />
                             <path
-                                fill-rule="nonzero"
+                                fillRule="nonzero"
                                 fill="#757575"
                                 d="m19.58203,30.62109
                                 c-4.6289,1.71094 -9.41406,-2.82421 -10.64062,-7.01953
@@ -288,7 +294,7 @@ export default withStyles(styles)(
                                 c-0.00391,-2.58203 -0.09766,-5.17968 -0.09766,-7.76953l0,-2.24609
                                 c0,-0.39844 0.0625,-0.84375 -0.08984,-1.21875zm0,0"
                                 fill="#757575"
-                                fill-rule="nonzero"
+                                fillRule="nonzero"
                             />
                             <path
                                 id="svg_10"
@@ -307,7 +313,7 @@ export default withStyles(styles)(
                                 c-0.75781,-1.98828 -1.89844,-4.17578 -3.375,-5.70703
                                 c-0.46875,-0.48828 -1.34375,-1.55078 -2.12891,-1.12109z"
                                 fill="#757575"
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                             />
                             <path
                                 id="svg_11"
@@ -325,7 +331,7 @@ export default withStyles(styles)(
                                 c-0.74609,0.28125 -0.65625,1.29297 -0.54297,1.91015
                                 c0.28516,1.51563 0.92969,3.25782 2.21094,4.21094z"
                                 fill="#757575"
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                             />
 
                             <path
@@ -355,7 +361,7 @@ export default withStyles(styles)(
                                 c0,1.15625 -0.02344,2.37109 0.39063,3.46484
                                 c0.28515,0.73828 0.83203,1.30859 1.65234,1.30859
                                 c0.32422,0 0.61328,-0.08593 0.92578,-0.18359z"
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                             />
                             <path
                                 id="svg_13"
@@ -373,7 +379,7 @@ export default withStyles(styles)(
                                 c1.7461,-0.38282 2.32813,-2.82032 1.17188,-4.14063
                                 c-0.61328,-0.70312 -1.79297,-0.81641 -2.65625,-0.61719z"
                                 fill="#757575"
-                                fill-rule="nonzero"
+                                fillRule="nonzero"
                             />
                         </g>
                    </svg>

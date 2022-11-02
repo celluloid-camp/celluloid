@@ -10,24 +10,67 @@
     "packages/*"
   ],
   "scripts": {
+    "setup": "yarn && yarn setup:packages",
+    "setup:packages": "lerna run setup",
     "watch": "yarn build-libs && concurrently \"yarn watch-types\" \"yarn watch-validators\" \"yarn watch-server\" \"yarn watch-client\"",
+    "dev": "yarn && tsc -b && concurrently --kill-others --names \"TSC,WATCH,RUN\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold\" \"tsc -b --watch --preserveWatchOutput\" \"lerna run --parallel watch\"",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
-    "watch-client": "(cd packages/client && yarn watch)",
-    "watch-server": "(cd packages/server && yarn watch)",
-    "watch-types": "(cd packages/types && yarn watch)",
-    "watch-validators": "(cd packages/validators && yarn watch)",
-    "build-client": "(cd packages/client && yarn build)",
-    "build-server": "(cd packages/server && yarn build --mode=production)",
-    "build-types": "(cd packages/types && yarn build)",
-    "build-validators": "(cd packages/validators && yarn build)",
-    "build-libs": "yarn build-types && yarn build-validators",
-    "build": "yarn build-libs && yarn build-client && yarn build-server",
+    "build": "lerna run build",
     "deploy": "./bin/deploy",
-    "start": "(cd packages/server && yarn start)"
+    "start": "(cd packages/server && yarn start)",
+    "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
+    "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
+    "--shortcuts to run commands in workspaces--": "",
+    "client": "yarn workspace @ccelluloide/client",
+    "server": "yarn workspace @celluloid/server",
+    "docker-build": "docker build -t celluloid:local  ."
   },
   "devDependencies": {
-    "cors-anywhere": "^0.4.4",
-    "lerna": "^6.0.0"
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-typescript": "^7.13.0",
+    "@types/jest": "^26.0.23",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "babel-jest": "^27.0.1",
+    "concurrently": "^6.2.0",
+    "dotenv": "^10.0.0",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint_d": "^10.1.2",
+    "jest": "^27.0.1",
+    "mock-req": "^0.2.0",
+    "mock-res": "^0.5.0",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.3.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.1",
+    "ts-loader": "^8.0.11",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lerna": "^6.0.1"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "proseWrap": "always",
+    "overrides": [
+      {
+        "files": [
+          "*.yml",
+          "*.yaml"
+        ],
+        "options": {
+          "printWidth": 120
+        }
+      }
+    ]
+  }
 }

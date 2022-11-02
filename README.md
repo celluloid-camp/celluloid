@@ -19,14 +19,16 @@ We'd appreciate your feedback about the application UX and design, as well as bu
 
 or run a local instance with :
 
-    docker run ghcr.io/celluloid-camp/celluloid:v1 \ 
-        -e CELLULOID_PG_HOST=localhost  \ 
-        -e CELLULOID_PG_PORT=5432  \ 
-        -e CELLULOID_PG_DATABASE=celluloid  \ 
-        -e CELLULOID_PG_USER=postgres  \ 
-        -e CELLULOID_PG_PASSWORD=root  \ 
-        -e CELLULOID_COOKIE_SECRET=XXX  \ 
-        -e CELLULOID_YOUTUBE_API=YOUTUBE_API_KEY  \ 
+    docker container run --rm --name celluloid \
+    -e CELLULOID_PG_HOST='localhost' \
+    -e CELLULOID_PG_PORT=5432  \
+    -e CELLULOID_PG_DATABASE='celluloid' \
+    -e CELLULOID_PG_USER='postgres' \
+    -e CELLULOID_PG_PASSWORD='root' \
+    -e CELLULOID_COOKIE_SECRET='XXX' \
+    -e CELLULOID_YOUTUBE_API='XXX' \
+    --net=host \
+    ghcr.io/celluloid-camp/celluloid:v1
 
 ## Who's behind it?
 
@@ -104,7 +106,7 @@ If this fails, you most certainly got your PostgreSQL server configuration or yo
 
 At the root of your repository, run
 
-    yarn watch
+    yarn dev
 
 This will trigger an interactive build, open up the app in a browser window while continuously watching the source files for modifications.
 

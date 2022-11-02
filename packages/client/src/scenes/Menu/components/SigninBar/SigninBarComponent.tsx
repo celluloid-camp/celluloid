@@ -1,7 +1,7 @@
 import { UserRecord } from '@celluloid/types';
 import {
   ClickAwayListener,
-  Grow,
+  Grow as GrowMUI,
   IconButton,
   MenuItem,
   MenuList,
@@ -9,9 +9,14 @@ import {
   Popper
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import { GrowProps } from '@material-ui/core/Grow';
 import UserAvatar from 'components/UserAvatar';
 import * as React from 'react';
 import { withI18n, WithI18n } from 'react-i18next';
+
+const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+  <GrowMUI {...props} />
+);
 
 interface Props {
   user?: UserRecord;

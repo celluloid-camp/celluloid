@@ -1,10 +1,10 @@
 import { ProjectCreateData, ProjectRecord, ProjectShareData, UserRecord } from '@celluloid/types';
-import { generateUniqueShareName } from 'auth/Utils';
-import { database, filterNull, getExactlyOne, hasConflictedOn } from 'backends/Database';
 import { QueryBuilder } from 'knex';
 
+import { generateUniqueShareName } from '../auth/Utils';
+import { database, filterNull, getExactlyOne, hasConflictedOn } from '../backends/Database';
+import { logger } from '../backends/Logger';
 import { tagProject } from './TagStore';
-import { logger } from 'backends/Logger';
 
 const log = logger('store/ProjectStore');
 
@@ -53,7 +53,8 @@ export function isMember(projectId: string, user: Partial<UserRecord>) {
   return database.first('projectId')
     .from('UserToProject')
     .where('UserToProject.projectId', projectId)
-    .andWhere('UserToProject.userId', user.id)
+    // @ts-ignore
+    .andWhere('UserToProject.userId', user.id) 
     .then((row: string) => row ? true : false);
 }
 
@@ -134,7 +135,7 @@ export function selectOne(projectId: string, user: Partial<UserRecord>) {
 export function insert(project: ProjectCreateData, user: UserRecord) {
   const INSERT_RETRY_COUNT = 20;
   const { tags, ...props } = project;
-  const query = (retry: number) =>
+  const query:any = (retry: number) =>
     database('Project')
       .insert({
         ...props,
@@ -156,7 +157,7 @@ export function insert(project: ProjectCreateData, user: UserRecord) {
         throw error;
       });
   return query(0)
-    .then(record =>
+    .then((record:any) =>
       Promise.all(project.tags.map(tag =>
         tagProject(tag.id, record.id)
       ))
