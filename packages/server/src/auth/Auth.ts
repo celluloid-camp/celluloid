@@ -1,5 +1,6 @@
 import { TeacherRecord, UserRecord } from "@celluloid/types";
 import * as bcrypt from "bcrypt";
+import passport from "passport";
 import {
   Strategy,
   VerifyFunction,
@@ -14,13 +15,25 @@ import { sendConfirmationCode } from "./Utils";
 
 const log = logger("auth/Auth");
 
+
+declare global {
+  namespace Express {
+    interface User {
+      id: string;
+    }
+  }
+}
+
 export enum SigninStrategy {
   LOGIN = "login",
   TEACHER_SIGNUP = "teacher-signup",
   STUDENT_SIGNUP = "student-signup",
 }
 
-export const deserializeUser = (id: string, done: any) => {
+passport.serializeUser((user, done) => {
+  return Promise.resolve(done(null, user.id));
+});
+passport.deserializeUser((id: string, done: any) => {
   return UserStore.selectOne(id)
     .then((result: TeacherRecord) => {
       if (result) {
@@ -33,7 +46,7 @@ export const deserializeUser = (id: string, done: any) => {
       }
     })
     .catch((error: Error) => Promise.resolve(done(error)));
-};
+});
 
 const signStudentUp: VerifyFunctionWithRequest = (
   req,

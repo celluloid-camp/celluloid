@@ -9,7 +9,7 @@ volumes:
 
 services:
   postgres:
-    image: postgres:10-alpine
+    image: postgres:11.3
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
@@ -18,7 +18,7 @@ services:
       # Uncomment below to maintain the peristant data
       - postgres:/data/postgres
       # Uncomment bellow to intialize the container with data by creating the respective file
-      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql      
+      # - ./data/schema.sql:/docker-entrypoint-initdb.d/init.sql      
     ports:
       - "5432:5432"
     restart: unless-stopped

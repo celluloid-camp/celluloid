@@ -6,7 +6,7 @@
   "license": "MIT",
   "proxy": "http://localhost:3001",
   "scripts": {
-    "watch": "yarn start",
+    "dev": "yarn start",
     "clean": "rm -rf build",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",

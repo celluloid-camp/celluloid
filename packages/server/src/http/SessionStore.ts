@@ -69,7 +69,7 @@ class PostgresStore extends Store {
         }
       })
       .then(() => {
-        log.log(`Set session with sid [${sid}]`);
+        log.info(`Set session with sid [${sid}]`);
         if (callback) {
           return Promise.resolve(callback.apply(this, null));
         }
