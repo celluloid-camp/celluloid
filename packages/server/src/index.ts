@@ -13,31 +13,21 @@ import UnfurlApi from './api/UnfurlApi';
 import UsersApi from './api/UserApi';
 import VideosApi from './api/VideoApi';
 import {
-  deserializeUser,
   loginStrategy,
   SigninStrategy,
   studentSignupStrategy,
   teacherSignupStrategy,
 } from './auth/Auth';
-import { Logger } from './backends/Logger';
+import { logger } from './backends/Logger';
 import { nocache } from './http/NoCache';
 import { createStore } from './http/SessionStore';
 import { clientApp, clientDir } from './Paths';
 
 require('cookie-parser');
 
-declare global {
-  namespace Express {
-    interface User {
-      id: string;
-    }
-  }
-}
+const log = logger('http')
 
-passport.serializeUser((user, done) => {
-  return Promise.resolve(done(null, user.id));
-});
-passport.deserializeUser(deserializeUser);
+
 passport.use(SigninStrategy.LOGIN, loginStrategy);
 passport.use(SigninStrategy.TEACHER_SIGNUP, teacherSignupStrategy);
 passport.use(SigninStrategy.STUDENT_SIGNUP, studentSignupStrategy);
@@ -62,7 +52,8 @@ app.use(
     saveUninitialized: true
   })
 );
-app.use(expressPino(Logger));
+
+app.use(expressPino({logger: log}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/projects', ProjectsApi);
@@ -79,7 +70,7 @@ app.use('/service-worker.js', nocache());
 app.get('/*', (_, res) => res.sendFile(clientApp));
 
 app.listen(process.env.CELLULOID_LISTEN_PORT, () => {
-  Logger.info(
+  log.info(
     `HTTP server listening on port ${process.env.CELLULOID_LISTEN_PORT}` +
     ` in ${process.env.NODE_ENV} mode`
   );
