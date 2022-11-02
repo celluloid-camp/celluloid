@@ -18,7 +18,7 @@ import { cancelShareProject, shareProjectThunk } from 'actions/ProjectActions';
 import DialogError from 'components/DialogError';
 import DialogHeader from 'components/DialogHeader';
 import ShareCredentials from 'components/ShareCredentials';
-import * as passwordGenerator from 'password-generator';
+import passwordGenerator from 'password-generator';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -129,7 +129,7 @@ export default withStyles(styles)(
                   {t('project.share.dialog.description')}
                   <a
                     href={`/shares/${project.id}?p=${sharePassword}`}
-                    target="_blank"
+                    target="_blank" rel="noreferrer"
                   >
                     {t('project.share.dialog.linkText')}
                   </a>.

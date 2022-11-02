@@ -1,4 +1,6 @@
-FROM node:15
+
+
+FROM node:16
 WORKDIR /usr/src/app
 RUN mkdir -p packages/{types,validators,client,server}
 COPY package.json ./
@@ -8,9 +10,15 @@ COPY packages/server/package.json packages/server/
 COPY packages/client/package.json packages/client/
 COPY yarn.lock ./
 RUN yarn
+
+
 COPY . ./
 ENV NODE_ENV=production
 RUN yarn build
-ENV CELLULOID_LISTEN_PORT=8000
-EXPOSE 8000
+
+ENV CELLULOID_LISTEN_PORT=3001
+EXPOSE 3001
+
+LABEL description="CELLULOID"
+
 CMD [ "yarn", "start"]

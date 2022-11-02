@@ -1,7 +1,7 @@
 import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
-import { database, getExactlyOne } from 'backends/Database';
 import { QueryBuilder } from 'knex';
 
+import { database, getExactlyOne } from '../backends/Database';
 import * as ProjectStore from './ProjectStore';
 
 export function selectByProject(projectId: string, user?: UserRecord) {

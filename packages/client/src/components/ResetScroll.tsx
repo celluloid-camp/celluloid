@@ -1,20 +1,17 @@
-import * as React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import * as React from "react";
+import { useEffect } from "react";
+import { RouteComponentProps, withRouter } from "react-router";
 
-interface Props extends RouteComponentProps<{}> {
-}
+type Props = {
+  children: JSX.Element;
+} & RouteComponentProps<any>;
 
-export default withRouter(
-  class extends React.Component<Props> {
+const ResetScroll: React.FC<Props> = ({ children, location }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
-    componentDidUpdate(prevProps: Props) {
-      if (this.props.location !== prevProps.location) {
-        window.scrollTo(0, 0);
-      }
-    }
+  return children;
+};
 
-    render() {
-      return this.props.children;
-    }
-  }
-);
+export default withRouter(ResetScroll);

@@ -7,7 +7,7 @@ import {
   Chip,
   createStyles,
   Grid,
-  Grow,
+  Grow as GrowMUI,
   Theme,
   Typography,
   WithStyles,
@@ -18,7 +18,19 @@ import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
-import Shiitake from 'shiitake';
+import Shiitake, { ShiitakeProps } from 'shiitake';
+import { GrowProps } from '@material-ui/core/Grow';
+
+const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+  <GrowMUI {...props} />
+);
+
+const ShiitakeFix:React.FC<React.PropsWithChildren & ShiitakeProps> = (props) => (
+  <Shiitake {...props} />
+);
+
+
+
 
 const styles = ({ palette, spacing, typography }: Theme) => createStyles({
   card: {
@@ -194,9 +206,9 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                     className={classes.title}
                     variant="h6"
                   >
-                    <Shiitake lines={2} tagName="span">
+                    <ShiitakeFix lines={2} tagName="span">
                       {title}
-                    </Shiitake>
+                    </ShiitakeFix>
                   </Typography>
                 </div>
               </CardMedia>
@@ -212,9 +224,9 @@ export default connect(null, mapDispatchToProps)(withStyles(styles)(
                       gutterBottom={true}
                       className={classes.objective}
                     >
-                      <Shiitake lines={3} tagName="span">
+                      <ShiitakeFix lines={3} tagName="span">
                         {objective}
-                      </Shiitake>
+                      </ShiitakeFix>
                     </Typography>
                   </Grid>
                   <Grid item={true} xs={12}>

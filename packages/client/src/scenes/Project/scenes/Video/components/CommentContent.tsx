@@ -14,7 +14,7 @@ import {
 } from '@celluloid/types';
 import {
   createStyles,
-  Grow,
+  Grow as GrowMUI,
   IconButton,
   Theme,
   Typography,
@@ -24,10 +24,15 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import UserAvatar from 'components/UserAvatar';
-import * as moment from 'moment';
-import * as React from 'react';
+import moment from 'moment';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { GrowProps } from '@material-ui/core/Grow';
+
+const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+  <GrowMUI {...props} />
+);
 
 const styles = (theme: Theme) => createStyles({
   root: {

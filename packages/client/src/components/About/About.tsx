@@ -36,27 +36,27 @@ export default withI18n()(({ t }: WithI18n) => (
     >
       <Grid container={true} spacing={40} direction="row" justify="center">
         <Grid item={true}>
-          <a href="https://www.icp.fr/" target="_blank">
+          <a href="https://www.icp.fr/" target="_blank" rel="noreferrer">
             <img src={logoIcp} height="100px" alt="Institut Catholique de Paris" />
           </a>
         </Grid>
         <Grid item={true}>
-          <a href="https://fondation-st-matthieu.org/" target="_blank">
+          <a href="https://fondation-st-matthieu.org/" target="_blank" rel="noreferrer">
             <img src={logoFsm} height="100px" alt="Fondation Saint-Matthieu" />
           </a>
         </Grid>
         <Grid item={true}>
-          <a href="https://www.lapaillasse.org/" target="_blank">
+          <a href="https://www.lapaillasse.org/" target="_blank" rel="noreferrer">
             <img src={logoLp} height="100px" alt="La Paillasse" />
           </a>
         </Grid>
         <Grid item={true}>
-          <a href="https://celluloid.hypotheses.org" target="_blank">
+          <a href="https://celluloid.hypotheses.org" target="_blank" rel="noreferrer">
             <img src={logoBlog} height="100px" alt="Le blog Celluloid" />
           </a>
         </Grid>
         <Grid item={true}>
-          <a href="https://www.huma-num.fr/" target="_blank">
+          <a href="https://www.huma-num.fr/" target="_blank" rel="noreferrer">
             <img src={logoHN} height="100px" alt="Le site de Huma-num" />
           </a>
         </Grid>

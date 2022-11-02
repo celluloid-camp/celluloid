@@ -5,7 +5,8 @@ import { ProjectGraphRecord, TagData, UserRecord } from '@celluloid/types';
 import {
   Chip,
   createStyles,
-  Fade,
+  Fade as FadeMUI,
+  Grow as GrowMUI,
   Theme,
   Toolbar,
   Typography,
@@ -13,7 +14,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import Grow from '@material-ui/core/Grow';
+import { GrowProps } from '@material-ui/core/Grow';
 import { listTagsThunk } from 'actions/TagActions';
 import classNames from 'classnames';
 import * as R from 'ramda';
@@ -26,6 +27,16 @@ import { AppState } from 'types/StateTypes';
 
 import ProjectThumbnail from './ProjectThumbnail';
 import { WithI18n, withI18n } from 'react-i18next';
+import { FadeProps } from '@material-ui/core/Fade';
+
+const Fade:React.FC<React.PropsWithChildren & FadeProps> = (props) => (
+  <FadeMUI {...props} />
+);
+
+const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+  <GrowMUI {...props} />
+);
+
 
 const projectMatchesTag = (project: ProjectGraphRecord) =>
   (tag: TagData) =>
