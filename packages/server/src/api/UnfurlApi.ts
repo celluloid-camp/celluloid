@@ -1,23 +1,22 @@
 import * as express from 'express';
-import { isLoggedIn } from 'auth/Utils';
-import { UnfurlData } from '@celluloid/types';
+import { unfurl } from 'unfurl.js'
+import { URL } from 'url';
 
-import * as unfurl from 'unfurl.js';
-
-import { logger } from 'backends/Logger';
+import { isLoggedIn } from '../auth/Utils';
+import { logger } from '../backends/Logger';
 
 const log = logger('api/UnfulApi');
 
 const router = express.Router();
 
 router.get('/', isLoggedIn, (req, res) => {
-  const url = req.query.url;
+  const url = req.query.url as string;
   return unfurl(url)
-    .then(raw => {
+    .then((raw:any) => {
       const parsedUrl = new URL(url as string);
       const result = {
-        faviconUrl: undefined,
-        website: undefined,
+        faviconUrl: "",
+        website: "",
         imageUrl: undefined,
         title: undefined,
         description: undefined,
@@ -37,14 +36,14 @@ router.get('/', isLoggedIn, (req, res) => {
         result.title = result.title || other.title;
         result.description = result.description || other.description;
         if (other.icon) {
-          result.faviconUrl = parsedUrl.origin + other.icon;
+          result.faviconUrl = parsedUrl.origin + other.icon || "";
         }
       }
       if (result.title && result.description) {
         if (!result.website) {
           result.website = parsedUrl.hostname;
         }
-        return res.status(200).json(result as UnfurlData);
+        return res.status(200).json(result);
       } else {
         return res.status(404);
       }

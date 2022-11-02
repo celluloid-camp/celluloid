@@ -1,4 +1,4 @@
-import * as pino from 'pino';
+import pino from 'pino';
 
 export const Logger = pino({
     level: process.env.CELLULOID_LOG_LEVEL || 'info'

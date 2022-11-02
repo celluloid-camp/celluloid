@@ -1,12 +1,13 @@
 import * as mailer from 'nodemailer';
-import * as smtp from 'nodemailer-smtp-transport';
-import { logger } from 'backends/Logger';
+import smtp from 'nodemailer-smtp-transport';
+
+import { logger } from './Logger';
 
 const log = logger('Email');
 
 const transport = mailer.createTransport(smtp({
   host: process.env.CELLULOID_SMTP_HOST,
-  port: parseInt(process.env.CELLULOID_SMTP_PORT, 10),
+  port: parseInt(process.env.CELLULOID_SMTP_PORT || "465", 10),
   secure: process.env.CELLULOID_SMTP_SECURE === 'true',
 
 }));
@@ -26,7 +27,7 @@ export function sendMail(
       } else {
         log.info(
           `Email sent to ${to} with subject [${subject}]`, info.response);
-        resolve();
+        resolve(null);
       }
     });
   });

@@ -3,8 +3,10 @@ import {
   ProjectGraphRecord,
   UnfurlData
 } from '@celluloid/types';
-import { Collapse, Fade, Grow, IconButton } from '@material-ui/core';
+import { Collapse, Fade as FadeMUI, Grow as GrowMUI, IconButton } from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
+import { FadeProps } from '@material-ui/core/Fade';
+import { GrowProps } from '@material-ui/core/Grow';
 import {
   createStyles,
   Theme,
@@ -20,6 +22,15 @@ import * as React from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
 import CommentsList from '../CommentsList';
+
+
+const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+  <GrowMUI {...props} />
+);
+
+const Fade:React.FC<React.PropsWithChildren & FadeProps> = (props) => (
+  <FadeMUI {...props} />
+);
 
 const styles = ({ spacing, typography, transitions, palette }: Theme) => createStyles({
   wrapper: {

@@ -3,15 +3,14 @@ import {
   AnnotationRecord,
   UserRecord
 } from '@celluloid/types';
-import { isProjectOwnerOrCollaborativeMember } from 'auth/Utils';
 import * as express from 'express';
-import * as AnnotationStore from 'store/AnnotationStore';
-import * as CommentStore from 'store/CommentStore';
-import * as ProjectStore from 'store/ProjectStore';
 
+import { isProjectOwnerOrCollaborativeMember } from '../auth/Utils';
+import { logger } from '../backends/Logger';
+import * as AnnotationStore from '../store/AnnotationStore';
+import * as CommentStore from '../store/CommentStore';
+import * as ProjectStore from '../store/ProjectStore';
 import CommentApi from './CommentApi';
-
-import { logger } from 'backends/Logger';
 
 const log = logger('api/AnnotationApi');
 
@@ -25,6 +24,7 @@ function fetchComments(annotation: AnnotationRecord, user: UserRecord) {
 }
 
 router.get('/', (req, res) => {
+  // @ts-ignore
   const projectId = req.params.projectId;
   const user = req.user as UserRecord;
 

@@ -1,7 +1,8 @@
 import * as express from "express";
-import { logger } from "backends/Logger";
-import * as queryString from "query-string";
 import fetch from "node-fetch";
+import * as queryString from "query-string";
+
+import { logger } from "../backends/Logger";
 
 const log = logger("api/videoApi");
 
@@ -45,7 +46,7 @@ router.get("/", async (req, res) => {
       `Could not perform YouTube API request (error ${response.status})`
     );
     return res.status(500);
-  } catch (e) {
+  } catch (e:any) {
     log.error(`Could not perform YouTube API request (error ${e.message})`);
     return res.status(500);
   }

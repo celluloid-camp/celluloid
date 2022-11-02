@@ -1,78 +1,71 @@
-import { database } from 'backends/Database';
-import { Store } from 'express-session';
-import * as moment from 'moment';
 
-import { logger } from 'backends/Logger';
+import { Session, Store } from "express-session";
+import moment from "moment";
 
-const log = logger('http/Session');
+import { database } from "../backends/Database";
+import { logger } from "../backends/Logger";
 
-const getExpiresAt = (session) => {
+const log = logger("http/Session");
+
+const getExpiresAt = (session:Session) => {
   return moment()
-    .add(session.cookie.maxAge / 1000, 's')
+    .add(session.cookie?.maxAge || 10 / 1000, "s")
     .toDate();
 };
 
 class PostgresStore extends Store {
   closed: boolean;
-  // tslint:disable-next-line:no-any
   pruneInterval: any;
-  // tslint:disable-next-line:no-any
   pruneTimer: any;
-  ttl: number;
+  // ttl: number;
 
   constructor(pruneInterval?: number) {
     super();
     this.closed = false;
-    this.pruneInterval =
-      pruneInterval || 60 * 1000; // 1 hour
-    this.pruneTimer =
-      setTimeout(
-        this.pruneSessions.bind(this),
-        this.pruneInterval
-      );
+    this.pruneInterval = pruneInterval || 60 * 1000; // 1 hour
+    this.pruneTimer = setTimeout(
+      this.pruneSessions.bind(this),
+      this.pruneInterval
+    );
     setImmediate(this.pruneSessions.bind(this));
   }
 
-  get = (sid, callback) => {
-    return database('Session')
+  get = (sid:string, callback:any) => {
+    return database("Session")
       .first()
-      .where('sid', sid)
-      .then(result => {
+      .where("sid", sid)
+      .then((result) => {
         if (result) {
-
-          return Promise.resolve(
-            callback(null, JSON.parse(result.session))
-          );
+          return Promise.resolve(callback(null, JSON.parse(result.session)));
         } else {
           return Promise.resolve(callback());
         }
       })
-      .catch(error => {
+      .catch((error) => {
         log.error(`Failed to get session with sid [${sid}]:`, error);
         return Promise.resolve(callback(error));
       });
-  }
+  };
 
-  set = (sid, session, callback) => {
-    return database('Session')
-      .select('sid')
-      .where('sid', sid)
+  set = (sid:string, session:Session, callback:any) => {
+    return database("Session")
+      .select("sid")
+      .where("sid", sid)
       .first()
-      .then(result => {
+      .then((result) => {
         if (!result) {
-          return database('Session')
-            .insert({
-              sid,
-              session,
-              expiresAt: getExpiresAt(session)
-            });
+          return database("Session").insert({
+            sid,
+            session,
+            expiresAt: getExpiresAt(session),
+          });
         } else {
-          return database('Session')
+          return database("Session")
             .update({
               session,
-              expiresAt: getExpiresAt(session)
+              expiresAt: getExpiresAt(session),
             })
-            .where('sid', sid);
+            .where("sid", sid);
         }
       })
       .then(() => {
@@ -81,60 +74,60 @@ class PostgresStore extends Store {
           return Promise.resolve(callback.apply(this, null));
         }
       })
-      .catch(error => {
+      .catch((error) => {
         log.error(`Failed to set session with sid [${sid}]:`, error);
         if (callback) {
           return Promise.resolve(callback.apply(this, error));
         }
       });
-  }
+  };
 
-  destroy = (sid, callback) => {
-    return database('Session')
+  destroy = (sid:string, callback:any) => {
+    return database("Session")
       .del()
-      .where('sid', sid)
+      .where("sid", sid)
       .then(() => {
         log.info(`Destroyed session with sid [${sid}]`);
         if (callback) {
           return Promise.resolve(callback.apply(this, null));
         }
       })
-      .catch(error => {
+      .catch((error) => {
         log.error(`Failed to destroy session with sid [${sid}]:`, error);
         if (callback) {
           return Promise.resolve(callback.apply(this, error));
         }
       });
-  }
+  };
 
-  touch = (sid, session, callback) => {
-    return database('Session')
+  touch = (sid:string, session:Session, callback:any) => {
+    return database("Session")
       .update({
-        expiresAt: getExpiresAt(session)
+        expiresAt: getExpiresAt(session),
       })
-      .where('sid', sid)
+      .where("sid", sid)
       .then(() => {
         if (callback) {
           return Promise.resolve(callback.apply(this, null));
         }
       })
-      .catch(error => {
+      .catch((error) => {
         log.error(`Failed to touch session with sid [${sid}]:`, error);
         if (callback) {
           return Promise.resolve(callback.apply(this, error));
         }
       });
-  }
+  };
 
   pruneSessions() {
-    database('Session')
+    database("Session")
       .del()
-      .where('expiresAt', '<', moment().toDate())
+      .where("expiresAt", "<", moment().toDate())
       .then(() => {
-        log.info('Sessions pruned');
+        log.info("Sessions pruned");
       })
-      .catch(error => {
-        log.info('Failed to prune sessions:', error);
+      .catch((error) => {
+        log.info("Failed to prune sessions:", error);
       });
   }
 

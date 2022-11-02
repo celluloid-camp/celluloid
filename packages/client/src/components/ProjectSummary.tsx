@@ -125,7 +125,7 @@ export default withStyles(styles)(
       >
         <a
          href={`${projectURLBase}${project.videoId}`}
-         target="_blank"
+         target="_blank" rel="noreferrer"
         >
           {t('project.videoUrlHelper')}
         </a>

@@ -15,7 +15,10 @@ services:
       POSTGRES_PASSWORD: root
       PGDATA: /data/postgis
     volumes:
+      # Uncomment below to maintain the peristant data
       - postgres:/data/postgres
+      # Uncomment bellow to intialize the container with data by creating the respective file
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql      
     ports:
       - "5432:5432"
     restart: unless-stopped
