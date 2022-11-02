@@ -7,7 +7,7 @@ import {
   validateStudentSignup,
 } from "@celluloid/validators";
 import { Request, Response, Router } from "express";
-import { authenticate } from "passport";
+import passport from "passport";
 
 import { SigninStrategy } from "../auth/Auth";
 import {
@@ -35,7 +35,7 @@ router.post("/student-signup", (req, res, next) => {
     );
     return res.status(400).json(result);
   }
-  return authenticate(SigninStrategy.STUDENT_SIGNUP, (error) => {
+  return passport.authenticate(SigninStrategy.STUDENT_SIGNUP, (error) => {
     if (error) {
       log.error(
         `Failed student signup with username ${payload.username}:`,
@@ -65,11 +65,13 @@ router.post("/signup", (req, res, next) => {
   const payload = req.body;
   const result = validateSignup(payload);
 
+
   if (!result.success) {
     log.error(`Failed user signup with data ${payload}: bad request:`, result);
     return res.status(400).json(result);
   }
-  return authenticate(SigninStrategy.TEACHER_SIGNUP, (error) => {
+
+  return passport.authenticate(SigninStrategy.TEACHER_SIGNUP, (error) => {
     if (error) {
       log.error(`Failed user signup with email ${payload.email}:`, error);
       if (hasConflictedOn(error, "User", "username")) {
@@ -86,7 +88,7 @@ router.post("/signup", (req, res, next) => {
         return res.status(500).send();
       }
     } else {
-      log.log(`New signup from teacher with email ${payload.email}`, result);
+      log.info(`New signup from teacher with email ${payload.email}`, result);
       return res.status(201).json(result);
     }
   })(req, res, next);
@@ -100,7 +102,7 @@ router.post("/login", (req, res, next) => {
     log.error(`Failed user login with data ${payload}: bad request:`, result);
     return res.status(400).json(result);
   }
-  return authenticate(SigninStrategy.LOGIN, (error, user) => {
+  return passport.authenticate(SigninStrategy.LOGIN, (error, user) => {
     if (error) {
       log.error(`Failed user login with data ${payload}:`, error);
       return res.status(401).json({
