@@ -1,31 +1,16 @@
 import { ProjectCreateData, ProjectGraphRecord, ProjectRecord, UserRecord } from '@celluloid/types';
-import { isProjectOwner, isTeacher } from 'auth/Utils';
 import { Router } from 'express';
-import * as ProjectStore from 'store/ProjectStore';
 
+import { isProjectOwner, isTeacher } from '../auth/Utils';
+import { logger } from '../backends/Logger';
+import * as ProjectStore from '../store/ProjectStore';
 import AnnotationsApi from './AnnotationApi';
-import { logger } from 'backends/Logger';
-
-import { Query, Params } from 'express-serve-static-core';
 
 const log = logger('api/CommentApi');
 
 const router = Router({ mergeParams: true });
 
 router.use('/:projectId/annotations', AnnotationsApi);
-
-
-export interface TypedRequestBody<T> extends Express.Request {
-  body: T
-}
-
-export interface TypedRequestQuery<T extends Query> extends Express.Request {
-  query: T
-}
-
-export interface TypedRequestParams<T extends Params> extends Express.Request {
-  params: T
-}
 
 
 function fetchMembers(project: ProjectRecord, user?: Partial<UserRecord>):
@@ -68,7 +53,7 @@ router.get(
     const user = req.user as UserRecord;
 
     ProjectStore.selectOne(projectId, user)
-      .then((project: ProjectGraphRecord) => {
+      .then((project: any) => {
         return res.json(project);
       })
       .catch((error: Error) => {
@@ -89,7 +74,7 @@ router.post(
     const project = req.body as ProjectCreateData;
 
     ProjectStore.insert(project, user)
-      .then(result => {
+      .then((result:any) => {
         return res.status(201).json(result);
       })
       .catch((error: Error) => {
@@ -129,9 +114,8 @@ router.get(
   (req, res) => {
     const projectId = req.params.projectId;
     const user = req.user;
-
-    ProjectStore.selectOne(projectId, user)
-      .then((project: ProjectGraphRecord) =>
+    ProjectStore.selectOne(projectId, user as UserRecord)
+      .then((project: any) =>
         fetchMembers(project, req.user)
       )
       .then(members => res.status(200).json(members))
@@ -152,7 +136,7 @@ router.put(
   (req, res) => {
     const projectId = req.params.projectId;
     ProjectStore.shareById(projectId, req.body)
-      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(() => ProjectStore.selectOne(projectId, req.user as UserRecord)) 
       .then(project => res.status(200).json(project))
       .catch(error => {
         log.error(`Failed to share project with id ${projectId}:`, error);
@@ -167,7 +151,7 @@ router.delete(
   (req, res) => {
     const projectId = req.params.projectId;
     ProjectStore.unshareById(projectId)
-      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(() => ProjectStore.selectOne(projectId, req.user as UserRecord))
       .then(project => res.status(200).json(project))
       .catch(error => {
         log.error(`Failed to unshare project with id ${projectId}:`, error);
@@ -182,7 +166,7 @@ router.put(
   (req, res) => {
     const projectId = req.params.projectId;
     ProjectStore.setPublicById(projectId, true)
-      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(() => ProjectStore.selectOne(projectId, req.user as UserRecord))
       .then(project => res.status(200).json(project))
       .catch(error => {
         log.error(`Failed to set project public with id ${projectId}:`, error);
@@ -197,7 +181,7 @@ router.delete(
   (req, res) => {
     const projectId = req.params.projectId;
     ProjectStore.setPublicById(projectId, false)
-      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(() => ProjectStore.selectOne(projectId, req.user as UserRecord))
       .then(project => res.status(200).json(project))
       .catch(error => {
         log.error(`Failed to unset public on project with id ${projectId}:`, error);
@@ -212,7 +196,7 @@ router.put(
   (req, res) => {
     const projectId = req.params.projectId;
     return ProjectStore.setCollaborativeById(projectId, true)
-      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(() => ProjectStore.selectOne(projectId, req.user as UserRecord))
       .then(project => res.status(200).json(project))
       .catch(error => {
         log.error(`Failed to unset collaborative on project with id ${projectId}:`, error);
@@ -227,7 +211,7 @@ router.delete(
   (req, res) => {
     const projectId = req.params.projectId;
     return ProjectStore.setCollaborativeById(projectId, false)
-      .then(() => ProjectStore.selectOne(projectId, req.user))
+      .then(() => ProjectStore.selectOne(projectId, req.user as UserRecord))
       .then(project => res.status(200).json(project))
       .catch(error => {
         log.error(`Failed to unset collaborative on project with id ${projectId}:`, error);

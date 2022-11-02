@@ -1,11 +1,48 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "./packages",
+    "composite": true,
+    "incremental": true,
+    "noEmitOnError": true,
+
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "lib": ["dom", "es2017"],
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "importHelpers": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "preserveWatchOutput": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+
+    "noEmit": true,
+    "declaration": true,
+    "declarationMap": true,
+    "baseUrl": ".",
     "paths": {
-      "@celluloid/*": [
-        "./*/src"
-      ]
+      "@celluloid/*": ["packages/*"]
     }
-  }
+  },
+  "include": [],
+  "exclude": ["packages/e2e"],
+  "references": [
+    { "path": "packages/client" },
+    { "path": "packages/types" },
+    { "path": "packages/server" },
+    { "path": "packages/validators" }
+  ]
 }

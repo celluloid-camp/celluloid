@@ -1,12 +1,14 @@
-import { generateConfirmationCode, hashPassword } from 'auth/Utils';
-import { database, getExactlyOne } from 'backends/Database';
 import { QueryBuilder, Transaction } from 'knex';
+
+import { generateConfirmationCode, hashPassword } from '../auth/Utils';
+import { database, getExactlyOne } from '../backends/Database';
 
 export function createStudent(
   username: string,
   password: string,
   projectId: string
 ) {
+  //@ts-ignore
   return database
     .transaction(transaction =>
       database('User')

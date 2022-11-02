@@ -158,7 +158,7 @@ export default withStyles(styles)(withI18n()(({
               {t('project.share.dialog.description')}
               <a
                 href={`/shares/${project.id}?p=${project.sharePassword}`}
-                target="_blank"
+                target="_blank" rel="noreferrer" 
               >
                 {t('project.share.dialog.linkText')}
               </a>.
@@ -195,6 +195,7 @@ export default withStyles(styles)(withI18n()(({
         >
           {Array.from(members).map((member: Member) => (
           <ListItem key={member.id} className={classes.listItem}>
+            {/* @ts-ignore */}
             <ListItemAvatar>
               <UserAvatar user={member} />
             </ListItemAvatar>
@@ -221,6 +222,7 @@ export default withStyles(styles)(withI18n()(({
         >
           {Array.from(members).map((member: Member) => (
           <ListItem key={member.id} className={classes.listItem}>
+            {/* @ts-ignore */}
             <ListItemAvatar>
               <UserAvatar user={member} />
             </ListItemAvatar>

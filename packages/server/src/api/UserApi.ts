@@ -1,54 +1,67 @@
-import { TeacherRecord } from '@celluloid/types';
+import { TeacherRecord } from "@celluloid/types";
 import {
   validateConfirmResetPassword,
   validateConfirmSignup,
   validateLogin,
   validateSignup,
   validateStudentSignup,
-} from '@celluloid/validators';
-import { SigninStrategy } from 'auth/Auth';
-import { isLoggedIn, sendConfirmationCode, sendPasswordReset } from 'auth/Utils';
-import { hasConflictedOn } from 'backends/Database';
-import { Request, Response, Router } from 'express';
-import { authenticate } from 'passport';
-import * as UserStore from 'store/UserStore';
-import { TeacherServerRecord } from 'types/UserTypes';
+} from "@celluloid/validators";
+import { Request, Response, Router } from "express";
+import { authenticate } from "passport";
 
-import { logger } from 'backends/Logger';
+import { SigninStrategy } from "../auth/Auth";
+import {
+  isLoggedIn,
+  sendConfirmationCode,
+  sendPasswordReset,
+} from "../auth/Utils";
+import { hasConflictedOn } from "../backends/Database";
+import { logger } from "../backends/Logger";
+import * as UserStore from "../store/UserStore";
+import { TeacherServerRecord } from "../types/UserTypes";
 
-
-const log = logger('api/User');
+const log = logger("api/User");
 
 const router = Router();
 
-router.post('/student-signup', (req, res, next) => {
+router.post("/student-signup", (req, res, next) => {
   const payload = req.body;
   const result = validateStudentSignup(payload);
 
   if (!result.success) {
-    log.error(`Failed student signup with data ${payload}: bad request:`, result);
+    log.error(
+      `Failed student signup with data ${payload}: bad request:`,
+      result
+    );
     return res.status(400).json(result);
   }
-  return authenticate(SigninStrategy.STUDENT_SIGNUP, error => {
+  return authenticate(SigninStrategy.STUDENT_SIGNUP, (error) => {
     if (error) {
-      log.error(`Failed student signup with username ${payload.username}:`, error);
-      if (hasConflictedOn(error, 'User', 'username')) {
+      log.error(
+        `Failed student signup with username ${payload.username}:`,
+        error
+      );
+      if (hasConflictedOn(error, "User", "username")) {
         return res.status(409).json({
-          success: false, errors: { username: 'UsernameAlreadyTaken' }
+          success: false,
+          errors: { username: "UsernameAlreadyTaken" },
         });
-      } else if (error.message === 'IncorrectProjectPassword') {
+      } else if (error.message === "IncorrectProjectPassword") {
         return res.status(403).send();
       } else {
         return res.status(500).send();
       }
     } else {
-      log.info(`New signup for student with username ${payload.username}`, result);
+      log.info(
+        `New signup for student with username ${payload.username}`,
+        result
+      );
       return res.status(201).json(result);
     }
   })(req, res, next);
 });
 
-router.post('/signup', (req, res, next) => {
+router.post("/signup", (req, res, next) => {
   const payload = req.body;
   const result = validateSignup(payload);
 
@@ -56,16 +69,18 @@ router.post('/signup', (req, res, next) => {
     log.error(`Failed user signup with data ${payload}: bad request:`, result);
     return res.status(400).json(result);
   }
-  return authenticate(SigninStrategy.TEACHER_SIGNUP, error => {
+  return authenticate(SigninStrategy.TEACHER_SIGNUP, (error) => {
     if (error) {
       log.error(`Failed user signup with email ${payload.email}:`, error);
-      if (hasConflictedOn(error, 'User', 'username')) {
+      if (hasConflictedOn(error, "User", "username")) {
         return res.status(409).json({
-          success: false, errors: { username: 'UsernameAlreadyTaken' }
+          success: false,
+          errors: { username: "UsernameAlreadyTaken" },
         });
-      } else if (hasConflictedOn(error, 'User', 'email')) {
+      } else if (hasConflictedOn(error, "User", "email")) {
         return res.status(409).json({
-          success: false, errors: { email: 'EmailAlreadyTaken' }
+          success: false,
+          errors: { email: "EmailAlreadyTaken" },
         });
       } else {
         return res.status(500).send();
@@ -77,7 +92,7 @@ router.post('/signup', (req, res, next) => {
   })(req, res, next);
 });
 
-router.post('/login', (req, res, next) => {
+router.post("/login", (req, res, next) => {
   const payload = req.body;
   const result = validateLogin(req.body);
 
@@ -89,10 +104,11 @@ router.post('/login', (req, res, next) => {
     if (error) {
       log.error(`Failed user login with data ${payload}:`, error);
       return res.status(401).json({
-        success: false, errors: { server: error.message }
+        success: false,
+        errors: { server: error.message },
       });
     } else {
-      return req.login(user, err => {
+      return req.login(user, (err) => {
         if (err) {
           log.error(`Failed to login user with login ${user.username}`);
           return res.status(500).send();
@@ -105,11 +121,11 @@ router.post('/login', (req, res, next) => {
 });
 
 function compareCodes(expected: string, actual: string) {
-  return expected.replace(/\s/g, '') === actual.replace(/\s/g, '');
+  return expected.replace(/\s/g, "") === actual.replace(/\s/g, "");
 }
 
-router.post('/confirm-signup', (req, res) => {
-  const payload = req.body;
+router.post("/confirm-signup", (req, res) => {
+  const payload: any = req.body;
   const result = validateConfirmSignup(payload);
 
   if (!result.success) {
@@ -118,41 +134,46 @@ router.post('/confirm-signup', (req, res) => {
   return UserStore.selectOneByUsernameOrEmail(payload.login)
     .then((user: TeacherServerRecord) => {
       if (!user) {
-        log.error(`Failed to confirm signup: user`
-          + ` with email ${payload.login} not found`);
+        log.error(
+          `Failed to confirm signup: user` +
+            ` with email ${payload.login} not found`
+        );
         return res.status(401).json({
           success: false,
-          errors: { server: 'InvalidUser' }
+          errors: { server: "InvalidUser" },
         });
       } else {
-        if (compareCodes(user.code, payload.code)) {
+        if (compareCodes(user.code || "", payload.code)) {
           return UserStore.confirmByEmail(payload.login)
             .then(() => res.status(200).json(result))
             .catch((error: Error) => {
               log.error(
                 `Failed to confirm signup for user` +
-                ` with email ${payload.login}:`,
+                  ` with email ${payload.login}:`,
                 error
               );
               return res.status(500).send();
             });
         } else {
-          log.error(`Failed to confirm signup for user with email`
-            + ` ${payload.login}: received code ${payload.code}, expected ${user.code}`);
+          log.error(
+            `Failed to confirm signup for user with email` +
+              ` ${payload.login}: received code ${payload.code}, expected ${user.code}`
+          );
           return res.status(401).json({
-            success: false, errors: { server: 'InvalidUser' }
+            success: false,
+            errors: { server: "InvalidUser" },
           });
         }
       }
     })
-    .catch(error => {
+    .catch((error) => {
       log.error(`Failed to confirm signup:`, error);
       return res.status(500).send();
     });
 });
 
-router.post('/confirm-reset-password', (req, res) => {
-  const payload = req.body;
+router.post("/confirm-reset-password", (req, res) => {
+  const payload: any = req.body;
   const result = validateConfirmResetPassword(payload);
 
   if (!result.success) {
@@ -161,12 +182,15 @@ router.post('/confirm-reset-password', (req, res) => {
   return UserStore.selectOneByUsernameOrEmail(payload.login)
     .then((user?: TeacherServerRecord) => {
       if (!user) {
-        log.error(`Failed to confirm password reset: user with email ${payload.login} not found`);
+        log.error(
+          `Failed to confirm password reset: user with email ${payload.login} not found`
+        );
         return res.status(401).json({
-          success: false, errors: { server: 'InvalidUser' }
+          success: false,
+          errors: { server: "InvalidUser" },
         });
       } else {
-        if (compareCodes(user.code, payload.code)) {
+        if (compareCodes(user.code || "", payload.code)) {
           return UserStore.updatePasswordByEmail(
             payload.login.trim(),
             payload.password
@@ -175,86 +199,97 @@ router.post('/confirm-reset-password', (req, res) => {
             .catch((error: Error) => {
               log.error(
                 `Failed to confirm password reset for user with email ${payload.login}`,
-                error);
+                error
+              );
               return res.status(500).send();
             });
         } else {
-          log.error(`Failed to confirm password reset for user with email ${payload.login}:`
-            + ` received code ${payload.code}, expected ${user.code}`);
+          log.error(
+            `Failed to confirm password reset for user with email ${payload.login}:` +
+              ` received code ${payload.code}, expected ${user.code}`
+          );
           return res.status(401).json({
-            success: false, errors: { server: 'InvalidUser' }
+            success: false,
+            errors: { server: "InvalidUser" },
           });
         }
       }
     })
-    .catch(error => {
+    .catch((error) => {
       log.error(`Failed to confirm password reset:`, error);
       return res.status(500).send();
     });
 });
 
-const resendCode = (sender: (user: TeacherRecord) =>
-  Promise<TeacherServerRecord>) =>
+const resendCode =
+  (sender: (user: TeacherRecord) => Promise<TeacherServerRecord>) =>
   (req: Request, res: Response) => {
     const payload = req.body;
 
     if (!payload.email || payload.email.trim().length === 0) {
       return res.status(400).json({
-        success: false, errors: { email: 'MissingEmail' }
+        success: false,
+        errors: { email: "MissingEmail" },
       });
     }
     return UserStore.selectOneByUsernameOrEmail(payload.email)
       .then((user?: TeacherServerRecord) => {
         if (!user) {
-          log.error(`Failed to resend authorization code:`
-            + ` user with email ${payload.email} not found`);
+          log.error(
+            `Failed to resend authorization code:` +
+              ` user with email ${payload.email} not found`
+          );
           return res.status(401).json({
-            success: false, errors: { server: 'InvalidUser' }
+            success: false,
+            errors: { server: "InvalidUser" },
           });
         } else {
-          return UserStore.updateCodeByEmail(payload.email)
-            .then((updatedUser: TeacherRecord) =>
+          return UserStore.updateCodeByEmail(payload.email).then(
+            (updatedUser: TeacherRecord) =>
               sender(updatedUser).then(() =>
                 res.status(200).json({ success: true, errors: {} })
               )
-            );
+          );
         }
       })
       .catch((error: Error) => {
         log.error(
-          `Failed to resend authorization code for user `
-          + ` with email ${payload.email}`,
+          `Failed to resend authorization code for user ` +
+            ` with email ${payload.email}`,
           error
         );
         return res.status(500).send();
       });
   };
 
-router.post('/reset-password', (req, res) => {
+router.post("/reset-password", (req, res) => {
+  // @ts-ignore
   return resendCode(sendPasswordReset)(req, res);
 });
 
-router.post('/resend-code', (req, res) => {
+router.post("/resend-code", (req, res) => {
+  // @ts-ignore
   return resendCode(sendConfirmationCode)(req, res);
 });
 
-router.get('/me', isLoggedIn, (req:any, res) => {
+router.get("/me", isLoggedIn, (req: any, res) => {
   if (req.user) {
     return res.status(200).json({
       teacher: {
         username: req.user.username,
         id: req.user.id,
-        role: req.user.role
-      }
+        role: req.user.role,
+      },
     });
   } else {
     return res.status(401).send();
   }
 });
 
-router.put('/logout', isLoggedIn, (req, res) => {
-  req.logout();
-  return res.status(200).send();
+router.put("/logout", isLoggedIn, (req, res) => {
+  req.logout({ keepSessionInfo: false }, () => {
+    return res.status(200).send();
+  });
 });
 
 export default router;

@@ -1,33 +1,42 @@
-import 'Config';
+import './Config';
 
-import ProjectsApi from 'api/ProjectApi';
-import TagsApi from 'api/TagApi';
-import UnfurlApi from 'api/UnfurlApi';
-import UsersApi from 'api/UserApi';
-import VideosApi from 'api/VideoApi';
-import { Logger } from 'backends/Logger';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import express from "express";
+import expressPino from 'express-pino-logger';
+import session from 'express-session';
+import passport from 'passport';
+
+import ProjectsApi from './api/ProjectApi';
+import TagsApi from './api/TagApi';
+import UnfurlApi from './api/UnfurlApi';
+import UsersApi from './api/UserApi';
+import VideosApi from './api/VideoApi';
 import {
   deserializeUser,
   loginStrategy,
-  serializeUser,
   SigninStrategy,
   studentSignupStrategy,
   teacherSignupStrategy,
-} from 'auth/Auth';
-import * as bodyParser from 'body-parser';
-import * as compression from 'compression';
-import * as express from 'express';
-import * as session from 'express-session';
-import { nocache } from 'http/NoCache';
-import { createStore } from 'http/SessionStore';
-import * as passport from 'passport';
-import { clientApp, clientDir } from 'Paths';
-
-import * as expressPino from 'express-pino-logger';
+} from './auth/Auth';
+import { Logger } from './backends/Logger';
+import { nocache } from './http/NoCache';
+import { createStore } from './http/SessionStore';
+import { clientApp, clientDir } from './Paths';
 
 require('cookie-parser');
 
-passport.serializeUser(serializeUser);
+declare global {
+  namespace Express {
+    interface User {
+      id: string;
+    }
+  }
+}
+
+passport.serializeUser((user, done) => {
+  return Promise.resolve(done(null, user.id));
+});
 passport.deserializeUser(deserializeUser);
 passport.use(SigninStrategy.LOGIN, loginStrategy);
 passport.use(SigninStrategy.TEACHER_SIGNUP, teacherSignupStrategy);

@@ -7,10 +7,10 @@ import {
 } from '@celluloid/types';
 import {
   Button,
-  Grow,
+  Grow as GrowMUI,
   WithStyles,
   withStyles,
-  Zoom
+  Zoom as ZoomMUI
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { triggerAddAnnotation } from 'actions/AnnotationsActions';
@@ -31,6 +31,16 @@ import AnnotationHints from './components/AnnotationHints';
 import Controls from './components/Controls';
 import { styles } from './VideoStyles';
 import { YouTubePlayer } from 'youtube-player/dist/types';
+import { ZoomProps } from '@material-ui/core/Zoom';
+import { GrowProps } from '@material-ui/core/Grow';
+
+const Zoom:React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
+  <ZoomMUI {...props} />
+);
+
+const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+  <GrowMUI {...props} />
+);
 
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
@@ -189,7 +199,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               >
                 <Button
                   color="secondary"
-                  variant="fab"
                   className={classes.annotateButton}
                   onClick={() => onClickAnnotate()}
                 >

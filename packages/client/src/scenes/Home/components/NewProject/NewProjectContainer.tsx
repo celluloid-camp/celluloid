@@ -304,12 +304,14 @@ export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(
               <List>
                 {project.assignments.map((assignment, index) =>
                   <ListItem key={index}>
+                    {/* @ts-ignore */}
                     <ListItemAvatar>
                       <Avatar>
                         {index + 1}
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={assignment} />
+                    {/* @ts-ignore */}
                     <ListItemSecondaryAction>
                       <IconButton
                         onClick={() => {
@@ -325,6 +327,7 @@ export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(
                   </ListItem>
                 )}
                 <ListItem>
+                  {/* @ts-ignore */}
                   <ListItemAvatar>
                     <Avatar>
                       {project.assignments.length + 1}
@@ -345,6 +348,7 @@ export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(
                       />
                     }
                   />
+                  {/* @ts-ignore */}
                   <ListItemSecondaryAction>
                     <IconButton
                       onClick={() => {

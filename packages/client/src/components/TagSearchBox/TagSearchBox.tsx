@@ -10,8 +10,8 @@ import {
   InputAdornment
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import * as React from 'react';
-import * as Autosuggest from 'react-autosuggest';
+import React from 'react';
+import Autosuggest from 'react-autosuggest';
 import {
   RenderSuggestionParams,
   RenderSuggestionsContainerParams,

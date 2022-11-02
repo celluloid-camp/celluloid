@@ -8,10 +8,9 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "tsc -b"
   },
   "devDependencies": {
-    "typescript": "^3.1.2"
+    "typescript": "^4.8.4"
   }
 }

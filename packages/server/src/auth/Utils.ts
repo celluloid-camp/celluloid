@@ -1,12 +1,12 @@
 import { UserRecord } from '@celluloid/types';
-import { sendMail } from 'backends/Email';
 import * as bcrypt from 'bcrypt';
 import { paramCase } from 'change-case';
 import { NextFunction, Request, Response } from 'express';
-import * as ProjectStore from 'store/ProjectStore';
-import { TeacherServerRecord  } from 'types/UserTypes';
 
-import { logger } from 'backends/Logger';
+import { sendMail } from '../backends/Email';
+import { logger } from '../backends/Logger';
+import * as ProjectStore from '../store/ProjectStore';
+import { TeacherServerRecord  } from '../types/UserTypes';
 
 const log = logger('auth/Auth');
 
@@ -102,13 +102,14 @@ export function generateUniqueShareName(title: string, count: number) {
   const compare = (a: string, b: string) =>
     b.length - a.length;
 
-  const construct = (result, str) => {
+  const construct = (result:string[], str:string) => {
+    var res:string[] = []
     if (!!str) {
       if (result.join().length < 6) {
-        result = [...result, str];
+        res = [...result, str];
       }
     }
-    return result;
+    return res;
   };
 
   const prefix = paramCase(title)
