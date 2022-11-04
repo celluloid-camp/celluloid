@@ -21,7 +21,7 @@ export default {
     },
     teachers: 'Enseignants et formateurs',
     students: 'Élèves et étudiants',
-    addVideo: 'Ajoutez un lien vers une vidéo YouTube...',
+    addVideo: 'Ajoutez un lien vers une vidéo PeerTube...',
     newProject: 'Nouveau projet',
     joinProject: 'Rejoindre un projet',
     searchProject: 'Rechercher un projet…',

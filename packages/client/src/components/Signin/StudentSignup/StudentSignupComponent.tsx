@@ -1,19 +1,20 @@
-import { SigninErrors, StudentSignupData } from '@celluloid/types';
-import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import DialogAltButtons from 'components/DialogAltButtons';
-import DialogButtons from 'components/DialogButtons';
-import DialogError from 'components/DialogError';
-import * as React from 'react';
-import { WithI18n, withI18n } from 'react-i18next';
-import { AnyAction } from 'redux';
-import { Action } from 'types/ActionTypes';
+import { SigninErrors, StudentSignupData } from "@celluloid/types";
+import { createStyles, Theme, WithStyles, withStyles } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import DialogAltButtons from "components/DialogAltButtons";
+import DialogButtons from "components/DialogButtons";
+import DialogError from "components/DialogError";
+import React from "react";
+import { useTranslation} from "react-i18next";
+import { AnyAction } from "redux";
+import { Action } from "types/ActionTypes";
 
-const styles = ({ spacing }: Theme) => createStyles({
-  question: {
-    marginTop: spacing.unit * 2
-  }
-});
+const styles = ({ spacing }: Theme) =>
+  createStyles({
+    question: {
+      marginTop: spacing.unit * 2,
+    },
+  });
 
 interface Props extends WithStyles<typeof styles> {
   data: StudentSignupData;
@@ -24,59 +25,56 @@ interface Props extends WithStyles<typeof styles> {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default withStyles(styles)(withI18n()(
-  ({
-    classes,
-    data,
-    errors,
-    onChange,
-    onSubmit,
-    onClickLogin,
-    t
-  }: Props & WithI18n) => (
+const StudentSignupComponent = withStyles(styles)(
+  ({ classes, data, errors, onChange, onSubmit, onClickLogin }: Props) => {
+    const { t } = useTranslation();
+    return (
       <>
         <TextField
           margin="dense"
           fullWidth={true}
           error={errors.username ? true : false}
-          label={t('signin.projectCode')}
+          label={t("signin.projectCode")}
           value={data.shareCode}
           required={true}
-          onChange={event => onChange('shareCode', event.target.value)}
+          onChange={(event) => onChange("shareCode", event.target.value)}
           helperText={errors && errors.shareCode}
         />
         <TextField
           margin="dense"
           fullWidth={true}
           error={errors.email ? true : false}
-          label={t('signin.username')}
+          label={t("signin.username")}
           value={data.username}
           required={true}
-          onChange={event => onChange('username', event.target.value)}
+          onChange={(event) => onChange("username", event.target.value)}
           helperText={errors.username}
         />
-        
+
         <TextField
           margin="dense"
           fullWidth={true}
           error={errors.password ? true : false}
-          label={t('signin.lastName')}
+          label={t("signin.lastName")}
           value={data.password}
           required={true}
-          onChange={event => onChange('password', event.target.value)}
-          helperText={errors.password ? errors.password : ''}
+          onChange={(event) => onChange("password", event.target.value)}
+          helperText={errors.password ? errors.password : ""}
         />
-        <DialogError error={t('signin.rememberlastName')} />
+        <DialogError error={t("signin.rememberlastName")} />
         {errors.server && <DialogError error={errors.server} />}
         <DialogAltButtons
-          heading={t('signin.alreadyRegistered')}
-          actionName={t('signin.loginAction')}
+          heading={t("signin.alreadyRegistered")}
+          actionName={t("signin.loginAction")}
           onSubmit={onClickLogin}
         />
         <DialogButtons
           onSubmit={onSubmit}
-          actionName={t('signin.joinAction')}
+          actionName={t("signin.joinAction")}
         />
       </>
-    )
-));
+    );
+  }
+);
+
+export default StudentSignupComponent;

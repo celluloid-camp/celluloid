@@ -1,6 +1,6 @@
 import { createStyles, Theme } from '@material-ui/core';
 
-export const styles = ({ spacing }: Theme) => createStyles({
+export const styles = ({ spacing, palette }: Theme) => createStyles({
   hintBox: {
     overflowY: 'auto' as 'auto',
     overflowX: 'hidden' as 'hidden',
@@ -53,7 +53,7 @@ export const styles = ({ spacing }: Theme) => createStyles({
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 1,
+    zIndex: 2,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   controlFrame: {
@@ -81,5 +81,28 @@ export const styles = ({ spacing }: Theme) => createStyles({
   },
   hidden: {
     opacity: 0
-  }
+  },
+  progressWrapper: {
+    width: '100%',
+    height: '50vh',
+  },
+  progress: {
+    color: '#ffff',
+  },
+  linearContainer: {
+    position: 'absolute' as 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    zIndex: 1,
+    transition: 'all 0.5s ease',
+    padding: 0
+  },
+  linearColorPrimary: {
+    backgroundColor: "#0000",
+  },
+  linearBarColorPrimary: {
+    backgroundColor: palette.secondary.dark,
+  },
 });
