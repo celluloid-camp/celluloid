@@ -4,6 +4,7 @@ import { UserRecord } from './UserTypes';
 export interface ProjectCreateData {
   videoId: string;
   title: string;
+  host: string;
   description?: string;
   objective: string;
   assignments: Array<string>;

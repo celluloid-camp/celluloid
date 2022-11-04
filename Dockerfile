@@ -1,5 +1,3 @@
-
-
 FROM node:16
 WORKDIR /usr/src/app
 RUN mkdir -p packages/{types,validators,client,server}
@@ -19,6 +17,7 @@ RUN yarn build
 ENV CELLULOID_LISTEN_PORT=3001
 EXPOSE 3001
 
-LABEL description="CELLULOID"
+LABEL org.opencontainers.image.description "Celluloid is a collaborative video annotation application designed for educational purposes."
+
 
 CMD [ "yarn", "start"]

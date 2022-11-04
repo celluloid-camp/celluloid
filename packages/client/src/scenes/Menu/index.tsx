@@ -1,3 +1,2 @@
-import { withMenuContainer } from './withMenuContainer';
-
-export { withMenuContainer as withMenu };
+export * from "./Layout";
+export * from "./MenuComponent";

@@ -1,4 +1,4 @@
-import { TagData } from '@celluloid/types';
+import { TagData } from "@celluloid/types";
 import {
   createStyles,
   MenuItem,
@@ -7,30 +7,29 @@ import {
   Theme,
   WithStyles,
   withStyles,
-  InputAdornment
-} from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import React from 'react';
-import Autosuggest from 'react-autosuggest';
+  InputAdornment,
+} from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+import React from "react";
+import Autosuggest, { RenderInputComponent } from "react-autosuggest";
 import {
   RenderSuggestionParams,
   RenderSuggestionsContainerParams,
   SuggestionSelectedEventData,
-} from 'react-autosuggest';
-import { AppState } from 'types/StateTypes';
-import { connect } from 'react-redux';
-import { WithI18n, withI18n } from 'react-i18next';
+} from "react-autosuggest";
+import { AppState } from "types/StateTypes";
+import { connect } from "react-redux";
 
-const parse = require('autosuggest-highlight/parse');
-const match = require('autosuggest-highlight/match');
+const parse = require("autosuggest-highlight/parse");
+const match = require("autosuggest-highlight/match");
 
 interface NewTag {
   name: string;
-  kind: 'NewTag';
+  kind: "NewTag";
 }
 
 interface ExistingTag {
-  kind: 'ExistingTag';
+  kind: "ExistingTag";
   name: string;
   data: TagData;
 }
@@ -38,52 +37,55 @@ interface ExistingTag {
 type Suggestion = ExistingTag | NewTag;
 
 function existingTag(data: TagData): ExistingTag {
-  return { kind: 'ExistingTag', data, name: data.name };
+  return { kind: "ExistingTag", data, name: data.name };
 }
 
 function newTag(name: string): NewTag {
-  return { kind: 'NewTag', name };
+  return { kind: "NewTag", name };
 }
 
 function isExistingTag(suggestion: Suggestion): suggestion is ExistingTag {
-  return suggestion.kind === 'ExistingTag';
+  return suggestion.kind === "ExistingTag";
 }
 
-const TagAutosuggest = Autosuggest as { new(): Autosuggest<Suggestion> };
+const TagAutosuggest = Autosuggest as { new (): Autosuggest<Suggestion> };
 
-function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
-  // const {
-  //   // classes,
-  //   // ref,
-  //   height,
-  //   width,
-  //   form,
-  //   formAction,
-  //   formEncType,
-  //   formMethod,
-  //   formNoValidate,
-  //   formTarget,
-  //   min,
-  //   max,
-  //   required,
-  //   alt,
-  //   src,
-  //   accept,
-  //   capture,
-  //   checked,
-  //   crossOrigin,
-  //   list,
-  //   maxLength,
-  //   minLength,
-  //   multiple,
-  //   pattern,
-  //   readOnly,
-  //   size,
-  //   step,
-  //   defaultValue,
-  // } = props;
-
-  // ...others
+function renderInputComponent(
+  props: Autosuggest.InputProps<Suggestion> &
+    WithStyles<any> & { ref: React.Ref<any> }
+) {
+  const {
+    classes,
+    ref,
+    height,
+    width,
+    form,
+    formAction,
+    formEncType,
+    formMethod,
+    formNoValidate,
+    formTarget,
+    min,
+    max,
+    required,
+    alt,
+    src,
+    accept,
+    capture,
+    checked,
+    crossOrigin,
+    list,
+    maxLength,
+    minLength,
+    multiple,
+    pattern,
+    readOnly,
+    size,
+    step,
+    defaultValue,
+    onChange,
+    ...others
+  } = props;
 
   return (
     <TextField
@@ -95,51 +97,48 @@ function renderInputComponent(props: Autosuggest.InputProps<Suggestion>) {
             <SearchIcon color="disabled" />
           </InputAdornment>
         ),
-        // inputRef: ref,
+        inputRef: ref,
         classes: {
-          // input: classes.input
+          input: classes.input,
         },
-        // ...others
+        ...others,
       }}
     />
   );
 }
 
-const renderSuggestion = (createLabel: string) => (
-  suggestion: Suggestion,
-  params: RenderSuggestionParams
-): JSX.Element => {
-  const matches = match(suggestion.name, params.query);
-  const parts = parse(suggestion.name, matches);
+const renderSuggestion =
+  () =>
+  (suggestion: Suggestion, params: RenderSuggestionParams): JSX.Element => {
+    const matches = match(suggestion.name, params.query);
+    const parts = parse(suggestion.name, matches);
 
-  return (
-    <MenuItem selected={params.isHighlighted} component="div">
-      <div>
-        {(isExistingTag(suggestion)) ?
-          parts.map((part: { text: string, highlight: boolean }, index: number) =>
-            part.highlight ? (
-              <span key={String(index)} style={{ fontWeight: 300 }}>
-                {part.text}
-              </span>
-            ) : (
-                <b key={String(index)} style={{ fontWeight: 500 }}>
-                  {part.text}
-                </b>
-              )
+    return (
+      <MenuItem selected={params.isHighlighted} component="div">
+        <div>
+          {isExistingTag(suggestion) ? (
+            parts.map(
+              (part: { text: string; highlight: boolean }, index: number) =>
+                part.highlight ? (
+                  <span key={String(index)} style={{ fontWeight: 300 }}>
+                    {part.text}
+                  </span>
+                ) : (
+                  <b key={String(index)} style={{ fontWeight: 500 }}>
+                    {part.text}
+                  </b>
+                )
+            )
           ) : (
             <>
-              <span style={{ fontWeight: 300 }}>
-                {`Créer le domaine `}
-              </span>
-              <b style={{ fontWeight: 500 }}>
-                {suggestion.name}
-              </b>
+              <span style={{ fontWeight: 300 }}>{`Créer le domaine `}</span>
+              <b style={{ fontWeight: 500 }}>{suggestion.name}</b>
             </>
           )}
-      </div>
-    </MenuItem>
-  );
-};
+        </div>
+      </MenuItem>
+    );
+  };
 
 function renderSuggestionsContainer(params: RenderSuggestionsContainerParams) {
   const { containerProps, children } = params;
@@ -155,27 +154,28 @@ function getSuggestionValue(suggestion: Suggestion): string {
   return suggestion.name;
 }
 
-const styles = ({ spacing }: Theme) => createStyles({
-  container: {
-    flexGrow: 1,
-    position: 'relative',
-  },
-  suggestionsContainerOpen: {
-    position: 'absolute',
-    marginBottom: spacing.unit * 3,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
-  suggestion: {
-    display: 'block',
-  },
-  suggestionsList: {
-    margin: 0,
-    padding: 0,
-    listStyleType: 'none',
-  },
-});
+const styles = ({ spacing }: Theme) =>
+  createStyles({
+    container: {
+      flexGrow: 1,
+      position: "relative",
+    },
+    suggestionsContainerOpen: {
+      position: "absolute",
+      marginBottom: spacing.unit * 3,
+      left: 0,
+      right: 0,
+      zIndex: 1,
+    },
+    suggestion: {
+      display: "block",
+    },
+    suggestionsList: {
+      margin: 0,
+      padding: 0,
+      listStyleType: "none",
+    },
+  });
 
 interface State {
   search: string;
@@ -191,42 +191,47 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  tags: state.tags
+  tags: state.tags,
 });
 
-export default (withStyles(styles)(
+export default withStyles(styles)(
   connect(mapStateToProps)(
-    withI18n()(class extends React.Component<Props & WithI18n, State> {
+    class extends React.Component<Props, State> {
       state = {
         suggestions: [],
-        search: ''
+        search: "",
       };
 
       render() {
-        const {
-          classes,
-          tags,
-          label,
-          onTagCreationRequested,
-          onTagSelected,
-          t
-        } = this.props;
+        const { classes, tags, label, onTagCreationRequested, onTagSelected } =
+          this.props;
         const { suggestions, search } = this.state;
 
-        const onSuggestionFetchRequested = ({ value }: Autosuggest.SuggestionsFetchRequestedParams): void => {
+        const onSuggestionFetchRequested = ({
+          value,
+        }: Autosuggest.SuggestionsFetchRequestedParams): void => {
           const inputValue = value.trim();
           const inputLength = inputValue.length;
           const hasInput = inputValue.length > 0;
 
-          const existingTags = hasInput ? tags.filter(tag =>
-            tag.name.toLowerCase().slice(0, inputLength) === inputValue.toLowerCase()
-          ).map(existingTag) : [];
+          const existingTags = hasInput
+            ? tags
+                .filter(
+                  (tag) =>
+                    tag.name.toLowerCase().slice(0, inputLength) ===
+                    inputValue.toLowerCase()
+                )
+                .map(existingTag)
+            : [];
 
-          const fullMatch = existingTags.length === 1 && existingTags[0].name.toLowerCase() === value.toLowerCase();
+          const fullMatch =
+            existingTags.length === 1 &&
+            existingTags[0].name.toLowerCase() === value.toLowerCase();
           this.setState({
-            suggestions: onTagCreationRequested && !fullMatch && hasInput
-              ? [...existingTags, newTag(inputValue)]
-              : existingTags
+            suggestions:
+              onTagCreationRequested && !fullMatch && hasInput
+                ? [...existingTags, newTag(inputValue)]
+                : existingTags,
           });
         };
 
@@ -239,16 +244,18 @@ export default (withStyles(styles)(
           } else if (onTagCreationRequested) {
             onTagCreationRequested(suggestion.name);
           }
-          this.setState({ search: '', suggestions: [] });
+          this.setState({ search: "", suggestions: [] });
         };
 
         const onInputChange = (
           _: React.ChangeEvent<HTMLTextAreaElement>,
-          { newValue }: Autosuggest.ChangeEvent): void => {
+          { newValue }: Autosuggest.ChangeEvent
+        ): void => {
           this.setState({ search: newValue });
         };
 
-        const onSuggestionClearRequested = () => this.setState({ suggestions: [] });
+        const onSuggestionClearRequested = () =>
+          this.setState({ suggestions: [] });
 
         const inputProps = {
           placeholder: label,
@@ -266,16 +273,18 @@ export default (withStyles(styles)(
               suggestion: classes.suggestion,
             }}
             onSuggestionsClearRequested={onSuggestionClearRequested}
+            // @ts-ignore
             renderInputComponent={renderInputComponent}
             suggestions={suggestions}
             onSuggestionsFetchRequested={onSuggestionFetchRequested}
             renderSuggestionsContainer={renderSuggestionsContainer}
             getSuggestionValue={getSuggestionValue}
-            renderSuggestion={renderSuggestion(t('tagSearch.createLabel'))}
+            renderSuggestion={renderSuggestion()}
             onSuggestionSelected={onSuggestionSelected}
             inputProps={inputProps}
           />
         );
       }
-    })
-  )));
+    }
+  )
+);
