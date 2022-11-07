@@ -1,15 +1,15 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { AppState } from 'types/StateTypes';
+import * as React from "react";
+import { connect } from "react-redux";
+import { AppState } from "types/StateTypes";
 
-import ConfirmResetPassword from './ConfirmResetPassword';
-import ConfirmSignup from './ConfirmSignup';
-import Dialog from './DialogComponent';
-import Login from './Login';
-import ResetPassword from './ResetPassword';
-import { SigninState } from './SigninTypes';
-import Signup from './Signup';
-import StudentSignup from './StudentSignup';
+import ConfirmResetPassword from "./ConfirmResetPassword";
+import ConfirmSignup from "./ConfirmSignup";
+import Dialog from "./DialogComponent";
+import Login from "./Login";
+import ResetPassword from "./ResetPassword";
+import { SigninState } from "./SigninTypes";
+import Signup from "./Signup";
+import StudentSignup from "./StudentSignup";
 
 interface Props {
   state: SigninState;
@@ -19,17 +19,17 @@ interface Props {
 
 const getComponent = (state: SigninState) => {
   switch (state.kind) {
-    case 'Signup':
+    case "Signup":
       return Signup;
-    case 'StudentSignup':
+    case "StudentSignup":
       return StudentSignup;
-    case 'Login':
+    case "Login":
       return Login;
-    case 'ConfirmSignup':
+    case "ConfirmSignup":
       return ConfirmSignup;
-    case 'ResetPassword':
+    case "ResetPassword":
       return ResetPassword;
-    case 'ConfirmResetPassword':
+    case "ConfirmResetPassword":
       return ConfirmResetPassword;
     default:
       return undefined;
@@ -37,25 +37,23 @@ const getComponent = (state: SigninState) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-  loading: state.signin.loading
+  loading: state.signin.loading,
 });
 
-export default connect(mapStateToProps)(class extends React.Component<Props> {
-  render() {
-    if (this.props.state.kind !== 'None') {
-      return (
-        <Dialog
-          loading={this.props.loading}
-          open={true}
-          title={this.props.state.name}
-          onCancel={this.props.onCancel}
-          Content={getComponent(this.props.state)}
-        />
-      );
-    } else {
-      return (
-        <div />
-      );
-    }
+const DialogContainer: React.FC<Props> = ({ state, loading, onCancel }) => {
+  if (state.kind !== "None") {
+    return (
+      <Dialog
+        loading={loading}
+        open={true}
+        title={state.name}
+        onCancel={onCancel}
+        Content={getComponent(state)}
+      />
+    );
+  } else {
+    return <div />;
   }
-});
+};
+
+export default connect(mapStateToProps)(DialogContainer);

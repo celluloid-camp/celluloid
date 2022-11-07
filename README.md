@@ -1,34 +1,21 @@
 # Celluloid
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.com/celluloid-camp/celluloid.svg?branch=master)](https://travis-ci.com/celluloid-camp/celluloid)
+[![Build Status](https://travis-ci.com/celluloid-camp/celluloid.svg?branch=main)](https://travis-ci.com/celluloid-camp/celluloid)
 [![Gitter chat](https://badges.gitter.im/celluloid-camp.png)](https://gitter.im/celluloid-camp)
-[![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 
 ## What is this?
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
-Find a YouTube video, choose an educational objective, annotate the video, share it with your students,
+Find a [PeerTube](https://joinpeertube.org/) video, choose an educational objective, annotate the video, share it with your students,
 collect their answers, answer their questions.
 
-## Demo
+## ✨ Demo
 
 Head to https://celluloid.huma-num.fr/, create an account and click where you think you should!
 
 We'd appreciate your feedback about the application UX and design, as well as bug reports - don't hesitate to [report an issue!](https://github.com/celluloid-camp/celluloid/issues)
 
-or run a local instance with :
-
-    docker container run --rm --name celluloid \
-    -e CELLULOID_PG_HOST='localhost' \
-    -e CELLULOID_PG_PORT=5432  \
-    -e CELLULOID_PG_DATABASE='celluloid' \
-    -e CELLULOID_PG_USER='postgres' \
-    -e CELLULOID_PG_PASSWORD='root' \
-    -e CELLULOID_COOKIE_SECRET='XXX' \
-    -e CELLULOID_YOUTUBE_API='XXX' \
-    --net=host \
-    ghcr.io/celluloid-camp/celluloid:v1
 
 ## Who's behind it?
 
@@ -55,14 +42,13 @@ To deploy and install Celluloid, knowing your way around the command-line is req
 - install the latest version of [nodejs](https://nodejs.org/en/)
 - install the latest version of [Yarn](https://yarnpkg.com/en/) and use it instead of NPM. The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html) so it needs yarn to leverage [Yarn workspace](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/)
 
-### Database
+### 📦 Database
 
 You'll need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 9.6 or later.
 
 For development purpose, you can use the provided Docker Compose [docker compose file](docker-compose.yml) and run the command: 
 
     docker-compose up -d
-
 
 Then:
 
@@ -102,6 +88,22 @@ Make sure your PostgreSQL server is up. In a terminal, go to the `bin` directory
 
 If this fails, you most certainly got your PostgreSQL server configuration or your `.env` file wrong.
 
+
+### Docker container
+
+For a quick run use the docker command line :
+
+    docker container run --rm --name celluloid \
+    -e CELLULOID_PG_HOST='localhost' \
+    -e CELLULOID_PG_PORT=5432  \
+    -e CELLULOID_PG_DATABASE='celluloid' \
+    -e CELLULOID_PG_USER='postgres' \
+    -e CELLULOID_PG_PASSWORD='root' \
+    -e CELLULOID_COOKIE_SECRET='XXX' \
+    --net=host \
+    ghcr.io/celluloid-camp/celluloid:v1
+
+
 ### Running the app in development mode
 
 At the root of your repository, run
@@ -136,11 +138,9 @@ Open a terminal at the root of your repository, then run
 Do not hesitate to open a pull request, [contact us on gitter](https://gitter.im) or [report a bug!](https://github.com/celluloid-camp/celluloid/issues)
 
 ## Roadmap
-
 - Administration GUI: content curation and moderation, user administration
-- Add more video backends (Vimeo)
 - Real-time annotation and comment updating using Websockets or SSE
-- Private video hosting (video upload, ingest, dash transcoding)
+
 
 ## Technical Stack
 
@@ -151,13 +151,6 @@ Before contributing to the development of Celluloid, you should get familiar wit
 - backend: [node.js](https://nodejs.org/en/), [Express](https://expressjs.com/) and [knex](https://knexjs.org/)
 - storage: [PostgreSQL](https://www.postgresql.org/)
 
-## File structure
+## V1 legacy
 
-The project is organized as a monorepo with 4 distinct packages residing in the `packages` directory.
-
-All paths are relative to the root of the repository.
-
-* `packages/server`: server-only files
-* `packages/client`: client-only files
-* `packages/validators`: validation scripts, shared by the client and server
-* `packages/types`: TypeScript definitions shared by the client and server
+Old celluloid version 1 that users Youtube videos still be found [here](https://github.com/celluloid-camp/celluloid/releases/tag/v1) 

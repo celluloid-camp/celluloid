@@ -1,33 +1,37 @@
 import { createStyles, withStyles } from "@material-ui/core";
-import About from "components/About";
 import LegalNotice from "components/LegalNotice";
 import NotFound from "components/NotFound";
 import TermsAndConditions from "components/TermsAndConditions";
 import UpdateIndicator from "components/UpdateIndicator";
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+
 import Home from "scenes/Home";
-import { withMenu } from "scenes/Menu";
 import Project from "scenes/Project";
 import ShareGuide from "scenes/ShareGuide";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import ResetScroll from "components/ResetScroll";
-import { ConnectedRouter } from "connected-react-router";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import en from "i18n/en";
 import fr from "i18n/fr";
 import * as i18next from "i18next";
-// import MomentUtils from 'material-ui-pickers/utils/moment-utils';
-// import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import { initReactI18next } from "react-i18next";
 
-import { reactI18nextModule } from "react-i18next";
 import { Provider } from "react-redux";
-import createAppStore, { history } from "store";
+import createAppStore from "store";
 import { Bright } from "utils/ThemeUtils";
-import * as LanguageDetector from "i18next-browser-languagedetector";
+import LanguageDetector from "i18next-browser-languagedetector";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { About } from "components/About";
+
+const queryClient = new QueryClient();
 
 i18next
-  .use(reactI18nextModule)
+  .use(initReactI18next)
   .use(LanguageDetector)
   .init({
     debug: false,
@@ -58,45 +62,36 @@ const styles = createStyles({
 const Content = () => {
   return (
     <Provider store={store}>
-      {/* @ts-ignore */}
-      <ConnectedRouter history={history}>
-        <ResetScroll>
-          <MuiThemeProvider theme={Bright}>
+        <MuiThemeProvider theme={Bright}>
+          <QueryClientProvider client={queryClient}>
             {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
             <React.Fragment>
               <CssBaseline />
               <React.Fragment>
                 <UpdateIndicator />
-                <Switch>
-                  <Route exact={true} path="/" component={withMenu(Home)} />
-                  <Route
-                    exact={true}
-                    path="/about"
-                    component={withMenu(About)}
-                  />
-                  <Route
-                    exact={true}
-                    path="/legal-notice"
-                    component={withMenu(LegalNotice)}
-                  />
-                  <Route
-                    exact={true}
-                    path="/terms-and-conditions"
-                    component={withMenu(TermsAndConditions)}
-                  />
-                  <Route
-                    path="/projects/:projectId"
-                    component={withMenu(Project)}
-                  />
-                  <Route path="/shares/:projectId" component={ShareGuide} />
-                  <Route component={withMenu(NotFound)} />
-                </Switch>
+                <BrowserRouter>
+                <ResetScroll/>
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={<Home />}
+                      errorElement={<NotFound />}
+                    />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/legal-notice" element={<LegalNotice />} />
+                    <Route
+                      path="/terms-and-conditions"
+                      element={<TermsAndConditions />}
+                    />
+                    <Route path="/projects/:projectId" element={<Project />} />
+                    <Route path="/shares/:projectId" element={<ShareGuide />} />
+                  </Routes>
+                </BrowserRouter>
               </React.Fragment>
             </React.Fragment>
             {/* </MuiPickersUtilsProvider> */}
-          </MuiThemeProvider>
-        </ResetScroll>
-      </ConnectedRouter>
+          </QueryClientProvider>
+        </MuiThemeProvider>
     </Provider>
   );
 };

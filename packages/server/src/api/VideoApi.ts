@@ -1,6 +1,9 @@
+
+import { PeerTubeVideo } from "@celluloid/types";
 import * as express from "express";
 import fetch from "node-fetch";
-import * as queryString from "query-string";
+import { last } from "ramda";
+import { URL } from "url";
 
 import { logger } from "../backends/Logger";
 
@@ -8,27 +11,20 @@ const log = logger("api/videoApi");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const videoId = req.query.id;
+type PeerTubeVideoInfo ={
+  id: string;
+  title: string;
+  thumbnailUrl: string;
+  host:string;
+}
 
-  const API_KEY = process.env.CELLULOID_YOUTUBE_API;
+async function getPeerVideoInfo(videoUrl: string): Promise<PeerTubeVideoInfo> {
+  var parsed = new URL(videoUrl);
 
-  if(!API_KEY){
-    log.error(
-        `Youtube API not provided`
-      );
-    return res.status(500);
-  }
+  const host = parsed.host;
+  const videoId = last(parsed.pathname.split("/"));
 
-  const query = {
-    part: "snippet",
-    id: videoId,
-    key: API_KEY,
-  };
-
-  const url = `https://www.googleapis.com/youtube/v3/videos?${queryString.stringify(
-    query
-  )}`;
+  const url = `https://${host}/api/v1/videos/${videoId}`;
 
   try {
     const response = await fetch(url, {
@@ -39,17 +35,33 @@ router.get("/", async (req, res) => {
     });
 
     if (response.status === 200) {
-      const data = await response.json();
-      return res.status(200).json(data);
+      const data:PeerTubeVideo = await response.json();
+      return {
+        id: data.shortUUID,
+        host,
+        title: data.name,
+        thumbnailUrl: `https://${host}/${data.thumbnailPath}`
+      };
     }
     log.error(
-      `Could not perform YouTube API request (error ${response.status})`
+      `Could not perform PeerTube API request (error ${response.status})`
     );
-    return res.status(500);
-  } catch (e:any) {
-    log.error(`Could not perform YouTube API request (error ${e.message})`);
-    return res.status(500);
+    throw new Error("Could not perform PeerTube API request ");
+  } catch (e: any) {
+    throw new Error("Could not perform PeerTube API request ");
   }
+}
+
+router.get("/", async (req, res) => {
+  if (req.query.url) {
+    try {
+      const data = await getPeerVideoInfo(req.query.url as string);
+      return res.status(200).json(data);
+    } catch (e: any) {
+      return res.status(500);
+    }
+  }
+  return res.status(500);
 });
 
 export default router;

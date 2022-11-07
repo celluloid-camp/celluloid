@@ -1,18 +1,23 @@
-import { ProjectCreateData, ProjectShareData, ProjectUpdateData } from '@celluloid/types';
+import {
+  ProjectCreateData,
+  ProjectGraphRecord,
+  ProjectShareData,
+  ProjectUpdateData,
+} from "@celluloid/types";
 
-import * as Constants from './Constants';
+import * as Constants from "./Constants";
 
 export default class Projects {
   static list() {
     const headers = {
-      'Accepts': 'application/json'
+      Accepts: "application/json",
     };
 
     return fetch(`/api/projects/`, {
-      method: 'GET',
+      method: "GET",
       headers: new Headers(headers),
-      credentials: 'include'
-    }).then(response => {
+      credentials: "include",
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       }
@@ -20,16 +25,16 @@ export default class Projects {
     });
   }
 
-  static get(projectId: string) {
+  static get(projectId: string): Promise<ProjectGraphRecord> {
     const headers = {
-      'Accepts': 'application/json'
+      Accepts: "application/json",
     };
 
     return fetch(`/api/projects/${projectId}`, {
-      method: 'GET',
+      method: "GET",
       headers: new Headers(headers),
-      credentials: 'include'
-    }).then(response => {
+      credentials: "include",
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 404) {
@@ -41,14 +46,14 @@ export default class Projects {
 
   static getMembers(projectId: string) {
     const headers = {
-      'Accepts': 'application/json'
+      Accepts: "application/json",
     };
 
     return fetch(`/api/projects/${projectId}/members`, {
-      method: 'GET',
+      method: "GET",
       headers: new Headers(headers),
-      credentials: 'include'
-    }).then(response => {
+      credentials: "include",
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 404) {
@@ -60,15 +65,15 @@ export default class Projects {
 
   static create(project: ProjectCreateData) {
     const headers = {
-      'Accepts': 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
-    return fetch('/api/projects', {
-      method: 'POST',
+    return fetch("/api/projects", {
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(project)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(project),
+    }).then((response) => {
       if (response.status === 201 || response.status === 400) {
         return response.json();
       } else if (response.status === 401) {
@@ -80,15 +85,15 @@ export default class Projects {
 
   static update(projectId: string, project: ProjectUpdateData) {
     const headers = {
-      'Accepts': 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
     return fetch(`/api/projects/${projectId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(project)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(project),
+    }).then((response) => {
       if (response.status === 200 || response.status === 400) {
         return response.json();
       } else if (response.status === 401) {
@@ -102,15 +107,15 @@ export default class Projects {
 
   static share(projectId: string, data: ProjectShareData) {
     const headers = {
-      'Accepts': 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
     return fetch(`/api/projects/${projectId}/share`, {
-      method: 'PUT',
+      method: "PUT",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(data)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(data),
+    }).then((response) => {
       if (response.status === 200 || response.status === 400) {
         return response.json();
       } else if (response.status === 401) {
@@ -124,14 +129,14 @@ export default class Projects {
 
   static unshare(projectId: string) {
     const headers = {
-      'Accepts': 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
     return fetch(`/api/projects/${projectId}/share`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: new Headers(headers),
-      credentials: 'include',
-    }).then(response => {
+      credentials: "include",
+    }).then((response) => {
       if (response.status === 200 || response.status === 400) {
         return response.json();
       } else if (response.status === 401) {
@@ -143,16 +148,20 @@ export default class Projects {
     });
   }
 
-  static setAttribute(projectId: string, attribute: 'collaborative' | 'public', on: boolean) {
+  static setAttribute(
+    projectId: string,
+    attribute: "collaborative" | "public",
+    on: boolean
+  ) {
     const headers = {
-      'Accepts': 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
     return fetch(`/api/projects/${projectId}/${attribute}`, {
-      method: on ? 'PUT' : 'DELETE',
+      method: on ? "PUT" : "DELETE",
       headers: new Headers(headers),
-      credentials: 'include',
-    }).then(response => {
+      credentials: "include",
+    }).then((response) => {
       if (response.status === 200 || response.status === 400) {
         return response.json();
       } else if (response.status === 401) {
@@ -166,14 +175,14 @@ export default class Projects {
 
   static delete(projectId: string) {
     const headers = {
-      'Accepts': 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
     return fetch(`/api/projects/${projectId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: new Headers(headers),
-      credentials: 'include',
-    }).then(response => {
+      credentials: "include",
+    }).then((response) => {
       if (response.status === 204 || response.status === 400) {
         return Promise.resolve();
       } else if (response.status === 401) {

@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "rootDir": "src",
+    "rootDir": "./src",
     "outDir": "build",
     "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
     "declarationDir": "build",
@@ -10,6 +10,5 @@
     "target": "es5",
     "module": "commonjs"
   },
-  "exclude": ["node_modules", "build"],
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

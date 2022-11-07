@@ -1,4 +1,3 @@
-import { YoutubeVideo } from 'types/YoutubeTypes';
 import {
   AnnotationRecord,
   CommentRecord,
@@ -10,6 +9,7 @@ import {
 } from '@celluloid/types';
 import * as SigninDialog from 'components/Signin';
 import { RouterState } from 'connected-react-router';
+import { PeertubeVideoInfo } from './YoutubeTypes';
 
 export interface SigninState {
   loading: boolean;
@@ -79,7 +79,7 @@ export interface HomeState {
     createProject?: string;
   };
   projects: ProjectGraphRecord[];
-  video?: YoutubeVideo;
+  video?: PeertubeVideoInfo;
   createProjectLoading: boolean;
 }
 
