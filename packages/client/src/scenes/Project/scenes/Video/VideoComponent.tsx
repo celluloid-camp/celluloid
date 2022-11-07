@@ -1,47 +1,69 @@
-import 'rc-slider/assets/index.css';
+import "rc-slider/assets/index.css";
 
 import {
   AnnotationRecord,
   ProjectGraphRecord,
-  UserRecord
-} from '@celluloid/types';
+  UserRecord,
+} from "@celluloid/types";
 import {
   Button,
+  CircularProgress,
+  Fab,
+  Grid,
   Grow as GrowMUI,
   WithStyles,
   withStyles,
-  Zoom as ZoomMUI
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import { triggerAddAnnotation } from 'actions/AnnotationsActions';
-import classnames from 'classnames';
-import * as React from 'react';
-import Fullscreen from 'react-full-screen';
-import { connect } from 'react-redux';
-import { TransitionGroup } from 'react-transition-group';
-import YouTube from 'react-youtube';
-import { Dispatch } from 'redux';
-import { EmptyAction } from 'types/ActionTypes';
-import { AppState } from 'types/StateTypes';
-import { canAnnotate } from 'utils/ProjectUtils';
+  Zoom as ZoomMUI,
+} from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import { triggerAddAnnotation } from "actions/AnnotationsActions";
+import classnames from "classnames";
+import * as React from "react";
+import Fullscreen from "react-full-screen";
+import { connect } from "react-redux";
+import { TransitionGroup } from "react-transition-group";
+import { Dispatch } from "redux";
+import { EmptyAction } from "types/ActionTypes";
+import { AppState } from "types/StateTypes";
+import { canAnnotate } from "utils/ProjectUtils";
 
-import AnnotationContent from './components/AnnotationContent';
-import AnnotationEditor from './components/AnnotationEditor';
-import AnnotationHints from './components/AnnotationHints';
-import Controls from './components/Controls';
-import { styles } from './VideoStyles';
-import { YouTubePlayer } from 'youtube-player/dist/types';
-import { ZoomProps } from '@material-ui/core/Zoom';
-import { GrowProps } from '@material-ui/core/Grow';
+import AnnotationContent from "./components/AnnotationContent";
+import AnnotationEditor from "./components/AnnotationEditor";
+import AnnotationHints from "./components/AnnotationHints";
+import Controls from "./components/Controls";
+import { styles } from "./VideoStyles";
+import { ZoomProps } from "@material-ui/core/Zoom";
+import { GrowProps } from "@material-ui/core/Grow";
+import ReactPlayer from "react-player";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import VideoApi from "services/VideoService";
 
-const Zoom:React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
+import LinearProgress from "@material-ui/core/LinearProgress";
+
+import get from "lodash/get";
+
+const Zoom: React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
   <ZoomMUI {...props} />
 );
 
-const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
 );
 
+export enum PlayerEvent {
+  PLAYING,
+  BUFFERING,
+  ENDED,
+  PAUSED,
+}
+
+export type PlayerProgressState = {
+  played: number;
+  playedSeconds: number;
+  loaded: number;
+  loadedSeconds: number;
+};
 interface Props extends WithStyles<typeof styles> {
   user?: UserRecord;
   project: ProjectGraphRecord;
@@ -56,8 +78,9 @@ interface Props extends WithStyles<typeof styles> {
   showControls: boolean;
   showHints: boolean;
   onUserAction(): void;
-  onPlayerReady(event:  { target: YouTubePlayer; }): void;
-  onPlayerStateChange(event: { target: YouTubePlayer; data: number; }): void;
+  onPlayerReady(player: ReactPlayer): void;
+  onPlayerProgress(state: PlayerProgressState): void;
+  onPlayerStateChange(event: PlayerEvent, data: number): void;
   onFullscreenChange(newState: boolean): void;
   onTogglePlayPause(): void;
   onToggleFullscreen(): void;
@@ -69,177 +92,246 @@ interface Props extends WithStyles<typeof styles> {
 
 const mapStateToProps = (state: AppState) => ({
   editing: state.project.video.editing,
-  focusedAnnotation: state.project.video.focusedAnnotation
+  focusedAnnotation: state.project.video.focusedAnnotation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  onClickAnnotate: () => dispatch(triggerAddAnnotation())
+  onClickAnnotate: () => dispatch(triggerAddAnnotation()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(styles)(({
-    user,
-    project,
-    annotations,
-    focusedAnnotation,
-    visibleAnnotations,
-    position,
-    duration,
-    playing,
-    fullscreen,
-    showControls,
-    showHints,
-    editing,
-    onUserAction,
-    onPlayerReady,
-    onPlayerStateChange,
-    onFullscreenChange,
-    onTogglePlayPause,
-    onToggleFullscreen,
-    onToggleHints,
-    onClickHint,
-    onClickAnnotate,
-    onSeek,
-    classes
-  }: Props) => {
-    const controlsOpacity = showControls || showHints ?
-      classes.visible : classes.hidden;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  withStyles(styles)(
+    ({
+      user,
+      project,
+      annotations,
+      focusedAnnotation,
+      visibleAnnotations,
+      position,
+      duration,
+      playing,
+      fullscreen,
+      showControls,
+      showHints,
+      editing,
+      onUserAction,
+      onPlayerReady,
+      onPlayerStateChange,
+      onPlayerProgress,
+      onFullscreenChange,
+      onTogglePlayPause,
+      onToggleFullscreen,
+      onToggleHints,
+      onClickHint,
+      onClickAnnotate,
+      onSeek,
+      classes,
+    }: Props) => {
+      const [isReady, setIsReady] = useState(false);
 
-    const hintBoxHeight = showHints ?
-      classes.hintBoxExpanded : classes.hintBoxCollapsed;
+      const { data, isLoading, isLoadingError } = useQuery({
+        queryKey: ["video", project.host, project.videoId],
+        queryFn: () => VideoApi.getPeerTubeVideo(project.host, project.videoId),
+      });
 
-    const focusedAnnotationId = focusedAnnotation
-      ? focusedAnnotation.id
-      : undefined;
+      const controlsOpacity =
+        isReady && (showControls || showHints)
+          ? classes.visible
+          : classes.hidden;
 
-    return (
-      <Fullscreen
-        enabled={fullscreen}
-        onChange={onFullscreenChange}
-      >
-        <div
-          className={classnames(
-            'full-screenable-node',
-            classes.videoWrapper
-          )}
-        >
-          <div>
-            <YouTube
-              videoId={project.videoId}
-              opts={{
-                playerVars: {
-                  modestbranding: 1,
-                  rel: 0,
-                  start: 0,
-                  showinfo: 0,
-                  iv_load_policy: 3,
-                  controls: 0
-                }
-              }}
-              className={classes.videoIframe}
-              onReady={onPlayerReady}
-              onStateChange={onPlayerStateChange}
-            />
-            <div
-              className={classes.glassPane}
-              onMouseMove={onUserAction}
-              onClick={onTogglePlayPause}
-            />
-            {!showHints &&
-              <div
-                className={classes.annotationFrame}
-                onMouseMove={onUserAction}
-              >
-                <Grow
-                  appear={true}
-                  in={editing}
-                >
-                  <div>
-                    {user && editing &&
-                      <AnnotationEditor
-                        user={user}
-                        projectId={project.id}
-                        video={{
-                          position: position,
-                          duration: duration
-                        }}
-                        onSeek={onSeek}
-                      />
-                    }
-                  </div>
-                </Grow>
-                <TransitionGroup appear={true}>
-                  {!editing && Array.from(visibleAnnotations.values())
-                    .map(annotation =>
-                      <Grow
-                        appear={true}
-                        in={!editing}
-                        key={annotation.id}
-                      >
-                        <div>
-                          <AnnotationContent
-                            project={project}
-                            focused={
-                              annotation.id === focusedAnnotationId
-                            }
-                            annotation={annotation}
-                          />
-                        </div>
-                      </Grow>
-                    )
-                  }
-                </TransitionGroup>
-              </div>
-            }
-            {(user && canAnnotate(project, user)) &&
-              <Zoom
-                appear={true}
-                exit={true}
-                in={!editing && !showHints && showControls}
-              >
-                <Button
-                  color="secondary"
-                  className={classes.annotateButton}
-                  onClick={() => onClickAnnotate()}
-                >
-                  <EditIcon />
-                </Button>
-              </Zoom>
-            }
-            <div
-              onMouseMove={onUserAction}
-              className={classnames(classes.hintBox, controlsOpacity, hintBoxHeight)}
-            >
-              <AnnotationHints
-                duration={duration}
-                position={position}
-                annotations={annotations}
-                visible={showHints}
-                onClick={onClickHint}
+      const hintBoxHeight = showHints
+        ? classes.hintBoxExpanded
+        : classes.hintBoxCollapsed;
+
+      const focusedAnnotationId = focusedAnnotation
+        ? focusedAnnotation.id
+        : undefined;
+
+      const [muted, setMuted] = useState(false);
+
+      // const handleOnDuration = (duration: number)=>{
+      //   onPlayerStateChange(PlayerEvent.)
+      // }
+
+      const handleToggleMute = () => {
+        setMuted(!muted);
+      };
+
+      const handleVideoRead = (player: ReactPlayer) => {
+        onPlayerReady(player);
+        setIsReady(true);
+      };
+
+      if (isLoading) {
+        return (
+          <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+            className={classnames(classes.progressWrapper)}
+          >
+            <Grid item>
+              <CircularProgress
+                className={classes.progress}
+                size={30}
+                thickness={5}
               />
-            </div>
-            <div
-              onMouseMove={onUserAction}
-              className={classnames([
-                classes.controlFrame, controlsOpacity
-              ])}
-            >
-              <Controls
-                user={user}
-                annotations={annotations}
-                position={position}
-                duration={duration}
-                fullscreen={fullscreen}
+            </Grid>
+          </Grid>
+        );
+      }
+
+      const handleBuffer = () => {
+        console.log("handleBuffer");
+      };
+
+      const handleBufferEnd = () => {
+        console.log("handleBufferEnd");
+      };
+
+      const videoUrl =
+        get(data, "files[0].fileUrl") ||
+        get(data, "streamingPlaylists[0].files[0].fileUrl") ||
+        "";
+
+      return (
+        <Fullscreen enabled={fullscreen} onChange={onFullscreenChange}>
+          <div
+            className={classnames("full-screenable-node", classes.videoWrapper)}
+          >
+            <div>
+              <ReactPlayer
+                url={videoUrl}
+                onReady={handleVideoRead}
+                // onDuration={handleOnDuration}
+                onProgress={onPlayerProgress}
+                className={classes.videoIframe}
+                style={{
+                  backgroundImage: `url(https://${project.host}${data?.previewPath})`,
+                }}
+                width="100%"
+                height="100%"
                 playing={playing}
-                onSeek={onSeek}
-                onToggleFullscreen={onToggleFullscreen}
-                onTogglePlayPause={onTogglePlayPause}
-                onToggleHints={onToggleHints}
+                onBuffer={handleBuffer}
+                onBufferEnd={handleBufferEnd}
+                muted={muted}
               />
+              <div
+                className={classes.glassPane}
+                onMouseMove={onUserAction}
+                onClick={onTogglePlayPause}
+              />
+              {!showHints && (
+                <div
+                  className={classes.annotationFrame}
+                  onMouseMove={onUserAction}
+                >
+                  <Grow appear={true} in={editing}>
+                    <div>
+                      {user && editing && (
+                        <AnnotationEditor
+                          user={user}
+                          projectId={project.id}
+                          video={{
+                            position: position,
+                            duration: duration,
+                          }}
+                          onSeek={onSeek}
+                        />
+                      )}
+                    </div>
+                  </Grow>
+                  <TransitionGroup appear={true}>
+                    {!editing &&
+                      Array.from(visibleAnnotations.values()).map(
+                        (annotation) => (
+                          <Grow appear={true} in={!editing} key={annotation.id}>
+                            <div>
+                              <AnnotationContent
+                                project={project}
+                                focused={annotation.id === focusedAnnotationId}
+                                annotation={annotation}
+                              />
+                            </div>
+                          </Grow>
+                        )
+                      )}
+                  </TransitionGroup>
+                </div>
+              )}
+              {isReady && user && canAnnotate(project, user) && (
+                <Zoom
+                  appear={true}
+                  exit={true}
+                  in={!editing && !showHints && showControls}
+                >
+                  <Fab
+                    color="secondary"
+                    className={classes.annotateButton}
+                    onClick={() => onClickAnnotate()}
+                  >
+                    <EditIcon />
+                  </Fab>
+                </Zoom>
+              )}
+              <div
+                onMouseMove={onUserAction}
+                className={classnames(
+                  classes.hintBox,
+                  controlsOpacity,
+                  hintBoxHeight
+                )}
+              >
+                <AnnotationHints
+                  duration={duration}
+                  position={position}
+                  annotations={annotations}
+                  visible={showHints}
+                  onClick={onClickHint}
+                />
+              </div>
+
+              {isReady ? (
+                <div
+                  onMouseMove={onUserAction}
+                  className={classnames([
+                    classes.controlFrame,
+                    controlsOpacity,
+                  ])}
+                >
+                  <Controls
+                    user={user}
+                    annotations={annotations}
+                    position={position}
+                    duration={duration}
+                    fullscreen={fullscreen}
+                    muted={muted}
+                    playing={playing}
+                    onSeek={onSeek}
+                    onToggleFullscreen={onToggleFullscreen}
+                    onTogglePlayPause={onTogglePlayPause}
+                    onToggleHints={onToggleHints}
+                    onToggleMuted={handleToggleMute}
+                  />
+                </div>
+              ) : (
+                <div className={classnames([classes.linearContainer])}>
+                  <LinearProgress
+                    classes={{
+                      colorPrimary: classes.linearColorPrimary,
+                      barColorPrimary: classes.linearBarColorPrimary,
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </Fullscreen>
-    );
-  })
+        </Fullscreen>
+      );
+    }
+  )
 );

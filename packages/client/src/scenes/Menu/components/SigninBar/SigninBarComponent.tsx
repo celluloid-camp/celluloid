@@ -1,4 +1,4 @@
-import { UserRecord } from '@celluloid/types';
+import { UserRecord } from "@celluloid/types";
 import {
   ClickAwayListener,
   Grow as GrowMUI,
@@ -6,15 +6,15 @@ import {
   MenuItem,
   MenuList,
   Paper,
-  Popper
-} from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import { GrowProps } from '@material-ui/core/Grow';
-import UserAvatar from 'components/UserAvatar';
-import * as React from 'react';
-import { withI18n, WithI18n } from 'react-i18next';
+  Popper,
+} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import { GrowProps } from "@material-ui/core/Grow";
+import UserAvatar from "components/UserAvatar";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 
-const Grow:React.FC<React.PropsWithChildren & GrowProps> = (props) => (
+const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
 );
 
@@ -28,7 +28,7 @@ interface Props {
   onCloseUserMenu(): void;
 }
 
-export default withI18n()(({
+const SigninBarComponent = ({
   user,
   menuAnchor,
   onClickLogin,
@@ -36,13 +36,11 @@ export default withI18n()(({
   onClickLogout,
   onOpenUserMenu,
   onCloseUserMenu,
-  t
-}: Props & WithI18n) =>
-  user ? (
+}: Props) => {
+  const { t } = useTranslation();
+  return user ? (
     <div>
-      <IconButton
-        onClick={event => onOpenUserMenu(event.target)}
-      >
+      <IconButton onClick={(event) => onOpenUserMenu(event.target)}>
         <UserAvatar user={user} noMargin={true} />
       </IconButton>
       <Popper
@@ -54,7 +52,10 @@ export default withI18n()(({
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
-            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+            style={{
+              transformOrigin:
+                placement === "bottom" ? "center top" : "center bottom",
+            }}
           >
             <Paper>
               <ClickAwayListener onClickAway={onCloseUserMenu}>
@@ -68,18 +69,13 @@ export default withI18n()(({
       </Popper>
     </div>
   ) : (
-      <div>
-        <Button
-          onClick={onClickSignup}
-        >
-          {t('menu.signup')}
-        </Button>
-        <Button
-          onClick={onClickLogin}
-          color="primary"
-        >
-          {t('menu.login')}
-        </Button>
-      </div>
-    )
-);
+    <div>
+      <Button onClick={onClickSignup}>{t("menu.signup")}</Button>
+      <Button onClick={onClickLogin} color="primary">
+        {t("menu.login")}
+      </Button>
+    </div>
+  );
+};
+
+export default SigninBarComponent;

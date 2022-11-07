@@ -1,17 +1,18 @@
-import { SigninErrors, TeacherSignupData, UserRecord } from '@celluloid/types';
+import { SigninErrors, TeacherSignupData, UserRecord  } from '@celluloid/types';
 import { doSignupThunk, openLogin } from 'actions/Signin';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { Action } from 'types/ActionTypes';
 import { AppState } from 'types/StateTypes';
-import { YoutubeVideo } from 'types/YoutubeTypes';
+import { PeertubeVideoInfo } from 'types/YoutubeTypes';
+
 
 import Signup from './SignupComponent';
 
 interface Props {
   user?: UserRecord;
-  video?: YoutubeVideo;
+  video?: PeertubeVideoInfo;
   errors: SigninErrors;
   onClickLogin(): Action<null>;
   onSubmit(data: TeacherSignupData): Promise<AnyAction>;

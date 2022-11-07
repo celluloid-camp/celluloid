@@ -19,7 +19,7 @@ export default {
     },
     teachers: 'Teachers & Trainers',
     students: 'Pupils & Students',
-    addVideo: 'Add a link to a YouTube video...',
+    addVideo: 'Add a link to a PeerTube video...',
     newProject: 'new project',
     joinProject: 'join a project',
     searchProject: 'Type anything…',

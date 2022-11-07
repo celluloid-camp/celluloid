@@ -1,18 +1,18 @@
-import { SigninErrors, TeacherSignupData, UserRecord } from '@celluloid/types';
-import { Typography } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import DialogAltButtons from 'components/DialogAltButtons';
-import DialogButtons from 'components/DialogButtons';
-import DialogError from 'components/DialogError';
-import * as React from 'react';
-import { WithI18n, withI18n } from 'react-i18next';
-import { AnyAction } from 'redux';
-import { Action } from 'types/ActionTypes';
-import { YoutubeVideo } from 'types/YoutubeTypes';
+import { SigninErrors, TeacherSignupData, UserRecord } from "@celluloid/types";
+import { Typography } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import DialogAltButtons from "components/DialogAltButtons";
+import DialogButtons from "components/DialogButtons";
+import DialogError from "components/DialogError";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import { AnyAction } from "redux";
+import { Action } from "types/ActionTypes";
+import { PeertubeVideoInfo } from "types/YoutubeTypes";
 
 interface Props {
   user?: UserRecord;
-  video?: YoutubeVideo;
+  video?: PeertubeVideoInfo;
   data: TeacherSignupData;
   errors: SigninErrors;
   confirmPasswordError: boolean;
@@ -21,7 +21,7 @@ interface Props {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default withI18n()(({
+const SignupComponent = ({
   data,
   user,
   video,
@@ -30,74 +30,77 @@ export default withI18n()(({
   onChange,
   onSubmit,
   onClickLogin,
-  t
-}: Props & WithI18n) => (
+}: Props) => {
+  const { t } = useTranslation();
+  return (
     <div>
-      {(video && user) &&
+      {video && user && (
         <Typography gutterBottom={true} variant="subtitle2" color="primary">
-          {t('signin.upgradeAccountMessage')}
+          {t("signin.upgradeAccountMessage")}
         </Typography>
-      }
-      {(video && !user) &&
+      )}
+      {video && !user && (
         <Typography gutterBottom={true} variant="subtitle2" color="primary">
-          {t('signin.signupOrLoginMessage')}
+          {t("signin.signupOrLoginMessage")}
         </Typography>
-      }
+      )}
       <TextField
         margin="dense"
         fullWidth={true}
         error={errors.username ? true : false}
-        label={t('signin.username')}
+        label={t("signin.username")}
         value={data.username}
         required={true}
-        onChange={event => onChange('username', event.target.value)}
+        onChange={(event) => onChange("username", event.target.value)}
         helperText={errors && errors.username}
       />
       <TextField
         margin="dense"
         fullWidth={true}
         error={errors.email ? true : false}
-        label={t('signin.email')}
+        label={t("signin.email")}
         value={data.email}
         required={true}
-        onChange={event => onChange('email', event.target.value)}
+        onChange={(event) => onChange("email", event.target.value)}
         helperText={errors.email}
       />
       <TextField
         margin="dense"
         fullWidth={true}
         error={errors.password ? true : false}
-        label={t('signin.password')}
+        label={t("signin.password")}
         value={data.password}
         type="password"
         required={true}
-        onChange={event => onChange('password', event.target.value)}
+        onChange={(event) => onChange("password", event.target.value)}
         helperText={errors.password}
       />
       <TextField
         margin="dense"
         fullWidth={true}
         error={confirmPasswordError ? true : false}
-        label={t('signin.confirmPassword')}
+        label={t("signin.confirmPassword")}
         type="password"
         required={true}
-        onChange={event => onChange('confirmPassword', event.target.value)}
-        helperText={confirmPasswordError
-          ? t('signin.passwordMismatch')
-          : undefined
+        onChange={(event) => onChange("confirmPassword", event.target.value)}
+        helperText={
+          confirmPasswordError ? t("signin.passwordMismatch") : undefined
         }
       />
       {errors.server && <DialogError error={errors.server} />}
-      {!user &&
+      {!user && (
         <DialogAltButtons
-          heading={t('signin.alreadyRegistered')}
-          actionName={t('signin.loginAction')}
+          heading={t("signin.alreadyRegistered")}
+          actionName={t("signin.loginAction")}
           onSubmit={onClickLogin}
         />
-      }
+      )}
       <DialogButtons
         onSubmit={onSubmit}
-        actionName={t('signin.signupAction')}
+        actionName={t("signin.signupAction")}
       />
     </div>
-  ));
+  );
+};
+
+export default SignupComponent;

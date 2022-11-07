@@ -1,4 +1,4 @@
-import 'rc-slider/assets/index.css';
+import "rc-slider/assets/index.css";
 
 import {
   Button,
@@ -9,62 +9,63 @@ import {
   Theme,
   Typography,
   WithStyles,
-  withStyles
-} from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import CancelIcon from '@material-ui/icons/Clear';
-import { Range } from 'rc-slider';
-import * as React from 'react';
-import { formatDuration } from 'utils/DurationUtils';
+  withStyles,
+} from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
+import CancelIcon from "@material-ui/icons/Clear";
+import { Range } from "rc-slider";
+import React from "react";
+import { formatDuration } from "utils/DurationUtils";
 
-import TransparentInput from '../TransparentInput';
-import { sliderRailStyle, sliderTrackStyle } from 'utils/SliderUtils';
-import { withI18n, WithI18n } from 'react-i18next';
+import TransparentInput from "../TransparentInput";
+import { sliderRailStyle, sliderTrackStyle } from "utils/SliderUtils";
+import { useTranslation } from "react-i18next";
 
-const caretStart = require('images/caret-start.png');
-const caretStop = require('images/caret-stop.png');
+const caretStart = require("images/caret-start.png");
+const caretStop = require("images/caret-stop.png");
 
-const styles = (theme: Theme) => createStyles({
-  root: {
-    paddingLeft: theme.spacing.unit,
-    paddingTop: theme.spacing.unit,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start'
-  },
-  content: {
-    flex: '1 1 auto',
-    minWidth: 0,
-    padding: `0 ${theme.spacing.unit * 2}px`,
-    '&:first-child': {
-      paddingLeft: 0,
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      paddingLeft: theme.spacing.unit,
+      paddingTop: theme.spacing.unit,
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "flex-start",
     },
-    margin: 10,
-  },
-  buttons: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end'
-  },
-  timeline: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  buttonRoot: {
-    fontSize: 10,
-    lineHeight: '20px',
-    minWidth: 20,
-    minHeight: 20,
-    maxWidth: 20,
-    maxHeight: 20,
-    margin: 4,
-    marginBottom: 7,
-    padding: 0,
-    borderRadius: '50%'
-  },
-});
+    content: {
+      flex: "1 1 auto",
+      minWidth: 0,
+      padding: `0 ${theme.spacing.unit * 2}px`,
+      "&:first-child": {
+        paddingLeft: 0,
+      },
+      margin: 10,
+    },
+    buttons: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-end",
+    },
+    timeline: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    buttonRoot: {
+      fontSize: 10,
+      lineHeight: "20px",
+      minWidth: 20,
+      minHeight: 20,
+      maxWidth: 20,
+      maxHeight: 20,
+      margin: 4,
+      marginBottom: 7,
+      padding: 0,
+      borderRadius: "50%",
+    },
+  });
 
 interface Props extends WithStyles<typeof styles> {
   startTime: number;
@@ -110,11 +111,7 @@ const TimingControl = (props: TimingControlProps) => (
       onSeek={props.onBack}
       classes={props.classes}
     />
-    <Typography
-      variant="caption"
-    >
-      {formatDuration(props.position)}
-    </Typography >
+    <Typography variant="caption">{formatDuration(props.position)}</Typography>
     <TimingButton
       forward={true}
       onSeek={props.onForward}
@@ -123,7 +120,7 @@ const TimingControl = (props: TimingControlProps) => (
   </>
 );
 
-export default withStyles(styles)(withI18n()(({
+const AnnotationEditorComponent: React.FC<Props> = ({
   startTime,
   stopTime,
   pause,
@@ -136,13 +133,14 @@ export default withStyles(styles)(withI18n()(({
   onClickSave,
   onClickCancel,
   classes,
-  t
-}: Props & WithI18n) => {
+}: Props) => {
+  const { t } = useTranslation();
+
   const handleStyles = {
     border: 0,
     borderRadius: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    backgroundSize: 'cover',
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundSize: "cover",
     width: 12,
     height: 12,
   };
@@ -154,7 +152,7 @@ export default withStyles(styles)(withI18n()(({
           text={text}
           error={error}
           onChange={onTextChange}
-          placeholder={t('annotation.contentPlaceholder')}
+          placeholder={t("annotation.contentPlaceholder")}
         />
         <div className={classes.timeline}>
           <TimingControl
@@ -172,14 +170,14 @@ export default withStyles(styles)(withI18n()(({
               min={0}
               max={duration}
               value={[startTime, stopTime]}
-              onChange={values => {
+              onChange={(values) => {
                 if (startTime !== values[0]) {
                   onTimingChange(values[0], true, false);
                 } else if (stopTime !== values[1]) {
                   onTimingChange(values[1], false, false);
                 }
               }}
-              onAfterChange={values => {
+              onAfterChange={(values) => {
                 if (startTime !== values[0]) {
                   onTimingChange(values[0], true, true);
                 } else if (stopTime !== values[1]) {
@@ -188,17 +186,20 @@ export default withStyles(styles)(withI18n()(({
               }}
               trackStyle={sliderTrackStyle}
               railStyle={sliderRailStyle}
-              handleStyle={[{
-                ...handleStyles,
-                marginTop: -11,
-                marginLeft: -5,
-                backgroundImage: `url(${caretStart})`
-              }, {
-                ...handleStyles,
-                marginTop: 3,
-                marginLeft: -6,
-                backgroundImage: `url(${caretStop})`
-              }]}
+              handleStyle={[
+                {
+                  ...handleStyles,
+                  marginTop: -11,
+                  marginLeft: -5,
+                  backgroundImage: `url(${caretStart})`,
+                },
+                {
+                  ...handleStyles,
+                  marginTop: 3,
+                  marginLeft: -6,
+                  backgroundImage: `url(${caretStop})`,
+                },
+              ]}
               allowCross={false}
             />
           </div>
@@ -218,27 +219,21 @@ export default withStyles(styles)(withI18n()(({
             control={
               <Checkbox
                 checked={pause}
-                onChange={event =>
-                  onCheckPauseChange(event.target.checked)
-                }
+                onChange={(event) => onCheckPauseChange(event.target.checked)}
               />
             }
-            label={t('annotation.pauseLabel')}
+            label={t("annotation.pauseLabel")}
           />
-          <IconButton
-            color="secondary"
-            onClick={() => onClickCancel()}
-          >
+          <IconButton color="secondary" onClick={() => onClickCancel()}>
             <CancelIcon />
           </IconButton>
-          <IconButton
-            color="primary"
-            onClick={() => onClickSave()}
-          >
+          <IconButton color="primary" onClick={() => onClickSave()}>
             <CheckIcon />
           </IconButton>
         </div>
       </div>
     </div>
   );
-}));
+};
+
+export default withStyles(styles)(AnnotationEditorComponent);

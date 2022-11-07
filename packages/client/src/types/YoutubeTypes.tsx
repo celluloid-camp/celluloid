@@ -1,7 +1,8 @@
-export interface YoutubeVideo {
+export interface PeertubeVideoInfo {
   id: string;
   title: string;
   thumbnailUrl: string;
+  host:string;
 }
 
 export interface Player {

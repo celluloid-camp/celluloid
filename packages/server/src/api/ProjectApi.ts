@@ -78,7 +78,7 @@ router.post(
         return res.status(201).json(result);
       })
       .catch((error: Error) => {
-        log.error('Failed to create project:', error);
+        log.error('Failed to create project:', error );
         return res.status(500).send();
       });
   });

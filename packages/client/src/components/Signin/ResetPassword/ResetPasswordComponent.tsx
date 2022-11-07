@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import DialogButtons from 'components/DialogButtons';
 import SigninError from 'components/DialogError';
 import * as React from 'react';
-import { WithI18n, withI18n } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { AnyAction } from 'redux';
 
 interface Props {
@@ -13,13 +13,15 @@ interface Props {
   onSubmit(): Promise<AnyAction>;
 }
 
-export default withI18n()(({
+const ResetPasswordComponent = ({
   login,
   errors,
   onChange,
   onSubmit,
-  t
-}: Props & WithI18n) => (
+}: Props) => {
+  
+  const {t} = useTranslation();
+  return(
     <div>
       <TextField
         margin="dense"
@@ -37,4 +39,8 @@ export default withI18n()(({
         actionName={t('signin.changePasswordAction')}
       />
     </div>
-  ));
+  )
+};
+
+
+  export default ResetPasswordComponent;

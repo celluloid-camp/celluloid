@@ -1,17 +1,16 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { RouteComponentProps, withRouter } from "react-router";
+import { useLocation } from "react-router-dom";
 
-type Props = {
-  children: JSX.Element;
-} & RouteComponentProps<any>;
 
-const ResetScroll: React.FC<Props> = ({ children, location }) => {
+const ResetScroll: React.FC<any> = () => {
+  const location = useLocation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
 
-  return children;
+  return null;
 };
 
-export default withRouter(ResetScroll);
+export default ResetScroll;

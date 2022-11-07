@@ -1,17 +1,26 @@
-import { AnnotationRecord, ProjectGraphRecord, UserRecord } from '@celluloid/types';
-import { listAnnotationsThunk, triggerBlurAnnotation } from 'actions/AnnotationsActions';
-import { playerNotifySeek, playerRequestSeek } from 'actions/PlayerActions';
-import * as R from 'ramda';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { Action, AsyncAction, EmptyAction } from 'types/ActionTypes';
-import { AppState } from 'types/StateTypes';
-import { Player, PlayerEventData } from 'types/YoutubeTypes';
-import * as AnnotationUtils from 'utils/AnnotationUtils';
-import { YouTubePlayer } from 'youtube-player/dist/types';
+import {
+  AnnotationRecord,
+  ProjectGraphRecord,
+  UserRecord,
+} from "@celluloid/types";
+import {
+  listAnnotationsThunk,
+  triggerBlurAnnotation,
+} from "actions/AnnotationsActions";
+import { playerNotifySeek, playerRequestSeek } from "actions/PlayerActions";
+import * as R from "ramda";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
+import { AppState } from "types/StateTypes";
+import * as AnnotationUtils from "utils/AnnotationUtils";
+import ReactPlayer from "react-player";
 
-import VideoComponent from './VideoComponent';
+import VideoComponent, {
+  PlayerEvent,
+  PlayerProgressState,
+} from "./VideoComponent";
 
 const FADE_TIMEOUT = 3000;
 
@@ -21,15 +30,14 @@ interface Props {
   project: ProjectGraphRecord;
   seeking: boolean;
   focusedAnnotation?: AnnotationRecord;
-  load(projectId: string):
-    AsyncAction<AnnotationRecord[], string>;
+  load(projectId: string): AsyncAction<AnnotationRecord[], string>;
   notifySeek(): EmptyAction;
   requestSeek(seekTarget: number): Action<number>;
   blurAnnotation(): EmptyAction;
 }
 
 interface State {
-  player?: Player;
+  player?: ReactPlayer;
   position: number;
   duration: number;
   playing: boolean;
@@ -43,21 +51,20 @@ const mapStateToProps = (state: AppState) => ({
   user: state.user,
   annotations: state.project.video.annotations,
   seeking: state.project.player.seeking,
-  focusedAnnotation: state.project.video.focusedAnnotation
+  focusedAnnotation: state.project.video.focusedAnnotation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  load: (projectId: string) =>
-    listAnnotationsThunk(projectId)(dispatch),
-  notifySeek: () =>
-    dispatch(playerNotifySeek()),
-  requestSeek: (seekTarget: number) =>
-    dispatch(playerRequestSeek(seekTarget)),
-  blurAnnotation: () =>
-    dispatch(triggerBlurAnnotation())
+  load: (projectId: string) => listAnnotationsThunk(projectId)(dispatch),
+  notifySeek: () => dispatch(playerNotifySeek()),
+  requestSeek: (seekTarget: number) => dispatch(playerRequestSeek(seekTarget)),
+  blurAnnotation: () => dispatch(triggerBlurAnnotation()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
   class extends React.Component<Props, State> {
     fadeoutTimer = -1;
     refreshTimer = -1;
@@ -69,7 +76,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       showControls: true,
       showHints: false,
       visibleAnnotations: [],
-      annotating: false
+      annotating: false,
     } as State;
 
     componentDidMount() {
@@ -95,32 +102,40 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         const annotations = this.props.annotations;
         const focusedAnnotation = this.props.focusedAnnotation;
         const position = player.getCurrentTime();
-        const visibleAnnotations = annotations
-          .filter(annotation =>
+        if (position) {
+          const visibleAnnotations = annotations.filter((annotation) =>
             AnnotationUtils.visible(annotation, position)
           );
-        visibleAnnotations.forEach(annotation => {
-          if (annotation.pause
-            && annotation.startTime >= position - 0.10
-            && annotation.startTime < position + 0.10) {
-            player.pauseVideo();
-            player.seekTo(position + 0.10, true);
-          }
-        });
 
-        const isFocusedAnnotationPredicate = (elem: AnnotationRecord) =>
-          !!focusedAnnotation && elem.id === focusedAnnotation.id;
-        const shouldBlur =
-          !R.find(isFocusedAnnotationPredicate, visibleAnnotations) && focusedAnnotation;
-
-        if (shouldBlur) {
-          this.props.blurAnnotation();
-        }
-        if (!this.props.seeking) {
-          this.setState({
-            visibleAnnotations,
-            position: position,
+          visibleAnnotations.forEach((annotation) => {
+            if (
+              annotation.pause &&
+              annotation.startTime >= position - 0.1 &&
+              annotation.startTime < position + 0.1
+            ) {
+              // player.pauseVideo();
+              this.setState({
+                playing: false,
+              });
+              player.seekTo(position + 0.1, "seconds");
+            }
           });
+
+          const isFocusedAnnotationPredicate = (elem: AnnotationRecord) =>
+            !!focusedAnnotation && elem.id === focusedAnnotation.id;
+          const shouldBlur =
+            !R.find(isFocusedAnnotationPredicate, visibleAnnotations) &&
+            focusedAnnotation;
+
+          if (shouldBlur) {
+            this.props.blurAnnotation();
+          }
+          if (!this.props.seeking) {
+            this.setState({
+              visibleAnnotations,
+              position: position,
+            });
+          }
         }
       }
     }
@@ -129,7 +144,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       this.setState({ showControls: true });
       clearInterval(this.fadeoutTimer);
       this.fadeoutTimer = window.setInterval(
-        this.fadeOutControls.bind(this), FADE_TIMEOUT
+        this.fadeOutControls.bind(this),
+        FADE_TIMEOUT
       );
     }
 
@@ -142,19 +158,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       const player = this.state.player;
       if (player) {
         if (pause) {
-          player.pauseVideo();
+          // player.pauseVideo();
+          this.setState({
+            playing: false,
+          });
         }
-        player.seekTo(value, seekAhead);
+        player.seekTo(value, "seconds");
         this.props.requestSeek(value);
       }
     }
 
     render() {
-      const {
-        user,
-        project,
-        annotations
-      } = this.props;
+      const { user, project, annotations } = this.props;
 
       const {
         player,
@@ -169,29 +184,32 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
       const onUserAction = this.resetFadeOutTimer.bind(this);
 
-      const onPlayerReady = (event:{ target: YouTubePlayer; }) => {
+      const onPlayerReady = (player: ReactPlayer) => {
         this.refreshTimer = window.setInterval(
-          this.refreshPlayer.bind(this), 200);
+          this.refreshPlayer.bind(this),
+          200
+        );
         this.setState({
-          // @ts-ignore
-          player: event.target,
-          // @ts-ignore
-          duration: event.target.getDuration()
+          player,
+          duration: player.getDuration(),
         });
       };
 
-      const onPlayerStateChange = (event: { target: YouTubePlayer, data: number }) => {
-        const state = event.data as PlayerEventData;
-        switch (state) {
-          case PlayerEventData.PLAYING:
+      const onPlayerProgress = (state: PlayerProgressState) => {
+        this.setState({
+          position: state.playedSeconds,
+        });
+      };
+
+      const onPlayerStateChange = (event: PlayerEvent, data: number) => {
+        switch (event) {
+          case PlayerEvent.PLAYING:
             this.setState({ playing: true });
             this.props.notifySeek();
             break;
-          case PlayerEventData.BUFFERING:
-          case PlayerEventData.CUED:
-          case PlayerEventData.ENDED:
-          case PlayerEventData.UNSTARTED:
-          case PlayerEventData.PAUSED:
+          case PlayerEvent.BUFFERING:
+          case PlayerEvent.ENDED:
+          case PlayerEvent.PAUSED:
           default:
             this.setState({ playing: false });
         }
@@ -204,29 +222,31 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         onUserAction();
         if (player) {
           if (playing) {
-            player.pauseVideo();
+            this.setState({ playing: false });
+            // player.pauseVideo();
           } else {
-            player.playVideo();
+            // player.playVideo();
+            this.setState({ playing: true });
           }
         }
       };
 
       const onToggleFullscreen = () =>
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
           ...prevState,
-          fullscreen: !prevState.fullscreen
+          fullscreen: !prevState.fullscreen,
         }));
 
       const onToggleHints = () => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
           ...prevState,
-          showHints: !prevState.showHints
+          showHints: !prevState.showHints,
         }));
       };
 
       const onClickHint = (annotation: AnnotationRecord) => {
         this.setState({
-          showHints: false
+          showHints: false,
         });
         this.seek(annotation.startTime, false, true);
       };
@@ -248,6 +268,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           onUserAction={onUserAction}
           onPlayerReady={onPlayerReady}
           onPlayerStateChange={onPlayerStateChange}
+          onPlayerProgress={onPlayerProgress}
           onFullscreenChange={onFullscreenChange}
           onTogglePlayPause={onTogglePlayPause}
           onToggleFullscreen={onToggleFullscreen}
@@ -257,4 +278,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         />
       );
     }
-  });
+  }
+);

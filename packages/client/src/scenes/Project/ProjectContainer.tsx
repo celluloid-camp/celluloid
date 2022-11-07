@@ -1,74 +1,63 @@
-import { ProjectGraphRecord, UserRecord } from '@celluloid/types';
-import { clearProject, loadProjectThunk } from 'actions/ProjectActions';
-import * as R from 'ramda';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
-import { AsyncAction, EmptyAction } from 'types/ActionTypes';
-import { ProjectRouteParams } from 'types/ProjectTypes';
-import { AppState } from 'types/StateTypes';
+import { ProjectGraphRecord, UserRecord } from "@celluloid/types";
+import { clearProject, loadProjectThunk } from "actions/ProjectActions";
 
-import ProjectComponent from './ProjectComponent';
+import React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { AsyncAction, EmptyAction } from "types/ActionTypes";
+import { AppState } from "types/StateTypes";
+import { useParams } from "react-router-dom";
+import { useDidUpdate } from "rooks";
+import ProjectComponent from "./ProjectComponent";
+import { useEffect } from "react";
+import { SharedLayout } from "scenes/Menu";
 
-interface Props extends
-  RouteComponentProps<ProjectRouteParams> {
+interface Props {
   user?: UserRecord;
   project?: ProjectGraphRecord;
   error?: string;
-  loadProject(projectId: string):
-    AsyncAction<ProjectGraphRecord, string>;
+  loadProject(projectId: string): AsyncAction<ProjectGraphRecord, string>;
   clearProject(): EmptyAction;
 }
 
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
   project: state.project.details.project,
-  error: state.project.details.error
+  error: state.project.details.error,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  loadProject: (projectId: string) =>
-    loadProjectThunk(projectId)(dispatch),
-  clearProject: () =>
-    dispatch(clearProject())
+  loadProject: (projectId: string) => loadProjectThunk(projectId)(dispatch),
+  clearProject: () => dispatch(clearProject()),
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(class extends React.Component<Props> {
+const ProjectContainer: React.FC<Props> = ({
+  user,
+  clearProject,
+  loadProject,
+  project,
+}) => {
+  let { projectId } = useParams();
 
-    componentDidUpdate(prevProps: Props) {
-      if (!R.equals(this.props.user, prevProps.user)) {
-        this.load();
-      }
+  const load = () => {
+    if (projectId) {
+      loadProject(projectId);
     }
+  };
 
-    componentDidMount() {
-      this.load();
-    }
+  useDidUpdate(() => {
+    load();
+  }, [user]);
 
-    componentWillUnmount() {
-      this.props.clearProject();
-    }
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    load() {
-      const projectId = this.props.match.params.projectId;
-      this.props.loadProject(projectId);
-    }
-
-    render() {
-      const { project } = this.props;
-      const load = this.load.bind(this);
-
-      return (
-        <ProjectComponent
-          project={project}
-          onVideoChange={load}
-        />
-      );
-    }
-  })
-);
+  return (
+    <SharedLayout>
+      <ProjectComponent project={project} onVideoChange={load} />
+    </SharedLayout>
+  );
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectContainer);
