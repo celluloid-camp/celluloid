@@ -28,7 +28,7 @@ async function main() {
       attempts++;
       if (attempts <= 30) {
         console.log(`Server is not ready yet: ${e.message}`);
-        execSync("docker logs gs-server", { stdio: "inherit" });
+        execSync("docker logs celluloid-server", { stdio: "inherit" });
       } else {
         console.log(`Server never came up, aborting :(`);
         process.exit(1);
