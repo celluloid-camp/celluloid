@@ -3,6 +3,8 @@ import * as R from "ramda";
 
 import { logger } from "./Logger";
 
+import configuration from "../knexfile"
+
 const log = logger("Database");
 
 const config = {
@@ -13,21 +15,22 @@ const config = {
   database: process.env.CELLULOID_PG_DATABASE,
 };
 
-export const database = Knex({
-  debug:
-    process.env.NODE_ENV !== "production" &&
-    process.env.CELLULOID_DEBUG_SQL !== undefined,
-  client: "pg",
-  connection: config,
-  pool: {
-    max: process.env.CELLULOID_PG_MAX_POOL_SIZE
-      ? parseInt(process.env.CELLULOID_PG_MAX_POOL_SIZE, 10)
-      : 2,
-    idleTimeoutMillis: process.env.CELLULOID_PG_IDLE_TIMEOUT
-      ? parseInt(process.env.CELLULOID_PG_IDLE_TIMEOUT, 10)
-      : 30000,
-  },
-});
+export const database = Knex(configuration)
+// {
+//   debug:
+//     process.env.NODE_ENV !== "production" &&
+//     process.env.CELLULOID_DEBUG_SQL !== undefined,
+//   client: "pg",
+//   connection: config,
+//   pool: {
+//     max: process.env.CELLULOID_PG_MAX_POOL_SIZE
+//       ? parseInt(process.env.CELLULOID_PG_MAX_POOL_SIZE, 10)
+//       : 2,
+//     idleTimeoutMillis: process.env.CELLULOID_PG_IDLE_TIMEOUT
+//       ? parseInt(process.env.CELLULOID_PG_IDLE_TIMEOUT, 10)
+//       : 30000,
+//   },
+// });
 
 export const filterNull =
   (prop: string) =>
@@ -38,7 +41,6 @@ export const filterNull =
     return obj;
   };
 
-// tslint:disable-next-line:no-any
 export function getExactlyOne(rows: any[]) {
   if (rows.length === 1) {
     return Promise.resolve(rows[0]);

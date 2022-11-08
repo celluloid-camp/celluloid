@@ -70,7 +70,7 @@ const signStudentUp: VerifyFunctionWithRequest = (
       }
       return Promise.reject(new Error("ProjectNotFound"));
     })
-    .then((user: UserRecord) => Promise.resolve(done(null, user)))
+    .then((user: any) => Promise.resolve(done(null, user)))
     .catch((error: Error) => {
       log.error("Failed to signup student:", error);
       return Promise.resolve(done(error));
