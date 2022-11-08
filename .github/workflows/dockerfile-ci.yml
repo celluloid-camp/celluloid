@@ -46,7 +46,7 @@ jobs:
         run: "ifconfig -a"
       - name: "Start docker server"
         run:
-          docker run --rm -d --init -p 3001:3001 --env-file .env -e NODE_ENV=production -e CELLULOID_PG_HOST=172.17.0.1 -e CELLULOID_PG_HOST=redis://172.17.0.1
+          docker run --rm -d --init -p 3001:3001 --env-file .env -e NODE_ENV=production -e CELLULOID_PG_HOST=172.17.0.1 -e CELLULOID_REDIS_URL=redis://172.17.0.1
           --name celluloid-server celluloid-server
       - name: "Test docker"
         run: node .github/workflows/test-docker.js
