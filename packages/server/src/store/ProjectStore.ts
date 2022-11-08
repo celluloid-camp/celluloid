@@ -1,101 +1,119 @@
-import { ProjectCreateData, ProjectRecord, ProjectShareData, UserRecord } from '@celluloid/types';
-import { QueryBuilder } from 'knex';
+import {
+  ProjectCreateData,
+  ProjectRecord,
+  ProjectShareData,
+  UserRecord,
+} from "@celluloid/types";
+import { Knex } from "knex";
 
-import { generateUniqueShareName } from '../auth/Utils';
-import { database, filterNull, getExactlyOne, hasConflictedOn } from '../backends/Database';
-import { logger } from '../backends/Logger';
-import { tagProject } from './TagStore';
+import { generateUniqueShareName } from "../auth/Utils";
+import {
+  database,
+  filterNull,
+  getExactlyOne,
+  hasConflictedOn,
+} from "../backends/Database";
+import { logger } from "../backends/Logger";
+import { Project, Tag, User } from "../knex";
+import { tagProject } from "./TagStore";
 
-const log = logger('store/ProjectStore');
+const log = logger("store/ProjectStore");
 
-export const orIsMember =
-  (nested: QueryBuilder, user?: UserRecord) =>
-    user
-      ? nested
-        .orWhereIn(
-          'Project.id',
-          database.select('projectId')
-            .from('UserToProject')
-            .where('userId', user.id))
-      : nested;
+export const orIsMember = (nested: Knex.QueryBuilder, user?: UserRecord) =>
+  user
+    ? nested.orWhereIn(
+        "Project.id",
+        database
+          .select("projectId")
+          .from("UserToProject")
+          .where("userId", user.id)
+      )
+    : nested;
 
-export const orIsOwner =
-  (nested: QueryBuilder, user?: UserRecord) =>
-    user
-      ? nested.orWhere('Project.userId', user.id)
-      : nested;
+export const orIsOwner = (nested: Knex.QueryBuilder, user?: UserRecord) =>
+  user ? nested.orWhere("Project.userId", user.id) : nested;
 
 function filterUserProps({ id, username, role }: UserRecord) {
   return {
     id,
     username,
-    role
+    role,
   };
 }
 
-export function isOwnerOrCollaborativeMember(projectId: string, user: UserRecord) {
+export function isOwnerOrCollaborativeMember(
+  projectId: string,
+  user: UserRecord
+) {
   return Promise.all([
     isOwner(projectId, user),
-    isCollaborativeMember(projectId, user)
-  ])
-    .then(([owner, member]: boolean[]) => owner || member);
+    isCollaborativeMember(projectId, user),
+  ]).then(([owner, member]: boolean[]) => owner || member);
 }
 
 export function isOwner(projectId: string, user: UserRecord) {
-  return database.first('id')
-    .from('Project')
-    .where('id', projectId)
-    .andWhere('userId', user.id)
-    .then((row: string) => row ? true : false);
+  return database
+    .first("id")
+    .from("Project")
+    .where("id", projectId)
+    .andWhere("userId", user.id)
+    .then((row: string) => (row ? true : false));
 }
 
 export function isMember(projectId: string, user: Partial<UserRecord>) {
-  return database.first('projectId')
-    .from('UserToProject')
-    .where('UserToProject.projectId', projectId)
-    // @ts-ignore
-    .andWhere('UserToProject.userId', user.id) 
-    .then((row: string) => row ? true : false);
+  return (
+    database
+      .first("projectId")
+      .from("UserToProject")
+      .where("UserToProject.projectId", projectId)
+      // @ts-ignore
+      .andWhere("UserToProject.userId", user.id)
+      .then((row: string) => (row ? true : false))
+  );
 }
 
 export function isCollaborativeMember(projectId: string, user: UserRecord) {
-  return database.first('projectId')
-    .from('UserToProject')
-    .innerJoin('Project', 'Project.id', 'UserToProject.projectId')
-    .where('UserToProject.projectId', projectId)
-    .andWhere('UserToProject.userId', user.id)
-    .andWhere('Project.collaborative', true)
-    .then((row: string) => row ? true : false);
+  return database
+    .first("projectId")
+    .from("UserToProject")
+    .innerJoin("Project", "Project.id", "UserToProject.projectId")
+    .where("UserToProject.projectId", projectId)
+    .andWhere("UserToProject.userId", user.id)
+    .andWhere("Project.collaborative", true)
+    .then((row: string) => (row ? true : false));
 }
 
+// < Project[] &{
+//   tags: Tag[],
+//   user: User
+// }>
 export function selectAll(user: UserRecord) {
-  return database
+  return database("projects")
     .select(
       database.raw('"Project".*'),
       database.raw(`to_json(array_agg("Tag")) AS "tags"`),
-      database.raw(`row_to_json("User") as "user"`))
-    .from('Project')
-    .innerJoin('User', 'User.id', 'Project.userId')
-    .leftJoin('TagToProject', 'Project.id', 'TagToProject.projectId')
-    .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
-    .where('Project.public', true)
+      database.raw(`row_to_json("User") as "user"`)
+    )
+    .from("Project")
+    .innerJoin("User", "User.id", "Project.userId")
+    .leftJoin("TagToProject", "Project.id", "TagToProject.projectId")
+    .leftJoin("Tag", "Tag.id", "TagToProject.tagId")
+    .where("Project.public", true)
     .modify(orIsOwner, user)
     .modify(orIsMember, user)
-    .groupBy('Project.id', 'User.id')
-    .map(filterNull('tags'))
-    .map(row => {
-      return ({
-        ...row,
-        user: filterUserProps(row.user),
-      });
-    });
+    .groupBy("Project.id", "User.id")
+    .then((rows) =>
+      rows.map((r: any) =>
+        filterNull("tags")({
+          ...r,
+          user: filterUserProps(r.user),
+        })
+      )
+    );
 }
 
 export function selectOneByShareName(shareName: string) {
-  return database
-    .first('*')
-    .from('Project')
-    .where('shareName', shareName);
+  return database.first("*").from("Project").where("shareName", shareName);
 }
 
 export function selectOne(projectId: string, user: Partial<UserRecord>) {
@@ -103,30 +121,33 @@ export function selectOne(projectId: string, user: Partial<UserRecord>) {
     .first(
       database.raw('"Project".*'),
       database.raw(`to_json(array_agg("Tag")) as "tags"`),
-      database.raw(`row_to_json("User") as "user"`))
-    .from('Project')
-    .innerJoin('User', 'User.id', 'Project.userId')
-    .leftJoin('TagToProject', 'Project.id', 'TagToProject.projectId')
-    .leftJoin('Tag', 'Tag.id', 'TagToProject.tagId')
-    .where((nested: QueryBuilder) => {
-      nested.where('Project.public', true);
+      database.raw(`row_to_json("User") as "user"`)
+    )
+    .from("Project")
+    .innerJoin("User", "User.id", "Project.userId")
+    .leftJoin("TagToProject", "Project.id", "TagToProject.projectId")
+    .leftJoin("Tag", "Tag.id", "TagToProject.tagId")
+    .where((nested: Knex.QueryBuilder) => {
+      nested.where("Project.public", true);
       nested.modify(orIsMember, user);
       nested.modify(orIsOwner, user);
     })
-    .andWhere('Project.id', projectId)
-    .groupBy('Project.id', 'User.id')
+    .andWhere("Project.id", projectId)
+    .groupBy("Project.id", "User.id")
     .then((row?) => {
       return new Promise((resolve, reject) => {
         if (row) {
-          return selectProjectMembers(projectId)
-            .then(members =>
-              resolve(filterNull('tags')({
+          return selectProjectMembers(projectId).then((members) =>
+            resolve(
+              filterNull("tags")({
                 user: filterUserProps(row.user),
                 members,
-                ...row
-              })));
+                ...row,
+              })
+            )
+          );
         } else {
-          return reject(new Error('ProjectNotFound'));
+          return reject(new Error("ProjectNotFound"));
         }
       });
     });
@@ -135,103 +156,97 @@ export function selectOne(projectId: string, user: Partial<UserRecord>) {
 export function insert(project: ProjectCreateData, user: UserRecord) {
   const INSERT_RETRY_COUNT = 20;
   const { tags, ...props } = project;
-  const query:any = (retry: number) =>
-    database('Project')
-      .insert({
+  const query: any = (retry: number) =>
+    database("Project")
+      .insert<Project>({
         ...props,
-        id: database.raw('uuid_generate_v4()'),
         userId: user.id,
-        publishedAt: database.raw('NOW()'),
-        shareName: generateUniqueShareName(props.title, retry)
+        publishedAt: database.raw("NOW()"),
+        shareName: generateUniqueShareName(props.title, retry),
       })
-      .returning('*')
+      .returning("*")
       .then(getExactlyOne)
-      .catch(error => {
-        if (hasConflictedOn(error, 'User', 'username')) {
+      .catch((error) => {
+        if (hasConflictedOn(error, "User", "username")) {
           if (retry < INSERT_RETRY_COUNT) {
             return query(retry + 1);
           } else {
-            log.warn('Failed to insert project: unique share name generation failed');
+            log.warn(
+              "Failed to insert project: unique share name generation failed"
+            );
           }
         }
         throw error;
       });
-  return query(0)
-    .then((record:any) =>
-      Promise.all(project.tags.map(tag =>
-        tagProject(tag.id, record.id)
-      ))
-        .then(() =>
-          Promise.resolve({ tags, ...record })
-        )
-    );
+  return query(0).then((record: any) =>
+    Promise.all(project.tags.map((tag) => tagProject(tag.id, record.id))).then(
+      () => Promise.resolve({ tags, ...record })
+    )
+  );
 }
 
 export function update(projectId: string, props: ProjectRecord) {
-  return database('Project')
+  return database("Project")
     .update(props)
-    .returning('*')
-    .where('id', projectId)
+    .returning("*")
+    .where("id", projectId)
     .then(getExactlyOne);
 }
 
 export function del(projectId: string) {
-  return database('Project')
-    .where('id', projectId)
-    .del();
+  return database("Project").where("id", projectId).del();
 }
 
 export function shareById(projectId: string, data: ProjectShareData) {
-  return database('Project')
+  return database("Project")
     .update({
       shared: true,
       sharePassword: data.sharePassword,
     })
-    .returning('*')
-    .where('id', projectId)
+    .returning("*")
+    .where("id", projectId)
     .then(getExactlyOne);
 }
 
 export function unshareById(projectId: string) {
-  return database('Project')
+  return database("Project")
     .update({
       shared: false,
       sharePassword: null,
     })
-    .returning('*')
-    .where('id', projectId)
+    .returning("*")
+    .where("id", projectId)
     .then(getExactlyOne);
 }
 
 export function selectProjectMembers(projectId: string) {
   return database
-    .select(
-      'User.id',
-      'User.username',
-      'User.role'
-    )
-    .from('UserToProject')
-    .innerJoin('User', 'User.id', 'UserToProject.userId')
-    .where('UserToProject.projectId', projectId)
-    .map(filterUserProps);
+    .select("User.id", "User.username", "User.role")
+    .from("UserToProject")
+    .innerJoin("User", "User.id", "UserToProject.userId")
+    .where("UserToProject.projectId", projectId)
+    .then((rows) => rows.map(filterUserProps));
 }
 
 export function setPublicById(projectId: string, _public: boolean) {
-  return database('Project')
+  return database("Project")
     .update({
-      'public': _public,
+      public: _public,
     })
-    .where('id', projectId)
-    .returning('*')
+    .where("id", projectId)
+    .returning("*")
     .then(getExactlyOne);
 }
 
-export function setCollaborativeById(projectId: string, collaborative: boolean) {
-  return database('Project')
+export function setCollaborativeById(
+  projectId: string,
+  collaborative: boolean
+) {
+  return database("Project")
     .update({
       collaborative,
     })
-    .where('id', projectId)
-    .returning('*')
+    .where("id", projectId)
+    .returning("*")
     .then(getExactlyOne);
 }
