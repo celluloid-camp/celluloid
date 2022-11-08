@@ -10,7 +10,7 @@ import { logger } from "../backends/Logger";
 const log = logger("http/Session");
 
 export function createSession() {
-  let client = createClient({ legacyMode: true });
+  let client = createClient({ legacyMode: true, url: process.env.CELLULOID_REDIS_URL || "redis://localhost" });
   client.connect().catch((e) => log.error(`redis error : ${e.message}`));
 
   log.info("redis connected");

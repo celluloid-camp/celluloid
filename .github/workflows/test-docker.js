@@ -14,7 +14,7 @@ async function main() {
         controller.abort();
       }, 3000);
       try {
-        response = await fetch("http://localhost:5678", {
+        response = await fetch("http://localhost:3001", {
           signal: controller.signal,
         });
       } finally {
