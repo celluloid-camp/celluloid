@@ -23,7 +23,8 @@ export function sendMail(
       if (error) {
         log.error(
           `Failed to send email to ${to} with body [${text}]`, error);
-        reject(new Error('Email sending failed'));
+        // reject(new Error('Email sending failed'));
+        resolve(null);
       } else {
         log.info(
           `Email sent to ${to} with subject [${subject}]`, info.response);

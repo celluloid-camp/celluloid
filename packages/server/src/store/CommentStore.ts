@@ -1,5 +1,5 @@
 import { CommentRecord, UserRecord } from '@celluloid/types';
-import { QueryBuilder } from 'knex';
+import { Knex } from 'knex';
 
 import { database, getExactlyOne } from '../backends/Database';
 import * as ProjectStore from './ProjectStore';
@@ -19,8 +19,7 @@ export function selectByAnnotation(annotationId: string, user: Partial<UserRecor
     .innerJoin('User', 'User.id', 'Comment.userId')
     .innerJoin('Project', 'Project.id', 'Annotation.projectId')
     .where('Comment.annotationId', annotationId)
-    .andWhere((nested: QueryBuilder) => {
-      // @ts-ignore
+    .andWhere((nested: Knex.QueryBuilder) => {
       nested.where('User.id', user.id); 
       nested.modify(ProjectStore.orIsOwner, user);
       nested.modify(ProjectStore.orIsMember, user);

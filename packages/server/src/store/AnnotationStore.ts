@@ -1,5 +1,5 @@
 import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
-import { QueryBuilder } from 'knex';
+import { Knex } from 'knex';
 
 import { database, getExactlyOne } from '../backends/Database';
 import * as ProjectStore from './ProjectStore';
@@ -19,7 +19,7 @@ export function selectByProject(projectId: string, user?: UserRecord) {
     .innerJoin('Project', 'Project.id', 'Annotation.projectId')
     .innerJoin('User', 'User.id', 'Annotation.userId')
     .where('Annotation.projectId', projectId)
-    .andWhere((nested: QueryBuilder) => {
+    .andWhere((nested: Knex.QueryBuilder) => {
       nested.modify(ProjectStore.orIsOwner, user);
       nested.modify(ProjectStore.orIsMember, user);
       return nested;
@@ -42,7 +42,7 @@ export function selectOne(annotationId: string, user?: Partial<UserRecord>) {
     .innerJoin('Project', 'Project.id', 'Annotation.projectId')
     .innerJoin('User', 'User.id', 'Annotation.userId')
     .where('Annotation.id', annotationId)
-    .andWhere((nested: QueryBuilder) => {
+    .andWhere((nested: Knex.QueryBuilder) => {
       nested.modify(ProjectStore.orIsOwner, user);
       nested.modify(ProjectStore.orIsMember, user);
       return nested;
@@ -71,6 +71,8 @@ export function insert(
     .then(getExactlyOne)
     .then(id => selectOne(id, user));
 }
+
+
 
 export function update(id: string, data: AnnotationData, user: UserRecord) {
   return database('Annotation')

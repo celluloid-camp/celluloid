@@ -99,7 +99,7 @@ router.post("/login", (req, res, next) => {
   const result = validateLogin(req.body);
 
   if (!result.success) {
-    log.error(`Failed user login with data ${payload}: bad request:`, result);
+    log.error(`Failed user login with data ${JSON.stringify(payload)}: bad request:`, result);
     return res.status(400).json(result);
   }
   return passport.authenticate(SigninStrategy.LOGIN, (error, user) => {
