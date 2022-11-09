@@ -79,15 +79,6 @@ In a terminal, at the root of the repository, run
 
 Open the newly created .env file with your favorite text editor and set the values that'll work for you.
 
-### Database provisioning
-
-Make sure your PostgreSQL server is up. In a terminal, go to the `bin` directory and run the `create_schema` script:
-
-    cd bin
-    ./create_schema.sh
-
-If this fails, you most certainly got your PostgreSQL server configuration or your `.env` file wrong.
-
 
 ### Docker container
 
@@ -127,7 +118,7 @@ You should be able to access your app at http://localhost:3001
 
 Open a terminal at the root of your repository, then run
 
-    docker run -f Dockerfile.webapp
+    docker compose -f Dockerfile
 
 (make sure [Docker](https://www.docker.com/get-started) is properly installed beforehand!)
 

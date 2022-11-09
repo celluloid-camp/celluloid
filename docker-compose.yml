@@ -6,6 +6,7 @@ networks:
 
 volumes:
   postgres:
+  redis:
 
 services:
   postgres:
@@ -15,10 +16,7 @@ services:
       POSTGRES_PASSWORD: root
       PGDATA: /data/postgis
     volumes:
-      # Uncomment below to maintain the peristant data
-      - postgres:/data/postgres
-      # Uncomment bellow to intialize the container with data by creating the respective file
-      # - ./data/schema.sql:/docker-entrypoint-initdb.d/init.sql      
+      - postgres:/data/postgres  
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -30,3 +28,14 @@ services:
     networks:
       - local
     command: postgres -c logging_collector=on
+
+
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"    
+    volumes:
+      - redis:/redis:/data
+    networks:
+      - local    
