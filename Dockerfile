@@ -1,6 +1,6 @@
-FROM node:16-alpine
+FROM node:16
 WORKDIR /usr/src/app
-RUN apk --update --no-cache add curl
+RUN apt-get update && apt-get install -y curl jq 
 RUN mkdir -p packages/{types,validators,client,server}
 COPY package.json ./
 COPY packages/types/package.json packages/types/
