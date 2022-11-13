@@ -57,6 +57,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
+    "eslint-config-react-app": "^7.0.1",
     "lerna": "^6.0.1",
     "orval": "^6.10.3",
     "server": "^1.0.37",
