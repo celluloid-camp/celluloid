@@ -6,15 +6,27 @@
     "outDir": "build",
     "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
     "declarationDir": "build",
-    "lib": ["es2018", "esnext.asynciterable"],
-    "target": "es2018",
-    "module": "commonjs"
+    "lib": [
+      "es2018",
+      "esnext.asynciterable"
+    ],
+    "target": "es6",
+    "module": "commonjs",
+    /* Experimental Options */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    /* Advanced Options */
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"],
-  "references": [{ "path": "../types" }, { "path": "../validators" }],
-  "ts-node": {
-    "compilerOptions": {
-      "rootDir": null
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../types"
+    },
+    {
+      "path": "../validators"
     }
-  }
+  ],
 }

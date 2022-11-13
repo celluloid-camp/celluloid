@@ -5,6 +5,7 @@ import compression from "compression";
 import express from "express";
 import expressPino from "express-pino-logger";
 import passport from "passport";
+import swaggerUi from "swagger-ui-express";
 
 import ProjectsApi from "./api/ProjectApi";
 import TagsApi from "./api/TagApi";
@@ -18,10 +19,10 @@ import {
   teacherSignupStrategy,
 } from "./auth/Auth";
 import { logger } from "./backends/Logger";
-import { createSession } from "./http/SessionStore";
-import { clientApp, clientDir } from "./Paths";
 import { knex } from "./database/connection";
-import path from "path";
+import { createSession } from "./http/SessionStore";
+import { clientApp, clientDir, publicDir } from "./Paths";
+import { RegisterRoutes } from "./routes";
 
 require("cookie-parser");
 
@@ -32,6 +33,7 @@ passport.use(SigninStrategy.TEACHER_SIGNUP, teacherSignupStrategy);
 passport.use(SigninStrategy.STUDENT_SIGNUP, studentSignupStrategy);
 const app = express();
 
+app.use(express.static(publicDir))
 app.use(express.static(clientDir));
 app.use(bodyParser.json());
 app.use(compression());
@@ -39,6 +41,9 @@ app.use(createSession());
 app.use(expressPino({ logger: log }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+RegisterRoutes(app);
+
 app.use("/api/projects", ProjectsApi);
 app.use("/api/users", UsersApi);
 app.use("/api/tags", TagsApi);
@@ -47,10 +52,21 @@ app.use("/api/video", VideosApi);
 
 app.get("/elb-status", (_, res) => res.status(200).send());
 
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: "/swagger.json",
+    },
+  })
+);
+
 app.get("/*", (_, res) => res.sendFile(clientApp));
 
 (async () => {
   try {
+
     log.info("Migration started...");
     await knex.migrate.latest();
     await knex.seed.run();

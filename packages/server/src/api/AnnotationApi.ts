@@ -6,7 +6,7 @@ import {
 import * as express from 'express';
 
 import { isProjectOwnerOrCollaborativeMember } from '../auth/Utils';
-import { logger } from '../backends/Logger';
+import { logger, Logger } from '../backends/Logger';
 import * as AnnotationStore from '../store/AnnotationStore';
 import * as CommentStore from '../store/CommentStore';
 import * as ProjectStore from '../store/ProjectStore';
@@ -58,7 +58,7 @@ router.post('/', isProjectOwnerOrCollaborativeMember, (req, res) => {
       return res.status(201).json(result);
     })
     .catch((error: Error) => {
-      log.error('Failed to create annotation:', error);
+      log.error( error, 'Failed to create annotation');
       return res.status(500).send();
     });
 });

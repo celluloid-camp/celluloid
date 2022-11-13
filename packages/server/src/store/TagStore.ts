@@ -8,7 +8,6 @@ export function selectAll() {
 export function insert(name: string) {
   return database('Tag')
     .insert({
-      'id': database.raw('uuid_generate_v4()'),
       'name': name,
       'featured': false
     })

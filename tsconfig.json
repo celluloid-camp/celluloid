@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "composite": true,
     "incremental": true,
     "noEmitOnError": true,
@@ -32,7 +33,10 @@
     "noEmit": true,
     "declaration": true,
     "declarationMap": true,
-    "baseUrl": ".",
+
+
+    "useUnknownInCatchVariables": false,
+
     "paths": {
       "@celluloid/*": ["packages/*"]
     }

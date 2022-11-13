@@ -7,7 +7,7 @@ import {
 import { Router } from "express";
 
 import { isProjectOwner, isTeacher } from "../auth/Utils";
-import { logger, Logger } from "../backends/Logger";
+import { logger } from "../backends/Logger";
 import * as ProjectStore from "../store/ProjectStore";
 import AnnotationsApi from "./AnnotationApi";
 
@@ -33,25 +33,25 @@ function fetchMembers(
 }
 
 
-router.get("/", (req, res) => {
-  return ProjectStore.selectAll(req.user as UserRecord)
-    .then((projects: ProjectGraphRecord[]) => {
-      return Promise.all(
-        projects.map((project) =>
-          fetchMembers(project, req.user).then((members: UserRecord[]) => ({
-            ...project,
-            members,
-          }))
-        )
-      );
-    })
-    .then((result: ProjectGraphRecord[]) => res.json(result))
-    .catch((error: Error) => {
-      console.log(error)
-      Logger.error("Failed to fetch projects from database:", error);
-      return res.status(500).send();
-    });
-});
+// router.get("/", (req, res) => {
+//   return ProjectStore.selectAll(req.user as UserRecord)
+//     .then((projects: ProjectGraphRecord[]) => {
+//       return Promise.all(
+//         projects.map((project) =>
+//           fetchMembers(project, req.user).then((members: UserRecord[]) => ({
+//             ...project,
+//             members,
+//           }))
+//         )
+//       );
+//     })
+//     .then((result: ProjectGraphRecord[]) => res.json(result))
+//     .catch((error: Error) => {
+//       console.log(error)
+//       Logger.error("Failed to fetch projects from database:", error);
+//       return res.status(500).send();
+//     });
+// });
 
 router.get("/:projectId", (req, res) => {
   const projectId = req.params.projectId;
@@ -71,20 +71,20 @@ router.get("/:projectId", (req, res) => {
     });
 });
 
-router.post("/", isTeacher, (req, res) => {
-  const user = req.user as UserRecord;
-  const project = req.body as ProjectCreateData;
+// router.post("/", isTeacher, (req, res) => {
+//   const user = req.user as UserRecord;
+//   const project = req.body as ProjectCreateData;
 
-  ProjectStore.insert(project, user)
-    .then((result: any) => {
-      return res.status(201).json(result);
-    })
-    .catch((error: Error) => {
-      console.log(error);
-      log.error(`Failed to create project: ${JSON.stringify(error)}`);
-      return res.status(500).send();
-    });
-});
+//   ProjectStore.insert(project, user)
+//     .then((result: any) => {
+//       return res.status(201).json(result);
+//     })
+//     .catch((error: Error) => {
+//       console.log(error);
+//       log.error(`Failed to create project: ${JSON.stringify(error)}`);
+//       return res.status(500).send();
+//     });
+// });
 
 router.put("/:projectId", isTeacher, isProjectOwner, (req: any, res) => {
   ProjectStore.update(req.body, req.params.projectId)
