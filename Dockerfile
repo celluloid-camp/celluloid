@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16-alpine
 WORKDIR /usr/src/app
 RUN apk --update --no-cache add curl
 RUN mkdir -p packages/{types,validators,client,server}
