@@ -12,7 +12,6 @@ export function createStudent(
     database("User")
       .transacting(transaction)
       .insert({
-        id: database.raw("uuid_generate_v4()"),
         password: hashPassword(password),
         username,
         confirmed: false,
@@ -37,7 +36,6 @@ export function createTeacher(
 ) {
   return database("User")
     .insert({
-      id: database.raw("uuid_generate_v4()"),
       email,
       password: hashPassword(password),
       username,

@@ -87,7 +87,7 @@ export function isCollaborativeMember(projectId: string, user: UserRecord) {
 //   tags: Tag[],
 //   user: User
 // }>
-export function selectAll(user: UserRecord) {
+export function selectAll(user: UserRecord):Promise<ProjectRecord[]> {
   return database("projects")
     .select(
       database.raw('"Project".*'),
@@ -250,3 +250,4 @@ export function setCollaborativeById(
     .returning("*")
     .then(getExactlyOne);
 }
+

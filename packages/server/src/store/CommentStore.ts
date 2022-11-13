@@ -2,6 +2,7 @@ import { CommentRecord, UserRecord } from '@celluloid/types';
 import { Knex } from 'knex';
 
 import { database, getExactlyOne } from '../backends/Database';
+import { Logger } from '../backends/Logger';
 import * as ProjectStore from './ProjectStore';
 
 export function selectByAnnotation(annotationId: string, user: Partial<UserRecord>) {
@@ -29,6 +30,8 @@ export function selectByAnnotation(annotationId: string, user: Partial<UserRecor
 }
 
 export function selectOne(commentId: string) {
+
+  console.log(commentId, "selectOne")
   return database.select(
     database.raw('"Comment".*'),
     database.raw(
@@ -49,7 +52,6 @@ export function selectOne(commentId: string) {
 export function insert(annotationId: string, text: string, user: Partial<UserRecord>) {
   return database('Comment')
     .insert({
-      id: database.raw('uuid_generate_v4()'),
       annotationId,
       userId: user.id,
       text,
@@ -57,7 +59,7 @@ export function insert(annotationId: string, text: string, user: Partial<UserRec
     })
     .returning('id')
     .then(getExactlyOne)
-    .then(id => selectOne(id));
+    .then(row => selectOne(row.id));
 }
 
 export function update(id: string, text: string) {

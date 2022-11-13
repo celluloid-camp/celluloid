@@ -59,7 +59,6 @@ export function insert(
 ) {
   return database('Annotation')
     .insert({
-      id: database.raw('uuid_generate_v4()'),
       text: annotation.text,
       startTime: annotation.startTime,
       stopTime: annotation.stopTime,

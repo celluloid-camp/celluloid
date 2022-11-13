@@ -38,11 +38,13 @@
   },
   "scripts": {
     "clean": "rm -rf build",
-    "build": "tsc -b",
+    "build": "tsoa spec-and-routes && tsc -b",
     "dev": "nodemon --signal SIGINT --watch 'build/**/*.js' -x \"node --inspect=9678 -r source-map-support/register\" build/index.js | pino-pretty",
     "start": "node --use-strict build/index.js",
     "generate-types": "ts-node src/test.ts",
-    "knex": "knex --cwd src"
+    "generate-api": "nodemon --watch src  -e ts -x \"tsoa spec-and-routes\"",
+    "knex": "knex --cwd src",
+    "tsoa": "tsoa"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
