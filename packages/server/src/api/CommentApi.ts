@@ -32,22 +32,24 @@ router.get('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
     });
 });
 
-router.post('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req, res) => {
+router.post('/', isLoggedIn, isProjectOwnerOrCollaborativeMember, async (req, res) => {
   const annotationId = req.params.annotationId;
   const user = req.user;
   const comment = req.body.text;
 
-  AnnotationStore.selectOne(annotationId, user)
-    .then(() => CommentStore.insert(annotationId, comment, user as UserRecord))
-    .then(result => res.status(201).json(result))
-    .catch((error: Error) => {
-      log.error('Failed to create comment:', error);
-      if (error.message === 'AnnotationNotFound') {
-        return res.status(404).json({ error: error.message });
-      } else {
-        return res.status(500).send();
-      }
-    });
+  try {
+    await AnnotationStore.selectOne(annotationId, user);
+    const result =  await CommentStore.insert(annotationId, comment, user as UserRecord);
+  
+    log.debug(result, "resutl");
+    return res.status(201).json(result)
+  }catch(error){
+    if (error.message === 'AnnotationNotFound') {
+      return res.status(404).json({ error: error.message });
+    }
+      return res.status(500).send();
+    
+  }
 });
 
 router.put('/:commentId', isLoggedIn, isProjectOwnerOrCollaborativeMember, (req:any, res) => {
