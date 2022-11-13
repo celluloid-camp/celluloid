@@ -4,11 +4,11 @@ import path from 'path';
 
 dotEnv.config({ path: '../../.env'});
 
-console.log(path.resolve(__dirname, "seeds"))
 
 const configuration = {
   client: "pg",
   connection: {
+    host: process.env.CELLULOID_PG_HOST,
     database: process.env.CELLULOID_PG_DATABASE,
     user: process.env.CELLULOID_PG_USER,
     password: process.env.CELLULOID_PG_PASSWORD
