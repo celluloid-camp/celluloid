@@ -11,8 +11,7 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "generate-api": "orval"
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@celluloid/types": "^0.1.0",
