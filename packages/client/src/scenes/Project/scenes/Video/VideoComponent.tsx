@@ -34,7 +34,7 @@ import Controls from "./components/Controls";
 import { styles } from "./VideoStyles";
 import { ZoomProps } from "@material-ui/core/Zoom";
 import { GrowProps } from "@material-ui/core/Grow";
-import ReactPlayer from "react-player";
+import ReactPlayer from "@celluloid-camp/react-player";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VideoApi from "services/VideoService";
@@ -81,6 +81,7 @@ interface Props extends WithStyles<typeof styles> {
   onPlayerReady(player: ReactPlayer): void;
   onPlayerProgress(state: PlayerProgressState): void;
   onPlayerStateChange(event: PlayerEvent, data: number): void;
+  onDuration(duration:number):void;
   onFullscreenChange(newState: boolean): void;
   onTogglePlayPause(): void;
   onToggleFullscreen(): void;
@@ -120,6 +121,7 @@ export default connect(
       onUserAction,
       onPlayerReady,
       onPlayerStateChange,
+      onDuration,
       onPlayerProgress,
       onFullscreenChange,
       onTogglePlayPause,
@@ -131,11 +133,6 @@ export default connect(
       classes,
     }: Props) => {
       const [isReady, setIsReady] = useState(false);
-
-      const { data, isLoading, isLoadingError } = useQuery({
-        queryKey: ["video", project.host, project.videoId],
-        queryFn: () => VideoApi.getPeerTubeVideo(project.host, project.videoId),
-      });
 
       const controlsOpacity =
         isReady && (showControls || showHints)
@@ -152,9 +149,7 @@ export default connect(
 
       const [muted, setMuted] = useState(false);
 
-      // const handleOnDuration = (duration: number)=>{
-      //   onPlayerStateChange(PlayerEvent.)
-      // }
+    
 
       const handleToggleMute = () => {
         setMuted(!muted);
@@ -165,25 +160,25 @@ export default connect(
         setIsReady(true);
       };
 
-      if (isLoading) {
-        return (
-          <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="center"
-            className={classnames(classes.progressWrapper)}
-          >
-            <Grid item>
-              <CircularProgress
-                className={classes.progress}
-                size={30}
-                thickness={5}
-              />
-            </Grid>
-          </Grid>
-        );
-      }
+      // if (isLoading) {
+      //   return (
+      //     <Grid
+      //       container
+      //       direction="column"
+      //       justify="center"
+      //       alignItems="center"
+      //       className={classnames(classes.progressWrapper)}
+      //     >
+      //       <Grid item>
+      //         <CircularProgress
+      //           className={classes.progress}
+      //           size={30}
+      //           thickness={5}
+      //         />
+      //       </Grid>
+      //     </Grid>
+      //   );
+      // }
 
       const handleBuffer = () => {
         console.log("handleBuffer");
@@ -193,10 +188,9 @@ export default connect(
         console.log("handleBufferEnd");
       };
 
-      const videoUrl =
-        get(data, "files[0].fileUrl") ||
-        get(data, "streamingPlaylists[0].files[0].fileUrl") ||
-        "";
+      const url = `https://${project.host}/w/${project.videoId}`;
+
+
 
       return (
         <Fullscreen enabled={fullscreen} onChange={onFullscreenChange}>
@@ -205,20 +199,28 @@ export default connect(
           >
             <div>
               <ReactPlayer
-                url={videoUrl}
+                url={url}
                 onReady={handleVideoRead}
-                // onDuration={handleOnDuration}
+                onDuration={onDuration}
                 onProgress={onPlayerProgress}
+                
                 className={classes.videoIframe}
-                style={{
-                  backgroundImage: `url(https://${project.host}${data?.previewPath})`,
-                }}
                 width="100%"
                 height="100%"
                 playing={playing}
                 onBuffer={handleBuffer}
                 onBufferEnd={handleBufferEnd}
                 muted={muted}
+                config={{
+                  peertube: {
+                    controls: 0,
+                    controlBar: 1,
+                    peertubeLink: 0,
+                    title: 0,
+                    warningTitle: 0,
+                    p2p: 0,
+                  }
+                }}
               />
               <div
                 className={classes.glassPane}
@@ -328,7 +330,7 @@ export default connect(
                   />
                 </div>
               )}
-            </div>
+            </div> 
           </div>
         </Fullscreen>
       );

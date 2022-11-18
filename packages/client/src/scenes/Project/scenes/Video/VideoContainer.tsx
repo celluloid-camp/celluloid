@@ -15,7 +15,7 @@ import { Dispatch } from "redux";
 import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
 import { AppState } from "types/StateTypes";
 import * as AnnotationUtils from "utils/AnnotationUtils";
-import ReactPlayer from "react-player";
+import ReactPlayer from "@celluloid-camp/react-player";
 
 import VideoComponent, {
   PlayerEvent,
@@ -163,6 +163,7 @@ export default connect(
             playing: false,
           });
         }
+        console.log("seekTo", value)
         player.seekTo(value, "seconds");
         this.props.requestSeek(value);
       }
@@ -200,6 +201,12 @@ export default connect(
           position: state.playedSeconds,
         });
       };
+
+      const onDuration =(duration:number) => {
+        this.setState({
+          duration,
+        });
+      }
 
       const onPlayerStateChange = (event: PlayerEvent, data: number) => {
         switch (event) {
@@ -269,6 +276,7 @@ export default connect(
           onPlayerReady={onPlayerReady}
           onPlayerStateChange={onPlayerStateChange}
           onPlayerProgress={onPlayerProgress}
+          onDuration={onDuration}
           onFullscreenChange={onFullscreenChange}
           onTogglePlayPause={onTogglePlayPause}
           onToggleFullscreen={onToggleFullscreen}
