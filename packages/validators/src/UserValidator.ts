@@ -6,7 +6,7 @@ import {
   TeacherConfirmResetPasswordData,
   TeacherSignupData,
 } from '@celluloid/types';
-import * as validator from 'validator';
+import validator from 'validator';
 
 export function validateSignup(payload: TeacherSignupData) {
   const result = { success: true, errors: {} } as SigninResult;
