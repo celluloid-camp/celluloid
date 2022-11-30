@@ -1,6 +1,6 @@
 # Celluloid
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.com/celluloid-camp/celluloid.svg?branch=main)](https://travis-ci.com/celluloid-camp/celluloid)
+[![Docker Build](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml)
 [![Gitter chat](https://badges.gitter.im/celluloid-camp.png)](https://gitter.im/celluloid-camp)
 
 ## What is this?
