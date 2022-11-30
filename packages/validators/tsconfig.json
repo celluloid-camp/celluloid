@@ -10,6 +10,5 @@
     "target": "es5",
     "module": "commonjs"
   },
-  "exclude": ["node_modules", "build"],
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
