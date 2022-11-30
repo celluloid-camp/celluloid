@@ -15,7 +15,7 @@ import { Dispatch } from "redux";
 import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
 import { AppState } from "types/StateTypes";
 import * as AnnotationUtils from "utils/AnnotationUtils";
-import ReactPlayer from "@celluloid-camp/react-player";
+import ReactPlayer from "@celluloid/react-player";
 
 import VideoComponent, {
   PlayerEvent,

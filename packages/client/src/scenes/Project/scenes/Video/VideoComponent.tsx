@@ -34,7 +34,7 @@ import Controls from "./components/Controls";
 import { styles } from "./VideoStyles";
 import { ZoomProps } from "@material-ui/core/Zoom";
 import { GrowProps } from "@material-ui/core/Grow";
-import ReactPlayer from "@celluloid-camp/react-player";
+import ReactPlayer from "@celluloid/react-player";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VideoApi from "services/VideoService";
