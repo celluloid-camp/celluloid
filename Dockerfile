@@ -6,7 +6,7 @@ COPY packages/types/package.json packages/types/
 COPY packages/validators/package.json packages/validators/
 COPY packages/server/package.json packages/server/
 COPY packages/client/package.json packages/client/
-COPY .npmrc yarn.lock package.json ./
+COPY yarn.lock package.json ./
 RUN yarn --frozen-lockfile --production=true --no-progress
 
 
