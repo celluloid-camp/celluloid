@@ -1130,10 +1130,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@celluloid-camp/react-player@2.11.2":
-  version "2.11.2"
-  resolved "https://npm.pkg.github.com/download/@celluloid-camp/react-player/2.11.2/3929dadd947bc8ffe9de679dca3fadaab3e3d1f8#3929dadd947bc8ffe9de679dca3fadaab3e3d1f8"
-  integrity sha512-JpQF7qR+uykLQ2PcOLpnL2FJtobDK74MAm+yoFIQ0lRuXiZF9Pqv7rVTgw+UMUaH5pBy4/0imvlL1b9e83bRaQ==
+"@celluloid/react-player@2.11.2":
+  version "2.11.3"
+  resolved "https://registry.yarnpkg.com/@celluloid/react-player/-/react-player-2.11.3.tgz#97d00b0cde911b8334ad887245476d07e6b8afcd"
+  integrity sha512-X1i0Zx790it53paHUlOSpE0UyTKjYoRxZrufGh1AZa0xmxL7RB/rinxWQcNWf7EU0loIQNfiUA5X5jx4G7mVcQ==
   dependencies:
     deepmerge "^4.0.0"
     load-script "^1.0.0"
