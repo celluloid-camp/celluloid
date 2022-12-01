@@ -9,6 +9,9 @@ COPY yarn.lock package.json ./
 RUN yarn --frozen-lockfile --no-progress
 
 
+ARG COMMIT
+ENV COMMIT=$COMMIT
+
 COPY . ./
 ENV NODE_ENV=production
 RUN yarn build

@@ -434,6 +434,9 @@ const MenuComponent: React.FC<Props> = ({
         <NavLink to="/legal-notice" className={classes.footerLink}>
           {t("menu.legalNotice")}
         </NavLink>
+        <Typography  variant="caption" className={classes.copyright}>
+           {process.env.REACT_APP_VERSION} {process.env.REACT_APP_COMMIT}
+        </Typography>
       </div>
     </div>
   );

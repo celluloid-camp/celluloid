@@ -17,6 +17,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1        
 
+      - name: Declare some variables
+        id: vars
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"        
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -29,5 +36,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ github.event.inputs.tag }}
+          tags: ${{ github.event.inputs.tag }}, ${{ steps.vars.outputs.sha_short }}, ${{ steps.vars.outputs.branch }}
+          image: ${{ github.repository }}
+          buildArgs: COMMIT=${{ steps.vars.outputs.sha_short }}
+          registry:  ghcr.io
