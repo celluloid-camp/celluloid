@@ -36,7 +36,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ github.event.inputs.tag }}, ${{ steps.vars.outputs.sha_short }}, ${{ steps.vars.outputs.branch }}
+          tags: ghcr.io/${{ github.event.inputs.tag }}, ghcr.io/${{ steps.vars.outputs.sha_short }}, ghcr.io/${{ steps.vars.outputs.branch }}
           image: ${{ github.repository }}
           buildArgs: COMMIT=${{ steps.vars.outputs.sha_short }}
           registry:  ghcr.io
