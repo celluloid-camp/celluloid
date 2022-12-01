@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@celluloid/client",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Erwan Queffélec <erwan.queffelec@gmail.com",
   "license": "MIT",
   "proxy": "http://localhost:3001",
