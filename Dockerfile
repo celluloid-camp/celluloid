@@ -10,7 +10,7 @@ RUN yarn --frozen-lockfile --no-progress
 
 
 ARG COMMIT
-ENV REACT_APP_COMMIT=$COMMIT
+ENV REACT_APP_COMMIT=${COMMIT}
 
 COPY . ./
 ENV NODE_ENV=production
