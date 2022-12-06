@@ -6,6 +6,7 @@ import {
   UserRecord,
 } from "@celluloid/types";
 import {
+  Badge,
   Button,
   CircularProgress,
   Fab,
@@ -26,7 +27,7 @@ import { Dispatch } from "redux";
 import { EmptyAction } from "types/ActionTypes";
 import { AppState } from "types/StateTypes";
 import { canAnnotate } from "utils/ProjectUtils";
-
+import AnnotationIcon from "@material-ui/icons/Comment";
 import AnnotationContent from "./components/AnnotationContent";
 import AnnotationEditor from "./components/AnnotationEditor";
 import AnnotationHints from "./components/AnnotationHints";
@@ -81,7 +82,7 @@ interface Props extends WithStyles<typeof styles> {
   onPlayerReady(player: ReactPlayer): void;
   onPlayerProgress(state: PlayerProgressState): void;
   onPlayerStateChange(event: PlayerEvent, data: number): void;
-  onDuration(duration:number):void;
+  onDuration(duration: number): void;
   onFullscreenChange(newState: boolean): void;
   onTogglePlayPause(): void;
   onToggleFullscreen(): void;
@@ -149,8 +150,6 @@ export default connect(
 
       const [muted, setMuted] = useState(false);
 
-    
-
       const handleToggleMute = () => {
         setMuted(!muted);
       };
@@ -190,114 +189,127 @@ export default connect(
 
       const url = `https://${project.host}/w/${project.videoId}`;
 
-
-
       return (
-        <Fullscreen enabled={fullscreen} onChange={onFullscreenChange}>
-          <div
-            className={classnames("full-screenable-node", classes.videoWrapper)}
-          >
-            <div>
-              <ReactPlayer
-                url={url}
-                onReady={handleVideoRead}
-                onDuration={onDuration}
-                onProgress={onPlayerProgress}
-                
-                className={classes.videoIframe}
-                width="100%"
-                height="100%"
-                playing={playing}
-                onBuffer={handleBuffer}
-                onBufferEnd={handleBufferEnd}
-                muted={muted}
-                config={{
-                  peertube: {
-                    controls: 0,
-                    controlBar: 1,
-                    peertubeLink: 0,
-                    title: 0,
-                    warningTitle: 0,
-                    p2p: 0,
-                  }
-                }}
-              />
-              <div
+        <div
+          className={classnames("full-screenable-node", classes.videoWrapper)}
+        >
+          <div>
+            <ReactPlayer
+              url={url}
+              onReady={handleVideoRead}
+              onDuration={onDuration}
+              onProgress={onPlayerProgress}
+              className={classes.videoIframe}
+              width="100%"
+              height="100%"
+              playing={playing}
+              onBuffer={handleBuffer}
+              onBufferEnd={handleBufferEnd}
+              onMouseMove={onUserAction}
+              muted={muted}
+              config={{
+                peertube: {
+                  controls: 1,
+                  controlBar: 1,
+                  peertubeLink: 0,
+                  title: 0,
+                  warningTitle: 0,
+                  p2p: 0,
+                },
+              }}
+            />
+            {/* <div
                 className={classes.glassPane}
                 onMouseMove={onUserAction}
-                onClick={onTogglePlayPause}
-              />
-              {!showHints && (
-                <div
-                  className={classes.annotationFrame}
-                  onMouseMove={onUserAction}
-                >
-                  <Grow appear={true} in={editing}>
-                    <div>
-                      {user && editing && (
-                        <AnnotationEditor
-                          user={user}
-                          projectId={project.id}
-                          video={{
-                            position: position,
-                            duration: duration,
-                          }}
-                          onSeek={onSeek}
-                        />
-                      )}
-                    </div>
-                  </Grow>
-                  <TransitionGroup appear={true}>
-                    {!editing &&
-                      Array.from(visibleAnnotations.values()).map(
-                        (annotation) => (
-                          <Grow appear={true} in={!editing} key={annotation.id}>
-                            <div>
-                              <AnnotationContent
-                                project={project}
-                                focused={annotation.id === focusedAnnotationId}
-                                annotation={annotation}
-                              />
-                            </div>
-                          </Grow>
-                        )
-                      )}
-                  </TransitionGroup>
-                </div>
-              )}
-              {isReady && user && canAnnotate(project, user) && (
-                <Zoom
-                  appear={true}
-                  exit={true}
-                  in={!editing && !showHints && showControls}
-                >
-                  <Fab
-                    color="secondary"
-                    className={classes.annotateButton}
-                    onClick={() => onClickAnnotate()}
-                  >
-                    <EditIcon />
-                  </Fab>
-                </Zoom>
-              )}
+                // onClick={onTogglePlayPause}
+              /> */}
+            {!showHints && (
               <div
+                className={classes.annotationFrame}
                 onMouseMove={onUserAction}
-                className={classnames(
-                  classes.hintBox,
-                  controlsOpacity,
-                  hintBoxHeight
-                )}
               >
-                <AnnotationHints
-                  duration={duration}
-                  position={position}
-                  annotations={annotations}
-                  visible={showHints}
-                  onClick={onClickHint}
-                />
+                <Grow appear={true} in={editing}>
+                  <div>
+                    {user && editing && (
+                      <AnnotationEditor
+                        user={user}
+                        projectId={project.id}
+                        video={{
+                          position: position,
+                          duration: duration,
+                        }}
+                        onSeek={onSeek}
+                      />
+                    )}
+                  </div>
+                </Grow>
+                <TransitionGroup appear={true}>
+                  {!editing &&
+                    Array.from(visibleAnnotations.values()).map(
+                      (annotation) => (
+                        <Grow appear={true} in={!editing} key={annotation.id}>
+                          <div>
+                            <AnnotationContent
+                              project={project}
+                              focused={annotation.id === focusedAnnotationId}
+                              annotation={annotation}
+                            />
+                          </div>
+                        </Grow>
+                      )
+                    )}
+                </TransitionGroup>
               </div>
+            )}
+            {isReady && user && canAnnotate(project, user) && (
+              <Zoom
+                appear={true}
+                exit={true}
+                in={!editing && !showHints && showControls}
+              >
+                <Fab
+                  color="secondary"
+                  className={classes.annotateButton}
+                  onClick={() => onClickAnnotate()}
+                >
+                  <EditIcon />
+                </Fab>
+              </Zoom>
+            )}
+            <div
+              onMouseMove={onUserAction}
+              className={classnames(
+                classes.hintBox,
+                controlsOpacity,
+                hintBoxHeight
+              )}
+            >
+              <AnnotationHints
+                duration={duration}
+                position={position}
+                annotations={annotations}
+                visible={showHints}
+                onClick={onClickHint}
+              />
+            </div>
 
-              {isReady ? (
+            {/* <Zoom
+                appear={true}
+                exit={true}
+                in={!editing && !showHints && showControls}
+              >
+                <Fab
+                  color="secondary"
+                  className={classes.annotationsButton}
+                  onClick={() => onToggleHints()}
+                >
+                  <Badge badgeContent={annotations.length} color="primary">
+                    <AnnotationIcon />
+                  </Badge>
+                </Fab>
+              </Zoom> */}
+
+            {/* {isReady ? (
                 <div
                   onMouseMove={onUserAction}
                   className={classnames([
@@ -329,10 +341,9 @@ export default connect(
                     }}
                   />
                 </div>
-              )}
-            </div> 
+              )} */}
           </div>
-        </Fullscreen>
+        </div>
       );
     }
   )
