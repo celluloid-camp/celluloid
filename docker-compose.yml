@@ -12,11 +12,12 @@ services:
   postgres:
     image: postgres:11.3
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
-      PGDATA: /data/postgis
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_MULTIPLE_DATABASES: celluloid, keycloak
     volumes:
-      - ./.data:/data/postgres  
+      - ./.data:/var/lib/postgresql/data
+      - ./docker/pg-init-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -27,8 +28,39 @@ services:
       retries: 5
     networks:
       - local
-    command: postgres -c logging_collector=on
 
+  keycloak:
+    image: quay.io/phasetwo/phasetwo-keycloak:20.0.1-alpha
+    ports:
+      - 8080:8080
+    environment: 
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}      
+      KC_DB_URL_DATABASE: keycloak
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_STRICT: false
+      KC_HEALTH_ENABLED: true
+      KC_PROXY: edge
+      KC_FEATURES:
+        authorization
+        token-exchange
+        docker
+        impersonation
+        scripts
+        upload-scripts
+        web-authn
+        client-policies
+        dynamic-scopes      
+    volumes:
+      - /etc/localtime:/etc/localtime:ro      
+    depends_on:
+      - postgres
+    command: start
+    networks:
+      - local      
 
   redis:
     image: redis:6-alpine
