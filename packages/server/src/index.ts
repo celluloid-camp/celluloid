@@ -136,7 +136,7 @@ app.use(
       // }
 
       return {
-        role: "postgres",
+        role: "celluloid",
       };
     },
   })

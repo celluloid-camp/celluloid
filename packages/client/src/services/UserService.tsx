@@ -3,23 +3,23 @@ import {
   Credentials,
   TeacherConfirmData,
   TeacherConfirmResetPasswordData,
-  StudentSignupData
-} from '@celluloid/types';
+  StudentSignupData,
+} from "@celluloid/types";
 
-import * as Constants from './Constants';
+import * as Constants from "./Constants";
 
 export default class {
   static login(credentials: Credentials) {
     const headers = {
-      Accepts: 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
     return fetch(`/api/users/login`, {
-      method: 'POST',
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(credentials)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(credentials),
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 400) {
@@ -33,16 +33,16 @@ export default class {
 
   static signup(data: TeacherSignupData) {
     const headers = {
-      Accepts: 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
 
     return fetch(`/api/users/signup`, {
-      method: 'POST',
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(data)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(data),
+    }).then((response) => {
       if (response.status === 201) {
         return response.json();
       } else if (response.status === 400) {
@@ -56,16 +56,16 @@ export default class {
 
   static studentSignup(data: StudentSignupData) {
     const headers = {
-      Accepts: 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
 
     return fetch(`/api/users/student-signup`, {
-      method: 'POST',
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(data)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(data),
+    }).then((response) => {
       if (response.status === 201) {
         return response.json();
       } else if (response.status === 400) {
@@ -79,16 +79,16 @@ export default class {
 
   static confirmSignup(data: TeacherConfirmData) {
     const headers = {
-      Accepts: 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
 
     return fetch(`/api/users/confirm-signup`, {
-      method: 'POST',
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(data)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(data),
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 400) {
@@ -102,16 +102,16 @@ export default class {
 
   static resetPassword(email: string) {
     const headers = {
-      Accepts: 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
 
     return fetch(`/api/users/reset-password`, {
-      method: 'POST',
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify({ email })
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 400) {
@@ -125,16 +125,16 @@ export default class {
 
   static confirmResetPassword(data: TeacherConfirmResetPasswordData) {
     const headers = {
-      Accepts: 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
 
     return fetch(`/api/users/confirm-reset-password`, {
-      method: 'POST',
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify(data)
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify(data),
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 400) {
@@ -148,16 +148,16 @@ export default class {
 
   static resendCode(email: string) {
     const headers = {
-      Accepts: 'application/json',
-      'Content-type': 'application/json'
+      Accepts: "application/json",
+      "Content-type": "application/json",
     };
 
     return fetch(`/api/users/resend-code`, {
-      method: 'POST',
+      method: "POST",
       headers: new Headers(headers),
-      credentials: 'include',
-      body: JSON.stringify({ email })
-    }).then(response => {
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 400) {
@@ -171,14 +171,14 @@ export default class {
 
   static me() {
     const headers = {
-      Accepts: 'application/json'
+      Accepts: "application/json",
     };
 
     return fetch(`/api/users/me`, {
-      method: 'GET',
+      method: "GET",
       headers: new Headers(headers),
-      credentials: 'include'
-    }).then(response => {
+      credentials: "include",
+    }).then((response) => {
       if (response.status === 200) {
         return response.json();
       } else if (response.status === 401) {
@@ -190,8 +190,8 @@ export default class {
 
   static logout() {
     return fetch(`/api/users/logout`, {
-      method: 'PUT',
-      credentials: 'include'
+      method: "PUT",
+      credentials: "include",
     });
   }
 }
