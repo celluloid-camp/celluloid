@@ -261,7 +261,7 @@ export default connect(
                 </TransitionGroup>
               </div>
             )}
-            {isReady && user && canAnnotate(project, user) && (
+            {user && canAnnotate(project, user) && (
               <Zoom
                 appear={true}
                 exit={true}

@@ -120,7 +120,7 @@ export const createProjectThunk =
       dispatch(triggerUpsertProjectLoading());
       return ProjectService.create(data)
         .then(project => {
-          dispatch(push(`/projects/${project.id}`));
+          // dispatch(push(`/projects/${project.id}`));
           dispatch(discardNewVideo());
           return dispatch(succeedUpsertProject(project));
         })

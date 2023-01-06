@@ -53,6 +53,7 @@ import { AppState } from "types/StateTypes";
 import { PeertubeVideoInfo } from "types/YoutubeTypes";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -161,6 +162,7 @@ const NewProjectContainer: React.FC<Props> = ({
   onCancel,
   onNewTag,
 }) => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [state, setState] = useState<State>({
     project: {
@@ -216,6 +218,14 @@ const NewProjectContainer: React.FC<Props> = ({
     });
   };
 
+  const handleSubmit = async (project: ProjectCreateData)=>{
+    const {error, payload} = await onSubmit(project);
+    if(!error){
+      navigate(`/projects/${(payload as ProjectGraphRecord).id}`);
+    }
+    
+
+  }
   if (video && user && user.role !== "Student") {
     return (
       <Dialog
@@ -501,7 +511,7 @@ const NewProjectContainer: React.FC<Props> = ({
           </Button>
           <Button
             onClick={() =>
-              onSubmit({ ...project, videoId: video.id, host: video.host })
+              handleSubmit({ ...project, videoId: video.id, host: video.host })
             }
             color="primary"
             variant="contained"

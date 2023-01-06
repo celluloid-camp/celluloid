@@ -13,20 +13,21 @@ import { MuiThemeProvider } from "@material-ui/core/styles";
 import ResetScroll from "components/ResetScroll";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import en from "i18n/en";
 import fr from "i18n/fr";
 import * as i18next from "i18next";
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import MomentUtils from "material-ui-pickers/utils/moment-utils";
 import { initReactI18next } from "react-i18next";
 
 import { Provider } from "react-redux";
-import createAppStore from "store";
+import createAppStore, { history } from "store";
 import { Bright } from "utils/ThemeUtils";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { About } from "components/About";
+import { ConnectedRouter } from "connected-react-router";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const styles = createStyles({
 const Content = () => {
   return (
     <Provider store={store}>
+      {/* <ConnectedRouter history={history}> */}
         <MuiThemeProvider theme={Bright}>
           <QueryClientProvider client={queryClient}>
             {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
@@ -70,7 +72,7 @@ const Content = () => {
               <React.Fragment>
                 <UpdateIndicator />
                 <BrowserRouter>
-                <ResetScroll/>
+                  <ResetScroll />
                   <Routes>
                     <Route
                       path="/"
@@ -92,6 +94,7 @@ const Content = () => {
             {/* </MuiPickersUtilsProvider> */}
           </QueryClientProvider>
         </MuiThemeProvider>
+      {/* </ConnectedRouter> */}
     </Provider>
   );
 };
