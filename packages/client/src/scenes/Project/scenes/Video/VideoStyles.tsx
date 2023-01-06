@@ -78,7 +78,7 @@ export const styles = ({ spacing, palette }: Theme) => createStyles({
   },
   annotationsButton: {
     right: spacing.unit * 2,
-    bottom: spacing.unit * 9,
+    bottom: spacing.unit * 18,
     position: 'absolute' as 'absolute',
     zIndex: 2
   },
