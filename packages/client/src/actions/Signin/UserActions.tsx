@@ -28,9 +28,12 @@ export const fetchCurrentUserThunk = () => (dispatch: Dispatch) => {
 };
 
 export const doLogoutThunk = () => (dispatch: Dispatch) => {
+
+  console.log("doLogoutThunk")
   return UserService
     .logout()
     .then(() => {
+      console.log("logout result")
       return dispatch(succeedCurrentUser());
     })
     .catch(error => {
