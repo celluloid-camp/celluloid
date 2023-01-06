@@ -150,11 +150,8 @@ export default connect(
 
       const [muted, setMuted] = useState(false);
 
-      const handleToggleMute = () => {
-        setMuted(!muted);
-      };
 
-      const handleVideoRead = (player: ReactPlayer) => {
+      const handleVideoReady = (player: ReactPlayer) => {
         onPlayerReady(player);
         setIsReady(true);
       };
@@ -196,7 +193,7 @@ export default connect(
           <div>
             <ReactPlayer
               url={url}
-              onReady={handleVideoRead}
+              onReady={handleVideoReady}
               onDuration={onDuration}
               onProgress={onPlayerProgress}
               className={classes.videoIframe}
@@ -290,10 +287,11 @@ export default connect(
                 annotations={annotations}
                 visible={showHints}
                 onClick={onClickHint}
+                onClose={()=>onToggleHints()}
               />
             </div>
 
-            {/* <Zoom
+            <Zoom
                 appear={true}
                 exit={true}
                 in={!editing && !showHints && showControls}
@@ -307,7 +305,7 @@ export default connect(
                     <AnnotationIcon />
                   </Badge>
                 </Fab>
-              </Zoom> */}
+              </Zoom>
 
             {/* {isReady ? (
                 <div

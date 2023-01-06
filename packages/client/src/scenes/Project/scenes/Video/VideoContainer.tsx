@@ -73,7 +73,7 @@ export default connect(
       position: 0,
       duration: 0,
       fullscreen: false,
-      showControls: true,
+      showControls: false,
       showHints: false,
       visibleAnnotations: [],
       annotating: false,

@@ -1,16 +1,19 @@
 import { AnnotationRecord } from "@celluloid/types";
 import {
   createStyles,
+  IconButton,
   Paper,
   Theme,
   Typography,
   WithStyles,
   withStyles,
+  Grid,
 } from "@material-ui/core";
 import classNames from "classnames";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { getUserColor } from "utils/UserUtils";
+import CancelIcon from "@material-ui/icons/Clear";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -54,6 +57,7 @@ interface Props extends WithStyles<typeof styles> {
   annotations: AnnotationRecord[];
   visible: boolean;
   onClick: Function;
+  onClose: Function;
 }
 
 const AnnotationHints: React.FC<Props> = ({
@@ -61,6 +65,7 @@ const AnnotationHints: React.FC<Props> = ({
   annotations,
   visible,
   onClick,
+  onClose,
   classes,
 }) => {
   const { t } = useTranslation();
@@ -70,13 +75,33 @@ const AnnotationHints: React.FC<Props> = ({
   const getHintWidth = (annotation: AnnotationRecord) =>
     `${((annotation.stopTime - annotation.startTime) * 100) / duration}%`;
 
+  const handleClose = (event: any) => {
+    event.stopPropagation();
+    onClose();
+  };
   return (
     <div className={classes.container}>
-      <Typography className={classes.title} align="left" variant="h5">
-        {annotations.length > 0
-          ? t("annotation.hintLabel", { count: annotations.length })
-          : t("annotation.hintLabelNone")}
-      </Typography>
+      <Grid
+        container
+        direction="row"
+        justify="space-between"
+        alignItems="center"
+        spacing={24}
+      >
+        <Grid item >
+          <Typography className={classes.title} align="left" variant="h5">
+            {annotations.length > 0
+              ? t("annotation.hintLabel", { count: annotations.length })
+              : t("annotation.hintLabelNone")}
+          </Typography>
+        </Grid>
+
+        <Grid item >
+          <IconButton color="secondary" onClick={handleClose}>
+            <CancelIcon fontSize="small" />
+          </IconButton>
+        </Grid>
+      </Grid>
       {annotations.map((annotation, index) => {
         return (
           <Paper
