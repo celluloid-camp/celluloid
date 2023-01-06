@@ -65,7 +65,6 @@ router.post("/signup", (req, res, next) => {
   const payload = req.body;
   const result = validateSignup(payload);
 
-
   if (!result.success) {
     log.error(`Failed user signup with data ${payload}: bad request:`, result);
     return res.status(400).json(result);
@@ -99,7 +98,10 @@ router.post("/login", (req, res, next) => {
   const result = validateLogin(req.body);
 
   if (!result.success) {
-    log.error(`Failed user login with data ${JSON.stringify(payload)}: bad request:`, result);
+    log.error(
+      `Failed user login with data ${JSON.stringify(payload)}: bad request:`,
+      result
+    );
     return res.status(400).json(result);
   }
   return passport.authenticate(SigninStrategy.LOGIN, (error, user) => {
@@ -289,9 +291,17 @@ router.get("/me", isLoggedIn, (req: any, res) => {
 });
 
 router.put("/logout", isLoggedIn, (req, res) => {
-  req.logout({ keepSessionInfo: false }, () => {
-    return res.status(200).send();
-  });
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        res.status(400).send("Unable to log out");
+      } else {
+        res.send("Logout successful");
+      }
+    });
+  } else {
+    res.end();
+  }
 });
 
 export default router;

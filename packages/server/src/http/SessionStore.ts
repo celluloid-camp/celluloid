@@ -1,5 +1,4 @@
 import session from "express-session";
-import moment from "moment";
 
 let RedisStore = require("connect-redis")(session);
 
