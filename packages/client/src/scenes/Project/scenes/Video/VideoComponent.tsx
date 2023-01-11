@@ -298,8 +298,7 @@ export default connect(
               />
             </div>
 
-            {annotations.length > 0 ? (
-              <Zoom
+            <Zoom
                 appear={true}
                 exit={true}
                 in={!editing && !showHints && showControls}
@@ -314,7 +313,6 @@ export default connect(
                   </Badge>
                 </Fab>
               </Zoom>
-            ) : null}
 
             {/* {isReady ? (
                 <div
