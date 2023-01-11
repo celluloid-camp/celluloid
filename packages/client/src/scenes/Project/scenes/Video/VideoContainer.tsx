@@ -73,7 +73,7 @@ export default connect(
       position: 0,
       duration: 0,
       fullscreen: false,
-      showControls: false,
+      showControls: true,
       showHints: false,
       visibleAnnotations: [],
       annotating: false,
@@ -245,6 +245,7 @@ export default connect(
         }));
 
       const onToggleHints = () => {
+        console.log("onToggleHints")
         this.setState((prevState) => ({
           ...prevState,
           showHints: !prevState.showHints,
