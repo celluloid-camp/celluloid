@@ -150,7 +150,6 @@ export default connect(
 
       const [muted, setMuted] = useState(false);
 
-
       const handleVideoReady = (player: ReactPlayer) => {
         onPlayerReady(player);
         setIsReady(true);
@@ -184,6 +183,13 @@ export default connect(
         console.log("handleBufferEnd");
       };
 
+      const handleToggleHints = (event: any) => {
+        if (event) {
+          event.stopPropagation();
+        }
+
+        onToggleHints();
+      };
       const url = `https://${project.host}/w/${project.videoId}`;
 
       return (
@@ -212,6 +218,7 @@ export default connect(
                   title: 0,
                   warningTitle: 0,
                   p2p: 0,
+                  autoplay: 1,
                 },
               }}
             />
@@ -287,11 +294,12 @@ export default connect(
                 annotations={annotations}
                 visible={showHints}
                 onClick={onClickHint}
-                onClose={()=>onToggleHints()}
+                onClose={handleToggleHints}
               />
             </div>
 
-            <Zoom
+            {annotations.length > 0 ? (
+              <Zoom
                 appear={true}
                 exit={true}
                 in={!editing && !showHints && showControls}
@@ -299,13 +307,14 @@ export default connect(
                 <Fab
                   color="secondary"
                   className={classes.annotationsButton}
-                  onClick={() => onToggleHints()}
+                  onClick={handleToggleHints}
                 >
                   <Badge badgeContent={annotations.length} color="primary">
                     <AnnotationIcon />
                   </Badge>
                 </Fab>
               </Zoom>
+            ) : null}
 
             {/* {isReady ? (
                 <div
