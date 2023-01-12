@@ -36,7 +36,7 @@ import { styles } from "./VideoStyles";
 import { ZoomProps } from "@material-ui/core/Zoom";
 import { GrowProps } from "@material-ui/core/Grow";
 import ReactPlayer from "@celluloid/react-player";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VideoApi from "services/VideoService";
 
@@ -190,8 +190,10 @@ export default connect(
 
         onToggleHints();
       };
+
       const url = `https://${project.host}/w/${project.videoId}`;
 
+      
       return (
         <div
           onMouseMove={onUserAction}
@@ -223,11 +225,11 @@ export default connect(
                 },
               }}
             />
-            {/* <div
+            <div
                 className={classes.glassPane}
                 onMouseMove={onUserAction}
                 // onClick={onTogglePlayPause}
-              /> */}
+              />
             {!showHints && (
               <div
                 className={classes.annotationFrame}
