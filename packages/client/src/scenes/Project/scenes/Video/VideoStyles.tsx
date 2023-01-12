@@ -40,6 +40,7 @@ export const styles = ({ spacing, palette }: Theme) => createStyles({
     bottom: 0,
     padding: 0,
     margin: 0,
+    backgroundColor: "red"
   },
   annotationFrame: {
     overflowY: 'auto' as 'auto',
