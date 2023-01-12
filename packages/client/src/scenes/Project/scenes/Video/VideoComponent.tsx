@@ -194,7 +194,7 @@ export default connect(
 
       return (
         <div
-        onMouseMove={onUserAction}
+          onMouseMove={onUserAction}
           className={classnames("full-screenable-node", classes.videoWrapper)}
         >
           <div>
@@ -209,7 +209,6 @@ export default connect(
               playing={playing}
               onBuffer={handleBuffer}
               onBufferEnd={handleBufferEnd}
-
               muted={muted}
               config={{
                 peertube: {
@@ -300,20 +299,20 @@ export default connect(
             </div>
 
             <Zoom
-                appear={true}
-                exit={true}
-                in={!editing && !showHints && showControls}
+              appear={true}
+              exit={true}
+              in={!editing && !showHints && showControls}
+            >
+              <Fab
+                color="secondary"
+                className={classes.annotationsButton}
+                onClick={handleToggleHints}
               >
-                <Fab
-                  color="secondary"
-                  className={classes.annotationsButton}
-                  onClick={handleToggleHints}
-                >
-                  <Badge badgeContent={annotations.length} color="primary">
-                    <AnnotationIcon />
-                  </Badge>
-                </Fab>
-              </Zoom>
+                <Badge badgeContent={annotations.length} color="primary">
+                  <AnnotationIcon />
+                </Badge>
+              </Fab>
+            </Zoom>
 
             {/* {isReady ? (
                 <div
