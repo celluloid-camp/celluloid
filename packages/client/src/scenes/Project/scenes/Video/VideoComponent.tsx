@@ -197,7 +197,7 @@ export default connect(
           onMouseMove={onUserAction}
           className={classnames("full-screenable-node", classes.videoWrapper)}
         >
-          <div>
+          <div onMouseMove={onUserAction}>
             <ReactPlayer
               url={url}
               onReady={handleVideoReady}
@@ -209,6 +209,7 @@ export default connect(
               playing={playing}
               onBuffer={handleBuffer}
               onBufferEnd={handleBufferEnd}
+              onMouseMove={onUserAction}
               muted={muted}
               config={{
                 peertube: {
