@@ -32,7 +32,7 @@ export const styles = ({ spacing, palette }: Theme) => createStyles({
     border: 0,
   },
   glassPane: {
-    opacity: 0,
+    // opacity: 0.5,
     position: 'absolute' as 'absolute',
     top: 0,
     left: 0,
@@ -40,7 +40,8 @@ export const styles = ({ spacing, palette }: Theme) => createStyles({
     bottom: 0,
     padding: 0,
     margin: 0,
-    backgroundColor: "red"
+    marginBottom: 50,
+    // backgroundColor: "red"
   },
   annotationFrame: {
     overflowY: 'auto' as 'auto',
