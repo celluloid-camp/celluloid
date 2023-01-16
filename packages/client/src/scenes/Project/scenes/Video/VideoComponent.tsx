@@ -36,7 +36,7 @@ import { styles } from "./VideoStyles";
 import { ZoomProps } from "@material-ui/core/Zoom";
 import { GrowProps } from "@material-ui/core/Grow";
 import ReactPlayer from "@celluloid/react-player";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VideoApi from "services/VideoService";
 
@@ -135,10 +135,13 @@ export default connect(
     }: Props) => {
       const [isReady, setIsReady] = useState(false);
 
+      const mounted = useRef(false);
+
+    
+      const playerRef = React.useRef<ReactPlayer>(null);
+
       const controlsOpacity =
-        isReady && (showControls || showHints)
-          ? classes.visible
-          : classes.hidden;
+        showControls || showHints ? classes.visible : classes.hidden;
 
       const hintBoxHeight = showHints
         ? classes.hintBoxExpanded
@@ -154,6 +157,17 @@ export default connect(
         onPlayerReady(player);
         setIsReady(true);
       };
+
+      // useEffect(() => {
+      //   if (playerRef && playerRef.current) {
+      //     setTimeout(()=>{
+      //       console.log("getDuration", playerRef.current?.getDuration());
+      //       // onPlayerReady(playerRef.current);
+      //       setIsReady(true);
+      //     }, 1000)
+
+      //   }
+      // }, [playerRef]);
 
       // if (isLoading) {
       //   return (
@@ -191,9 +205,22 @@ export default connect(
         onToggleHints();
       };
 
-      const url = `https://${project.host}/w/${project.videoId}`;
+      useEffect(() => {
+        mounted.current = true;
+
+        return () => {
+          mounted.current = false;
+        };
+      }, []);
 
       
+
+      const url = `https://${project.host}/w/${project.videoId}`;
+
+      if(!mounted || !project) {
+        return null;
+      }
+
       return (
         <div
           onMouseMove={onUserAction}
@@ -201,6 +228,7 @@ export default connect(
         >
           <div onMouseMove={onUserAction}>
             <ReactPlayer
+              ref={playerRef}
               url={url}
               onReady={handleVideoReady}
               onDuration={onDuration}
@@ -212,6 +240,9 @@ export default connect(
               onBuffer={handleBuffer}
               onBufferEnd={handleBufferEnd}
               onMouseMove={onUserAction}
+              onError={(error, data, hlsInstance) => {
+                console.log({ error, data, hlsInstance });
+              }}
               muted={muted}
               config={{
                 peertube: {
@@ -225,11 +256,13 @@ export default connect(
                 },
               }}
             />
+
             <div
-                className={classes.glassPane}
-                onMouseMove={onUserAction}
-                // onClick={onTogglePlayPause}
-              />
+              className={classes.glassPane}
+              onMouseMove={onUserAction}
+              // onClick={onTogglePlayPause}
+            />
+
             {!showHints && (
               <div
                 className={classes.annotationFrame}
@@ -268,7 +301,7 @@ export default connect(
                 </TransitionGroup>
               </div>
             )}
-            {user && canAnnotate(project, user) && (
+            {isReady && user && canAnnotate(project, user) && (
               <Zoom
                 appear={true}
                 exit={true}
@@ -304,7 +337,7 @@ export default connect(
             <Zoom
               appear={true}
               exit={true}
-              in={!editing && !showHints && showControls}
+              in={!editing && !showHints && showControls && isReady}
             >
               <Fab
                 color="secondary"

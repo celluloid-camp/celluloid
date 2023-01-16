@@ -127,7 +127,6 @@ interface Props extends WithStyles<typeof styles> {
   project: ProjectGraphRecord;
 }
 
-
 const ProjectThumbnail: React.FC<Props> = ({
   classes,
   project,
@@ -232,4 +231,4 @@ const ProjectThumbnail: React.FC<Props> = ({
   );
 };
 
-export default withStyles(styles)((ProjectThumbnail));
+export default withStyles(styles)(ProjectThumbnail);
