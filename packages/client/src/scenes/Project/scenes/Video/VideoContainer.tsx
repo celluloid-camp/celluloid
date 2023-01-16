@@ -186,9 +186,10 @@ export default connect(
       const onUserAction = this.resetFadeOutTimer.bind(this);
 
       const onPlayerReady = (player: ReactPlayer) => {
+        console.log("onPlayerReady")
         this.refreshTimer = window.setInterval(
           this.refreshPlayer.bind(this),
-          200
+          1000
         );
         this.setState({
           player,
@@ -197,12 +198,14 @@ export default connect(
       };
 
       const onPlayerProgress = (state: PlayerProgressState) => {
+        console.log("onPlayerProgress")
         this.setState({
           position: state.playedSeconds,
         });
       };
 
       const onDuration =(duration:number) => {
+        console.log("onDuration")
         this.setState({
           duration,
         });
@@ -245,7 +248,6 @@ export default connect(
         }));
 
       const onToggleHints = () => {
-        console.log("onToggleHints")
         this.setState((prevState) => ({
           ...prevState,
           showHints: !prevState.showHints,
