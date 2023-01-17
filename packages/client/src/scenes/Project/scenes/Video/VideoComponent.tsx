@@ -178,6 +178,7 @@ export default connect(
 
       const [url, setUrl] = useState<string>("");
 
+
       const controlsOpacity =
         showControls || showHints ? classes.visible : classes.hidden;
 
@@ -261,7 +262,6 @@ export default connect(
             {!showHints && (
               <div
                 className={classes.annotationFrame}
-                onMouseMove={onUserAction}
               >
                 <Grow appear={true} in={editing}>
                   <div>
