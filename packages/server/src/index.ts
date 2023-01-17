@@ -54,93 +54,93 @@ app.use("/api/video", VideosApi);
 app.get("/elb-status", (_, res) => res.status(200).send());
 
 
-const RemoveQueryQueryPlugin: Plugin = (builder) => {
-  builder.hook("GraphQLObjectType:fields", (fields, build, context) => {
-    if (context.scope.isRootQuery) {
-      const { query, ...rest } = fields;
-      // Drop the `query` field
-      return rest;
-    } else {
-      return fields;
-    }
-  });
-};
+// const RemoveQueryQueryPlugin: Plugin = (builder) => {
+//   builder.hook("GraphQLObjectType:fields", (fields, build, context) => {
+//     if (context.scope.isRootQuery) {
+//       const { query, ...rest } = fields;
+//       // Drop the `query` field
+//       return rest;
+//     } else {
+//       return fields;
+//     }
+//   });
+// };
 
-type PgConstraint = any;
+// type PgConstraint = any;
 
-const PrimaryKeyMutationsOnlyPlugin: Plugin = (builder) => {
-  builder.hook(
-    "build",
-    (build) => {
-      build.pgIntrospectionResultsByKind.constraint.forEach(
-        (constraint: PgConstraint) => {
-          if (!constraint.tags.omit && constraint.type !== "p") {
-            constraint.tags.omit = ["update", "delete"];
-          }
-        }
-      );
-      return build;
-    },
-    [],
-    [],
-    ["PgIntrospection"]
-  );
-};
+// const PrimaryKeyMutationsOnlyPlugin: Plugin = (builder) => {
+//   builder.hook(
+//     "build",
+//     (build) => {
+//       build.pgIntrospectionResultsByKind.constraint.forEach(
+//         (constraint: PgConstraint) => {
+//           if (!constraint.tags.omit && constraint.type !== "p") {
+//             constraint.tags.omit = ["update", "delete"];
+//           }
+//         }
+//       );
+//       return build;
+//     },
+//     [],
+//     [],
+//     ["PgIntrospection"]
+//   );
+// };
 
 
-app.use(
-  postgraphile(DATABASE_URL, "public", {
-    subscriptions: true,
-    watchPg: true,
-    dynamicJson: true,
-    setofFunctionsContainNulls: false,
-    ignoreRBAC: false,
-    showErrorStack: "json",
-    extendedErrors: ["hint", "detail", "errcode"],
-    appendPlugins: [
-      require("@graphile-contrib/pg-simplify-inflector"),
-      ConnectionFilterPlugin,
-      RemoveQueryQueryPlugin,
-      PrimaryKeyMutationsOnlyPlugin
-    ],
-    skipPlugins: [
-      // Disable the 'Node' interface
-      NodePlugin,
-    ],
-    sortExport: true,
-    exportGqlSchemaPath: "schema.graphql",
-    graphiql: true,
-    enhanceGraphiql: true,
-    allowExplain() {
-      return true;
-    },
-    enableQueryBatching: true,
-    legacyRelations: "omit",
-    pgSettings: async () => {
-      // const authorization = req.headers.authorization;
-      // const bearerStr = "Bearer";
-      // if (canSplit(authorization, bearerStr)) {
-      //   const token = authorization.split(bearerStr);
-      //   if (token.length > 1) {
-      //     try {
-      //       const user = await keycloak.verifyOnline(token[1]);
-      //       const role = user.resourceAccess.web.roles[0];
-      //       const id = user.id.split(":")[2];
+// app.use(
+//   postgraphile(DATABASE_URL, "public", {
+//     subscriptions: true,
+//     watchPg: true,
+//     dynamicJson: true,
+//     setofFunctionsContainNulls: false,
+//     ignoreRBAC: false,
+//     showErrorStack: "json",
+//     extendedErrors: ["hint", "detail", "errcode"],
+//     appendPlugins: [
+//       require("@graphile-contrib/pg-simplify-inflector"),
+//       ConnectionFilterPlugin,
+//       RemoveQueryQueryPlugin,
+//       PrimaryKeyMutationsOnlyPlugin
+//     ],
+//     skipPlugins: [
+//       // Disable the 'Node' interface
+//       NodePlugin,
+//     ],
+//     sortExport: true,
+//     exportGqlSchemaPath: "schema.graphql",
+//     graphiql: true,
+//     enhanceGraphiql: true,
+//     allowExplain() {
+//       return true;
+//     },
+//     enableQueryBatching: true,
+//     legacyRelations: "omit",
+//     pgSettings: async () => {
+//       // const authorization = req.headers.authorization;
+//       // const bearerStr = "Bearer";
+//       // if (canSplit(authorization, bearerStr)) {
+//       //   const token = authorization.split(bearerStr);
+//       //   if (token.length > 1) {
+//       //     try {
+//       //       const user = await keycloak.verifyOnline(token[1]);
+//       //       const role = user.resourceAccess.web.roles[0];
+//       //       const id = user.id.split(":")[2];
 
-      //       return {
-      //         "jwt.claims.user_id": id,
-      //         "jwt.claims.role": role,
-      //       };
-      //     } catch (e) {}
-      //   }
-      // }
+//       //       return {
+//       //         "jwt.claims.user_id": id,
+//       //         "jwt.claims.role": role,
+//       //       };
+//       //     } catch (e) {}
+//       //   }
+//       // }
 
-      return {
-        role: "celluloid",
-      };
-    },
-  })
-);
+//       return {
+//         role: "celluloid",
+//       };
+//     },
+//   })
+// );
 
 app.get("/*", (_, res) => res.sendFile(clientApp));
 

@@ -35,7 +35,7 @@ import Controls from "./components/Controls";
 import { styles } from "./VideoStyles";
 import { ZoomProps } from "@material-ui/core/Zoom";
 import { GrowProps } from "@material-ui/core/Grow";
-import ReactPlayer from "@celluloid/react-player";
+import ReactPlayer, { ReactPlayerProps } from "@celluloid/react-player";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VideoApi from "services/VideoService";
@@ -51,6 +51,47 @@ const Zoom: React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
 const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
 );
+
+
+const Player: React.FC<ReactPlayerProps> = (props) => {
+  const playerRef = React.useRef<ReactPlayer>(null);
+
+  // useEffect(() => {
+  //   if (playerRef && playerRef.current) {
+
+  //     setInterval(() => {
+  //       console.log("getDuration", playerRef.current?.getDuration());
+  //       // onPlayerReady(playerRef.current);
+  //       // setIsReady(true);
+  //     }, 1000);
+  //   }
+  // }, [playerRef]);
+
+
+
+  return (
+    <ReactPlayer
+      ref={playerRef}
+      width="100%"
+      height="100%"
+      onError={(error, data, hlsInstance) => {
+        console.log({ error, data, hlsInstance });
+      }}
+      config={{
+        peertube: {
+          controls: 1,
+          controlBar: 1,
+          peertubeLink: 0,
+          title: 0,
+          warningTitle: 0,
+          p2p: 0,
+          autoplay: 1,
+        },
+      }}
+      {...props}
+    />
+  );
+};
 
 export enum PlayerEvent {
   PLAYING,
@@ -135,10 +176,7 @@ export default connect(
     }: Props) => {
       const [isReady, setIsReady] = useState(false);
 
-      const mounted = useRef(false);
-
-    
-      const playerRef = React.useRef<ReactPlayer>(null);
+      const [url, setUrl] = useState<string>("");
 
       const controlsOpacity =
         showControls || showHints ? classes.visible : classes.hidden;
@@ -158,16 +196,15 @@ export default connect(
         setIsReady(true);
       };
 
-      // useEffect(() => {
-      //   if (playerRef && playerRef.current) {
-      //     setTimeout(()=>{
-      //       console.log("getDuration", playerRef.current?.getDuration());
-      //       // onPlayerReady(playerRef.current);
-      //       setIsReady(true);
-      //     }, 1000)
+      useEffect(() => {
+        if (project) {
+          setUrl(`https://${project.host}/w/${project.videoId}`);
+        }
 
-      //   }
-      // }, [playerRef]);
+        return () => {
+          setUrl("");
+        };
+      }, [project]);
 
       // if (isLoading) {
       //   return (
@@ -189,14 +226,6 @@ export default connect(
       //   );
       // }
 
-      const handleBuffer = () => {
-        console.log("handleBuffer");
-      };
-
-      const handleBufferEnd = () => {
-        console.log("handleBufferEnd");
-      };
-
       const handleToggleHints = (event: any) => {
         if (event) {
           event.stopPropagation();
@@ -205,30 +234,13 @@ export default connect(
         onToggleHints();
       };
 
-      useEffect(() => {
-        mounted.current = true;
-
-        return () => {
-          mounted.current = false;
-        };
-      }, []);
-
-      
-
-      const url = `https://${project.host}/w/${project.videoId}`;
-
-      if(!mounted || !project) {
-        return null;
-      }
-
       return (
         <div
           onMouseMove={onUserAction}
           className={classnames("full-screenable-node", classes.videoWrapper)}
         >
           <div onMouseMove={onUserAction}>
-            <ReactPlayer
-              ref={playerRef}
+            <Player
               url={url}
               onReady={handleVideoReady}
               onDuration={onDuration}
@@ -237,24 +249,7 @@ export default connect(
               width="100%"
               height="100%"
               playing={playing}
-              onBuffer={handleBuffer}
-              onBufferEnd={handleBufferEnd}
-              onMouseMove={onUserAction}
-              onError={(error, data, hlsInstance) => {
-                console.log({ error, data, hlsInstance });
-              }}
               muted={muted}
-              config={{
-                peertube: {
-                  controls: 1,
-                  controlBar: 1,
-                  peertubeLink: 0,
-                  title: 0,
-                  warningTitle: 0,
-                  p2p: 0,
-                  autoplay: 1,
-                },
-              }}
             />
 
             <div

@@ -10,7 +10,7 @@ export default {
   home: {
     title: 'Apprendre ensemble avec une vidéo',
     description:
-      'Partagez une vidéo Youtube avec vos élèves, vos'
+      'Partagez une vidéo PeerTube avec vos élèves, vos'
       + ' étudiant.e.s ou un groupe en formation : créez'
       + ' votre projet pédagogique, annotez les images,'
       + ' posez des questions et répondez à celles des'

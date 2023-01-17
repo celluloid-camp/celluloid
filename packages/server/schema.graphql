@@ -3238,7 +3238,7 @@ type User {
     orderBy: [CommentsOrderBy!] = [PRIMARY_KEY_ASC]
   ): CommentsConnection!
   confirmed: Boolean!
-  email: String!
+  email: String
   extra: JSON
   id: UUID!
   password: String!
@@ -3392,7 +3392,7 @@ input UserInput {
   code: String
   codeGeneratedAt: Datetime
   confirmed: Boolean
-  email: String!
+  email: String
   extra: JSON
   id: UUID
   password: String!

@@ -28,6 +28,7 @@ router.post("/student-signup", (req, res, next) => {
   const payload = req.body;
   const result = validateStudentSignup(payload);
 
+
   if (!result.success) {
     log.error(
       `Failed student signup with data ${payload}: bad request:`,
@@ -37,6 +38,7 @@ router.post("/student-signup", (req, res, next) => {
   }
   return passport.authenticate(SigninStrategy.STUDENT_SIGNUP, (error) => {
     if (error) {
+      console.log("error", error)
       log.error(
         `Failed student signup with username ${payload.username}:`,
         error

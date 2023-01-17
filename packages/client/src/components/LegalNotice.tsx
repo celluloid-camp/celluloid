@@ -172,7 +172,7 @@ const LegalNotice: React.FC<any> = () => (
           un enseignant) et des participants à ce projet (qui peuvent par
           exemple être ses élèves). Dans tous les cas, l’utilisateur qui crée un
           projet dans Celluloid et y associe une vidéo lue depuis un site tiers
-          (Youtube…) est responsable du projet et de l’usage de la vidéo qui y
+          (PeerTube) est responsable du projet et de l’usage de la vidéo qui y
           est faite :
         </p>
         <p>
@@ -193,7 +193,7 @@ const LegalNotice: React.FC<any> = () => (
         </p>
         <p>
           Les vidéos utilisées dans le cadre des projets créés dans Celluloid
-          sont hébergé par des sites tiers (Youtube notamment). Le contenu de
+          sont hébergé par des sites tiers (PeerTube notamment). Le contenu de
           ces vidéos ne sauraient engager la responsabilité des responsables
           éditoriaux de Celluloid. Pour supprimer une vidéo sdont le contenu
           serait inapproprié, l'utilisateur devra s'adresser directement à

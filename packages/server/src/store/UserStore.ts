@@ -1,5 +1,6 @@
 import { UserRecord } from "@celluloid/types";
 import { Knex } from "knex";
+
 import { generateConfirmationCode, hashPassword } from "../auth/Utils";
 import { database, getExactlyOne } from "../backends/Database";
 
@@ -8,6 +9,8 @@ export function createStudent(
   password: string,
   projectId: string
 ) {
+
+
   return database.transaction((transaction) =>
     database("User")
       .transacting(transaction)
