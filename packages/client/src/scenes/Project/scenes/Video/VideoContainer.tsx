@@ -97,7 +97,6 @@ export default connect(
 
     refreshPlayer() {
       const { player } = this.state;
-
       if (player) {
         const annotations = this.props.annotations;
         const focusedAnnotation = this.props.focusedAnnotation;
@@ -113,7 +112,7 @@ export default connect(
               annotation.startTime >= position - 0.1 &&
               annotation.startTime < position + 0.1
             ) {
-              // player.pauseVideo();
+              // player.pause();
               this.setState({
                 playing: false,
               });
@@ -130,6 +129,7 @@ export default connect(
           if (shouldBlur) {
             this.props.blurAnnotation();
           }
+
           if (!this.props.seeking) {
             this.setState({
               visibleAnnotations,
@@ -163,9 +163,9 @@ export default connect(
             playing: false,
           });
         }
-        console.log("seekTo", value)
+        console.log("seekTo", value);
         player.seekTo(value, "seconds");
-        this.props.requestSeek(value);
+        // this.props.requestSeek(value);
       }
     }
 
@@ -186,10 +186,10 @@ export default connect(
       const onUserAction = this.resetFadeOutTimer.bind(this);
 
       const onPlayerReady = (player: ReactPlayer) => {
-        console.log("onPlayerReady")
+        console.log("onPlayerReady");
         this.refreshTimer = window.setInterval(
           this.refreshPlayer.bind(this),
-          1000
+          500
         );
         this.setState({
           player,
@@ -198,18 +198,17 @@ export default connect(
       };
 
       const onPlayerProgress = (state: PlayerProgressState) => {
-        console.log("onPlayerProgress")
         this.setState({
           position: state.playedSeconds,
         });
       };
 
-      const onDuration =(duration:number) => {
-        console.log("onDuration")
+      const onDuration = (duration: number) => {
+        console.log("onDuration");
         this.setState({
           duration,
         });
-      }
+      };
 
       const onPlayerStateChange = (event: PlayerEvent, data: number) => {
         switch (event) {
