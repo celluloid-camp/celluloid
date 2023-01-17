@@ -9,7 +9,7 @@ export default {
 
   home: {
     title: 'Learning together with a video',
-    description: 'Share a YouTube video with your students,'
+    description: 'Share a PeerTube video with your students,'
       + ' your pupils or your training groups: create your'
       + ' educational project, annotate the video frames,'
       + ' ask questions, provide the answers.',
