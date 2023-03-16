@@ -109,14 +109,14 @@ export default connect(
           visibleAnnotations.forEach((annotation) => {
             if (
               annotation.pause &&
-              annotation.startTime >= position - 0.1 &&
-              annotation.startTime < position + 0.1
+              annotation.startTime === Math.floor(position)
             ) {
               // player.pause();
+              player.getInternalPlayer().pause()
               this.setState({
                 playing: false,
               });
-              player.seekTo(position + 0.1, "seconds");
+              player.seekTo(position + 1, "seconds");
             }
           });
 
