@@ -5,7 +5,7 @@ import DialogAltButtons from "components/DialogAltButtons";
 import DialogButtons from "components/DialogButtons";
 import DialogError from "components/DialogError";
 import React from "react";
-import { useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
 import { Action } from "types/ActionTypes";
 
@@ -26,7 +26,7 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const StudentSignupComponent = withStyles(styles)(
-  ({ classes, data, errors, onChange, onSubmit, onClickLogin }: Props) => {
+  ({ data, errors, onChange, onSubmit, onClickLogin }: Props) => {
     const { t } = useTranslation();
     return (
       <>

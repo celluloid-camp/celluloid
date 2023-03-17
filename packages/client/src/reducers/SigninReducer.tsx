@@ -1,14 +1,13 @@
-import * as SigninDialog from 'components/Signin';
-import { ActionType } from 'types/ActionTypes';
-
-import { AnyAction } from 'redux';
+import * as SigninDialog from "components/Signin";
+import { AnyAction } from "redux";
+import { ActionType } from "types/ActionTypes";
 
 const initialState = {
   loading: false,
   errors: {},
   dialog: new SigninDialog.Closed(),
   email: undefined,
-  password: undefined
+  password: undefined,
 };
 
 export default (state = initialState, action: AnyAction) => {
@@ -36,7 +35,7 @@ export default (state = initialState, action: AnyAction) => {
         loading: false,
         errors: {},
         dialog: new SigninDialog.ConfirmSignupOpen(),
-        credentials: action.payload
+        credentials: action.payload,
       };
     case ActionType.OPEN_RESET_PASSWORD:
       return {
@@ -53,7 +52,7 @@ export default (state = initialState, action: AnyAction) => {
     case ActionType.TRIGGER_SIGNIN_LOADING:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case ActionType.CLOSE_SIGNIN:
       return {
@@ -74,14 +73,14 @@ export default (state = initialState, action: AnyAction) => {
       return {
         loading: false,
         dialog: new SigninDialog.Closed(),
-        errors: {}
+        errors: {},
       };
     case ActionType.SUCCEED_SIGNUP:
       return {
         ...state,
         loading: false,
         errors: {},
-        dialog: new SigninDialog.LoginOpen()
+        dialog: new SigninDialog.LoginOpen(),
       };
     default:
       return state;

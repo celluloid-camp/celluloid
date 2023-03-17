@@ -4,10 +4,11 @@
   "version": "0.1.0",
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
-  "author": "Erwan Queffélec <erwan.queffelec@gmail.com>",
+  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
+    "watch": "tsc -b --watch --preserveWatchOutput",
     "build": "tsc -b"
   },
   "devDependencies": {

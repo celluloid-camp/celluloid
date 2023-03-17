@@ -5,11 +5,12 @@ import {
   ProjectGraphRecord,
   SigninErrors,
   TagData,
-  UserRecord
-} from '@celluloid/types';
-import * as SigninDialog from 'components/Signin';
-import { RouterState } from 'connected-react-router';
-import { PeertubeVideoInfo } from './YoutubeTypes';
+  UserRecord,
+} from "@celluloid/types";
+import * as SigninDialog from "components/Signin";
+import { RouterState } from "connected-react-router";
+
+import { PeertubeVideoInfo } from "./YoutubeTypes";
 
 export interface SigninState {
   loading: boolean;
@@ -63,19 +64,19 @@ export enum SharingStatus {
   OPEN,
   ERROR,
   LOADING,
-  CLOSED
+  CLOSED,
 }
 
 export enum ComponentStatus {
   LOADING,
   ERROR,
-  READY
+  READY,
 }
 
 export interface HomeState {
   errors: {
-    projects?: string,
-    video?: string,
+    projects?: string;
+    video?: string;
     createProject?: string;
   };
   projects: ProjectGraphRecord[];

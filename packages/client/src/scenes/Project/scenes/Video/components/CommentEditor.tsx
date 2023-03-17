@@ -1,4 +1,3 @@
-import { AppState } from "types/StateTypes";
 import { AnnotationRecord, CommentRecord, UserRecord } from "@celluloid/types";
 import {
   createStyles,
@@ -17,13 +16,14 @@ import {
 } from "actions/CommentActions";
 import UserAvatar from "components/UserAvatar";
 import * as React from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { AsyncAction, EmptyAction } from "types/ActionTypes";
+import { AppState } from "types/StateTypes";
 
 import TransparentInput from "./TransparentInput";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -73,11 +73,11 @@ interface Props extends WithStyles<typeof styles> {
   onClickCancel(): void;
 }
 
-interface State {
-  text: string;
-}
+// interface State {
+//   text: string;
+// }
 
-const init = ({ comment }: Props) => {
+const _init = ({ comment }: Props) => {
   if (comment) {
     return { text: comment.text };
   } else {

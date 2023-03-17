@@ -14,16 +14,15 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ButtonProgress from "components/ButtonProgress";
 import DialogError from "components/DialogError";
 import LabeledProgressSwitch from "components/LabeledProgressSwitch";
+import ShareCredentials from "components/ShareCredentials";
 import UserAvatar from "components/UserAvatar";
 import VisibilityChip from "components/VisibilityChip";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { AsyncAction } from "types/ActionTypes";
-import { isOwner, isAdmin } from "utils/ProjectUtils";
-
-import ShareCredentials from "components/ShareCredentials";
+import { isAdmin, isOwner } from "utils/ProjectUtils";
 
 import ShareDialog from "./components/ShareDialog";
-import { useTranslation } from "react-i18next";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({

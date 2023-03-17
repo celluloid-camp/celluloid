@@ -1,5 +1,5 @@
 import { routerMiddleware } from "connected-react-router";
-import { createBrowserHistory, History } from "history";
+import { createBrowserHistory } from "history";
 import { applyMiddleware, compose, createStore } from "redux";
 
 import createRootReducer from "../reducers";
