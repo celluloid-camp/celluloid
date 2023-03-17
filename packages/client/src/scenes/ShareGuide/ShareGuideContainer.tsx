@@ -7,16 +7,16 @@ import {
   WithStyles,
   withStyles,
 } from "@material-ui/core";
+import { useQuery } from "@tanstack/react-query";
 import LoadingBig from "components/LoadingBig";
 import NotFound from "components/NotFound";
 import ProjectSummary from "components/ProjectSummary";
 import ShareCredentials from "components/ShareCredentials";
 import * as queryString from "query-string";
 import React from "react";
-import ProjectService from "services/ProjectService";
-import { useLocation, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useLocation, useParams } from "react-router-dom";
+import ProjectService from "services/ProjectService";
 
 const styles = (theme: Theme) =>
   createStyles({

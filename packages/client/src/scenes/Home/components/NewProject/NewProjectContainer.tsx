@@ -1,15 +1,5 @@
 import "rc-slider/assets/index.css";
 
-import { createProjectThunk } from "actions/ProjectActions";
-import { createTagThunk } from "actions/TagActions";
-import DialogError from "components/DialogError";
-import DialogHeader from "components/DialogHeader";
-import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
-import {
-  sliderHandleStyle,
-  sliderRailStyle,
-  sliderTrackStyle,
-} from "utils/SliderUtils";
 import {
   ProjectCreateData,
   ProjectGraphRecord,
@@ -42,18 +32,28 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { discardNewVideo } from "actions/HomeActions";
+import { createProjectThunk } from "actions/ProjectActions";
+import { createTagThunk } from "actions/TagActions";
+import DialogError from "components/DialogError";
+import DialogHeader from "components/DialogHeader";
 import TagSearchBox from "components/TagSearchBox/TagSearchBox";
 import * as R from "ramda";
 import { Range } from "rc-slider";
 import * as React from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Dispatch } from "redux";
+import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
 import { levelLabel, levelsCount } from "types/LevelTypes";
 import { AppState } from "types/StateTypes";
 import { PeertubeVideoInfo } from "types/YoutubeTypes";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import {
+  sliderHandleStyle,
+  sliderRailStyle,
+  sliderTrackStyle,
+} from "utils/SliderUtils";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -218,14 +218,12 @@ const NewProjectContainer: React.FC<Props> = ({
     });
   };
 
-  const handleSubmit = async (project: ProjectCreateData)=>{
-    const {error, payload} = await onSubmit(project);
-    if(!error){
+  const handleSubmit = async (project: ProjectCreateData) => {
+    const { error, payload } = await onSubmit(project);
+    if (!error) {
       navigate(`/projects/${(payload as ProjectGraphRecord).id}`);
     }
-    
-
-  }
+  };
   if (video && user && user.role !== "Student") {
     return (
       <Dialog

@@ -1,5 +1,6 @@
 import "rc-slider/assets/index.css";
 
+import ReactPlayer, { ReactPlayerProps } from "@celluloid/react-player";
 import {
   AnnotationRecord,
   ProjectGraphRecord,
@@ -7,44 +8,33 @@ import {
 } from "@celluloid/types";
 import {
   Badge,
-  Button,
-  CircularProgress,
   Fab,
-  Grid,
   Grow as GrowMUI,
   WithStyles,
   withStyles,
   Zoom as ZoomMUI,
 } from "@material-ui/core";
+import { GrowProps } from "@material-ui/core/Grow";
+// import LinearProgress from "@material-ui/core/LinearProgress";
+import { ZoomProps } from "@material-ui/core/Zoom";
+import AnnotationIcon from "@material-ui/icons/Comment";
 import EditIcon from "@material-ui/icons/Edit";
+// import { useQuery } from "@tanstack/react-query";
 import { triggerAddAnnotation } from "actions/AnnotationsActions";
 import classnames from "classnames";
 import * as React from "react";
-import Fullscreen from "react-full-screen";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
 import { Dispatch } from "redux";
 import { EmptyAction } from "types/ActionTypes";
 import { AppState } from "types/StateTypes";
 import { canAnnotate } from "utils/ProjectUtils";
-import AnnotationIcon from "@material-ui/icons/Comment";
+
 import AnnotationContent from "./components/AnnotationContent";
 import AnnotationEditor from "./components/AnnotationEditor";
 import AnnotationHints from "./components/AnnotationHints";
-import Controls from "./components/Controls";
 import { styles } from "./VideoStyles";
-import { ZoomProps } from "@material-ui/core/Zoom";
-import { GrowProps } from "@material-ui/core/Grow";
-import ReactPlayer, { ReactPlayerProps } from "@celluloid/react-player";
-import { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import VideoApi from "services/VideoService";
-
-
-
-import LinearProgress from "@material-ui/core/LinearProgress";
-
-import get from "lodash/get";
 
 const Zoom: React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
   <ZoomMUI {...props} />
@@ -53,7 +43,6 @@ const Zoom: React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
 const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
 );
-
 
 const Player: React.FC<ReactPlayerProps> = (props) => {
   const playerRef = React.useRef<ReactPlayer>(null);
@@ -68,8 +57,6 @@ const Player: React.FC<ReactPlayerProps> = (props) => {
   //     }, 1000);
   //   }
   // }, [playerRef]);
-
-
 
   return (
     <ReactPlayer
@@ -158,18 +145,13 @@ export default connect(
       position,
       duration,
       playing,
-      fullscreen,
       showControls,
       showHints,
       editing,
       onUserAction,
       onPlayerReady,
-      onPlayerStateChange,
       onDuration,
       onPlayerProgress,
-      onFullscreenChange,
-      onTogglePlayPause,
-      onToggleFullscreen,
       onToggleHints,
       onClickHint,
       onClickAnnotate,
@@ -179,7 +161,6 @@ export default connect(
       const [isReady, setIsReady] = useState(false);
 
       const [url, setUrl] = useState<string>("");
-
 
       const controlsOpacity =
         showControls || showHints ? classes.visible : classes.hidden;
@@ -192,7 +173,7 @@ export default connect(
         ? focusedAnnotation.id
         : undefined;
 
-      const [muted, setMuted] = useState(false);
+      const [muted] = useState(false);
 
       const handleVideoReady = (player: ReactPlayer) => {
         onPlayerReady(player);
@@ -262,9 +243,7 @@ export default connect(
             />
 
             {!showHints && (
-              <div
-                className={classes.annotationFrame}
-              >
+              <div className={classes.annotationFrame}>
                 <Grow appear={true} in={editing}>
                   <div>
                     {user && editing && (

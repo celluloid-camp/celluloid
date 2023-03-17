@@ -1,19 +1,19 @@
 import { AnnotationRecord } from "@celluloid/types";
 import {
   createStyles,
+  Grid,
   IconButton,
   Paper,
   Theme,
   Typography,
   WithStyles,
   withStyles,
-  Grid,
 } from "@material-ui/core";
+import CancelIcon from "@material-ui/icons/Clear";
 import classNames from "classnames";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { getUserColor } from "utils/UserUtils";
-import CancelIcon from "@material-ui/icons/Clear";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -88,7 +88,7 @@ const AnnotationHints: React.FC<Props> = ({
         alignItems="center"
         spacing={24}
       >
-        <Grid item >
+        <Grid item>
           <Typography className={classes.title} align="left" variant="h5">
             {annotations.length > 0
               ? t("annotation.hintLabel", { count: annotations.length })
@@ -96,7 +96,7 @@ const AnnotationHints: React.FC<Props> = ({
           </Typography>
         </Grid>
 
-        <Grid item >
+        <Grid item>
           <IconButton color="secondary" onClick={handleClose}>
             <CancelIcon fontSize="small" />
           </IconButton>

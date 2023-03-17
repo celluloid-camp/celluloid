@@ -1,6 +1,3 @@
-import { listProjectsThunk } from "actions/ProjectActions";
-import TagSearchBox from "components/TagSearchBox/TagSearchBox";
-import { isMember, isOwner, isAdmin } from "utils/ProjectUtils";
 import { ProjectGraphRecord, TagData, UserRecord } from "@celluloid/types";
 import {
   Chip,
@@ -13,23 +10,26 @@ import {
   WithStyles,
   withStyles,
 } from "@material-ui/core";
+import { FadeProps } from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import { GrowProps } from "@material-ui/core/Grow";
+import { listProjectsThunk } from "actions/ProjectActions";
 import { listTagsThunk } from "actions/TagActions";
 import classNames from "classnames";
+import TagSearchBox from "components/TagSearchBox/TagSearchBox";
 import * as R from "ramda";
 import * as React from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
 import { Dispatch } from "redux";
+import { useDidUpdate } from "rooks";
 import { AsyncAction } from "types/ActionTypes";
 import { AppState } from "types/StateTypes";
+import { isAdmin, isMember, isOwner } from "utils/ProjectUtils";
 
 import ProjectThumbnail from "./ProjectThumbnail";
-import { FadeProps } from "@material-ui/core/Fade";
-import { useEffect, useState } from "react";
-import { useDidUpdate } from "rooks";
-import { useTranslation } from "react-i18next";
 
 const Fade: React.FC<React.PropsWithChildren & FadeProps> = (props) => (
   <FadeMUI {...props} />
@@ -74,7 +74,6 @@ interface Props extends WithStyles<typeof styles> {
   loadTags(): AsyncAction<TagData[], string>;
 }
 
-
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
   projects: state.home.projects,
@@ -106,7 +105,7 @@ const ProjectGrid: React.FC<Props> = ({
 
   useEffect(() => {
     load();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useDidUpdate(() => {

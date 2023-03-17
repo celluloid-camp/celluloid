@@ -1,20 +1,22 @@
-import { ActionType } from 'types/ActionTypes';
-import { AnyAction } from 'redux';
-import { HomeState } from 'types/StateTypes';
+import { AnyAction } from "redux";
+import { ActionType } from "types/ActionTypes";
+import { HomeState } from "types/StateTypes";
 
 const initialState = {
   errors: {
     video: undefined,
     projects: undefined,
-    createProject: undefined
+    createProject: undefined,
   },
   projects: [],
   video: undefined,
-  createProjectLoading: false
+  createProjectLoading: false,
 } as HomeState;
 
-export default (state = initialState, { type, payload }: AnyAction):
-  HomeState => {
+export default (
+  state = initialState,
+  { type, payload }: AnyAction
+): HomeState => {
   switch (type) {
     case ActionType.SUCCEED_UPSERT_PROJECT:
       return {
@@ -22,7 +24,7 @@ export default (state = initialState, { type, payload }: AnyAction):
         errors: {
           ...state.errors,
           video: undefined,
-          createProject: undefined
+          createProject: undefined,
         },
         video: undefined,
         createProjectLoading: false,
@@ -32,21 +34,21 @@ export default (state = initialState, { type, payload }: AnyAction):
         ...state,
         errors: {
           ...state.errors,
-          createProject: payload
+          createProject: payload,
         },
-        createProjectLoading: false
+        createProjectLoading: false,
       };
     case ActionType.TRIGGER_UPSERT_PROJECT_LOADING:
       return {
         ...state,
-        createProjectLoading: true
+        createProjectLoading: true,
       };
     case ActionType.FAIL_LOAD_VIDEO:
       return {
         ...state,
         errors: {
           ...state.errors,
-          video: payload
+          video: payload,
         },
         video: undefined,
       };
@@ -55,9 +57,9 @@ export default (state = initialState, { type, payload }: AnyAction):
         ...state,
         errors: {
           ...state.errors,
-          video: undefined
+          video: undefined,
         },
-        video: payload
+        video: payload,
       };
     case ActionType.SUCCEED_LIST_PROJECTS:
       return {
@@ -66,25 +68,25 @@ export default (state = initialState, { type, payload }: AnyAction):
           ...state.errors,
           projects: undefined,
         },
-        projects: payload
+        projects: payload,
       };
     case ActionType.DISCARD_NEW_VIDEO:
       return {
         ...state,
         errors: {
           ...state.errors,
-          video: undefined
+          video: undefined,
         },
-        video: undefined
+        video: undefined,
       };
     case ActionType.FAIL_LIST_PROJECTS:
       return {
         ...state,
         errors: {
           ...state.errors,
-          projects: payload
+          projects: payload,
         },
-        projects: []
+        projects: [],
       };
     default:
       return state;

@@ -1,21 +1,15 @@
+/* eslint-disable import/no-anonymous-default-export */
 module.exports = {
   parser: "@typescript-eslint/parser",
-  extends: [
-    "plugin:react/recommended",
-    "plugin:import/errors",
-    "plugin:import/typescript",
-    "prettier",
-  ],
+  extends: ["plugin:import/errors", "plugin:import/typescript", "prettier"],
   plugins: [
     "jest",
     "@typescript-eslint",
     "react-hooks",
-    "react",
     "simple-import-sort",
     "import",
   ],
-  overrides: [
-  ],
+  overrides: [],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: "module",
@@ -97,5 +91,7 @@ module.exports = {
 
     "import/no-deprecated": "warn",
     "import/no-duplicates": "error",
+
+    "import/no-unresolved": "warn",
   },
 };

@@ -1,12 +1,11 @@
-import * as React from 'react';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'react-redux';
+import { SigninErrors } from "@celluloid/types";
+import { doResetPasswordThunk } from "actions/Signin/ResetPasswordActions";
+import * as React from "react";
+import { connect } from "react-redux";
+import { AnyAction, Dispatch } from "redux";
+import { AppState } from "types/StateTypes";
 
-import ResetPassword from './ResetPasswordComponent';
-import { AppState } from 'types/StateTypes';
-
-import { SigninErrors } from '@celluloid/types';
-import { doResetPasswordThunk } from 'actions/Signin/ResetPasswordActions';
+import ResetPassword from "./ResetPasswordComponent";
 
 interface Props {
   errors: SigninErrors;
@@ -15,13 +14,13 @@ interface Props {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onSubmit: (email: string) => doResetPasswordThunk(email)(dispatch)
+    onSubmit: (email: string) => doResetPasswordThunk(email)(dispatch),
   };
 };
 
 const mapStateToProps = (state: AppState) => {
   return {
-    errors: state.signin.errors
+    errors: state.signin.errors,
   };
 };
 
@@ -30,12 +29,12 @@ export default connect(
   mapDispatchToProps
 )(
   class extends React.Component<Props, { login: string }> {
-    state = { login: '' };
+    state = { login: "" };
 
     render() {
       const onChange = (value: string) => {
         this.setState({
-          login: value
+          login: value,
         });
       };
 
