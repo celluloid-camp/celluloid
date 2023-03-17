@@ -1,9 +1,9 @@
-import { AppState } from "types/StateTypes";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import * as React from "react";
-import { connect } from "react-redux";
 import { Trans } from "react-i18next";
+import { connect } from "react-redux";
+import { AppState } from "types/StateTypes";
 
 const mapStateToProps = (state: AppState) => ({
   open: state.updated,

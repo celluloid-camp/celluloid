@@ -27,6 +27,8 @@ import { clientApp, clientDir, publicDir } from "./Paths";
 
 const DATABASE_URL = `postgresql://${process.env.CELLULOID_PG_USER}:${process.env.CELLULOID_PG_PASSWORD}@${process.env.CELLULOID_PG_HOST}:${process.env.CELLULOID_PG_PORT}/${process.env.CELLULOID_PG_DATABASE}`;
 
+
+
 require("cookie-parser");
 
 const log = logger("http");

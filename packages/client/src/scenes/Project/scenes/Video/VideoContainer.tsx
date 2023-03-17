@@ -1,3 +1,4 @@
+import ReactPlayer from "@celluloid/react-player";
 import {
   AnnotationRecord,
   ProjectGraphRecord,
@@ -15,7 +16,6 @@ import { Dispatch } from "redux";
 import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
 import { AppState } from "types/StateTypes";
 import * as AnnotationUtils from "utils/AnnotationUtils";
-import ReactPlayer from "@celluloid/react-player";
 
 import VideoComponent, {
   PlayerEvent,
@@ -112,7 +112,7 @@ export default connect(
               annotation.startTime === Math.floor(position)
             ) {
               // player.pause();
-              player.getInternalPlayer().pause()
+              player.getInternalPlayer().pause();
               this.setState({
                 playing: false,
               });
@@ -153,7 +153,7 @@ export default connect(
       this.setState({ showControls: false });
     }
 
-    seek(value: number, pause: boolean, seekAhead: boolean) {
+    seek(value: number, pause: boolean, _seekAhead: boolean) {
       this.setState({ position: value });
       const player = this.state.player;
       if (player) {
@@ -210,7 +210,7 @@ export default connect(
         });
       };
 
-      const onPlayerStateChange = (event: PlayerEvent, data: number) => {
+      const onPlayerStateChange = (event: PlayerEvent, _data: number) => {
         switch (event) {
           case PlayerEvent.PLAYING:
             this.setState({ playing: true });

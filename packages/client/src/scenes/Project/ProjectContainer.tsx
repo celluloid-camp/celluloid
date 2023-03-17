@@ -1,16 +1,15 @@
 import { ProjectGraphRecord, UserRecord } from "@celluloid/types";
 import { clearProject, loadProjectThunk } from "actions/ProjectActions";
-
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
 import { Dispatch } from "redux";
+import { useDidUpdate } from "rooks";
+import { SharedLayout } from "scenes/Menu";
 import { AsyncAction, EmptyAction } from "types/ActionTypes";
 import { AppState } from "types/StateTypes";
-import { useParams } from "react-router-dom";
-import { useDidUpdate } from "rooks";
+
 import ProjectComponent from "./ProjectComponent";
-import { useEffect } from "react";
-import { SharedLayout } from "scenes/Menu";
 
 interface Props {
   user?: UserRecord;
@@ -31,12 +30,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   clearProject: () => dispatch(clearProject()),
 });
 
-const ProjectContainer: React.FC<Props> = ({
-  user,
-  clearProject,
-  loadProject,
-  project,
-}) => {
+const ProjectContainer: React.FC<Props> = ({ user, loadProject, project }) => {
   let { projectId } = useParams();
 
   const load = () => {

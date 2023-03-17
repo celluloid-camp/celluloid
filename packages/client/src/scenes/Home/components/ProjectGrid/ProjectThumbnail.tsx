@@ -1,4 +1,3 @@
-import VisibilityChip from "components/VisibilityChip";
 import { ProjectGraphRecord } from "@celluloid/types";
 import {
   Card,
@@ -13,17 +12,18 @@ import {
   WithStyles,
   withStyles,
 } from "@material-ui/core";
-import PlayIcon from "@material-ui/icons/PlayCircleOutline";
-import { push } from "connected-react-router";
-import * as React from "react";
-import { connect } from "react-redux";
-import { AnyAction, Dispatch } from "redux";
-import Shiitake, { ShiitakeProps } from "shiitake";
 import { GrowProps } from "@material-ui/core/Grow";
-import { useState } from "react";
+// import PlayIcon from "@material-ui/icons/PlayCircleOutline";
 import { useQuery } from "@tanstack/react-query";
+import VisibilityChip from "components/VisibilityChip";
+// import { push } from "connected-react-router";
+import * as React from "react";
+import { useState } from "react";
+// import { connect } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+// import { AnyAction, Dispatch } from "redux";
 import VideoApi from "services/VideoService";
-import { useNavigate } from "react-router-dom";
+import Shiitake, { ShiitakeProps } from "shiitake";
 
 const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
@@ -134,7 +134,6 @@ const ProjectThumbnail: React.FC<Props> = ({
 }) => {
   const [elevated, setElevated] = useState(false);
 
-  const navigate = useNavigate();
   const query = useQuery({
     queryKey: ["video", project.host, project.videoId],
     queryFn: () => VideoApi.getPeerTubeVideo(project.host, project.videoId),
@@ -142,7 +141,7 @@ const ProjectThumbnail: React.FC<Props> = ({
 
   const onClick = () => {
     // navigate(`/projects/${project.id}`);
-    window.location.assign(`/projects/${project.id}`)
+    window.location.assign(`/projects/${project.id}`);
   };
 
   return (
