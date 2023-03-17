@@ -1,6 +1,12 @@
 FROM node:16
 WORKDIR /usr/src/app
-COPY . ./
+RUN mkdir -p packages/{types,validators,client,server}
+COPY packages/types/package.json packages/types/
+COPY packages/validators/package.json packages/validators/
+COPY packages/server/package.json packages/server/
+COPY packages/client/package.json packages/client/
+COPY yarn.lock .yarnrc.yml package.json ./
+COPY .yarn ./.yarn
 RUN yarn set version berry
 RUN yarn install
 
@@ -8,6 +14,7 @@ RUN yarn install
 ARG COMMIT
 ENV REACT_APP_COMMIT=${COMMIT}
 
+COPY . ./
 ENV NODE_ENV=production
 RUN yarn build
 
