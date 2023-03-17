@@ -1,24 +1,24 @@
 import { TagData } from "@celluloid/types";
 import {
   createStyles,
+  InputAdornment,
   MenuItem,
   Paper,
   TextField,
   Theme,
   WithStyles,
   withStyles,
-  InputAdornment,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import React from "react";
-import Autosuggest, { RenderInputComponent } from "react-autosuggest";
-import {
+import Autosuggest, {
+  // RenderInputComponent,
   RenderSuggestionParams,
   RenderSuggestionsContainerParams,
   SuggestionSelectedEventData,
 } from "react-autosuggest";
-import { AppState } from "types/StateTypes";
 import { connect } from "react-redux";
+import { AppState } from "types/StateTypes";
 
 const parse = require("autosuggest-highlight/parse");
 const match = require("autosuggest-highlight/match");

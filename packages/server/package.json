@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Celluloid backend",
   "repository": "http://github.com/celluloid-edu/celluloid",
-  "author": "Erwan Queffélec <erwan.queffelec@gmail.com",
+  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "main": "build/index.js",
   "license": "MIT",
   "dependencies": {
@@ -41,6 +41,7 @@
   "scripts": {
     "clean": "rm -rf build",
     "build": "tsc -b",
+    "watch": "tsc -b --watch --preserveWatchOutput",
     "dev": "nodemon --signal SIGINT --watch 'build/**/*.js' -x \"node --inspect=9678 -r source-map-support/register\" build/index.js | pino-pretty",
     "start": "node --use-strict build/index.js",
     "knex": "knex --cwd src"

@@ -1,21 +1,21 @@
 import {
-  triggerCancelEditComment,
-  triggerEditComment
-} from 'actions/CommentActions';
-import { AppState } from 'types/StateTypes';
-import {
   AnnotationRecord,
   CommentRecord,
   ProjectGraphRecord,
-  UserRecord
-} from '@celluloid/types';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { Action, EmptyAction } from 'types/ActionTypes';
+  UserRecord,
+} from "@celluloid/types";
+import {
+  triggerCancelEditComment,
+  triggerEditComment,
+} from "actions/CommentActions";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { Action, EmptyAction } from "types/ActionTypes";
+import { AppState } from "types/StateTypes";
 
-import CommentContent from './CommentContent';
-import CommentEditor from './CommentEditor';
+import CommentContent from "./CommentContent";
+import CommentEditor from "./CommentEditor";
 
 interface Props {
   user?: UserRecord;
@@ -30,23 +30,28 @@ interface Props {
 
 const mapStateToProps = (state: AppState) => ({
   editing: state.project.video.commenting,
-  focused: state.project.video.focusedComment
+  focused: state.project.video.focusedComment,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   onClickCancel: () => dispatch(triggerCancelEditComment()),
-  onClickEdit: (comment: CommentRecord) => dispatch(triggerEditComment(comment))
+  onClickEdit: (comment: CommentRecord) =>
+    dispatch(triggerEditComment(comment)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
   class extends React.Component<Props> {
-
     render() {
-      const { comment, user, annotation, project, onClickCancel, onClickEdit } = this.props;
+      const { comment, user, annotation, project, onClickCancel, onClickEdit } =
+        this.props;
 
-      const editing = this.props.editing
-        && this.props.focused
-        && this.props.focused.id === comment.id;
+      const editing =
+        this.props.editing &&
+        this.props.focused &&
+        this.props.focused.id === comment.id;
 
       if (editing && user) {
         return (
@@ -69,4 +74,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         );
       }
     }
-  });
+  }
+);

@@ -15,11 +15,11 @@ import CheckIcon from "@material-ui/icons/Check";
 import CancelIcon from "@material-ui/icons/Clear";
 import { Range } from "rc-slider";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { formatDuration } from "utils/DurationUtils";
+import { sliderRailStyle, sliderTrackStyle } from "utils/SliderUtils";
 
 import TransparentInput from "../TransparentInput";
-import { sliderRailStyle, sliderTrackStyle } from "utils/SliderUtils";
-import { useTranslation } from "react-i18next";
 
 const caretStart = require("images/caret-start.png");
 const caretStop = require("images/caret-stop.png");

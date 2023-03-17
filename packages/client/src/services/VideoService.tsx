@@ -1,7 +1,7 @@
-import * as queryString from "query-string";
+import { PeerTubeVideo } from "@celluloid/types";
+// import * as queryString from "query-string";
 import { last } from "ramda";
 import { PeertubeVideoInfo } from "types/YoutubeTypes";
-import { PeerTubeVideo } from "@celluloid/types";
 
 class VideoApi {
   static async getPeerTubeVideoData(
@@ -38,10 +38,9 @@ class VideoApi {
   }
 
   static async getPeerTubeVideo(
-    host:string,
-    videoId: string,
+    host: string,
+    videoId: string
   ): Promise<PeerTubeVideo> {
-   
     const headers = {
       Accepts: "application/json",
     };
@@ -55,13 +54,12 @@ class VideoApi {
 
     if (response.status === 200) {
       const data: PeerTubeVideo = await response.json();
-      return data
+      return data;
     }
     throw new Error(
       `Could not perform YouTube API request (error ${response.status})`
     );
   }
-
 }
 
 export default VideoApi;

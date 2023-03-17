@@ -3,12 +3,12 @@ import {
   fetchCurrentUserThunk,
 } from "actions/Signin/UserActions";
 import * as React from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { AnyAction, Dispatch } from "redux";
 
 import Menu from "./MenuComponent";
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 
 type Props = React.PropsWithChildren & {
   loadUser(): Promise<AnyAction>;
@@ -32,6 +32,7 @@ const SharedLayoutInner: React.FC<Props> = ({
 
   useEffect(() => {
     loadUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onOpenLangMenu = (element: EventTarget) => {

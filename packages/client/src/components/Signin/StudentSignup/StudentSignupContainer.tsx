@@ -1,7 +1,6 @@
 import { SigninErrors, StudentSignupData } from "@celluloid/types";
 import { doStudentSignupThunk, openLogin } from "actions/Signin";
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { AnyAction, Dispatch } from "redux";
 import { Action } from "types/ActionTypes";
@@ -34,7 +33,6 @@ const StudentSignupComponent: React.FC<Props> = ({
   onClickLogin,
   onSubmit,
 }) => {
-  const { t } = useTranslation();
   const [state, setState] = useState({
     shareCode: "",
     username: "",

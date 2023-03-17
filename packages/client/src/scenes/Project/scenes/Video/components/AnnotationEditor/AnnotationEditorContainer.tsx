@@ -1,17 +1,17 @@
-import { maxAnnotationDuration } from 'utils/AnnotationUtils';
-import { AnnotationData, AnnotationRecord, UserRecord } from '@celluloid/types';
+import { AnnotationData, AnnotationRecord, UserRecord } from "@celluloid/types";
 import {
   createAnnotationThunk,
   triggerCancelAnnotation,
   updateAnnotationThunk,
-} from 'actions/AnnotationsActions';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { Action, AsyncAction } from 'types/ActionTypes';
-import { AppState } from 'types/StateTypes';
+} from "actions/AnnotationsActions";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { Action, AsyncAction } from "types/ActionTypes";
+import { AppState } from "types/StateTypes";
+import { maxAnnotationDuration } from "utils/AnnotationUtils";
 
-import AnnotationEditorComponent from './AnnotationEditorComponent';
+import AnnotationEditorComponent from "./AnnotationEditorComponent";
 
 interface Props {
   user: UserRecord;
@@ -23,12 +23,15 @@ interface Props {
     duration: number;
   };
   onSeek(position: number, pause: boolean, seekAhead: boolean): void;
-  onCreate(projectId: string, data: AnnotationData):
-    AsyncAction<AnnotationRecord, string>;
-  onUpdate(projectId: string, record: AnnotationRecord):
-    AsyncAction<AnnotationRecord, string>;
-  onCancel(annotation?: AnnotationRecord):
-    Action<AnnotationRecord | undefined>;
+  onCreate(
+    projectId: string,
+    data: AnnotationData
+  ): AsyncAction<AnnotationRecord, string>;
+  onUpdate(
+    projectId: string,
+    record: AnnotationRecord
+  ): AsyncAction<AnnotationRecord, string>;
+  onCancel(annotation?: AnnotationRecord): Action<AnnotationRecord | undefined>;
 }
 
 interface State {
@@ -38,26 +41,23 @@ interface State {
 function init({ annotation, video }: Props): State {
   if (annotation) {
     return {
-      annotation
+      annotation,
     };
   } else {
     return {
       annotation: {
-        text: '',
+        text: "",
         startTime: video.position,
-        stopTime: maxAnnotationDuration(
-          video.position,
-          video.duration
-        ),
-        pause: false
-      }
+        stopTime: maxAnnotationDuration(video.position, video.duration),
+        pause: false,
+      },
     } as State;
   }
 }
 
 const mapStateToProps = (state: AppState) => ({
   error: state.project.video.annotationError,
-  annotation: state.project.video.focusedAnnotation
+  annotation: state.project.video.focusedAnnotation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -66,38 +66,36 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   onUpdate: (projectId: string, record: AnnotationRecord) =>
     updateAnnotationThunk(projectId, record)(dispatch),
   onCancel: (annotation?: AnnotationRecord) =>
-    dispatch(triggerCancelAnnotation(annotation))
+    dispatch(triggerCancelAnnotation(annotation)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
   class extends React.Component<Props, State> {
-
     state = init(this.props);
 
     render() {
-      const {
-        projectId,
-        video,
-        onCreate,
-        onUpdate,
-        onCancel,
-        onSeek
-      } = this.props;
+      const { projectId, video, onCreate, onUpdate, onCancel, onSeek } =
+        this.props;
 
       const { annotation } = this.state;
 
       const onCheckPauseChange = (pause: boolean) => {
-        this.setState(state => ({
+        this.setState((state) => ({
           ...state,
           annotation: {
             ...state.annotation,
-            pause
-          }
+            pause,
+          },
         }));
       };
 
       const onTimingChange = (
-        position: number, isStart: boolean, seekAhead: boolean
+        position: number,
+        isStart: boolean,
+        _seekAhead: boolean
       ) => {
         const state = this.state as State;
         if (isStart) {
@@ -113,7 +111,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         if (this.props.annotation) {
           onUpdate(projectId, {
             ...this.props.annotation,
-            ...annotation
+            ...annotation,
           });
         } else {
           onCreate(projectId, annotation);
@@ -125,12 +123,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       const onTextChange = (text: string) => {
-        this.setState(state => ({
+        this.setState((state) => ({
           ...state,
           annotation: {
             ...state.annotation,
-            text
-          }
+            text,
+          },
         }));
       };
 
@@ -146,4 +144,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         />
       );
     }
-  });
+  }
+);

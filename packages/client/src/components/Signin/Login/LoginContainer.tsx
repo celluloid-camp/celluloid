@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'react-redux';
+import { Credentials, SigninErrors } from "@celluloid/types";
+import { doLoginThunk, openResetPassword, openSignup } from "actions/Signin";
+import * as React from "react";
+import { connect } from "react-redux";
+import { AnyAction, Dispatch } from "redux";
+import { Action } from "types/ActionTypes";
+import { AppState } from "types/StateTypes";
 
-import Login from './LoginComponent';
-import { openSignup, doLoginThunk, openResetPassword } from 'actions/Signin';
-import { Action } from 'types/ActionTypes';
-import { AppState } from 'types/StateTypes';
-
-import { Credentials, SigninErrors } from '@celluloid/types';
+import Login from "./LoginComponent";
 
 interface Props {
   errors: SigninErrors;
@@ -18,31 +17,33 @@ interface Props {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onSubmit: (credentials: Credentials) =>
-      doLoginThunk(credentials)(dispatch),
+    onSubmit: (credentials: Credentials) => doLoginThunk(credentials)(dispatch),
     onClickSignup: () => dispatch(openSignup()),
-    onClickResetPassword: () => dispatch(openResetPassword())
+    onClickResetPassword: () => dispatch(openResetPassword()),
   };
 };
 
 const mapStateToProps = (state: AppState) => {
   return {
-    errors: state.signin.errors
+    errors: state.signin.errors,
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
   class extends React.Component<Props, Credentials> {
     state = {
-      login: '',
-      password: '',
+      login: "",
+      password: "",
     } as Credentials;
 
     render() {
       const onChange = (name: string, value: string) => {
-        this.setState(state => ({
+        this.setState((state) => ({
           ...state,
-          [name]: value
+          [name]: value,
         }));
       };
 
@@ -57,4 +58,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         />
       );
     }
-  });
+  }
+);

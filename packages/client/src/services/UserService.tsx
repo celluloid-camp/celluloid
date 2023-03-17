@@ -1,9 +1,9 @@
 import {
-  TeacherSignupData,
   Credentials,
+  StudentSignupData,
   TeacherConfirmData,
   TeacherConfirmResetPasswordData,
-  StudentSignupData,
+  TeacherSignupData,
 } from "@celluloid/types";
 
 import * as Constants from "./Constants";
