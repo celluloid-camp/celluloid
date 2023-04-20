@@ -1,13 +1,7 @@
-import { WithStyles, withStyles } from "@material-ui/core";
 import * as React from "react";
 
-import { styles } from "./ImageStyles";
-
-interface Props extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(({ classes }: Props) => (
+export default () => (
   <svg
-    className={classes.icon}
     version="1.1"
     x="0"
     y="0"
@@ -231,4 +225,4 @@ export default withStyles(styles)(({ classes }: Props) => (
       />
     </g>
   </svg>
-));
+);

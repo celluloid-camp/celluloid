@@ -1,5 +1,5 @@
 import { Credentials, SigninErrors } from "@celluloid/types";
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 import DialogAltButtons from "components/DialogAltButtons";
 import DialogButtons from "components/DialogButtons";
 import SigninError from "components/DialogError";

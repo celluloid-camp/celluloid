@@ -1,6 +1,5 @@
 import { SigninErrors, StudentSignupData } from "@celluloid/types";
-import { createStyles, Theme, WithStyles, withStyles } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 import DialogAltButtons from "components/DialogAltButtons";
 import DialogButtons from "components/DialogButtons";
 import DialogError from "components/DialogError";
@@ -9,14 +8,14 @@ import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
 import { Action } from "types/ActionTypes";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    question: {
-      marginTop: spacing.unit * 2,
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     question: {
+//       marginTop: spacing.unit * 2,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   data: StudentSignupData;
   errors: SigninErrors;
   confirmPasswordError?: string;
@@ -25,56 +24,57 @@ interface Props extends WithStyles<typeof styles> {
   onSubmit(): Promise<AnyAction>;
 }
 
-const StudentSignupComponent = withStyles(styles)(
-  ({ data, errors, onChange, onSubmit, onClickLogin }: Props) => {
-    const { t } = useTranslation();
-    return (
-      <>
-        <TextField
-          margin="dense"
-          fullWidth={true}
-          error={errors.username ? true : false}
-          label={t("signin.projectCode")}
-          value={data.shareCode}
-          required={true}
-          onChange={(event) => onChange("shareCode", event.target.value)}
-          helperText={errors && errors.shareCode}
-        />
-        <TextField
-          margin="dense"
-          fullWidth={true}
-          error={errors.email ? true : false}
-          label={t("signin.username")}
-          value={data.username}
-          required={true}
-          onChange={(event) => onChange("username", event.target.value)}
-          helperText={errors.username}
-        />
+const StudentSignupComponent = ({
+  data,
+  errors,
+  onChange,
+  onSubmit,
+  onClickLogin,
+}: Props) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <TextField
+        margin="dense"
+        fullWidth={true}
+        error={errors.username ? true : false}
+        label={t("signin.projectCode")}
+        value={data.shareCode}
+        required={true}
+        onChange={(event) => onChange("shareCode", event.target.value)}
+        helperText={errors && errors.shareCode}
+      />
+      <TextField
+        margin="dense"
+        fullWidth={true}
+        error={errors.email ? true : false}
+        label={t("signin.username")}
+        value={data.username}
+        required={true}
+        onChange={(event) => onChange("username", event.target.value)}
+        helperText={errors.username}
+      />
 
-        <TextField
-          margin="dense"
-          fullWidth={true}
-          error={errors.password ? true : false}
-          label={t("signin.lastName")}
-          value={data.password}
-          required={true}
-          onChange={(event) => onChange("password", event.target.value)}
-          helperText={errors.password ? errors.password : ""}
-        />
-        <DialogError error={t("signin.rememberlastName")} />
-        {errors.server && <DialogError error={errors.server} />}
-        <DialogAltButtons
-          heading={t("signin.alreadyRegistered")}
-          actionName={t("signin.loginAction")}
-          onSubmit={onClickLogin}
-        />
-        <DialogButtons
-          onSubmit={onSubmit}
-          actionName={t("signin.joinAction")}
-        />
-      </>
-    );
-  }
-);
+      <TextField
+        margin="dense"
+        fullWidth={true}
+        error={errors.password ? true : false}
+        label={t("signin.lastName")}
+        value={data.password}
+        required={true}
+        onChange={(event) => onChange("password", event.target.value)}
+        helperText={errors.password ? errors.password : ""}
+      />
+      <DialogError error={t("signin.rememberlastName")} />
+      {errors.server && <DialogError error={errors.server} />}
+      <DialogAltButtons
+        heading={t("signin.alreadyRegistered")}
+        actionName={t("signin.loginAction")}
+        onSubmit={onClickLogin}
+      />
+      <DialogButtons onSubmit={onSubmit} actionName={t("signin.joinAction")} />
+    </>
+  );
+};
 
 export default StudentSignupComponent;

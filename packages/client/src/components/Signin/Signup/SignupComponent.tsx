@@ -1,6 +1,6 @@
 import { SigninErrors, TeacherSignupData, UserRecord } from "@celluloid/types";
-import { Typography } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
+import { Typography } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import DialogAltButtons from "components/DialogAltButtons";
 import DialogButtons from "components/DialogButtons";
 import DialogError from "components/DialogError";

@@ -1,18 +1,15 @@
 import "rc-slider/assets/index.css";
 
+import CheckIcon from "@mui/icons-material/Check";
+import CancelIcon from "@mui/icons-material/Clear";
 import {
+  Box,
   Button,
   Checkbox,
-  createStyles,
   FormControlLabel,
   IconButton,
-  Theme,
   Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
-import CancelIcon from "@material-ui/icons/Clear";
+} from "@mui/material";
 import { Range } from "rc-slider";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -24,50 +21,50 @@ import TransparentInput from "../TransparentInput";
 const caretStart = require("images/caret-start.png");
 const caretStop = require("images/caret-stop.png");
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing.unit,
-      paddingTop: theme.spacing.unit,
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "flex-start",
-    },
-    content: {
-      flex: "1 1 auto",
-      minWidth: 0,
-      padding: `0 ${theme.spacing.unit * 2}px`,
-      "&:first-child": {
-        paddingLeft: 0,
-      },
-      margin: 10,
-    },
-    buttons: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "flex-end",
-    },
-    timeline: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    buttonRoot: {
-      fontSize: 10,
-      lineHeight: "20px",
-      minWidth: 20,
-      minHeight: 20,
-      maxWidth: 20,
-      maxHeight: 20,
-      margin: 4,
-      marginBottom: 7,
-      padding: 0,
-      borderRadius: "50%",
-    },
-  });
+// const styles = (theme: Theme) =>
+//   createStyles({
+//     root: {
+//       paddingLeft: theme.spacing.unit,
+//       paddingTop: theme.spacing.unit,
+//       display: "flex",
+//       flexDirection: "row",
+//       alignItems: "flex-start",
+//     },
+//     content: {
+//       flex: "1 1 auto",
+//       minWidth: 0,
+//       padding: `0 ${theme.spacing.unit * 2}px`,
+//       "&:first-child": {
+//         paddingLeft: 0,
+//       },
+//       margin: 10,
+//     },
+//     buttons: {
+//       display: "flex",
+//       flexDirection: "row",
+//       alignItems: "center",
+//       justifyContent: "flex-end",
+//     },
+//     timeline: {
+//       display: "flex",
+//       flexDirection: "row",
+//       alignItems: "center",
+//     },
+//     buttonRoot: {
+//       fontSize: 10,
+//       lineHeight: "20px",
+//       minWidth: 20,
+//       minHeight: 20,
+//       maxWidth: 20,
+//       maxHeight: 20,
+//       margin: 4,
+//       marginBottom: 7,
+//       padding: 0,
+//       borderRadius: "50%",
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   startTime: number;
   stopTime: number;
   pause: boolean;
@@ -81,12 +78,12 @@ interface Props extends WithStyles<typeof styles> {
   onClickCancel(): void;
 }
 
-interface TimingButtonProps extends WithStyles<typeof styles> {
+interface TimingButtonProps {
   forward: boolean;
   onSeek(): void;
 }
 
-interface TimingControlProps extends WithStyles<typeof styles> {
+interface TimingControlProps {
   position: number;
   onBack(): void;
   onForward(): void;
@@ -94,7 +91,18 @@ interface TimingControlProps extends WithStyles<typeof styles> {
 
 const TimingButton = (props: TimingButtonProps) => (
   <Button
-    classes={{ root: props.classes.buttonRoot }}
+    sx={{
+      fontSize: 10,
+      lineHeight: "20px",
+      minWidth: 20,
+      minHeight: 20,
+      maxWidth: 20,
+      maxHeight: 20,
+      margin: 4,
+      marginBottom: 7,
+      padding: 0,
+      borderRadius: "50%",
+    }}
     size="small"
     onClick={() => {
       props.onSeek();
@@ -106,17 +114,9 @@ const TimingButton = (props: TimingButtonProps) => (
 
 const TimingControl = (props: TimingControlProps) => (
   <>
-    <TimingButton
-      forward={false}
-      onSeek={props.onBack}
-      classes={props.classes}
-    />
+    <TimingButton forward={false} onSeek={props.onBack} />
     <Typography variant="caption">{formatDuration(props.position)}</Typography>
-    <TimingButton
-      forward={true}
-      onSeek={props.onForward}
-      classes={props.classes}
-    />
+    <TimingButton forward={true} onSeek={props.onForward} />
   </>
 );
 
@@ -132,7 +132,6 @@ const AnnotationEditorComponent: React.FC<Props> = ({
   onTextChange,
   onClickSave,
   onClickCancel,
-  classes,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -146,15 +145,33 @@ const AnnotationEditorComponent: React.FC<Props> = ({
   };
 
   return (
-    <div className={classes.root}>
-      <div className={classes.content}>
+    <Box
+      sx={{
+        paddingLeft: 1,
+        paddingTop: 1,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+      }}
+    >
+      <Box
+        sx={{
+          flex: "1 1 auto",
+          minWidth: 0,
+          paddingX: 2,
+          "&:first-child": {
+            paddingLeft: 0,
+          },
+          margin: 10,
+        }}
+      >
         <TransparentInput
           text={text}
           error={error}
           onChange={onTextChange}
           placeholder={t("annotation.contentPlaceholder")}
         />
-        <div className={classes.timeline}>
+        <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
           <TimingControl
             onBack={() =>
               onTimingChange(Math.max(0, startTime - 1), true, true)
@@ -163,7 +180,6 @@ const AnnotationEditorComponent: React.FC<Props> = ({
               onTimingChange(Math.min(stopTime, startTime + 1), true, true)
             }
             position={startTime}
-            classes={classes}
           />
           <div style={{ padding: 8, flexGrow: 1 }}>
             <Range
@@ -211,10 +227,16 @@ const AnnotationEditorComponent: React.FC<Props> = ({
               onTimingChange(Math.min(stopTime + 1, duration), false, true)
             }
             position={stopTime}
-            classes={classes}
           />
-        </div>
-        <div className={classes.buttons}>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
           <FormControlLabel
             control={
               <Checkbox
@@ -230,10 +252,10 @@ const AnnotationEditorComponent: React.FC<Props> = ({
           <IconButton color="primary" onClick={() => onClickSave()}>
             <CheckIcon />
           </IconButton>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
-export default withStyles(styles)(AnnotationEditorComponent);
+export default AnnotationEditorComponent;
