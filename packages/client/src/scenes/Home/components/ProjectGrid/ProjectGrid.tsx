@@ -1,21 +1,9 @@
 import { ProjectGraphRecord, TagData, UserRecord } from "@celluloid/types";
-import {
-  Chip,
-  createStyles,
-  Fade as FadeMUI,
-  Grow as GrowMUI,
-  Theme,
-  Toolbar,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import { FadeProps } from "@material-ui/core/Fade";
-import Grid from "@material-ui/core/Grid";
-import { GrowProps } from "@material-ui/core/Grow";
+import { Box, Chip, Fade as FadeMUI, Toolbar, Typography } from "@mui/material";
+import { FadeProps } from "@mui/material/Fade";
+import Grid from "@mui/material/Grid";
 import { listProjectsThunk } from "actions/ProjectActions";
 import { listTagsThunk } from "actions/TagActions";
-import classNames from "classnames";
 import TagSearchBox from "components/TagSearchBox/TagSearchBox";
 import * as R from "ramda";
 import * as React from "react";
@@ -35,37 +23,33 @@ const Fade: React.FC<React.PropsWithChildren & FadeProps> = (props) => (
   <FadeMUI {...props} />
 );
 
-const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
-  <GrowMUI {...props} />
-);
-
 const projectMatchesTag = (project: ProjectGraphRecord) => (tag: TagData) =>
   !!R.find((elem: TagData) => R.equals(elem, tag))(project.tags);
 
-const styles = (theme: Theme) =>
-  createStyles({
-    grid: {
-      paddingLeft: (theme.spacing.unit * 5) / 2,
-      paddingRight: (theme.spacing.unit * 5) / 2,
-    },
-    tags: {
-      paddingBottom: theme.spacing.unit * 2,
-    },
-    sectionTitle: {
-      paddingTop: theme.spacing.unit * 4,
-      paddingBottom: theme.spacing.unit,
-    },
-    noProjects: {
-      fontWeight: "bold",
-      color: theme.palette.grey[300],
-    },
-    error: {
-      fontWeight: "bold",
-      color: theme.palette.error.light,
-    },
-  });
+// const styles = (theme: Theme) =>
+//   createStyles({
+//     grid: {
+//       paddingLeft: (theme.spacing.unit * 5) / 2,
+//       paddingRight: (theme.spacing.unit * 5) / 2,
+//     },
+//     tags: {
+//       paddingBottom: theme.spacing.unit * 2,
+//     },
+//     sectionTitle: {
+//       paddingTop: theme.spacing.unit * 4,
+//       paddingBottom: theme.spacing.unit,
+//     },
+//     noProjects: {
+//       fontWeight: "bold",
+//       color: theme.palette.grey[300],
+//     },
+//     error: {
+//       fontWeight: "bold",
+//       color: theme.palette.error.light,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   user?: UserRecord;
   projects: ProjectGraphRecord[];
   tags: TagData[];
@@ -93,7 +77,6 @@ const ProjectGrid: React.FC<Props> = ({
   projects,
   tags,
   error,
-  classes,
 }) => {
   const [selectedTags, setSelectedTags] = useState<TagData[]>([]);
   const { t } = useTranslation();
@@ -156,7 +139,7 @@ const ProjectGrid: React.FC<Props> = ({
   return (
     <>
       <Toolbar>
-        <div className={classes.tags}>
+        <Box sx={{ paddingBottom: 2 }}>
           {tags.map((tag) => (
             <Chip
               onClick={() => onTagSelected(tag)}
@@ -170,7 +153,7 @@ const ProjectGrid: React.FC<Props> = ({
               }}
             />
           ))}
-        </div>
+        </Box>
       </Toolbar>
       <Toolbar>
         <TagSearchBox
@@ -179,7 +162,11 @@ const ProjectGrid: React.FC<Props> = ({
           label={t("home.searchProject")}
         />
       </Toolbar>
-      <div className={classes.grid}>
+      <Box
+        sx={{
+          ph: 2,
+        }}
+      >
         {userProjects.length > 0 && (
           <>
             <Fade in={userProjects.length > 0} appear={true}>
@@ -187,7 +174,10 @@ const ProjectGrid: React.FC<Props> = ({
                 gutterBottom={true}
                 color="primary"
                 variant="h4"
-                className={classes.sectionTitle}
+                sx={{
+                  pt: 4,
+                  pb: 1,
+                }}
               >
                 {t("home.myProjects")}
               </Typography>
@@ -195,9 +185,11 @@ const ProjectGrid: React.FC<Props> = ({
             <Grid container={true} spacing={40} direction="row">
               <TransitionGroup component={null} appear={true}>
                 {userProjects.map((project: ProjectGraphRecord) => (
-                  <Grow in={true} appear={true} key={project.id}>
-                    <ProjectThumbnail showPublic={true} project={project} />
-                  </Grow>
+                  <ProjectThumbnail
+                    showPublic={true}
+                    project={project}
+                    key={project.id}
+                  />
                 ))}
               </TransitionGroup>
             </Grid>
@@ -210,7 +202,10 @@ const ProjectGrid: React.FC<Props> = ({
                 gutterBottom={true}
                 color="primary"
                 variant="h4"
-                className={classes.sectionTitle}
+                sx={{
+                  pt: 4,
+                  pb: 1,
+                }}
               >
                 {t("home.publicProjects")}
               </Typography>
@@ -218,9 +213,11 @@ const ProjectGrid: React.FC<Props> = ({
             <Grid container={true} spacing={40} direction="row">
               <TransitionGroup component={null} appear={true}>
                 {publicProjects.map((project: ProjectGraphRecord) => (
-                  <Grow in={true} appear={true} key={project.id}>
-                    <ProjectThumbnail showPublic={false} project={project} />
-                  </Grow>
+                  <ProjectThumbnail
+                    showPublic={false}
+                    project={project}
+                    key={project.id}
+                  />
                 ))}
               </TransitionGroup>
             </Grid>
@@ -232,7 +229,10 @@ const ProjectGrid: React.FC<Props> = ({
               variant="h3"
               align="center"
               gutterBottom={true}
-              className={classNames(classes.sectionTitle, classes.noProjects)}
+              sx={{
+                pt: 4,
+                pb: 1,
+              }}
             >
               {t("home.emptySearchResult")}
             </Typography>
@@ -244,17 +244,18 @@ const ProjectGrid: React.FC<Props> = ({
               variant="h4"
               align="center"
               gutterBottom={true}
-              className={classNames(classes.sectionTitle, classes.error)}
+              sx={{
+                pt: 4,
+                pb: 1,
+              }}
             >
               {error}
             </Typography>
           </Fade>
         )}
-      </div>
+      </Box>
     </>
   );
 };
 
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(ProjectGrid)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectGrid);

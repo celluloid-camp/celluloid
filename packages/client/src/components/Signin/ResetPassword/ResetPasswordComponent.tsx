@@ -1,10 +1,10 @@
-import { SigninErrors } from '@celluloid/types';
-import TextField from '@material-ui/core/TextField';
-import DialogButtons from 'components/DialogButtons';
-import SigninError from 'components/DialogError';
-import * as React from 'react';
-import { useTranslation } from 'react-i18next';
-import { AnyAction } from 'redux';
+import { SigninErrors } from "@celluloid/types";
+import TextField from "@mui/material/TextField";
+import DialogButtons from "components/DialogButtons";
+import SigninError from "components/DialogError";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import { AnyAction } from "redux";
 
 interface Props {
   login: string;
@@ -19,28 +19,26 @@ const ResetPasswordComponent = ({
   onChange,
   onSubmit,
 }: Props) => {
-  
-  const {t} = useTranslation();
-  return(
+  const { t } = useTranslation();
+  return (
     <div>
       <TextField
         margin="dense"
         fullWidth={true}
-        label={t('signin.login')}
+        label={t("signin.login")}
         required={true}
         value={login}
         error={errors.login ? true : false}
-        onChange={event => onChange(event.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         helperText={errors && errors.login}
       />
       {errors.server && <SigninError error={errors.server} />}
       <DialogButtons
         onSubmit={onSubmit}
-        actionName={t('signin.changePasswordAction')}
+        actionName={t("signin.changePasswordAction")}
       />
     </div>
-  )
+  );
 };
 
-
-  export default ResetPasswordComponent;
+export default ResetPasswordComponent;

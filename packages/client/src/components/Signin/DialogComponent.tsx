@@ -1,14 +1,8 @@
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import {
-  createStyles,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core/styles";
-import DialogHeader from "components/DialogHeader";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
 import * as React from "react";
 
+import DialogHeader from "../DialogHeader";
 import ConfirmResetPassword from "./ConfirmResetPassword";
 import ConfirmSignup from "./ConfirmSignup";
 import Login from "./Login";
@@ -16,15 +10,15 @@ import ResetPassword from "./ResetPassword";
 import Signup from "./Signup";
 import StudentSignup from "./StudentSignup";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    content: {
-      padding: spacing.unit * 2,
-      margin: spacing.unit,
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     content: {
+//       padding: spacing.unit * 2,
+//       margin: spacing.unit,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   loading: boolean;
   title: string;
   open: boolean;
@@ -38,8 +32,8 @@ interface Props extends WithStyles<typeof styles> {
   onCancel(): void;
 }
 
-export default withStyles(styles)((props: Props) => {
-  const { loading, classes, title, open, onCancel, Content } = props;
+export default (props: Props) => {
+  const { loading, title, open, onCancel, Content } = props;
 
   return (
     <Dialog
@@ -50,9 +44,9 @@ export default withStyles(styles)((props: Props) => {
       onClose={() => onCancel()}
     >
       <DialogHeader title={title} loading={loading} onClose={onCancel} />
-      <DialogContent className={classes.content}>
+      <DialogContent sx={{ margin: 1, padding: 2 }}>
         {Content && <Content />}
       </DialogContent>
     </Dialog>
   );
-});
+};

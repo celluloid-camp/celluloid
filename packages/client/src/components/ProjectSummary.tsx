@@ -1,44 +1,36 @@
 import { ProjectGraphRecord } from "@celluloid/types";
-import {
-  Chip,
-  createStyles,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
+import { Box, Chip, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    section: {
-      marginTop: spacing.unit * 2,
-    },
-    questions: {
-      margin: 0,
-      padding: 0,
-      paddingLeft: spacing.unit * 2 + 2,
-    },
-    tagList: {
-      padding: 0,
-      margin: 0,
-      display: "flex",
-      justifyContent: "left",
-      flexWrap: "wrap",
-    },
-    tag: {
-      marginRight: 4,
-      marginBottom: 4,
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     section: {
+//       marginTop: spacing.unit * 2,
+//     },
+//     questions: {
+//       margin: 0,
+//       padding: 0,
+//       paddingLeft: spacing.unit * 2 + 2,
+//     },
+//     tagList: {
+//       padding: 0,
+//       margin: 0,
+//       display: "flex",
+//       justifyContent: "left",
+//       flexWrap: "wrap",
+//     },
+//     tag: {
+//       marginRight: 4,
+//       marginBottom: 4,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   project: ProjectGraphRecord;
 }
 
-
-const ProjectSummary: React.FC<Props> = ({ project, classes }: Props) => {
+const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
   const { t } = useTranslation();
   return (
     <>
@@ -46,11 +38,26 @@ const ProjectSummary: React.FC<Props> = ({ project, classes }: Props) => {
         {project.title}
       </Typography>
       {project.tags.length > 0 && (
-        <div className={classes.tagList}>
+        <Box
+          sx={{
+            padding: 0,
+            margin: 0,
+            display: "flex",
+            justifyContent: "left",
+            flexWrap: "wrap",
+          }}
+        >
           {project.tags.map((tag, index) => (
-            <Chip className={classes.tag} key={index} label={tag.name} />
+            <Chip
+              sx={{
+                marginRight: 4,
+                marginBottom: 4,
+              }}
+              key={index}
+              label={tag.name}
+            />
           ))}
-        </div>
+        </Box>
       )}
       <Typography align="justify" gutterBottom={true} variant="subtitle1">
         <b>{project.description}</b>
@@ -60,7 +67,9 @@ const ProjectSummary: React.FC<Props> = ({ project, classes }: Props) => {
         gutterBottom={true}
         variant="h4"
         color="primary"
-        className={classes.section}
+        sx={{
+          marginTop: 2,
+        }}
       >
         {t("project.objective")}
       </Typography>
@@ -74,12 +83,12 @@ const ProjectSummary: React.FC<Props> = ({ project, classes }: Props) => {
             gutterBottom={true}
             variant="h4"
             color="primary"
-            className={classes.section}
+            mt={2}
           >
             <Trans i18nKey={"project.assignment"} />
           </Typography>
           <Typography align="left" gutterBottom={true} variant="subtitle1">
-            <ol className={classes.questions}>
+            <ol>
               {project.assignments.map((assignment, index) => (
                 <li key={index}>{assignment}</li>
               ))}
@@ -92,7 +101,9 @@ const ProjectSummary: React.FC<Props> = ({ project, classes }: Props) => {
         gutterBottom={true}
         variant="h4"
         color="primary"
-        className={classes.section}
+        sx={{
+          marginTop: 2,
+        }}
       >
         <Trans i18nKey={"project.URL_title"} />
       </Typography>
@@ -110,4 +121,4 @@ const ProjectSummary: React.FC<Props> = ({ project, classes }: Props) => {
   );
 };
 
-export default withStyles(styles)(ProjectSummary);
+export default ProjectSummary;

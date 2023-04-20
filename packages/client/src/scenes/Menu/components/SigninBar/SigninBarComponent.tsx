@@ -7,9 +7,9 @@ import {
   MenuList,
   Paper,
   Popper,
-} from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import { GrowProps } from "@material-ui/core/Grow";
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import { GrowProps } from "@mui/material/Grow";
 import UserAvatar from "components/UserAvatar";
 import * as React from "react";
 import { useTranslation } from "react-i18next";

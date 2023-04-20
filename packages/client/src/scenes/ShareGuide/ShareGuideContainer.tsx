@@ -1,12 +1,4 @@
-import {
-  Button,
-  createStyles,
-  Paper,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import LoadingBig from "components/LoadingBig";
 import NotFound from "components/NotFound";
@@ -18,71 +10,69 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
 import ProjectService from "services/ProjectService";
 
-const styles = (theme: Theme) =>
-  createStyles({
-    step: {
-      "&:last-child $stepSeparator": {
-        display: "none",
-      },
-      "& > div:first-child": {
-        position: "static",
-        height: 0,
-      },
-      "& > div:last-child": {
-        marginLeft: theme.spacing.unit * 5,
-        paddingLeft: theme.spacing.unit * 2.5,
-      },
-      position: "relative",
-      minHeight: theme.spacing.unit * 5,
-    },
-    stepsWrapper: {
-      paddding: theme.spacing.unit * 2.5,
-    },
-    stepSeparator: {
-      left: theme.spacing.unit * 2.5,
-      bottom: theme.spacing.unit,
-      top: theme.spacing.unit * 6,
-      position: "absolute",
-      border: `1px solid ${theme.palette.divider}`,
-    },
-    stepNumber: {
-      ...theme.typography.subtitle1,
-      border: `1px solid ${theme.palette.divider}`,
-      lineHeight: `${theme.spacing.unit * 5}px`,
-      borderRadius: theme.spacing.unit * 2.5,
-      position: "relative",
-      textAlign: "center",
-      width: theme.spacing.unit * 5,
-      height: theme.spacing.unit * 5,
-    },
-    stepTitle: {
-      ...theme.typography.subtitle1,
-      lineHeight: `${theme.spacing.unit * 5}px`,
-    },
-    stepBody: {
-      minHeight: theme.spacing.unit * 5,
-      paddingTop: theme.spacing.unit * 2,
-      paddingBottom: theme.spacing.unit * 2,
-    },
-    paper: {
-      padding: theme.spacing.unit * 4,
-    },
-    password: {
-      fontFamily: "monospace",
-    },
-    button: {
-      marginBottom: theme.spacing.unit * 2,
-    },
-    "@media print": {
-      button: {
-        display: "none",
-      },
-    },
-  });
+// const styles = (theme: Theme) =>
+//   createStyles({
+//     step: {
+//       "&:last-child $stepSeparator": {
+//         display: "none",
+//       },
+//       "& > div:first-child": {
+//         position: "static",
+//         height: 0,
+//       },
+//       "& > div:last-child": {
+//         marginLeft: theme.spacing.unit * 5,
+//         paddingLeft: theme.spacing.unit * 2.5,
+//       },
+//       position: "relative",
+//       minHeight: theme.spacing.unit * 5,
+//     },
+//     stepsWrapper: {
+//       paddding: theme.spacing.unit * 2.5,
+//     },
+//     stepSeparator: {
+//       left: theme.spacing.unit * 2.5,
+//       bottom: theme.spacing.unit,
+//       top: theme.spacing.unit * 6,
+//       position: "absolute",
+//       border: `1px solid ${theme.palette.divider}`,
+//     },
+//     stepNumber: {
+//       ...theme.typography.subtitle1,
+//       border: `1px solid ${theme.palette.divider}`,
+//       lineHeight: `${theme.spacing.unit * 5}px`,
+//       borderRadius: theme.spacing.unit * 2.5,
+//       position: "relative",
+//       textAlign: "center",
+//       width: theme.spacing.unit * 5,
+//       height: theme.spacing.unit * 5,
+//     },
+//     stepTitle: {
+//       ...theme.typography.subtitle1,
+//       lineHeight: `${theme.spacing.unit * 5}px`,
+//     },
+//     stepBody: {
+//       minHeight: theme.spacing.unit * 5,
+//       paddingTop: theme.spacing.unit * 2,
+//       paddingBottom: theme.spacing.unit * 2,
+//     },
+//     paper: {
+//       padding: theme.spacing.unit * 4,
+//     },
+//     password: {
+//       fontFamily: "monospace",
+//     },
+//     button: {
+//       marginBottom: theme.spacing.unit * 2,
+//     },
+//     "@media print": {
+//       button: {
+//         display: "none",
+//       },
+//     },
+//   });
 
-type Props = WithStyles<typeof styles>;
-
-const ShareGuideContainer: React.FC<Props> = ({ classes }) => {
+const ShareGuideContainer: React.FC = () => {
   const { t } = useTranslation();
   let { projectId = "" } = useParams();
 
@@ -131,16 +121,16 @@ const ShareGuideContainer: React.FC<Props> = ({ classes }) => {
 
     return (
       <>
-        <Paper className={classes.paper}>
+        <Paper sx={{ padding: 4 }}>
           <Button
             color="primary"
             variant="contained"
             onClick={handleClickPrint}
-            className={classes.button}
+            sx={{ marginBottom: 2 }}
           >
             {t("printAction")}
           </Button>
-          <Typography variant="display3" gutterBottom={true}>
+          <Typography variant="body2" gutterBottom={true}>
             {t("project.share.guide.title")}
           </Typography>
 
@@ -151,16 +141,16 @@ const ShareGuideContainer: React.FC<Props> = ({ classes }) => {
           <div style={{ paddingTop: 16 }}>
             {steps.map((step, index) => {
               return (
-                <div key={index} className={classes.step}>
+                <Box key={index}>
                   <div>
-                    <div className={classes.stepNumber}>{index + 1}</div>
-                    <div className={classes.stepSeparator} />
+                    <div>{index + 1}</div>
+                    <div />
                   </div>
                   <div>
-                    <div className={classes.stepTitle}>{step.title}</div>
-                    <div className={classes.stepBody}>{step.body}</div>
+                    <div>{step.title}</div>
+                    <div>{step.body}</div>
                   </div>
-                </div>
+                </Box>
               );
             })}
           </div>
@@ -174,4 +164,4 @@ const ShareGuideContainer: React.FC<Props> = ({ classes }) => {
   }
 };
 
-export default withStyles(styles)(ShareGuideContainer);
+export default ShareGuideContainer;

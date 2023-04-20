@@ -1,7 +1,8 @@
-import { createStyles, Theme } from '@material-ui/core';
+import { createStyles, Theme } from "@mui/material";
 
-export const styles = ({ palette }: Theme) => createStyles({
-  icon: {
-    fill: palette.grey[600]
-  }
-});
+export const styles = ({ palette }: Theme) =>
+  createStyles({
+    icon: {
+      fill: palette.grey[600],
+    },
+  });

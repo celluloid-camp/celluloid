@@ -1,57 +1,47 @@
 import { AnnotationRecord } from "@celluloid/types";
-import {
-  createStyles,
-  Grid,
-  IconButton,
-  Paper,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import CancelIcon from "@material-ui/icons/Clear";
-import classNames from "classnames";
+import CancelIcon from "@mui/icons-material/Clear";
+import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { getUserColor } from "utils/UserUtils";
 
-const styles = (theme: Theme) =>
-  createStyles({
-    visible: {
-      opacity: 1,
-    },
-    hidden: {
-      opacity: 0,
-    },
-    hint: {
-      cursor: "pointer",
-      position: "absolute",
-      zIndex: 6,
-      height: 10,
-      minWidth: 10,
-      margin: 0,
-      padding: 0,
-      borderRadius: 2,
-      backgroundColor: "white",
-      transition: "all 0.2s ease",
-      "&:hover": {
-        filter: "brightness(85%)",
-      },
-    },
-    container: {
-      position: "relative",
-      margin: 24,
-      height: `calc(100% - ${theme.spacing.unit * 6}px)`,
-      width: `calc(100% - ${theme.spacing.unit * 6}px)`,
-    },
-    title: {
-      color: theme.palette.text.disabled,
-      top: 0,
-      left: 0,
-    },
-  });
+// const styles = (theme: Theme) =>
+//   createStyles({
+//     visible: {
+//       opacity: 1,
+//     },
+//     hidden: {
+//       opacity: 0,
+//     },
+//     hint: {
+//       cursor: "pointer",
+//       position: "absolute",
+//       zIndex: 6,
+//       height: 10,
+//       minWidth: 10,
+//       margin: 0,
+//       padding: 0,
+//       borderRadius: 2,
+//       backgroundColor: "white",
+//       transition: "all 0.2s ease",
+//       "&:hover": {
+//         filter: "brightness(85%)",
+//       },
+//     },
+//     container: {
+//       position: "relative",
+//       margin: 24,
+//       height: `calc(100% - ${theme.spacing.unit * 6}px)`,
+//       width: `calc(100% - ${theme.spacing.unit * 6}px)`,
+//     },
+//     title: {
+//       color: theme.palette.text.disabled,
+//       top: 0,
+//       left: 0,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   duration: number;
   position: number;
   annotations: AnnotationRecord[];
@@ -66,7 +56,6 @@ const AnnotationHints: React.FC<Props> = ({
   visible,
   onClick,
   onClose,
-  classes,
 }) => {
   const { t } = useTranslation();
 
@@ -80,16 +69,23 @@ const AnnotationHints: React.FC<Props> = ({
     onClose();
   };
   return (
-    <div className={classes.container}>
+    <Box
+      sx={(theme) => ({
+        position: "relative",
+        margin: 24,
+        height: `calc(100% - ${theme.spacing(6)}px)`,
+        width: `calc(100% - ${theme.spacing(6)}px)`,
+      })}
+    >
       <Grid
         container
-        direction="row"
-        justify="space-between"
-        alignItems="center"
-        spacing={24}
+        // direction="row"
+        // justify="space-between"
+        // alignItems="center"
+        // spacing={24}
       >
         <Grid item>
-          <Typography className={classes.title} align="left" variant="h5">
+          <Typography align="left" variant="h5">
             {annotations.length > 0
               ? t("annotation.hintLabel", { count: annotations.length })
               : t("annotation.hintLabelNone")}
@@ -106,10 +102,26 @@ const AnnotationHints: React.FC<Props> = ({
         return (
           <Paper
             key={annotation.id}
-            className={classNames(
-              classes.hint,
-              visible ? classes.visible : classes.hidden
-            )}
+            sx={{
+              cursor: "pointer",
+              position: "absolute",
+              zIndex: 6,
+              height: 10,
+              minWidth: 10,
+              margin: 0,
+              padding: 0,
+              borderRadius: 2,
+              backgroundColor: "white",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                filter: "brightness(85%)",
+              },
+              opacity: visible ? 1 : 0,
+            }}
+            // className={classNames(
+            //   classes.hint,
+            //   visible ? classes.visible : classes.hidden
+            // )}
             style={{
               color: "white",
               top: visible ? 48 + index * 24 : 0,
@@ -122,8 +134,8 @@ const AnnotationHints: React.FC<Props> = ({
           />
         );
       })}
-    </div>
+    </Box>
   );
 };
 
-export default withStyles(styles)(AnnotationHints);
+export default AnnotationHints;

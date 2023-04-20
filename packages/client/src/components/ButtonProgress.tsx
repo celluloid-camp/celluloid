@@ -1,52 +1,47 @@
-import {
-  Button,
-  CircularProgress,
-  createStyles,
-  Theme,
-  WithStyles,
-  withStyles
-} from '@material-ui/core';
-import { ButtonClassKey, ButtonProps } from '@material-ui/core/Button';
-import classnames from 'classnames';
-import * as React from 'react';
+import { Button, CircularProgress } from "@mui/material";
+import { ButtonClassKey, ButtonProps } from "@mui/material/Button";
+import classnames from "classnames";
 
-const styles = ({ spacing }: Theme) => createStyles({
-  wrapper: {
-    margin: spacing.unit,
-    position: 'relative',
-  },
-  progress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-  },
-  sizeSmall: {
-    marginTop: -10,
-    marginLeft: -10
-  },
-  sizeDefault: {
-    marginTop: -12,
-    marginLeft: -12,
-  }
-});
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     wrapper: {
+//       margin: spacing.unit,
+//       position: "relative",
+//     },
+//     progress: {
+//       position: "absolute",
+//       top: "50%",
+//       left: "50%",
+//     },
+//     sizeSmall: {
+//       marginTop: -10,
+//       marginLeft: -10,
+//     },
+//     sizeDefault: {
+//       marginTop: -12,
+//       marginLeft: -12,
+//     },
+//   });
 
 type WithoutClassKey<T> = {
-  [P in keyof T]: T[P] extends ButtonClassKey ? never : T[P]
+  [P in keyof T]: T[P] extends ButtonClassKey ? never : T[P];
 }[keyof T];
 
-interface Props extends WithStyles<typeof styles>, Pick<ButtonProps, WithoutClassKey<ButtonProps>> {
+interface Props extends Pick<ButtonProps, WithoutClassKey<ButtonProps>> {
   loading: boolean;
 }
-export default withStyles(styles)(({
-  loading, classes, disabled, children, size, color, ...otherProps
+export default ({
+  loading,
+  classes,
+  disabled,
+  children,
+  size,
+  color,
+  ...otherProps
 }: Props) => {
-
-  const {
-    sizePx,
-    sizeClass
-  } = (() => {
+  const { sizePx, sizeClass } = (() => {
     switch (size) {
-      case 'small':
+      case "small":
         return { sizePx: 20, sizeClass: classes.sizeSmall };
       default:
         return { sizePx: 24, sizeClass: classes.sizeDefault };
@@ -54,7 +49,7 @@ export default withStyles(styles)(({
   })();
 
   return (
-    <div className={classes.wrapper} >
+    <div className={classes.wrapper}>
       <Button
         {...otherProps}
         size={size}
@@ -63,13 +58,13 @@ export default withStyles(styles)(({
       >
         {children}
       </Button>
-      {loading &&
+      {loading && (
         <CircularProgress
           size={sizePx}
           color={color}
           className={classnames(classes.progress, sizeClass)}
         />
-      }
+      )}
     </div>
   );
-});
+};

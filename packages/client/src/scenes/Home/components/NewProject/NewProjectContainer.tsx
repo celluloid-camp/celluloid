@@ -6,11 +6,13 @@ import {
   TagData,
   UserRecord,
 } from "@celluloid/types";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import {
   Avatar,
+  Box,
   Button,
   Chip,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,13 +26,8 @@ import {
   ListItemText,
   Switch,
   TextField,
-  Theme,
   Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
+} from "@mui/material";
 import { discardNewVideo } from "actions/HomeActions";
 import { createProjectThunk } from "actions/ProjectActions";
 import { createTagThunk } from "actions/TagActions";
@@ -38,7 +35,6 @@ import DialogError from "components/DialogError";
 import DialogHeader from "components/DialogHeader";
 import TagSearchBox from "components/TagSearchBox/TagSearchBox";
 import * as R from "ramda";
-import { Range } from "rc-slider";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -46,75 +42,70 @@ import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Dispatch } from "redux";
 import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
-import { levelLabel, levelsCount } from "types/LevelTypes";
+import { levelsCount } from "types/LevelTypes";
 import { AppState } from "types/StateTypes";
 import { PeertubeVideoInfo } from "types/YoutubeTypes";
-import {
-  sliderHandleStyle,
-  sliderRailStyle,
-  sliderTrackStyle,
-} from "utils/SliderUtils";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    tagList: {
-      justifyContent: "center",
-      alignItems: "center",
-      display: "flex",
-      flexWrap: "wrap",
-      marginTop: spacing.unit * 2,
-      marginBottom: spacing.unit * 2,
-    },
-    levels: {
-      paddingTop: spacing.unit * 4,
-      width: "100%",
-      display: "flex",
-      flexDirection: "row",
-    },
-    levelSlider: {
-      flexGrow: 1,
-      paddingTop: 20,
-    },
-    levelLabel: {
-      fontWeight: "bold",
-      width: spacing.unit * 12,
-    },
-    assignmentInput: {
-      marginRight: spacing.unit * 2,
-    },
-    content: {
-      padding: spacing.unit * 2,
-      margin: spacing.unit,
-    },
-    sectionTitle: {
-      paddingTop: spacing.unit * 4,
-    },
-    image: {
-      position: "relative",
-      width: "100%",
-      height: 320,
-      backgroundPosition: "center",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-    },
-    videoTitleWrapper: {
-      position: "absolute",
-      padding: `${spacing.unit}px ${spacing.unit * 3}px`,
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
-      bottom: 0,
-      right: 0,
-      left: 0,
-    },
-    videoTitle: {
-      color: "white",
-      fontWeight: 500,
-    },
-    switchLabel: {
-      paddingTop: spacing.unit * 1.5,
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     tagList: {
+//       justifyContent: "center",
+//       alignItems: "center",
+//       display: "flex",
+//       flexWrap: "wrap",
+//       marginTop: spacing.unit * 2,
+//       marginBottom: spacing.unit * 2,
+//     },
+//     levels: {
+//       paddingTop: spacing.unit * 4,
+//       width: "100%",
+//       display: "flex",
+//       flexDirection: "row",
+//     },
+//     levelSlider: {
+//       flexGrow: 1,
+//       paddingTop: 20,
+//     },
+//     levelLabel: {
+//       fontWeight: "bold",
+//       width: spacing.unit * 12,
+//     },
+//     assignmentInput: {
+//       marginRight: spacing.unit * 2,
+//     },
+//     content: {
+//       padding: spacing.unit * 2,
+//       margin: spacing.unit,
+//     },
+//     sectionTitle: {
+//       paddingTop: spacing.unit * 4,
+//     },
+//     image: {
+//       position: "relative",
+//       width: "100%",
+//       height: 320,
+//       backgroundPosition: "center",
+//       backgroundSize: "cover",
+//       backgroundRepeat: "no-repeat",
+//     },
+//     videoTitleWrapper: {
+//       position: "absolute",
+//       padding: `${spacing.unit}px ${spacing.unit * 3}px`,
+//       backgroundColor: "rgba(0, 0, 0, 0.7)",
+//       bottom: 0,
+//       right: 0,
+//       left: 0,
+//     },
+//     videoTitle: {
+//       color: "white",
+//       fontWeight: 500,
+//     },
+//     switchLabel: {
+//       paddingTop: spacing.unit * 1.5,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   video?: PeertubeVideoInfo;
   tags: TagData[];
   loading: boolean;
@@ -152,7 +143,6 @@ function tagCreationSucceeded(
 }
 
 const NewProjectContainer: React.FC<Props> = ({
-  classes,
   video,
   tags,
   loading,
@@ -237,24 +227,41 @@ const NewProjectContainer: React.FC<Props> = ({
           onClose={() => onCancel()}
           loading={loading}
         >
-          <div
-            className={classes.image}
+          <Box
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: 320,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
             style={{
               backgroundImage: `url(${video.thumbnailUrl})`,
             }}
           >
-            <div className={classes.videoTitleWrapper}>
-              <Typography
-                variant="h5"
-                gutterBottom={true}
-                className={classes.videoTitle}
-              >
+            <Box
+              sx={{
+                position: "absolute",
+                padding: 3,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                bottom: 0,
+                right: 0,
+                left: 0,
+              }}
+            >
+              <Typography variant="h5" gutterBottom={true} color={"white"}>
                 {video.title}
               </Typography>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </DialogHeader>
-        <DialogContent className={classes.content}>
+        <DialogContent
+          sx={{
+            padding: 2,
+            margin: 1,
+          }}
+        >
           <TextField
             margin="normal"
             required={true}
@@ -297,7 +304,9 @@ const NewProjectContainer: React.FC<Props> = ({
           />
           <Typography
             variant="h6"
-            className={classes.sectionTitle}
+            sx={{
+              paddingTop: 4,
+            }}
             gutterBottom={true}
           >
             {t("project.assignmentsSection")}
@@ -334,7 +343,9 @@ const NewProjectContainer: React.FC<Props> = ({
                 <Avatar>{project.assignments.length + 1}</Avatar>
               </ListItemAvatar>
               <ListItemText
-                className={classes.assignmentInput}
+                sx={{
+                  marginRight: 2,
+                }}
                 primary={
                   <TextField
                     variant="outlined"
@@ -376,13 +387,24 @@ const NewProjectContainer: React.FC<Props> = ({
           </List>
           <Typography
             variant="h6"
-            className={classes.sectionTitle}
+            sx={{
+              paddingTop: 4,
+            }}
             gutterBottom={true}
           >
             {t("project.tagsSection")}
           </Typography>
           <Typography variant="subtitle1">{t("project.tagsHelper")}</Typography>
-          <div className={classes.tagList}>
+          <Box
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+              flexWrap: "wrap",
+              marginTop: 2,
+              marginBottom: 2,
+            }}
+          >
             {displayedTags.map((tag) => (
               <Chip
                 onClick={() => onTagSelected(tag)}
@@ -396,7 +418,7 @@ const NewProjectContainer: React.FC<Props> = ({
                 }}
               />
             ))}
-          </div>
+          </Box>
           <TagSearchBox
             onTagSelected={onTagSelected}
             onTagCreationRequested={onTagCreationRequested}
@@ -404,7 +426,9 @@ const NewProjectContainer: React.FC<Props> = ({
           />
           <Typography
             variant="h6"
-            className={classes.sectionTitle}
+            sx={{
+              paddingTop: 4,
+            }}
             gutterBottom={true}
           >
             {t("project.levelsSection")}
@@ -412,7 +436,7 @@ const NewProjectContainer: React.FC<Props> = ({
           <Typography variant="subtitle1">
             {t("project.levelsHelper")}
           </Typography>
-          <div className={classes.levels}>
+          {/* <div className={classes.levels}>
             <Typography align="left" className={classes.levelLabel}>
               {t(levelLabel(project.levelStart))}
             </Typography>
@@ -436,10 +460,12 @@ const NewProjectContainer: React.FC<Props> = ({
             <Typography align="right" className={classes.levelLabel}>
               {t(levelLabel(project.levelEnd))}
             </Typography>
-          </div>
+          </div> */}
           <Typography
             variant="h6"
-            className={classes.sectionTitle}
+            sx={{
+              paddingTop: 4,
+            }}
             gutterBottom={true}
           >
             {t("project.visibilitySection")}
@@ -449,7 +475,9 @@ const NewProjectContainer: React.FC<Props> = ({
               <Typography
                 variant="subtitle1"
                 align="right"
-                className={classes.switchLabel}
+                sx={{
+                  paddingTop: 1,
+                }}
               >
                 {t("project.public")}
               </Typography>
@@ -465,7 +493,12 @@ const NewProjectContainer: React.FC<Props> = ({
               />
             </Grid>
             <Grid item={true} xs={8}>
-              <Typography gutterBottom={true} className={classes.switchLabel}>
+              <Typography
+                gutterBottom={true}
+                sx={{
+                  paddingTop: 1,
+                }}
+              >
                 {t("project.publicHelper")}
               </Typography>
             </Grid>
@@ -475,7 +508,9 @@ const NewProjectContainer: React.FC<Props> = ({
               <Typography
                 variant="subtitle1"
                 align="right"
-                className={classes.switchLabel}
+                sx={{
+                  paddingTop: 1,
+                }}
               >
                 {t("project.collaborative")}
               </Typography>
@@ -491,7 +526,12 @@ const NewProjectContainer: React.FC<Props> = ({
               />
             </Grid>
             <Grid item={true} xs={8}>
-              <Typography gutterBottom={true} className={classes.switchLabel}>
+              <Typography
+                gutterBottom={true}
+                sx={{
+                  paddingTop: 1,
+                }}
+              >
                 {t("project.collaborativeHelper")}
               </Typography>
             </Grid>
@@ -524,6 +564,7 @@ const NewProjectContainer: React.FC<Props> = ({
   }
 };
 
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(NewProjectContainer)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NewProjectContainer);

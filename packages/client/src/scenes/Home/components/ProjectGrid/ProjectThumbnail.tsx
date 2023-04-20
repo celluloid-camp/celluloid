@@ -1,19 +1,17 @@
 import { ProjectGraphRecord } from "@celluloid/types";
 import {
+  Box,
   Card,
   CardContent,
   CardMedia,
   Chip,
-  createStyles,
   Grid,
   Grow as GrowMUI,
-  Theme,
+  Stack,
   Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import { GrowProps } from "@material-ui/core/Grow";
-// import PlayIcon from "@material-ui/icons/PlayCircleOutline";
+} from "@mui/material";
+import { GrowProps } from "@mui/material/Grow";
+// import PlayIcon from "@mui/icons-material/PlayCircleOutline";
 import { useQuery } from "@tanstack/react-query";
 import VisibilityChip from "components/VisibilityChip";
 // import { push } from "connected-react-router";
@@ -33,105 +31,101 @@ const ShiitakeFix: React.FC<React.PropsWithChildren & ShiitakeProps> = (
   props
 ) => <Shiitake {...props} />;
 
-const styles = ({ palette, spacing, typography }: Theme) =>
-  createStyles({
-    card: {
-      height: "100%",
-      "& a:any-link": {
-        textDecoration: "none",
-      },
-      transition: "all 0.2s ease",
-      cursor: "pointer",
-    },
-    image: {
-      height: spacing.unit * 27,
-      textAlign: "center",
-      padding: spacing.unit * 6,
-      position: "relative",
-    },
-    visibilityContainer: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-end",
-      position: "absolute",
-      right: 0,
-      top: 0,
-      padding: spacing.unit,
-    },
-    visibilityChip: {
-      backgroundColor: palette.secondary.dark,
-      color: "white",
-      margin: spacing.unit,
-    },
-    tagList: {
-      display: "flex",
-      justifyContent: "flex-start",
-      flexWrap: "wrap",
-      paddingTop: spacing.unit * 3,
-    },
-    tag: {
-      margin: spacing.unit / 2,
-    },
-    iconWrapper: {
-      position: "relative",
-      top: 0,
-      left: 0,
-      right: 0,
-    },
-    icon: {
-      width: spacing.unit * 7,
-      height: spacing.unit * 7,
-      color: palette.grey[100],
-    },
-    title: {
-      position: "relative",
-      color: palette.grey[100],
-      lineHeight: 1.25,
-      textAlign: "left",
-    },
-    titleWrapper: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      height: spacing.unit * 9,
-      padding: spacing.unit * 2,
-      position: "absolute",
-      zIndex: 3,
-      bottom: 0,
-      right: 0,
-      left: 0,
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
-    },
-    objective: {
-      height: spacing.unit * 2,
-      ...typography.subtitle1,
-      fontWeight: 500,
-      color: palette.grey[800],
-      lineHeight: 1.25,
-      textAlign: "left",
-    },
-    username: {
-      paddingTop: spacing.unit * 3,
-      color: palette.grey[700],
-      textAlign: "left",
-    },
-    publishedAt: {
-      color: palette.grey[600],
-      textAlign: "left",
-    },
-  });
+// const styles = ({ palette, spacing, typography }: Theme) =>
+//   createStyles({
+//     card: {
+//       height: "100%",
+//       "& a:any-link": {
+//         textDecoration: "none",
+//       },
+//       transition: "all 0.2s ease",
+//       cursor: "pointer",
+//     },
+//     image: {
+//       height: spacing.unit * 27,
+//       textAlign: "center",
+//       padding: spacing.unit * 6,
+//       position: "relative",
+//     },
+//     visibilityContainer: {
+//       display: "flex",
+//       flexDirection: "column",
+//       justifyContent: "flex-start",
+//       alignItems: "flex-end",
+//       position: "absolute",
+//       right: 0,
+//       top: 0,
+//       padding: spacing.unit,
+//     },
+//     visibilityChip: {
+//       backgroundColor: palette.secondary.dark,
+//       color: "white",
+//       margin: spacing.unit,
+//     },
+//     tagList: {
+//       display: "flex",
+//       justifyContent: "flex-start",
+//       flexWrap: "wrap",
+//       paddingTop: spacing.unit * 3,
+//     },
+//     tag: {
+//       margin: spacing.unit / 2,
+//     },
+//     iconWrapper: {
+//       position: "relative",
+//       top: 0,
+//       left: 0,
+//       right: 0,
+//     },
+//     icon: {
+//       width: spacing.unit * 7,
+//       height: spacing.unit * 7,
+//       color: palette.grey[100],
+//     },
+//     title: {
+//       position: "relative",
+//       color: palette.grey[100],
+//       lineHeight: 1.25,
+//       textAlign: "left",
+//     },
+//     titleWrapper: {
+//       display: "flex",
+//       flexDirection: "column",
+//       justifyContent: "center",
+//       height: spacing.unit * 9,
+//       padding: spacing.unit * 2,
+//       position: "absolute",
+//       zIndex: 3,
+//       bottom: 0,
+//       right: 0,
+//       left: 0,
+//       backgroundColor: "rgba(0, 0, 0, 0.7)",
+//     },
+//     objective: {
+//       height: spacing.unit * 2,
+//       ...typography.subtitle1,
+//       fontWeight: 500,
+//       color: palette.grey[800],
+//       lineHeight: 1.25,
+//       textAlign: "left",
+//     },
+//     username: {
+//       paddingTop: spacing.unit * 3,
+//       color: palette.grey[700],
+//       textAlign: "left",
+//     },
+//     publishedAt: {
+//       color: palette.grey[600],
+//       textAlign: "left",
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   showPublic: boolean;
   project: ProjectGraphRecord;
 }
 
-const ProjectThumbnail: React.FC<Props> = ({
-  classes,
-  project,
-  showPublic,
-}) => {
+const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
   const [elevated, setElevated] = useState(false);
 
   const query = useQuery({
@@ -161,19 +155,17 @@ const ProjectThumbnail: React.FC<Props> = ({
       >
         <Card
           raised={elevated}
-          className={classes.card}
           onMouseOver={() => setElevated(true)}
           onMouseOut={() => setElevated(false)}
           onClick={() => onClick()}
         >
           <CardMedia
             image={`https://${project.host}${query.data?.thumbnailPath}`}
-            className={classes.image}
           >
             {/* <div className={classes.iconWrapper}>
               <PlayIcon className={classes.icon} />
             </div> */}
-            <div className={classes.visibilityContainer}>
+            <Stack direction="row" spacing={1}>
               {showPublic && (
                 <VisibilityChip show={project.public} label="public" />
               )}
@@ -181,47 +173,49 @@ const ProjectThumbnail: React.FC<Props> = ({
                 show={project.collaborative}
                 label="collaboratif"
               />
-            </div>
-            <div className={classes.titleWrapper}>
-              <Typography className={classes.title} variant="h6">
+            </Stack>
+            <Box
+              sx={(theme) => ({
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                height: theme.spacing(9),
+                padding: theme.spacing(2),
+                zIndex: 3,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+              })}
+            >
+              <Typography variant="h6" color="white">
                 <ShiitakeFix lines={2} tagName="span">
                   {project.title}
                 </ShiitakeFix>
               </Typography>
-            </div>
+            </Box>
           </CardMedia>
           <CardContent>
-            <Grid
-              container={true}
-              direction="column"
-              justify="space-between"
-              alignItems="stretch"
-            >
+            <Grid container>
               <Grid item={true} xs={12}>
-                <Typography gutterBottom={true} className={classes.objective}>
+                <Typography gutterBottom={true}>
                   <ShiitakeFix lines={3} tagName="span">
                     {project.objective}
                   </ShiitakeFix>
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
-                <Typography className={classes.username}>
-                  {project.user.username}
-                </Typography>
-                <Typography variant="caption" className={classes.publishedAt}>
+                <Typography>{project.user.username}</Typography>
+                <Typography variant="caption">
                   {new Date(project.publishedAt).toLocaleDateString()}
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
-                <div className={classes.tagList}>
+                <Stack spacing={2}>
                   {project.tags.map((tag, index) => (
-                    <Chip
-                      className={classes.tag}
-                      key={index}
-                      label={tag.name}
-                    />
+                    <Chip sx={{ m: 2 }} key={index} label={tag.name} />
                   ))}
-                </div>
+                </Stack>
               </Grid>
             </Grid>
           </CardContent>
@@ -231,4 +225,4 @@ const ProjectThumbnail: React.FC<Props> = ({
   );
 };
 
-export default withStyles(styles)(ProjectThumbnail);
+export default ProjectThumbnail;

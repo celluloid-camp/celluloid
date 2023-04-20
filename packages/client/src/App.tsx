@@ -1,6 +1,3 @@
-import { createStyles, withStyles } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { MuiThemeProvider } from "@material-ui/core/styles";
 // import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as i18next from "i18next";
@@ -24,9 +21,12 @@ import Home from "./scenes/Home";
 import Project from "./scenes/Project";
 import ShareGuide from "./scenes/ShareGuide";
 import createAppStore from "./store";
-import { Bright } from "./utils/ThemeUtils";
 
 const queryClient = new QueryClient();
+
+import { ThemeProvider } from "@mui/material";
+
+import { createTheme } from "./theme";
 
 i18next
   .use(initReactI18next)
@@ -49,23 +49,14 @@ i18next
 
 const store = createAppStore();
 
-const styles = createStyles({
-  "@global": {
-    a: {
-      color: "#42a6f5",
-    },
-  },
-});
-
 const Content = () => {
   return (
     <Provider store={store}>
       {/* <ConnectedRouter history={history}> */}
-      <MuiThemeProvider theme={Bright}>
+      <ThemeProvider theme={createTheme()}>
         <QueryClientProvider client={queryClient}>
           {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
           <React.Fragment>
-            <CssBaseline />
             <React.Fragment>
               <UpdateIndicator />
               <BrowserRouter>
@@ -90,10 +81,10 @@ const Content = () => {
           </React.Fragment>
           {/* </MuiPickersUtilsProvider> */}
         </QueryClientProvider>
-      </MuiThemeProvider>
+      </ThemeProvider>
       {/* </ConnectedRouter> */}
     </Provider>
   );
 };
 
-export default withStyles(styles)(Content);
+export default Content;

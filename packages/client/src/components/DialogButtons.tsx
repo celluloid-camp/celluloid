@@ -1,39 +1,29 @@
-import Button from '@material-ui/core/Button';
-import DialogActions from '@material-ui/core/DialogActions';
-import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
-import * as React from 'react';
-import { AnyAction } from 'redux';
+import Button from "@mui/material/Button";
+import DialogActions from "@mui/material/DialogActions";
+import * as React from "react";
+import { AnyAction } from "redux";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    dialogActionsRoot: {
-      marginTop: spacing.unit * 2,
-      justifyContent: 'space-around'
-    }
-  });
-
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   actionName: string;
   onSubmit(): Promise<AnyAction>;
 }
 
-export default withStyles(styles)(
-  ({ actionName, onSubmit, classes }: Props) => (
-    <DialogActions
-      classes={{
-        root: classes.dialogActionsRoot
+export default ({ actionName, onSubmit }: Props) => (
+  <DialogActions
+    sx={{
+      marginTop: 2,
+      justifyContent: "space-around",
+    }}
+  >
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSubmit();
       }}
     >
-      <form
-        onSubmit={event => {
-          event.preventDefault();
-          onSubmit();
-        }}
-      >
-        <Button type="submit" variant="contained" color="secondary">
-          {actionName}
-        </Button>
-      </form>
-    </DialogActions>
-  )
+      <Button type="submit" variant="contained" color="secondary">
+        {actionName}
+      </Button>
+    </form>
+  </DialogActions>
 );

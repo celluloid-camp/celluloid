@@ -1,65 +1,67 @@
-import { ProjectGraphRecord } from '@celluloid/types';
-import {
-  Grid,
-  MuiThemeProvider,
-  WithStyles,
-  withStyles
-} from '@material-ui/core';
-import ProjectSummary from 'components/ProjectSummary';
-import * as React from 'react';
-import { Dark } from 'utils/ThemeUtils';
+import { ProjectGraphRecord } from "@celluloid/types";
+import { Box, Grid } from "@mui/material";
+import ProjectSummary from "components/ProjectSummary";
+import * as React from "react";
 
-import SideBar from './components/SideBar';
-import { styles } from './ProjectStyles';
-import Video from './scenes/Video';
+import SideBar from "./components/SideBar";
+import Video from "./scenes/Video";
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   project?: ProjectGraphRecord;
   onVideoChange(): void;
 }
 
-export default withStyles(styles)(({
-  project,
-  classes,
-}: Props) => (
-    <div className={classes.root}>
-      <MuiThemeProvider theme={Dark}>
-        <div className={classes.videoContainer}>
-          <div className={classes.video}>
-            {project &&
-              <Video
-                project={project}
-              />
-            }
-          </div>
-        </div>
-      </MuiThemeProvider>
-      <div
-        className={classes.content}
+export default ({ project }: Props) => (
+  <Box sx={{ minHeight: "calc(100vh - 64px)" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        textAlign: "center" as "center",
+        backgroundColor: "black",
+      }}
+    >
+      <Box
+        sx={{
+          height: "100%",
+          maxWidth: 1024,
+          margin: "0 auto",
+        }}
       >
-        {project &&
-          <Grid
-            container={true}
-            direction="row"
-            alignItems="flex-start"
-            spacing={16}
-          >
-            <Grid item={true} xs={12} md={8} lg={9}>
-              <ProjectSummary project={project} />
-            </Grid>
-            <Grid
-              className={classes.sideBar}
-              item={true}
-              xs={12}
-              md={4}
-              lg={3}
-            >
-              <SideBar
-                project={project}
-              />
-            </Grid>
+        {project && <Video project={project} />}
+      </Box>
+    </Box>
+    <Box
+      sx={(theme) => ({
+        padding: theme.spacing(3),
+        minHeight: "calc(100% - 64px)",
+        maxWidth: 1024,
+        margin: "0 auto",
+      })}
+    >
+      {project && (
+        <Grid
+          container={true}
+          direction="row"
+          alignItems="flex-start"
+          spacing={16}
+        >
+          <Grid item={true} xs={12} md={8} lg={9}>
+            <ProjectSummary project={project} />
           </Grid>
-        }
-      </div>
-    </div>
-  ));
+          <Grid
+            sx={{
+              textAlign: "left",
+            }}
+            item={true}
+            xs={12}
+            md={4}
+            lg={3}
+          >
+            <SideBar project={project} />
+          </Grid>
+        </Grid>
+      )}
+    </Box>
+  </Box>
+);
