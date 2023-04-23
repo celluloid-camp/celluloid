@@ -1,43 +1,35 @@
-import {
-  Button,
-  createStyles,
-  Paper,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import { getButtonLink } from "components/ButtonLink";
-import React from "react";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { Trans } from "react-i18next";
-import { SharedLayout } from "scenes/Menu";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    body: {
-      padding: spacing.unit * 4,
-    },
-    buttonWrapper: {
-      padding: spacing.unit * 2,
-    },
-  });
+import { SharedLayout } from "../scenes/Menu";
+import { getButtonLink } from "./ButtonLink";
 
-export default withStyles(styles)(({ classes }: WithStyles<typeof styles>) => (
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     body: {
+//       padding: spacing.unit * 4,
+//     },
+//     buttonWrapper: {
+//       padding: spacing.unit * 2,
+//     },
+//   });
+
+export default () => (
   <SharedLayout>
     <Paper>
-      <div className={classes.body}>
+      <Box sx={{ padding: 4 }}>
         <Typography variant="h4" gutterBottom={true}>
           <Trans i18nKey={"notFound.title"} />
         </Typography>
         <Typography>
           <Trans i18nKey={"notFound.description"} />
         </Typography>
-      </div>
-      <div className={classes.buttonWrapper}>
+      </Box>
+      <Box sx={{ padding: 2 }}>
         <Button component={getButtonLink(".")}>
           <Trans i18nKey={"notFound.action"} />
         </Button>
-      </div>
+      </Box>
     </Paper>
   </SharedLayout>
-));
+);

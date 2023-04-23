@@ -1,17 +1,14 @@
 import { ProjectGraphRecord, UserRecord } from "@celluloid/types";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { LoadingButton } from "@mui/lab";
 import {
-  createStyles,
+  Box,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   ListSubheader,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import ButtonProgress from "components/ButtonProgress";
+} from "@mui/material";
 import DialogError from "components/DialogError";
 import LabeledProgressSwitch from "components/LabeledProgressSwitch";
 import ShareCredentials from "components/ShareCredentials";
@@ -24,44 +21,44 @@ import { isAdmin, isOwner } from "utils/ProjectUtils";
 
 import ShareDialog from "./components/ShareDialog";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    button: {
-      padding: spacing.unit,
-      paddingBottom: 0,
-    },
-    paper: {
-      marginTop: 0,
-      margin: spacing.unit,
-      padding: spacing.unit,
-    },
-    list: {
-      padding: 0,
-      paddingBottom: spacing.unit * 2,
-    },
-    listItem: {
-      padding: 0,
-    },
-    listHeader: {
-      height: spacing.unit * 5,
-      textAlign: "left",
-      marginTop: spacing.unit,
-      paddingLeft: spacing.unit,
-    },
-    buttonIcon: {
-      marginRight: spacing.unit * 2,
-    },
-    chips: {
-      paddingTop: spacing.unit,
-      textAlign: "right",
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     button: {
+//       padding: spacing.unit,
+//       paddingBottom: 0,
+//     },
+//     paper: {
+//       marginTop: 0,
+//       margin: spacing.unit,
+//       padding: spacing.unit,
+//     },
+//     list: {
+//       padding: 0,
+//       paddingBottom: spacing.unit * 2,
+//     },
+//     listItem: {
+//       padding: 0,
+//     },
+//     listHeader: {
+//       height: spacing.unit * 5,
+//       textAlign: "left",
+//       marginTop: spacing.unit,
+//       paddingLeft: spacing.unit,
+//     },
+//     buttonIcon: {
+//       marginRight: spacing.unit * 2,
+//     },
+//     chips: {
+//       paddingTop: spacing.unit,
+//       textAlign: "right",
+//     },
+//   });
 
 export interface Member extends UserRecord {
   subtitle?: string;
 }
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   user?: UserRecord;
   project: ProjectGraphRecord;
   members: Set<Member>;
@@ -101,7 +98,6 @@ const SideBarComponenent: React.FC<Props> = ({
   onClickSetCollaborative,
   onClickShare,
   onClickDelete,
-  classes,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -127,7 +123,7 @@ const SideBarComponenent: React.FC<Props> = ({
           />
         </>
       ) : (
-        <div className={classes.chips}>
+        <Box sx={{ paddingTop: 1 }}>
           <VisibilityChip
             show={project.public}
             label={t("project.public").toLowerCase()}
@@ -136,7 +132,7 @@ const SideBarComponenent: React.FC<Props> = ({
             show={project.collaborative}
             label={t("project.collaborative").toLowerCase()}
           />
-        </div>
+        </Box>
       )}
       {user && isOwner(project, user) && (
         <>
@@ -149,7 +145,7 @@ const SideBarComponenent: React.FC<Props> = ({
           />
           <ShareDialog project={project} />
           {project.shared && (
-            <div className={classes.chips}>
+            <Box sx={{ paddingTop: 1 }}>
               <ShareCredentials
                 name={project.shareName}
                 password={project.sharePassword}
@@ -163,7 +159,7 @@ const SideBarComponenent: React.FC<Props> = ({
                 {t("project.share.dialog.linkText")}
               </a>
               .
-            </div>
+            </Box>
           )}
         </>
       )}
@@ -185,15 +181,18 @@ const SideBarComponenent: React.FC<Props> = ({
       {user && isOwner(project, user) && (
         <List
           dense={true}
-          className={classes.list}
+          sx={{
+            padding: 0,
+            paddingBottom: 2,
+          }}
           subheader={
-            <ListSubheader className={classes.listHeader}>
+            <ListSubheader>
               {t("project.members", { count: members.size })}
             </ListSubheader>
           }
         >
           {Array.from(members).map((member: Member) => (
-            <ListItem key={member.id} className={classes.listItem}>
+            <ListItem key={member.id}>
               {/* @ts-ignore */}
               <ListItemAvatar>
                 <UserAvatar user={member} />
@@ -210,15 +209,18 @@ const SideBarComponenent: React.FC<Props> = ({
       {user && isAdmin(user) && (
         <List
           dense={true}
-          className={classes.list}
+          sx={{
+            padding: 0,
+            paddingBottom: 2,
+          }}
           subheader={
-            <ListSubheader className={classes.listHeader}>
+            <ListSubheader>
               {t("project.members", { count: members.size })}
             </ListSubheader>
           }
         >
           {Array.from(members).map((member: Member) => (
-            <ListItem key={member.id} className={classes.listItem}>
+            <ListItem key={member.id}>
               {/* @ts-ignore */}
               <ListItemAvatar>
                 <UserAvatar user={member} />
@@ -234,8 +236,13 @@ const SideBarComponenent: React.FC<Props> = ({
       )}
 
       {((user && isOwner(project, user)) || (user && isAdmin(user))) && (
-        <div className={classes.button}>
-          <ButtonProgress
+        <Box
+          sx={{
+            padding: 2,
+            paddingBottom: 0,
+          }}
+        >
+          <LoadingButton
             variant="contained"
             color="secondary"
             size="small"
@@ -243,14 +250,14 @@ const SideBarComponenent: React.FC<Props> = ({
             loading={deleteLoading}
             onClick={() => onClickDelete(project.id)}
           >
-            <DeleteIcon fontSize="inherit" className={classes.buttonIcon} />
+            <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
             {t("deleteAction")}
-          </ButtonProgress>
+          </LoadingButton>
           {deleteError && <DialogError error={deleteError} />}
-        </div>
+        </Box>
       )}
     </>
   );
 };
 
-export default withStyles(styles)(SideBarComponenent);
+export default SideBarComponenent;

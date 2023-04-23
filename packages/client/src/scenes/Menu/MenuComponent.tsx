@@ -1,21 +1,19 @@
 import { UserRecord } from "@celluloid/types";
 import {
   AppBar,
+  Box,
   Button,
   ClickAwayListener,
-  createStyles,
   Grow as GrowMUI,
+  Link,
   MenuItem,
   MenuList,
   Paper,
   Popper,
-  Theme,
   Toolbar,
   Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import { GrowProps } from "@material-ui/core/Grow";
+} from "@mui/material";
+import { GrowProps } from "@mui/material/Grow";
 import { closeSignin, openLogin, openSignup } from "actions/Signin";
 import { getButtonLink } from "components/ButtonLink";
 import SigninDialog, { SigninState } from "components/Signin";
@@ -33,52 +31,18 @@ const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
 );
 
-const styles = ({ typography, spacing, palette }: Theme) =>
-  createStyles({
-    root: { height: "100%" },
-    grow: { flex: 1 },
-    homeLink: {
-      color: palette.grey[600],
-      fontSize: typography.h4.fontSize,
-      fontWeight: typography.h4.fontWeight,
-      fontFamily: typography.h4.fontFamily,
-      textTransform: "none",
-      textDecoration: "none",
-    },
-    content: {
-      paddingTop: spacing.unit * 8,
-      height: "100%",
-    },
-    footer: {
-      paddingTop: spacing.unit * 3,
-      width: "100%",
-      textAlign: "center",
-      marginBottom: spacing.unit * 9,
-    },
-    copyright: {
-      color: palette.grey[600],
-    },
-    footerLink: {
-      ...typography.caption,
-      color: palette.grey[600],
-      display: "inline",
-      textDecoration: "underline",
-    },
-  });
-
-type Props = React.PropsWithChildren &
-  WithStyles<typeof styles> & {
-    user?: UserRecord;
-    signinDialog: SigninState;
-    menuAnchor?: HTMLElement;
-    onOpenLangMenu(element: EventTarget): void;
-    onCloseLangMenu(): void;
-    onLangChange(lang: string): void;
-    onClickLogin(): EmptyAction;
-    onClickSignup(): EmptyAction;
-    onCloseSignin(): EmptyAction;
-    onClickLogout(): Promise<AnyAction>;
-  };
+type Props = React.PropsWithChildren & {
+  user?: UserRecord;
+  signinDialog: SigninState;
+  menuAnchor?: HTMLElement;
+  onOpenLangMenu(element: EventTarget): void;
+  onCloseLangMenu(): void;
+  onLangChange(lang: string): void;
+  onClickLogin(): EmptyAction;
+  onClickSignup(): EmptyAction;
+  onCloseSignin(): EmptyAction;
+  onClickLogout(): Promise<AnyAction>;
+};
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -96,7 +60,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 const MenuComponent: React.FC<Props> = ({
-  classes,
   user,
   menuAnchor,
   onOpenLangMenu,
@@ -112,11 +75,11 @@ const MenuComponent: React.FC<Props> = ({
   const { t, i18n } = useTranslation();
 
   return (
-    <div className={classes.root}>
+    <Box sx={{ height: "100%" }}>
       <AppBar color="default">
         <Toolbar>
-          <div className={classes.grow}>
-            <Button component={getButtonLink("/")} className={classes.homeLink}>
+          <Box flexGrow={1}>
+            <Button component={getButtonLink("/")}>
               <svg width="180" height="40">
                 <g id="surface1">
                   <path
@@ -376,12 +339,21 @@ const MenuComponent: React.FC<Props> = ({
                 </g>
               </svg>
             </Button>
-          </div>
+          </Box>
+
+          <Button component={getButtonLink("/About")}>{t("menu.about")}</Button>
+          <SigninBar
+            user={user}
+            onClickLogin={onClickLogin}
+            onClickSignup={onClickSignup}
+            onClickLogout={onClickLogout}
+          />
+
           <Button
             onClick={(event) => onOpenLangMenu(event.target)}
-            color="secondary"
+            sx={{ color: "text.primary" }}
           >
-            {i18n.language.split("_")[0]}
+            {i18n.language.split("_")[0].toUpperCase()}
           </Button>
           <Popper
             open={Boolean(menuAnchor)}
@@ -412,35 +384,26 @@ const MenuComponent: React.FC<Props> = ({
               </Grow>
             )}
           </Popper>
-          <Button component={getButtonLink("/About")}>{t("menu.about")}</Button>
-          <SigninBar
-            user={user}
-            onClickLogin={onClickLogin}
-            onClickSignup={onClickSignup}
-            onClickLogout={onClickLogout}
-          />
         </Toolbar>
       </AppBar>
       <SigninDialog onCancel={onCloseSignin} state={signinDialog} />
-      <div className={classes.content}>{children}</div>
-      <div className={classes.footer}>
-        <Typography variant="caption" className={classes.copyright}>
+      <Box sx={{ paddingTop: 8 }}>{children}</Box>
+      <Box sx={{ paddingTop: 3 }}>
+        <Typography variant="caption" sx={{ color: "gray" }}>
           {`© 2018 Institut Catholique de Paris`}
         </Typography>
-        <NavLink to="/terms-and-conditions" className={classes.footerLink}>
+        <Link component={NavLink} to="/terms-and-conditions">
           {t("menu.termsAndConditions")}
-        </NavLink>
+        </Link>
         {` - `}
-        <NavLink to="/legal-notice" className={classes.footerLink}>
+        <Link component={NavLink} to="/legal-notice">
           {t("menu.legalNotice")}
-        </NavLink>
-        <Typography  variant="caption" className={classes.copyright}>
-           {process.env.REACT_APP_VERSION} {process.env.REACT_APP_COMMIT}
+        </Link>
+        <Typography variant="caption">
+          {process.env.REACT_APP_VERSION} {process.env.REACT_APP_COMMIT}
         </Typography>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(MenuComponent)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(MenuComponent);

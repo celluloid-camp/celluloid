@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { SharedLayout } from "scenes/Menu";
@@ -44,8 +44,8 @@ export const About: React.FC = () => {
             textAlign: "center",
           }}
         >
-          <Grid container={true} spacing={40} direction="row" justify="center">
-            <Grid item={true}>
+          <Grid container spacing={2}>
+            <Grid item>
               <a href="https://www.icp.fr/" target="_blank" rel="noreferrer">
                 <img
                   src={logoIcp}

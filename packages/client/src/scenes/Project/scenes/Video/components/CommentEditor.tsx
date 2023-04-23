@@ -1,14 +1,8 @@
 import { AnnotationRecord, CommentRecord, UserRecord } from "@celluloid/types";
-import {
-  createStyles,
-  IconButton,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import CheckIcon from "@material-ui/icons/Check";
-import CancelIcon from "@material-ui/icons/Clear";
+import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
+import CancelIcon from "@mui/icons-material/Clear";
+import { Box, IconButton } from "@mui/material";
 import {
   createCommentThunk,
   triggerAddComment,
@@ -25,38 +19,38 @@ import { AppState } from "types/StateTypes";
 
 import TransparentInput from "./TransparentInput";
 
-const styles = (theme: Theme) =>
-  createStyles({
-    buttons: {
-      marginTop: theme.spacing.unit / 2,
-      marginRight: theme.spacing.unit * 2,
-      width: theme.spacing.unit * 8,
-    },
-    button: {
-      padding: 0,
-      width: 32,
-      height: 32,
-    },
-    content: {
-      flex: "1 1 auto",
-      minWidth: 0,
-      padding: `0 ${theme.spacing.unit}px`,
-      "&:first-child": {
-        paddingLeft: 0,
-      },
-      margin: theme.spacing.unit / 2,
-    },
-    root: {
-      transition: "all 0.15s ease",
-      minHeight: 54,
-      paddingLeft: theme.spacing.unit * 2.5,
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "flex-start",
-    },
-  });
+// const styles = (theme: Theme) =>
+//   createStyles({
+//     buttons: {
+//       marginTop: theme.spacing.unit / 2,
+//       marginRight: theme.spacing.unit * 2,
+//       width: theme.spacing.unit * 8,
+//     },
+//     button: {
+//       padding: 0,
+//       width: 32,
+//       height: 32,
+//     },
+//     content: {
+//       flex: "1 1 auto",
+//       minWidth: 0,
+//       padding: `0 ${theme.spacing.unit}px`,
+//       "&:first-child": {
+//         paddingLeft: 0,
+//       },
+//       margin: theme.spacing.unit / 2,
+//     },
+//     root: {
+//       transition: "all 0.15s ease",
+//       minHeight: 54,
+//       paddingLeft: theme.spacing.unit * 2.5,
+//       display: "flex",
+//       flexDirection: "row",
+//       alignItems: "flex-start",
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   user: UserRecord;
   annotation: AnnotationRecord;
   comment?: CommentRecord;
@@ -98,7 +92,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 const CommentEditor: React.FC<Props> = ({
-  classes,
   user,
   annotation,
   comment,
@@ -132,28 +125,61 @@ const CommentEditor: React.FC<Props> = ({
   };
 
   return (
-    <div className={classes.root}>
+    <Box
+      sx={{
+        transition: "all 0.15s ease",
+        minHeight: 54,
+        paddingLeft: 2.5,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+      }}
+    >
       <UserAvatar user={user} small={true} />
-      <div className={classes.content}>
+      <Box
+        sx={{
+          flex: "1 1 auto",
+          minWidth: 0,
+          paddingY: 1,
+          "&:first-child": {
+            paddingLeft: 0,
+          },
+          margin: 0.5,
+        }}
+      >
         <TransparentInput
           unpadded={true}
           text={text}
           onChange={onTextChange}
           placeholder={t("annotation.commentPlaceholder")}
         />
-      </div>
-      <div className={classes.buttons}>
+      </Box>
+      <Box
+        sx={(theme) => ({
+          marginTop: 0.5,
+          marginRight: 2,
+          width: theme.spacing(8),
+        })}
+      >
         {comment ? (
           <>
             <IconButton
-              className={classes.button}
+              sx={{
+                padding: 0,
+                width: 32,
+                height: 32,
+              }}
               color="secondary"
               onClick={() => onClickCancel()}
             >
               <CancelIcon fontSize="small" />
             </IconButton>
             <IconButton
-              className={classes.button}
+              sx={{
+                padding: 0,
+                width: 32,
+                height: 32,
+              }}
               color="primary"
               onClick={() => onClickUpdate(annotation, { ...comment, text })}
             >
@@ -162,18 +188,20 @@ const CommentEditor: React.FC<Props> = ({
           </>
         ) : (
           <IconButton
-            className={classes.button}
+            sx={{
+              padding: 0,
+              width: 32,
+              height: 32,
+            }}
             color="primary"
             onClick={() => onClickAdd(annotation, text)}
           >
             <AddIcon fontSize="small" />
           </IconButton>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(CommentEditor)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentEditor);

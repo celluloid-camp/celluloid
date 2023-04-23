@@ -1,41 +1,34 @@
-import {
-  createStyles,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import React from "react";
+import { Box, Typography } from "@mui/material";
 import { Trans } from "react-i18next";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    shareInfo: {
-      marginBottom: spacing.unit * 2,
-    },
-    password: {
-      fontFamily: "monospace",
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     shareInfo: {
+//       marginBottom: spacing.unit * 2,
+//     },
+//     password: {
+//       fontFamily: "monospace",
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   name: string;
   password: string;
 }
 
-export default withStyles(styles)(({ name, password, classes }: Props) => (
+export default ({ name, password }: Props) => (
   <>
-    <div className={classes.shareInfo}>
+    <Box sx={{ marginBottom: 2 }}>
       <Typography variant="caption" gutterBottom={true}>
         <Trans i18nKey={"signin.projectCode"} />
       </Typography>
       <Typography
         variant="body2"
         gutterBottom={true}
-        className={classes.password}
+        sx={{ fontFamily: "monospace" }}
       >
         {`${name}-${password}`}
       </Typography>
-    </div>
+    </Box>
   </>
-));
+);

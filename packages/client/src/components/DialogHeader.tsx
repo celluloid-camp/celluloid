@@ -1,59 +1,50 @@
-import {
-  createStyles,
-  DialogTitle,
-  IconButton,
-  LinearProgress,
-  Theme,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import * as React from 'react';
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, DialogTitle, IconButton, LinearProgress } from "@mui/material";
+import * as React from "react";
 
-const styles = ({ palette, spacing }: Theme) => createStyles({
-  closeIcon: {
-    position: 'absolute',
-    right: spacing.unit,
-    top: spacing.unit,
-  },
-  progress: {
-    flexGrow: 1
-  },
-  title: {
-    backgroundColor: palette.primary.main,
-    textAlign: 'center',
-  },
-  titleTypo: {
-    color: palette.primary.contrastText
-  }
-});
+// const styles = ({ palette, spacing }: Theme) =>
+//   createStyles({
+//     closeIcon: {
+//       position: "absolute",
+//       right: spacing.unit,
+//       top: spacing.unit,
+//     },
+//     progress: {
+//       flexGrow: 1,
+//     },
+//     title: {
+//       backgroundColor: palette.primary.main,
+//       textAlign: "center",
+//     },
+//     titleTypo: {
+//       color: palette.primary.contrastText,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   title: string;
   loading: boolean;
   children?: React.ReactNode;
   onClose(): void;
 }
 
-export default withStyles(styles)(({
-  onClose, title, loading, classes, children
-}: Props) => (
-    <>
-      <DialogTitle className={classes.title}>
-        <span className={classes.closeIcon}>
-          <IconButton onClick={() => onClose()}>
-            <CloseIcon nativeColor="white" />
-          </IconButton>
-        </span>
-        <span className={classes.titleTypo}>{title}</span>
-      </DialogTitle>
-      {children}
-      <div className={classes.progress}>
-        {loading ? (
-          <LinearProgress variant="query" />
-        ) : (
-            <LinearProgress variant="determinate" value={0} />
-          )}
-      </div>
-    </>
-  ));
+export default ({ onClose, title, loading, children }: Props) => (
+  <>
+    <DialogTitle sx={{ backgroundColor: "primary", textAlign: "center" }}>
+      <span>
+        <IconButton onClick={() => onClose()}>
+          <CloseIcon sx={{ color: "white" }} />
+        </IconButton>
+      </span>
+      <span>{title}</span>
+    </DialogTitle>
+    {children}
+    <Box sx={{ flexGrow: 1 }}>
+      {loading ? (
+        <LinearProgress variant="query" />
+      ) : (
+        <LinearProgress variant="determinate" value={0} />
+      )}
+    </Box>
+  </>
+);

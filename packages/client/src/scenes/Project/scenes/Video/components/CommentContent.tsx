@@ -4,18 +4,10 @@ import {
   ProjectGraphRecord,
   UserRecord,
 } from "@celluloid/types";
-import {
-  createStyles,
-  Grow as GrowMUI,
-  IconButton,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import { GrowProps } from "@material-ui/core/Grow";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { Box, Grow as GrowMUI, IconButton, Typography } from "@mui/material";
+import { GrowProps } from "@mui/material/Grow";
 import { deleteCommentThunk } from "actions/CommentActions";
 import UserAvatar from "components/UserAvatar";
 import moment from "moment";
@@ -30,53 +22,53 @@ const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
 );
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      transition: "all 0.15s ease",
-      minHeight: 54,
-      paddingLeft: theme.spacing.unit * 2.5,
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "flex-start",
-      paddingBottom: theme.spacing.unit,
-    },
-    text: {
-      ...theme.typography.caption,
-      color: theme.palette.text.disabled,
-      "& a:any-link": {
-        color: "#42a6f5",
-      },
-      whiteSpace: "pre-wrap",
-    },
-    content: {
-      flex: "1 1 auto",
-      minWidth: 0,
-      padding: `0 ${theme.spacing.unit}px`,
-      "&:first-child": {
-        paddingLeft: 0,
-      },
-      margin: theme.spacing.unit / 2,
-    },
-    buttons: {
-      width: theme.spacing.unit * 8,
-      marginTop: theme.spacing.unit / 2,
-      marginRight: theme.spacing.unit * 2,
-    },
-    button: {
-      width: theme.spacing.unit * 4,
-      height: theme.spacing.unit * 4,
-    },
-    icon: {
-      fontSize: theme.spacing.unit * 2.5,
-    },
-  });
+// const styles = (theme: Theme) =>
+//   createStyles({
+//     root: {
+//       transition: "all 0.15s ease",
+//       minHeight: 54,
+//       paddingLeft: theme.spacing.unit * 2.5,
+//       display: "flex",
+//       flexDirection: "row",
+//       alignItems: "flex-start",
+//       paddingBottom: theme.spacing.unit,
+//     },
+//     text: {
+//       ...theme.typography.caption,
+//       color: theme.palette.text.disabled,
+//       "& a:any-link": {
+//         color: "#42a6f5",
+//       },
+//       whiteSpace: "pre-wrap",
+//     },
+//     content: {
+//       flex: "1 1 auto",
+//       minWidth: 0,
+//       padding: `0 ${theme.spacing.unit}px`,
+//       "&:first-child": {
+//         paddingLeft: 0,
+//       },
+//       margin: theme.spacing.unit / 2,
+//     },
+//     buttons: {
+//       width: theme.spacing.unit * 8,
+//       marginTop: theme.spacing.unit / 2,
+//       marginRight: theme.spacing.unit * 2,
+//     },
+//     button: {
+//       width: theme.spacing.unit * 4,
+//       height: theme.spacing.unit * 4,
+//     },
+//     icon: {
+//       fontSize: theme.spacing.unit * 2.5,
+//     },
+//   });
 
 interface State {
   hovering: boolean;
 }
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   user?: UserRecord;
   project: ProjectGraphRecord;
   comment: CommentRecord;
@@ -101,83 +93,109 @@ export default connect(
   null,
   mapDispatchToProps
 )(
-  withStyles(styles)(
-    class extends React.Component<Props, State> {
-      state = {
-        hovering: false,
+  class extends React.Component<Props, State> {
+    state = {
+      hovering: false,
+    };
+
+    render() {
+      const { user, project, comment, annotation, onClickEdit, onClickDelete } =
+        this.props;
+
+      const { hovering } = this.state;
+      const showActions =
+        user &&
+        (canEditComment(comment, user) || isOwner(project, user)) &&
+        hovering;
+
+      const onHover = (hoverChange: boolean) => {
+        this.setState({ hovering: hoverChange });
       };
 
-      render() {
-        const {
-          classes,
-          user,
-          project,
-          comment,
-          annotation,
-          onClickEdit,
-          onClickDelete,
-        } = this.props;
-
-        const { hovering } = this.state;
-        const showActions =
-          user &&
-          (canEditComment(comment, user) || isOwner(project, user)) &&
-          hovering;
-
-        const onHover = (hoverChange: boolean) => {
-          this.setState({ hovering: hoverChange });
-        };
-
-        return (
-          <div
-            className={classes.root}
-            onMouseEnter={() => onHover(true)}
-            onMouseLeave={() => onHover(false)}
+      return (
+        <Box
+          sx={(theme) => ({
+            minHeight: 54,
+            paddingLeft: theme.spacing(2.5),
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-start",
+            paddingBottom: theme.spacing(1),
+          })}
+          onMouseEnter={() => onHover(true)}
+          onMouseLeave={() => onHover(false)}
+        >
+          <UserAvatar user={comment.user} small={true} />
+          <Box
+            sx={(theme) => ({
+              flex: "1 1 auto",
+              minWidth: 0,
+              padding: `0 ${theme.spacing(1)}px`,
+              "&:first-child": {
+                paddingLeft: 0,
+              },
+              margin: 0.5,
+            })}
           >
-            <UserAvatar user={comment.user} small={true} />
-            <div className={classes.content}>
-              <Typography variant="caption">
-                {`${comment.user.username} | ${moment(
-                  comment.createdAt
-                ).fromNow()}`}
-              </Typography>
-              <Typography
-                className={classes.text}
-                noWrap={true}
-                gutterBottom={true}
-              >
-                {comment.text}
-              </Typography>
-            </div>
-            <Grow in={showActions} appear={true}>
-              <div className={classes.buttons}>
-                {showActions && (
-                  <>
-                    <IconButton
-                      className={classes.button}
-                      onClick={() => onClickEdit()}
-                    >
-                      <EditIcon className={classes.icon} color="disabled" />
-                    </IconButton>
-                    <IconButton
-                      className={classes.button}
-                      onClick={() =>
-                        onClickDelete(
-                          annotation.projectId,
-                          annotation.id,
-                          comment
-                        )
-                      }
-                    >
-                      <DeleteIcon className={classes.icon} color="disabled" />
-                    </IconButton>
-                  </>
-                )}
-              </div>
-            </Grow>
-          </div>
-        );
-      }
+            <Typography variant="caption">
+              {`${comment.user.username} | ${moment(
+                comment.createdAt
+              ).fromNow()}`}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                "& a:any-link": {
+                  color: "#42a6f5",
+                },
+                whiteSpace: "pre-wrap",
+              }}
+              noWrap={true}
+              gutterBottom={true}
+            >
+              {comment.text}
+            </Typography>
+          </Box>
+          <Grow in={showActions} appear={true}>
+            <Box
+              sx={(theme) => ({
+                width: theme.spacing(8),
+                marginTop: 0.5,
+                marginRight: 2,
+              })}
+            >
+              {showActions && (
+                <>
+                  <IconButton
+                    sx={(theme) => ({
+                      width: theme.spacing(4),
+                      height: theme.spacing(4),
+                    })}
+                    onClick={() => onClickEdit()}
+                  >
+                    <EditIcon color="disabled" />
+                  </IconButton>
+                  <IconButton
+                    sx={(theme) => ({
+                      width: theme.spacing(4),
+                      height: theme.spacing(4),
+                    })}
+                    onClick={() =>
+                      onClickDelete(
+                        annotation.projectId,
+                        annotation.id,
+                        comment
+                      )
+                    }
+                  >
+                    <DeleteIcon color="disabled" />
+                  </IconButton>
+                </>
+              )}
+            </Box>
+          </Grow>
+        </Box>
+      );
     }
-  )
+  }
 );

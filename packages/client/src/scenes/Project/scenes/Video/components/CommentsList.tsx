@@ -3,13 +3,7 @@ import {
   ProjectGraphRecord,
   UserRecord,
 } from "@celluloid/types";
-import {
-  createStyles,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
@@ -19,19 +13,19 @@ import { canAnnotate } from "utils/ProjectUtils";
 import Comment from "./Comment";
 import CommentEditor from "./CommentEditor";
 
-const styles = ({ spacing, palette }: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: spacing.unit * 8.5,
-      paddingRight: spacing.unit * 7,
-    },
-    commentCount: {
-      color: palette.text.disabled,
-      paddingLeft: spacing.unit * 2,
-    },
-  });
+// const styles = ({ spacing, palette }: Theme) =>
+//   createStyles({
+//     root: {
+//       paddingLeft: spacing.unit * 8.5,
+//       paddingRight: spacing.unit * 7,
+//     },
+//     commentCount: {
+//       color: palette.text.disabled,
+//       paddingLeft: spacing.unit * 2,
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   annotation: AnnotationRecord;
   user?: UserRecord;
   project: ProjectGraphRecord;
@@ -41,18 +35,24 @@ const mapStateToProps = (state: AppState) => ({
   user: state.user,
 });
 
-const CommentList: React.FC<Props> = ({
-  annotation,
-  classes,
-  user,
-  project,
-}: Props) => {
+const CommentList: React.FC<Props> = ({ annotation, user, project }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <div className={classes.root}>
+    <Box
+      sx={{
+        paddingLeft: 8,
+        paddingRight: 7,
+      }}
+    >
       {annotation.comments.length > 0 && (
-        <Typography gutterBottom={true} className={classes.commentCount}>
+        <Typography
+          gutterBottom={true}
+          color="disabled"
+          sx={{
+            paddingLeft: 2,
+          }}
+        >
           {t("annotation.commentLabel", { count: annotation.comments.length })}
         </Typography>
       )}
@@ -72,8 +72,8 @@ const CommentList: React.FC<Props> = ({
           onClickCancel={() => null}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
-export default withStyles(styles)(connect(mapStateToProps)(CommentList));
+export default connect(mapStateToProps)(CommentList);

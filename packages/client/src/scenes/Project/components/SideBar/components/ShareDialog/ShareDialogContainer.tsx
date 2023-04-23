@@ -1,19 +1,15 @@
 import { ProjectGraphRecord, ProjectShareData } from "@celluloid/types";
+import CancelIcon from "@mui/icons-material/Clear";
+import PrintIcon from "@mui/icons-material/Print";
+import ShareIcon from "@mui/icons-material/Share";
+import WarningIcon from "@mui/icons-material/Warning";
 import {
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
-  Theme,
   Typography,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import CancelIcon from "@material-ui/icons/Clear";
-import PrintIcon from "@material-ui/icons/Print";
-import ShareIcon from "@material-ui/icons/Share";
-import WarningIcon from "@material-ui/icons/Warning";
+} from "@mui/material";
 import { cancelShareProject, shareProjectThunk } from "actions/ProjectActions";
 import DialogError from "components/DialogError";
 import DialogHeader from "components/DialogHeader";
@@ -27,25 +23,25 @@ import { Dispatch } from "redux";
 import { AsyncAction, EmptyAction } from "types/ActionTypes";
 import { AppState, SharingStatus } from "types/StateTypes";
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    icons: {
-      marginRight: spacing.unit * 2,
-      fontSize: 30,
-    },
-    content: {
-      padding: spacing.unit * 2,
-      margin: spacing.unit,
-    },
-    highlights: {
-      display: "flex",
-      marginTop: spacing.unit,
-      marginBottom: spacing.unit * 2,
-      alignItems: "flex-start",
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     icons: {
+//       marginRight: spacing.unit * 2,
+//       fontSize: 30,
+//     },
+//     content: {
+//       padding: spacing.unit * 2,
+//       margin: spacing.unit,
+//     },
+//     highlights: {
+//       display: "flex",
+//       marginTop: spacing.unit,
+//       marginBottom: spacing.unit * 2,
+//       alignItems: "flex-start",
+//     },
+//   });
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   project: ProjectGraphRecord;
   error?: string;
   status: SharingStatus;
@@ -77,7 +73,6 @@ const SharedDialogContainer: React.FC<Props> = ({
   onSubmit,
   status,
   error,
-  classes,
 }) => {
   const { t } = useTranslation();
   const [sharePassword] = useState(`${pass()}-${pass()}`);
@@ -94,17 +89,17 @@ const SharedDialogContainer: React.FC<Props> = ({
         onClose={() => onCancel()}
         loading={status === SharingStatus.LOADING}
       />
-      <DialogContent className={classes.content}>
+      <DialogContent>
         <ShareCredentials name={project.shareName} password={sharePassword} />
-        <div className={classes.highlights}>
-          <WarningIcon color="primary" className={classes.icons} />
+        <div>
+          <WarningIcon color="primary" />
           <Typography gutterBottom={true}>
             <b>{t("project.codeWarning.title")}</b>
             {t("project.codeWarning.description")}
           </Typography>
         </div>
-        <div className={classes.highlights}>
-          <PrintIcon color="primary" className={classes.icons} />
+        <div>
+          <PrintIcon color="primary" />
           <Typography gutterBottom={true}>
             {t("project.share.dialog.description")}
             <a
@@ -141,6 +136,7 @@ const SharedDialogContainer: React.FC<Props> = ({
   );
 };
 
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(SharedDialogContainer)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SharedDialogContainer);

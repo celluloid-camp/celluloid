@@ -1,15 +1,5 @@
 import { TagData } from "@celluloid/types";
-import {
-  createStyles,
-  InputAdornment,
-  MenuItem,
-  Paper,
-  TextField,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
+import { MenuItem, Paper, TextField } from "@mui/material";
 import React from "react";
 import Autosuggest, {
   // RenderInputComponent,
@@ -51,11 +41,9 @@ function isExistingTag(suggestion: Suggestion): suggestion is ExistingTag {
 const TagAutosuggest = Autosuggest as { new (): Autosuggest<Suggestion> };
 
 function renderInputComponent(
-  props: Autosuggest.InputProps<Suggestion> &
-    WithStyles<any> & { ref: React.Ref<any> }
+  props: Autosuggest.InputProps<Suggestion> & { ref: React.Ref<any> }
 ) {
   const {
-    classes,
     ref,
     height,
     width,
@@ -84,25 +72,22 @@ function renderInputComponent(
     step,
     defaultValue,
     onChange,
-    ...others
+    ..._
   } = props;
 
   return (
     <TextField
       variant="outlined"
       fullWidth={true}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon color="disabled" />
-          </InputAdornment>
-        ),
-        inputRef: ref,
-        classes: {
-          input: classes.input,
-        },
-        ...others,
-      }}
+      // InputProps={{
+      //   startAdornment: (
+      //     <InputAdornment position="start">
+      //       <SearchIcon color="disabled" />
+      //     </InputAdornment>
+      //   ),
+      //   inputRef: ref,
+      //   ...others,
+      // }}
     />
   );
 }
@@ -154,35 +139,35 @@ function getSuggestionValue(suggestion: Suggestion): string {
   return suggestion.name;
 }
 
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    container: {
-      flexGrow: 1,
-      position: "relative",
-    },
-    suggestionsContainerOpen: {
-      position: "absolute",
-      marginBottom: spacing.unit * 3,
-      left: 0,
-      right: 0,
-      zIndex: 1,
-    },
-    suggestion: {
-      display: "block",
-    },
-    suggestionsList: {
-      margin: 0,
-      padding: 0,
-      listStyleType: "none",
-    },
-  });
+// const styles = ({ spacing }: Theme) =>
+//   createStyles({
+//     container: {
+//       flexGrow: 1,
+//       position: "relative",
+//     },
+//     suggestionsContainerOpen: {
+//       position: "absolute",
+//       marginBottom: spacing.unit * 3,
+//       left: 0,
+//       right: 0,
+//       zIndex: 1,
+//     },
+//     suggestion: {
+//       display: "block",
+//     },
+//     suggestionsList: {
+//       margin: 0,
+//       padding: 0,
+//       listStyleType: "none",
+//     },
+//   });
 
 interface State {
   search: string;
   suggestions: Suggestion[];
 }
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   tags: TagData[];
   label: string;
   prefix?: string;
@@ -194,97 +179,93 @@ const mapStateToProps = (state: AppState) => ({
   tags: state.tags,
 });
 
-export default withStyles(styles)(
-  connect(mapStateToProps)(
-    class extends React.Component<Props, State> {
-      state = {
-        suggestions: [],
-        search: "",
+export default connect(mapStateToProps)(
+  class extends React.Component<Props, State> {
+    state = {
+      suggestions: [],
+      search: "",
+    };
+
+    render() {
+      const { tags, label, onTagCreationRequested, onTagSelected } = this.props;
+      const { suggestions, search } = this.state;
+
+      const onSuggestionFetchRequested = ({
+        value,
+      }: Autosuggest.SuggestionsFetchRequestedParams): void => {
+        const inputValue = value.trim();
+        const inputLength = inputValue.length;
+        const hasInput = inputValue.length > 0;
+
+        const existingTags = hasInput
+          ? tags
+              .filter(
+                (tag) =>
+                  tag.name.toLowerCase().slice(0, inputLength) ===
+                  inputValue.toLowerCase()
+              )
+              .map(existingTag)
+          : [];
+
+        const fullMatch =
+          existingTags.length === 1 &&
+          existingTags[0].name.toLowerCase() === value.toLowerCase();
+        this.setState({
+          suggestions:
+            onTagCreationRequested && !fullMatch && hasInput
+              ? [...existingTags, newTag(inputValue)]
+              : existingTags,
+        });
       };
 
-      render() {
-        const { classes, tags, label, onTagCreationRequested, onTagSelected } =
-          this.props;
-        const { suggestions, search } = this.state;
+      const onSuggestionSelected = (
+        _: React.FormEvent<HTMLInputElement>,
+        { suggestion }: SuggestionSelectedEventData<Suggestion>
+      ): void => {
+        if (isExistingTag(suggestion)) {
+          onTagSelected(suggestion.data);
+        } else if (onTagCreationRequested) {
+          onTagCreationRequested(suggestion.name);
+        }
+        this.setState({ search: "", suggestions: [] });
+      };
 
-        const onSuggestionFetchRequested = ({
-          value,
-        }: Autosuggest.SuggestionsFetchRequestedParams): void => {
-          const inputValue = value.trim();
-          const inputLength = inputValue.length;
-          const hasInput = inputValue.length > 0;
+      const onInputChange = (
+        _: React.ChangeEvent<HTMLTextAreaElement>,
+        { newValue }: Autosuggest.ChangeEvent
+      ): void => {
+        this.setState({ search: newValue });
+      };
 
-          const existingTags = hasInput
-            ? tags
-                .filter(
-                  (tag) =>
-                    tag.name.toLowerCase().slice(0, inputLength) ===
-                    inputValue.toLowerCase()
-                )
-                .map(existingTag)
-            : [];
+      const onSuggestionClearRequested = () =>
+        this.setState({ suggestions: [] });
 
-          const fullMatch =
-            existingTags.length === 1 &&
-            existingTags[0].name.toLowerCase() === value.toLowerCase();
-          this.setState({
-            suggestions:
-              onTagCreationRequested && !fullMatch && hasInput
-                ? [...existingTags, newTag(inputValue)]
-                : existingTags,
-          });
-        };
+      const inputProps = {
+        placeholder: label,
+        value: search,
+        onChange: onInputChange,
+      };
 
-        const onSuggestionSelected = (
-          _: React.FormEvent<HTMLInputElement>,
-          { suggestion }: SuggestionSelectedEventData<Suggestion>
-        ): void => {
-          if (isExistingTag(suggestion)) {
-            onTagSelected(suggestion.data);
-          } else if (onTagCreationRequested) {
-            onTagCreationRequested(suggestion.name);
-          }
-          this.setState({ search: "", suggestions: [] });
-        };
-
-        const onInputChange = (
-          _: React.ChangeEvent<HTMLTextAreaElement>,
-          { newValue }: Autosuggest.ChangeEvent
-        ): void => {
-          this.setState({ search: newValue });
-        };
-
-        const onSuggestionClearRequested = () =>
-          this.setState({ suggestions: [] });
-
-        const inputProps = {
-          placeholder: label,
-          classes: classes,
-          value: search,
-          onChange: onInputChange,
-        };
-
-        return (
-          <TagAutosuggest
-            theme={{
-              container: classes.container,
-              suggestionsContainerOpen: classes.suggestionsContainerOpen,
-              suggestionsList: classes.suggestionsList,
-              suggestion: classes.suggestion,
-            }}
-            onSuggestionsClearRequested={onSuggestionClearRequested}
-            // @ts-ignore
-            renderInputComponent={renderInputComponent}
-            suggestions={suggestions}
-            onSuggestionsFetchRequested={onSuggestionFetchRequested}
-            renderSuggestionsContainer={renderSuggestionsContainer}
-            getSuggestionValue={getSuggestionValue}
-            renderSuggestion={renderSuggestion()}
-            onSuggestionSelected={onSuggestionSelected}
-            inputProps={inputProps}
-          />
-        );
-      }
+      return (
+        <TagAutosuggest
+          // theme={{
+          //   container: classes.container,
+          //   suggestionsContainerOpen: classes.suggestionsContainerOpen,
+          //   suggestionsList: classes.suggestionsList,
+          //   suggestion: classes.suggestion,
+          // }}
+          onSuggestionsClearRequested={onSuggestionClearRequested}
+          // @ts-ignore
+          renderInputComponent={renderInputComponent}
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={onSuggestionFetchRequested}
+          renderSuggestionsContainer={renderSuggestionsContainer}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestion()}
+          onSuggestionSelected={onSuggestionSelected}
+          inputProps={inputProps}
+        />
+      );
     }
-  )
+  }
 );

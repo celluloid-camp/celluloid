@@ -6,22 +6,21 @@ import {
   ProjectGraphRecord,
   UserRecord,
 } from "@celluloid/types";
+import AnnotationIcon from "@mui/icons-material/Comment";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Badge,
+  Box,
   Fab,
   Grow as GrowMUI,
-  WithStyles,
-  withStyles,
+  useTheme,
   Zoom as ZoomMUI,
-} from "@material-ui/core";
-import { GrowProps } from "@material-ui/core/Grow";
-// import LinearProgress from "@material-ui/core/LinearProgress";
-import { ZoomProps } from "@material-ui/core/Zoom";
-import AnnotationIcon from "@material-ui/icons/Comment";
-import EditIcon from "@material-ui/icons/Edit";
+} from "@mui/material";
+import { GrowProps } from "@mui/material/Grow";
+// import LinearProgress from "@mui/material/LinearProgress";
+import { ZoomProps } from "@mui/material/Zoom";
 // import { useQuery } from "@tanstack/react-query";
 import { triggerAddAnnotation } from "actions/AnnotationsActions";
-import classnames from "classnames";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -34,7 +33,6 @@ import { canAnnotate } from "utils/ProjectUtils";
 import AnnotationContent from "./components/AnnotationContent";
 import AnnotationEditor from "./components/AnnotationEditor";
 import AnnotationHints from "./components/AnnotationHints";
-import { styles } from "./VideoStyles";
 
 const Zoom: React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
   <ZoomMUI {...props} />
@@ -95,7 +93,7 @@ export type PlayerProgressState = {
   loaded: number;
   loadedSeconds: number;
 };
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   user?: UserRecord;
   project: ProjectGraphRecord;
   annotations: AnnotationRecord[];
@@ -135,198 +133,241 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  withStyles(styles)(
-    ({
-      user,
-      project,
-      annotations,
-      focusedAnnotation,
-      visibleAnnotations,
-      position,
-      duration,
-      playing,
-      showControls,
-      showHints,
-      editing,
-      onUserAction,
-      onPlayerReady,
-      onDuration,
-      onPlayerProgress,
-      onToggleHints,
-      onClickHint,
-      onClickAnnotate,
-      onSeek,
-      classes,
-    }: Props) => {
-      const [isReady, setIsReady] = useState(false);
+  ({
+    user,
+    project,
+    annotations,
+    focusedAnnotation,
+    visibleAnnotations,
+    position,
+    duration,
+    playing,
+    showControls,
+    showHints,
+    editing,
+    onUserAction,
+    onPlayerReady,
+    onDuration,
+    onPlayerProgress,
+    onToggleHints,
+    onClickHint,
+    onClickAnnotate,
+    onSeek,
+  }: Props) => {
+    const [isReady, setIsReady] = useState(false);
 
-      const [url, setUrl] = useState<string>("");
+    const theme = useTheme();
+    const [url, setUrl] = useState<string>("");
 
-      const controlsOpacity =
-        showControls || showHints ? classes.visible : classes.hidden;
+    const focusedAnnotationId = focusedAnnotation
+      ? focusedAnnotation.id
+      : undefined;
 
-      const hintBoxHeight = showHints
-        ? classes.hintBoxExpanded
-        : classes.hintBoxCollapsed;
+    const [muted] = useState(false);
 
-      const focusedAnnotationId = focusedAnnotation
-        ? focusedAnnotation.id
-        : undefined;
+    const handleVideoReady = (player: ReactPlayer) => {
+      onPlayerReady(player);
+      setIsReady(true);
+    };
 
-      const [muted] = useState(false);
+    useEffect(() => {
+      if (project) {
+        setUrl(`https://${project.host}/w/${project.videoId}`);
+      }
 
-      const handleVideoReady = (player: ReactPlayer) => {
-        onPlayerReady(player);
-        setIsReady(true);
+      return () => {
+        setUrl("");
       };
+    }, [project]);
 
-      useEffect(() => {
-        if (project) {
-          setUrl(`https://${project.host}/w/${project.videoId}`);
-        }
+    // if (isLoading) {
+    //   return (
+    //     <Grid
+    //       container
+    //       direction="column"
+    //       justify="center"
+    //       alignItems="center"
+    //       className={classnames(classes.progressWrapper)}
+    //     >
+    //       <Grid item>
+    //         <CircularProgress
+    //           className={classes.progress}
+    //           size={30}
+    //           thickness={5}
+    //         />
+    //       </Grid>
+    //     </Grid>
+    //   );
+    // }
 
-        return () => {
-          setUrl("");
-        };
-      }, [project]);
+    const handleToggleHints = (event: any) => {
+      if (event) {
+        event.stopPropagation();
+      }
 
-      // if (isLoading) {
-      //   return (
-      //     <Grid
-      //       container
-      //       direction="column"
-      //       justify="center"
-      //       alignItems="center"
-      //       className={classnames(classes.progressWrapper)}
-      //     >
-      //       <Grid item>
-      //         <CircularProgress
-      //           className={classes.progress}
-      //           size={30}
-      //           thickness={5}
-      //         />
-      //       </Grid>
-      //     </Grid>
-      //   );
-      // }
+      onToggleHints();
+    };
 
-      const handleToggleHints = (event: any) => {
-        if (event) {
-          event.stopPropagation();
-        }
+    return (
+      <Box
+        onMouseMove={onUserAction}
+        sx={{
+          position: "relative" as "relative",
+          width: "100%",
+          paddingBottom: "56.25%",
+          backgroundColor: "black",
+        }}
+      >
+        <div onMouseMove={onUserAction}>
+          <Player
+            url={url}
+            onReady={handleVideoReady}
+            onDuration={onDuration}
+            onProgress={onPlayerProgress}
+            style={{
+              position: "absolute" as "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              border: 0,
+            }}
+            width="100%"
+            height="100%"
+            playing={playing}
+            muted={muted}
+          />
 
-        onToggleHints();
-      };
+          <div
+            style={{
+              position: "absolute" as "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              padding: 0,
+              margin: 0,
+              marginBottom: 50,
+            }}
+            onMouseMove={onUserAction}
+            // onClick={onTogglePlayPause}
+          />
 
-      return (
-        <div
-          onMouseMove={onUserAction}
-          className={classnames("full-screenable-node", classes.videoWrapper)}
-        >
-          <div onMouseMove={onUserAction}>
-            <Player
-              url={url}
-              onReady={handleVideoReady}
-              onDuration={onDuration}
-              onProgress={onPlayerProgress}
-              className={classes.videoIframe}
-              width="100%"
-              height="100%"
-              playing={playing}
-              muted={muted}
-            />
-
-            <div
-              className={classes.glassPane}
-              onMouseMove={onUserAction}
-              // onClick={onTogglePlayPause}
-            />
-
-            {!showHints && (
-              <div className={classes.annotationFrame}>
-                <Grow appear={true} in={editing}>
-                  <div>
-                    {user && editing && (
-                      <AnnotationEditor
-                        user={user}
-                        projectId={project.id}
-                        video={{
-                          position: position,
-                          duration: duration,
-                        }}
-                        onSeek={onSeek}
-                      />
-                    )}
-                  </div>
-                </Grow>
-                <TransitionGroup appear={true}>
-                  {!editing &&
-                    Array.from(visibleAnnotations.values()).map(
-                      (annotation) => (
-                        <Grow appear={true} in={!editing} key={annotation.id}>
-                          <div>
-                            <AnnotationContent
-                              project={project}
-                              focused={annotation.id === focusedAnnotationId}
-                              annotation={annotation}
-                            />
-                          </div>
-                        </Grow>
-                      )
-                    )}
-                </TransitionGroup>
-              </div>
-            )}
-            {isReady && user && canAnnotate(project, user) && (
-              <Zoom
-                appear={true}
-                exit={true}
-                in={!editing && !showHints && showControls}
-              >
-                <Fab
-                  color="secondary"
-                  className={classes.annotateButton}
-                  onClick={() => onClickAnnotate()}
-                >
-                  <EditIcon />
-                </Fab>
-              </Zoom>
-            )}
-            <div
-              onMouseMove={onUserAction}
-              className={classnames(
-                classes.hintBox,
-                controlsOpacity,
-                hintBoxHeight
-              )}
+          {!showHints && (
+            <Box
+              sx={{
+                overflowY: "auto" as "auto",
+                overflowX: "hidden" as "hidden",
+                maxHeight: `calc(100% - ${theme.spacing(18)}px)`,
+                verticalAlign: "middle",
+                textAlign: "left" as "left",
+                color: "white",
+                transition: "all 0.5s ease",
+                position: "absolute" as "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 2,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+              }}
             >
-              <AnnotationHints
-                duration={duration}
-                position={position}
-                annotations={annotations}
-                visible={showHints}
-                onClick={onClickHint}
-                onClose={handleToggleHints}
-              />
-            </div>
-
+              <Grow appear={true} in={editing}>
+                <div>
+                  {user && editing && (
+                    <AnnotationEditor
+                      user={user}
+                      projectId={project.id}
+                      video={{
+                        position: position,
+                        duration: duration,
+                      }}
+                      onSeek={onSeek}
+                    />
+                  )}
+                </div>
+              </Grow>
+              <TransitionGroup appear={true}>
+                {!editing &&
+                  Array.from(visibleAnnotations.values()).map((annotation) => (
+                    <Grow appear={true} in={!editing} key={annotation.id}>
+                      <div>
+                        <AnnotationContent
+                          project={project}
+                          focused={annotation.id === focusedAnnotationId}
+                          annotation={annotation}
+                        />
+                      </div>
+                    </Grow>
+                  ))}
+              </TransitionGroup>
+            </Box>
+          )}
+          {isReady && user && canAnnotate(project, user) && (
             <Zoom
               appear={true}
               exit={true}
-              in={!editing && !showHints && showControls && isReady}
+              in={!editing && !showHints && showControls}
             >
               <Fab
                 color="secondary"
-                className={classes.annotationsButton}
-                onClick={handleToggleHints}
+                sx={{
+                  right: theme.spacing(2),
+                  bottom: theme.spacing(9),
+                  position: "absolute" as "absolute",
+                  zIndex: 2,
+                }}
+                onClick={() => onClickAnnotate()}
               >
-                <Badge badgeContent={annotations.length} color="primary">
-                  <AnnotationIcon />
-                </Badge>
+                <EditIcon />
               </Fab>
             </Zoom>
+          )}
+          <Box
+            onMouseMove={onUserAction}
+            sx={{
+              overflowY: "auto" as "auto",
+              overflowX: "hidden" as "hidden",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              position: "absolute" as "absolute",
+              transition: "all 0.5s ease",
+              bottom: theme.spacing(7),
+              width: "100%",
+              opacity: showControls || showHints ? 1 : 0,
+              height: showHints ? `calc(100% - ${theme.spacing(7)}px)` : 0,
+            }}
+          >
+            <AnnotationHints
+              duration={duration}
+              position={position}
+              annotations={annotations}
+              visible={showHints}
+              onClick={onClickHint}
+              onClose={handleToggleHints}
+            />
+          </Box>
 
-            {/* {isReady ? (
+          <Zoom
+            appear={true}
+            exit={true}
+            in={!editing && !showHints && showControls && isReady}
+          >
+            <Fab
+              color="secondary"
+              sx={{
+                right: theme.spacing(2),
+                bottom: theme.spacing(18),
+                position: "absolute" as "absolute",
+                zIndex: 2,
+              }}
+              onClick={handleToggleHints}
+            >
+              <Badge badgeContent={annotations.length} color="primary">
+                <AnnotationIcon />
+              </Badge>
+            </Fab>
+          </Zoom>
+
+          {/* {isReady ? (
                 <div
                   onMouseMove={onUserAction}
                   className={classnames([
@@ -359,9 +400,8 @@ export default connect(
                   />
                 </div>
               )} */}
-          </div>
         </div>
-      );
-    }
-  )
+      </Box>
+    );
+  }
 );
