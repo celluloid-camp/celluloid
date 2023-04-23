@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mystic-curve-336716",
+  "private_key_id": "35f43cea532a0296628119354b09b0771297a9c8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDAyYMk/MN8qRTu\n7HsAD2GBUNGRLboGIhaq5XDITphpmFoG/FyKyxgxyF9cdudH4BbQsdDUYwhzt15o\nHVZI86juktOCJuk6BB61E9f/BE0cLlFdSu6isl2Bo12a9Bzy0LLfq1qfDBH1FCrJ\nERrOISlOWtqTN7MjcfnZAnEgkqoI7vLuLVOY6AF+js6NZr8a/C7ieE944VciK8t8\nqWsKar+DiiPmPS0A7gzHw4hpuqFCaZtIG61MRjQMdB7XTzQOdIPiNoVEdqf/Kpdd\nNhIJKBEE4xeyKV8AriXWW2+EhCeE2gpQJaCzH8vMNq96Ohy9csB4A+tlegfkdiCG\nMIGL4ptnAgMBAAECggEAWsfpSeb+dLq34UQZLW+QthClBmyWXuH5c5LkN2aPLZYw\nun5mY3L8WyDkCsnw4a8bfz1kPUa/CaJswbEi2upl/6XDFFQXWhrrjNAh03OmjeEf\nrkMlORatomiXoOpXoV12BY4Od7t6z0GmXhUAXtVNuphcuZsubz/x62bTd4eoqths\nFtWsLjgcAcL2ZfBBmvmksuYOJvL/I4Vt6VLxJzqUoGnZH7HFTPVThXFGdZgvq5Dx\nPNnHNP3Pt8BsrG7gFrAfF1A8lfLwZ21n5qsk3JzOysq0I00ElkB0Jlr1xy9cyu0c\nqj9OFIX+aHmEsefdrUODKQY/17I7187FnInSqyEy4QKBgQDzMKu58Dupi4g2Qie3\nDTNNMoQN0hdGRn1U9lUoyStQs943hfyL8x0yNgUv+bAmBFyyLJqOop+GJV/E6LYH\nGmaJySRmhJ2bnC/++iqOQb762Ltpnl1PnBsA4rGVGd8HZQaXPGvBmk4xA557RKv1\nn0Y+g05FVBPRlD3FysBbl1CcoQKBgQDK8S0UDd3HL/42CSsAem1qRlfmehA/kLDJ\nSBga3e7yr/IwbUkPuZ3VSG0ntRtwbFAa2jxwBY0sYtqYYYSnEb34PpRv/BJ7lmZD\nOcu28muzUMEal+7il2NMHa7SLqStfwVDOesV2ATIm4r5vFA+XEi3fWscjkCquOck\np/T2zxJzBwKBgA54yv9ZqHNCdmykKzDdfDwP0YPxCKmJ8FNqBU9UCVvYGFU9h/Xc\nFdSzGkPsm+rnP4zq0pfCXbPh7X0OTCbID2oLqjrfkXF9Le4CfR3SE8dhtmVmoy7l\nn0XCN8cjrv4FqQq+8bqnsBeCm5/CSmlnfQqjTbkac8N5CuQGWMQakRWBAoGBAJe9\nYME/5PWMUv1AOaDv6WOvGQZBemis3SKC/1MHYiSfnezLqfdSCEtzDfrElbGnqvWI\n++uemwH3IA8Ty0XIJEy7Le3VglRaDjhxvHocJJ884EXsGDfgjeRZxV9udL8s3Fh5\ns+bvUBRXCMDWJwGZqt1Xr4D4dC2yd1GXK7hm+Bp9AoGBAISGNmEQqgHVrfJ+3ngz\n3BlBFGmlAhyei+OS1yY92mxDIkx5xFOS44jDyTo0LB00X0WndH/VTcVqz2RptBtf\nX/mr+KH4OyzBV11FRMP9mj8pq7kKMIJSaSTm3p34es9i66bLa+nI/NMAsxVrFq42\nE3kTLXqM5/7uZEtRgJyb+0ax\n-----END PRIVATE KEY-----\n",
+  "client_email": "spreadsheet@mystic-curve-336716.iam.gserviceaccount.com",
+  "client_id": "108677440273523055014",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/spreadsheet%40mystic-curve-336716.iam.gserviceaccount.com"
+}
