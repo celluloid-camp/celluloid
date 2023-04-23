@@ -7,13 +7,15 @@
   "repository": "http://github.com/celluloid-edu/celluloid",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "tools/i18next-sync"
   ],
   "scripts": {
     "watch": "yarn workspaces foreach -p -i run watch",
     "dev": "yarn && yarn watch & yarn workspaces foreach -p -i run dev",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "yarn workspaces foreach -ptR run build",
+    "i18n:sync": "yarn workspace translations sync",
     "deploy": "./bin/deploy",
     "start": "(cd packages/server && yarn start)",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",

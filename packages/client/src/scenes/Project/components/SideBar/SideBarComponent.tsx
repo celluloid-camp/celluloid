@@ -1,5 +1,6 @@
 import { ProjectGraphRecord, UserRecord } from "@celluloid/types";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { LoadingButton } from "@mui/lab";
 import {
   Box,
   List,
@@ -8,7 +9,6 @@ import {
   ListItemText,
   ListSubheader,
 } from "@mui/material";
-import ButtonProgress from "components/ButtonProgress";
 import DialogError from "components/DialogError";
 import LabeledProgressSwitch from "components/LabeledProgressSwitch";
 import ShareCredentials from "components/ShareCredentials";
@@ -242,7 +242,7 @@ const SideBarComponenent: React.FC<Props> = ({
             paddingBottom: 0,
           }}
         >
-          <ButtonProgress
+          <LoadingButton
             variant="contained"
             color="secondary"
             size="small"
@@ -252,7 +252,7 @@ const SideBarComponenent: React.FC<Props> = ({
           >
             <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
             {t("deleteAction")}
-          </ButtonProgress>
+          </LoadingButton>
           {deleteError && <DialogError error={deleteError} />}
         </Box>
       )}
