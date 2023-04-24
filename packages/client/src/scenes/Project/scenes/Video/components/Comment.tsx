@@ -4,15 +4,16 @@ import {
   ProjectGraphRecord,
   UserRecord,
 } from "@celluloid/types";
-import {
-  triggerCancelEditComment,
-  triggerEditComment,
-} from "actions/CommentActions";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { Action, EmptyAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
+
+import {
+  triggerCancelEditComment,
+  triggerEditComment,
+} from "~actions/CommentActions";
+import { Action, EmptyAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
 
 import CommentContent from "./CommentContent";
 import CommentEditor from "./CommentEditor";

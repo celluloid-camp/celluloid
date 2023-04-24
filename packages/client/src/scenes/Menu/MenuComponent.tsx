@@ -14,16 +14,17 @@ import {
   Typography,
 } from "@mui/material";
 import { GrowProps } from "@mui/material/Grow";
-import { closeSignin, openLogin, openSignup } from "actions/Signin";
-import { getButtonLink } from "components/ButtonLink";
-import SigninDialog, { SigninState } from "components/Signin";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { AnyAction, Dispatch } from "redux";
-import { EmptyAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
+
+import { closeSignin, openLogin, openSignup } from "~actions/Signin";
+import { getButtonLink } from "~components/ButtonLink";
+import SigninDialog, { SigninState } from "~components/Signin";
+import { EmptyAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
 
 import SigninBar from "./components/SigninBar";
 
@@ -399,9 +400,6 @@ const MenuComponent: React.FC<Props> = ({
         <Link component={NavLink} to="/legal-notice">
           {t("menu.legalNotice")}
         </Link>
-        <Typography variant="caption">
-          {process.env.REACT_APP_VERSION} {process.env.REACT_APP_COMMIT}
-        </Typography>
       </Box>
     </Box>
   );

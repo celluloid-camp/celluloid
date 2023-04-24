@@ -1,13 +1,21 @@
 /* eslint-disable import/no-anonymous-default-export */
 module.exports = {
   parser: "@typescript-eslint/parser",
-  extends: ["plugin:import/errors", "plugin:import/typescript", "prettier"],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    // "plugin:import/errors",
+    "plugin:import/typescript",
+    "plugin:react-hooks/recommended",
+    "prettier",
+  ],
   plugins: [
     "jest",
     "@typescript-eslint",
     "react-hooks",
     "simple-import-sort",
     "import",
+    "react-refresh",
   ],
   overrides: [],
   parserOptions: {
@@ -29,6 +37,7 @@ module.exports = {
     es6: true,
   },
   rules: {
+    "react-refresh/only-export-components": "warn",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
     "@typescript-eslint/no-unused-vars": [
@@ -73,7 +82,7 @@ module.exports = {
     "react/jsx-filename-extension": 0,
     "react/no-unescaped-entities": 0,
 
-    "import/no-extraneous-dependencies": 0,
+    // "import/no-extraneous-dependencies": 0,
 
     "react/destructuring-assignment": 0,
 
@@ -89,9 +98,9 @@ module.exports = {
     "sort-imports": "off",
     "import/order": "off",
 
-    "import/no-deprecated": "warn",
-    "import/no-duplicates": "error",
+    // "import/no-deprecated": "warn",
+    // "import/no-duplicates": "error",
 
-    "import/no-unresolved": "warn",
+    // "import/no-unresolved": "warn",
   },
 };

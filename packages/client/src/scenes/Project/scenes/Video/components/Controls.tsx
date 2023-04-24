@@ -12,13 +12,14 @@ import { Badge, Grid, IconButton, Typography } from "@mui/material";
 import Slider from "rc-slider";
 import * as React from "react";
 import { connect } from "react-redux";
-import { AppState } from "types/StateTypes";
-import { formatDuration } from "utils/DurationUtils";
+
+import { AppState } from "~types/StateTypes";
+import { formatDuration } from "~utils/DurationUtils";
 import {
   sliderHandleStyle,
   sliderRailStyle,
   sliderTrackStyle,
-} from "utils/SliderUtils";
+} from "~utils/SliderUtils";
 
 // const styles = ({ spacing }: Theme) =>
 //   createStyles({

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { AppState } from "types/StateTypes";
+
+import { AppState } from "~types/StateTypes";
 
 import ConfirmResetPassword from "./ConfirmResetPassword";
 import ConfirmSignup from "./ConfirmSignup";

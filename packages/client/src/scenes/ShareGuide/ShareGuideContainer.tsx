@@ -1,14 +1,15 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import LoadingBig from "components/LoadingBig";
-import NotFound from "components/NotFound";
-import ProjectSummary from "components/ProjectSummary";
-import ShareCredentials from "components/ShareCredentials";
 import * as queryString from "query-string";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
-import ProjectService from "services/ProjectService";
+
+import LoadingBig from "~components/LoadingBig";
+import NotFound from "~components/NotFound";
+import ProjectSummary from "~components/ProjectSummary";
+import ShareCredentials from "~components/ShareCredentials";
+import ProjectService from "~services/ProjectService";
 
 // const styles = (theme: Theme) =>
 //   createStyles({
@@ -74,11 +75,11 @@ import ProjectService from "services/ProjectService";
 
 const ShareGuideContainer: React.FC = () => {
   const { t } = useTranslation();
-  let { projectId = "" } = useParams();
+  const { projectId = "" } = useParams();
 
   const href = window.location.host;
   const protocol = window.location.protocol;
-  let location = useLocation();
+  const location = useLocation();
 
   const parsedUrl = queryString.parse(location.search);
 

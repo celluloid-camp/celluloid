@@ -7,8 +7,9 @@ import {
   TagData,
   UserRecord,
 } from "@celluloid/types";
-import * as SigninDialog from "components/Signin";
 import { RouterState } from "connected-react-router";
+
+import * as SigninDialog from "~components/Signin";
 
 import { PeertubeVideoInfo } from "./YoutubeTypes";
 

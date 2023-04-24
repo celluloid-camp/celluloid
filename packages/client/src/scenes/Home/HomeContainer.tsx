@@ -4,17 +4,18 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { loadVideoThunk } from "actions/HomeActions";
-import { openStudentSignup } from "actions/Signin";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { SharedLayout } from "scenes/Menu/Layout";
-import { AsyncAction, EmptyAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
-import { PeertubeVideoInfo } from "types/YoutubeTypes";
+
+import { loadVideoThunk } from "~actions/HomeActions";
+import { openStudentSignup } from "~actions/Signin";
+import { SharedLayout } from "~scenes/Menu/Layout";
+import { AsyncAction, EmptyAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
+import { PeertubeVideoInfo } from "~types/YoutubeTypes";
 
 import NewProject from "./components/NewProject";
 import ProjectGrid from "./components/ProjectGrid";

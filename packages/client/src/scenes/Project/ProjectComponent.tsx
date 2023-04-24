@@ -1,7 +1,7 @@
 import { ProjectGraphRecord } from "@celluloid/types";
 import { Box, Grid } from "@mui/material";
-import ProjectSummary from "components/ProjectSummary";
-import * as React from "react";
+
+import ProjectSummary from "~components/ProjectSummary";
 
 import SideBar from "./components/SideBar";
 import Video from "./scenes/Video";
@@ -11,13 +11,13 @@ interface Props {
   onVideoChange(): void;
 }
 
-export default ({ project }: Props) => (
+const ProjectComponent = ({ project }: Props) => (
   <Box sx={{ minHeight: "calc(100vh - 64px)" }}>
     <Box
       sx={{
         width: "100%",
         height: "100%",
-        textAlign: "center" as "center",
+        textAlign: "center" as const,
         backgroundColor: "black",
       }}
     >
@@ -65,3 +65,4 @@ export default ({ project }: Props) => (
     </Box>
   </Box>
 );
+export default ProjectComponent;

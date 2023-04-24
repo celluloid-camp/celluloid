@@ -3,7 +3,8 @@ import CancelIcon from "@mui/icons-material/Clear";
 import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { getUserColor } from "utils/UserUtils";
+
+import { getUserColor } from "~utils/UserUtils";
 
 // const styles = (theme: Theme) =>
 //   createStyles({

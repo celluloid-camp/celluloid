@@ -10,9 +10,10 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import { GrowProps } from "@mui/material/Grow";
-import UserAvatar from "components/UserAvatar";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+
+import UserAvatar from "~components/UserAvatar";
 
 const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />

@@ -1,13 +1,14 @@
-import { AnnotationData, AnnotationRecord } from '@celluloid/types';
-import { Dispatch } from 'redux';
-import AnnotationService from 'services/AnnotationService';
+import { AnnotationData, AnnotationRecord } from "@celluloid/types";
+import { Dispatch } from "redux";
+
+import AnnotationService from "~services/AnnotationService";
 import {
   ActionType,
   AsyncAction,
   createAction,
   createEmptyAction,
   createErrorAction,
-} from 'types/ActionTypes';
+} from "~types/ActionTypes";
 
 export const triggerListAnnotationsLoading = () =>
   createEmptyAction(ActionType.TRIGGER_LIST_ANNOTATIONS_LOADING);
@@ -56,42 +57,42 @@ export const succeedDeleteAnnotation = (annotation: AnnotationRecord) =>
 
 export const listAnnotationsThunk =
   (projectId: string) =>
-    (dispatch: Dispatch): AsyncAction<AnnotationRecord[], string> => {
-      dispatch(triggerListAnnotationsLoading());
-      return AnnotationService.list(projectId)
-        .then(annotations => dispatch(succeedListAnnotations(annotations)))
-        .catch(error => dispatch(failListAnnotations(error)));
-    };
+  (dispatch: Dispatch): AsyncAction<AnnotationRecord[], string> => {
+    dispatch(triggerListAnnotationsLoading());
+    return AnnotationService.list(projectId)
+      .then((annotations) => dispatch(succeedListAnnotations(annotations)))
+      .catch((error) => dispatch(failListAnnotations(error)));
+  };
 
 export const createAnnotationThunk =
   (projectId: string, data: AnnotationData) =>
-    (dispatch: Dispatch): AsyncAction<AnnotationRecord, string> => {
-      dispatch(triggerUpsertAnnotationLoading());
-      return AnnotationService.create(projectId, data)
-        .then(annotation => {
-          return dispatch(succeedAddAnnotation(annotation));
-        })
-        .catch(error => dispatch(failUpsertAnnotation(error)));
-    };
+  (dispatch: Dispatch): AsyncAction<AnnotationRecord, string> => {
+    dispatch(triggerUpsertAnnotationLoading());
+    return AnnotationService.create(projectId, data)
+      .then((annotation) => {
+        return dispatch(succeedAddAnnotation(annotation));
+      })
+      .catch((error) => dispatch(failUpsertAnnotation(error)));
+  };
 
 export const updateAnnotationThunk =
   (projectId: string, record: AnnotationRecord) =>
-    (dispatch: Dispatch): AsyncAction<AnnotationRecord, string> => {
-      dispatch(triggerUpsertAnnotationLoading(record));
-      return AnnotationService.update(projectId, record.id, record)
-        .then(annotation => {
-          return dispatch(succeedUpdateAnnotation(annotation));
-        })
-        .catch(error => dispatch(failUpsertAnnotation(error)));
-    };
+  (dispatch: Dispatch): AsyncAction<AnnotationRecord, string> => {
+    dispatch(triggerUpsertAnnotationLoading(record));
+    return AnnotationService.update(projectId, record.id, record)
+      .then((annotation) => {
+        return dispatch(succeedUpdateAnnotation(annotation));
+      })
+      .catch((error) => dispatch(failUpsertAnnotation(error)));
+  };
 
 export const deleteAnnotationThunk =
   (projectId: string, annotation: AnnotationRecord) =>
-    (dispatch: Dispatch): AsyncAction<AnnotationRecord, string> => {
-      dispatch(triggerDeleteAnnotationLoading(annotation));
-      return AnnotationService.delete(projectId, annotation.id)
-        .then(() => {
-          return dispatch(succeedDeleteAnnotation(annotation));
-        })
-        .catch(error => dispatch(failDeleteAnnotation(error)));
-    };
+  (dispatch: Dispatch): AsyncAction<AnnotationRecord, string> => {
+    dispatch(triggerDeleteAnnotationLoading(annotation));
+    return AnnotationService.delete(projectId, annotation.id)
+      .then(() => {
+        return dispatch(succeedDeleteAnnotation(annotation));
+      })
+      .catch((error) => dispatch(failDeleteAnnotation(error)));
+  };

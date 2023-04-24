@@ -1,12 +1,12 @@
 import { Credentials, SigninErrors } from "@celluloid/types";
 import TextField from "@mui/material/TextField";
-import DialogAltButtons from "components/DialogAltButtons";
-import DialogButtons from "components/DialogButtons";
-import SigninError from "components/DialogError";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
-import { Action } from "types/ActionTypes";
+
+import DialogAltButtons from "~components/DialogAltButtons";
+import DialogButtons from "~components/DialogButtons";
+import SigninError from "~components/DialogError";
+import { Action } from "~types/ActionTypes";
 
 interface Props {
   credentials: Credentials;

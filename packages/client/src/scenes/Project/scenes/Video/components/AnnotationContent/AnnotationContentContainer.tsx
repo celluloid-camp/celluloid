@@ -4,25 +4,25 @@ import {
   UnfurlData,
   UserRecord,
 } from "@celluloid/types";
+import getUrls from "get-urls";
+import linkifyUrls from "linkify-urls";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+
 import {
   deleteAnnotationThunk,
   triggerEditAnnotation,
   triggerFocusAnnotation,
-} from "actions/AnnotationsActions";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import * as UnfurlService from "services/UnfurlService";
-import { Action, AsyncAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
-import { canEditAnnotation } from "utils/AnnotationUtils";
-import { formatDuration } from "utils/DurationUtils";
-import { isOwner } from "utils/ProjectUtils";
+} from "~actions/AnnotationsActions";
+import * as UnfurlService from "~services/UnfurlService";
+import { Action, AsyncAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
+import { canEditAnnotation } from "~utils/AnnotationUtils";
+import { formatDuration } from "~utils/DurationUtils";
+import { isOwner } from "~utils/ProjectUtils";
 
 import AnnotationContentComponent from "./AnnotationContentComponent";
-
-const getUrls = require("get-urls");
-const linkifyUrls = require("linkify-urls");
 
 interface Link {
   url: string;
@@ -53,7 +53,7 @@ interface Props {
 }
 
 function parseText(text: string): State {
-  const previews = Array.from(getUrls(text) as string[]).map((url: string) => {
+  const previews = Array.from(getUrls(text)).map((url: string) => {
     return {
       url,
     } as Link;

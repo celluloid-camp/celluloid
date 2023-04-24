@@ -4,17 +4,18 @@ import {
   ProjectShareData,
   ProjectUpdateData,
 } from "@celluloid/types";
-import { discardNewVideo } from "actions/HomeActions";
 import { push } from "connected-react-router";
 import { Dispatch } from "redux";
-import ProjectService from "services/ProjectService";
+
+import { discardNewVideo } from "~actions/HomeActions";
+import ProjectService from "~services/ProjectService";
 import {
   ActionType,
   AsyncAction,
   createAction,
   createEmptyAction,
   createErrorAction,
-} from "types/ActionTypes";
+} from "~types/ActionTypes";
 
 export const succeedListProjects = (projects: ProjectGraphRecord[]) =>
   createAction(ActionType.SUCCEED_LIST_PROJECTS, projects);

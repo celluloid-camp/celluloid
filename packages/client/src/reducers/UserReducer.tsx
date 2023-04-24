@@ -1,5 +1,6 @@
 import { AnyAction } from "redux";
-import { ActionType } from "types/ActionTypes";
+
+import { ActionType } from "~types/ActionTypes";
 
 const initialState = null;
 

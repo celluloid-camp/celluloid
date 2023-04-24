@@ -1,9 +1,10 @@
 import { SigninErrors } from "@celluloid/types";
-import { doResetPasswordThunk } from "actions/Signin/ResetPasswordActions";
 import * as React from "react";
 import { connect } from "react-redux";
 import { AnyAction, Dispatch } from "redux";
-import { AppState } from "types/StateTypes";
+
+import { doResetPasswordThunk } from "~actions/Signin/ResetPasswordActions";
+import { AppState } from "~types/StateTypes";
 
 import ResetPassword from "./ResetPasswordComponent";
 
