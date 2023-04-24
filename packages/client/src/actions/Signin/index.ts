@@ -1,4 +1,4 @@
-import { ActionType, createEmptyAction } from "types/ActionTypes";
+import { ActionType, createEmptyAction } from "~types/ActionTypes";
 
 export const closeSignin = () => createEmptyAction(ActionType.CLOSE_SIGNIN);
 

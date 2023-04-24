@@ -1,13 +1,14 @@
 import { PeerTubeVideo } from "@celluloid/types";
 // import * as queryString from "query-string";
 import { last } from "ramda";
-import { PeertubeVideoInfo } from "types/YoutubeTypes";
+
+import { PeertubeVideoInfo } from "~types/YoutubeTypes";
 
 class VideoApi {
   static async getPeerTubeVideoData(
     videoUrl: string
   ): Promise<PeertubeVideoInfo> {
-    var parsed = new URL(videoUrl);
+    const parsed = new URL(videoUrl);
 
     const host = parsed.host;
     const videoId = last(parsed.pathname.split("/"));

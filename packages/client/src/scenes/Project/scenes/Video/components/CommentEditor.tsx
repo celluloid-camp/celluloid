@@ -3,19 +3,20 @@ import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import CancelIcon from "@mui/icons-material/Clear";
 import { Box, IconButton } from "@mui/material";
-import {
-  createCommentThunk,
-  triggerAddComment,
-  updateCommentThunk,
-} from "actions/CommentActions";
-import UserAvatar from "components/UserAvatar";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { AsyncAction, EmptyAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
+
+import {
+  createCommentThunk,
+  triggerAddComment,
+  updateCommentThunk,
+} from "~actions/CommentActions";
+import UserAvatar from "~components/UserAvatar";
+import { AsyncAction, EmptyAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
 
 import TransparentInput from "./TransparentInput";
 
@@ -71,7 +72,7 @@ interface Props {
 //   text: string;
 // }
 
-const _init = ({ comment }: Props) => {
+export const _init = ({ comment }: Props) => {
   if (comment) {
     return { text: comment.text };
   } else {

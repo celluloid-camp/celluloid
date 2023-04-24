@@ -1,12 +1,16 @@
-import { SigninErrors, TeacherConfirmResetPasswordData } from '@celluloid/types';
-import { doConfirmResetPasswordThunk } from 'actions/Signin';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { AnyAction, Dispatch } from 'redux';
-import { Action } from 'types/ActionTypes';
-import { AppState } from 'types/StateTypes';
+import {
+  SigninErrors,
+  TeacherConfirmResetPasswordData,
+} from "@celluloid/types";
+import * as React from "react";
+import { connect } from "react-redux";
+import { AnyAction, Dispatch } from "redux";
 
-import ConfirmResetPassword from './ConfirmResetPasswordComponent';
+import { doConfirmResetPasswordThunk } from "~actions/Signin";
+import { Action } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
+
+import ConfirmResetPassword from "./ConfirmResetPasswordComponent";
 
 interface Props {
   errors: SigninErrors;
@@ -17,13 +21,13 @@ interface Props {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onSubmit: (data: TeacherConfirmResetPasswordData) =>
-      doConfirmResetPasswordThunk(data)(dispatch)
+      doConfirmResetPasswordThunk(data)(dispatch),
   };
 };
 
 const mapStateToProps = (state: AppState) => {
   return {
-    errors: state.signin.errors
+    errors: state.signin.errors,
   };
 };
 
@@ -33,24 +37,22 @@ interface State extends TeacherConfirmResetPasswordData {
 
 class Confirm extends React.Component<Props, State> {
   state = {
-    login: '',
-    code: '',
-    password: '',
-    confirmPassword: ''
+    login: "",
+    code: "",
+    password: "",
+    confirmPassword: "",
   } as State;
 
   render() {
     const onChange = (name: string, value: string) => {
-      this.setState(state => ({
+      this.setState((state) => ({
         ...state,
-        [name]: value
+        [name]: value,
       }));
     };
 
     const confirmPasswordError =
-      this.state.confirmPassword === this.state.password
-        ? false
-        : true;
+      this.state.confirmPassword === this.state.password ? false : true;
 
     return (
       <ConfirmResetPassword
@@ -64,7 +66,4 @@ class Confirm extends React.Component<Props, State> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Confirm);
+export default connect(mapStateToProps, mapDispatchToProps)(Confirm);

@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 import React from "react";
-import { SharedLayout } from "scenes/Menu";
+
+import { SharedLayout } from "~scenes/Menu";
 
 const LegalNotice: React.FC<any> = () => (
   <SharedLayout>

@@ -19,16 +19,17 @@ import {
 import { GrowProps } from "@mui/material/Grow";
 // import LinearProgress from "@mui/material/LinearProgress";
 import { ZoomProps } from "@mui/material/Zoom";
-// import { useQuery } from "@tanstack/react-query";
-import { triggerAddAnnotation } from "actions/AnnotationsActions";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
 import { Dispatch } from "redux";
-import { EmptyAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
-import { canAnnotate } from "utils/ProjectUtils";
+
+// import { useQuery } from "@tanstack/react-query";
+import { triggerAddAnnotation } from "~actions/AnnotationsActions";
+import { EmptyAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
+import { canAnnotate } from "~utils/ProjectUtils";
 
 import AnnotationContent from "./components/AnnotationContent";
 import AnnotationEditor from "./components/AnnotationEditor";
@@ -212,7 +213,7 @@ export default connect(
       <Box
         onMouseMove={onUserAction}
         sx={{
-          position: "relative" as "relative",
+          position: "relative" as const,
           width: "100%",
           paddingBottom: "56.25%",
           backgroundColor: "black",
@@ -225,7 +226,7 @@ export default connect(
             onDuration={onDuration}
             onProgress={onPlayerProgress}
             style={{
-              position: "absolute" as "absolute",
+              position: "absolute" as const,
               top: 0,
               left: 0,
               width: "100%",
@@ -240,7 +241,7 @@ export default connect(
 
           <div
             style={{
-              position: "absolute" as "absolute",
+              position: "absolute" as const,
               top: 0,
               left: 0,
               right: 0,
@@ -256,14 +257,14 @@ export default connect(
           {!showHints && (
             <Box
               sx={{
-                overflowY: "auto" as "auto",
-                overflowX: "hidden" as "hidden",
+                overflowY: "auto" as const,
+                overflowX: "hidden" as const,
                 maxHeight: `calc(100% - ${theme.spacing(18)}px)`,
                 verticalAlign: "middle",
-                textAlign: "left" as "left",
+                textAlign: "left" as const,
                 color: "white",
                 transition: "all 0.5s ease",
-                position: "absolute" as "absolute",
+                position: "absolute" as const,
                 top: 0,
                 left: 0,
                 right: 0,
@@ -313,7 +314,7 @@ export default connect(
                 sx={{
                   right: theme.spacing(2),
                   bottom: theme.spacing(9),
-                  position: "absolute" as "absolute",
+                  position: "absolute" as const,
                   zIndex: 2,
                 }}
                 onClick={() => onClickAnnotate()}
@@ -325,10 +326,10 @@ export default connect(
           <Box
             onMouseMove={onUserAction}
             sx={{
-              overflowY: "auto" as "auto",
-              overflowX: "hidden" as "hidden",
+              overflowY: "auto" as const,
+              overflowX: "hidden" as const,
               backgroundColor: "rgba(0, 0, 0, 0.7)",
-              position: "absolute" as "absolute",
+              position: "absolute" as const,
               transition: "all 0.5s ease",
               bottom: theme.spacing(7),
               width: "100%",
@@ -356,7 +357,7 @@ export default connect(
               sx={{
                 right: theme.spacing(2),
                 bottom: theme.spacing(18),
-                position: "absolute" as "absolute",
+                position: "absolute" as const,
                 zIndex: 2,
               }}
               onClick={handleToggleHints}

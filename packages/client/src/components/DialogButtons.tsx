@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
-import * as React from "react";
 import { AnyAction } from "redux";
 
 interface Props {

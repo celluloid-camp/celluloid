@@ -1,6 +1,5 @@
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import * as React from "react";
 
 import DialogHeader from "../DialogHeader";
 import ConfirmResetPassword from "./ConfirmResetPassword";

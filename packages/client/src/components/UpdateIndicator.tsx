@@ -3,7 +3,8 @@ import Snackbar from "@mui/material/Snackbar";
 import * as React from "react";
 import { Trans } from "react-i18next";
 import { connect } from "react-redux";
-import { AppState } from "types/StateTypes";
+
+import { AppState } from "~types/StateTypes";
 
 const mapStateToProps = (state: AppState) => ({
   open: state.updated,

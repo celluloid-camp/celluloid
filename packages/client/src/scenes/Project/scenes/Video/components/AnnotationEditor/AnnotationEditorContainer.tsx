@@ -1,15 +1,16 @@
 import { AnnotationData, AnnotationRecord, UserRecord } from "@celluloid/types";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+
 import {
   createAnnotationThunk,
   triggerCancelAnnotation,
   updateAnnotationThunk,
-} from "actions/AnnotationsActions";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { Action, AsyncAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
-import { maxAnnotationDuration } from "utils/AnnotationUtils";
+} from "~actions/AnnotationsActions";
+import { Action, AsyncAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
+import { maxAnnotationDuration } from "~utils/AnnotationUtils";
 
 import AnnotationEditorComponent from "./AnnotationEditorComponent";
 

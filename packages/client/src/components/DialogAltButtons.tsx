@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import * as React from "react";
 import { AnyAction } from "redux";
 
 interface Props {

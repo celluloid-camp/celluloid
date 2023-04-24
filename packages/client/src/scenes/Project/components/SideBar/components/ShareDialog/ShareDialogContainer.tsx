@@ -10,18 +10,18 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import { cancelShareProject, shareProjectThunk } from "actions/ProjectActions";
-import DialogError from "components/DialogError";
-import DialogHeader from "components/DialogHeader";
-import ShareCredentials from "components/ShareCredentials";
-import passwordGenerator from "password-generator";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { AsyncAction, EmptyAction } from "types/ActionTypes";
-import { AppState, SharingStatus } from "types/StateTypes";
+
+import { cancelShareProject, shareProjectThunk } from "~actions/ProjectActions";
+import DialogError from "~components/DialogError";
+import DialogHeader from "~components/DialogHeader";
+import ShareCredentials from "~components/ShareCredentials";
+import { AsyncAction, EmptyAction } from "~types/ActionTypes";
+import { AppState, SharingStatus } from "~types/StateTypes";
 
 // const styles = ({ spacing }: Theme) =>
 //   createStyles({
@@ -41,6 +41,23 @@ import { AppState, SharingStatus } from "types/StateTypes";
 //     },
 //   });
 
+function passwordGenerator(
+  length: number,
+  allowSymbols: boolean,
+  allowedChars: RegExp
+): string {
+  let result = "";
+  let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  if (allowSymbols) {
+    chars += "!@#$%^&*()_+~`|}{[]:;?><,./-=";
+  }
+  const charArray = [...chars.matchAll(allowedChars)].map((match) => match[0]);
+  for (let i = 0; i < length; i++) {
+    result += charArray[Math.floor(Math.random() * charArray.length)];
+  }
+  return result;
+}
+
 interface Props {
   project: ProjectGraphRecord;
   error?: string;
@@ -53,7 +70,7 @@ interface Props {
 }
 
 function pass() {
-  return passwordGenerator(6, false, /[\w\d]/);
+  return passwordGenerator(6, false, /[\w\d]/g);
 }
 
 const mapStateToProps = (state: AppState) => ({

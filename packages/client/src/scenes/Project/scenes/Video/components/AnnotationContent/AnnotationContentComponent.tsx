@@ -16,9 +16,10 @@ import CardMedia from "@mui/material/CardMedia";
 import { FadeProps } from "@mui/material/Fade";
 import { GrowProps } from "@mui/material/Grow";
 import Typography from "@mui/material/Typography";
-import UserAvatar from "components/UserAvatar";
 import * as React from "react";
 import { TransitionGroup } from "react-transition-group";
+
+import UserAvatar from "~components/UserAvatar";
 
 import CommentsList from "../CommentsList";
 

@@ -1,7 +1,8 @@
 import { TagData } from "@celluloid/types";
 import * as R from "ramda";
 import { AnyAction } from "redux";
-import { ActionType } from "types/ActionTypes";
+
+import { ActionType } from "~types/ActionTypes";
 
 const sortTags = R.compose<TagData[], TagData[]>(
   R.sort(R.ascend(R.prop("name")))

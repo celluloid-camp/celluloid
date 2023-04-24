@@ -3,11 +3,11 @@ import {
   TeacherConfirmResetPasswordData,
 } from "@celluloid/types";
 import { TextField } from "@mui/material";
-import DialogButtons from "components/DialogButtons";
-import DialogError from "components/DialogError";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
+
+import DialogButtons from "~components/DialogButtons";
+import DialogError from "~components/DialogError";
 
 interface Props {
   data: TeacherConfirmResetPasswordData;

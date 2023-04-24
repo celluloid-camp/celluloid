@@ -28,12 +28,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { discardNewVideo } from "actions/HomeActions";
-import { createProjectThunk } from "actions/ProjectActions";
-import { createTagThunk } from "actions/TagActions";
-import DialogError from "components/DialogError";
-import DialogHeader from "components/DialogHeader";
-import TagSearchBox from "components/TagSearchBox/TagSearchBox";
 import * as R from "ramda";
 import * as React from "react";
 import { useState } from "react";
@@ -41,10 +35,17 @@ import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Dispatch } from "redux";
-import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
-import { levelsCount } from "types/LevelTypes";
-import { AppState } from "types/StateTypes";
-import { PeertubeVideoInfo } from "types/YoutubeTypes";
+
+import { discardNewVideo } from "~actions/HomeActions";
+import { createProjectThunk } from "~actions/ProjectActions";
+import { createTagThunk } from "~actions/TagActions";
+import DialogError from "~components/DialogError";
+import DialogHeader from "~components/DialogHeader";
+import TagSearchBox from "~components/TagSearchBox/TagSearchBox";
+import { Action, AsyncAction, EmptyAction } from "~types/ActionTypes";
+import { levelsCount } from "~types/LevelTypes";
+import { AppState } from "~types/StateTypes";
+import { PeertubeVideoInfo } from "~types/YoutubeTypes";
 
 // const styles = ({ spacing }: Theme) =>
 //   createStyles({

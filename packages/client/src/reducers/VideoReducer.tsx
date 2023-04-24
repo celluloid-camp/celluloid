@@ -1,8 +1,9 @@
 import { AnnotationRecord, CommentRecord } from "@celluloid/types";
 import * as R from "ramda";
 import { AnyAction } from "redux";
-import { ActionType } from "types/ActionTypes";
-import { ComponentStatus, VideoState } from "types/StateTypes";
+
+import { ActionType } from "~types/ActionTypes";
+import { ComponentStatus, VideoState } from "~types/StateTypes";
 
 const initialState = {
   status: ComponentStatus.LOADING,

@@ -1,17 +1,18 @@
 import { ProjectGraphRecord, UserRecord } from "@celluloid/types";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+
 import {
   deleteProjectThunk,
   openShareProject,
   setProjectCollaborativeThunk,
   setProjectPublicThunk,
   unshareProjectThunk,
-} from "actions/ProjectActions";
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { AsyncAction, EmptyAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
+} from "~actions/ProjectActions";
+import { AsyncAction, EmptyAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
 
 import SideBarComponent from "./SideBarComponent";
 

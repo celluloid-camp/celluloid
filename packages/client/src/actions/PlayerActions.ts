@@ -1,8 +1,8 @@
 import {
   ActionType,
   createAction,
-  createEmptyAction
-} from 'types/ActionTypes';
+  createEmptyAction,
+} from "~types/ActionTypes";
 
 export const playerRequestSeek = (seekTarget: number) =>
   createAction(ActionType.PLAYER_REQUEST_SEEK, seekTarget);

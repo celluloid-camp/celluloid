@@ -1,10 +1,11 @@
 import { Credentials, SigninErrors } from "@celluloid/types";
-import { doLoginThunk, openResetPassword, openSignup } from "actions/Signin";
 import * as React from "react";
 import { connect } from "react-redux";
 import { AnyAction, Dispatch } from "redux";
-import { Action } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
+
+import { doLoginThunk, openResetPassword, openSignup } from "~actions/Signin";
+import { Action } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
 
 import Login from "./LoginComponent";
 

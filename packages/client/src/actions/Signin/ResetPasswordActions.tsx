@@ -1,13 +1,25 @@
-import { SigninErrors, SigninResult, TeacherConfirmResetPasswordData } from '@celluloid/types';
-import { Dispatch } from 'redux';
-import UserService from 'services/UserService';
-import { ActionType, createAction, createEmptyAction, createErrorAction } from 'types/ActionTypes';
+import {
+  SigninErrors,
+  SigninResult,
+  TeacherConfirmResetPasswordData,
+} from "@celluloid/types";
+import { Dispatch } from "redux";
 
-import { doLoginThunk, triggerSigninLoading } from '.';
+import UserService from "~services/UserService";
+import {
+  ActionType,
+  createAction,
+  createEmptyAction,
+  createErrorAction,
+} from "~types/ActionTypes";
 
-export const openResetPassword = () => createEmptyAction(ActionType.OPEN_RESET_PASSWORD);
+import { doLoginThunk, triggerSigninLoading } from ".";
 
-export const succeedResetPassword = () => createEmptyAction(ActionType.SUCCEED_RESET_PASSWORD);
+export const openResetPassword = () =>
+  createEmptyAction(ActionType.OPEN_RESET_PASSWORD);
+
+export const succeedResetPassword = () =>
+  createEmptyAction(ActionType.SUCCEED_RESET_PASSWORD);
 
 export const openConfirmResetPassword = (email: string) =>
   createAction(ActionType.OPEN_CONFIRM_RESET_PASSWORD, email);
@@ -29,27 +41,26 @@ export const doResetPasswordThunk = (email: string) => (dispatch: Dispatch) => {
       }
     })
     .catch(() => {
-      return dispatch(failResetPassword({ server: 'RequestFailed' }));
+      return dispatch(failResetPassword({ server: "RequestFailed" }));
     });
 };
 
-export const doConfirmResetPasswordThunk = (
-  data: TeacherConfirmResetPasswordData
-) => (dispatch: Dispatch) => {
-  dispatch(triggerSigninLoading());
-  return UserService.confirmResetPassword(data)
-    .then((result: SigninResult) => {
-      if (!result.success) {
-        return dispatch(failConfirmResetPassword(result.errors));
-      } else {
-        doLoginThunk({
-          login: data.login,
-          password: data.password
-        })(dispatch);
-        return dispatch(succeedResetPassword());
-      }
-    })
-    .catch(() => {
-      return dispatch(failResetPassword({ server: 'RequestFailed' }));
-    });
-};
+export const doConfirmResetPasswordThunk =
+  (data: TeacherConfirmResetPasswordData) => (dispatch: Dispatch) => {
+    dispatch(triggerSigninLoading());
+    return UserService.confirmResetPassword(data)
+      .then((result: SigninResult) => {
+        if (!result.success) {
+          return dispatch(failConfirmResetPassword(result.errors));
+        } else {
+          doLoginThunk({
+            login: data.login,
+            password: data.password,
+          })(dispatch);
+          return dispatch(succeedResetPassword());
+        }
+      })
+      .catch(() => {
+        return dispatch(failResetPassword({ server: "RequestFailed" }));
+      });
+  };

@@ -13,15 +13,16 @@ import {
 import { GrowProps } from "@mui/material/Grow";
 // import PlayIcon from "@mui/icons-material/PlayCircleOutline";
 import { useQuery } from "@tanstack/react-query";
-import VisibilityChip from "components/VisibilityChip";
 // import { push } from "connected-react-router";
 import * as React from "react";
 import { useState } from "react";
+import Shiitake, { ShiitakeProps } from "shiitake";
+
+import VisibilityChip from "~components/VisibilityChip";
 // import { connect } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 // import { AnyAction, Dispatch } from "redux";
-import VideoApi from "services/VideoService";
-import Shiitake, { ShiitakeProps } from "shiitake";
+import VideoApi from "~services/VideoService";
 
 const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
