@@ -1,13 +1,14 @@
-import { CommentRecord } from '@celluloid/types';
-import { Dispatch } from 'redux';
-import CommentService from 'services/CommentService';
+import { CommentRecord } from "@celluloid/types";
+import { Dispatch } from "redux";
+
+import CommentService from "~services/CommentService";
 import {
   ActionType,
   AsyncAction,
   createAction,
   createEmptyAction,
-  createErrorAction
-} from 'types/ActionTypes';
+  createErrorAction,
+} from "~types/ActionTypes";
 
 export const triggerUpsertCommentLoading = (comment?: CommentRecord) =>
   createAction(ActionType.TRIGGER_UPSERT_COMMENT_LOADING, comment);
@@ -41,27 +42,32 @@ export const triggerCancelEditComment = () =>
 
 export const deleteCommentThunk =
   (projectId: string, annotationId: string, comment: CommentRecord) =>
-    (dispatch: Dispatch): AsyncAction<CommentRecord, string> => {
-      dispatch(triggerDeleteCommentLoading(comment));
-      return CommentService.delete(projectId, annotationId, comment.id)
-        .then(() => dispatch(succeedDeleteComment(comment)))
-        .catch(error => dispatch(failDeleteComment(error)));
-    };
+  (dispatch: Dispatch): AsyncAction<CommentRecord, string> => {
+    dispatch(triggerDeleteCommentLoading(comment));
+    return CommentService.delete(projectId, annotationId, comment.id)
+      .then(() => dispatch(succeedDeleteComment(comment)))
+      .catch((error) => dispatch(failDeleteComment(error)));
+  };
 
 export const createCommentThunk =
   (projectId: string, annotationId: string, comment: string) =>
-    (dispatch: Dispatch): AsyncAction<CommentRecord, string> => {
-      dispatch(triggerUpsertCommentLoading());
-      return CommentService.create(projectId, annotationId, comment)
-        .then(created => dispatch(succeedAddComment(created)))
-        .catch(error => dispatch(failUpsertComment(error)));
-    };
+  (dispatch: Dispatch): AsyncAction<CommentRecord, string> => {
+    dispatch(triggerUpsertCommentLoading());
+    return CommentService.create(projectId, annotationId, comment)
+      .then((created) => dispatch(succeedAddComment(created)))
+      .catch((error) => dispatch(failUpsertComment(error)));
+  };
 
 export const updateCommentThunk =
   (projectId: string, annotationId: string, record: CommentRecord) =>
-    (dispatch: Dispatch): AsyncAction<CommentRecord, string> => {
-      dispatch(triggerUpsertCommentLoading(record));
-      return CommentService.update(projectId, annotationId, record.id, record.text)
-        .then(updated => dispatch(succeedUpdateComment(updated)))
-        .catch(error => dispatch(failUpsertComment(error)));
-    };
+  (dispatch: Dispatch): AsyncAction<CommentRecord, string> => {
+    dispatch(triggerUpsertCommentLoading(record));
+    return CommentService.update(
+      projectId,
+      annotationId,
+      record.id,
+      record.text
+    )
+      .then((updated) => dispatch(succeedUpdateComment(updated)))
+      .catch((error) => dispatch(failUpsertComment(error)));
+  };

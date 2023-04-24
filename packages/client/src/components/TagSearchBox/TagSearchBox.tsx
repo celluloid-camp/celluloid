@@ -1,5 +1,7 @@
 import { TagData } from "@celluloid/types";
 import { MenuItem, Paper, TextField } from "@mui/material";
+import match from "autosuggest-highlight/match";
+import parse from "autosuggest-highlight/parse";
 import React from "react";
 import Autosuggest, {
   // RenderInputComponent,
@@ -8,10 +10,8 @@ import Autosuggest, {
   SuggestionSelectedEventData,
 } from "react-autosuggest";
 import { connect } from "react-redux";
-import { AppState } from "types/StateTypes";
 
-const parse = require("autosuggest-highlight/parse");
-const match = require("autosuggest-highlight/match");
+import { AppState } from "~types/StateTypes";
 
 interface NewTag {
   name: string;
@@ -40,9 +40,9 @@ function isExistingTag(suggestion: Suggestion): suggestion is ExistingTag {
 
 const TagAutosuggest = Autosuggest as { new (): Autosuggest<Suggestion> };
 
-function renderInputComponent(
-  props: Autosuggest.InputProps<Suggestion> & { ref: React.Ref<any> }
-) {
+function renderInputComponent() {
+//props: Autosuggest.InputProps<Suggestion> & { ref: React.Ref<any> }
+  /*
   const {
     ref,
     height,
@@ -72,9 +72,10 @@ function renderInputComponent(
     step,
     defaultValue,
     onChange,
-    ..._
-  } = props;
 
+    ...other
+  } = props;
+*/
   return (
     <TextField
       variant="outlined"

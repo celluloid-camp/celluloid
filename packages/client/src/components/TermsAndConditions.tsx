@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 import * as React from "react";
-import { SharedLayout } from "scenes/Menu";
+
+import { SharedLayout } from "~scenes/Menu";
 
 const TermsAndConditions: React.FC<any> = () => (
   <SharedLayout>

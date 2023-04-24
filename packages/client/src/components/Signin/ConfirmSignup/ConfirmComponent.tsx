@@ -1,11 +1,11 @@
 import { SigninErrors, TeacherConfirmData } from "@celluloid/types";
 import { TextField } from "@mui/material";
-import DialogAltButtons from "components/DialogAltButtons";
-import DialogButtons from "components/DialogButtons";
-import SigninError from "components/DialogError";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
+
+import DialogAltButtons from "~components/DialogAltButtons";
+import DialogButtons from "~components/DialogButtons";
+import SigninError from "~components/DialogError";
 
 interface Props {
   data: TeacherConfirmData;

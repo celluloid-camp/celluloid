@@ -1,12 +1,13 @@
-import {
-  doLogoutThunk,
-  fetchCurrentUserThunk,
-} from "actions/Signin/UserActions";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { AnyAction, Dispatch } from "redux";
+
+import {
+  doLogoutThunk,
+  fetchCurrentUserThunk,
+} from "~actions/Signin/UserActions";
 
 import Menu from "./MenuComponent";
 

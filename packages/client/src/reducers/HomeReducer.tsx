@@ -1,6 +1,7 @@
 import { AnyAction } from "redux";
-import { ActionType } from "types/ActionTypes";
-import { HomeState } from "types/StateTypes";
+
+import { ActionType } from "~types/ActionTypes";
+import { HomeState } from "~types/StateTypes";
 
 const initialState = {
   errors: {

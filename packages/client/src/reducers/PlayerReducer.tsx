@@ -1,12 +1,16 @@
-import { AnyAction } from 'redux';
-import { ActionType } from 'types/ActionTypes';
-import { PlayerState } from 'types/StateTypes';
+import { AnyAction } from "redux";
+
+import { ActionType } from "~types/ActionTypes";
+import { PlayerState } from "~types/StateTypes";
 
 const initialState = {
   seeking: false,
 } as PlayerState;
 
-export default (state = initialState, { type, payload }: AnyAction): PlayerState => {
+export default (
+  state = initialState,
+  { type, payload }: AnyAction
+): PlayerState => {
   switch (type) {
     case ActionType.PLAYER_NOTIFY_SEEK:
       return {
@@ -16,7 +20,7 @@ export default (state = initialState, { type, payload }: AnyAction): PlayerState
     case ActionType.PLAYER_REQUEST_SEEK:
       return {
         seeking: true,
-        seekTarget: payload
+        seekTarget: payload,
       };
     default:
       return state;

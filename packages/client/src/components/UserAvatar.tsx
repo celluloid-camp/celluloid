@@ -1,7 +1,7 @@
 import { UserRecord } from "@celluloid/types";
 import { Avatar } from "@mui/material";
-import * as React from "react";
-import { getUserColor, getUserInitials } from "utils/UserUtils";
+
+import { getUserColor, getUserInitials } from "~utils/UserUtils";
 
 // const styles = ({ spacing }: Theme) =>
 //   createStyles({

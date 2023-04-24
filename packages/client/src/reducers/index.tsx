@@ -1,7 +1,8 @@
 import { connectRouter } from "connected-react-router";
 import { History } from "history";
 import { AnyAction, combineReducers } from "redux";
-import { ActionType } from "types/ActionTypes";
+
+import { ActionType } from "~types/ActionTypes";
 
 import home from "./HomeReducer";
 import player from "./PlayerReducer";

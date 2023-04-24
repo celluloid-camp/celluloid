@@ -1,14 +1,14 @@
 import { SigninErrors, TeacherSignupData, UserRecord } from "@celluloid/types";
 import { Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import DialogAltButtons from "components/DialogAltButtons";
-import DialogButtons from "components/DialogButtons";
-import DialogError from "components/DialogError";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
-import { Action } from "types/ActionTypes";
-import { PeertubeVideoInfo } from "types/YoutubeTypes";
+
+import DialogAltButtons from "~components/DialogAltButtons";
+import DialogButtons from "~components/DialogButtons";
+import DialogError from "~components/DialogError";
+import { Action } from "~types/ActionTypes";
+import { PeertubeVideoInfo } from "~types/YoutubeTypes";
 
 interface Props {
   user?: UserRecord;

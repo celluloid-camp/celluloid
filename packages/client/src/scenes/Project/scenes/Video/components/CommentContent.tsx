@@ -6,21 +6,17 @@ import {
 } from "@celluloid/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box, Grow as GrowMUI, IconButton, Typography } from "@mui/material";
-import { GrowProps } from "@mui/material/Grow";
-import { deleteCommentThunk } from "actions/CommentActions";
-import UserAvatar from "components/UserAvatar";
+import { Box, Grow, IconButton, Typography } from "@mui/material";
 import moment from "moment";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { AsyncAction } from "types/ActionTypes";
-import { canEditComment } from "utils/AnnotationUtils";
-import { isOwner } from "utils/ProjectUtils";
 
-const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
-  <GrowMUI {...props} />
-);
+import { deleteCommentThunk } from "~actions/CommentActions";
+import UserAvatar from "~components/UserAvatar";
+import { AsyncAction } from "~types/ActionTypes";
+import { canEditComment } from "~utils/AnnotationUtils";
+import { isOwner } from "~utils/ProjectUtils";
 
 // const styles = (theme: Theme) =>
 //   createStyles({

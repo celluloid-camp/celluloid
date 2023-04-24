@@ -1,6 +1,7 @@
-import { AnyAction } from 'redux';
-import { ActionType } from 'types/ActionTypes';
-import { ComponentStatus, ProjectDetailsState } from 'types/StateTypes';
+import { AnyAction } from "redux";
+
+import { ActionType } from "~types/ActionTypes";
+import { ComponentStatus, ProjectDetailsState } from "~types/StateTypes";
 
 const initialState = {
   status: ComponentStatus.LOADING,
@@ -13,11 +14,13 @@ const initialState = {
   setPublicError: undefined,
   setCollaborativeError: undefined,
   unshareError: undefined,
-  unshareLoading: false
+  unshareLoading: false,
 } as ProjectDetailsState;
 
-export default (state = initialState, {type, payload}: AnyAction):
-  ProjectDetailsState => {
+export default (
+  state = initialState,
+  { type, payload }: AnyAction
+): ProjectDetailsState => {
   switch (type) {
     case ActionType.CLEAR_PROJECT:
       return initialState;
@@ -26,25 +29,25 @@ export default (state = initialState, {type, payload}: AnyAction):
         ...initialState,
         status: ComponentStatus.ERROR,
         project: undefined,
-        error: payload
+        error: payload,
       };
     case ActionType.SUCCEED_LOAD_PROJECT:
       return {
         ...state,
         status: ComponentStatus.READY,
         project: payload,
-        error: undefined
+        error: undefined,
       };
     case ActionType.TRIGGER_DELETE_PROJECT_LOADING:
       return {
         ...state,
-        deleteLoading: true
+        deleteLoading: true,
       };
     case ActionType.FAIL_DELETE_PROJECT:
       return {
         ...state,
         deleteLoading: false,
-        deleteError: payload
+        deleteError: payload,
       };
     case ActionType.SUCCEED_DELETE_PROJECT:
       return initialState;
@@ -64,12 +67,12 @@ export default (state = initialState, {type, payload}: AnyAction):
         ...state,
         setPublicLoading: false,
         setPublicError: undefined,
-        project: payload
+        project: payload,
       };
     case ActionType.TRIGGER_SET_PROJECT_COLLABORATIVE_LOADING:
       return {
         ...state,
-        setCollaborativeLoading: true
+        setCollaborativeLoading: true,
       };
     case ActionType.FAIL_SET_PROJECT_COLLABORATIVE:
       return {
@@ -82,12 +85,12 @@ export default (state = initialState, {type, payload}: AnyAction):
         ...state,
         setCollaborativeLoading: false,
         setCollaborativeError: undefined,
-        project: payload
+        project: payload,
       };
     case ActionType.TRIGGER_UNSHARE_PROJECT_LOADING:
       return {
         ...state,
-        unshareLoading: true
+        unshareLoading: true,
       };
     case ActionType.FAIL_UNSHARE_PROJECT:
       return {
@@ -100,7 +103,7 @@ export default (state = initialState, {type, payload}: AnyAction):
         ...state,
         unshareLoading: false,
         unshareError: undefined,
-        project: payload
+        project: payload,
       };
     default:
       return state;

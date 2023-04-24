@@ -1,10 +1,10 @@
 import { SigninErrors } from "@celluloid/types";
 import TextField from "@mui/material/TextField";
-import DialogButtons from "components/DialogButtons";
-import SigninError from "components/DialogError";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
+
+import DialogButtons from "~components/DialogButtons";
+import SigninError from "~components/DialogError";
 
 interface Props {
   login: string;

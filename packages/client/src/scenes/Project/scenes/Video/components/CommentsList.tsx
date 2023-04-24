@@ -7,8 +7,9 @@ import { Box, Typography } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import { AppState } from "types/StateTypes";
-import { canAnnotate } from "utils/ProjectUtils";
+
+import { AppState } from "~types/StateTypes";
+import { canAnnotate } from "~utils/ProjectUtils";
 
 import Comment from "./Comment";
 import CommentEditor from "./CommentEditor";

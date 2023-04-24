@@ -4,18 +4,19 @@ import {
   ProjectGraphRecord,
   UserRecord,
 } from "@celluloid/types";
-import {
-  listAnnotationsThunk,
-  triggerBlurAnnotation,
-} from "actions/AnnotationsActions";
-import { playerNotifySeek, playerRequestSeek } from "actions/PlayerActions";
 import * as R from "ramda";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { Action, AsyncAction, EmptyAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
-import * as AnnotationUtils from "utils/AnnotationUtils";
+
+import {
+  listAnnotationsThunk,
+  triggerBlurAnnotation,
+} from "~actions/AnnotationsActions";
+import { playerNotifySeek, playerRequestSeek } from "~actions/PlayerActions";
+import { Action, AsyncAction, EmptyAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
+import * as AnnotationUtils from "~utils/AnnotationUtils";
 
 import VideoComponent, {
   PlayerEvent,
