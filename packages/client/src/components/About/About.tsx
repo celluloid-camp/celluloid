@@ -1,13 +1,14 @@
 import { Grid, Typography } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { SharedLayout } from "scenes/Menu";
 
-const logoIcp = require("./images/logo-icp.jpg");
-const logoFsm = require("./images/logo-fsm.jpg");
-const logoLp = require("./images/logo-lp.png");
-const logoBlog = require("./images/logo-blog-celluloid.jpg");
-const logoHN = require("./images/logo-huma-num.jpg");
+import { SharedLayout } from "~scenes/Menu";
+
+import logoBlog from "./images/logo-blog-celluloid.jpg";
+import logoFsm from "./images/logo-fsm.jpg";
+import logoHN from "./images/logo-huma-num.jpg";
+import logoIcp from "./images/logo-icp.jpg";
+import logoLp from "./images/logo-lp.png";
 
 export const About: React.FC = () => {
   const { t } = useTranslation();

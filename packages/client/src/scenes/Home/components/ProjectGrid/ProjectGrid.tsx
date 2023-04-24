@@ -1,10 +1,6 @@
 import { ProjectGraphRecord, TagData, UserRecord } from "@celluloid/types";
-import { Box, Chip, Fade as FadeMUI, Toolbar, Typography } from "@mui/material";
-import { FadeProps } from "@mui/material/Fade";
+import { Box, Chip, Fade, Toolbar, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { listProjectsThunk } from "actions/ProjectActions";
-import { listTagsThunk } from "actions/TagActions";
-import TagSearchBox from "components/TagSearchBox/TagSearchBox";
 import * as R from "ramda";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -13,15 +9,15 @@ import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
 import { Dispatch } from "redux";
 import { useDidUpdate } from "rooks";
-import { AsyncAction } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
-import { isAdmin, isMember, isOwner } from "utils/ProjectUtils";
+
+import { listProjectsThunk } from "~actions/ProjectActions";
+import { listTagsThunk } from "~actions/TagActions";
+import TagSearchBox from "~components/TagSearchBox/TagSearchBox";
+import { AsyncAction } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
+import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
 
 import ProjectThumbnail from "./ProjectThumbnail";
-
-const Fade: React.FC<React.PropsWithChildren & FadeProps> = (props) => (
-  <FadeMUI {...props} />
-);
 
 const projectMatchesTag = (project: ProjectGraphRecord) => (tag: TagData) =>
   !!R.find((elem: TagData) => R.equals(elem, tag))(project.tags);
@@ -101,7 +97,7 @@ const ProjectGrid: React.FC<Props> = ({
     selectedTags.length > 0
       ? R.filter((project: ProjectGraphRecord) => {
           const matchesTag = projectMatchesTag(project);
-          return selectedTags.reduce((acc, tag) => matchesTag(tag), true);
+          return selectedTags.reduce((_, tag) => matchesTag(tag), true);
         })(projects)
       : projects;
 

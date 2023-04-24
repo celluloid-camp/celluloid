@@ -1,6 +1,7 @@
-import * as SigninDialog from "components/Signin";
 import { AnyAction } from "redux";
-import { ActionType } from "types/ActionTypes";
+
+import * as SigninDialog from "~components/Signin";
+import { ActionType } from "~types/ActionTypes";
 
 const initialState = {
   loading: false,

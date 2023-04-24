@@ -1,10 +1,11 @@
 import { SigninErrors, StudentSignupData } from "@celluloid/types";
-import { doStudentSignupThunk, openLogin } from "actions/Signin";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { AnyAction, Dispatch } from "redux";
-import { Action } from "types/ActionTypes";
-import { AppState } from "types/StateTypes";
+
+import { doStudentSignupThunk, openLogin } from "~actions/Signin";
+import { Action } from "~types/ActionTypes";
+import { AppState } from "~types/StateTypes";
 
 import StudentSignup from "./StudentSignupComponent";
 

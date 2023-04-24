@@ -5,7 +5,6 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import * as React from "react";
 
 import DialogError from "./DialogError";
 
@@ -28,7 +27,7 @@ interface Props {
   label: string;
   checked: boolean;
   loading: boolean;
-  onChange: Function;
+  onChange: () => void;
   error?: string;
 }
 

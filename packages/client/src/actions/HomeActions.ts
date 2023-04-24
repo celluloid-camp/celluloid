@@ -1,15 +1,16 @@
 import { UserRecord } from "@celluloid/types";
-import { openSignup } from "actions/Signin";
 import { Dispatch } from "redux";
-import VideoService from "services/VideoService";
+
+import { openSignup } from "~actions/Signin";
+import VideoService from "~services/VideoService";
 import {
   ActionType,
   AsyncAction,
   createAction,
   createEmptyAction,
   createErrorAction,
-} from "types/ActionTypes";
-import { PeertubeVideoInfo } from "types/YoutubeTypes";
+} from "~types/ActionTypes";
+import { PeertubeVideoInfo } from "~types/YoutubeTypes";
 
 export const failLoadVideo = (error: string) =>
   createErrorAction(ActionType.FAIL_LOAD_VIDEO, error);

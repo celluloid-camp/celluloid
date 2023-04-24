@@ -13,13 +13,13 @@ import {
 import { Range } from "rc-slider";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { formatDuration } from "utils/DurationUtils";
-import { sliderRailStyle, sliderTrackStyle } from "utils/SliderUtils";
+
+import caretStart from "~images/caret-start.png";
+import caretStop from "~images/caret-stop.png";
+import { formatDuration } from "~utils/DurationUtils";
+import { sliderRailStyle, sliderTrackStyle } from "~utils/SliderUtils";
 
 import TransparentInput from "../TransparentInput";
-
-const caretStart = require("images/caret-start.png");
-const caretStop = require("images/caret-stop.png");
 
 // const styles = (theme: Theme) =>
 //   createStyles({
