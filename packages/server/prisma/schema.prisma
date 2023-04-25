@@ -1,0 +1,118 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+  output = "public"
+}
+
+model Annotation {
+  id        String    @id @unique(map: "annotation_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  text      String
+  startTime Float     @db.Real
+  stopTime  Float     @db.Real
+  pause     Boolean
+  userId    String    @db.Uuid
+  projectId String    @db.Uuid
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
+  extra     Json?     @default("{}")
+  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_projectid_foreign")
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_userid_foreign")
+  Comment   Comment[]
+}
+
+model Comment {
+  id           String     @id @unique(map: "comment_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  text         String
+  annotationId String     @db.Uuid
+  userId       String     @db.Uuid
+  createdAt    DateTime?  @default(now()) @db.Timestamptz(6)
+  extra        Json?      @default("{}")
+  Annotation   Annotation @relation(fields: [annotationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_annotationid_foreign")
+  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_userid_foreign")
+}
+
+model Language {
+  id   String @unique(map: "language_id_unique")
+  name String
+}
+
+model Project {
+  id             String          @id @unique(map: "project_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  videoId        String
+  userId         String          @db.Uuid
+  title          String
+  description    String
+  host           String?
+  assignments    String[]
+  publishedAt    DateTime        @default(now()) @db.Timestamptz(6)
+  objective      String
+  levelStart     Int
+  levelEnd       Int
+  public         Boolean         @default(false)
+  collaborative  Boolean
+  shared         Boolean         @default(false)
+  shareName      String?         @unique(map: "project_sharename_unique")
+  shareExpiresAt DateTime?       @db.Timestamptz(6)
+  sharePassword  String?
+  extra          Json?           @default("{}")
+  Annotation     Annotation[]
+  User           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "project_userid_foreign")
+  TagToProject   TagToProject[]
+  UserToProject  UserToProject[] @ignore
+}
+
+model Tag {
+  id           String         @id @unique(map: "tag_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String
+  featured     Boolean        @default(false)
+  extra        Json?          @default("{}")
+  TagToProject TagToProject[]
+}
+
+model TagToProject {
+  tagId     String  @db.Uuid
+  projectId String  @db.Uuid
+  Project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tagtoproject_projectid_foreign")
+  Tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tagtoproject_tagid_foreign")
+
+  @@unique([tagId, projectId], map: "TagToProjectTagIdProjectIdUnique")
+}
+
+model User {
+  id              String          @id @unique(map: "user_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email           String?         @unique(map: "user_email_unique") @db.VarChar(255)
+  username        String          @unique(map: "user_username_unique") @db.VarChar(255)
+  password        String          @db.VarChar(255)
+  confirmed       Boolean         @default(false)
+  code            String?
+  codeGeneratedAt DateTime?       @db.Timestamptz(6)
+  role            UserRole?
+  extra           Json?           @default("{}")
+  Annotation      Annotation[]
+  Comment         Comment[]
+  Project         Project[]
+  UserToProject   UserToProject[] @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model UserToProject {
+  id        Int      @id @default(autoincrement())
+  userId    String?  @db.Uuid
+  projectId String?  @db.Uuid
+  Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_projectid_foreign")
+  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_userid_foreign")
+}
+
+
+enum UserRole {
+  Admin
+  Teacher
+  Student
+}
