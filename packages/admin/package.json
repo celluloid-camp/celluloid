@@ -12,7 +12,8 @@
   },
   "scripts": {
     "dev": "dotenv -e .env -- nodemon -e ts,json --exec node --loader ts-node/esm src/server.ts",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc",
+    "start": "node --use-strict build/index.js"
   },
   "dependencies": {
     "@adminjs/express": "6.0.0",
