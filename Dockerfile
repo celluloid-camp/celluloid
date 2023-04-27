@@ -10,7 +10,7 @@ COPY packages/admin/package.json packages/admin/
 COPY yarn.lock .yarnrc.yml package.json ./
 COPY .yarn ./.yarn
 RUN yarn set version berry
-RUN yarn install
+RUN yarn install --inline-builds
 
 
 ARG COMMIT
