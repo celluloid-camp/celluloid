@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 WORKDIR /usr/src/app
 RUN mkdir -p packages/{types,validators,client,server,prisma,admin}
 COPY packages/types/package.json packages/types/
