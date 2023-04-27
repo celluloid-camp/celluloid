@@ -6,6 +6,7 @@ import AdminJS, { AdminJSOptions, DEFAULT_PATHS, ThemeConfig } from "adminjs";
 
 import { componentLoader, Components } from './components.js'
 
+
 export const overrides: ThemeConfig['overrides'] = {
   colors: {
     primary100: '#557CFF',

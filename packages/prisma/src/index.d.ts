@@ -1,8 +1,5 @@
-import { PrismaClient } from './generated/client'
-
-// export * from "./generated/client/index.d";
-
-export type * from "./generated/client/runtime/index.d";
+import { PrismaClient } from './generated'
+export type * from "./generated/index.d";
 
 export interface Context {
   prisma: PrismaClient;
