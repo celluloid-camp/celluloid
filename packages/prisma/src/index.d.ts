@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from './generated/client'
 
-export * from ".prisma/client/index.d";
+export * from "./generated/client/index.d";
 
 import { PrismaClient } from './generated/client'
 

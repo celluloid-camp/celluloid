@@ -1,8 +1,7 @@
 import AdminJSExpress from "@adminjs/express";
 import * as AdminJSPrisma from "@adminjs/prisma";
 import { dark, light, noSidebar } from '@adminjs/themes'
-import { createContext } from "@celluloid/prisma";
-import { DMMFClass } from "@prisma/client/runtime";
+import { createContext, DMMFClass } from "@celluloid/prisma";
 import AdminJS, { AdminJSOptions, DEFAULT_PATHS, ThemeConfig } from "adminjs";
 
 import { componentLoader, Components } from './components.js'

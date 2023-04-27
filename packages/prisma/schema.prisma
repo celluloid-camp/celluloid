@@ -5,8 +5,8 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-///  output   = "src/generated/client"
-///  binaryTargets = ["native"]
+  output   = "src/generated/client"
+  binaryTargets = ["native"]
 }
 
 model Annotation {

@@ -13,10 +13,7 @@
     "db:migrate": "dotenv -e ../../.env prisma migrate dev",
     "generate": "prisma generate",
     "prisma": "prisma",
-    "postinstall": "npx prisma generate"
-  },
-  "installConfig": {
-    "hoistingLimits": "workspaces"
+    "postinstall": "prisma generate"
   },
   "devDependencies": {
     "@prisma/client": "^4.13.0",
