@@ -13,7 +13,7 @@
     "db:migrate": "dotenv -e ../../.env prisma migrate dev",
     "generate": "prisma generate",
     "prisma": "prisma",
-    "postinstall": "yarn genrate"
+    "postinstall": "yarn generate"
   },
   "installConfig": {
     "hoistingLimits": "workspaces"
