@@ -152,7 +152,7 @@ const CommentEditor: React.FC<Props> = ({
           unpadded={true}
           text={text}
           onChange={onTextChange}
-          placeholder={t("annotation.commentPlaceholder")}
+          placeholder={t("annotation.commentPlaceholder") || ""}
         />
       </Box>
       <Box

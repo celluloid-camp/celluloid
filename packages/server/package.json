@@ -35,11 +35,11 @@
     "validator": "^13.7.0"
   },
   "scripts": {
-    "clean": "rm -rf build",
+    "clean": "rm -rf dist",
     "build": "tsc -b",
     "watch": "tsc -b --watch --preserveWatchOutput",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts | pino-pretty",
-    "start": "node --use-strict build/index.js",
+    "start": "node --use-strict dist/index.js",
     "knex": "knex --cwd src"
   },
   "devDependencies": {

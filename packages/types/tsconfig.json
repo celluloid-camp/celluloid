@@ -3,9 +3,9 @@
   "compilerOptions": {
     "noEmit": false,
     "rootDir": "./src",
-    "outDir": "build",
-    "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
-    "declarationDir": "build",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "declarationDir": "dist",
     "lib": [
       "dom",
       "dom.iterable",
@@ -16,7 +16,7 @@
   },
   "exclude": [
     "node_modules",
-    "build"
+    "dist"
   ],
   "include": [
     "./src/**/*"

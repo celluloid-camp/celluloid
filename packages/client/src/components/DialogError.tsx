@@ -20,7 +20,7 @@ import { Box, Typography } from "@mui/material";
 //   });
 
 interface Props {
-  error?: string;
+  error?: string | null;
   small?: boolean;
   align?: "right" | "center" | "left";
 }

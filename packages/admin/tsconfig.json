@@ -3,19 +3,28 @@
     "jsx": "react",
     "module": "esnext",
     "moduleResolution": "nodenext",
-    "declaration": false,
+    "declaration": true,
     "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "es6",
-    "lib": ["esnext"],
-    "sourceMap": false,
+    "lib": [
+      "esnext"
+    ],
+    "sourceMap": true,
     "outDir": "dist",
     "skipLibCheck": true,
     "esModuleInterop": true
-    
   },
-  "exclude": ["node_modules", "src/**/theme.bundle.js"],
-  "include": ["src"]
+  "exclude": [
+    "node_modules",
+    "src/**/theme.bundle.js"
+  ],
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../prisma"
+    }
+  ]
 }
