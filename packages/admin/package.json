@@ -1,0 +1,41 @@
+{
+  "name": "@celluloid/admin",
+  "version": "1.0.6",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "author": "Younes Benaomar",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=14.16"
+  },
+  "scripts": {
+    "dev": "dotenv -e .env -- nodemon -e ts,json --exec node --loader ts-node/esm src/server.ts",
+    "build": "rm -rf dist && tsc"
+  },
+  "dependencies": {
+    "@adminjs/express": "6.0.0",
+    "@adminjs/prisma": "4.0.0",
+    "@adminjs/themes": "^1.0.0",
+    "@celluloid/prisma": "2.0.6",
+    "adminjs": "7.0.0",
+    "express": "^4.18.2",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.3",
+    "tslib": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "copyfiles": "^2.4.1",
+    "del-cli": "^5.0.0",
+    "dotenv-cli": "^7.2.1",
+    "nodemon": "^2.0.22",
+    "np": "^7.7.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.5.3"
+  },
+  "files": [
+    "dist"
+  ]
+}

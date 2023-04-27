@@ -3,16 +3,14 @@
   "compilerOptions": {
     "noEmit": false,
     "rootDir": "src",
-    "outDir": "build",
-    "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
-    "declarationDir": "build",
+    "outDir": "dist",
     "lib": [
       "es2018",
       "esnext.asynciterable"
     ],
     "target": "es6",
     "module": "commonjs",
-    "moduleResolution": "nodenext",
+    // "moduleResolution": "nodenext",
     /* Experimental Options */
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -21,23 +19,10 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "strict": false,
-    "paths": {
-      /* IMPORTANT: this must be the same of 'src/aliases.ts' */
-      "~/*": [
-        "src/*"
-      ]
-    },
+    "strict": true,
+    "allowJs": false,
   },
   "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "../types"
-    },
-    {
-      "path": "../validators"
-    }
-  ],
+    "src/**/*"
+  ]
 }

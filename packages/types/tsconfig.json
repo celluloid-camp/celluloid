@@ -6,10 +6,19 @@
     "outDir": "build",
     "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
     "declarationDir": "build",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "target": "es5",
     "module": "commonjs"
   },
-  "exclude": ["node_modules", "build"],
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "exclude": [
+    "node_modules",
+    "build"
+  ],
+  "include": [
+    "./src/**/*"
+  ]
 }

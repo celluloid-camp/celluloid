@@ -5,11 +5,8 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-}
-
-generator jsonSchema {
-  provider = "prisma-json-schema-generator"
-  output = "public"
+///  output   = "src/generated/client"
+///  binaryTargets = ["native"]
 }
 
 model Annotation {
@@ -98,7 +95,7 @@ model User {
   Annotation      Annotation[]
   Comment         Comment[]
   Project         Project[]
-  UserToProject   UserToProject[] @ignore
+  UserToProject   UserToProject[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.

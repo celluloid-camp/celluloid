@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es6",
+    "lib": ["esnext"],
+    "sourceMap": false,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "esModuleInterop": true
+    
+  },
+  "exclude": ["node_modules", "src/**/theme.bundle.js"],
+  "include": ["src"]
+}
