@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/validators",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "version": "0.1.0",
   "description": "Validation library for Celluloid client and server types",
   "repository": "http://github.com/celluloid-edu/celluloid",

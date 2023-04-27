@@ -1,12 +1,12 @@
 import { UserRecord } from '@celluloid/types';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { paramCase } from 'change-case';
 import { NextFunction, Request, Response } from 'express';
 
 import { sendMail } from '../backends/Email';
 import { logger } from '../backends/Logger';
 import * as ProjectStore from '../store/ProjectStore';
-import { TeacherServerRecord  } from '../types/UserTypes';
+import { TeacherServerRecord } from '../types/UserTypes';
 
 const log = logger('auth/Auth');
 
@@ -28,7 +28,7 @@ export function isLoggedIn(
 }
 
 export function isTeacher(
-  req:any,
+  req: any,
   res: Response,
   next: NextFunction) {
   if ((!req.user || req.user.role !== 'Teacher') && (!req.user || req.user.role !== 'Admin')) {
@@ -102,9 +102,9 @@ export function generateUniqueShareName(title: string, count: number) {
   const compare = (a: string, b: string) =>
     b.length - a.length;
 
-  const construct = (result:string[], str:string) => {
-    var res:string[] = []
-    if (!!str) {
+  const construct = (result: string[], str: string) => {
+    let res: string[] = []
+    if (str) {
       if (result.join().length < 6) {
         res = [...result, str];
       }
@@ -142,8 +142,7 @@ export function sendConfirmationCode(user: TeacherServerRecord) {
 }
 
 export function sendPasswordReset(user: TeacherServerRecord) {
-  const subject = `${
-    user.username
+  const subject = `${user.username
     } : réinitialisation de votre mot de passe Celluloid`;
   const text =
     `Bonjour ${user.username},\n\n` +

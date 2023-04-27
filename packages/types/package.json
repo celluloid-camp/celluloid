@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/types",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "version": "0.1.0",
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
