@@ -40,11 +40,7 @@
     "watch": "tsc -b --watch --preserveWatchOutput",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts | pino-pretty",
     "start": "node --use-strict build/index.js",
-    "knex": "knex --cwd src",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "prisma": "prisma",
-    "postinstall": "prisma generate"
+    "knex": "knex --cwd src"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

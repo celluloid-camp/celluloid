@@ -50,7 +50,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@adminjs/express@npm:6.0.0, @adminjs/express@npm:^6.0.0":
+"@adminjs/express@npm:6.0.0":
   version: 6.0.0
   resolution: "@adminjs/express@npm:6.0.0"
   peerDependencies:
@@ -63,7 +63,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@adminjs/prisma@npm:4.0.0, @adminjs/prisma@npm:^4.0.0":
+"@adminjs/prisma@npm:4.0.0":
   version: 4.0.0
   resolution: "@adminjs/prisma@npm:4.0.0"
   peerDependencies:
@@ -1822,13 +1822,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@celluloid/server@workspace:packages/server"
   dependencies:
-    "@adminjs/express": ^6.0.0
-    "@adminjs/prisma": ^4.0.0
-    "@adminjs/themes": ^1.0.0
     "@babel/core": ^7.1.2
     "@celluloid/types": ^0.1.0
     "@celluloid/validators": ^0.1.0
-    "@prisma/client": ^4.13.0
     "@types/bcrypt": ^3.0.0
     "@types/compression": ^1.0.0
     "@types/connect-redis": ^0.0.19
@@ -1846,7 +1842,6 @@ __metadata:
     "@types/passport-local": ^1.0.33
     "@types/pg": ^7.4.1
     "@types/ramda": ^0.25.35
-    adminjs: ^7.0.0
     bcrypt: ^3.0.0
     body-parser: ^1.18.2
     compression: ^1.7.2
@@ -1872,7 +1867,6 @@ __metadata:
     pino: ^8.7.0
     pino-pretty: ^9.1.1
     pino-std-serializers: ^6.0.0
-    prisma: ^4.13.0
     ramda: ^0.28.0
     redis: ^4.4.0
     source-map-support: ^0.5.13
@@ -1882,7 +1876,6 @@ __metadata:
     typescript: ^5.0.4
     unfurl.js: ^6.0.0
     validator: ^13.7.0
-    zod: ^3.21.4
   languageName: unknown
   linkType: soft
 
@@ -6078,7 +6071,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"adminjs@npm:7.0.0, adminjs@npm:^7.0.0":
+"adminjs@npm:7.0.0":
   version: 7.0.0
   resolution: "adminjs@npm:7.0.0"
   dependencies:
@@ -23439,12 +23432,5 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.21.4":
-  version: 3.21.4
-  resolution: "zod@npm:3.21.4"
-  checksum: f185ba87342ff16f7a06686767c2b2a7af41110c7edf7c1974095d8db7a73792696bcb4a00853de0d2edeb34a5b2ea6a55871bc864227dace682a0a28de33e1f
   languageName: node
   linkType: hard
