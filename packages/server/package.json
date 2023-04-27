@@ -6,7 +6,6 @@
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
   "private": true,
-  "type": "module",
   "dependencies": {
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.2",
