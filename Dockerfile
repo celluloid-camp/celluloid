@@ -15,13 +15,14 @@ COPY . .
 RUN yarn set version berry
 
 # Install project dependencies
-RUN yarn install --inline-builds
-
-# Build the project
-RUN yarn build
-
-ENV CELLULOID_LISTEN_PORT=3001
-EXPOSE 3001
+RUN yarn install --no-progress \
+    && yarn build
+# --inline-builds
 
 
-CMD [ "yarn", "workspace", "@celluloid/server", "start"]
+ENV PORT=3000
+EXPOSE $PORT
+
+
+CMD [ "yarn", "workspace", "@celluloid/server", "run", "start"]
+
