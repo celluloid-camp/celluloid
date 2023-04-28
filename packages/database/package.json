@@ -19,8 +19,8 @@
     "format": "prisma format",
     "generate": "prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
-    "prebuild": "npm run generate",
-    "predev": "npm run generate",
+    "prebuild": "yarn run generate",
+    "predev": "yarn run generate",
     "studio": "prisma studio"
   },
   "devDependencies": {
@@ -38,8 +38,5 @@
   },
   "dependencies": {
     "@prisma/client": "^4.13.0"
-  },
-  "prisma": {
-    "schema": "./schema.prisma"
   }
 }

@@ -27,7 +27,7 @@
     "client": "yarn workspace @celluloid/client",
     "server": "yarn workspace @celluloid/server",
     "admin": "yarn workspace @celluloid/admin",
-    "prisma": "yarn workspace @celluloid/prisma",
+    "database": "yarn workspace @celluloid/database",
     "docker-build": "docker build -t celluloid:local  ."
   },
   "devDependencies": {
