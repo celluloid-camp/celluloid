@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/validators",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "version": "0.1.0",
   "description": "Validation library for Celluloid client and server types",
   "repository": "http://github.com/celluloid-edu/celluloid",
@@ -14,7 +14,7 @@
   "devDependencies": {
     "@celluloid/types": "^0.1.0",
     "@types/validator": "13.7.10",
-    "typescript": "^4.8.4",
+    "typescript": "^5.0.4",
     "validator": "13.7.0"
   }
 }

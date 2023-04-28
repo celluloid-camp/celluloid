@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "declaration": true,
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es6",
+    "lib": [
+      "esnext"
+    ],
+    "sourceMap": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "node_modules",
+    "src/**/theme.bundle.js"
+  ],
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../prisma"
+    }
+  ]
+}

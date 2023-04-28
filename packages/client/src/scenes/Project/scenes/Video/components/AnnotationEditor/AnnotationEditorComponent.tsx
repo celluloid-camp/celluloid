@@ -169,7 +169,7 @@ const AnnotationEditorComponent: React.FC<Props> = ({
           text={text}
           error={error}
           onChange={onTextChange}
-          placeholder={t("annotation.contentPlaceholder")}
+          placeholder={t("annotation.contentPlaceholder") || ""}
         />
         <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
           <TimingControl

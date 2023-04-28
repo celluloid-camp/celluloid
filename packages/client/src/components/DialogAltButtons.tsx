@@ -4,12 +4,12 @@ import Typography from "@mui/material/Typography";
 import { AnyAction } from "redux";
 
 interface Props {
-  heading?: string;
+  heading?: string | null;
   actionName: string;
   onSubmit(): Promise<AnyAction> | AnyAction;
 }
 
-export default ({ actionName, onSubmit, heading }: Props) => (
+const DialogAltButtons = ({ actionName, onSubmit, heading }: Props) => (
   <Box
     sx={{
       justifyContent: "center",
@@ -29,3 +29,4 @@ export default ({ actionName, onSubmit, heading }: Props) => (
     </Button>
   </Box>
 );
+export default DialogAltButtons;

@@ -1,0 +1,46 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~actions/*": [
+                "src/actions/*"
+            ],
+            "~components/*": [
+                "src/components/*"
+            ],
+            "~hooks/*": [
+                "src/hooks/*"
+            ],
+            "~images/*": [
+                "src/images/*"
+            ],
+            "~locales/*": [
+                "src/locales/*"
+            ],
+            "~reducers/*": [
+                "src/reducers/*"
+            ],
+            "~scenes/*": [
+                "src/scenes/*"
+            ],
+            "~services/*": [
+                "src/services/*"
+            ],
+            "~store/*": [
+                "src/store/*"
+            ],
+            "~theme/*": [
+                "src/theme/*"
+            ],
+            "~types/*": [
+                "src/types/*"
+            ],
+            "~utils/*": [
+                "src/utils/*"
+            ],
+            "~/*": [
+                "src/*"
+            ]
+        }
+    }
+}
