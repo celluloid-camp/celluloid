@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.description="Celluloid is a collaborative video a
 LABEL org.opencontainers.image.licenses=MIT
 
 # Install system dependencies
-RUN apk update && apk add --no-cache git python3 make g++
+RUN apk update && apk add --no-cache git python3 make g++ curl
 
 # Set working directory
 WORKDIR /app
