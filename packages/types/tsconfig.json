@@ -3,13 +3,22 @@
   "compilerOptions": {
     "noEmit": false,
     "rootDir": "./src",
-    "outDir": "build",
-    "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
-    "declarationDir": "build",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "declarationDir": "dist",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "target": "es5",
     "module": "commonjs"
   },
-  "exclude": ["node_modules", "build"],
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "./src/**/*"
+  ]
 }

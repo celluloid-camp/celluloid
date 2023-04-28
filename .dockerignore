@@ -13,6 +13,8 @@
 **/dist
 **/__tests__
 
+node_modules
+
 .yarnclean
 yarn-error.log*
 yarn-debug.log*

@@ -107,7 +107,7 @@ const HomeContainer: React.FC<Props> = ({
                       width: 300,
                     }}
                     variant="outlined"
-                    placeholder={t("home.addVideo")}
+                    placeholder={t("home.addVideo") || ""}
                     onChange={handleVideoUrlChanged}
                     value={newProjectVideoUrl}
                     error={errors?.video != undefined}

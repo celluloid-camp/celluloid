@@ -350,7 +350,7 @@ const NewProjectContainer: React.FC<Props> = ({
                 primary={
                   <TextField
                     variant="outlined"
-                    placeholder={t("project.assignmentPlaceholder")}
+                    placeholder={t("project.assignmentPlaceholder") || ""}
                     fullWidth={true}
                     value={nextAssignment}
                     onChange={(event) => {

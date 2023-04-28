@@ -153,7 +153,7 @@ const ProjectGrid: React.FC<Props> = ({
       </Toolbar>
       <Toolbar>
         <TagSearchBox
-          prefix={t("tagSearch.prefix")}
+          prefix={t("tagSearch.prefix") || ""}
           onTagSelected={onTagSelected}
           label={t("home.searchProject")}
         />
