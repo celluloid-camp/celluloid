@@ -17,7 +17,6 @@
     "build": "yarn workspaces foreach -pt run build",
     "i18n:sync": "yarn workspace translations sync",
     "deploy": "./bin/deploy",
-    "start": "(cd packages/server && yarn start)",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "--shortcuts to run commands in workspaces--": "",

@@ -25,4 +25,4 @@ EXPOSE 3001
 
 
 
-CMD [ "yarn", "start"]
+CMD [ "yarn", "server", "start"]

@@ -1,5 +1,5 @@
 import { TeacherRecord, UserRecord } from "@celluloid/types";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import passport from "passport";
 import {
   Strategy,

@@ -1825,6 +1825,7 @@ __metadata:
     "@celluloid/types": ^0.1.0
     "@celluloid/validators": ^0.1.0
     "@types/bcrypt": ^3.0.0
+    "@types/bcryptjs": ^2.4.2
     "@types/compression": ^1.0.0
     "@types/connect-redis": ^0.0.19
     "@types/cookie-parser": ^1.4.1
@@ -1872,7 +1873,6 @@ __metadata:
     ts-node: ^10.9.1
     ts-node-dev: ^2.0.0
     tslib: ^2.2.0
-    typescript: ^5.0.4
     unfurl.js: ^6.0.0
     validator: ^13.7.0
   languageName: unknown
@@ -4673,6 +4673,13 @@ __metadata:
   version: 3.0.1
   resolution: "@types/bcrypt@npm:3.0.1"
   checksum: e8cdb677acabd0c6f6cdf3148feae73336c0fe471d55d42474ac3ecdb735434ab5a43338b337aeef71a1c8f9aa56572e9c9d035338ab19b3f3c8291e70d3eb4d
+  languageName: node
+  linkType: hard
+
+"@types/bcryptjs@npm:^2.4.2":
+  version: 2.4.2
+  resolution: "@types/bcryptjs@npm:2.4.2"
+  checksum: 220dade7b0312b41e23ccfb15f2ddde7804eb3c7ef41db41a6c49054be1e19a15eb3dd8c8ef196494f0866307cce22ad6f3f272941387124707d81dc66155bbc
   languageName: node
   linkType: hard
 
