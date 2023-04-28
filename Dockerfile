@@ -15,8 +15,7 @@ COPY . .
 RUN yarn set version berry
 
 # Install project dependencies
-RUN yarn install --no-progress \
-    && yarn build
+RUN yarn install && yarn build
 # --inline-builds
 
 
