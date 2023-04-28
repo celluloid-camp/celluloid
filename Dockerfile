@@ -24,5 +24,4 @@ ENV CELLULOID_LISTEN_PORT=3001
 EXPOSE 3001
 
 
-
-CMD [ "yarn", "server", "start"]
+CMD [ "yarn", "workspace", "@celluloid/server", "start"]
