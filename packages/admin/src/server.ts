@@ -55,11 +55,11 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
     branding: {
       companyName: 'Celluloid',
       withMadeWithLove: false,
-      logo: '/assets/images/logo.svg',
+      logo: '/admin/assets/images/logo.svg',
       theme: overrides
     },
     assets: {
-      styles: ['/assets/styles/override.css'],
+      styles: ['/admin/assets/styles/override.css'],
     },
     dashboard: {
       component: Components.MyInput,

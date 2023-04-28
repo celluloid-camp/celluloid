@@ -41,10 +41,5 @@
   },
   "files": [
     "dist"
-  ],
-  "references": [
-    {
-      "path": "../prisma"
-    }
   ]
 }
