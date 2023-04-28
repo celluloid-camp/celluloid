@@ -10,6 +10,10 @@
     "packages/*",
     "tools/i18next-sync"
   ],
+  "prisma": {
+    "schema": "packages/database/prisma/schema.prisma",
+    "seed": "tsx packages/database/prisma/src/seed.ts"
+  },
   "scripts": {
     "watch": "yarn workspaces foreach -p -i run watch",
     "dev": "yarn && yarn watch & yarn workspaces foreach -p -i run dev",
@@ -55,6 +59,8 @@
     "ts-jest": "^27.0.1",
     "ts-loader": "^8.0.11",
     "ts-node": "^10.0.0",
+    "tsup": "^5.11.13",
+    "tsx": "^3.7.1",
     "typescript": "^5.0.4"
   },
   "prettier": {
