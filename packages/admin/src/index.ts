@@ -12,13 +12,11 @@ const start = async () => {
     rootPath: "/admin"
   });
 
-  app.use('/', adminRouter);
+  app.use('/admin', adminRouter);
 
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
-  app.get("/admin", express.static(path.join(__dirname, "../public")));
-
-  app.get("/*", (_, res) => res.status(404).send("page not found"));
+  app.use("/admin", express.static(path.join(__dirname, "../public")));
 
   app.listen(3000, () => {
     console.log(
