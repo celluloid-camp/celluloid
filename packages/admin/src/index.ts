@@ -18,6 +18,8 @@ const start = async () => {
 
   app.use(express.static(path.join(__dirname, "../public")));
 
+  app.get("/*", (_, res) => res.status(404).send("page not found"));
+
   app.listen(3000, () => {
     console.log(
       `AdminJS started on localhost:3000`

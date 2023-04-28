@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "dotenv -e .env -- nodemon -e ts,json --exec node --loader ts-node/esm src/server.ts",
+    "dev-tsup": "tsup src/index.ts --watch --onSuccess 'node dist/index.js'",
     "build": "rm -rf dist && tsc",
     "start": "node --use-strict dist/index.js"
   },
