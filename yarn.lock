@@ -21728,9 +21728,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"translations@workspace:tools/i18next-sync":
+"translations@workspace:packages/i18next-sync":
   version: 0.0.0-use.local
-  resolution: "translations@workspace:tools/i18next-sync"
+  resolution: "translations@workspace:packages/i18next-sync"
   dependencies:
     colors: ^1.4.0
     google-spreadsheet: ^3.2.0
