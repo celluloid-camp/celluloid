@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.description="Celluloid is a collaborative video a
 LABEL org.opencontainers.image.licenses=MIT
 
 # Install system dependencies
-RUN apk update && apk add --no-cache git python3 make g++
+RUN apk update && apk add --no-cache git python3 make g++ curl
 
 # Set working directory
 WORKDIR /app
@@ -15,14 +15,13 @@ COPY . .
 RUN yarn set version berry
 
 # Install project dependencies
-RUN yarn install --inline-builds
-
-# Build the project
-RUN yarn build
-
-ENV CELLULOID_LISTEN_PORT=3001
-EXPOSE 3001
+RUN yarn install && yarn build
+# --inline-builds
 
 
+ENV PORT=3000
+EXPOSE $PORT
 
-CMD [ "yarn", "start"]
+
+CMD [ "yarn", "workspace", "@celluloid/server", "run", "start"]
+

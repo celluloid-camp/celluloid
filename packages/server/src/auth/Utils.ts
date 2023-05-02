@@ -1,5 +1,5 @@
 import { UserRecord } from '@celluloid/types';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { paramCase } from 'change-case';
 import { NextFunction, Request, Response } from 'express';
 
