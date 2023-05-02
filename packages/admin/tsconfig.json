@@ -21,10 +21,5 @@
   ],
   "include": [
     "src"
-  ],
-  "references": [
-    {
-      "path": "../prisma"
-    }
   ]
 }
