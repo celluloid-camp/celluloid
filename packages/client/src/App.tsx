@@ -2,6 +2,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
+import { ConfirmProvider } from "material-ui-confirm";
 // import MomentUtils from "material-ui-pickers/utils/moment-utils";
 import React from "react";
 import { initReactI18next } from "react-i18next";
@@ -19,13 +20,13 @@ import en from "./locales/en/common.json";
 import fr from "./locales/fr/common.json";
 import Home from "./scenes/Home";
 import Project from "./scenes/Project";
-import ShareGuide from "./scenes/ShareGuide";
 import createAppStore from "./store";
 
 const queryClient = new QueryClient();
 
-import { ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 
+import { SharePage } from "./pages/share";
 import { createTheme } from "./theme";
 
 i18next
@@ -54,32 +55,35 @@ const Content = () => {
     <Provider store={store}>
       {/* <ConnectedRouter history={history}> */}
       <ThemeProvider theme={createTheme()}>
+        <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
-          <React.Fragment>
+          <ConfirmProvider>
+            {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
             <React.Fragment>
-              <UpdateIndicator />
-              <BrowserRouter>
-                <ResetScroll />
-                <Routes>
-                  <Route
-                    path="/"
-                    element={<Home />}
-                    errorElement={<NotFound />}
-                  />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/legal-notice" element={<LegalNotice />} />
-                  <Route
-                    path="/terms-and-conditions"
-                    element={<TermsAndConditions />}
-                  />
-                  <Route path="/projects/:projectId" element={<Project />} />
-                  <Route path="/shares/:projectId" element={<ShareGuide />} />
-                </Routes>
-              </BrowserRouter>
+              <React.Fragment>
+                <UpdateIndicator />
+                <BrowserRouter>
+                  <ResetScroll />
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={<Home />}
+                      errorElement={<NotFound />}
+                    />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/legal-notice" element={<LegalNotice />} />
+                    <Route
+                      path="/terms-and-conditions"
+                      element={<TermsAndConditions />}
+                    />
+                    <Route path="/projects/:projectId" element={<Project />} />
+                    <Route path="/shares/:projectId" element={<SharePage />} />
+                  </Routes>
+                </BrowserRouter>
+              </React.Fragment>
             </React.Fragment>
-          </React.Fragment>
-          {/* </MuiPickersUtilsProvider> */}
+            {/* </MuiPickersUtilsProvider> */}
+          </ConfirmProvider>
         </QueryClientProvider>
       </ThemeProvider>
       {/* </ConnectedRouter> */}

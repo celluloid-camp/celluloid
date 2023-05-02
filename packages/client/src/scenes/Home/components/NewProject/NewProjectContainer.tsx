@@ -318,12 +318,10 @@ const NewProjectContainer: React.FC<Props> = ({
           <List>
             {project.assignments.map((assignment, index) => (
               <ListItem key={index}>
-                {/* @ts-ignore */}
                 <ListItemAvatar>
                   <Avatar>{index + 1}</Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={assignment} />
-                {/* @ts-ignore */}
                 <ListItemSecondaryAction>
                   <IconButton
                     onClick={() => {
@@ -339,7 +337,6 @@ const NewProjectContainer: React.FC<Props> = ({
               </ListItem>
             ))}
             <ListItem>
-              {/* @ts-ignore */}
               <ListItemAvatar>
                 <Avatar>{project.assignments.length + 1}</Avatar>
               </ListItemAvatar>
@@ -362,7 +359,6 @@ const NewProjectContainer: React.FC<Props> = ({
                   />
                 }
               />
-              {/* @ts-ignore */}
               <ListItemSecondaryAction>
                 <IconButton
                   onClick={() => {
@@ -370,12 +366,7 @@ const NewProjectContainer: React.FC<Props> = ({
                       ...state,
                       project: {
                         ...state.project,
-                        assignments: [
-                          // @ts-ignore
-                          ...project.assignments,
-                          // @ts-ignore
-                          nextAssignment,
-                        ],
+                        assignments: [...project.assignments, nextAssignment],
                       },
                       nextAssignment: "",
                     });

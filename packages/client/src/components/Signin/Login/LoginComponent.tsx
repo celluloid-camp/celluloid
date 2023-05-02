@@ -1,4 +1,5 @@
 import { Credentials, SigninErrors } from "@celluloid/types";
+import { Button, DialogActions } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
@@ -57,11 +58,15 @@ const LoginComponent = ({
         actionName={t("signin.signupAction")}
         onSubmit={onClickSignup}
       />
-      <DialogAltButtons
-        actionName={t("signin.forgotPasswordAction")}
-        onSubmit={onClickResetPassword}
-      />
-      <DialogButtons onSubmit={onSubmit} actionName={t("signin.loginAction")} />
+
+      <DialogActions>
+        <Button onClick={onClickResetPassword}>
+          {t("signin.forgotPasswordAction")}
+        </Button>
+        <Button autoFocus onClick={onSubmit} variant="contained">
+          {t("signin.loginAction")}
+        </Button>
+      </DialogActions>
     </div>
   );
 };

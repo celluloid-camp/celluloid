@@ -19,7 +19,7 @@ import { Dispatch } from "redux";
 import { cancelShareProject, shareProjectThunk } from "~actions/ProjectActions";
 import DialogError from "~components/DialogError";
 import DialogHeader from "~components/DialogHeader";
-import ShareCredentials from "~components/ShareCredentials";
+import { ShareCredentials } from "~components/ShareCredentials";
 import { AsyncAction, EmptyAction } from "~types/ActionTypes";
 import { AppState, SharingStatus } from "~types/StateTypes";
 

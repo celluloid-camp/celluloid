@@ -1,36 +1,43 @@
 import { ProjectGraphRecord } from "@celluloid/types";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import {
+  Avatar,
   Box,
   Card,
   CardContent,
   CardMedia,
   Chip,
   Grid,
-  Grow as GrowMUI,
+  Grow,
+  Paper,
   Stack,
+  styled,
   Typography,
 } from "@mui/material";
-import { GrowProps } from "@mui/material/Grow";
 // import PlayIcon from "@mui/icons-material/PlayCircleOutline";
 import { useQuery } from "@tanstack/react-query";
-// import { push } from "connected-react-router";
 import * as React from "react";
-import { useState } from "react";
-import Shiitake, { ShiitakeProps } from "shiitake";
 
+import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
+import { UserAvatar } from "~components/UserAvatar";
 import VisibilityChip from "~components/VisibilityChip";
 // import { connect } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 // import { AnyAction, Dispatch } from "redux";
 import VideoApi from "~services/VideoService";
 
-const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
-  <GrowMUI {...props} />
-);
-
-const ShiitakeFix: React.FC<React.PropsWithChildren & ShiitakeProps> = (
-  props
-) => <Shiitake {...props} />;
+const StyledBox = styled(Box)(({ theme }) => ({
+  position: "relative",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 10,
+    left: -10,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "white",
+  },
+}));
 
 // const styles = ({ palette, spacing, typography }: Theme) =>
 //   createStyles({
@@ -127,8 +134,6 @@ interface Props {
 }
 
 const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
-  const [elevated, setElevated] = useState(false);
-
   const query = useQuery({
     queryKey: ["video", project.host, project.videoId],
     queryFn: () => VideoApi.getPeerTubeVideo(project.host, project.videoId),
@@ -140,89 +145,70 @@ const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
   };
 
   return (
-    <Grid
-      xs={12}
-      sm={6}
-      lg={4}
-      xl={3}
-      item={true}
-      style={{ textAlign: "center" }}
+    <Grow
+      style={{ transformOrigin: "0 0 0" }}
+      in={true}
+      appear={true}
+      key={project.id}
     >
-      <Grow
-        style={{ transformOrigin: "0 0 0" }}
-        in={true}
-        appear={true}
-        key={project.id}
+      <Card
+        elevation={0}
+        sx={{
+          borderRadius: 0,
+          backgroundColor: "transparent",
+          overflow: "visible",
+        }}
+        onClick={() => onClick()}
       >
-        <Card
-          raised={elevated}
-          onMouseOver={() => setElevated(true)}
-          onMouseOut={() => setElevated(false)}
-          onClick={() => onClick()}
-        >
+        <StyledBox>
           <CardMedia
+            component="img"
+            sx={{ position: "relative" }}
+            height="194"
             image={`https://${project.host}${query.data?.thumbnailPath}`}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 94,
+              right: 0,
+            }}
           >
-            {/* <div className={classes.iconWrapper}>
-              <PlayIcon className={classes.icon} />
-            </div> */}
-            <Stack direction="row" spacing={1}>
-              {showPublic && (
-                <VisibilityChip show={project.public} label="public" />
-              )}
-              <VisibilityChip
-                show={project.collaborative}
-                label="collaboratif"
-              />
-            </Stack>
-            <Box
-              sx={(theme) => ({
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                height: theme.spacing(9),
-                padding: theme.spacing(2),
-                zIndex: 3,
-                bottom: 0,
-                right: 0,
-                left: 0,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-              })}
-            >
-              <Typography variant="h6" color="white">
-                <ShiitakeFix lines={2} tagName="span">
-                  {project.title}
-                </ShiitakeFix>
+            <PlayCircleIcon
+              sx={{ color: "white", fontSize: 100, opacity: 0.8 }}
+            />
+          </Box>
+        </StyledBox>
+
+        <CardContent sx={{ paddingX: 1, paddingY: 2 }}>
+          <Grid container>
+            <Grid item={true} xs={12}>
+              <Typography variant="h6" noWrap>
+                {project.title}
               </Typography>
-            </Box>
-          </CardMedia>
-          <CardContent>
-            <Grid container>
-              <Grid item={true} xs={12}>
-                <Typography gutterBottom={true}>
-                  <ShiitakeFix lines={3} tagName="span">
-                    {project.objective}
-                  </ShiitakeFix>
-                </Typography>
-              </Grid>
-              <Grid item={true} xs={12}>
-                <Typography>{project.user.username}</Typography>
-                <Typography variant="caption">
-                  {new Date(project.publishedAt).toLocaleDateString()}
-                </Typography>
-              </Grid>
-              <Grid item={true} xs={12}>
-                <Stack spacing={2}>
-                  {project.tags.map((tag, index) => (
-                    <Chip sx={{ m: 2 }} key={index} label={tag.name} />
-                  ))}
-                </Stack>
-              </Grid>
+              <Typography gutterBottom={true} noWrap>
+                {project.objective}
+              </Typography>
             </Grid>
-          </CardContent>
-        </Card>
-      </Grow>
-    </Grid>
+            <Grid item={true} xs={12}>
+              <ProjectUserAvatar project={project} />
+            </Grid>
+            {/* <Grid item={true} xs={12}>
+              <Stack direction="row" spacing={1}>
+                {showPublic && (
+                  <VisibilityChip show={project.public} label="public" />
+                )}
+                <VisibilityChip
+                  show={project.collaborative}
+                  label="collaboratif"
+                />
+              </Stack>
+            </Grid> */}
+          </Grid>
+        </CardContent>
+      </Card>
+    </Grow>
   );
 };
 

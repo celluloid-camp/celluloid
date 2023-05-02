@@ -128,8 +128,8 @@ const AnnotationHints: React.FC<Props> = ({
               top: visible ? 48 + index * 24 : 0,
               left: getHintStartPosition(annotation),
               width: getHintWidth(annotation),
-              backgroundColor: getUserColor(annotation.user),
-              border: `2px solid ${getUserColor(annotation.user)}`,
+              backgroundColor: getUserColor(annotation.user.id),
+              border: `2px solid ${getUserColor(annotation.user.id)}`,
             }}
             onClick={() => onClick(annotation)}
           />

@@ -104,15 +104,15 @@ export const baseThemeOptions: ThemeOptions = {
         }
         @font-face {
           font-family: 'abril_fatfaceregular';
-          src: url('fonts/abrilfatface-regular-webfont.woff') format('woff'),
-            url(fonts/abrilfatface-regular-webfont.woff2) format('woff2');
+          src: url('/fonts/abrilfatface-regular-webfont.woff') format('woff'),
+            url(/fonts/abrilfatface-regular-webfont.woff2) format('woff2');
           font-weight: normal;
           font-style: normal;
         }
         @font-face {
           font-family: 'lexendregular';
-          src: url('fonts/lexend-variablefont_wght-webfont.woff2') format('woff2'),
-              url('fonts/lexend-variablefont_wght-webfont.woff') format('woff');
+          src: url('/fonts/lexend-variablefont_wght-webfont.woff2') format('woff2'),
+              url('/fonts/lexend-variablefont_wght-webfont.woff') format('woff');
           font-weight: normal;
           font-style: normal;
         }

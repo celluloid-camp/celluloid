@@ -1765,6 +1765,7 @@ __metadata:
     i18next-browser-languagedetector: ^7.0.0
     linkify-urls: ^4.0.0
     lodash: ^4.17.21
+    material-ui-confirm: ^3.0.9
     material-ui-pickers: ^1.0.0-rc.17
     moment-duration-format: ^2.2.2
     prop-types: ^15.6.2
@@ -15216,6 +15217,17 @@ __metadata:
     "@types/minimatch": ^3.0.3
     minimatch: ^3.0.2
   checksum: f6d4f94bdcf773f9cbd4b7b10199a7632c434833a4c01bfb29c373e118647bb3b748aa3f20c70d6c3a715915fcc44ad4a77a9f8d5f059f3a0d15c984c0acc83d
+  languageName: node
+  linkType: hard
+
+"material-ui-confirm@npm:^3.0.9":
+  version: 3.0.9
+  resolution: "material-ui-confirm@npm:3.0.9"
+  peerDependencies:
+    "@mui/material": ">= 5.0.0"
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+  checksum: 6423b7d5324e8cc004407234dc74b890263ba8767cfb0304e22eb111e6ed3a5de3f1bd39c81018469bf4342f50541f918b476b53595e0dc1960a86a05c80d4cd
   languageName: node
   linkType: hard
 

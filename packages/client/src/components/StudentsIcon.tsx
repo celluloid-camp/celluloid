@@ -1,12 +1,5 @@
-export default () => (
-  <svg
-    version="1.1"
-    x="0"
-    y="0"
-    width="150px"
-    height="150px"
-    viewBox="0 0 23 23"
-  >
+export const StudentsIcon: React.FC = () => (
+  <svg version="1.1" x="0" y="0" viewBox="0 0 23 23">
     <g id="surface1">
       <path
         id="svg_2"

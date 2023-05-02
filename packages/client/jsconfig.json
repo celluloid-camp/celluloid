@@ -40,6 +40,12 @@
             ],
             "~/*": [
                 "src/*"
+            ],
+            "~pages/*": [
+                "src/pages/*"
+            ],
+            "~home/*": [
+                "src/components/home/*"
             ]
         }
     }

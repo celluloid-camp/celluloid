@@ -14,7 +14,7 @@ import {
   triggerAddComment,
   updateCommentThunk,
 } from "~actions/CommentActions";
-import UserAvatar from "~components/UserAvatar";
+import { UserAvatar } from "~components/UserAvatar";
 import { AsyncAction, EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 
@@ -136,7 +136,7 @@ const CommentEditor: React.FC<Props> = ({
         alignItems: "flex-start",
       }}
     >
-      <UserAvatar user={user} small={true} />
+      <UserAvatar username={user.username} userId={user.id} small />
       <Box
         sx={{
           flex: "1 1 auto",

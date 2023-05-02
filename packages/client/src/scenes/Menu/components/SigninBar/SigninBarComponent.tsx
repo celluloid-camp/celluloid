@@ -13,7 +13,7 @@ import { GrowProps } from "@mui/material/Grow";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import UserAvatar from "~components/UserAvatar";
+import { UserAvatar } from "~components/UserAvatar";
 
 const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
   <GrowMUI {...props} />
@@ -42,7 +42,7 @@ const SigninBarComponent = ({
   return user ? (
     <div>
       <IconButton onClick={(event) => onOpenUserMenu(event.target)}>
-        <UserAvatar user={user} noMargin={true} />
+        <UserAvatar username={user.username} userId={user.id} />
       </IconButton>
       <Popper
         open={Boolean(menuAnchor)}
@@ -71,8 +71,16 @@ const SigninBarComponent = ({
     </div>
   ) : (
     <div>
-      <Button onClick={onClickSignup}>{t("menu.signup")}</Button>
-      <Button onClick={onClickLogin} color="primary">
+      <Button
+        onClick={onClickSignup}
+        sx={{ textTransform: "uppercase", color: "text.primary" }}
+      >
+        {t("menu.signup")}
+      </Button>
+      <Button
+        onClick={onClickLogin}
+        sx={{ textTransform: "uppercase", color: "text.primary" }}
+      >
         {t("menu.login")}
       </Button>
     </div>

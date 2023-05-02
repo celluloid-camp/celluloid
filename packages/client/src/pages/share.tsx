@@ -8,7 +8,7 @@ import { useLocation, useParams } from "react-router-dom";
 import LoadingBig from "~components/LoadingBig";
 import NotFound from "~components/NotFound";
 import ProjectSummary from "~components/ProjectSummary";
-import ShareCredentials from "~components/ShareCredentials";
+import { ShareCredentials } from "~components/ShareCredentials";
 import ProjectService from "~services/ProjectService";
 
 // const styles = (theme: Theme) =>
@@ -73,7 +73,7 @@ import ProjectService from "~services/ProjectService";
 //     },
 //   });
 
-const ShareGuideContainer: React.FC = () => {
+export const SharePage: React.FC = () => {
   const { t } = useTranslation();
   const { projectId = "" } = useParams();
 
@@ -97,7 +97,7 @@ const ShareGuideContainer: React.FC = () => {
       {
         title: (
           <span>
-            {t("project.share.guide.step1")}
+            {t("project.share.guide.step1")}{" "}
             <a href={`${protocol}//${href}`}>{href}</a>
           </span>
         ),
@@ -164,5 +164,3 @@ const ShareGuideContainer: React.FC = () => {
     return <LoadingBig />;
   }
 };
-
-export default ShareGuideContainer;

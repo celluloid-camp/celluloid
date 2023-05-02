@@ -1,5 +1,18 @@
 import { ProjectGraphRecord, TagData, UserRecord } from "@celluloid/types";
-import { Box, Chip, Fade, Toolbar, Typography } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Container,
+  Divider,
+  Fade,
+  IconButton,
+  InputBase,
+  Paper,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import * as R from "ramda";
 import * as React from "react";
@@ -12,7 +25,6 @@ import { useDidUpdate } from "rooks";
 
 import { listProjectsThunk } from "~actions/ProjectActions";
 import { listTagsThunk } from "~actions/TagActions";
-import TagSearchBox from "~components/TagSearchBox/TagSearchBox";
 import { AsyncAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
@@ -133,8 +145,9 @@ const ProjectGrid: React.FC<Props> = ({
     !error && publicProjects.length === 0 && userProjects.length === 0;
 
   return (
-    <>
-      <Toolbar>
+    <Box sx={{ padding: 5, backgroundColor: "brand.orange" }}>
+      <Container maxWidth="lg">
+        {/* <Toolbar>
         <Box sx={{ paddingBottom: 2 }}>
           {tags.map((tag) => (
             <Chip
@@ -157,100 +170,128 @@ const ProjectGrid: React.FC<Props> = ({
           onTagSelected={onTagSelected}
           label={t("home.searchProject")}
         />
-      </Toolbar>
-      <Box
-        sx={{
-          ph: 2,
-        }}
-      >
-        {userProjects.length > 0 && (
-          <>
-            <Fade in={userProjects.length > 0} appear={true}>
+      </Toolbar> */}
+
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            borderRadius: 5,
+            alignItems: "center",
+            width: "100%",
+            height: 50,
+          }}
+        >
+          <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
+            <SearchIcon />
+          </IconButton>
+          {/* <CircularProgress sx={{ p: "10px", ml: 1 }} /> */}
+          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder={t("search.placeholder", "Chercher un projet") || ""}
+          />
+        </Paper>
+
+        <Box
+          sx={{
+            ph: 2,
+          }}
+        >
+          {userProjects.length > 0 && (
+            <>
+              <Fade in={userProjects.length > 0} appear={true}>
+                <Typography
+                  gutterBottom={true}
+                  variant="h4"
+                  fontFamily={"abril_fatfaceregular"}
+                  sx={{
+                    pt: 4,
+                    pb: 1,
+                  }}
+                >
+                  {t("home.myProjects")}
+                </Typography>
+              </Fade>
+              <Grid container={true} spacing={10} direction="row">
+                <TransitionGroup component={null} appear={true}>
+                  {userProjects.map((project: ProjectGraphRecord) => (
+                    <Grid xs={12} sm={6} lg={4} xl={3} item>
+                      <ProjectThumbnail
+                        showPublic={true}
+                        project={project}
+                        key={project.id}
+                      />
+                    </Grid>
+                  ))}
+                </TransitionGroup>
+              </Grid>
+            </>
+          )}
+          {publicProjects.length > 0 && (
+            <>
+              <Fade in={publicProjects.length > 0} appear={true}>
+                <Typography
+                  gutterBottom={true}
+                  color="primary"
+                  variant="h4"
+                  sx={{
+                    pt: 4,
+                    pb: 1,
+                  }}
+                >
+                  {t("home.publicProjects")}
+                </Typography>
+              </Fade>
+              <Grid container={true} spacing={40} direction="row">
+                <TransitionGroup component={null} appear={true}>
+                  {publicProjects.map((project: ProjectGraphRecord) => (
+                    <Grid xs={12} sm={6} lg={4} xl={3} item>
+                      <ProjectThumbnail
+                        showPublic={false}
+                        project={project}
+                        key={project.id}
+                      />
+                    </Grid>
+                  ))}
+                </TransitionGroup>
+              </Grid>
+            </>
+          )}
+          {noProjects && (
+            <Fade in={noProjects} appear={true}>
               <Typography
+                variant="h3"
+                align="center"
                 gutterBottom={true}
-                color="primary"
-                variant="h4"
                 sx={{
                   pt: 4,
                   pb: 1,
                 }}
               >
-                {t("home.myProjects")}
+                {t("home.emptySearchResult")}
               </Typography>
             </Fade>
-            <Grid container={true} spacing={40} direction="row">
-              <TransitionGroup component={null} appear={true}>
-                {userProjects.map((project: ProjectGraphRecord) => (
-                  <ProjectThumbnail
-                    showPublic={true}
-                    project={project}
-                    key={project.id}
-                  />
-                ))}
-              </TransitionGroup>
-            </Grid>
-          </>
-        )}
-        {publicProjects.length > 0 && (
-          <>
-            <Fade in={publicProjects.length > 0} appear={true}>
+          )}
+          {error && (
+            <Fade in={!!error} appear={true}>
               <Typography
-                gutterBottom={true}
-                color="primary"
                 variant="h4"
+                align="center"
+                gutterBottom={true}
                 sx={{
                   pt: 4,
                   pb: 1,
                 }}
               >
-                {t("home.publicProjects")}
+                {error}
               </Typography>
             </Fade>
-            <Grid container={true} spacing={40} direction="row">
-              <TransitionGroup component={null} appear={true}>
-                {publicProjects.map((project: ProjectGraphRecord) => (
-                  <ProjectThumbnail
-                    showPublic={false}
-                    project={project}
-                    key={project.id}
-                  />
-                ))}
-              </TransitionGroup>
-            </Grid>
-          </>
-        )}
-        {noProjects && (
-          <Fade in={noProjects} appear={true}>
-            <Typography
-              variant="h3"
-              align="center"
-              gutterBottom={true}
-              sx={{
-                pt: 4,
-                pb: 1,
-              }}
-            >
-              {t("home.emptySearchResult")}
-            </Typography>
-          </Fade>
-        )}
-        {error && (
-          <Fade in={!!error} appear={true}>
-            <Typography
-              variant="h4"
-              align="center"
-              gutterBottom={true}
-              sx={{
-                pt: 4,
-                pb: 1,
-              }}
-            >
-              {error}
-            </Typography>
-          </Fade>
-        )}
-      </Box>
-    </>
+          )}
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

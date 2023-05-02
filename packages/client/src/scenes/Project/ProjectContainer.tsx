@@ -49,6 +49,8 @@ const ProjectContainer: React.FC<Props> = ({ user, loadProject, project }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if(!project) return null;
+
   return (
     <SharedLayout>
       <ProjectComponent project={project} onVideoChange={load} />

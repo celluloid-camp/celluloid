@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
 import { deleteCommentThunk } from "~actions/CommentActions";
-import UserAvatar from "~components/UserAvatar";
+import { UserAvatar } from "~components/UserAvatar";
 import { AsyncAction } from "~types/ActionTypes";
 import { canEditComment } from "~utils/AnnotationUtils";
 import { isOwner } from "~utils/ProjectUtils";
@@ -85,7 +85,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   ) => deleteCommentThunk(projectId, annotationId, comment)(dispatch),
 });
 
-export default connect(
+const CommentContent = connect(
   null,
   mapDispatchToProps
 )(
@@ -121,7 +121,11 @@ export default connect(
           onMouseEnter={() => onHover(true)}
           onMouseLeave={() => onHover(false)}
         >
-          <UserAvatar user={comment.user} small={true} />
+          <UserAvatar
+            username={comment.user.username}
+            id={comment.user.id}
+            small
+          />
           <Box
             sx={(theme) => ({
               flex: "1 1 auto",
@@ -195,3 +199,5 @@ export default connect(
     }
   }
 );
+
+export default CommentContent;

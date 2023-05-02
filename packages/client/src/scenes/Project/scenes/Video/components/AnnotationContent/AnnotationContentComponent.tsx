@@ -19,7 +19,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { TransitionGroup } from "react-transition-group";
 
-import UserAvatar from "~components/UserAvatar";
+import { UserAvatar } from "~components/UserAvatar";
 
 import CommentsList from "../CommentsList";
 
@@ -124,7 +124,7 @@ interface Props {
   onClickDelete(): void;
 }
 
-export default ({
+const AnnotationContentComponent = ({
   annotation,
   project,
   formattedStartTime,
@@ -151,7 +151,10 @@ export default ({
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
     >
-      <UserAvatar user={annotation.user} />
+      <UserAvatar
+        username={annotation.user.username}
+        userId={annotation.user.id}
+      />
       <Box
         sx={(theme) => ({
           flex: "1 1 auto",
@@ -312,3 +315,5 @@ export default ({
     </Collapse>
   </Box>
 );
+
+export default AnnotationContentComponent;

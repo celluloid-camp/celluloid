@@ -1,34 +1,32 @@
-import { UserRecord } from "@celluloid/types";
-import { Avatar } from "@mui/material";
+import { Avatar, AvatarProps } from "@mui/material";
+import React from "react";
 
 import { getUserColor, getUserInitials } from "~utils/UserUtils";
 
-// const styles = ({ spacing }: Theme) =>
-//   createStyles({
-//     small: {
-// height: spacing.unit * 4,
-// width: spacing.unit * 4,
-// fontSize: "13px",
-//     },
-//   });
-
-interface Props {
-  user: UserRecord;
-  noMargin?: boolean;
+type UserAvatarProps = AvatarProps & {
+  username: string;
+  userId: string;
   small?: boolean;
-}
+};
 
-export default ({ user, noMargin, small }: Props) => (
-  <Avatar
-    // sx={(theme)=> small? {
-    //   height: theme.spacing * 4,
-    //   width: theme.spacing * 4
-    // }: undefined}
-    style={{
-      margin: noMargin ? 0 : small ? 4 : 10,
-      backgroundColor: getUserColor(user),
-    }}
-  >
-    {getUserInitials(user)}
-  </Avatar>
+export const UserAvatar: React.FC<UserAvatarProps> = React.memo(
+  ({ userId, username, small }) => (
+    <Avatar
+      sx={
+        small
+          ? {
+              height: 24,
+              width: 24,
+              backgroundColor: getUserColor(userId),
+            }
+          : {
+              height: 40,
+              width: 40,
+              backgroundColor: getUserColor(userId),
+            }
+      }
+    >
+      {getUserInitials(username)}
+    </Avatar>
+  )
 );

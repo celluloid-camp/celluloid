@@ -22,12 +22,12 @@ interface Neutral {
 declare module "@mui/material/styles" {
   interface Palette {
     neutral?: Neutral;
-    brand: { green: string };
+    brand: { green: string, orange: string };
   }
 
   interface PaletteOptions {
     neutral?: Neutral;
-    brand: { green: string };
+    brand: { green: string, orange: string };
   }
 }
 

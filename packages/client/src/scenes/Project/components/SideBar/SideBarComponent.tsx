@@ -3,57 +3,26 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
+  Chip,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   ListSubheader,
+  Stack,
+  Typography,
 } from "@mui/material";
+import { useConfirm } from "material-ui-confirm";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import DialogError from "~components/DialogError";
 import LabeledProgressSwitch from "~components/LabeledProgressSwitch";
-import ShareCredentials from "~components/ShareCredentials";
-import UserAvatar from "~components/UserAvatar";
-import VisibilityChip from "~components/VisibilityChip";
+import { UserAvatar } from "~components/UserAvatar";
 import { AsyncAction } from "~types/ActionTypes";
 import { isAdmin, isOwner } from "~utils/ProjectUtils";
 
 import ShareDialog from "./components/ShareDialog";
-
-// const styles = ({ spacing }: Theme) =>
-//   createStyles({
-//     button: {
-//       padding: spacing.unit,
-//       paddingBottom: 0,
-//     },
-//     paper: {
-//       marginTop: 0,
-//       margin: spacing.unit,
-//       padding: spacing.unit,
-//     },
-//     list: {
-//       padding: 0,
-//       paddingBottom: spacing.unit * 2,
-//     },
-//     listItem: {
-//       padding: 0,
-//     },
-//     listHeader: {
-//       height: spacing.unit * 5,
-//       textAlign: "left",
-//       marginTop: spacing.unit,
-//       paddingLeft: spacing.unit,
-//     },
-//     buttonIcon: {
-//       marginRight: spacing.unit * 2,
-//     },
-//     chips: {
-//       paddingTop: spacing.unit,
-//       textAlign: "right",
-//     },
-//   });
 
 export interface Member extends UserRecord {
   subtitle?: string;
@@ -101,70 +70,110 @@ const SideBarComponenent: React.FC<Props> = ({
   onClickDelete,
 }: Props) => {
   const { t } = useTranslation();
+  const confirm = useConfirm();
+
+  const handleDelete = () => {
+    confirm({
+      title: t("project.confirm-delete.title", "Delete project"),
+      description: t("project.confirm-delete.description", "Are you sure ?"),
+      confirmationText: t("deleteAction"),
+      cancellationText: t("cancelAction"),
+      confirmationButtonProps: {
+        variant: "contained",
+        color: "error",
+      },
+    }).then(() => {
+      onClickDelete(project.id);
+    });
+  };
 
   return (
-    <>
-      {user && isOwner(project, user) ? (
-        <>
-          <LabeledProgressSwitch
-            label={t("project.public")}
-            checked={project.public}
-            loading={setPublicLoading}
-            error={setPublicError}
-            onChange={() => onClickSetPublic(project.id, !project.public)}
-          />
-          <LabeledProgressSwitch
-            label={t("project.collaborative")}
-            checked={project.collaborative}
-            loading={setCollaborativeLoading}
-            error={setCollaborativeError}
-            onChange={() =>
-              onClickSetCollaborative(project.id, !project.collaborative)
-            }
-          />
-        </>
-      ) : (
-        <Box sx={{ paddingTop: 1 }}>
-          <VisibilityChip
-            show={project.public}
-            label={t("project.public").toLowerCase()}
-          />
-          <VisibilityChip
-            show={project.collaborative}
-            label={t("project.collaborative").toLowerCase()}
-          />
-        </Box>
-      )}
-      {user && isOwner(project, user) && (
-        <>
-          <LabeledProgressSwitch
-            label={t("project.shared")}
-            checked={project.shared}
-            loading={unshareLoading}
-            error={unshareError}
-            onChange={() => onClickShare()}
-          />
-          <ShareDialog project={project} />
-          {project.shared && (
-            <Box sx={{ paddingTop: 1 }}>
-              <ShareCredentials
-                name={project.shareName}
-                password={project.sharePassword}
-              />
-              {t("project.share.dialog.description")}
-              <a
-                href={`/shares/${project.id}?p=${project.sharePassword}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {t("project.share.dialog.linkText")}
-              </a>
-              .
-            </Box>
-          )}
-        </>
-      )}
-      {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
+    <Box>
+      <Stack direction={"row"} spacing={1}>
+        {project.public && (
+          <Chip label={t("project.public").toUpperCase()} size="small" />
+        )}
+
+        {project.collaborative && (
+          <Chip label={t("project.collaborative").toUpperCase()} size="small" />
+        )}
+      </Stack>
+
+      <Box
+        sx={{
+          backgroundColor: "white",
+          paddingX: 3,
+          marginY: 2,
+          paddingY: 3,
+          borderRadius: 2,
+        }}
+      >
+        {user && isOwner(project, user) ? (
+          <>
+            <Typography variant="h6" mb={2}>
+              {t("project.edit", "Modification")}
+            </Typography>
+            <LabeledProgressSwitch
+              label={t("project.public")}
+              checked={project.public}
+              loading={setPublicLoading}
+              error={setPublicError}
+              onChange={() => onClickSetPublic(project.id, !project.public)}
+            />
+            <LabeledProgressSwitch
+              label={t("project.collaborative")}
+              checked={project.collaborative}
+              loading={setCollaborativeLoading}
+              error={setCollaborativeError}
+              onChange={() =>
+                onClickSetCollaborative(project.id, !project.collaborative)
+              }
+            />
+            <LabeledProgressSwitch
+              label={t("project.shared")}
+              checked={project.shared}
+              loading={unshareLoading}
+              error={unshareError}
+              onChange={() => onClickShare()}
+            />
+            <ShareDialog project={project} />
+            {project.shared && (
+              <Box sx={{ paddingTop: 1 }}>
+                <Box sx={{ marginBottom: 2 }}>
+                  <Typography gutterBottom={true} variant="body2">
+                    <Trans i18nKey={"signin.projectCode"} />
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    gutterBottom={true}
+                    textAlign={"center"}
+                    sx={{
+                      fontFamily: "monospace",
+                      padding: 1,
+                      borderRadius: 10,
+                      backgroundColor: "#F7EEC0",
+                    }}
+                  >
+                    {`${project.shareName}-${project.sharePassword}`}
+                  </Typography>
+                </Box>
+                <Typography variant="body2">
+                  {t("project.share.dialog.description")}
+                  <a
+                    href={`/shares/${project.id}?p=${project.sharePassword}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {t("project.share.dialog.linkText")}
+                  </a>
+                </Typography>
+                .
+              </Box>
+            )}
+          </>
+        ) : null}
+
+        {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
       && (user && !isAdmin(user)) && project.shared) &&
         <div className={classes.button}>
           <ButtonProgress
@@ -179,85 +188,64 @@ const SideBarComponenent: React.FC<Props> = ({
           </ButtonProgress>
         </div>
       } */}
-      {user && isOwner(project, user) && (
-        <List
-          dense={true}
-          sx={{
-            padding: 0,
-            paddingBottom: 2,
-          }}
-          subheader={
-            <ListSubheader>
-              {t("project.members", { count: members.size })}
-            </ListSubheader>
-          }
-        >
-          {Array.from(members).map((member: Member) => (
-            <ListItem key={member.id}>
-              {/* @ts-ignore */}
-              <ListItemAvatar>
-                <UserAvatar user={member} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={member.username}
-                secondary={member.subtitle}
-              />
-            </ListItem>
-          ))}
-        </List>
-      )}
 
-      {user && isAdmin(user) && (
-        <List
-          dense={true}
-          sx={{
-            padding: 0,
-            paddingBottom: 2,
-          }}
-          subheader={
-            <ListSubheader>
+        {user && isOwner(project, user) && (
+          <>
+            <Typography variant="h6" mb={2}>
               {t("project.members", { count: members.size })}
-            </ListSubheader>
-          }
-        >
-          {Array.from(members).map((member: Member) => (
-            <ListItem key={member.id}>
-              {/* @ts-ignore */}
-              <ListItemAvatar>
-                <UserAvatar user={member} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={member.username}
-                secondary={member.subtitle}
-              />
-              <ListItemText primary={member.email} />
-            </ListItem>
-          ))}
-        </List>
-      )}
+            </Typography>
+            <List
+              dense={true}
+              sx={{
+                width: "100%",
+                maxWidth: 360,
+                bgcolor: "neutral.100",
+                position: "relative",
+                overflow: "auto",
+                borderRadius: 2,
+                minHeight: 300,
+                maxHeight: 300,
+                "& ul": { padding: 0 },
+              }}
+            >
+              {Array.from(members).map((member: Member) => (
+                <ListItem key={member.id}>
+                  <ListItemAvatar>
+                    <UserAvatar username={member.username} userId={member.id} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={member.username}
+                    secondary={member.subtitle}
+                  />
+                  {isAdmin(user) && <ListItemText primary={member.email} />}
+                </ListItem>
+              ))}
+            </List>
+          </>
+        )}
 
-      {((user && isOwner(project, user)) || (user && isAdmin(user))) && (
-        <Box
-          sx={{
-            padding: 2,
-            paddingBottom: 0,
-          }}
-        >
-          <LoadingButton
-            variant="contained"
-            color="secondary"
-            size="small"
-            fullWidth={true}
-            loading={deleteLoading}
-            onClick={() => onClickDelete(project.id)}
+        {((user && isOwner(project, user)) || (user && isAdmin(user))) && (
+          <Box
+            sx={{
+              padding: 2,
+            }}
           >
-            <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
-            {t("deleteAction")}
-          </LoadingButton>
-          {deleteError && <DialogError error={deleteError} />}
-        </Box>
-      )}
-    </>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              size="small"
+              fullWidth={true}
+              loading={deleteLoading}
+              onClick={handleDelete}
+            >
+              <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
+              {t("deleteAction")}
+            </LoadingButton>
+            {deleteError && <DialogError error={deleteError} />}
+          </Box>
+        )}
+      </Box>
+    </Box>
   );
 };
 
