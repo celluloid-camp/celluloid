@@ -24,7 +24,7 @@ interface Props {
   comment: CommentRecord;
   annotation: AnnotationRecord;
   onClickEdit(): void;
-  onClickDelete(
+  onClickDelete?(
     projectId: string,
     annotationId: string,
     comment: CommentRecord
@@ -39,10 +39,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   ) => deleteCommentThunk(projectId, annotationId, comment)(dispatch),
 });
 
-export const CommentContent: React.FC<Props> = connect(
-  null,
-  mapDispatchToProps
-)(({ user, project, comment, annotation, onClickEdit, onClickDelete }) => {
+const CommentContentWrapper: React.FC<Props> = ({
+  user,
+  project,
+  comment,
+  annotation,
+  onClickEdit,
+  onClickDelete,
+}) => {
   const [hovering, setHovering] = useState(false);
 
   const showActions =
@@ -106,6 +110,7 @@ export const CommentContent: React.FC<Props> = connect(
               <IconButton
                 size="small"
                 onClick={() =>
+                  onClickDelete &&
                   onClickDelete(annotation.projectId, annotation.id, comment)
                 }
               >
@@ -117,4 +122,9 @@ export const CommentContent: React.FC<Props> = connect(
       </Grow>
     </Box>
   );
-});
+};
+
+export const CommentContent = connect(
+  null,
+  mapDispatchToProps
+)(CommentContentWrapper);

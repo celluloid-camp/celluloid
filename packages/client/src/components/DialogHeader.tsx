@@ -1,66 +1,23 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, DialogTitle, IconButton, LinearProgress } from "@mui/material";
+import {
+  DialogTitle,
+  DialogTitleProps,
+  IconButton,
+  LinearProgress,
+} from "@mui/material";
 import * as React from "react";
-// const styles = ({ palette, spacing }: Theme) =>
-//   createStyles({
-//     closeIcon: {
-//       position: "absolute",
-//       right: spacing.unit,
-//       top: spacing.unit,
-//     },
-//     progress: {
-//       flexGrow: 1,
-//     },
-//     title: {
-//       backgroundColor: palette.primary.main,
-//       textAlign: "center",
-//     },
-//     titleTypo: {
-//       color: palette.primary.contrastText,
-//     },
-//   });
 
-interface Props {
-  title: string;
-  loading: boolean;
-  children?: React.ReactNode;
-  onClose(): void;
-}
-
-const CustomDialogTitle: React.FC<Props> = ({
-  onClose,
-  title,
-  loading,
-  children,
-}) => (
-  <>
-    <DialogTitle sx={{ backgroundColor: "primary", textAlign: "left" }}>
-      <span>
-        <IconButton onClick={() => onClose()}>
-          <CloseIcon sx={{ color: "white" }} />
-        </IconButton>
-      </span>
-      <span>{title}</span>
-    </DialogTitle>
-    {children}
-    <Box sx={{ flexGrow: 1 }}>
-      <LinearProgress
-        variant="query"
-        sx={{ display: loading ? "block" : "none" }}
-      />
-    </Box>
-  </>
-);
-
-export interface DialogTitleProps {
-  children?: React.ReactNode;
+export type BootstrapDialogTitleProps = DialogTitleProps & {
   loading?: boolean;
   onClose: () => void;
-}
+};
 
-function BootstrapDialogTitle(props: DialogTitleProps) {
-  const { children, onClose, loading, ...other } = props;
-
+const BootstrapDialogTitle: React.FC<BootstrapDialogTitleProps> = ({
+  children,
+  onClose,
+  loading,
+  ...other
+}) => {
   return (
     <>
       <DialogTitle
@@ -89,6 +46,6 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
       />
     </>
   );
-}
+};
 
 export default BootstrapDialogTitle;

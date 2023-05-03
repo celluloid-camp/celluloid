@@ -102,7 +102,7 @@ const SharedDialogContainer: React.FC<Props> = ({
       onClose={() => onCancel()}
     >
       <DialogHeader
-        title={t("shareAction")}
+        title={t("shareAction") || ""}
         onClose={() => onCancel()}
         loading={status === SharingStatus.LOADING}
       />

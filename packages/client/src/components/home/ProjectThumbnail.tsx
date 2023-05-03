@@ -1,20 +1,12 @@
 import { ProjectGraphRecord } from "@celluloid/types";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
   CardMedia,
-  Chip,
-  createMuiTheme,
-  createTheme,
   Grid,
   Grow,
-  Paper,
-  Stack,
   styled,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
 // import PlayIcon from "@mui/icons-material/PlayCircleOutline";
@@ -22,14 +14,12 @@ import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 
 import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
-import { UserAvatar } from "~components/UserAvatar";
-import VisibilityChip from "~components/VisibilityChip";
 // import { connect } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 // import { AnyAction, Dispatch } from "redux";
 import VideoApi from "~services/VideoService";
 
-const StyledBox = styled(Box)(({ theme }) => ({
+const StyledBox = styled(Box)(() => ({
   position: "relative",
   "&::before": {
     content: '""',
@@ -42,18 +32,18 @@ const StyledBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledCardContent = styled(CardContent)(({ theme }) => ({
+const StyledCardContent = styled(CardContent)(() => ({
   "&.MuiCardContent-root:last-child": {
     paddingBottom: "0px",
   },
 }));
 
 interface Props {
-  showPublic: boolean;
+  showPublic?: boolean;
   project: ProjectGraphRecord;
 }
 
-const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
+const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   const query = useQuery({
     queryKey: ["video", project.host, project.videoId],
     queryFn: () => VideoApi.getPeerTubeVideo(project.host, project.videoId),

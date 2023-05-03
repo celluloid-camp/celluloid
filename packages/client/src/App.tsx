@@ -1,6 +1,5 @@
 // import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 // import MomentUtils from "material-ui-pickers/utils/moment-utils";
-import ClickAwayListener from "@mui/base/ClickAwayListener";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
@@ -58,41 +57,33 @@ const Content = () => {
       <ThemeProvider theme={createTheme()}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <ClickAwayListener>
-            <ConfirmProvider>
-              {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
+          <ConfirmProvider>
+            {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
+            <React.Fragment>
               <React.Fragment>
-                <React.Fragment>
-                  <UpdateIndicator />
-                  <BrowserRouter>
-                    <ResetScroll />
-                    <Routes>
-                      <Route
-                        path="/"
-                        element={<Home />}
-                        errorElement={<NotFound />}
-                      />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/legal-notice" element={<LegalNotice />} />
-                      <Route
-                        path="/terms-and-conditions"
-                        element={<TermsAndConditions />}
-                      />
-                      <Route
-                        path="/projects/:projectId"
-                        element={<Project />}
-                      />
-                      <Route
-                        path="/shares/:projectId"
-                        element={<SharePage />}
-                      />
-                    </Routes>
-                  </BrowserRouter>
-                </React.Fragment>
+                <UpdateIndicator />
+                <BrowserRouter>
+                  <ResetScroll />
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={<Home />}
+                      errorElement={<NotFound />}
+                    />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/legal-notice" element={<LegalNotice />} />
+                    <Route
+                      path="/terms-and-conditions"
+                      element={<TermsAndConditions />}
+                    />
+                    <Route path="/projects/:projectId" element={<Project />} />
+                    <Route path="/shares/:projectId" element={<SharePage />} />
+                  </Routes>
+                </BrowserRouter>
               </React.Fragment>
-              {/* </MuiPickersUtilsProvider> */}
-            </ConfirmProvider>
-          </ClickAwayListener>
+            </React.Fragment>
+            {/* </MuiPickersUtilsProvider> */}
+          </ConfirmProvider>
         </QueryClientProvider>
       </ThemeProvider>
       {/* </ConnectedRouter> */}

@@ -2,15 +2,12 @@ import { ProjectGraphRecord, TagData, UserRecord } from "@celluloid/types";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
-  Chip,
-  CircularProgress,
   Container,
   Divider,
   Fade,
   IconButton,
   InputBase,
   Paper,
-  Toolbar,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -83,10 +80,9 @@ const ProjectGrid: React.FC<Props> = ({
   loadTags,
   user,
   projects,
-  tags,
   error,
 }) => {
-  const [selectedTags, setSelectedTags] = useState<TagData[]>([]);
+  const [selectedTags] = useState<TagData[]>([]);
   const { t } = useTranslation();
 
   const load = () => {
@@ -123,23 +119,23 @@ const ProjectGrid: React.FC<Props> = ({
 
   const publicProjects = R.difference(sorted, userProjects);
 
-  const isTagSelected = (tag: TagData) =>
-    R.find((elem: TagData) => R.equals(elem, tag))(selectedTags);
+  // const isTagSelected = (tag: TagData) =>
+  //   R.find((elem: TagData) => R.equals(elem, tag))(selectedTags);
 
-  const removeTag = (tag: TagData) =>
-    R.filter((elem: TagData) => !R.equals(elem, tag))(selectedTags);
+  // const removeTag = (tag: TagData) =>
+  //   R.filter((elem: TagData) => !R.equals(elem, tag))(selectedTags);
 
-  const onTagSelected = (tag: TagData) => {
-    setSelectedTags(
-      isTagSelected(tag) ? removeTag(tag) : [...selectedTags, tag]
-    );
+  // const onTagSelected = (tag: TagData) => {
+  //   setSelectedTags(
+  //     isTagSelected(tag) ? removeTag(tag) : [...selectedTags, tag]
+  //   );
 
-    // this.setState((state) => ({
-    //   selectedTags: isTagSelected(tag)
-    //     ? removeTag(tag)
-    //     : [...state.selectedTags, tag],
-    // }));
-  };
+  //   // this.setState((state) => ({
+  //   //   selectedTags: isTagSelected(tag)
+  //   //     ? removeTag(tag)
+  //   //     : [...state.selectedTags, tag],
+  //   // }));
+  // };
 
   const noProjects =
     !error && publicProjects.length === 0 && userProjects.length === 0;

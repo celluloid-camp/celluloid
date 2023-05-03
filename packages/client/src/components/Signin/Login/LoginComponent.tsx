@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
 
 import DialogAltButtons from "~components/DialogAltButtons";
-import DialogButtons from "~components/DialogButtons";
 import SigninError from "~components/DialogError";
 import { Action } from "~types/ActionTypes";
 

@@ -7,7 +7,7 @@ import {
 import getUrls from "get-urls";
 import linkifyUrls from "linkify-urls";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
@@ -16,9 +16,8 @@ import {
   triggerEditAnnotation,
   triggerFocusAnnotation,
 } from "~actions/AnnotationsActions";
-import * as UnfurlService from "~services/UnfurlService";
+// import * as UnfurlService from "~services/UnfurlService";
 import { Action, AsyncAction } from "~types/ActionTypes";
-import { AppState } from "~types/StateTypes";
 import { canEditAnnotation } from "~utils/AnnotationUtils";
 import { formatDuration } from "~utils/DurationUtils";
 import { isOwner } from "~utils/ProjectUtils";
@@ -80,7 +79,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 const AnnotationContentWrapper: React.FC<Props> = ({
   user,
-  error,
   project,
   annotation,
   focused,
@@ -88,31 +86,31 @@ const AnnotationContentWrapper: React.FC<Props> = ({
   onClickDelete,
   onFocus,
 }) => {
-  const [state, setState] = useState<State>(parseText(annotation.text));
+  const [state] = useState<State>(parseText(annotation.text));
 
-  const { hovering, richText, loading, previews } = state;
+  const { richText, loading, previews } = state;
 
   const formattedStart = formatDuration(annotation.startTime);
   const formattedStop = formatDuration(annotation.stopTime);
 
-  const loadPreviews = useCallback(() => {
-    Promise.all(
-      previews.map((preview) =>
-        UnfurlService.unfurl(preview.url).then((data?: UnfurlData) => {
-          return {
-            url: preview.url,
-            data,
-          };
-        })
-      )
-    ).then((previews) => {
-      setState({
-        ...state,
-        previews,
-        loading: false,
-      });
-    });
-  }, [previews, state]);
+  // const loadPreviews = useCallback(() => {
+  //   Promise.all(
+  //     previews.map((preview) =>
+  //       UnfurlService.unfurl(preview.url).then((data?: UnfurlData) => {
+  //         return {
+  //           url: preview.url,
+  //           data,
+  //         };
+  //       })
+  //     )
+  //   ).then((previews) => {
+  //     setState({
+  //       ...state,
+  //       previews,
+  //       loading: false,
+  //     });
+  //   });
+  // }, [previews, state]);
 
   // useEffect(() => {
   //   if (annotation.text != state.text) {

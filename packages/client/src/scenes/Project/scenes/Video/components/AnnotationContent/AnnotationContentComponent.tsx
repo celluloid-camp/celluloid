@@ -8,7 +8,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Box, Collapse, Fade, Grow, IconButton } from "@mui/material";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import * as React from "react";
 import { useState } from "react";
 import { TransitionGroup } from "react-transition-group";
 

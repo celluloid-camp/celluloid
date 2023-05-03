@@ -5,18 +5,15 @@ import {
   Button,
   ClickAwayListener,
   Grow,
-  Link,
   MenuItem,
   MenuList,
   Paper,
   Popper,
   Toolbar,
-  Typography,
 } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
 import { AnyAction, Dispatch } from "redux";
 
 import { closeSignin, openLogin, openSignup } from "~actions/Signin";

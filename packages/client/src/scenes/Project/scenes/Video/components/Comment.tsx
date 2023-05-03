@@ -40,43 +40,38 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(triggerEditComment(comment)),
 });
 
-const Comment: React.FC<Props> = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  ({
-    comment,
-    user,
-    annotation,
-    project,
-    onClickCancel,
-    editing,
-    focused,
-    onClickEdit,
-  }) => {
-    const edit = editing && focused && focused.id === comment.id;
+const Comment: React.FC<Props> = ({
+  comment,
+  user,
+  annotation,
+  project,
+  onClickCancel,
+  editing,
+  focused,
+  onClickEdit,
+}) => {
+  const edit = editing && focused && focused.id === comment.id;
 
-    if (edit && user) {
-      return (
-        <CommentEditor
-          user={user}
-          annotation={annotation}
-          comment={comment}
-          onClickCancel={onClickCancel}
-        />
-      );
-    } else {
-      return (
-        <CommentContent
-          user={user}
-          project={project}
-          annotation={annotation}
-          comment={comment}
-          onClickEdit={() => onClickEdit(comment)}
-        />
-      );
-    }
+  if (edit && user) {
+    return (
+      <CommentEditor
+        user={user}
+        annotation={annotation}
+        comment={comment}
+        onClickCancel={onClickCancel}
+      />
+    );
+  } else {
+    return (
+      <CommentContent
+        user={user}
+        project={project}
+        annotation={annotation}
+        comment={comment}
+        onClickEdit={() => onClickEdit(comment)}
+      />
+    );
   }
-);
+};
 
-export default Comment;
+export default connect(mapStateToProps, mapDispatchToProps)(Comment);

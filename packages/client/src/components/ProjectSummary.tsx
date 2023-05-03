@@ -1,12 +1,5 @@
 import { ProjectGraphRecord } from "@celluloid/types";
-import {
-  Box,
-  Chip,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 

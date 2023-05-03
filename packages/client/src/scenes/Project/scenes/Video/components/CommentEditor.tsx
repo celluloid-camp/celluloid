@@ -1,5 +1,4 @@
 import { AnnotationRecord, CommentRecord, UserRecord } from "@celluloid/types";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckIcon from "@mui/icons-material/Check";
 import CancelIcon from "@mui/icons-material/Clear";
 import SendIcon from "@mui/icons-material/Send";

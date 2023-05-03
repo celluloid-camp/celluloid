@@ -224,7 +224,7 @@ const NewProjectContainer: React.FC<Props> = ({
         scroll="body"
       >
         <DialogHeader
-          title={t("project.createTitle")}
+          title={t("project.createTitle") || ""}
           onClose={() => onCancel()}
           loading={loading}
         >

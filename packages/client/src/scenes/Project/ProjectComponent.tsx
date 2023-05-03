@@ -1,5 +1,5 @@
 import { ProjectGraphRecord } from "@celluloid/types";
-import { Box, Container, Grid, Paper } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 
 import ProjectSummary from "~components/ProjectSummary";
 
