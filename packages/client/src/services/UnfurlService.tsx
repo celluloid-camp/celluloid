@@ -1,21 +1,24 @@
-import * as queryString from 'query-string';
+import * as queryString from "query-string";
 
 export function unfurl(url: string) {
   const headers = {
-    Accepts: 'application/json',
+    Accepts: "application/json",
   };
 
   return fetch(`/api/unfurl?${queryString.stringify({ url })}`, {
-    method: 'GET',
+    method: "GET",
     headers: new Headers(headers),
-    credentials: 'include',
-  }).then(response => {
-    if (response.status === 200) {
-      return response.json();
-    } else {
+    credentials: "include",
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      } else {
+        return null;
+      }
+    })
+    .catch((e) => {
+      console.error(e);
       return null;
-    }
-  }).catch(() => {
-    return null;
-  });
+    });
 }

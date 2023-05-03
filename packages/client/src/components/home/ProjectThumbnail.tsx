@@ -7,11 +7,14 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  createMuiTheme,
+  createTheme,
   Grid,
   Grow,
   Paper,
   Stack,
   styled,
+  ThemeProvider,
   Typography,
 } from "@mui/material";
 // import PlayIcon from "@mui/icons-material/PlayCircleOutline";
@@ -39,94 +42,11 @@ const StyledBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-// const styles = ({ palette, spacing, typography }: Theme) =>
-//   createStyles({
-//     card: {
-//       height: "100%",
-//       "& a:any-link": {
-//         textDecoration: "none",
-//       },
-//       transition: "all 0.2s ease",
-//       cursor: "pointer",
-//     },
-//     image: {
-//       height: spacing.unit * 27,
-//       textAlign: "center",
-//       padding: spacing.unit * 6,
-//       position: "relative",
-//     },
-//     visibilityContainer: {
-//       display: "flex",
-//       flexDirection: "column",
-//       justifyContent: "flex-start",
-//       alignItems: "flex-end",
-//       position: "absolute",
-//       right: 0,
-//       top: 0,
-//       padding: spacing.unit,
-//     },
-//     visibilityChip: {
-//       backgroundColor: palette.secondary.dark,
-//       color: "white",
-//       margin: spacing.unit,
-//     },
-//     tagList: {
-//       display: "flex",
-//       justifyContent: "flex-start",
-//       flexWrap: "wrap",
-//       paddingTop: spacing.unit * 3,
-//     },
-//     tag: {
-//       margin: spacing.unit / 2,
-//     },
-//     iconWrapper: {
-//       position: "relative",
-//       top: 0,
-//       left: 0,
-//       right: 0,
-//     },
-//     icon: {
-//       width: spacing.unit * 7,
-//       height: spacing.unit * 7,
-//       color: palette.grey[100],
-//     },
-//     title: {
-//       position: "relative",
-//       color: palette.grey[100],
-//       lineHeight: 1.25,
-//       textAlign: "left",
-//     },
-//     titleWrapper: {
-//       display: "flex",
-//       flexDirection: "column",
-//       justifyContent: "center",
-//       height: spacing.unit * 9,
-//       padding: spacing.unit * 2,
-//       position: "absolute",
-//       zIndex: 3,
-//       bottom: 0,
-//       right: 0,
-//       left: 0,
-//       backgroundColor: "rgba(0, 0, 0, 0.7)",
-//     },
-//     objective: {
-//       height: spacing.unit * 2,
-//       ...typography.subtitle1,
-//       fontWeight: 500,
-//       color: palette.grey[800],
-//       lineHeight: 1.25,
-//       textAlign: "left",
-//     },
-//     username: {
-//       paddingTop: spacing.unit * 3,
-//       color: palette.grey[700],
-//       textAlign: "left",
-//     },
-//     publishedAt: {
-//       color: palette.grey[600],
-//       textAlign: "left",
-//     },
-//   });
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  "&.MuiCardContent-root:last-child": {
+    paddingBottom: "0px",
+  },
+}));
 
 interface Props {
   showPublic: boolean;
@@ -145,6 +65,7 @@ const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
   };
 
   return (
+    // <ThemeProvider theme={modalTheme}>
     <Grow
       style={{ transformOrigin: "0 0 0" }}
       in={true}
@@ -167,7 +88,7 @@ const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
             height="194"
             image={`https://${project.host}${query.data?.thumbnailPath}`}
           />
-          <Box
+          {/* <Box
             sx={{
               position: "absolute",
               top: 0,
@@ -178,10 +99,12 @@ const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
             <PlayCircleIcon
               sx={{ color: "white", fontSize: 100, opacity: 0.8 }}
             />
-          </Box>
+          </Box> */}
         </StyledBox>
 
-        <CardContent sx={{ paddingX: 1, paddingY: 2 }}>
+        <StyledCardContent
+          sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}
+        >
           <Grid container>
             <Grid item={true} xs={12}>
               <Typography variant="h6" noWrap>
@@ -206,9 +129,10 @@ const ProjectThumbnail: React.FC<Props> = ({ project, showPublic }) => {
               </Stack>
             </Grid> */}
           </Grid>
-        </CardContent>
+        </StyledCardContent>
       </Card>
     </Grow>
+    // </ThemeProvider>
   );
 };
 

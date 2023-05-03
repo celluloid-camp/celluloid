@@ -10,7 +10,7 @@ type UserAvatarProps = AvatarProps & {
 };
 
 export const UserAvatar: React.FC<UserAvatarProps> = React.memo(
-  ({ userId, username, small }) => (
+  ({ userId, username, small, ...props }) => (
     <Avatar
       sx={
         small
@@ -18,13 +18,16 @@ export const UserAvatar: React.FC<UserAvatarProps> = React.memo(
               height: 24,
               width: 24,
               backgroundColor: getUserColor(userId),
+              ...props.sx,
             }
           : {
               height: 40,
               width: 40,
               backgroundColor: getUserColor(userId),
+              ...props.sx,
             }
       }
+      {...props}
     >
       {getUserInitials(username)}
     </Avatar>

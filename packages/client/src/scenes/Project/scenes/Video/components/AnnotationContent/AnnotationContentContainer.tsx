@@ -7,6 +7,7 @@ import {
 import getUrls from "get-urls";
 import linkifyUrls from "linkify-urls";
 import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
@@ -63,15 +64,10 @@ function parseText(text: string): State {
     text,
     previews,
     richText,
-    loading: true,
+    loading: false,
     hovering: false,
   } as State;
 }
-
-const mapStateToProps = (state: AppState) => ({
-  user: state.user,
-  error: state.project.video.annotationError,
-});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   onClickEdit: (record: AnnotationRecord) =>
@@ -82,94 +78,80 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(triggerFocusAnnotation(record)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  class extends React.PureComponent<Props, State> {
-    state = parseText(this.props.annotation.text);
+const AnnotationContentWrapper: React.FC<Props> = ({
+  user,
+  error,
+  project,
+  annotation,
+  focused,
+  onClickEdit,
+  onClickDelete,
+  onFocus,
+}) => {
+  const [state, setState] = useState<State>(parseText(annotation.text));
 
-    static getDerivedStateFromProps({ annotation }: Props, state: State) {
-      if (annotation.text !== state.text) {
-        return parseText(annotation.text);
-      }
-      return null;
-    }
+  const { hovering, richText, loading, previews } = state;
 
-    loadPreviews() {
-      Promise.all(
-        this.state.previews.map((preview) =>
-          UnfurlService.unfurl(preview.url).then((data?: UnfurlData) => {
-            return {
-              url: preview.url,
-              data,
-            };
-          })
-        )
-      ).then((previews) => {
-        this.setState({
-          previews,
-          loading: false,
-        });
+  const formattedStart = formatDuration(annotation.startTime);
+  const formattedStop = formatDuration(annotation.stopTime);
+
+  const loadPreviews = useCallback(() => {
+    Promise.all(
+      previews.map((preview) =>
+        UnfurlService.unfurl(preview.url).then((data?: UnfurlData) => {
+          return {
+            url: preview.url,
+            data,
+          };
+        })
+      )
+    ).then((previews) => {
+      setState({
+        ...state,
+        previews,
+        loading: false,
       });
-    }
+    });
+  }, [previews, state]);
 
-    componentDidUpdate({ annotation }: Props) {
-      if (this.props.annotation.text !== annotation.text) {
-        this.loadPreviews();
-      }
-    }
+  // useEffect(() => {
+  //   if (annotation.text != state.text) {
+  //     setState(parseText(annotation.text));
+  //     loadPreviews();
+  //   }
+  // }, [annotation, loadPreviews, state.text]);
 
-    componentDidMount() {
-      this.loadPreviews();
-    }
+  // useEffect(() => {
+  //   const load = async () => await loadPreviews();
+  //   load();
+  // }, []);
 
-    render() {
-      const {
-        user,
-        project,
-        annotation,
-        focused,
-        onFocus,
-        onClickDelete,
-        onClickEdit,
-      } = this.props;
+  const canEdit = useMemo(
+    () =>
+      user != null &&
+      (isOwner(project, user) || canEditAnnotation(annotation, user)),
+    [user, project, annotation]
+  );
 
-      const { hovering, richText, loading, previews } = this.state;
+  return (
+    <AnnotationContentComponent
+      annotation={annotation}
+      project={project}
+      formattedStartTime={formattedStart}
+      formattedStopTime={formattedStop}
+      richText={richText}
+      previews={previews}
+      loading={loading}
+      focused={focused}
+      canEdit={canEdit}
+      onFocus={() => onFocus(annotation)}
+      onClickDelete={() => onClickDelete(project.id, annotation)}
+      onClickEdit={() => onClickEdit(annotation)}
+    />
+  );
+};
 
-      const formattedStart = formatDuration(annotation.startTime);
-      const formattedStop = formatDuration(annotation.stopTime);
-
-      const onHover = (value: boolean) => {
-        this.setState({
-          hovering: value,
-        });
-      };
-
-      const showActions =
-        (user &&
-          (focused || hovering) &&
-          (isOwner(project, user) || canEditAnnotation(annotation, user))) ||
-        false;
-
-      return (
-        <AnnotationContentComponent
-          annotation={annotation}
-          project={project}
-          formattedStartTime={formattedStart}
-          formattedStopTime={formattedStop}
-          richText={richText}
-          previews={previews}
-          loading={loading}
-          focused={focused}
-          hovering={hovering}
-          showActions={showActions}
-          onHover={onHover}
-          onFocus={() => onFocus(annotation)}
-          onClickDelete={() => onClickDelete(project.id, annotation)}
-          onClickEdit={() => onClickEdit(annotation)}
-        />
-      );
-    }
-  }
-);
+export const AnnotationContent = connect(
+  null,
+  mapDispatchToProps
+)(AnnotationContentWrapper);

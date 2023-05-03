@@ -111,7 +111,7 @@ const HomeContainer: React.FC<Props> = ({
               <Stack
                 spacing={4}
                 paddingY={5}
-                marginX={20}
+                marginX={10}
                 alignItems={"center"}
               >
                 <Paper

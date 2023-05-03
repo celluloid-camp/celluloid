@@ -42,6 +42,7 @@ const CommentList: React.FC<Props> = ({ annotation, user, project }: Props) => {
   return (
     <Box
       sx={{
+        marginTop: 1,
         paddingLeft: 8,
         paddingRight: 7,
       }}
@@ -52,6 +53,7 @@ const CommentList: React.FC<Props> = ({ annotation, user, project }: Props) => {
           color="disabled"
           sx={{
             paddingLeft: 2,
+            marginBottom: 1,
           }}
         >
           {t("annotation.commentLabel", { count: annotation.comments.length })}

@@ -214,7 +214,7 @@ const ProjectGrid: React.FC<Props> = ({
                   {t("home.myProjects")}
                 </Typography>
               </Fade>
-              <Grid container={true} spacing={10} direction="row">
+              <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
                   {userProjects.map((project: ProjectGraphRecord) => (
                     <Grid xs={12} sm={6} lg={4} xl={3} item>
@@ -244,7 +244,7 @@ const ProjectGrid: React.FC<Props> = ({
                   {t("home.publicProjects")}
                 </Typography>
               </Fade>
-              <Grid container={true} spacing={40} direction="row">
+              <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
                   {publicProjects.map((project: ProjectGraphRecord) => (
                     <Grid xs={12} sm={6} lg={4} xl={3} item>
