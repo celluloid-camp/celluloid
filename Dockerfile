@@ -22,6 +22,7 @@ RUN yarn install && yarn build
 ENV PORT=3000
 EXPOSE $PORT
 
+COPY ./scripts/docker-bootstrap.sh ./docker-bootstrap.sh
 
-CMD [ "yarn", "workspace", "@celluloid/server", "run", "start"]
+CMD [ "./docker-bootstrap.sh", "server"]
 

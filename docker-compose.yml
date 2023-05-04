@@ -18,7 +18,7 @@ services:
       POSTGRES_MULTIPLE_DATABASES: celluloid, keycloak
     volumes:
       - ./.data:/var/lib/postgresql/data
-      - ./scripts/pg-init-scripts:/docker-entrypoint-initdb.d
+      - ./scripts/pg-init-scripts.sh:/docker-entrypoint-initdb.d/init.sh
     ports:
       - "5432:5432"
     restart: unless-stopped
