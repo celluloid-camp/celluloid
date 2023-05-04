@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { connect } from "react-redux";
+import { Outlet } from "react-router-dom";
 import { AnyAction, Dispatch } from "redux";
 
 import {
@@ -22,17 +23,19 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-const SharedLayoutInner: React.FC<Props> = ({
-  children,
-  onClickLogout,
-  loadUser,
-}) => {
+const SharedLayoutInner: React.FC<Props> = ({ onClickLogout, loadUser }) => {
   useEffect(() => {
     loadUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <AppBarMenu onClickLogout={onClickLogout}>{children}</AppBarMenu>;
+  return (
+    <>
+      <AppBarMenu onClickLogout={onClickLogout}>
+        <Outlet />
+      </AppBarMenu>
+    </>
+  );
 };
 
 export const SharedLayout = connect(

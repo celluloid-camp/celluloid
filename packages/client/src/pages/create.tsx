@@ -26,7 +26,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
 
-import { SharedLayout } from "~components/SharedLayout";
 import { StyledTitle } from "~components/typography";
 import { ERR_ALREADY_EXISTING_PROJECT } from "~services/Constants";
 import Projects from "~services/ProjectService";
@@ -394,22 +393,20 @@ export const CreateProjectPage: React.FC = () => {
   };
 
   return (
-    <SharedLayout>
-      <Box sx={{ paddingX: 5, paddingY: 1, backgroundColor: "brand.orange" }}>
-        <Container sx={{ height: "100vh" }} maxWidth="md">
-          <Paper sx={{ marginTop: 10, padding: 5 }}>
-            <StyledTitle gutterBottom={true} variant="h4" sx={{ marginTop: 1 }}>
-              <Trans i18nKey="project.createTitle" />
-            </StyledTitle>
+    <Box sx={{ paddingX: 5, paddingY: 1, backgroundColor: "brand.orange" }}>
+      <Container sx={{ height: "100vh" }} maxWidth="md">
+        <Paper sx={{ marginTop: 10, padding: 5 }}>
+          <StyledTitle gutterBottom={true} variant="h4" sx={{ marginTop: 1 }}>
+            <Trans i18nKey="project.createTitle" />
+          </StyledTitle>
 
-            <PeerTubeVideoUrlForm onLoaded={handleVideoInfoLoaded} />
+          <PeerTubeVideoUrlForm onLoaded={handleVideoInfoLoaded} />
 
-            {videoInfo ? <PeerTubeVideoSnapshot video={videoInfo} /> : null}
+          {videoInfo ? <PeerTubeVideoSnapshot video={videoInfo} /> : null}
 
-            {videoInfo ? <CreateProjectForm video={videoInfo} /> : null}
-          </Paper>
-        </Container>
-      </Box>
-    </SharedLayout>
+          {videoInfo ? <CreateProjectForm video={videoInfo} /> : null}
+        </Paper>
+      </Container>
+    </Box>
   );
 };

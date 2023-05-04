@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { openStudentSignup } from "~actions/Signin";
 import ProjectGrid from "~components/home/ProjectGrid";
 import { LogoSign } from "~components/LogoSign";
-import { SharedLayout } from "~components/SharedLayout";
 import { StudentsIcon } from "~components/StudentsIcon";
 import { TeacherIcon } from "~components/TeacherIcon";
 // import { useMe } from "~hooks/use-user";
@@ -24,7 +23,7 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <SharedLayout>
+    <React.Fragment>
       <Box sx={{ backgroundColor: "brand.green" }}>
         <Container maxWidth="lg">
           <Grid container={true}>
@@ -179,6 +178,6 @@ export const HomePage: React.FC = () => {
       </Box>
 
       <ProjectGrid />
-    </SharedLayout>
+    </React.Fragment>
   );
 };

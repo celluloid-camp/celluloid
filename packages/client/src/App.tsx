@@ -10,6 +10,8 @@ import { initReactI18next } from "react-i18next";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import { SharedLayout } from "~components/SharedLayout";
+
 import ResetScroll from "./components/ResetScroll";
 import UpdateIndicator from "./components/UpdateIndicator";
 // import { ConnectedRouter } from "connected-react-router";
@@ -19,7 +21,6 @@ import { About } from "./pages/about";
 import { CreateProjectPage } from "./pages/create";
 import { HomePage } from "./pages/home";
 import LegalNotice from "./pages/legal";
-import { NotFound } from "./pages/NotFound";
 import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
 import Project from "./scenes/Project";
@@ -64,19 +65,19 @@ const Content = () => {
                 <BrowserRouter>
                   <ResetScroll />
                   <Routes>
-                    <Route
-                      path="/"
-                      element={<HomePage />}
-                      errorElement={<NotFound />}
-                    ></Route>
-                    <Route path="/create" element={<CreateProjectPage />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/legal-notice" element={<LegalNotice />} />
-                    <Route
-                      path="/terms-and-conditions"
-                      element={<TermsAndConditions />}
-                    />
-                    <Route path="/projects/:projectId" element={<Project />} />
+                    <Route path="/" element={<SharedLayout />}>
+                      <Route index element={<HomePage />} />
+                      <Route path="create" element={<CreateProjectPage />} />
+                      <Route path="about" element={<About />} />
+                      <Route path="legal-notice" element={<LegalNotice />} />
+                      <Route
+                        path="terms-and-conditions"
+                        element={<TermsAndConditions />}
+                      />
+                      <Route path="projects/:projectId" element={<Project />} />
+                      <Route path="shares/:projectId" element={<SharePage />} />
+                      {/* <Route path="*" element={<NotFound />} /> */}
+                    </Route>
                     <Route path="/shares/:projectId" element={<SharePage />} />
                   </Routes>
                 </BrowserRouter>
