@@ -22,6 +22,7 @@ import { useDidUpdate } from "rooks";
 
 import { listProjectsThunk } from "~actions/ProjectActions";
 import { listTagsThunk } from "~actions/TagActions";
+import { StyledTitle } from "~components/typography";
 import { AsyncAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
@@ -30,29 +31,6 @@ import ProjectThumbnail from "./ProjectThumbnail";
 
 const projectMatchesTag = (project: ProjectGraphRecord) => (tag: TagData) =>
   !!R.find((elem: TagData) => R.equals(elem, tag))(project.tags);
-
-// const styles = (theme: Theme) =>
-//   createStyles({
-//     grid: {
-//       paddingLeft: (theme.spacing.unit * 5) / 2,
-//       paddingRight: (theme.spacing.unit * 5) / 2,
-//     },
-//     tags: {
-//       paddingBottom: theme.spacing.unit * 2,
-//     },
-//     sectionTitle: {
-//       paddingTop: theme.spacing.unit * 4,
-//       paddingBottom: theme.spacing.unit,
-//     },
-//     noProjects: {
-//       fontWeight: "bold",
-//       color: theme.palette.grey[300],
-//     },
-//     error: {
-//       fontWeight: "bold",
-//       color: theme.palette.error.light,
-//     },
-//   });
 
 interface Props {
   user?: UserRecord;
@@ -143,31 +121,6 @@ const ProjectGrid: React.FC<Props> = ({
   return (
     <Box sx={{ padding: 5, backgroundColor: "brand.orange" }}>
       <Container maxWidth="lg">
-        {/* <Toolbar>
-        <Box sx={{ paddingBottom: 2 }}>
-          {tags.map((tag) => (
-            <Chip
-              onClick={() => onTagSelected(tag)}
-              onDelete={
-                isTagSelected(tag) ? () => onTagSelected(tag) : undefined
-              }
-              key={tag.id}
-              label={tag.name}
-              style={{
-                margin: 4,
-              }}
-            />
-          ))}
-        </Box>
-      </Toolbar>
-      <Toolbar>
-        <TagSearchBox
-          prefix={t("tagSearch.prefix") || ""}
-          onTagSelected={onTagSelected}
-          label={t("home.searchProject")}
-        />
-      </Toolbar> */}
-
         <Paper
           component="form"
           sx={{
@@ -198,17 +151,9 @@ const ProjectGrid: React.FC<Props> = ({
           {userProjects.length > 0 && (
             <>
               <Fade in={userProjects.length > 0} appear={true}>
-                <Typography
-                  gutterBottom={true}
-                  variant="h4"
-                  fontFamily={"abril_fatfaceregular"}
-                  sx={{
-                    pt: 4,
-                    pb: 1,
-                  }}
-                >
+                <StyledTitle gutterBottom={true} variant="h4">
                   {t("home.myProjects")}
-                </Typography>
+                </StyledTitle>
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
@@ -228,17 +173,13 @@ const ProjectGrid: React.FC<Props> = ({
           {publicProjects.length > 0 && (
             <>
               <Fade in={publicProjects.length > 0} appear={true}>
-                <Typography
+                <StyledTitle
                   gutterBottom={true}
-                  color="primary"
+                  fontFamily={"abril_fatfaceregular"}
                   variant="h4"
-                  sx={{
-                    pt: 4,
-                    pb: 1,
-                  }}
                 >
                   {t("home.publicProjects")}
-                </Typography>
+                </StyledTitle>
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>

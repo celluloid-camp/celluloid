@@ -1,5 +1,6 @@
 // import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 // import MomentUtils from "material-ui-pickers/utils/moment-utils";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
@@ -9,25 +10,23 @@ import { initReactI18next } from "react-i18next";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { About } from "./components/About";
-import LegalNotice from "./components/LegalNotice";
-import NotFound from "./components/NotFound";
 import ResetScroll from "./components/ResetScroll";
-import TermsAndConditions from "./components/TermsAndConditions";
 import UpdateIndicator from "./components/UpdateIndicator";
 // import { ConnectedRouter } from "connected-react-router";
 import en from "./locales/en/common.json";
 import fr from "./locales/fr/common.json";
-import Home from "./scenes/Home";
+import { About } from "./pages/about";
+import { CreateProjectPage } from "./pages/create";
+import { HomePage } from "./pages/home";
+import LegalNotice from "./pages/legal";
+import { NotFound } from "./pages/NotFound";
+import { SharePage } from "./pages/share";
+import { TermsAndConditions } from "./pages/terms";
 import Project from "./scenes/Project";
 import createAppStore from "./store";
+import { createTheme } from "./theme";
 
 const queryClient = new QueryClient();
-
-import { CssBaseline, ThemeProvider } from "@mui/material";
-
-import { SharePage } from "./pages/share";
-import { createTheme } from "./theme";
 
 i18next
   .use(initReactI18next)
@@ -67,9 +66,10 @@ const Content = () => {
                   <Routes>
                     <Route
                       path="/"
-                      element={<Home />}
+                      element={<HomePage />}
                       errorElement={<NotFound />}
-                    />
+                    ></Route>
+                    <Route path="/create" element={<CreateProjectPage />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/legal-notice" element={<LegalNotice />} />
                     <Route

@@ -14,14 +14,11 @@ import {
   InputAdornment,
   Typography,
 } from "@mui/material";
-import { Range } from "rc-slider";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import caretStart from "~images/caret-start.png";
-import caretStop from "~images/caret-stop.png";
+import { StyledRange } from "~components/slider/range";
 import { formatDuration } from "~utils/DurationUtils";
-import { sliderRailStyle, sliderTrackStyle } from "~utils/SliderUtils";
 
 import TransparentInput from "../TransparentInput";
 
@@ -50,7 +47,7 @@ const TimingControl: React.FC<TimingControlProps> = ({
   position,
   onForward,
 }) => (
-  <>
+  <Box>
     <IconButton onClick={onBack} color="secondary">
       <ArrowLeftIcon />
     </IconButton>
@@ -59,7 +56,7 @@ const TimingControl: React.FC<TimingControlProps> = ({
     <IconButton onClick={onForward} color="secondary">
       <ArrowRightIcon />
     </IconButton>
-  </>
+  </Box>
 );
 
 const AnnotationEditorComponent: React.FC<Props> = ({
@@ -76,15 +73,6 @@ const AnnotationEditorComponent: React.FC<Props> = ({
   onClickCancel,
 }: Props) => {
   const { t } = useTranslation();
-
-  const handleStyles = {
-    border: 0,
-    borderRadius: 0,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    backgroundSize: "cover",
-    width: 12,
-    height: 12,
-  };
 
   return (
     <ClickAwayListener onClickAway={onClickCancel}>
@@ -126,8 +114,8 @@ const AnnotationEditorComponent: React.FC<Props> = ({
               }
               position={startTime}
             />
-            <div style={{ padding: 8, flexGrow: 1 }}>
-              <Range
+            <Box display={"flex"} flex={1} paddingY={4} paddingX={2}>
+              <StyledRange
                 min={0}
                 max={duration}
                 value={[startTime, stopTime]}
@@ -145,25 +133,9 @@ const AnnotationEditorComponent: React.FC<Props> = ({
                     onTimingChange(values[1], false, true);
                   }
                 }}
-                trackStyle={sliderTrackStyle}
-                railStyle={sliderRailStyle}
-                handleStyle={[
-                  {
-                    ...handleStyles,
-                    marginTop: -11,
-                    marginLeft: -5,
-                    backgroundImage: `url(${caretStart})`,
-                  },
-                  {
-                    ...handleStyles,
-                    marginTop: 3,
-                    marginLeft: -6,
-                    backgroundImage: `url(${caretStop})`,
-                  },
-                ]}
                 allowCross={false}
               />
-            </div>
+            </Box>
             <TimingControl
               onBack={() =>
                 onTimingChange(Math.max(startTime, stopTime - 1), false, true)

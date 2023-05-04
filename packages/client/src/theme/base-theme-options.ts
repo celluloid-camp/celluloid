@@ -151,6 +151,10 @@ export const baseThemeOptions: ThemeOptions = {
           width: '100%',
           zIndex: 2000
         }
+        input:-webkit-autofill,
+        input:-webkit-autofill:focus {
+          transition: background-color 600000s 0s, color 600000s 0s;
+        }
         `,
     },
     MuiDrawer: {},

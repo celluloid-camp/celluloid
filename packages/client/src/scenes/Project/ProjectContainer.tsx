@@ -6,7 +6,7 @@ import { Dispatch } from "redux";
 import { useDidUpdate } from "rooks";
 
 import { clearProject, loadProjectThunk } from "~actions/ProjectActions";
-import { SharedLayout } from "~scenes/Menu";
+import { SharedLayout } from "~components/SharedLayout";
 import { AsyncAction, EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 
@@ -49,7 +49,7 @@ const ProjectContainer: React.FC<Props> = ({ user, loadProject, project }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if(!project) return null;
+  if (!project) return null;
 
   return (
     <SharedLayout>

@@ -6,72 +6,11 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
 
 import LoadingBig from "~components/LoadingBig";
-import NotFound from "~components/NotFound";
 import ProjectSummary from "~components/ProjectSummary";
 import { ShareCredentials } from "~components/ShareCredentials";
 import ProjectService from "~services/ProjectService";
 
-// const styles = (theme: Theme) =>
-//   createStyles({
-//     step: {
-//       "&:last-child $stepSeparator": {
-//         display: "none",
-//       },
-//       "& > div:first-child": {
-//         position: "static",
-//         height: 0,
-//       },
-//       "& > div:last-child": {
-//         marginLeft: theme.spacing.unit * 5,
-//         paddingLeft: theme.spacing.unit * 2.5,
-//       },
-//       position: "relative",
-//       minHeight: theme.spacing.unit * 5,
-//     },
-//     stepsWrapper: {
-//       paddding: theme.spacing.unit * 2.5,
-//     },
-//     stepSeparator: {
-//       left: theme.spacing.unit * 2.5,
-//       bottom: theme.spacing.unit,
-//       top: theme.spacing.unit * 6,
-//       position: "absolute",
-//       border: `1px solid ${theme.palette.divider}`,
-//     },
-//     stepNumber: {
-//       ...theme.typography.subtitle1,
-//       border: `1px solid ${theme.palette.divider}`,
-//       lineHeight: `${theme.spacing.unit * 5}px`,
-//       borderRadius: theme.spacing.unit * 2.5,
-//       position: "relative",
-//       textAlign: "center",
-//       width: theme.spacing.unit * 5,
-//       height: theme.spacing.unit * 5,
-//     },
-//     stepTitle: {
-//       ...theme.typography.subtitle1,
-//       lineHeight: `${theme.spacing.unit * 5}px`,
-//     },
-//     stepBody: {
-//       minHeight: theme.spacing.unit * 5,
-//       paddingTop: theme.spacing.unit * 2,
-//       paddingBottom: theme.spacing.unit * 2,
-//     },
-//     paper: {
-//       padding: theme.spacing.unit * 4,
-//     },
-//     password: {
-//       fontFamily: "monospace",
-//     },
-//     button: {
-//       marginBottom: theme.spacing.unit * 2,
-//     },
-//     "@media print": {
-//       button: {
-//         display: "none",
-//       },
-//     },
-//   });
+import { NotFound } from "./NotFound";
 
 export const SharePage: React.FC = () => {
   const { t } = useTranslation();

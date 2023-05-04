@@ -10,6 +10,10 @@ import {
 import React from "react";
 import { Trans } from "react-i18next";
 
+import { GithubLogo } from "~images/Github";
+import { HumaNumLogo } from "~images/HumaNum";
+import { OpenEditionLogo } from "~images/OpenEdition";
+
 import { LogoSign } from "./LogoSign";
 
 type FooterProps = BoxProps;
@@ -17,7 +21,7 @@ type FooterProps = BoxProps;
 export const Footer: React.FC<FooterProps> = (props) => (
   <footer>
     <Box sx={{ backgroundColor: "primary.main" }} {...props}>
-      <Container sx={{ padding: 10 }} maxWidth="lg">
+      <Container sx={{ padding: { xs: 5, lg: 10 } }} maxWidth="lg">
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
             <Stack>
@@ -27,13 +31,42 @@ export const Footer: React.FC<FooterProps> = (props) => (
               <Link href="/legal-notice" color="white">
                 <Trans i18nKey={"footer.legalNotice"} />
               </Link>
+              <Stack direction={"row"} marginTop={2} spacing={1}>
+                <Box width={34}>
+                  <a
+                    href="https://github.com/celluloid-camp"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <GithubLogo />
+                  </a>
+                </Box>
+                <Box width={29}>
+                  <a
+                    href="https://canevas.hypotheses.org/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <OpenEditionLogo />
+                  </a>
+                </Box>
+                <Box width={34}>
+                  <a
+                    href="https://huma-num.fr/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <HumaNumLogo />
+                  </a>
+                </Box>
+              </Stack>
             </Stack>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box
               sx={{
                 flexDirection: "column",
-                alignItems: "flex-end",
+                alignItems: { lg: "flex-end", sm: "center" },
                 display: "flex",
               }}
             >
@@ -44,7 +77,7 @@ export const Footer: React.FC<FooterProps> = (props) => (
                 variant="subtitle1"
                 gutterBottom={true}
                 color="white"
-                textAlign={"right"}
+                textAlign={{ lg: "left", sm: "center" }}
               >
                 <Trans
                   i18nKey={"footer.copyright"}

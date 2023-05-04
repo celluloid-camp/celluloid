@@ -3,7 +3,7 @@ import {
   Box,
   Card,
   CardContent,
-  CardMedia,
+  CircularProgress,
   Grid,
   Grow,
   styled,
@@ -11,13 +11,14 @@ import {
 } from "@mui/material";
 // import PlayIcon from "@mui/icons-material/PlayCircleOutline";
 import { useQuery } from "@tanstack/react-query";
+import Image from "mui-image";
 import * as React from "react";
 
 import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
 // import { connect } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 // import { AnyAction, Dispatch } from "redux";
-import VideoApi from "~services/VideoService";
+import { getPeerTubeVideoData } from "~services/VideoService";
 
 const StyledBox = styled(Box)(() => ({
   position: "relative",
@@ -46,7 +47,10 @@ interface Props {
 const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   const query = useQuery({
     queryKey: ["video", project.host, project.videoId],
-    queryFn: () => VideoApi.getPeerTubeVideo(project.host, project.videoId),
+    queryFn: () =>
+      getPeerTubeVideoData(
+        `https://${project.host}/api/v1/videos/${project.videoId}`
+      ),
   });
 
   const onClick = () => {
@@ -72,11 +76,11 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
         onClick={() => onClick()}
       >
         <StyledBox>
-          <CardMedia
-            component="img"
-            sx={{ position: "relative" }}
-            height="194"
-            image={`https://${project.host}${query.data?.thumbnailPath}`}
+          <Image
+            src={`https://${project.host}${query.data?.thumbnailPath}`}
+            height={"20vh"}
+            showLoading={<CircularProgress />}
+            bgColor="#000000"
           />
           {/* <Box
             sx={{

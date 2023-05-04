@@ -6,6 +6,7 @@ import {
 
 import { baseThemeOptions } from "./base-theme-options";
 import { celluloidThemeOptions } from "./celluloid-theme-options";
+import { reactRouterThemeOptions } from "./react-router-link";
 
 interface Neutral {
   100: string;
@@ -31,8 +32,9 @@ declare module "@mui/material/styles" {
   }
 }
 
+
 export const createTheme = (): Theme => {
-  let theme = createMuiTheme(baseThemeOptions, celluloidThemeOptions);
+  let theme = createMuiTheme(baseThemeOptions, celluloidThemeOptions, reactRouterThemeOptions);
 
   theme = responsiveFontSizes(theme);
 
