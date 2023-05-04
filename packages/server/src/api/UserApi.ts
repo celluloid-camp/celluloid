@@ -9,8 +9,6 @@ import {
 import { Request, Response, Router } from "express";
 import passport from "passport";
 
-import { User } from "~/knex";
-
 import { SigninStrategy } from "../auth/Auth";
 import {
   isLoggedIn,
