@@ -6,7 +6,6 @@ import { Dispatch } from "redux";
 import { useDidUpdate } from "rooks";
 
 import { clearProject, loadProjectThunk } from "~actions/ProjectActions";
-import { SharedLayout } from "~components/SharedLayout";
 import { AsyncAction, EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 
@@ -51,10 +50,6 @@ const ProjectContainer: React.FC<Props> = ({ user, loadProject, project }) => {
 
   if (!project) return null;
 
-  return (
-    <SharedLayout>
-      <ProjectComponent project={project} onVideoChange={load} />
-    </SharedLayout>
-  );
+  return <ProjectComponent project={project} onVideoChange={load} />;
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectContainer);
