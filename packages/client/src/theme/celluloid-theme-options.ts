@@ -189,6 +189,7 @@ export const celluloidThemeOptions: ThemeOptions = {
     warning,
     brand: {
       green: "#C2CCAB",
+      orange: "#FFE7DB"
     },
   },
   shadows: [

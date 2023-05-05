@@ -1,16 +1,16 @@
 import { UserRecord } from "@celluloid/types";
 import randomColor from "randomcolor";
 
-export function getUserInitials(user: UserRecord): string {
-  return user.username
+export function getUserInitials(username: string): string {
+  return username
     .split(/\s+/)
     .map((part) => part.substring(0, 1))
     .join("")
     .substring(0, 2);
 }
 
-export function getUserColor(user: UserRecord): string {
-  return randomColor({ seed: user.id, luminosity: "bright" });
+export function getUserColor(id: string): string {
+  return randomColor({ seed: id, luminosity: "bright" });
 }
 
 export function isTeacher(user?: UserRecord) {

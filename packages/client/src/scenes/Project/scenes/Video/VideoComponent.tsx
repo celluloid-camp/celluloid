@@ -8,17 +8,7 @@ import {
 } from "@celluloid/types";
 import AnnotationIcon from "@mui/icons-material/Comment";
 import EditIcon from "@mui/icons-material/Edit";
-import {
-  Badge,
-  Box,
-  Fab,
-  Grow as GrowMUI,
-  useTheme,
-  Zoom as ZoomMUI,
-} from "@mui/material";
-import { GrowProps } from "@mui/material/Grow";
-// import LinearProgress from "@mui/material/LinearProgress";
-import { ZoomProps } from "@mui/material/Zoom";
+import { Badge, Box, Fab, Grow, useTheme, Zoom } from "@mui/material";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -31,17 +21,9 @@ import { EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 import { canAnnotate } from "~utils/ProjectUtils";
 
-import AnnotationContent from "./components/AnnotationContent";
+import { AnnotationContent } from "./components/AnnotationContent/AnnotationContentContainer";
 import AnnotationEditor from "./components/AnnotationEditor";
 import AnnotationHints from "./components/AnnotationHints";
-
-const Zoom: React.FC<React.PropsWithChildren & ZoomProps> = (props) => (
-  <ZoomMUI {...props} />
-);
-
-const Grow: React.FC<React.PropsWithChildren & GrowProps> = (props) => (
-  <GrowMUI {...props} />
-);
 
 const Player: React.FC<ReactPlayerProps> = (props) => {
   const playerRef = React.useRef<ReactPlayer>(null);
@@ -130,7 +112,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   onClickAnnotate: () => dispatch(triggerAddAnnotation()),
 });
 
-export default connect(
+const VideoComponent = connect(
   mapStateToProps,
   mapDispatchToProps
 )(
@@ -213,7 +195,7 @@ export default connect(
       <Box
         onMouseMove={onUserAction}
         sx={{
-          position: "relative" as const,
+          position: "relative",
           width: "100%",
           paddingBottom: "56.25%",
           backgroundColor: "black",
@@ -226,7 +208,7 @@ export default connect(
             onDuration={onDuration}
             onProgress={onPlayerProgress}
             style={{
-              position: "absolute" as const,
+              position: "absolute",
               top: 0,
               left: 0,
               width: "100%",
@@ -241,7 +223,7 @@ export default connect(
 
           <div
             style={{
-              position: "absolute" as const,
+              position: "absolute",
               top: 0,
               left: 0,
               right: 0,
@@ -257,14 +239,14 @@ export default connect(
           {!showHints && (
             <Box
               sx={{
-                overflowY: "auto" as const,
-                overflowX: "hidden" as const,
-                maxHeight: `calc(100% - ${theme.spacing(18)}px)`,
+                overflowY: "auto",
+                overflowX: "hidden",
+                maxHeight: `100%`,
                 verticalAlign: "middle",
-                textAlign: "left" as const,
+                textAlign: "left",
                 color: "white",
                 transition: "all 0.5s ease",
-                position: "absolute" as const,
+                position: "absolute",
                 top: 0,
                 left: 0,
                 right: 0,
@@ -293,6 +275,7 @@ export default connect(
                     <Grow appear={true} in={!editing} key={annotation.id}>
                       <div>
                         <AnnotationContent
+                          user={user}
                           project={project}
                           focused={annotation.id === focusedAnnotationId}
                           annotation={annotation}
@@ -326,15 +309,13 @@ export default connect(
           <Box
             onMouseMove={onUserAction}
             sx={{
-              overflowY: "auto" as const,
-              overflowX: "hidden" as const,
+              overflow: "hidden",
               backgroundColor: "rgba(0, 0, 0, 0.7)",
-              position: "absolute" as const,
-              transition: "all 0.5s ease",
-              bottom: theme.spacing(7),
+              position: "absolute",
+              bottom: 5,
               width: "100%",
               opacity: showControls || showHints ? 1 : 0,
-              height: showHints ? `calc(100% - ${theme.spacing(7)}px)` : 0,
+              height: showHints ? `100%` : 0,
             }}
           >
             <AnnotationHints
@@ -406,3 +387,5 @@ export default connect(
     );
   }
 );
+
+export default VideoComponent;

@@ -1,11 +1,10 @@
 import { SigninErrors, TeacherSignupData, UserRecord } from "@celluloid/types";
-import { Typography } from "@mui/material";
+import { Button, DialogActions, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useTranslation } from "react-i18next";
 import { AnyAction } from "redux";
 
 import DialogAltButtons from "~components/DialogAltButtons";
-import DialogButtons from "~components/DialogButtons";
 import DialogError from "~components/DialogError";
 import { Action } from "~types/ActionTypes";
 import { PeertubeVideoInfo } from "~types/YoutubeTypes";
@@ -88,6 +87,7 @@ const SignupComponent = ({
         }
       />
       {errors.server && <DialogError error={errors.server} />}
+
       {!user && (
         <DialogAltButtons
           heading={t("signin.alreadyRegistered")}
@@ -95,10 +95,12 @@ const SignupComponent = ({
           onSubmit={onClickLogin}
         />
       )}
-      <DialogButtons
-        onSubmit={onSubmit}
-        actionName={t("signin.signupAction")}
-      />
+
+      <DialogActions>
+        <Button autoFocus onClick={onSubmit} variant="contained">
+          {t("signin.signupAction")}
+        </Button>
+      </DialogActions>
     </div>
   );
 };

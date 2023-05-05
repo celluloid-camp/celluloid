@@ -1,8 +1,14 @@
 import { AnnotationRecord, CommentRecord, UserRecord } from "@celluloid/types";
-import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import CancelIcon from "@mui/icons-material/Clear";
-import { Box, IconButton } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import {
+  Box,
+  ClickAwayListener,
+  IconButton,
+  InputAdornment,
+  Stack,
+} from "@mui/material";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,42 +20,11 @@ import {
   triggerAddComment,
   updateCommentThunk,
 } from "~actions/CommentActions";
-import UserAvatar from "~components/UserAvatar";
+import { UserAvatar } from "~components/UserAvatar";
 import { AsyncAction, EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 
 import TransparentInput from "./TransparentInput";
-
-// const styles = (theme: Theme) =>
-//   createStyles({
-//     buttons: {
-//       marginTop: theme.spacing.unit / 2,
-//       marginRight: theme.spacing.unit * 2,
-//       width: theme.spacing.unit * 8,
-//     },
-//     button: {
-//       padding: 0,
-//       width: 32,
-//       height: 32,
-//     },
-//     content: {
-//       flex: "1 1 auto",
-//       minWidth: 0,
-//       padding: `0 ${theme.spacing.unit}px`,
-//       "&:first-child": {
-//         paddingLeft: 0,
-//       },
-//       margin: theme.spacing.unit / 2,
-//     },
-//     root: {
-//       transition: "all 0.15s ease",
-//       minHeight: 54,
-//       paddingLeft: theme.spacing.unit * 2.5,
-//       display: "flex",
-//       flexDirection: "row",
-//       alignItems: "flex-start",
-//     },
-//   });
 
 interface Props {
   user: UserRecord;
@@ -102,21 +77,7 @@ const CommentEditor: React.FC<Props> = ({
   onClickCancel,
 }) => {
   const { t } = useTranslation();
-  const [text, setText] = useState("");
-
-  // state = init(this.props);
-
-  // static getDerivedStateFromProps(props: Props, state: State) {
-  //   if (!props.editing) {
-  //     return init(props);
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
-  if (comment && comment.text !== text) {
-    setText(comment.text);
-  }
+  const [text, setText] = useState(comment?.text || "");
 
   const onTextChange = (value: string) => {
     if (text === "") {
@@ -126,82 +87,64 @@ const CommentEditor: React.FC<Props> = ({
   };
 
   return (
-    <Box
-      sx={{
-        transition: "all 0.15s ease",
-        minHeight: 54,
-        paddingLeft: 2.5,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "flex-start",
-      }}
-    >
-      <UserAvatar user={user} small={true} />
+    <ClickAwayListener onClickAway={onClickCancel}>
       <Box
         sx={{
-          flex: "1 1 auto",
-          minWidth: 0,
-          paddingY: 1,
-          "&:first-child": {
-            paddingLeft: 0,
-          },
-          margin: 0.5,
+          transition: "all 0.15s ease",
+          minHeight: 54,
+          paddingLeft: 2,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-start",
         }}
       >
-        <TransparentInput
-          unpadded={true}
-          text={text}
-          onChange={onTextChange}
-          placeholder={t("annotation.commentPlaceholder") || ""}
-        />
+        <UserAvatar username={user.username} userId={user.id} small />
+        <Box flex={1} marginLeft={1}>
+          <TransparentInput
+            unpadded={true}
+            value={text}
+            onChange={onTextChange}
+            placeholder={t("annotation.commentPlaceholder") || ""}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="Send"
+                  onClick={() =>
+                    comment
+                      ? onClickUpdate(annotation, { ...comment, text })
+                      : onClickAdd(annotation, text)
+                  }
+                  edge="end"
+                  color="success"
+                >
+                  <SendIcon />
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </Box>
+        <Box
+          sx={(theme) => ({
+            marginRight: 2,
+            width: theme.spacing(2),
+          })}
+        >
+          {comment ? (
+            <Stack direction={"row"}>
+              <IconButton color="secondary" onClick={() => onClickCancel()}>
+                <CancelIcon fontSize="small" />
+              </IconButton>
+              <IconButton
+                color="primary"
+                onClick={() => onClickUpdate(annotation, { ...comment, text })}
+              >
+                <CheckIcon fontSize="small" />
+              </IconButton>
+            </Stack>
+          ) : null}
+        </Box>
       </Box>
-      <Box
-        sx={(theme) => ({
-          marginTop: 0.5,
-          marginRight: 2,
-          width: theme.spacing(8),
-        })}
-      >
-        {comment ? (
-          <>
-            <IconButton
-              sx={{
-                padding: 0,
-                width: 32,
-                height: 32,
-              }}
-              color="secondary"
-              onClick={() => onClickCancel()}
-            >
-              <CancelIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              sx={{
-                padding: 0,
-                width: 32,
-                height: 32,
-              }}
-              color="primary"
-              onClick={() => onClickUpdate(annotation, { ...comment, text })}
-            >
-              <CheckIcon fontSize="small" />
-            </IconButton>
-          </>
-        ) : (
-          <IconButton
-            sx={{
-              padding: 0,
-              width: 32,
-              height: 32,
-            }}
-            color="primary"
-            onClick={() => onClickAdd(annotation, text)}
-          >
-            <AddIcon fontSize="small" />
-          </IconButton>
-        )}
-      </Box>
-    </Box>
+    </ClickAwayListener>
   );
 };
 

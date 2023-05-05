@@ -31,24 +31,30 @@ interface Props {
   error?: string;
 }
 
-export default ({ label, checked, loading, error, onChange }: Props) => (
+const LabeledProgressSwitch: React.FC<Props> = ({
+  label,
+  checked,
+  loading,
+  error,
+  onChange,
+}) => (
   <Box sx={{ position: "relative" }}>
     <Typography
       variant="body2"
-      align="right"
+      align="left"
       gutterBottom={true}
       component="div"
     >
+      <Switch checked={checked} onChange={() => onChange()} />
+      {label}
       {loading && (
         <CircularProgress
-          color="secondary"
-          sx={{ marginRight: 2 }}
+          color="primary"
+          sx={{ marginLeft: 2 }}
           size={16}
           variant="indeterminate"
         />
       )}
-      {label}
-      <Switch checked={checked} onChange={() => onChange()} />
     </Typography>
     <div
     // className={classes.error}
@@ -59,3 +65,5 @@ export default ({ label, checked, loading, error, onChange }: Props) => (
     </div>
   </Box>
 );
+
+export default LabeledProgressSwitch;

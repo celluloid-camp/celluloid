@@ -11,13 +11,15 @@
     "node": ">=14.16"
   },
   "scripts": {
-    "dev": "dotenv -e .env -- nodemon -e ts,json --exec node --loader ts-node/esm src/server.ts",
+    "dev": "dotenv -e .env -- nodemon -e ts,json --exec node --loader ts-node/esm src/index.ts",
     "dev-tsup": "tsup src/index.ts --watch --onSuccess 'node dist/index.js'",
+    "test": "echo $TEST",
     "build": "rm -rf dist && tsc",
-    "start": "node --use-strict dist/index.js"
+    "start": "DATABASE_URL=$DATABASE_URL node --use-strict dist/index.js"
   },
   "dependencies": {
     "@adminjs/express": "6.0.0",
+    "@adminjs/import-export": "^3.0.0",
     "@adminjs/prisma": "4.0.0",
     "@adminjs/themes": "^1.0.0",
     "@celluloid/database": "*",

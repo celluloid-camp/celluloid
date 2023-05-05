@@ -15,7 +15,7 @@ import {
 import { Action, EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 
-import CommentContent from "./CommentContent";
+import { CommentContent } from "./CommentContent";
 import CommentEditor from "./CommentEditor";
 
 interface Props {
@@ -40,40 +40,38 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(triggerEditComment(comment)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  class extends React.Component<Props> {
-    render() {
-      const { comment, user, annotation, project, onClickCancel, onClickEdit } =
-        this.props;
+const Comment: React.FC<Props> = ({
+  comment,
+  user,
+  annotation,
+  project,
+  onClickCancel,
+  editing,
+  focused,
+  onClickEdit,
+}) => {
+  const edit = editing && focused && focused.id === comment.id;
 
-      const editing =
-        this.props.editing &&
-        this.props.focused &&
-        this.props.focused.id === comment.id;
-
-      if (editing && user) {
-        return (
-          <CommentEditor
-            user={user}
-            annotation={annotation}
-            comment={comment}
-            onClickCancel={onClickCancel}
-          />
-        );
-      } else {
-        return (
-          <CommentContent
-            user={user}
-            project={project}
-            annotation={annotation}
-            comment={comment}
-            onClickEdit={() => onClickEdit(comment)}
-          />
-        );
-      }
-    }
+  if (edit && user) {
+    return (
+      <CommentEditor
+        user={user}
+        annotation={annotation}
+        comment={comment}
+        onClickCancel={onClickCancel}
+      />
+    );
+  } else {
+    return (
+      <CommentContent
+        user={user}
+        project={project}
+        annotation={annotation}
+        comment={comment}
+        onClickEdit={() => onClickEdit(comment)}
+      />
+    );
   }
-);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Comment);

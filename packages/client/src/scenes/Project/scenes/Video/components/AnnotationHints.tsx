@@ -1,54 +1,18 @@
 import { AnnotationRecord } from "@celluloid/types";
 import CancelIcon from "@mui/icons-material/Clear";
-import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
+import { Box, IconButton, Paper, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { getUserColor } from "~utils/UserUtils";
-
-// const styles = (theme: Theme) =>
-//   createStyles({
-//     visible: {
-//       opacity: 1,
-//     },
-//     hidden: {
-//       opacity: 0,
-//     },
-//     hint: {
-//       cursor: "pointer",
-//       position: "absolute",
-//       zIndex: 6,
-//       height: 10,
-//       minWidth: 10,
-//       margin: 0,
-//       padding: 0,
-//       borderRadius: 2,
-//       backgroundColor: "white",
-//       transition: "all 0.2s ease",
-//       "&:hover": {
-//         filter: "brightness(85%)",
-//       },
-//     },
-//     container: {
-//       position: "relative",
-//       margin: 24,
-//       height: `calc(100% - ${theme.spacing.unit * 6}px)`,
-//       width: `calc(100% - ${theme.spacing.unit * 6}px)`,
-//     },
-//     title: {
-//       color: theme.palette.text.disabled,
-//       top: 0,
-//       left: 0,
-//     },
-//   });
 
 interface Props {
   duration: number;
   position: number;
   annotations: AnnotationRecord[];
   visible: boolean;
-  onClick: Function;
-  onClose: Function;
+  onClick: (annotation: AnnotationRecord) => void;
+  onClose: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const AnnotationHints: React.FC<Props> = ({
@@ -65,40 +29,42 @@ const AnnotationHints: React.FC<Props> = ({
   const getHintWidth = (annotation: AnnotationRecord) =>
     `${((annotation.stopTime - annotation.startTime) * 100) / duration}%`;
 
-  const handleClose = (event: any) => {
+  const handleClose: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
-    onClose();
+    onClose(event);
   };
   return (
     <Box
       sx={(theme) => ({
         position: "relative",
-        margin: 24,
+        left: 0,
+        top: 0,
+        margin: 0,
         height: `calc(100% - ${theme.spacing(6)}px)`,
-        width: `calc(100% - ${theme.spacing(6)}px)`,
+        width: `100%`,
       })}
     >
-      <Grid
-        container
-        // direction="row"
-        // justify="space-between"
-        // alignItems="center"
-        // spacing={24}
+      <Box
+        display={"flex"}
+        flexDirection={"row"}
+        paddingX={2}
+        paddingY={2}
+        justifyContent={"space-between"}
       >
-        <Grid item>
-          <Typography align="left" variant="h5">
+        <Box>
+          <Typography align="left" variant="h5" color="white">
             {annotations.length > 0
               ? t("annotation.hintLabel", { count: annotations.length })
               : t("annotation.hintLabelNone")}
           </Typography>
-        </Grid>
+        </Box>
 
-        <Grid item>
+        <Box>
           <IconButton color="secondary" onClick={handleClose}>
             <CancelIcon fontSize="small" />
           </IconButton>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
       {annotations.map((annotation, index) => {
         return (
           <Paper
@@ -117,19 +83,15 @@ const AnnotationHints: React.FC<Props> = ({
               "&:hover": {
                 filter: "brightness(85%)",
               },
-              opacity: visible ? 1 : 0,
-            }}
-            // className={classNames(
-            //   classes.hint,
-            //   visible ? classes.visible : classes.hidden
-            // )}
-            style={{
+              visible: visible ? "visible" : "hidden",
               color: "white",
-              top: visible ? 48 + index * 24 : 0,
+              top: visible ? 60 + index * 24 : 0,
               left: getHintStartPosition(annotation),
               width: getHintWidth(annotation),
-              backgroundColor: getUserColor(annotation.user),
-              border: `2px solid ${getUserColor(annotation.user)}`,
+              border: `2px solid ${getUserColor(annotation.user.id)}`,
+            }}
+            style={{
+              backgroundColor: getUserColor(annotation.user.id),
             }}
             onClick={() => onClick(annotation)}
           />

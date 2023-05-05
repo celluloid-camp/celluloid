@@ -1,3 +1,4 @@
+import { styled } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 
@@ -9,14 +10,14 @@ import ResetPassword from "./ResetPassword";
 import Signup from "./Signup";
 import StudentSignup from "./StudentSignup";
 
-// const styles = ({ spacing }: Theme) =>
-//   createStyles({
-//     content: {
-//       padding: spacing.unit * 2,
-//       margin: spacing.unit,
-//     },
-//   });
-
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(0),
+  },
+}));
 interface Props {
   loading: boolean;
   title: string;
@@ -31,21 +32,25 @@ interface Props {
   onCancel(): void;
 }
 
-export default (props: Props) => {
-  const { loading, title, open, onCancel, Content } = props;
+const DialogComponent: React.FC<Props> = (props) => {
+  const { loading = false, title, open, onCancel, Content } = props;
 
   return (
-    <Dialog
+    <BootstrapDialog
       scroll="body"
       open={open}
       maxWidth="xs"
       fullWidth={true}
       onClose={() => onCancel()}
     >
-      <DialogHeader title={title} loading={loading} onClose={onCancel} />
+      <DialogHeader loading={loading} onClose={onCancel}>
+        {title}
+      </DialogHeader>
       <DialogContent sx={{ margin: 1, padding: 2 }}>
         {Content && <Content />}
       </DialogContent>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
+
+export default DialogComponent;

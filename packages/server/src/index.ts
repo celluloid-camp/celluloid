@@ -53,15 +53,15 @@ app.get("/*", (_, res) => res.sendFile(clientApp));
 (async () => {
   try {
     // TODO: replace this with prisma migrate deploy
-    log.info("Migration started...");
-    await knex.migrate.latest();
-    await knex.seed.run();
-    log.info("Migration finished...");
+    // log.info("Migration started...");
+    // await knex.migrate.latest();
+    // await knex.seed.run();
+    // log.info("Migration finished...");
 
     app.listen(process.env.CELLULOID_LISTEN_PORT, () => {
       log.info(
         `HTTP server listening on port ${process.env.CELLULOID_LISTEN_PORT}` +
-          ` in ${process.env.NODE_ENV} mode`
+        ` in ${process.env.NODE_ENV} mode`
       );
     });
   } catch (err) {
