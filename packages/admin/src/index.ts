@@ -26,15 +26,15 @@ const start = async () => {
 
 
   const adminRouter = await getAdminRouter({
-    rootPath: "/"
+    rootPath: "/admin"
   });
 
 
-  app.use('/', adminRouter);
+  app.use('/admin', adminRouter);
 
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
-  app.use("/", express.static(path.join(__dirname, "../public")));
+  app.use("/admin", express.static(path.join(__dirname, "../public")));
 
   app.listen(3000, () => {
     console.log(
