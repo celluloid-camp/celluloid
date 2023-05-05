@@ -4,7 +4,6 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-console.log("process.env.DATABASE_URL", process.env.DATABASE_URL)
 export const prisma = global.prisma || new PrismaClient({
   datasources: {
     db: {

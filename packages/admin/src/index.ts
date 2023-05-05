@@ -26,18 +26,15 @@ const start = async () => {
 
 
   const adminRouter = await getAdminRouter({
-    rootPath: "/admin"
+    rootPath: "/"
   });
 
 
-  app.use('/admin', adminRouter);
+  app.use('/', adminRouter);
 
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
-  if (process.env.NODE_ENV == "production") {
-    app.use("/admin", express.static(path.join(__dirname, "../public")));
-    app.get("/*", (_, res) => res.status(404).send("page not found"));
-  }
+  app.use("/", express.static(path.join(__dirname, "../public")));
 
   app.listen(3000, () => {
     console.log(
