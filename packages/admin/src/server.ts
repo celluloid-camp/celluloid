@@ -156,13 +156,9 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
     ...options
   };
 
-
-
   const admin = new AdminJS(adminOptions);
   if (process.env.NODE_ENV == "developement")
     admin.watch()
-
-  console.log("DATABASE_URL", process.env.DATABASE_URL);
   return AdminJSExpress.buildRouter(admin);
 };
 

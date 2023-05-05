@@ -30,13 +30,17 @@ const start = async () => {
   });
 
 
-  app.use('/', adminRouter);
+  app.use('/admin', adminRouter);
 
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
-  app.use("/admin", express.static(path.join(__dirname, "../public")));
+  if (process.env.NODE_ENV == "production") {
+    app.use("/admin", express.static(path.join(__dirname, "../public")));
+  }
 
-  app.get("/*", (_, res) => res.status(404).send("page not found"));
+
+
+  // app.get("/*", (_, res) => res.status(404).send("page not found"));
 
   app.listen(3000, () => {
     console.log(
