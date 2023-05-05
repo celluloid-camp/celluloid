@@ -63,6 +63,11 @@ export const SigninMenu = ({
           "aria-labelledby": "basic-button",
         }}
       >
+        {user.role == "admin" ? (
+          <MenuItem href="/admin">
+            <Trans i18nKey={"menu.admin"} />
+          </MenuItem>
+        ) : null}
         <MenuItem onClick={handleLogout}>
           <Trans i18nKey={"menu.logout"} />
         </MenuItem>
