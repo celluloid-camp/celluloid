@@ -61,9 +61,11 @@ export const SigninMenu = ({
         onClose={handleClose}
       >
         {user && user.role == "Admin" ? (
-          <MenuItem href="/admin" target="_blank" rel="noopener noreferrer">
-            <Trans i18nKey={"menu.admin"} />
-          </MenuItem>
+          <a href={"/admin"} target="_blank" rel="noopener noreferrer">
+            <MenuItem>
+              <Trans i18nKey={"menu.admin"} />
+            </MenuItem>
+          </a>
         ) : null}
         <MenuItem onClick={handleLogout}>
           <Trans i18nKey={"menu.logout"} />
