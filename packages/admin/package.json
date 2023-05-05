@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@adminjs/express": "6.0.0",
+    "@adminjs/import-export": "^3.0.0",
     "@adminjs/prisma": "4.0.0",
     "@adminjs/themes": "^1.0.0",
     "@celluloid/database": "*",

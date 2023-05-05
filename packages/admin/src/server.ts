@@ -1,4 +1,5 @@
 import AdminJSExpress from "@adminjs/express";
+import importExportFeature from "@adminjs/import-export";
 import * as AdminJSPrisma from "@adminjs/prisma";
 import { dark, light, noSidebar } from '@adminjs/themes'
 import { DMMFClass, prisma } from "@celluloid/database";
@@ -130,7 +131,12 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
               },
             },
           },
-        }
+        },
+        features: [
+          importExportFeature({
+            componentLoader,
+          }),
+        ],
       },
       {
         resource: { model: dmmf.modelMap.Comment, client: prisma },
