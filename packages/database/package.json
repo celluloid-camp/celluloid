@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsup",
     "clean": "rimraf .turbo node_modules dist",
-    "migrate:initial": "prisma migrate resolve --applied 0_init",
+    "migrate:initial": "DATABASE_URL=$DATABASE_URL prisma migrate resolve --applied 0_init",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
     "push": "prisma db push",

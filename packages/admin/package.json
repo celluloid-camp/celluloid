@@ -13,8 +13,9 @@
   "scripts": {
     "dev": "dotenv -e .env -- nodemon -e ts,json --exec node --loader ts-node/esm src/index.ts",
     "dev-tsup": "tsup src/index.ts --watch --onSuccess 'node dist/index.js'",
+    "test": "echo $TEST",
     "build": "rm -rf dist && tsc",
-    "start": "node --use-strict dist/index.js"
+    "start": "DATABASE_URL=$DATABASE_URL node --use-strict dist/index.js"
   },
   "dependencies": {
     "@adminjs/express": "6.0.0",
