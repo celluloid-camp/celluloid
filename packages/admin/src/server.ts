@@ -76,8 +76,8 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
             name: 'Users',
             icon: 'User',
           },
-          listProperties: ['id', 'email', 'username', 'role', 'code', 'confirmed'],
-          filterProperties: ['email', 'username', 'role'],
+          listProperties: ['email', 'username', 'role', 'code', 'confirmed'],
+          filterProperties: ['email', 'username',],
           editProperties: ['username', 'confirmed', 'role'],
           actions: {
             new: {
@@ -95,7 +95,7 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
             icon: 'Play',
           },
           listProperties: ['title', 'description', 'public', 'shared', 'publishedAt'],
-          filterProperties: ['title', 'description', 'publishedAt'],
+          filterProperties: ['title', 'description', 'user'],
           editProperties: ['title', 'description', 'public', 'shared'],
           actions: {
             new: {
@@ -117,6 +117,9 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
         resource: { model: dmmf.modelMap.Annotation, client: prisma },
         options: {
           navigation: "Projects",
+          listProperties: ['Project', 'User', 'text', 'createdAt'],
+          filterProperties: ['Project', 'User'],
+          editProperties: ['text', "pause"],
           actions: {
             new: {
               isAccessible: false,
@@ -142,6 +145,9 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
         resource: { model: dmmf.modelMap.Comment, client: prisma },
         options: {
           navigation: "Projects",
+          listProperties: ['User', 'Annotation', 'text', 'createdAt'],
+          filterProperties: ['User', 'Annotation'],
+          editProperties: ['text'],
           actions: {
             new: {
               isAccessible: false,

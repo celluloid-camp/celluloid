@@ -59,12 +59,9 @@ export const SigninMenu = ({
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
       >
-        {user.role == "admin" ? (
-          <MenuItem href="/admin">
+        {user && user.role == "Admin" ? (
+          <MenuItem href="/admin" target="_blank" rel="noopener noreferrer">
             <Trans i18nKey={"menu.admin"} />
           </MenuItem>
         ) : null}
