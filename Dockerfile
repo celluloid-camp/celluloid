@@ -22,6 +22,5 @@ RUN yarn install && yarn build
 ENV PORT=3000
 EXPOSE $PORT
 
-
-CMD [ "yarn", "workspace", "@celluloid/server", "run", "start"]
+CMD [ "yarn", "server", "start"]
 

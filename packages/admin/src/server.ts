@@ -1,4 +1,5 @@
 import AdminJSExpress from "@adminjs/express";
+import importExportFeature from "@adminjs/import-export";
 import * as AdminJSPrisma from "@adminjs/prisma";
 import { dark, light, noSidebar } from '@adminjs/themes'
 import { DMMFClass, prisma } from "@celluloid/database";
@@ -55,11 +56,11 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
     branding: {
       companyName: 'Celluloid',
       withMadeWithLove: false,
-      logo: '/admin/assets/images/logo.svg',
+      logo: '/assets/images/logo.svg',
       theme: overrides
     },
     assets: {
-      styles: ['/admin/assets/styles/override.css'],
+      styles: ['/assets/styles/override.css'],
     },
     dashboard: {
       component: Components.MyInput,
@@ -130,7 +131,12 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
               },
             },
           },
-        }
+        },
+        features: [
+          importExportFeature({
+            componentLoader,
+          }),
+        ],
       },
       {
         resource: { model: dmmf.modelMap.Comment, client: prisma },
@@ -157,12 +163,9 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
   };
 
 
-
   const admin = new AdminJS(adminOptions);
   if (process.env.NODE_ENV == "developement")
     admin.watch()
-
-  console.log("DATABASE_URL", process.env.DATABASE_URL);
   return AdminJSExpress.buildRouter(admin);
 };
 

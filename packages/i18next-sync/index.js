@@ -15,22 +15,19 @@ const SPREADSHEET_ID = "1gp65aIFlL5x2K8znQ81WjDbXgVtRiCJ9fLCNPw2gYF0";
 
 console.log("Working directory:", __dirname);
 
-const LOCALES_FOLDER = path.resolve(
-  __dirname,
-  "../../packages/client/src/locales"
-);
-const globs = path.resolve(
-  process.cwd(),
-  "../../packages/client/src/**/*.{ts,tsx}"
-);
+const LOCALES_FOLDER = path.resolve(__dirname, "../client/src/locales");
+const globs = path.resolve(process.cwd(), "../client/src/**/*.{ts,tsx}");
 
 // Spreadsheet from https://docs.google.com/spreadsheets/d/1gp65aIFlL5x2K8znQ81WjDbXgVtRiCJ9fLCNPw2gYF0/edit#gid=0
 async function main() {
   var doc = new GoogleSpreadsheet(SPREADSHEET_ID);
-
-  await doc.useServiceAccountAuth(creds);
-
-  await doc.loadInfo();
+  try {
+    await doc.useServiceAccountAuth(creds);
+    await doc.loadInfo();
+  } catch (e) {
+    console.log(e.message);
+    return null;
+  }
 
   const sheet = doc.sheetsByTitle[SPREADSHEET_TITLE];
   await sheet.loadHeaderRow();

@@ -6,6 +6,7 @@ import {
 
 import { baseThemeOptions } from "./base-theme-options";
 import { celluloidThemeOptions } from "./celluloid-theme-options";
+import { reactRouterThemeOptions } from "./react-router-link";
 
 interface Neutral {
   100: string;
@@ -22,17 +23,18 @@ interface Neutral {
 declare module "@mui/material/styles" {
   interface Palette {
     neutral?: Neutral;
-    brand: { green: string };
+    brand: { green: string, orange: string };
   }
 
   interface PaletteOptions {
     neutral?: Neutral;
-    brand: { green: string };
+    brand: { green: string, orange: string };
   }
 }
 
+
 export const createTheme = (): Theme => {
-  let theme = createMuiTheme(baseThemeOptions, celluloidThemeOptions);
+  let theme = createMuiTheme(baseThemeOptions, celluloidThemeOptions, reactRouterThemeOptions);
 
   theme = responsiveFontSizes(theme);
 

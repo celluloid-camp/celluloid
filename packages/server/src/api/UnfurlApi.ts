@@ -9,49 +9,51 @@ const log = logger('api/UnfulApi');
 
 const router = express.Router();
 
-router.get('/', isLoggedIn, (req, res) => {
+type Result = {
+  faviconUrl: string | undefined
+  website: string | undefined
+  imageUrl: string | undefined
+  title: string | undefined
+  description: string | undefined
+};
+
+router.get('/', isLoggedIn, async (req, res) => {
   const url = req.query.url as string;
-  return unfurl(url)
-    .then((raw:any) => {
-      const parsedUrl = new URL(url as string);
-      const result = {
-        faviconUrl: "",
-        website: "",
-        imageUrl: undefined,
-        title: undefined,
-        description: undefined,
-      };
-      if (raw.ogp) {
-        const ogp = raw.ogp;
-        result.website = ogp.ogSiteName;
-        result.imageUrl =
-          ogp.ogImage.length > 0 ?
-            ogp.ogImage[0].url :
-            null;
-        result.title = ogp.ogTitle;
-        result.description = ogp.ogDescription;
+  try {
+    const raw = await unfurl(url);
+    const parsedUrl = new URL(url as string);
+    const result: Result = {
+      faviconUrl: "",
+      website: "",
+      imageUrl: undefined,
+      title: undefined,
+      description: undefined,
+    };
+
+    const ogp = raw.open_graph;
+    result.website = ogp.url;
+
+    result.title = ogp.title || raw.description;
+    result.description = ogp.description || raw.description;
+    result.faviconUrl = raw.favicon
+
+    result.imageUrl =
+      ogp.images && ogp.images.length > 0 ?
+        ogp.images[0].url :
+        undefined;
+    if (result.title && result.description) {
+      if (!result.website) {
+        result.website = parsedUrl.hostname;
       }
-      if (raw.other) {
-        const other = raw.other;
-        result.title = result.title || other.title;
-        result.description = result.description || other.description;
-        if (other.icon) {
-          result.faviconUrl = parsedUrl.origin + other.icon || "";
-        }
-      }
-      if (result.title && result.description) {
-        if (!result.website) {
-          result.website = parsedUrl.hostname;
-        }
-        return res.status(200).json(result);
-      } else {
-        return res.status(404);
-      }
-    })
-    .catch((error: Error) => {
-      log.error(`could not unfurl link: ${error.message}`);
-      return res.status(500);
-    });
+    }
+    return res.status(200).json(result);
+
+  } catch (e) {
+    log.error(`could not unfurl link: ${e.message}`);
+    return res.status(500);
+  }
+
+
 });
 
 export default router;

@@ -1,30 +1,9 @@
 import { ProjectGraphRecord } from "@celluloid/types";
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-// const styles = ({ spacing }: Theme) =>
-//   createStyles({
-//     section: {
-//       marginTop: spacing.unit * 2,
-//     },
-//     questions: {
-//       margin: 0,
-//       padding: 0,
-//       paddingLeft: spacing.unit * 2 + 2,
-//     },
-//     tagList: {
-//       padding: 0,
-//       margin: 0,
-//       display: "flex",
-//       justifyContent: "left",
-//       flexWrap: "wrap",
-//     },
-//     tag: {
-//       marginRight: 4,
-//       marginBottom: 4,
-//     },
-//   });
+import { ProjectUserAvatar } from "./ProjectUserAvatar";
 
 interface Props {
   project: ProjectGraphRecord;
@@ -33,91 +12,62 @@ interface Props {
 const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
   const { t } = useTranslation();
   return (
-    <>
+    <Box sx={{ padding: 0 }}>
       <Typography align="left" variant="h3" gutterBottom={true}>
         {project.title}
       </Typography>
-      {project.tags.length > 0 && (
-        <Box
+
+      <ProjectUserAvatar project={project} />
+
+      <Box
+        sx={{
+          backgroundColor: "white",
+          paddingX: 2,
+          marginY: 2,
+          paddingY: 2,
+          borderRadius: 2,
+        }}
+      >
+        <Typography align="justify" gutterBottom={true} variant="body2">
+          <b>{project.description}</b>
+        </Typography>
+
+        <Typography
+          align="left"
+          gutterBottom={true}
+          variant="h6"
           sx={{
-            padding: 0,
-            margin: 0,
-            display: "flex",
-            justifyContent: "left",
-            flexWrap: "wrap",
+            marginTop: 2,
           }}
         >
-          {project.tags.map((tag, index) => (
-            <Chip
-              sx={{
-                marginRight: 4,
-                marginBottom: 4,
-              }}
-              key={index}
-              label={tag.name}
-            />
-          ))}
-        </Box>
-      )}
-      <Typography align="justify" gutterBottom={true} variant="subtitle1">
-        <b>{project.description}</b>
-      </Typography>
-      <Typography
-        align="left"
-        gutterBottom={true}
-        variant="h4"
-        color="primary"
-        sx={{
-          marginTop: 2,
-        }}
-      >
-        {t("project.objective")}
-      </Typography>
-      <Typography align="justify" gutterBottom={true} variant="subtitle1">
-        {project.objective}
-      </Typography>
-      {project.assignments.length > 0 && (
-        <>
-          <Typography
-            align="left"
-            gutterBottom={true}
-            variant="h4"
-            color="primary"
-            mt={2}
-          >
-            <Trans i18nKey={"project.assignment"} />
-          </Typography>
-          <Typography align="left" gutterBottom={true} variant="subtitle1">
-            <ol>
-              {project.assignments.map((assignment, index) => (
-                <li key={index}>{assignment}</li>
-              ))}
-            </ol>
-          </Typography>
-        </>
-      )}
-      <Typography
-        align="left"
-        gutterBottom={true}
-        variant="h4"
-        color="primary"
-        sx={{
-          marginTop: 2,
-        }}
-      >
-        <Trans i18nKey={"project.URL_title"} />
-      </Typography>
+          {t("project.objective")}
+        </Typography>
+        <Typography align="justify" gutterBottom={true} variant="body2">
+          {project.objective}
+        </Typography>
 
-      <Typography align="left" gutterBottom={true} variant="subtitle1">
-        <a
-          href={`https://${project.host}/w/${project.videoId}`}
-          target="_blank"
-          rel="noreferrer"
+        <Typography
+          align="left"
+          gutterBottom={true}
+          variant="h6"
+          sx={{
+            marginTop: 2,
+          }}
         >
-          <Trans i18nKey={"project.videoUrlHelper"} />
-        </a>
-      </Typography>
-    </>
+          <Trans i18nKey={"project.URL_title"} />
+        </Typography>
+
+        <Typography align="left" gutterBottom={true} variant="body2">
+          <a
+            href={`https://${project.host}/w/${project.videoId}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Trans i18nKey={"project.videoUrlHelper"} />
+          </a>
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

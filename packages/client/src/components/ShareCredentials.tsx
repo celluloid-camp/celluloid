@@ -16,10 +16,13 @@ interface Props {
   password: string;
 }
 
-export default ({ name, password }: Props) => (
+export const ShareCredentials: React.FC<Props> = ({
+  name,
+  password,
+}: Props) => (
   <>
     <Box sx={{ marginBottom: 2 }}>
-      <Typography variant="caption" gutterBottom={true}>
+      <Typography gutterBottom={true}>
         <Trans i18nKey={"signin.projectCode"} />
       </Typography>
       <Typography

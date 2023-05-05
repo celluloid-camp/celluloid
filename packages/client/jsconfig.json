@@ -8,9 +8,6 @@
             "~components/*": [
                 "src/components/*"
             ],
-            "~hooks/*": [
-                "src/hooks/*"
-            ],
             "~images/*": [
                 "src/images/*"
             ],
@@ -40,6 +37,12 @@
             ],
             "~/*": [
                 "src/*"
+            ],
+            "~pages/*": [
+                "src/pages/*"
+            ],
+            "~hooks/*": [
+                "src/hooks/*"
             ]
         }
     }
