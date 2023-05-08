@@ -56,11 +56,11 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
     branding: {
       companyName: 'Celluloid',
       withMadeWithLove: false,
-      logo: '/assets/images/logo.svg',
+      logo: '/admin/assets/images/logo.svg',
       theme: overrides
     },
     assets: {
-      styles: ['/assets/styles/override.css'],
+      styles: ['/admin/assets/styles/override.css'],
     },
     dashboard: {
       component: Components.MyInput,
@@ -76,8 +76,8 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
             name: 'Users',
             icon: 'User',
           },
-          listProperties: ['id', 'email', 'username', 'role', 'code', 'confirmed'],
-          filterProperties: ['email', 'username', 'role'],
+          listProperties: ['email', 'username', 'role', 'code', 'confirmed'],
+          filterProperties: ['email', 'username',],
           editProperties: ['username', 'confirmed', 'role'],
           actions: {
             new: {
@@ -94,8 +94,8 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
             name: 'Projects',
             icon: 'Play',
           },
-          listProperties: ['title', 'description', 'public', 'shared', 'publishedAt'],
-          filterProperties: ['title', 'description', 'publishedAt'],
+          listProperties: ['title', 'description', 'public', 'shared', 'publishedAt', 'User'],
+          filterProperties: ['title', 'description', 'User'],
           editProperties: ['title', 'description', 'public', 'shared'],
           actions: {
             new: {
@@ -117,6 +117,9 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
         resource: { model: dmmf.modelMap.Annotation, client: prisma },
         options: {
           navigation: "Projects",
+          listProperties: ['Project', 'text', 'createdAt', 'User'],
+          filterProperties: ['Project', 'User'],
+          editProperties: ['text', "pause"],
           actions: {
             new: {
               isAccessible: false,
@@ -142,6 +145,9 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
         resource: { model: dmmf.modelMap.Comment, client: prisma },
         options: {
           navigation: "Projects",
+          listProperties: ['Annotation', 'text', 'createdAt', 'User'],
+          filterProperties: ['User', 'Annotation'],
+          editProperties: ['text'],
           actions: {
             new: {
               isAccessible: false,

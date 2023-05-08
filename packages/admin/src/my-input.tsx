@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
 // just some regular React component
-const MyInputComponent = () => <p>test</p>
+const MyInputComponent = () => <p></p>;
 
-export default MyInputComponent
+export default MyInputComponent;
