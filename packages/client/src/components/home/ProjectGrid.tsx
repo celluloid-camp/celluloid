@@ -38,7 +38,7 @@ export const ProjectGrid: React.FC = () => {
     if (value.length >= 3) {
       setSearchTerm(value);
     }
-  }, 300);
+  }, 1000);
 
   const { data: user } = useMe();
   const { data: projects = [], error, isLoading } = useProjects(searchTerm);
