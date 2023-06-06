@@ -50,7 +50,7 @@ function init({ annotation, video }: Props): State {
         text: "",
         startTime: video.position,
         stopTime: maxAnnotationDuration(video.position, video.duration),
-        pause: false,
+        pause: true,
       },
     } as State;
   }

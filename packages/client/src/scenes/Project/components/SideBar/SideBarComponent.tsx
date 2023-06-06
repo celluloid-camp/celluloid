@@ -225,7 +225,6 @@ const SideBarComponenent: React.FC<Props> = ({
                     primary={member.username}
                     secondary={member.subtitle}
                   />
-                  {isAdmin(user) && <ListItemText primary={member.email} />}
                 </ListItem>
               ))}
             </List>
