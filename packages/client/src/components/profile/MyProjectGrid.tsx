@@ -1,11 +1,5 @@
 import { ProjectGraphRecord } from "@celluloid/types";
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Fade,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import * as R from "ramda";
 import * as React from "react";
