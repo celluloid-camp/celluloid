@@ -116,41 +116,6 @@ const SideBarComponenent: React.FC<Props> = ({
           borderRadius: 2,
         }}
       >
-        {annotations && annotations.length > 0 ? (
-          <>
-            <Typography variant="h6" mb={2}>
-              {t("project.export", "Export annotations")}
-            </Typography>
-            <Stack direction={"row"} spacing={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                sx={{ textTransform: "uppercase" }}
-                onClick={() => handleExport("csv")}
-              >
-                CSV
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => handleExport("xml")}
-              >
-                XML
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => handleExport("srt")}
-              >
-                SRT
-              </Button>
-            </Stack>
-          </>
-        ) : null}
-
         {user && isOwner(project, user) ? (
           <>
             <Typography variant="h6" mb={2}>
@@ -287,6 +252,41 @@ const SideBarComponenent: React.FC<Props> = ({
             {deleteError && <DialogError error={deleteError} />}
           </Box>
         )}
+
+        {annotations && annotations.length > 0 ? (
+          <>
+            <Typography variant="h6" mb={2}>
+              {t("project.export", "Export annotations")}
+            </Typography>
+            <Stack direction={"row"} spacing={1}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{ textTransform: "uppercase" }}
+                onClick={() => handleExport("csv")}
+              >
+                CSV
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => handleExport("xml")}
+              >
+                XML
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => handleExport("srt")}
+              >
+                SRT
+              </Button>
+            </Stack>
+          </>
+        ) : null}
       </Box>
     </Box>
   );

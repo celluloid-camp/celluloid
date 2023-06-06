@@ -35,7 +35,7 @@ const UserProfile: React.FC = () => {
         </Box>
       ) : (
         <>
-          <UserAvatar username={data.username} userId={data.id} small={false} />
+          <UserAvatar username={data.username} userId={data.id} />
           <Typography variant="h4" color="textPrimary" sx={{ mt: 1 }}>
             {data.username}
           </Typography>
