@@ -1,6 +1,7 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import * as React from "react";
 
+import { MyProjectGrid } from "~components/profile/MyProjectGrid";
 import { UserAvatar } from "~components/UserAvatar";
 import { useMe } from "~hooks/use-user";
 
@@ -34,7 +35,7 @@ const UserProfile: React.FC = () => {
         </Box>
       ) : (
         <>
-          <UserAvatar username={data.username} userId={data.id} />
+          <UserAvatar username={data.username} userId={data.id} small={false} />
           <Typography variant="h4" color="textPrimary" sx={{ mt: 1 }}>
             {data.username}
           </Typography>
@@ -42,6 +43,7 @@ const UserProfile: React.FC = () => {
             {data.email} - {data.role}
           </Typography>
 
+          <MyProjectGrid />
           {/* <Grid container spacing={2} sx={{ mt: 3 }}>
         {userProjects.map((project) => (
           <Grid item xs={12} sm={6} md={4} key={project.id}>
