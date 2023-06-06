@@ -44,7 +44,7 @@ interface Props {
   project: ProjectGraphRecord;
 }
 
-const ProjectThumbnail: React.FC<Props> = ({ project }) => {
+export const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   const query = useQuery({
     queryKey: ["video", project.host, project.videoId],
     queryFn: () =>
@@ -59,13 +59,6 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   };
 
   return (
-    // <ThemeProvider theme={modalTheme}>
-    // <Grow
-    //   style={{ transformOrigin: "0 0 0" }}
-    //   in={true}
-    //   appear={true}
-    //   key={project.id}
-    // >
     <Card
       elevation={0}
       sx={{
@@ -123,9 +116,6 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
         </Grid>
       </StyledCardContent>
     </Card>
-    // </Grow>
     // </ThemeProvider>
   );
 };
-
-export default ProjectThumbnail;

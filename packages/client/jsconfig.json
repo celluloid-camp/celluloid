@@ -43,6 +43,9 @@
             ],
             "~hooks/*": [
                 "src/hooks/*"
+            ],
+            "~profile/*": [
+                "src/components/profile/*"
             ]
         }
     }
