@@ -1,7 +1,9 @@
 import { ProjectGraphRecord, TagData, UserRecord } from "@celluloid/types";
+import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
+  CircularProgress,
   Container,
   Divider,
   Fade,
@@ -11,83 +13,45 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { useQueryClient } from "@tanstack/react-query";
+import { debounce } from "lodash";
 import * as R from "ramda";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
-import { Dispatch } from "redux";
 import { useDidUpdate } from "rooks";
 
-import { listProjectsThunk } from "~actions/ProjectActions";
-import { listTagsThunk } from "~actions/TagActions";
 import { StyledTitle } from "~components/typography";
-import { AsyncAction } from "~types/ActionTypes";
-import { AppState } from "~types/StateTypes";
+import { useMe, useProjects } from "~hooks/use-user";
 import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
 
 import ProjectThumbnail from "./ProjectThumbnail";
 
-const projectMatchesTag = (project: ProjectGraphRecord) => (tag: TagData) =>
-  !!R.find((elem: TagData) => R.equals(elem, tag))(project.tags);
+export const ProjectGrid: React.FC = () => {
+  const queryClient = useQueryClient();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
 
-interface Props {
-  user?: UserRecord;
-  projects: ProjectGraphRecord[];
-  tags: TagData[];
-  error?: string;
-  loadProjects(): AsyncAction<ProjectGraphRecord[], string>;
-  loadTags(): AsyncAction<TagData[], string>;
-}
+  // Debounce the search function
+  const debouncedSearch = debounce((value: string) => {
+    if (value.length >= 3) {
+      setSearchTerm(value);
+    }
+  }, 300);
 
-const mapStateToProps = (state: AppState) => ({
-  user: state.user,
-  projects: state.home.projects,
-  tags: state.tags,
-  error: state.home.errors.projects,
-});
+  const { data: user } = useMe();
+  const { data: projects = [], error, isLoading } = useProjects(searchTerm);
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  loadTags: () => listTagsThunk()(dispatch),
-  loadProjects: () => listProjectsThunk()(dispatch),
-});
-
-const ProjectGrid: React.FC<Props> = ({
-  loadProjects,
-  loadTags,
-  user,
-  projects,
-  error,
-}) => {
-  const [selectedTags] = useState<TagData[]>([]);
   const { t } = useTranslation();
 
-  const load = () => {
-    loadProjects();
-    loadTags();
-  };
-
-  useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useDidUpdate(() => {
-    load();
-  }, [user]);
+  // useDidUpdate(() => {
+  //   queryClient.invalidateQueries(["projects"]);
+  // }, [user]);
 
   const sort = R.sortWith([R.descend(R.prop("publishedAt"))]);
 
-  const filtered =
-    selectedTags.length > 0
-      ? R.filter((project: ProjectGraphRecord) => {
-          const matchesTag = projectMatchesTag(project);
-          return selectedTags.reduce((_, tag) => matchesTag(tag), true);
-        })(projects)
-      : projects;
-
-  const sorted = sort(filtered) as ProjectGraphRecord[];
+  const sorted = sort(projects) as ProjectGraphRecord[];
 
   const userProjects = R.filter(
     (project: ProjectGraphRecord) =>
@@ -97,32 +61,25 @@ const ProjectGrid: React.FC<Props> = ({
 
   const publicProjects = R.difference(sorted, userProjects);
 
-  // const isTagSelected = (tag: TagData) =>
-  //   R.find((elem: TagData) => R.equals(elem, tag))(selectedTags);
-
-  // const removeTag = (tag: TagData) =>
-  //   R.filter((elem: TagData) => !R.equals(elem, tag))(selectedTags);
-
-  // const onTagSelected = (tag: TagData) => {
-  //   setSelectedTags(
-  //     isTagSelected(tag) ? removeTag(tag) : [...selectedTags, tag]
-  //   );
-
-  //   // this.setState((state) => ({
-  //   //   selectedTags: isTagSelected(tag)
-  //   //     ? removeTag(tag)
-  //   //     : [...state.selectedTags, tag],
-  //   // }));
-  // };
-
   const noProjects =
     !error && publicProjects.length === 0 && userProjects.length === 0;
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    debouncedSearch(value);
+  };
+
+  const handleResetSearch = () => {
+    setSearchTerm(undefined);
+    if (searchInputRef.current) {
+      searchInputRef.current.value = "";
+    }
+  };
 
   return (
     <Box sx={{ padding: 5, backgroundColor: "brand.orange" }}>
       <Container maxWidth="lg">
         <Paper
-          component="form"
           sx={{
             p: "2px 4px",
             display: "flex",
@@ -139,9 +96,31 @@ const ProjectGrid: React.FC<Props> = ({
           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
           <InputBase
             sx={{ ml: 1, flex: 1 }}
+            inputRef={searchInputRef}
+            onChange={handleSearchChange}
             placeholder={t("search.placeholder", "Chercher un projet") || ""}
           />
+          {searchTerm ? (
+            <IconButton onClick={handleResetSearch}>
+              <ClearIcon />
+            </IconButton>
+          ) : null}
         </Paper>
+
+        {isLoading ? (
+          <Box
+            mx={2}
+            my={10}
+            display={"flex"}
+            alignContent={"center"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box>
+              <CircularProgress />
+            </Box>
+          </Box>
+        ) : null}
 
         <Box
           sx={{
@@ -196,7 +175,8 @@ const ProjectGrid: React.FC<Props> = ({
               </Grid>
             </>
           )}
-          {noProjects && (
+
+          {!isLoading && noProjects && (
             <Fade in={noProjects} appear={true}>
               <Typography
                 variant="h3"
@@ -211,10 +191,10 @@ const ProjectGrid: React.FC<Props> = ({
               </Typography>
             </Fade>
           )}
-          {error && (
+          {error ? (
             <Fade in={!!error} appear={true}>
               <Typography
-                variant="h4"
+                variant="h6"
                 align="center"
                 gutterBottom={true}
                 sx={{
@@ -222,14 +202,12 @@ const ProjectGrid: React.FC<Props> = ({
                   pb: 1,
                 }}
               >
-                {error}
+                {t("ERR_UNKOWN")}
               </Typography>
             </Fade>
-          )}
+          ) : null}
         </Box>
       </Container>
     </Box>
   );
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectGrid);

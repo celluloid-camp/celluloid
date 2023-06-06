@@ -268,23 +268,26 @@ const resendCode =
     };
 
 router.post("/reset-password", (req, res) => {
-  // @ts-ignore
   return resendCode(sendPasswordReset)(req, res);
 });
 
 router.post("/resend-code", (req, res) => {
-  // @ts-ignore
   return resendCode(sendConfirmationCode)(req, res);
 });
 
 router.get("/me", isLoggedIn, (req: any, res) => {
   if (req.user) {
     return res.status(200).json({
+      // compatibility with old frontend
       teacher: {
         username: req.user.username,
         id: req.user.id,
         role: req.user.role,
       },
+      username: req.user.username,
+      id: req.user.id,
+      role: req.user.role,
+      email: req.user.email,
     });
   } else {
     return res.status(401).send();

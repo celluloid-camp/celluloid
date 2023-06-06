@@ -1880,6 +1880,7 @@ __metadata:
     "@types/node-fetch": ^2.6.2
     "@types/nodemailer": ^6.4.6
     "@types/nodemailer-smtp-transport": ^2.7.4
+    "@types/papaparse": ^5.3.7
     "@types/passport": ^1.0.0
     "@types/passport-local": ^1.0.33
     "@types/pg": ^7.4.1
@@ -1896,6 +1897,7 @@ __metadata:
     express-session: ^1.17.3
     extend: ^3.0.2
     jest: ^27.0.1
+    js2xmlparser: ^5.0.0
     knex: ^2.3.0
     knex-types: ^0.4.0
     lodash: ^4.17.13
@@ -1903,6 +1905,7 @@ __metadata:
     mock-req: ^0.2.0
     nodemailer: ^6.0.0
     nodemailer-smtp-transport: ^2.7.4
+    papaparse: ^5.4.1
     passport: ^0.4.0
     passport-local: ^1.0.0
     pg: ^8.8.0
@@ -5288,6 +5291,15 @@ __metadata:
   version: 1.3.2
   resolution: "@types/object.pick@npm:1.3.2"
   checksum: 71053ec6849142e934a1f2232e004f103e26a7df4782a83e83d976c74f1804c3ac29ed96223a6eef7b08f36ee019d1675f0d752fd79c9f444a080646d438c87d
+  languageName: node
+  linkType: hard
+
+"@types/papaparse@npm:^5.3.7":
+  version: 5.3.7
+  resolution: "@types/papaparse@npm:5.3.7"
+  dependencies:
+    "@types/node": "*"
+  checksum: 5ffa6fc81c0f41cd18c9c015599b3690f2a19ee553dec85e92c17bd1ef4a045e0ba4973d8bd49aed9f83fcba3b0ec280ebbe0a0def66701c0b4860c691444694
   languageName: node
   linkType: hard
 
@@ -14328,6 +14340,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js2xmlparser@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "js2xmlparser@npm:5.0.0"
+  dependencies:
+    xmlcreate: ^2.0.4
+  checksum: 1304b65f97482e6fd565437597ae43c7ebc75bb5c5a268ec1439ada1ef5b3d30034226bfc02e6668aecb3521e5dc64ef4ba387e08f102597a500838fad550dc3
+  languageName: node
+  linkType: hard
+
 "jsdom@npm:^16.6.0":
   version: 16.7.0
   resolution: "jsdom@npm:16.7.0"
@@ -16811,6 +16832,13 @@ __metadata:
   version: 1.0.0
   resolution: "packet-reader@npm:1.0.0"
   checksum: 0b7516f0cbf3e322aad591bed29ba544220088c53943145c0d9121a6f59182ad811f7fd6785a8979a34356aca69d97653689029964c5998dc02645633d88ffd7
+  languageName: node
+  linkType: hard
+
+"papaparse@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "papaparse@npm:5.4.1"
+  checksum: fc9e52f7158dca3517c229e3309065b1ab5da6c7194572fba4f31ff138bc43e3c91182cc40365cc828f97fe10d0aca416068fd731661058bea0f69ddb84a411a
   languageName: node
   linkType: hard
 
@@ -23695,6 +23723,13 @@ __metadata:
   version: 2.2.0
   resolution: "xmlchars@npm:2.2.0"
   checksum: 8c70ac94070ccca03f47a81fcce3b271bd1f37a591bf5424e787ae313fcb9c212f5f6786e1fa82076a2c632c0141552babcd85698c437506dfa6ae2d58723062
+  languageName: node
+  linkType: hard
+
+"xmlcreate@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "xmlcreate@npm:2.0.4"
+  checksum: b8dd52668b9aea77cd1408fa85538c14bb8dcc98b4e7bb51e76696c9c115d59eba7240298d0c4fd2caf8f1a8e283ab4e5c7b9a6bcfcf23a8b48f5068b677b748
   languageName: node
   linkType: hard
 

@@ -34,23 +34,41 @@ function fetchMembers(
 
 
 router.get("/", (req, res) => {
-  return ProjectStore.selectAll(req.user as UserRecord)
-    //@ts-ignore
-    .then((projects: ProjectGraphRecord[]) => {
-      return Promise.all(
-        projects.map((project) =>
-          fetchMembers(project, req.user).then((members: UserRecord[]) => ({
-            ...project,
-            members,
-          }))
-        )
-      );
-    })
-    .then((result: ProjectGraphRecord[]) => res.json(result))
-    .catch((error: Error) => {
-      console.log(error)
-      return res.status(500).send();
-    });
+  if (req.query.keyword) {
+    return ProjectStore.searchAll(req.user as UserRecord, req.query.keyword as string)
+      .then((projects: ProjectGraphRecord[]) => {
+        return Promise.all(
+          projects.map((project) =>
+            fetchMembers(project, req.user).then((members: UserRecord[]) => ({
+              ...project,
+              members,
+            }))
+          )
+        );
+      })
+      .then((result: ProjectGraphRecord[]) => res.json(result))
+      .catch((error: Error) => {
+        console.log(error)
+        return res.status(500).send();
+      });
+  } else {
+    return ProjectStore.selectAll(req.user as UserRecord)
+      .then((projects: ProjectGraphRecord[]) => {
+        return Promise.all(
+          projects.map((project) =>
+            fetchMembers(project, req.user).then((members: UserRecord[]) => ({
+              ...project,
+              members,
+            }))
+          )
+        );
+      })
+      .then((result: ProjectGraphRecord[]) => res.json(result))
+      .catch((error: Error) => {
+        console.log(error)
+        return res.status(500).send();
+      });
+  }
 });
 
 router.get("/:projectId", (req, res) => {

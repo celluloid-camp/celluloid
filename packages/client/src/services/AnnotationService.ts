@@ -90,4 +90,23 @@ export default class {
       throw new Error(Constants.ERR_UNAVAILABLE);
     });
   }
+
+  static export(projectId: string, format: "csv" | "xml" | "srt") {
+    fetch(`/api/projects/${projectId}/annotations/export/${format}`) // Make a GET request to the Express route
+      .then((response) => response.blob()) // Get the response as a Blob
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob])); // Create a URL for the Blob
+        const a = document.createElement('a'); // Create a temporary <a> element
+        a.href = url;
+        a.download = `annotation.${format}`; // Set the filename for the downloaded file
+        a.click(); // Trigger the click event to start the download
+        window.URL.revokeObjectURL(url); // Clean up the URL object
+      })
+      .catch((error) => {
+        console.error('Error downloading CSV:', error);
+      });
+  }
+
+
+
 }

@@ -13,7 +13,7 @@ import { Box, CircularProgress } from "@mui/material";
 //   },
 // });
 
-export default () => (
+export const LoadingBig = () => (
   <Box
     sx={{
       width: 100,
