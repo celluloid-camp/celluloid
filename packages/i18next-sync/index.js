@@ -25,7 +25,7 @@ async function main() {
     await doc.useServiceAccountAuth(creds);
     await doc.loadInfo();
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return null;
   }
 
