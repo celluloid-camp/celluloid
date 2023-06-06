@@ -2,15 +2,22 @@ import { UserRecord } from "@celluloid/types";
 import { AppBar, Box, Button, styled, Toolbar } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { AnyAction, Dispatch } from "redux";
 
-import { closeSignin, openLogin, openSignup } from "~actions/Signin";
+import {
+  closeSignin,
+  openLogin,
+  openSignup,
+  openStudentSignup,
+} from "~actions/Signin";
 import { getButtonLink } from "~components/ButtonLink";
 import { Footer } from "~components/Footer";
 import { LogoWithLabel } from "~components/LogoWithLabel";
 import SigninDialog, { SigninState } from "~components/Signin";
 import { SigninMenu } from "~components/SigninMenu";
+import { useMe } from "~hooks/use-user";
 import { EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
 
@@ -52,6 +59,21 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
   children,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { data } = useMe();
+  const dispatch = useDispatch();
+
+  const handleCreate = () => {
+    if (!data.error) {
+      navigate(`/create`);
+    } else {
+      dispatch(openStudentSignup());
+    }
+  };
+
+  const handleJoin = () => {
+    dispatch(openStudentSignup());
+  };
 
   return (
     <Box sx={{ height: "100vh" }}>
@@ -65,21 +87,21 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
 
           <Button
             sx={{ textTransform: "uppercase", color: "text.primary" }}
-            href="/create"
+            onClick={() => handleCreate()}
           >
             {t("menu.create", "Créer")}
           </Button>
 
           <Button
             sx={{ textTransform: "uppercase", color: "text.primary" }}
-            component={getButtonLink("/")}
+            onClick={() => handleJoin()}
           >
             {t("menu.join", "Rejoindre")}
           </Button>
 
           <Button
             sx={{ textTransform: "uppercase", color: "text.primary" }}
-            component={getButtonLink("/")}
+            href="/"
           >
             {t("menu.explore", "Explorer")}
           </Button>

@@ -31,19 +31,22 @@ import { createTheme } from "./theme";
 const queryClient = new QueryClient();
 
 i18next
-  .use(initReactI18next)
   .use(LanguageDetector)
+  .use(initReactI18next)
   .init({
     debug: false,
     resources: {
       en_US: {
-        translation: en,
+        translations: en,
       },
       fr_FR: {
-        translation: fr,
+        translations: fr,
       },
     },
-    fallbackLng: "en_US",
+    ns: ["translations"],
+    defaultNS: "translations",
+
+    fallbackLng: "fr_FR",
     interpolation: {
       escapeValue: false,
     },

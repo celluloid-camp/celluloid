@@ -1,8 +1,10 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
-import logoBlog from "../images/about/logo-blog-celluloid.jpg";
+import { OpenEditionLogo } from "~images/OpenEdition";
+
+import mshparisnordLogo from "../images/about/hsmparisnord_100px.jpg";
 import logoFsm from "../images/about/logo-fsm.jpg";
 import logoHN from "../images/about/logo-huma-num.jpg";
 import logoIcp from "../images/about/logo-icp.jpg";
@@ -30,24 +32,26 @@ export const About: React.FC = () => {
       <Typography variant="subtitle1" gutterBottom={true}>
         {t("about.support")}
       </Typography>
-      <Typography variant="subtitle1" gutterBottom={true}>
+      <Typography variant="subtitle1" gutterBottom={true} pt={1}>
         {t("about.opensource.prefix")}
-        <a href="https://github.com/celluloid-camp/">
-          {t("about.opensource.github")}
-        </a>
       </Typography>
+
+      <Trans i18nKey="about.opensource.github" pt={2}>
+        <a href="https://github.com/celluloid-camp/"></a>
+      </Trans>
+
       <div
         style={{
           padding: 48,
           textAlign: "center",
         }}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={2} bgcolor={"white"}>
           <Grid item>
             <a href="https://www.icp.fr/" target="_blank" rel="noreferrer">
               <img
                 src={logoIcp}
-                height="100px"
+                height="60px"
                 alt="Institut Catholique de Paris"
               />
             </a>
@@ -58,11 +62,7 @@ export const About: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <img
-                src={logoFsm}
-                height="100px"
-                alt="Fondation Saint-Matthieu"
-              />
+              <img src={logoFsm} height="60px" alt="Fondation Saint-Matthieu" />
             </a>
           </Grid>
           <Grid item={true}>
@@ -71,21 +71,37 @@ export const About: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <img src={logoLp} height="100px" alt="La Paillasse" />
+              <img src={logoLp} height="60px" alt="La Paillasse" />
             </a>
           </Grid>
           <Grid item={true}>
-            <a
-              href="https://celluloid.hypotheses.org"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src={logoBlog} height="100px" alt="Le blog Celluloid" />
-            </a>
+            <Box width={40}>
+              <a
+                href="https://canevas.hypotheses.org/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <OpenEditionLogo color="#eb5b4f" />
+              </a>
+            </Box>
           </Grid>
           <Grid item={true}>
             <a href="https://www.huma-num.fr/" target="_blank" rel="noreferrer">
-              <img src={logoHN} height="100px" alt="Le site de Huma-num" />
+              <img src={logoHN} height="60px" alt="Le site de Huma-num" />
+            </a>
+          </Grid>
+
+          <Grid item={true}>
+            <a
+              href="https://www.mshparisnord.fr/programmes/consortium-humanum-cannevas/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src={mshparisnordLogo}
+                height="60px"
+                alt="Le site de Huma-num"
+              />
             </a>
           </Grid>
         </Grid>

@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Stack } from "@mui/material";
+import { Box, Container, Link, Paper, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -78,13 +78,14 @@ export const HomePage: React.FC = () => {
                   </Typography>
                   <Typography variant="subtitle1" gutterBottom={true}>
                     <Trans i18nKey={"home.tutoriel.link"}>
-                      <a
+                      default
+                      <Link
                         href="https://celluloid.hypotheses.org/1365"
                         target="_blank"
                         rel="noreferrer"
                       >
                         https://celluloid.hypotheses.org/1365
-                      </a>
+                      </Link>
                     </Trans>
                   </Typography>
                 </Box>
