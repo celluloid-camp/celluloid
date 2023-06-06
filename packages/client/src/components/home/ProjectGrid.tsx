@@ -37,6 +37,8 @@ export const ProjectGrid: React.FC = () => {
   const debouncedSearch = debounce((value: string) => {
     if (value.length >= 3) {
       setSearchTerm(value);
+    } else if (value.length === 0) {
+      setSearchTerm(undefined);
     }
   }, 1000);
 

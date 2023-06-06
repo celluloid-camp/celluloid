@@ -40,6 +40,11 @@ export const SigninMenu = ({
     navigate("/profile");
   };
 
+  const handleOpenAdmin = () => {
+    window.open("/admin", "_blank");
+    handleClose();
+  };
+
   return (
     <div>
       {user ? (
@@ -69,11 +74,9 @@ export const SigninMenu = ({
         onClose={handleClose}
       >
         {user && user.role == "Admin" ? (
-          <a href={"/admin"} target="_blank" rel="noopener noreferrer">
-            <MenuItem>
-              <Trans i18nKey={"menu.admin"} />
-            </MenuItem>
-          </a>
+          <MenuItem onClick={handleOpenAdmin}>
+            <Trans i18nKey={"menu.admin"} />
+          </MenuItem>
         ) : null}
         <MenuItem onClick={handleProfile}>
           <Trans i18nKey={"menu.profile"} />
