@@ -3,6 +3,7 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import * as React from "react";
 import { Trans } from "react-i18next";
+import { useNavigate } from "react-router";
 
 import { UserAvatar } from "~components/UserAvatar";
 
@@ -19,6 +20,7 @@ export const SigninMenu = ({
   onClickSignup,
   onClickLogout,
 }: Props) => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -32,6 +34,12 @@ export const SigninMenu = ({
     handleClose();
     onClickLogout();
   };
+
+  const handleProfile = () => {
+    handleClose();
+    navigate("/profile");
+  };
+
   return (
     <div>
       {user ? (
@@ -67,6 +75,9 @@ export const SigninMenu = ({
             </MenuItem>
           </a>
         ) : null}
+        <MenuItem onClick={handleProfile}>
+          <Trans i18nKey={"menu.profile"} />
+        </MenuItem>
         <MenuItem onClick={handleLogout}>
           <Trans i18nKey={"menu.logout"} />
         </MenuItem>

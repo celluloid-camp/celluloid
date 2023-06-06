@@ -3,6 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
+  Button,
   Chip,
   List,
   ListItem,
@@ -18,6 +19,8 @@ import { Trans, useTranslation } from "react-i18next";
 import DialogError from "~components/DialogError";
 import LabeledProgressSwitch from "~components/LabeledProgressSwitch";
 import { UserAvatar } from "~components/UserAvatar";
+import { useGetAnnotationsQuery } from "~hooks/user-project";
+import AnnotationService from "~services/AnnotationService";
 import { AsyncAction } from "~types/ActionTypes";
 import { isAdmin, isOwner } from "~utils/ProjectUtils";
 
@@ -71,6 +74,8 @@ const SideBarComponenent: React.FC<Props> = ({
   const { t } = useTranslation();
   const confirm = useConfirm();
 
+  const { data: annotations } = useGetAnnotationsQuery(project.id);
+
   const handleDelete = () => {
     confirm({
       title: t("project.confirm-delete.title", "Delete project"),
@@ -84,6 +89,10 @@ const SideBarComponenent: React.FC<Props> = ({
     }).then(() => {
       onClickDelete(project.id);
     });
+  };
+
+  const handleExport = (format: "csv" | "xml" | "srt") => {
+    AnnotationService.export(project.id, format);
   };
 
   return (
@@ -107,6 +116,41 @@ const SideBarComponenent: React.FC<Props> = ({
           borderRadius: 2,
         }}
       >
+        {annotations && annotations.length > 0 ? (
+          <>
+            <Typography variant="h6" mb={2}>
+              {t("project.export", "Export annotations")}
+            </Typography>
+            <Stack direction={"row"} spacing={1}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{ textTransform: "uppercase" }}
+                onClick={() => handleExport("csv")}
+              >
+                CSV
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => handleExport("xml")}
+              >
+                XML
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => handleExport("srt")}
+              >
+                SRT
+              </Button>
+            </Stack>
+          </>
+        ) : null}
+
         {user && isOwner(project, user) ? (
           <>
             <Typography variant="h6" mb={2}>

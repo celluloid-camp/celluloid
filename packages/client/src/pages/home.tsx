@@ -5,21 +5,31 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { openStudentSignup } from "~actions/Signin";
-import ProjectGrid from "~components/home/ProjectGrid";
+import { ProjectGrid } from "~components/home/ProjectGrid";
 import { LogoSign } from "~components/LogoSign";
 import { StudentsIcon } from "~components/StudentsIcon";
 import { TeacherIcon } from "~components/TeacherIcon";
-// import { useMe } from "~hooks/use-user";
+import { useMe } from "~hooks/use-user";
 
 export const HomePage: React.FC = () => {
-  // const { data: user } = useMe();
+  const { data } = useMe();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const handleJoin = () => {
     dispatch(openStudentSignup());
+  };
+
+  const handleCreate = () => {
+    if (!data.error) {
+      navigate(`/create`);
+    } else {
+      dispatch(openStudentSignup());
+    }
   };
 
   return (
@@ -123,7 +133,7 @@ export const HomePage: React.FC = () => {
                       color="primary"
                       size="large"
                       sx={{ textTransform: "uppercase" }}
-                      href="/create"
+                      onClick={() => handleCreate()}
                     >
                       {t("home.newProject")}
                     </Button>

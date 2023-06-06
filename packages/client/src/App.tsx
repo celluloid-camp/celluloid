@@ -21,6 +21,7 @@ import { About } from "./pages/about";
 import { CreateProjectPage } from "./pages/create";
 import { HomePage } from "./pages/home";
 import LegalNotice from "./pages/legal";
+import UserProfile from "./pages/profile";
 import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
 import Project from "./scenes/Project";
@@ -69,6 +70,7 @@ const Content = () => {
                       <Route index element={<HomePage />} />
                       <Route path="create" element={<CreateProjectPage />} />
                       <Route path="about" element={<About />} />
+                      <Route path="profile" element={<UserProfile />} />
                       <Route path="legal-notice" element={<LegalNotice />} />
                       <Route
                         path="terms-and-conditions"

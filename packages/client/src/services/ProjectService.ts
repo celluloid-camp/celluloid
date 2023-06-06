@@ -8,12 +8,15 @@ import {
 import * as Constants from "./Constants";
 
 export default class Projects {
-  static list() {
+  static list(keyword?: string) {
     const headers = {
       Accepts: "application/json",
     };
 
-    return fetch(`/api/projects/`, {
+    const url = keyword ? `/api/projects?keyword=${keyword}` : `/api/projects`
+
+
+    return fetch(url, {
       method: "GET",
       headers: new Headers(headers),
       credentials: "include",

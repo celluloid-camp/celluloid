@@ -1,14 +1,18 @@
 import { AnnotationData, AnnotationRecord, UserRecord } from "@celluloid/types";
 import * as express from "express";
+import Papa from 'papaparse';
 
 import { isProjectOwnerOrCollaborativeMember } from "../auth/Utils";
 import { logger } from "../backends/Logger";
 import * as AnnotationStore from "../store/AnnotationStore";
 import * as CommentStore from "../store/CommentStore";
 import * as ProjectStore from "../store/ProjectStore";
+import { convertToSrt } from "../utils/srt";
 import CommentApi from "./CommentApi";
 
+
 const log = logger("api/AnnotationApi");
+const js2xmlparser = require("js2xmlparser");
 
 const router = express.Router({ mergeParams: true });
 
@@ -20,8 +24,7 @@ function fetchComments(annotation: AnnotationRecord, user: UserRecord) {
   );
 }
 
-router.get("/", (req, res) => {
-  // @ts-ignore
+router.get('/', (req: express.Request<{ projectId: string }>, res: express.Response) => {
   const projectId = req.params.projectId;
   const user = req.user as UserRecord;
 
@@ -44,6 +47,43 @@ router.get("/", (req, res) => {
       }
     });
 });
+
+router.get('/export/:format', async (req: express.Request<{ projectId: string, format: string }>, res: express.Response) => {
+  const projectId = req.params.projectId;
+  const format = req.params.format;
+  const user = req.user as UserRecord;
+
+  const annotations = await AnnotationStore.selectByProject(projectId, user);
+  const data = await Promise.all(
+    annotations.map((annotation) => fetchComments(annotation, user))
+  );
+
+  const formated = data.map((annotation) => ({
+    startTime: annotation.startTime,
+    endTime: annotation.stopTime,
+    text: annotation.text,
+    comments: annotation.comments.map((comment) => comment.text)
+  }))
+
+  let content = "";
+  if (format === 'xml') {
+    content = js2xmlparser.parse("annotations", formated);
+  } else if (format == "csv") {
+
+    content = Papa.unparse(formated);
+  } else if (format == "srt") {
+
+    content = convertToSrt(formated);
+
+  }
+
+  res.setHeader('Content-Disposition', `attachment; filename="data.${format}"`);
+  res.setHeader('Content-Type', `text/${format}`);
+  res.send(content);
+
+});
+
+
 
 router.post("/", isProjectOwnerOrCollaborativeMember, (req, res) => {
   const projectId = req.params.projectId;
