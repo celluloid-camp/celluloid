@@ -48,6 +48,17 @@ app.use("/api/video", VideosApi);
 
 app.get("/elb-status", (_, res) => res.status(200).send());
 
+app.get('/auth', (req, res, next) => {
+  // Check if the user session is valid
+  if (req.user) {
+    // User session is valid, allow the request to proceed
+    next();
+  } else {
+    // User session is invalid, send an authentication error response
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+});
+
 app.get("/*", (_, res) => res.sendFile(clientApp));
 
 (async () => {
