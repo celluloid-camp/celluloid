@@ -1,4 +1,4 @@
-import { ProjectGraphRecord, TagData, UserRecord } from "@celluloid/types";
+import { ProjectGraphRecord } from "@celluloid/types";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -17,7 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import * as R from "ramda";
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TransitionGroup } from "react-transition-group";
 import { useDidUpdate } from "rooks";
@@ -45,9 +45,9 @@ export const ProjectGrid: React.FC = () => {
 
   const { t } = useTranslation();
 
-  // useDidUpdate(() => {
-  //   queryClient.invalidateQueries(["projects"]);
-  // }, [user]);
+  useDidUpdate(() => {
+    queryClient.invalidateQueries(["projects"]);
+  }, [user]);
 
   const sort = R.sortWith([R.descend(R.prop("publishedAt"))]);
 

@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import * as React from "react";
 
 import { UserAvatar } from "~components/UserAvatar";
