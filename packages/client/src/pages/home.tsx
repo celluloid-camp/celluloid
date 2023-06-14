@@ -76,15 +76,16 @@ export const HomePage: React.FC = () => {
                   >
                     <Trans i18nKey={"home.tutoriel.subtitle"}></Trans>
                   </Typography>
+
                   <Typography variant="subtitle1" gutterBottom={true}>
                     <Trans i18nKey={"home.tutoriel.link"}>
                       default
                       <Link
-                        href="https://celluloid.hypotheses.org/1365"
+                        href="https://canevas.hypotheses.org/560"
                         target="_blank"
                         rel="noreferrer"
                       >
-                        https://celluloid.hypotheses.org/1365
+                        https://canevas.hypotheses.org/560
                       </Link>
                     </Trans>
                   </Typography>
