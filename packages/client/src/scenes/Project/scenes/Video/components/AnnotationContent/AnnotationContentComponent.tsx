@@ -101,27 +101,27 @@ const AnnotationContentComponent = ({
               appear={true}
               {...(focused ? { timeout: 1000 } : {})}
             >
-              <div>
+              <Box>
                 {!focused && (
                   <Typography
+                    component={"p"}
                     sx={{
                       "& a:any-link": {
                         color: "#42a6f5",
                       },
                     }}
-                    color="neutral.400"
-                    noWrap={true}
+                    color="danger.main"
                     gutterBottom={true}
                   >
-                    <span dangerouslySetInnerHTML={{ __html: richText }} />
+                    {richText}
                   </Typography>
                 )}
-              </div>
+              </Box>
             </Fade>
             <Collapse in={focused} appear={true}>
               {focused && (
                 <Typography
-                  noWrap={true}
+                  component={"p"}
                   color="neutral.400"
                   sx={{
                     "& a:any-link": {

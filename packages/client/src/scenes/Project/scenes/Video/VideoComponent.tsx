@@ -55,7 +55,7 @@ const Player: React.FC<ReactPlayerProps> = (props) => {
           title: 0,
           warningTitle: 0,
           p2p: 0,
-          autoplay: 1,
+          autoplay: 0,
         },
       }}
       {...props}
@@ -224,7 +224,7 @@ const VideoComponent = connect(
           <div
             style={{
               position: "absolute",
-              top: 0,
+              top: 350,
               left: 0,
               right: 0,
               bottom: 0,
