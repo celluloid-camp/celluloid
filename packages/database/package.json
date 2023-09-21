@@ -11,18 +11,20 @@
   "scripts": {
     "build": "tsup",
     "clean": "rimraf .turbo node_modules dist",
-    "migrate:initial": "DATABASE_URL=$DATABASE_URL prisma migrate resolve --applied 0_init",
-    "migrate:deploy": "prisma migrate deploy",
-    "migrate:dev": "prisma migrate dev",
-    "push": "prisma db push",
+    "setup": "yarn db:push && yarn migrate:init && migrate:deploy && yarn generate",
+    "migrate:init": "yarn prisma migrate resolve --applied 0_init",
+    "migrate:deploy": "yarn prisma migrate deploy",
+    "migrate:dev": "yarn prisma migrate dev",
+    "db:push": "yarn prisma db push",
     "seed": "tsx src/seed.ts",
     "dev": "tsup --watch",
     "format": "prisma format",
-    "generate": "prisma generate",
+    "generate": "yarn prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
     "prebuild": "yarn run generate",
     "predev": "yarn run generate",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "prisma": "dotenv -e ../../.env -- npx prisma"
   },
   "devDependencies": {
     "@celluloid/config": "*",

@@ -1,7 +1,5 @@
+import RedisStore from "connect-redis"
 import session from "express-session";
-
-let RedisStore = require("connect-redis")(session);
-
 import { createClient } from "redis";
 
 import { logger } from "../backends/Logger";
@@ -9,12 +7,15 @@ import { logger } from "../backends/Logger";
 const log = logger("http/Session");
 
 export function createSession() {
-  let client = createClient({ legacyMode: true, url: process.env.CELLULOID_REDIS_URL || "redis://localhost" });
-  client.connect().catch((e) => log.error(`redis error : ${e.message}`));
+  const redisClient = createClient({ url: process.env.CELLULOID_REDIS_URL || "redis://localhost" });
+  redisClient.connect().catch((e) => log.error(`redis error : ${e.message}`));
 
+  const redisStore = new RedisStore({
+    client: redisClient,
+  })
   log.info("redis connected");
   return session({
-    store: new RedisStore({ client }),
+    store: redisStore,
     cookie: {
       domain: process.env.CELLULOID_COOKIE_DOMAIN
         ? process.env.CELLULOID_COOKIE_DOMAIN

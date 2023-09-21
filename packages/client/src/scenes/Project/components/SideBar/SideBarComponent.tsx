@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
+import Image from "mui-image";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -107,6 +108,72 @@ const SideBarComponenent: React.FC<Props> = ({
         )}
       </Stack>
 
+      <Box
+        sx={{
+          backgroundColor: "white",
+          paddingX: 3,
+          marginY: 2,
+          paddingY: 3,
+          borderRadius: 2,
+        }}
+      >
+        <Typography variant="h6" mb={2}>
+          {t("project.playlist", "Playlist")}
+        </Typography>
+
+        <List
+          dense={true}
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            bgcolor: "neutral.100",
+            position: "relative",
+            overflow: "auto",
+            borderRadius: 2,
+            "& ul": { padding: 0 },
+          }}
+        >
+          <ListItem>
+            <Stack sx={{ backgroundColor: "black" }} width={150} height={100}>
+              <Image bgColor="#000000" src="" />
+              <Stack flex={1} marginX={1} marginBottom={1}>
+                <Typography
+                  variant="caption"
+                  color={"white"}
+                  sx={{
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 1,
+                  }}
+                >
+                  {project.title}
+                </Typography>
+              </Stack>
+            </Stack>
+          </ListItem>
+          <ListItem>
+            <Stack sx={{ backgroundColor: "black" }} width={150} height={100}>
+              <Image bgColor="#000000" src="" />
+              <Stack flex={1} marginX={1} marginBottom={1}>
+                <Typography
+                  variant="caption"
+                  color={"white"}
+                  sx={{
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 1,
+                  }}
+                >
+                  {project.title}
+                </Typography>
+              </Stack>
+            </Stack>
+          </ListItem>
+        </List>
+      </Box>
       <Box
         sx={{
           backgroundColor: "white",

@@ -1,4 +1,3 @@
-import { ProjectGraphRecord } from "@celluloid/types";
 import {
   Box,
   Card,
@@ -13,10 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "mui-image";
 import * as React from "react";
 
-import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
-// import { connect } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { AnyAction, Dispatch } from "redux";
+// import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
 import { getPeerTubeVideoData } from "~services/VideoService";
 
 const StyledBox = styled(Box)(() => ({
@@ -40,7 +36,13 @@ const StyledCardContent = styled(CardContent)(() => ({
 
 interface Props {
   showPublic?: boolean;
-  project: ProjectGraphRecord;
+  project: {
+    id: string;
+    host?: string | null;
+    videoId: string;
+    title: string;
+    objective: string;
+  };
 }
 
 export const ProjectThumbnail: React.FC<Props> = ({ project }) => {
@@ -99,7 +101,7 @@ export const ProjectThumbnail: React.FC<Props> = ({ project }) => {
             </Typography>
           </Grid>
           <Grid item={true} xs={12}>
-            <ProjectUserAvatar project={project} />
+            {/* <ProjectUserAvatar project={project} /> */}
           </Grid>
           {/* <Grid item={true} xs={12}>
               <Stack direction="row" spacing={1}>

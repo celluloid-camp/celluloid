@@ -1,10 +1,13 @@
 import { PeerTubeVideo, ProjectCreateData } from "@celluloid/types";
 import ClearIcon from "@mui/icons-material/Clear";
+import CloseIcon from "@mui/icons-material/Close";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import { LoadingButton } from "@mui/lab";
 import {
   Autocomplete,
   Box,
+  ButtonBase,
   Chip,
   CircularProgress,
   Container,
@@ -19,7 +22,7 @@ import {
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import moment from "moment";
+// import moment from "moment";
 import Image from "mui-image";
 import React, { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -30,8 +33,10 @@ import { StyledTitle } from "~components/typography";
 import { ERR_ALREADY_EXISTING_PROJECT } from "~services/Constants";
 import Projects from "~services/ProjectService";
 import { getPeerTubeVideoData } from "~services/VideoService";
-import { formatDuration } from "~utils/DurationUtils";
+// import { formatDuration } from "~utils/DurationUtils";
 import { humanizeError } from "~utils/errors";
+
+const THUMBNAIL_WIDTH = 250;
 
 type PeerTubeVideoUrlFormProps = {
   onLoaded: (data: PeerTubeVideo | null) => void;
@@ -348,12 +353,45 @@ const CreateProjectForm: React.FC<{ video: PeerTubeVideo }> = ({ video }) => {
   );
 };
 
+const AddRelatedVideoPlaceHolder: React.FC = () => {
+  return (
+    <Grid item xs={6}>
+      <Stack
+        sx={{
+          borderColor: "neutral.300",
+          borderRadius: 1,
+          borderWidth: 1,
+          borderStyle: "solid",
+        }}
+        width={THUMBNAIL_WIDTH}
+        height={"100%"}
+      >
+        <ButtonBase sx={{ height: "100%" }}>
+          <Stack
+            flex={1}
+            marginX={1}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <PlaylistAddIcon sx={{ color: "neutral.500" }} fontSize="large" />
+            <Typography variant="body2" color="neutral.500">
+              <Trans i18nKey={"project.add-related-video"}>
+                Add a related video
+              </Trans>
+            </Typography>
+          </Stack>
+        </ButtonBase>
+      </Stack>
+    </Grid>
+  );
+};
+
 const PeerTubeVideoSnapshot: React.FC<{ video: PeerTubeVideo }> = ({
   video,
 }) => {
   // const url = new URL(video.url);
   const thumbnailUrl = `https://${video.account.host}${video.thumbnailPath}`;
-  const { i18n } = useTranslation();
+  // const { i18n } = useTranslation();
   return (
     <Box
       marginTop={2}
@@ -361,16 +399,26 @@ const PeerTubeVideoSnapshot: React.FC<{ video: PeerTubeVideo }> = ({
       padding={2}
       borderRadius={1}
     >
-      <Stack direction={"row"}>
-        <Image
-          src={thumbnailUrl}
-          width={"20%"}
-          showLoading={<CircularProgress />}
-          bgColor="#000000"
-        />
-        <Stack flex={1} marginLeft={2}>
-          <Typography variant="h6">{video.name}</Typography>
-          <Typography variant="body2">{video.account.displayName}</Typography>
+      <Grid container rowSpacing={1} columnSpacing={1}>
+        <Grid item>
+          <Box sx={{ position: "absolute", zIndex: 1 }} width={THUMBNAIL_WIDTH}>
+            <Box display={"flex"} justifyContent="flex-end">
+              <IconButton aria-label="delete">
+                <CloseIcon sx={{ color: "white" }} />
+              </IconButton>
+            </Box>
+          </Box>
+          <Stack sx={{ backgroundColor: "black" }} width={250}>
+            <Image
+              src={thumbnailUrl}
+              showLoading={<CircularProgress />}
+              bgColor="#000000"
+            />
+            <Stack flex={1} marginX={1} marginBottom={1}>
+              <Typography variant="body2" color={"white"}>
+                {video.name}
+              </Typography>
+              {/* <Typography variant="body2">{video.account.displayName}</Typography>
           <Typography variant="caption">
             {video.account.host} - {formatDuration(video.duration)}
           </Typography>
@@ -378,9 +426,12 @@ const PeerTubeVideoSnapshot: React.FC<{ video: PeerTubeVideo }> = ({
             {moment(video.createdAt)
               .locale(i18n.language.substring(0, 2))
               .format("LLL")}
-          </Typography>
-        </Stack>
-      </Stack>
+          </Typography> */}
+            </Stack>
+          </Stack>
+        </Grid>
+        <AddRelatedVideoPlaceHolder />
+      </Grid>
     </Box>
   );
 };

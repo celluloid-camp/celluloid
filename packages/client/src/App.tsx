@@ -2,15 +2,17 @@
 // import MomentUtils from "material-ui-pickers/utils/moment-utils";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
 import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { ConfirmProvider } from "material-ui-confirm";
-import React from "react";
+import React, { useState } from "react";
 import { initReactI18next } from "react-i18next";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { SharedLayout } from "~components/SharedLayout";
+import { trpc } from "~utils/trpc";
 
 import ResetScroll from "./components/ResetScroll";
 import UpdateIndicator from "./components/UpdateIndicator";
@@ -27,8 +29,6 @@ import { TermsAndConditions } from "./pages/terms";
 import Project from "./scenes/Project";
 import createAppStore from "./store";
 import { createTheme } from "./theme";
-
-const queryClient = new QueryClient();
 
 i18next
   .use(LanguageDetector)
@@ -54,47 +54,75 @@ i18next
 
 const store = createAppStore();
 
-const Content = () => {
+const App = () => {
+  const [queryClient] = useState(() => new QueryClient());
+  const [trpcClient] = useState(() =>
+    trpc.createClient({
+      links: [
+        httpBatchLink({
+          url: "/trpc",
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
+        }),
+      ],
+    })
+  );
+
   return (
     <Provider store={store}>
       {/* <ConnectedRouter history={history}> */}
       <ThemeProvider theme={createTheme()}>
         <CssBaseline />
-        <QueryClientProvider client={queryClient}>
-          <ConfirmProvider>
-            {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
-            <React.Fragment>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <ConfirmProvider>
+              {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
               <React.Fragment>
-                <UpdateIndicator />
-                <BrowserRouter>
-                  <ResetScroll />
-                  <Routes>
-                    <Route path="/" element={<SharedLayout />}>
-                      <Route index element={<HomePage />} />
-                      <Route path="create" element={<CreateProjectPage />} />
-                      <Route path="about" element={<About />} />
-                      <Route path="profile" element={<UserProfile />} />
-                      <Route path="legal-notice" element={<LegalNotice />} />
+                <React.Fragment>
+                  <UpdateIndicator />
+                  <BrowserRouter>
+                    <ResetScroll />
+                    <Routes>
+                      <Route path="/" element={<SharedLayout />}>
+                        <Route index element={<HomePage />} />
+                        <Route path="create" element={<CreateProjectPage />} />
+                        <Route path="about" element={<About />} />
+                        <Route path="profile" element={<UserProfile />} />
+                        <Route path="legal-notice" element={<LegalNotice />} />
+                        <Route
+                          path="terms-and-conditions"
+                          element={<TermsAndConditions />}
+                        />
+                        <Route
+                          path="projects/:projectId"
+                          element={<Project />}
+                        />
+                        <Route
+                          path="shares/:projectId"
+                          element={<SharePage />}
+                        />
+                        {/* <Route path="*" element={<NotFound />} /> */}
+                      </Route>
                       <Route
-                        path="terms-and-conditions"
-                        element={<TermsAndConditions />}
+                        path="/shares/:projectId"
+                        element={<SharePage />}
                       />
-                      <Route path="projects/:projectId" element={<Project />} />
-                      <Route path="shares/:projectId" element={<SharePage />} />
-                      {/* <Route path="*" element={<NotFound />} /> */}
-                    </Route>
-                    <Route path="/shares/:projectId" element={<SharePage />} />
-                  </Routes>
-                </BrowserRouter>
+                    </Routes>
+                  </BrowserRouter>
+                </React.Fragment>
               </React.Fragment>
-            </React.Fragment>
-            {/* </MuiPickersUtilsProvider> */}
-          </ConfirmProvider>
-        </QueryClientProvider>
+              {/* </MuiPickersUtilsProvider> */}
+            </ConfirmProvider>
+          </QueryClientProvider>
+        </trpc.Provider>
       </ThemeProvider>
       {/* </ConnectedRouter> */}
     </Provider>
   );
 };
 
-export default Content;
+export default App;

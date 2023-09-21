@@ -3,7 +3,7 @@ import "./Config";
 import bodyParser from "body-parser";
 import compression from "compression";
 import express from "express";
-import expressPino from "express-pino-logger";
+// import expressPino from "express-pino-logger";
 import passport from "passport";
 
 import ProjectsApi from "./api/ProjectApi";
@@ -36,7 +36,7 @@ app.use(express.static(clientDir));
 app.use(bodyParser.json());
 app.use(compression());
 app.use(createSession());
-app.use(expressPino({ logger: log }));
+// app.use(expressPino({ logger: log }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -48,7 +48,10 @@ app.use("/api/video", VideosApi);
 
 app.get("/elb-status", (_, res) => res.status(200).send());
 
-app.get('/auth', (req, res, next) => {
+app.get('/api/test', (req, res, next) => {
+
+  console.log("here", req.session)
+
   // Check if the user session is valid
   if (req.user) {
     // User session is valid, allow the request to proceed

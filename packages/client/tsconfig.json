@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "composite": false,
     "rootDir": "src",
     "baseUrl": ".",
     "target": "ESNext",
@@ -23,6 +24,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "declaration": false,
+    "declarationMap": false,
     "paths": {
       "~actions/*": [
         "src/actions/*"

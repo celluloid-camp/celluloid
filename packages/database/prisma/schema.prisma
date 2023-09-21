@@ -9,7 +9,7 @@ generator client {
 }
 
 model Annotation {
-  id        String    @id @unique(map: "annotation_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id        String    @id @unique(map: "annotation_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   text      String
   startTime Float     @db.Real
   stopTime  Float     @db.Real
@@ -24,7 +24,7 @@ model Annotation {
 }
 
 model Comment {
-  id           String     @id @unique(map: "comment_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id           String     @id @unique(map: "comment_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   text         String
   annotationId String     @db.Uuid
   userId       String     @db.Uuid
@@ -40,7 +40,7 @@ model Language {
 }
 
 model Project {
-  id             String          @id @unique(map: "project_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id             String          @id @unique(map: "project_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   videoId        String
   userId         String          @db.Uuid
   title          String
@@ -65,7 +65,7 @@ model Project {
 }
 
 model Tag {
-  id           String         @id @unique(map: "tag_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id           String         @id @unique(map: "tag_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name         String
   featured     Boolean        @default(false)
   extra        Json?          @default("{}")
@@ -82,7 +82,7 @@ model TagToProject {
 }
 
 model User {
-  id              String          @id @unique(map: "user_id_unique") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String          @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email           String?         @unique(map: "user_email_unique") @db.VarChar(255)
   username        String          @unique(map: "user_username_unique") @db.VarChar(255)
   password        String          @db.VarChar(255)

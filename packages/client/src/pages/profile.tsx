@@ -3,12 +3,10 @@ import * as React from "react";
 
 import { MyProjectGrid } from "~components/profile/MyProjectGrid";
 import { UserAvatar } from "~components/UserAvatar";
-import { useMe } from "~hooks/use-user";
+import { trpc } from "~utils/trpc";
 
 const UserProfile: React.FC = () => {
-  const { data, isLoading } = useMe();
-
-  console.log(data);
+  const { data, isFetching } = trpc.user.me.useQuery();
   return (
     <Box
       sx={{
@@ -20,7 +18,7 @@ const UserProfile: React.FC = () => {
         pt: 8,
       }}
     >
-      {isLoading ? (
+      {isFetching || !data ? (
         <Box
           mx={2}
           my={10}

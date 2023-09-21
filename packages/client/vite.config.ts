@@ -15,6 +15,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": "http://localhost:3001",
+      "/trpc": "http://localhost:2021",
     },
   },
   logLevel: "error",

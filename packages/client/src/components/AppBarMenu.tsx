@@ -17,9 +17,9 @@ import { Footer } from "~components/Footer";
 import { LogoWithLabel } from "~components/LogoWithLabel";
 import SigninDialog, { SigninState } from "~components/Signin";
 import { SigninMenu } from "~components/SigninMenu";
-import { useMe } from "~hooks/use-user";
 import { EmptyAction } from "~types/ActionTypes";
 import { AppState } from "~types/StateTypes";
+import { trpc } from "~utils/trpc";
 
 import { LanguageMenu } from "./LanguageMenu";
 
@@ -60,11 +60,11 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data } = useMe();
+  const meQuery = trpc.user.me.useQuery();
   const dispatch = useDispatch();
 
   const handleCreate = () => {
-    if (!data.error) {
+    if (!meQuery.error) {
       navigate(`/create`);
     } else {
       dispatch(openStudentSignup());

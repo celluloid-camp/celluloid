@@ -12,10 +12,11 @@ import { ProjectGrid } from "~components/home/ProjectGrid";
 import { LogoSign } from "~components/LogoSign";
 import { StudentsIcon } from "~components/StudentsIcon";
 import { TeacherIcon } from "~components/TeacherIcon";
-import { useMe } from "~hooks/use-user";
+import { trpc } from "~utils/trpc";
 
 export const HomePage: React.FC = () => {
-  const { data } = useMe();
+  const { isError } = trpc.user.me.useQuery();
+
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -25,7 +26,7 @@ export const HomePage: React.FC = () => {
   };
 
   const handleCreate = () => {
-    if (!data.error) {
+    if (!isError) {
       navigate(`/create`);
     } else {
       dispatch(openStudentSignup());
