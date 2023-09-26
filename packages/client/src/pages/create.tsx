@@ -7,10 +7,17 @@ import { LoadingButton } from "@mui/lab";
 import {
   Autocomplete,
   Box,
+  Button,
   ButtonBase,
   Chip,
   CircularProgress,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogProps,
+  DialogTitle,
   Grid,
   IconButton,
   InputAdornment,
@@ -31,15 +38,15 @@ import * as Yup from "yup";
 
 import { StyledTitle } from "~components/typography";
 import { ERR_ALREADY_EXISTING_PROJECT } from "~services/Constants";
-import Projects from "~services/ProjectService";
 import { getPeerTubeVideoData } from "~services/VideoService";
 // import { formatDuration } from "~utils/DurationUtils";
 import { humanizeError } from "~utils/errors";
+import { trpc } from "~utils/trpc";
 
 const THUMBNAIL_WIDTH = 250;
 
 type PeerTubeVideoUrlFormProps = {
-  onLoaded: (data: PeerTubeVideo | null) => void;
+  onLoaded: (data: PeerTubeVideo[] | null) => void;
 };
 
 const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
@@ -48,7 +55,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
   const { t } = useTranslation();
 
   const validationSchema = Yup.object().shape({
-    data: Yup.object(),
+    data: Yup.array().of(Yup.object()),
     url: Yup.string()
       .url(t("project.create.url.not-valid") || "")
       .required(t("project.create.url.required") || ""),
@@ -63,7 +70,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     validationSchema: validationSchema,
     onSubmit: (values) => {
       if (values.data) {
-        onLoaded(values.data as PeerTubeVideo);
+        onLoaded(values.data);
       }
       formik.setStatus("submited");
     },
@@ -133,14 +140,19 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
   );
 };
 
-const CreateProjectForm: React.FC<{ video: PeerTubeVideo }> = ({ video }) => {
+const CreateProjectForm: React.FC<{ videos: PeerTubeVideo[] }> = ({
+  videos,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const mutation = useMutation({
-    mutationFn: (newProject: ProjectCreateData) => {
-      return Projects.create(newProject);
-    },
-  });
+
+  const mutation = trpc.playlist.add.useMutation();
+
+  // const mutation = useMutation({
+  //   mutationFn: (newProject: ProjectCreateData) => {
+  //     return Projects.create(newProject);
+  //   },
+  // });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -156,7 +168,7 @@ const CreateProjectForm: React.FC<{ video: PeerTubeVideo }> = ({ video }) => {
 
   const formik = useFormik({
     initialValues: {
-      title: video.name,
+      title: "",
       description: "",
       keywords: [],
       public: false,
@@ -166,21 +178,25 @@ const CreateProjectForm: React.FC<{ video: PeerTubeVideo }> = ({ video }) => {
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
-        const res = await mutation.mutateAsync({
-          videoId: video.shortUUID,
+        const playlist = await mutation.mutateAsync({
           title: values.title,
-          host: video.account.host,
+          projects: videos.map((video) => ({
+            videoId: video.shortUUID,
+            host: video.account.host,
+          })),
           description: values.description,
           public: values.public,
           collaborative: values.collaborative,
-          assignments: [],
-          tags: [],
           objective: "",
           levelStart: 0,
           levelEnd: 5,
+          shared: false,
+          userId: "",
         });
-        formik.resetForm();
-        navigate(`/projects/${res.id}`);
+        if (playlist) {
+          formik.resetForm();
+          navigate(`/projects/${playlist.projects[0].id}`);
+        }
       } catch (e) {
         if (e.message == ERR_ALREADY_EXISTING_PROJECT) {
           formik.setFieldError(
@@ -353,7 +369,7 @@ const CreateProjectForm: React.FC<{ video: PeerTubeVideo }> = ({ video }) => {
   );
 };
 
-const AddRelatedVideoPlaceHolder: React.FC = () => {
+const AddVideoButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
     <Grid item xs={6}>
       <Stack
@@ -364,9 +380,9 @@ const AddRelatedVideoPlaceHolder: React.FC = () => {
           borderStyle: "solid",
         }}
         width={THUMBNAIL_WIDTH}
-        height={"100%"}
+        height={180}
       >
-        <ButtonBase sx={{ height: "100%" }}>
+        <ButtonBase sx={{ height: "100%" }} onClick={onClick}>
           <Stack
             flex={1}
             marginX={1}
@@ -375,8 +391,8 @@ const AddRelatedVideoPlaceHolder: React.FC = () => {
           >
             <PlaylistAddIcon sx={{ color: "neutral.500" }} fontSize="large" />
             <Typography variant="body2" color="neutral.500">
-              <Trans i18nKey={"project.add-related-video"}>
-                Add a related video
+              <Trans i18nKey={"project.add-video-to-playlist-button"}>
+                Ajouter une vidéo à la liste de lecture
               </Trans>
             </Typography>
           </Stack>
@@ -386,11 +402,59 @@ const AddRelatedVideoPlaceHolder: React.FC = () => {
   );
 };
 
-const PeerTubeVideoSnapshot: React.FC<{ video: PeerTubeVideo }> = ({
+const VideoSnap: React.FC<{ video: PeerTubeVideo; onDelete: () => void }> = ({
   video,
+  onDelete,
 }) => {
-  // const url = new URL(video.url);
   const thumbnailUrl = `https://${video.account.host}${video.thumbnailPath}`;
+  return (
+    <Grid item>
+      <Box sx={{ position: "absolute", zIndex: 1 }} width={THUMBNAIL_WIDTH}>
+        <Box display={"flex"} justifyContent="flex-end">
+          <IconButton aria-label="delete" onClick={onDelete}>
+            <CloseIcon sx={{ color: "white" }} />
+          </IconButton>
+        </Box>
+      </Box>
+      <Stack sx={{ backgroundColor: "black" }} width={250} height={180}>
+        <Image
+          src={thumbnailUrl}
+          showLoading={<CircularProgress />}
+          bgColor="#000000"
+        />
+        <Stack flex={1} marginX={1} marginBottom={1}>
+          <Typography
+            variant="body2"
+            color={"white"}
+            sx={{
+              display: "-webkit-box",
+              overflow: "hidden",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 1,
+            }}
+          >
+            {video.name}
+          </Typography>
+          {/* <Typography variant="body2">{video.account.displayName}</Typography>
+    <Typography variant="caption">
+      {video.account.host} - {formatDuration(video.duration)}
+    </Typography>
+    <Typography variant="caption">
+      {moment(video.createdAt)
+        .locale(i18n.language.substring(0, 2))
+        .format("LLL")}
+    </Typography> */}
+        </Stack>
+      </Stack>
+    </Grid>
+  );
+};
+
+const PeerTubeVideoSnapshots: React.FC<{
+  videos: PeerTubeVideo[];
+  onDelete: (index: number) => void;
+  onAddMore: () => void;
+}> = ({ videos, onDelete, onAddMore }) => {
   // const { i18n } = useTranslation();
   return (
     <Box
@@ -400,63 +464,111 @@ const PeerTubeVideoSnapshot: React.FC<{ video: PeerTubeVideo }> = ({
       borderRadius={1}
     >
       <Grid container rowSpacing={1} columnSpacing={1}>
-        <Grid item>
-          <Box sx={{ position: "absolute", zIndex: 1 }} width={THUMBNAIL_WIDTH}>
-            <Box display={"flex"} justifyContent="flex-end">
-              <IconButton aria-label="delete">
-                <CloseIcon sx={{ color: "white" }} />
-              </IconButton>
-            </Box>
-          </Box>
-          <Stack sx={{ backgroundColor: "black" }} width={250}>
-            <Image
-              src={thumbnailUrl}
-              showLoading={<CircularProgress />}
-              bgColor="#000000"
-            />
-            <Stack flex={1} marginX={1} marginBottom={1}>
-              <Typography variant="body2" color={"white"}>
-                {video.name}
-              </Typography>
-              {/* <Typography variant="body2">{video.account.displayName}</Typography>
-          <Typography variant="caption">
-            {video.account.host} - {formatDuration(video.duration)}
-          </Typography>
-          <Typography variant="caption">
-            {moment(video.createdAt)
-              .locale(i18n.language.substring(0, 2))
-              .format("LLL")}
-          </Typography> */}
-            </Stack>
-          </Stack>
-        </Grid>
-        <AddRelatedVideoPlaceHolder />
+        {videos.map((video, index) => (
+          <VideoSnap
+            video={video}
+            key={video.id}
+            onDelete={() => onDelete(index)}
+          />
+        ))}
+        <AddVideoButton onClick={onAddMore} />
       </Grid>
     </Box>
   );
 };
 
-export const CreateProjectPage: React.FC = () => {
-  const [videoInfo, setVideoInfo] = useState<PeerTubeVideo | null>(null);
+type AddVideoToPlaylistDialogProps = DialogProps & {
+  handleClose: () => void;
+};
+const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
+  handleClose,
+  ...props
+}) => {
+  return (
+    <Dialog onClose={handleClose} fullWidth {...props}>
+      <DialogTitle>
+        <Trans i18nKey={"project.add-related-video"}>
+          Ajouter une vidéo à la liste de lecture
+        </Trans>
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          <Trans i18nKey={"project.add-video-playlist-description"}>
+            Ajouter une vidéo à la liste de lecture
+          </Trans>
+        </DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Lien"
+          type="url"
+          fullWidth
+          variant="standard"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="secondary">
+          <Trans i18nKey={"project.submit-add-video-playlist"}>Annuler</Trans>
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          <Trans i18nKey={"project.cancel-add-video"}>Ajouter</Trans>
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
-  const handleVideoInfoLoaded = (data: PeerTubeVideo | null) => {
+export const CreateProjectPage: React.FC = () => {
+  const [videoInfo, setVideoInfo] = useState<PeerTubeVideo[] | null>(null);
+
+  const handleVideoInfoLoaded = (data: PeerTubeVideo[] | null) => {
     setVideoInfo(data);
   };
 
+  const handleDelete = (index: number) => {
+    const newVideos = videoInfo?.filter((_, i) => i != index);
+    setVideoInfo(newVideos);
+  };
+
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
   return (
-    <Box sx={{ paddingX: 5, paddingY: 1, backgroundColor: "brand.orange" }}>
-      <Container sx={{ height: "100vh" }} maxWidth="md">
-        <Paper sx={{ marginTop: 10, padding: 5 }}>
+    <Box
+      sx={{
+        paddingX: 5,
+        paddingTop: 1,
+        backgroundColor: "brand.orange",
+        height: "100%",
+      }}
+    >
+      <Container maxWidth="md">
+        <Paper sx={{ padding: 5 }}>
           <StyledTitle gutterBottom={true} variant="h4" sx={{ marginTop: 1 }}>
             <Trans i18nKey="project.createTitle" />
           </StyledTitle>
 
           <PeerTubeVideoUrlForm onLoaded={handleVideoInfoLoaded} />
 
-          {videoInfo ? <PeerTubeVideoSnapshot video={videoInfo} /> : null}
+          {videoInfo ? (
+            <PeerTubeVideoSnapshots
+              videos={videoInfo}
+              onDelete={handleDelete}
+              onAddMore={handleClickOpen}
+            />
+          ) : null}
 
-          {videoInfo ? <CreateProjectForm video={videoInfo} /> : null}
+          {videoInfo ? <CreateProjectForm videos={videoInfo} /> : null}
         </Paper>
+        <AddVideoToPlaylistDialog open={openDialog} handleClose={handleClose} />
       </Container>
     </Box>
   );

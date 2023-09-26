@@ -1,9 +1,8 @@
 {
   "extends": "@celluloid/config/tsconfig/node16.json",
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "tsup.config.ts"
+    "src",
+    "client-prisma"
   ],
   "exclude": [
     "node_modules"

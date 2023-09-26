@@ -1,12 +1,13 @@
 import AdminJSExpress from "@adminjs/express";
 import importExportFeature from "@adminjs/import-export";
-import * as AdminJSPrisma from "@adminjs/prisma";
+import { Database, getModelByName, Resource } from '@adminjs/prisma';
 import { dark, light, noSidebar } from '@adminjs/themes'
-import { DMMFClass, prisma } from "@celluloid/database";
+import PrismaModule from '@celluloid/database/client-prisma/index.js';
 import AdminJS, { AdminJSOptions, DEFAULT_PATHS, ThemeConfig } from "adminjs";
 
 import { componentLoader, Components } from './components.js'
 
+const prisma = new PrismaModule.PrismaClient();
 
 export const overrides: ThemeConfig['overrides'] = {
   colors: {
@@ -46,12 +47,11 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
 
 
   AdminJS.registerAdapter({
-    Resource: AdminJSPrisma.Resource,
-    Database: AdminJSPrisma.Database,
+    Resource: Resource,
+    Database: Database,
   });
 
 
-  const dmmf = (prisma as any)._baseDmmf as DMMFClass;
   const adminOptions = {
     branding: {
       companyName: 'Celluloid',
@@ -70,7 +70,7 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
     componentLoader,
     resources: [
       {
-        resource: { model: dmmf.modelMap.User, client: prisma },
+        resource: { model: getModelByName('User', PrismaModule), client: prisma },
         options: {
           navigation: {
             name: 'Users',
@@ -88,14 +88,14 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
         }
       },
       {
-        resource: { model: dmmf.modelMap.Project, client: prisma },
+        resource: { model: getModelByName('Project', PrismaModule), client: prisma },
         options: {
           navigation: {
             name: 'Projects',
             icon: 'Play',
           },
-          listProperties: ['title', 'description', 'public', 'shared', 'publishedAt', 'User'],
-          filterProperties: ['title', 'description', 'User'],
+          listProperties: ['title', 'description', 'public', 'shared', 'publishedAt', 'user'],
+          filterProperties: ['title', 'description', 'user'],
           editProperties: ['title', 'description', 'public', 'shared'],
           actions: {
             new: {
@@ -114,11 +114,37 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
         },
       },
       {
-        resource: { model: dmmf.modelMap.Annotation, client: prisma },
+        resource: { model: getModelByName('Playlist', PrismaModule), client: prisma },
+        options: {
+          navigation: {
+            name: 'Playlists',
+            icon: 'Play',
+          },
+          listProperties: ['title', 'description', 'user'],
+          filterProperties: ['title', 'description', 'user'],
+          editProperties: ['title', 'description'],
+          actions: {
+            new: {
+              isAccessible: false,
+              isVisible: false,
+            },
+          },
+          properties: {
+            description: {
+              type: 'textarea',
+              props: {
+                rows: 10,
+              },
+            },
+          },
+        },
+      },
+      {
+        resource: { model: getModelByName('Annotation', PrismaModule), client: prisma },
         options: {
           navigation: "Projects",
-          listProperties: ['Project', 'text', 'createdAt', 'User'],
-          filterProperties: ['Project', 'User'],
+          listProperties: ['project', 'text', 'createdAt', 'user'],
+          filterProperties: ['project', 'user'],
           editProperties: ['text', "pause"],
           actions: {
             new: {
@@ -142,11 +168,11 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
         ],
       },
       {
-        resource: { model: dmmf.modelMap.Comment, client: prisma },
+        resource: { model: getModelByName('Comment', PrismaModule), client: prisma },
         options: {
           navigation: "Projects",
-          listProperties: ['Annotation', 'text', 'createdAt', 'User'],
-          filterProperties: ['User', 'Annotation'],
+          listProperties: ['annotation', 'text', 'createdAt', 'user'],
+          filterProperties: ['user', 'annotation'],
           editProperties: ['text'],
           actions: {
             new: {

@@ -5,19 +5,19 @@
   "repository": "http://github.com/celluloid-edu/celluloid",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
-  "main": "./dist/index.js",
+  "main": "./src/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap",
     "clean": "rimraf .turbo node_modules dist",
+    "dev": "tsx watch --clear-screen=false src ",
     "setup": "yarn db:push && yarn migrate:init && migrate:deploy && yarn generate",
     "migrate:init": "yarn prisma migrate resolve --applied 0_init",
     "migrate:deploy": "yarn prisma migrate deploy",
     "migrate:dev": "yarn prisma migrate dev",
     "db:push": "yarn prisma db push",
     "seed": "tsx src/seed.ts",
-    "dev": "tsup --watch",
     "format": "prisma format",
     "generate": "yarn prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
@@ -31,8 +31,9 @@
     "@types/dotenv": "^6.0.0",
     "copyfiles": "^2.4.1",
     "dotenv-cli": "^7.2.1",
+    "esbuild": "^0.19.3",
     "eslint": "^8.12.0",
-    "prisma": "^4.13.0",
+    "prisma": "^5.3.1",
     "rimraf": "^3.0.2",
     "ts-node-dev": "^2.0.0",
     "tsup": "^5.11.13",
@@ -40,6 +41,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@prisma/client": "^4.13.0"
+    "@prisma/client": "^5.3.1"
   }
 }

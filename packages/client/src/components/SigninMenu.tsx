@@ -1,4 +1,4 @@
-import { UserRecord } from "@celluloid/types";
+import { User } from "@celluloid/database/client-prisma";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import * as React from "react";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import { UserAvatar } from "~components/UserAvatar";
 
 interface Props {
-  user?: UserRecord;
+  user?: User;
   onClickLogin(): void;
   onClickSignup(): void;
   onClickLogout(): void;

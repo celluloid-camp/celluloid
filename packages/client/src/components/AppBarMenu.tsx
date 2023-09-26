@@ -31,7 +31,6 @@ type Props = React.PropsWithChildren & {
   onClickLogin(): EmptyAction;
   onClickSignup(): EmptyAction;
   onCloseSignin(): EmptyAction;
-  onClickLogout(): Promise<AnyAction>;
 };
 
 const mapStateToProps = (state: AppState) => {
@@ -53,7 +52,6 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
   user,
   onClickLogin,
   onClickSignup,
-  onClickLogout,
   onCloseSignin,
   signinDialog,
   children,
@@ -61,6 +59,9 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const meQuery = trpc.user.me.useQuery();
+
+  const logoutMutation = trpc.user.logout.useMutation();
+
   const dispatch = useDispatch();
 
   const handleCreate = () => {
@@ -75,6 +76,10 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
     dispatch(openStudentSignup());
   };
 
+  const handleLogout = async () => {
+    await logoutMutation.mutateAsync();
+    navigate("/");
+  };
   return (
     <Box sx={{ height: "100vh" }}>
       <AppBar color="default" position="fixed">
@@ -116,7 +121,7 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
             user={user}
             onClickLogin={onClickLogin}
             onClickSignup={onClickSignup}
-            onClickLogout={onClickLogout}
+            onClickLogout={handleLogout}
           />
           <LanguageMenu />
         </Toolbar>
@@ -124,7 +129,7 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
       <SigninDialog onCancel={onCloseSignin} state={signinDialog} />
       <Offset />
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </Box>
   );
 };

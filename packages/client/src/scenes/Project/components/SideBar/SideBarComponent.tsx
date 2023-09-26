@@ -19,6 +19,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 import DialogError from "~components/DialogError";
 import LabeledProgressSwitch from "~components/LabeledProgressSwitch";
+import { PlaylistSideBar } from "~components/PlaylistSideBar";
 import { UserAvatar } from "~components/UserAvatar";
 import { useGetAnnotationsQuery } from "~hooks/user-project";
 import AnnotationService from "~services/AnnotationService";
@@ -117,62 +118,7 @@ const SideBarComponenent: React.FC<Props> = ({
           borderRadius: 2,
         }}
       >
-        <Typography variant="h6" mb={2}>
-          {t("project.playlist", "Playlist")}
-        </Typography>
-
-        <List
-          dense={true}
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            width: "100%",
-            bgcolor: "neutral.100",
-            position: "relative",
-            overflow: "auto",
-            borderRadius: 2,
-            "& ul": { padding: 0 },
-          }}
-        >
-          <ListItem>
-            <Stack sx={{ backgroundColor: "black" }} width={150} height={100}>
-              <Image bgColor="#000000" src="" />
-              <Stack flex={1} marginX={1} marginBottom={1}>
-                <Typography
-                  variant="caption"
-                  color={"white"}
-                  sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    WebkitBoxOrient: "vertical",
-                    WebkitLineClamp: 1,
-                  }}
-                >
-                  {project.title}
-                </Typography>
-              </Stack>
-            </Stack>
-          </ListItem>
-          <ListItem>
-            <Stack sx={{ backgroundColor: "black" }} width={150} height={100}>
-              <Image bgColor="#000000" src="" />
-              <Stack flex={1} marginX={1} marginBottom={1}>
-                <Typography
-                  variant="caption"
-                  color={"white"}
-                  sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    WebkitBoxOrient: "vertical",
-                    WebkitLineClamp: 1,
-                  }}
-                >
-                  {project.title}
-                </Typography>
-              </Stack>
-            </Stack>
-          </ListItem>
-        </List>
+        <PlaylistSideBar projectId={project.id} />
       </Box>
       <Box
         sx={{

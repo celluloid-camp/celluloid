@@ -5,7 +5,8 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl"]
+  // binaryTargets = ["native", "linux-musl"]
+  output   = "../client-prisma"
 }
 
 model Annotation {
@@ -18,9 +19,9 @@ model Annotation {
   projectId String    @db.Uuid
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
   extra     Json?     @default("{}")
-  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_projectid_foreign")
-  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_userid_foreign")
-  Comment   Comment[]
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_projectid_foreign")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_userid_foreign")
+  comment   Comment[]
 }
 
 model Comment {
@@ -30,8 +31,8 @@ model Comment {
   userId       String     @db.Uuid
   createdAt    DateTime?  @default(now()) @db.Timestamptz(6)
   extra        Json?      @default("{}")
-  Annotation   Annotation @relation(fields: [annotationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_annotationid_foreign")
-  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_userid_foreign")
+  annotation   Annotation @relation(fields: [annotationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_annotationid_foreign")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_userid_foreign")
 }
 
 model Language {
@@ -48,20 +49,37 @@ model Project {
   host           String?
   assignments    String[]
   publishedAt    DateTime        @default(now()) @db.Timestamptz(6)
-  objective      String
-  levelStart     Int
-  levelEnd       Int
+  objective      String?
+  levelStart     Int?
+  levelEnd       Int?
   public         Boolean         @default(false)
   collaborative  Boolean
   shared         Boolean         @default(false)
   shareName      String?         @unique(map: "project_sharename_unique")
   shareExpiresAt DateTime?       @db.Timestamptz(6)
   sharePassword  String?
-  extra          Json?           @default("{}")
-  Annotation     Annotation[]
-  User           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "project_userid_foreign")
+  extra          Json?           @default("{}") @db.Json
+  annotation     Annotation[]
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "project_userid_foreign")
   TagToProject   TagToProject[]
   UserToProject  UserToProject[] @ignore
+
+  playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId String?   @db.Uuid
+}
+
+model Playlist {
+  id String @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  title       String
+  description String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+
+  projects Project[]
+
+  publishedAt DateTime @default(now()) @db.Timestamptz(6)
 }
 
 model Tag {
@@ -91,10 +109,12 @@ model User {
   codeGeneratedAt DateTime?       @db.Timestamptz(6)
   role            UserRole?
   extra           Json?           @default("{}")
-  Annotation      Annotation[]
-  Comment         Comment[]
-  Project         Project[]
+  annotation      Annotation[]
+  comment         Comment[]
+  project         Project[]
   UserToProject   UserToProject[]
+
+  playlist Playlist[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -102,10 +122,9 @@ model UserToProject {
   id        Int      @id @default(autoincrement())
   userId    String?  @db.Uuid
   projectId String?  @db.Uuid
-  Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_projectid_foreign")
-  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_userid_foreign")
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_projectid_foreign")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_userid_foreign")
 }
-
 
 enum UserRole {
   Admin

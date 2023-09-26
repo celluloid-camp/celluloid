@@ -36,9 +36,9 @@ const start = async () => {
 
   app.use("/admin", express.static(path.join(__dirname, "../public")));
 
-  app.listen(3000, () => {
+  app.listen(4000, () => {
     console.log(
-      `AdminJS started on localhost:3000`
+      `AdminJS started on localhost:4000`
     );
   });
 };

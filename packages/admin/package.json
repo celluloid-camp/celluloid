@@ -11,19 +11,17 @@
     "node": ">=16"
   },
   "scripts": {
-    "dev": "dotenv -e .env -- nodemon -e ts,json --exec node --loader ts-node/esm src/index.ts",
-    "dev-tsup": "tsup src/index.ts --watch --onSuccess 'node dist/index.js'",
-    "test": "echo $TEST",
+    "dev": "tsx watch --clear-screen=false src ",
     "build": "rm -rf dist && tsc",
     "start": "DATABASE_URL=$DATABASE_URL node --use-strict dist/index.js"
   },
   "dependencies": {
     "@adminjs/express": "6.0.0",
     "@adminjs/import-export": "^3.0.0",
-    "@adminjs/prisma": "4.0.0",
-    "@adminjs/themes": "^1.0.0",
+    "@adminjs/prisma": "5.0.1",
+    "@adminjs/themes": "^1.0.1",
     "@celluloid/database": "*",
-    "adminjs": "7.0.0",
+    "adminjs": "7.2.2",
     "connect-redis": "^7.0.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
@@ -39,11 +37,8 @@
     "copyfiles": "^2.4.1",
     "del-cli": "^5.0.0",
     "dotenv-cli": "^7.2.1",
-    "nodemon": "^2.0.22",
     "np": "^7.7.0",
-    "ts-node-dev": "^2.0.0",
-    "tsup": "^5.11.13",
-    "tsx": "^3.7.1",
+    "tsx": "^3.12.10",
     "typescript": "^5.0.4"
   },
   "files": [
