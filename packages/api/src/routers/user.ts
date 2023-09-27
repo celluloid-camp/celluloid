@@ -1,6 +1,6 @@
+import { prisma } from "@celluloid/database"
 import { z } from 'zod';
 
-import { prisma } from '../prisma';
 import { protectedProcedure, router } from '../trpc';
 
 

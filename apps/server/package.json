@@ -1,8 +1,8 @@
 {
-  "name": "@celluloid/server",
+  "name": "server",
   "version": "2.0.0",
   "description": "Celluloid backend",
-  "repository": "http://github.com/celluloid-edu/celluloid",
+  "repository": "http://github.com/celluloid-camp/celluloid",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
   "private": true,
@@ -46,8 +46,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
-    "@celluloid/types": "^0.1.0",
-    "@celluloid/validators": "^0.1.0",
+    "@celluloid/types": "*",
+    "@celluloid/validators": "*",
     "@types/bcrypt": "^3.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/compression": "^1.0.0",

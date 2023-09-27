@@ -8,7 +8,7 @@ on:
         default: "latest"
 
 jobs:
-  Deploy:
+  build-containers:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -35,7 +35,21 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}/admin:${{ github.event.inputs.tag }}
-          build-args: COMMIT=${{ steps.vars.outputs.sha_short }}, APP=admin, START_COMMAND=start
+          build-args: |
+            COMMIT=${{ steps.vars.outputs.sha_short }}
+            APP=admin
+            START_COMMAND=start
+
+      - name: Build Server
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/server:${{ github.event.inputs.tag }}
+          build-args: |
+            COMMIT=${{ steps.vars.outputs.sha_short }}
+            APP=server
+            START_COMMAND=start
 
       # - name: Build and Push Docker Image
       #   uses: docker/build-push-action@v2

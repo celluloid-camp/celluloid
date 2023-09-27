@@ -1,8 +1,8 @@
 import { UserRole } from '@celluloid/database';
+import { prisma } from "@celluloid/database"
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { prisma } from '../prisma';
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({

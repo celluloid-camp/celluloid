@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@celluloid/client",
+  "name": "client",
   "version": "2.0.1-alpha-6",
   "type": "module",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",

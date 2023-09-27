@@ -18,7 +18,6 @@ import {
   teacherSignupStrategy,
 } from "./auth/Auth";
 import { logger } from "./backends/Logger";
-import { knex } from "./database/connection";
 import { createSession } from "./http/SessionStore";
 import { clientApp, clientDir, publicDir } from "./Paths";
 
@@ -48,19 +47,6 @@ app.use("/api/video", VideosApi);
 
 app.get("/elb-status", (_, res) => res.status(200).send());
 
-app.get('/api/test', (req, res, next) => {
-
-  console.log("here", req.session)
-
-  // Check if the user session is valid
-  if (req.user) {
-    // User session is valid, allow the request to proceed
-    next();
-  } else {
-    // User session is invalid, send an authentication error response
-    res.status(401).json({ error: 'Unauthorized' });
-  }
-});
 
 app.get("/*", (_, res) => res.sendFile(clientApp));
 

@@ -3,11 +3,9 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import bcrypt from 'bcryptjs';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import * as dotEnv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import * as path from "path";
 import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 
@@ -16,7 +14,6 @@ import { appRouter } from './routers';
 import { createSession } from './session';
 import { createContext } from './trpc';
 
-dotEnv.config({ path: path.resolve("..", "..", ".env") });
 
 const trpcApiEndpoint = '/trpc'
 
