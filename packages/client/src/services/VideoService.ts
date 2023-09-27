@@ -1,10 +1,23 @@
-import { PeerTubeVideo } from "@celluloid/types";
+import { PeerTubeVideo, Playlist } from "@celluloid/types";
 // import * as queryString from "query-string";
 import { last } from "ramda";
 
+
+export type PeerTubeVideoWithThumbnail = PeerTubeVideo & {
+  thumbnailURL: string;
+}
+
+export type PeerTubeVideoDataResult = {
+  videos: PeerTubeVideoWithThumbnail[];
+  orignalURL: string;
+  apiURL: string;
+  isPlaylist: boolean;
+  _raw: JSON
+}
+
 export const getPeerTubeVideoData = async (
   url: string
-): Promise<PeerTubeVideo[]> => {
+): Promise<PeerTubeVideoDataResult> => {
 
   const parsed = new URL(url);
   const host = parsed.host;
@@ -26,19 +39,19 @@ export const getPeerTubeVideoData = async (
 
   if (response.status === 200) {
     const data = await response.json();
-    return isPlaylist ? data.data.map((d) => d.video) : [data];
-
-    // const data: PeerTubeVideo = await response.json();
-    // return {
-    //   id: data.shortUUID,
-    //   host,
-    //   title: data.name,
-    //   thumbnailUrl: `https://${host}${data.thumbnailPath}`,
-    // };
+    return {
+      isPlaylist,
+      orignalURL: url,
+      apiURL: apiUrl,
+      videos: isPlaylist ? data.data.map((d: Playlist) => ({ ...d.video, thumbnailURL: `https://${host}${d.video.thumbnailPath}` })) : [{ ...data, thumbnailURL: `https://${host}${data.thumbnailPath}` }],
+      _raw: data
+    }
+  } else {
+    throw new Error(
+      `Could not perform YouTube API request (error ${response.status})`
+    );
   }
-  throw new Error(
-    `Could not perform YouTube API request (error ${response.status})`
-  );
+
 }
 
 
@@ -65,14 +78,6 @@ export const getPeerTubeThumbnail = async (
   if (response.status === 200) {
     const data = await response.json();
     return data.thumbnailPath;
-
-    // const data: PeerTubeVideo = await response.json();
-    // return {
-    //   id: data.shortUUID,
-    //   host,
-    //   title: data.name,
-    //   thumbnailUrl: `https://${host}${data.thumbnailPath}`,
-    // };
   }
   throw new Error(
     `Could not perform YouTube API request (error ${response.status})`

@@ -1,33 +1,38 @@
-import { ButtonBase, List, ListItem, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  ButtonBase,
+  List,
+  ListItem,
+  Stack,
+  Typography,
+} from "@mui/material";
 import * as React from "react";
 import { Trans } from "react-i18next";
 
-import { trpc } from "~utils/trpc";
+import { ProjectById } from "~utils/trpc";
 
 import { ProjectThumbnailImage } from "./ProjectThumbnailImage";
 
-export const PlaylistSideBar: React.FC<{ projectId: string }> = ({
-  projectId,
+export const PlaylistSideBar: React.FC<{ project: ProjectById }> = ({
+  project,
 }) => {
-  const { data, isFetching } = trpc.project.byId.useQuery({ id: projectId });
-
   const handleClick = (id: string) => {
     // navigate(`/projects/${id}`, { replace: true });
     window.location.assign(`/projects/${id}`);
   };
 
-  if (isFetching) return null;
-
-  if (
-    data &&
-    data.playlist &&
-    data.playlist.projects &&
-    data.playlist.projects.length == 0
-  )
-    return null;
+  if (!project.playlist) return null;
 
   return (
-    <>
+    <Box
+      sx={{
+        backgroundColor: "white",
+        paddingX: 3,
+        marginY: 2,
+        paddingY: 3,
+        borderRadius: 2,
+      }}
+    >
       <Typography variant="h6" mb={2}>
         <Trans i18nKey={"project.playlist"}>Liste de lecture</Trans>
       </Typography>
@@ -45,16 +50,16 @@ export const PlaylistSideBar: React.FC<{ projectId: string }> = ({
           "& ul": { padding: 0 },
         }}
       >
-        {data?.playlist?.projects.map((project) => (
-          <ListItem key={project.id}>
+        {project.playlist.projects?.map((p) => (
+          <ListItem key={p.id}>
             <ButtonBase
               sx={{ height: "100%" }}
-              onClick={() => handleClick(project.id)}
+              onClick={() => handleClick(p.id)}
             >
               <Stack
                 sx={[
                   { backgroundColor: "black" },
-                  projectId == project.id
+                  project.id == p.id
                     ? {
                         borderWidth: 2,
                         borderStyle: "solid",
@@ -67,8 +72,8 @@ export const PlaylistSideBar: React.FC<{ projectId: string }> = ({
               >
                 <ProjectThumbnailImage
                   bgColor="#000000"
-                  host={project.host}
-                  videoId={project.videoId}
+                  host={p.host}
+                  videoId={p.videoId}
                 />
                 <Stack flex={1} marginX={1} marginBottom={1}>
                   <Typography
@@ -81,7 +86,7 @@ export const PlaylistSideBar: React.FC<{ projectId: string }> = ({
                       WebkitLineClamp: 1,
                     }}
                   >
-                    {project.title}
+                    {p.title}
                   </Typography>
                 </Stack>
               </Stack>
@@ -89,6 +94,6 @@ export const PlaylistSideBar: React.FC<{ projectId: string }> = ({
           </ListItem>
         ))}
       </List>
-    </>
+    </Box>
   );
 };

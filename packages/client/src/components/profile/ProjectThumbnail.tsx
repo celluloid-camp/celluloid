@@ -2,18 +2,15 @@ import {
   Box,
   Card,
   CardContent,
-  CircularProgress,
   Grid,
   styled,
   Typography,
 } from "@mui/material";
 // import PlayIcon from "@mui/icons-material/PlayCircleOutline";
-import { useQuery } from "@tanstack/react-query";
-import Image from "mui-image";
 import * as React from "react";
 
+import { ProjectThumbnailImage } from "~components/ProjectThumbnailImage";
 // import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
-import { getPeerTubeVideoData } from "~services/VideoService";
 
 const StyledBox = styled(Box)(() => ({
   position: "relative",
@@ -38,22 +35,14 @@ interface Props {
   showPublic?: boolean;
   project: {
     id: string;
-    host?: string | null;
+    host?: string | null | undefined;
     videoId: string;
     title: string;
-    objective: string;
+    objective: string | null | undefined;
   };
 }
 
 export const ProjectThumbnail: React.FC<Props> = ({ project }) => {
-  const query = useQuery({
-    queryKey: ["video", project.host, project.videoId],
-    queryFn: () =>
-      getPeerTubeVideoData(
-        `https://${project.host}/api/v1/videos/${project.videoId}`
-      ),
-  });
-
   const onClick = () => {
     // navigate(`/projects/${project.id}`);
     window.location.assign(`/projects/${project.id}`);
@@ -70,10 +59,10 @@ export const ProjectThumbnail: React.FC<Props> = ({ project }) => {
       onClick={() => onClick()}
     >
       <StyledBox>
-        <Image
-          src={`https://${project.host}${query.data?.thumbnailPath}`}
+        <ProjectThumbnailImage
+          host={project.host}
+          videoId={project.videoId}
           height={"20vh"}
-          showLoading={<CircularProgress />}
           bgColor="#000000"
         />
         {/* <Box

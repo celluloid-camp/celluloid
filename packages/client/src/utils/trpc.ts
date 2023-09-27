@@ -30,3 +30,5 @@ type RouterOutput = inferRouterOutputs<AppRouter>;
 
 
 export type UserMe = RouterOutput['user']['me'];
+
+export type ProjectById = RouterOutput['project']['byId'];

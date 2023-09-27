@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "tsx watch --clear-screen=false src ",
     "build": "rm -rf dist && tsc",
-    "start": "DATABASE_URL=$DATABASE_URL node --use-strict dist/index.js"
+    "start": "node --use-strict dist/index.js"
   },
   "dependencies": {
     "@adminjs/express": "6.0.0",

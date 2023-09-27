@@ -190,3 +190,5 @@ yourself with some of the following technologies:
 
 You can still find the old Celluloid version 1 that supports YouTube videos
 [here](https://github.com/celluloid-camp/celluloid/releases/tag/v1).
+
+docker build --build-arg APP=admin -t celluloid-admin .

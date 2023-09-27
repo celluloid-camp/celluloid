@@ -1,9 +1,10 @@
-import { UserRole } from '@celluloid/database/client-prisma';
+import { UserRole } from '@celluloid/database';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { prisma } from '../prisma';
 import { protectedProcedure, publicProcedure, router } from '../trpc';
+import { generateUniqueShareName } from '../utils';
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
 //   id: true,
@@ -92,6 +93,8 @@ export const playlistRouter = router({
         title: z.string().min(1),
         description: z.string(),
         projects: z.array(z.object({
+          title: z.string(),
+          description: z.string(),
           videoId: z.string(),
           host: z.string(),
         })),
@@ -105,7 +108,9 @@ export const playlistRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.requirePermission(UserRole.Teacher)) {
+      if (ctx.user && ctx.requirePermission(UserRole.Teacher)) {
+        const userId = ctx.user.id;
+
         const project = await prisma.playlist.create({
           select: {
             projects: true,
@@ -119,15 +124,16 @@ export const playlistRouter = router({
                 data: input.projects.map(p => ({
                   videoId: p.videoId,
                   host: p.host,
-                  title: input.title,
-                  description: input.description,
+                  title: p.title,
+                  description: p.description,
                   objective: input.objective,
                   levelStart: input.levelStart,
                   levelEnd: input.levelEnd,
                   public: input.public,
                   collaborative: input.collaborative,
                   shared: input.shared,
-                  userId: ctx.user?.id,
+                  userId: userId,
+                  shareName: generateUniqueShareName(p.title)
                 }))
               }
             }

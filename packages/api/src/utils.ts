@@ -1,5 +1,5 @@
 import { paramCase } from 'change-case';
-import { uniqueId } from 'lodash';
+import _ from 'lodash';
 
 export function generateUniqueShareName(title: string) {
   const compare = (a: string, b: string) =>
@@ -21,5 +21,5 @@ export function generateUniqueShareName(title: string) {
     .reduce(construct, [])
     .join('-');
 
-  return uniqueId(prefix);
+  return _.uniqueId(prefix);
 }

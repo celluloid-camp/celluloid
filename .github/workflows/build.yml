@@ -30,11 +30,27 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: false
+          file: Dockerfile.node
+          tags: custom-node:latest
+
+      - name: Build Admin
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ github.event.inputs.tag }}, ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
-          image: ${{ github.repository }}
-          buildArgs: COMMIT=${{ steps.vars.outputs.sha_short }}
-          registry: ghcr.io
+          tags: ghcr.io/${{ github.repository }}/admin:${{ github.event.inputs.tag }}
+          build-args: COMMIT=${{ steps.vars.outputs.sha_short }}, APP=admin, START_COMMAND=start
+
+      # - name: Build and Push Docker Image
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ghcr.io/${{ github.repository }}:${{ github.event.inputs.tag }}, ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
+      #     image: ${{ github.repository }}
+      #     buildArgs: COMMIT=${{ steps.vars.outputs.sha_short }}
+      #     registry: ghcr.io

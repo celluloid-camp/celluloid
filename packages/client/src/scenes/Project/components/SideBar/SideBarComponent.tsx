@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
-import Image from "mui-image";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -25,6 +24,7 @@ import { useGetAnnotationsQuery } from "~hooks/user-project";
 import AnnotationService from "~services/AnnotationService";
 import { AsyncAction } from "~types/ActionTypes";
 import { isAdmin, isOwner } from "~utils/ProjectUtils";
+import { trpc } from "~utils/trpc";
 
 import ShareDialog from "./components/ShareDialog";
 
@@ -78,6 +78,8 @@ const SideBarComponenent: React.FC<Props> = ({
 
   const { data: annotations } = useGetAnnotationsQuery(project.id);
 
+  const { data: dataproject } = trpc.project.byId.useQuery({ id: project.id });
+
   const handleDelete = () => {
     confirm({
       title: t("project.confirm-delete.title", "Delete project"),
@@ -109,17 +111,8 @@ const SideBarComponenent: React.FC<Props> = ({
         )}
       </Stack>
 
-      <Box
-        sx={{
-          backgroundColor: "white",
-          paddingX: 3,
-          marginY: 2,
-          paddingY: 3,
-          borderRadius: 2,
-        }}
-      >
-        <PlaylistSideBar projectId={project.id} />
-      </Box>
+      {dataproject ? <PlaylistSideBar project={dataproject} /> : null}
+
       <Box
         sx={{
           backgroundColor: "white",

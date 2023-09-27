@@ -1,8 +1,9 @@
+import { UserRole } from '@celluloid/database';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { prisma } from '../prisma';
-import { publicProcedure, router } from '../trpc';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
 //   id: true,
@@ -93,10 +94,9 @@ export const projectRouter = router({
       }
       return project;
     }),
-  add: publicProcedure
+  add: protectedProcedure
     .input(
       z.object({
-        videoId: z.string(),
         title: z.string().min(1),
         description: z.string(),
         objective: z.string(),
@@ -106,13 +106,29 @@ export const projectRouter = router({
         collaborative: z.boolean(),
         shared: z.boolean(),
         userId: z.string(),
+        videoId: z.string(),
+        host: z.string(),
       }),
     )
-    .mutation(async ({ input }) => {
-      const project = await prisma.project.create({
-        data: input,
-        // select: defaultPostSelect,
-      });
-      return project;
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user && ctx.user.id && ctx.requirePermission(UserRole.Teacher)) {
+        const project = await prisma.project.create({
+          data: {
+            userId: ctx.user?.id,
+            title: input.title,
+            description: input.description,
+            videoId: input.videoId,
+            host: input.host,
+            objective: input.objective,
+            levelStart: input.levelStart,
+            levelEnd: input.levelEnd,
+            public: input.public,
+            collaborative: input.collaborative,
+            shared: input.shared,
+          }
+          // select: defaultPostSelect,
+        });
+        return project;
+      }
     }),
 });

@@ -1,4 +1,4 @@
 
 
-import { PrismaClient } from '@celluloid/database/client-prisma'
+import { PrismaClient } from '@celluloid/database'
 export const prisma = new PrismaClient()

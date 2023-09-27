@@ -98,3 +98,14 @@ export interface StreamingPlaylist {
   redundancies: Record<string, unknown>
   files: File[];
 }
+
+
+
+export interface Playlist {
+  id: number
+  position: number
+  startTimestamp: number | null
+  stopTimestamp: number | null
+  type: number
+  video: PeerTubeVideo
+}

@@ -4,7 +4,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { AnyAction, Dispatch } from "redux";
+import { Dispatch } from "redux";
 
 import {
   closeSignin,
@@ -49,7 +49,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 export const AppBarMenuWrapper: React.FC<Props> = ({
-  user,
   onClickLogin,
   onClickSignup,
   onCloseSignin,
@@ -59,7 +58,6 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const meQuery = trpc.user.me.useQuery();
-
   const logoutMutation = trpc.user.logout.useMutation();
 
   const dispatch = useDispatch();
@@ -118,7 +116,7 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
             {t("menu.about")}
           </Button>
           <SigninMenu
-            user={user}
+            user={meQuery.data}
             onClickLogin={onClickLogin}
             onClickSignup={onClickSignup}
             onClickLogout={handleLogout}
@@ -129,7 +127,7 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
       <SigninDialog onCancel={onCloseSignin} state={signinDialog} />
       <Offset />
       {children}
-      {/* <Footer /> */}
+      <Footer />
     </Box>
   );
 };

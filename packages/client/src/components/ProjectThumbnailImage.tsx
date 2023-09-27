@@ -6,7 +6,7 @@ import * as React from "react";
 import { getPeerTubeThumbnail } from "~services/VideoService";
 
 type ProjectThumbnailImageProps = {
-  host?: string;
+  host: string | undefined | null;
   videoId: string;
   bgColor?: React.CSSProperties["backgroundColor"] | undefined;
   height?: React.CSSProperties["height"] | number | undefined;

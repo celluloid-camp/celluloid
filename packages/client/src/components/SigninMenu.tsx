@@ -1,4 +1,3 @@
-import { User } from "@celluloid/database/client-prisma";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import * as React from "react";
@@ -6,9 +5,10 @@ import { Trans } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { UserAvatar } from "~components/UserAvatar";
+import { UserMe } from "~utils/trpc";
 
 interface Props {
-  user?: User;
+  user?: UserMe;
   onClickLogin(): void;
   onClickSignup(): void;
   onClickLogout(): void;
