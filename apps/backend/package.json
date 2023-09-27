@@ -10,7 +10,7 @@
     "test-start": "start-server-and-test 'node dist/index' 2021"
   },
   "dependencies": {
-    "@celluloid/database": "*",
+    "@celluloid/prisma": "*",
     "@celluloid/trpc": "*",
     "@trpc/server": "^10.38.4",
     "bcryptjs": "^2.4.3",

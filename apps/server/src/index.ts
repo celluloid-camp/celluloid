@@ -39,17 +39,20 @@ app.use(createSession());
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/api/status", (_, res) => res.status(200).json({
+  commit: process.env.COMMIT,
+  version: packageJson.version
+}));
+
 app.use("/api/projects", ProjectsApi);
 app.use("/api/users", UsersApi);
 app.use("/api/tags", TagsApi);
 app.use("/api/unfurl", UnfurlApi);
 app.use("/api/video", VideosApi);
 
-app.get("/api/status", (_, res) => res.status(200).json({
-  commit: process.env.COMMIT,
-  version: packageJson.version
-}));
+
 // app.get("/*", (_, res) => res.sendFile(clientApp));
+
 
 (async () => {
   try {

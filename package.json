@@ -10,10 +10,6 @@
     "apps/*",
     "packages/*"
   ],
-  "prisma": {
-    "schema": "packages/database/prisma/schema.prisma",
-    "seed": "tsx packages/database/prisma/src/seed.ts"
-  },
   "scripts": {
     "watch": "yarn workspaces foreach -p -i run watch",
     "dev": "yarn watch & yarn workspaces foreach -p -i run dev ",

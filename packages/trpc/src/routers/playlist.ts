@@ -1,5 +1,5 @@
-import { UserRole } from '@celluloid/database';
-import { prisma } from "@celluloid/database"
+import { UserRole } from '@celluloid/prisma';
+import { prisma } from "@celluloid/prisma"
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 

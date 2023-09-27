@@ -12,7 +12,7 @@
     "dev": "tsx watch --clear-screen=false src "
   },
   "dependencies": {
-    "@celluloid/database": "*",
+    "@celluloid/prisma": "*",
     "@trpc/server": "^10.38.4",
     "bcryptjs": "^2.4.3",
     "change-case": "^4.1.2",

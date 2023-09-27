@@ -1,5 +1,5 @@
 {
-  "name": "@celluloid/database",
+  "name": "@celluloid/prisma",
   "version": "2.0.6",
   "description": "Celluloid backend",
   "repository": "http://github.com/celluloid-edu/celluloid",
@@ -9,8 +9,12 @@
   "files": [
     "src/index.ts"
   ],
+  "prisma": {
+    "schema": "schema.prisma",
+    "seed": "tsx src/seed.ts"
+  },
   "scripts": {
-    "build": "npx -y rimraf dist/* && yarn prisma generate && npx tsc",
+    "build": "yarn prisma generate && npx tsc",
     "clean": "rimraf .turbo node_modules dist",
     "dev": "tsx watch --clear-screen=false src ",
     "setup": "yarn db:push && yarn migrate:init && migrate:deploy && yarn generate",

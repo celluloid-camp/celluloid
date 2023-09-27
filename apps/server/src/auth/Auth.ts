@@ -1,4 +1,4 @@
-import { TeacherRecord, UserRecord } from "@celluloid/types";
+import { TeacherRecord } from "@celluloid/types";
 import bcrypt from 'bcryptjs';
 import passport from "passport";
 import {

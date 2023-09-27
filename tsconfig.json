@@ -51,7 +51,7 @@
       "path": "packages/trpc"
     },
     {
-      "path": "packages/database"
+      "path": "packages/prisma"
     },
     {
       "path": "packages/validators"

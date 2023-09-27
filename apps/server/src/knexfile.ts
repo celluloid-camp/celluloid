@@ -1,8 +1,7 @@
 import * as dotEnv from 'dotenv';
 import { Knex } from 'knex';
-import path from 'path';
 
-dotEnv.config({ path: '../../.env'});
+dotEnv.config({ path: '../../.env' });
 
 
 const configuration = {
@@ -16,16 +15,6 @@ const configuration = {
   pool: {
     min: 2,
     max: 10
-  },
-  migrations: {
-    tableName: "knex_migrations",
-    extension: 'ts',
-    directory: path.resolve(__dirname, "migrations"),
-    loadExtensions: [".js"]
-  },
-  seeds: {
-    directory: path.resolve(__dirname, "seeds"),
-    loadExtensions: [".js"]
   }
 } as Knex.Config
 

@@ -1828,9 +1828,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@celluloid/database@*, @celluloid/database@workspace:packages/database":
+"@celluloid/prisma@*, @celluloid/prisma@workspace:packages/prisma":
   version: 0.0.0-use.local
-  resolution: "@celluloid/database@workspace:packages/database"
+  resolution: "@celluloid/prisma@workspace:packages/prisma"
   dependencies:
     "@celluloid/config": "*"
     "@prisma/client": ^5.3.1
@@ -1867,7 +1867,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@celluloid/trpc@workspace:packages/trpc"
   dependencies:
-    "@celluloid/database": "*"
+    "@celluloid/prisma": "*"
     "@trpc/server": ^10.38.4
     "@types/uuid": ^9.0.4
     bcryptjs: ^2.4.3
@@ -6388,7 +6388,7 @@ __metadata:
     "@adminjs/prisma": 5.0.1
     "@adminjs/themes": ^1.0.1
     "@celluloid/config": "*"
-    "@celluloid/database": "*"
+    "@celluloid/prisma": "*"
     "@types/cors": ^2.8.13
     "@types/express": ^4.17.17
     "@types/node": ^18.14.2
@@ -7314,7 +7314,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:apps/backend"
   dependencies:
-    "@celluloid/database": "*"
+    "@celluloid/prisma": "*"
     "@celluloid/trpc": "*"
     "@trpc/server": ^10.38.4
     "@types/express": ^4.17.17
@@ -12059,7 +12059,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "frontend@workspace:apps/frontend"
   dependencies:
-    "@celluloid/database": "*"
+    "@celluloid/prisma": "*"
     "@celluloid/react-player": 2.11.5
     "@celluloid/trpc": "*"
     "@celluloid/types": ^0.1.0

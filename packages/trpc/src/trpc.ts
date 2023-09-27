@@ -1,4 +1,4 @@
-import { User, UserRole } from '@celluloid/database';
+import { User, UserRole } from '@celluloid/prisma';
 import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { OpenApiMeta } from 'trpc-openapi';

@@ -1,4 +1,4 @@
-import { prisma } from "@celluloid/database"
+import { prisma } from "@celluloid/prisma"
 import { appRouter, createContext } from '@celluloid/trpc';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import bcrypt from 'bcryptjs';

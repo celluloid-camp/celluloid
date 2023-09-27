@@ -6,14 +6,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --open",
     "build": "vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "serve"
   },
   "dependencies": {
-    "@celluloid/database": "*",
+    "@celluloid/prisma": "*",
     "@celluloid/react-player": "2.11.5",
     "@celluloid/trpc": "*",
     "@celluloid/types": "^0.1.0",

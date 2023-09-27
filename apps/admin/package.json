@@ -20,7 +20,7 @@
     "@adminjs/import-export": "^3.0.0",
     "@adminjs/prisma": "5.0.1",
     "@adminjs/themes": "^1.0.1",
-    "@celluloid/database": "*",
+    "@celluloid/prisma": "*",
     "adminjs": "7.2.2",
     "connect-redis": "^7.0.0",
     "cors": "^2.8.5",
