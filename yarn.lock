@@ -1817,36 +1817,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@celluloid/api@workspace:packages/api":
-  version: 0.0.0-use.local
-  resolution: "@celluloid/api@workspace:packages/api"
-  dependencies:
-    "@celluloid/database": "*"
-    "@trpc/server": ^10.38.4
-    "@types/express": ^4.17.17
-    "@types/swagger-ui-express": ^4.1.3
-    "@types/uuid": ^9.0.4
-    bcryptjs: ^2.4.3
-    change-case: ^4.1.2
-    connect-redis: ^7.1.0
-    cookie-parser: ^1.4.6
-    cors: ^2.8.5
-    dotenv: ^16.3.1
-    esbuild: ^0.19.3
-    express: ^4.17.1
-    express-session: ^1.17.3
-    lodash: ^4.17.21
-    redis: ^4.6.9
-    start-server-and-test: ^2.0.0
-    swagger-ui-express: ^5.0.0
-    trpc-openapi: ^1.2.0
-    tsx: ^3.12.10
-    uuid: ^9.0.1
-    wait-port: ^1.0.4
-    zod: ^3.22.2
-  languageName: unknown
-  linkType: soft
-
 "@celluloid/config@*, @celluloid/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@celluloid/config@workspace:packages/config"
@@ -1892,6 +1862,25 @@ __metadata:
   checksum: 6398faa6a8df677d690f831178aed5ea2041651da132d67c53b5cb3431f42f4dc75429e64b742bca7daeee25b5d746fd9603a6652d1ba2d014442cb5df7dcc73
   languageName: node
   linkType: hard
+
+"@celluloid/trpc@*, @celluloid/trpc@workspace:packages/trpc":
+  version: 0.0.0-use.local
+  resolution: "@celluloid/trpc@workspace:packages/trpc"
+  dependencies:
+    "@celluloid/database": "*"
+    "@trpc/server": ^10.38.4
+    "@types/uuid": ^9.0.4
+    bcryptjs: ^2.4.3
+    change-case: ^4.1.2
+    dotenv: ^16.3.1
+    esbuild: ^0.19.3
+    lodash: ^4.17.21
+    trpc-openapi: ^1.2.0
+    tsx: ^3.12.10
+    uuid: ^9.0.1
+    zod: ^3.22.2
+  languageName: unknown
+  linkType: soft
 
 "@celluloid/types@*, @celluloid/types@^0.1.0, @celluloid/types@workspace:packages/types":
   version: 0.0.0-use.local
@@ -7321,6 +7310,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"backend@workspace:apps/backend":
+  version: 0.0.0-use.local
+  resolution: "backend@workspace:apps/backend"
+  dependencies:
+    "@celluloid/database": "*"
+    "@celluloid/trpc": "*"
+    "@trpc/server": ^10.38.4
+    "@types/express": ^4.17.17
+    "@types/swagger-ui-express": ^4.1.3
+    "@types/uuid": ^9.0.4
+    bcryptjs: ^2.4.3
+    change-case: ^4.1.2
+    connect-redis: ^7.1.0
+    cookie-parser: ^1.4.6
+    cors: ^2.8.5
+    dotenv: ^16.3.1
+    esbuild: ^0.19.3
+    express: ^4.17.1
+    express-session: ^1.17.3
+    lodash: ^4.17.21
+    redis: ^4.6.9
+    start-server-and-test: ^2.0.0
+    swagger-ui-express: ^5.0.0
+    trpc-openapi: ^1.2.0
+    tsx: ^3.12.10
+    uuid: ^9.0.1
+    wait-port: ^1.0.4
+    zod: ^3.22.2
+  languageName: unknown
+  linkType: soft
+
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -12041,6 +12061,7 @@ __metadata:
   dependencies:
     "@celluloid/database": "*"
     "@celluloid/react-player": 2.11.5
+    "@celluloid/trpc": "*"
     "@celluloid/types": ^0.1.0
     "@celluloid/validators": ^0.1.0
     "@emotion/react": ^11.10.6

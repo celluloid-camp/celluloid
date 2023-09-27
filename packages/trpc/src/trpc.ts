@@ -18,11 +18,8 @@ export const createContext = async ({
 }: trpcExpress.CreateExpressContextOptions): Promise<Context> => {
   const requestId = uuid();
   res.setHeader('x-request-id', requestId);
-
   const user: User | null = req.user as User;
-
   const requirePermission = (role: UserRole) => {
-    console.log("user?.role", user)
     if (user?.role !== role) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',

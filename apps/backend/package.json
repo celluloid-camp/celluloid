@@ -1,7 +1,7 @@
 {
-  "name": "@celluloid/api",
+  "name": "backend",
   "private": true,
-  "version": "2.0.1-alpha-6",
+  "version": "2.0.1",
   "type": "module",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@celluloid/database": "*",
+    "@celluloid/trpc": "*",
     "@trpc/server": "^10.38.4",
     "bcryptjs": "^2.4.3",
     "change-case": "^4.1.2",

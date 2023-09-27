@@ -15,6 +15,7 @@
   "dependencies": {
     "@celluloid/database": "*",
     "@celluloid/react-player": "2.11.5",
+    "@celluloid/trpc": "*",
     "@celluloid/types": "^0.1.0",
     "@celluloid/validators": "^0.1.0",
     "@emotion/react": "^11.10.6",

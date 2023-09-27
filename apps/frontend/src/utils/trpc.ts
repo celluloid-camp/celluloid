@@ -1,4 +1,4 @@
-import type { AppRouter } from "@celluloid/api/src/routers";
+import type { AppRouter } from "@celluloid/trpc";
 import { createTRPCReact, TRPCClientError } from '@trpc/react-query';
 import { inferRouterOutputs } from "@trpc/server";
 

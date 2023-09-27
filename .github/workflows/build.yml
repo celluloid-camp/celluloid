@@ -29,6 +29,17 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build Backend
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/backend:${{ github.event.inputs.tag }}
+          build-args: |
+            COMMIT=${{ steps.vars.outputs.sha_short }}
+            APP=backend
+            START_COMMAND=start
+
       - name: Build Admin
         uses: docker/build-push-action@v3
         with:

@@ -45,9 +45,11 @@ FROM node:20-alpine  AS runner
 WORKDIR /app
 ARG APP=admin
 ARG START_COMMAND=dev
+ARG COMMIT
 
 ENV APP=${APP}
 ENV START_COMMAND=${START_COMMAND}
+ENV COMMIT=${COMMIT}
 
 COPY --from=builder /app .
 

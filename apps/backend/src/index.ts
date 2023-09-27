@@ -1,4 +1,5 @@
 import { prisma } from "@celluloid/database"
+import { appRouter, createContext } from '@celluloid/trpc';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import bcrypt from 'bcryptjs';
 import cookieParser from 'cookie-parser';
@@ -10,9 +11,7 @@ import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 
 import { openApiDocument } from './openapi';
-import { appRouter } from './routers';
 import { createSession } from './session';
-import { createContext } from './trpc';
 
 
 const trpcApiEndpoint = '/trpc'

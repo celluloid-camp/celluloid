@@ -25,9 +25,10 @@
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "--shortcuts to run commands in workspaces--": "",
-    "client": "yarn workspace client",
+    "frontend": "yarn workspace frontend",
     "server": "yarn workspace server",
     "admin": "yarn workspace admin",
+    "backend": "yarn workspace backend",
     "database": "yarn workspace @celluloid/database",
     "docker-build": "docker build -t celluloid:local  ."
   },

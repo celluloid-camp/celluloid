@@ -1,6 +1,5 @@
+import { appRouter } from '@celluloid/trpc';
 import { generateOpenApiDocument } from 'trpc-openapi';
-
-import { appRouter } from './routers';
 
 // Generate OpenAPI schema document
 export const openApiDocument = generateOpenApiDocument(appRouter, {
