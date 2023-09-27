@@ -74,7 +74,6 @@ async function main() {
   app.use((req, _res, next) => {
     // request logger
     console.log('⬅️ ', req.method, req.path, req.body ?? req.query);
-
     next();
   });
 
@@ -96,7 +95,7 @@ async function main() {
 
 
 
-  app.listen(2021, () => {
+  app.listen(process.env.PORT || 2021, () => {
     console.log('listening on port 2021');
   });
 }

@@ -1,9 +1,11 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "composite": true,
     "strict": true,
     "outDir": "dist"
   },

@@ -9,7 +9,7 @@ export function createSession() {
 
   // Initialize client.
   const redisClient = createClient({
-    url: process.env.CELLULOID_REDIS_URL || "redis://localhost"
+    url: process.env.REDIS_URL || "redis://localhost"
   })
   redisClient.connect().catch(console.error)
 

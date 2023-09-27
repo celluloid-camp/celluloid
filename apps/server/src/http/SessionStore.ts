@@ -7,7 +7,7 @@ import { logger } from "../backends/Logger";
 const log = logger("http/Session");
 
 export function createSession() {
-  const redisClient = createClient({ url: process.env.CELLULOID_REDIS_URL || "redis://localhost" });
+  const redisClient = createClient({ url: process.env.REDIS_URL || "redis://localhost" });
   redisClient.connect().catch((e) => log.error(`redis error : ${e.message}`));
 
   const redisStore = new RedisStore({

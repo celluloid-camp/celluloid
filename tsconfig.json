@@ -48,7 +48,10 @@
       "path": "packages/types"
     },
     {
-      "path": "packages/server"
+      "path": "packages/trpc"
+    },
+    {
+      "path": "packages/database"
     },
     {
       "path": "packages/validators"
