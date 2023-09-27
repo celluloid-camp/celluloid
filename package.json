@@ -7,8 +7,8 @@
   "repository": "http://github.com/celluloid-edu/celluloid",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "tools/i18next-sync"
+    "apps/*",
+    "packages/*"
   ],
   "prisma": {
     "schema": "packages/database/prisma/schema.prisma",
@@ -27,7 +27,7 @@
     "--shortcuts to run commands in workspaces--": "",
     "client": "yarn workspace @celluloid/client",
     "server": "yarn workspace @celluloid/server",
-    "admin": "yarn workspace @celluloid/admin",
+    "admin": "yarn workspace admin",
     "database": "yarn workspace @celluloid/database",
     "docker-build": "docker build -t celluloid:local  ."
   },

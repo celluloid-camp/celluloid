@@ -1,3 +1,4 @@
+import { prisma } from "@celluloid/database"
 import * as trpcExpress from '@trpc/server/adapters/express';
 import bcrypt from 'bcryptjs';
 import cookieParser from 'cookie-parser';
@@ -11,7 +12,6 @@ import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 
 import { openApiDocument } from './openapi';
-import { prisma } from './prisma';
 import { appRouter } from './routers';
 import { createSession } from './session';
 import { createContext } from './trpc';

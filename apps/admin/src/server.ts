@@ -2,12 +2,10 @@ import AdminJSExpress from "@adminjs/express";
 import importExportFeature from "@adminjs/import-export";
 import { Database, getModelByName, Resource } from '@adminjs/prisma';
 import { dark, light, noSidebar } from '@adminjs/themes'
-import PrismaModule from '@celluloid/database';
+import PrismaModule, { prisma } from '@celluloid/database';
 import AdminJS, { AdminJSOptions, DEFAULT_PATHS, ThemeConfig } from "adminjs";
 
 import { componentLoader, Components } from './components.js'
-
-const prisma = new PrismaModule.PrismaClient();
 
 export const overrides: ThemeConfig['overrides'] = {
   colors: {

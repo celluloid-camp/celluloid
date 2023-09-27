@@ -29,14 +29,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: false
-          file: Dockerfile.node
-          tags: custom-node:latest
-
       - name: Build Admin
         uses: docker/build-push-action@v3
         with:
