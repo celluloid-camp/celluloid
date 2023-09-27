@@ -19,7 +19,7 @@ import {
 } from "./auth/Auth";
 import { logger } from "./backends/Logger";
 import { createSession } from "./http/SessionStore";
-import { clientApp, clientDir, publicDir } from "./Paths";
+const packageJson = require('../package.json');
 
 require("cookie-parser");
 
@@ -30,8 +30,8 @@ passport.use(SigninStrategy.TEACHER_SIGNUP, teacherSignupStrategy);
 passport.use(SigninStrategy.STUDENT_SIGNUP, studentSignupStrategy);
 const app = express();
 
-app.use(express.static(publicDir));
-app.use(express.static(clientDir));
+// app.use(express.static(publicDir));
+// app.use(express.static(clientDir));
 app.use(bodyParser.json());
 app.use(compression());
 app.use(createSession());
@@ -45,19 +45,14 @@ app.use("/api/tags", TagsApi);
 app.use("/api/unfurl", UnfurlApi);
 app.use("/api/video", VideosApi);
 
-app.get("/elb-status", (_, res) => res.status(200).send());
-
-
-app.get("/*", (_, res) => res.sendFile(clientApp));
+app.get("/api/status", (_, res) => res.status(200).json({
+  commit: process.env.COMMIT,
+  version: packageJson.version
+}));
+// app.get("/*", (_, res) => res.sendFile(clientApp));
 
 (async () => {
   try {
-    // TODO: replace this with prisma migrate deploy
-    // log.info("Migration started...");
-    // await knex.migrate.latest();
-    // await knex.seed.run();
-    // log.info("Migration finished...");
-
     app.listen(process.env.CELLULOID_LISTEN_PORT, () => {
       log.info(
         `HTTP server listening on port ${process.env.CELLULOID_LISTEN_PORT}` +

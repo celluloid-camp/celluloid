@@ -80,12 +80,6 @@
   ],
   "references": [
     {
-      "path": "../types"
-    },
-    {
-      "path": "../validators"
-    },
-    {
       "path": "./tsconfig.node.json"
     }
   ]

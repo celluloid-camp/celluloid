@@ -4,8 +4,6 @@
     "noEmit": false,
     "rootDir": "src",
     "outDir": "dist",
-    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
-    "declarationDir": "dist",
     "lib": [
       "dom",
       "dom.iterable",

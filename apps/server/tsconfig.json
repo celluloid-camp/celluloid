@@ -28,13 +28,5 @@
   },
   "include": [
     "src"
-  ],
-  "references": [
-    {
-      "path": "../types"
-    },
-    {
-      "path": "../validators"
-    }
-  ],
+  ]
 }

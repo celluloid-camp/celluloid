@@ -32,6 +32,7 @@ COPY --from=installer --link /app .
 
 COPY --from=pruned /app/out/full/ .
 COPY turbo.json turbo.json
+COPY tsconfig.json tsconfig.json
 
 RUN turbo run build --no-cache --filter=${APP}
 
