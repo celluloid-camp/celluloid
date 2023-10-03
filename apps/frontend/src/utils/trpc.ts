@@ -28,7 +28,8 @@ export function isTRPCClientError(
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
-
 export type UserMe = RouterOutput['user']['me'];
 
 export type ProjectById = RouterOutput['project']['byId'];
+
+export type ProjectList = RouterOutput['project']['list'];

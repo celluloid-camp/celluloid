@@ -3,8 +3,6 @@ import session from "express-session"
 import { createClient } from "redis"
 
 
-
-
 export function createSession() {
 
   // Initialize client.
@@ -20,6 +18,9 @@ export function createSession() {
 
   return session({
     store: redisStore,
+    name: process.env.CELLULOID_COOKIE_NAME
+      ? process.env.CELLULOID_COOKIE_NAME
+      : undefined,
     cookie: {
       domain: process.env.CELLULOID_COOKIE_DOMAIN
         ? process.env.CELLULOID_COOKIE_DOMAIN

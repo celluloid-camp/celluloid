@@ -1,3 +1,2 @@
 export { appRouter } from './routers';
-export { createContext } from './trpc';
-
+export { createRPCContext } from './trpc';

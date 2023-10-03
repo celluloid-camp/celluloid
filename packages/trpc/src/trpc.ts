@@ -12,7 +12,7 @@ export type Context = {
   logout: () => Promise<boolean>;
 };
 
-export const createContext = async ({
+export const createRPCContext = async ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions): Promise<Context> => {
@@ -36,7 +36,7 @@ export const createContext = async ({
         if (err) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
-            message: `nable to log out`
+            message: `Enable to log out`
           })
         } else {
           resolve(true)
@@ -44,7 +44,6 @@ export const createContext = async ({
       });
     })
   }
-
   return { user, requirePermission, logout, requestId };
 };
 

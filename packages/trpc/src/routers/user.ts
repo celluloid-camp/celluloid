@@ -36,6 +36,50 @@ export const userRouter = router({
     const user = await prisma.user.findUnique({ where: { id: input.id } });
     return user;
   }),
+  projects: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+
+      if (ctx.user) {
+        const limit = input.limit ?? 50;
+        const { cursor } = input;
+
+        const items = await prisma.project.findMany({
+          take: limit + 1,
+          where: {
+            userId: ctx.user.id
+          },
+          include: {
+
+          },
+          cursor: cursor
+            ? {
+              id: cursor,
+            }
+            : undefined,
+          orderBy: {
+            publishedAt: 'desc',
+          },
+        });
+        let nextCursor: typeof cursor | undefined = undefined;
+        if (items.length > limit) {
+          // Remove the last item and use it as next cursor
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const nextItem = items.pop()!;
+          nextCursor = nextItem.id;
+        }
+
+        return {
+          items: items.reverse(),
+          nextCursor,
+        };
+      }
+    }),
   logout: protectedProcedure
     .mutation(async (opts) => {
       const { ctx } = opts;

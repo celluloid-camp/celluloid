@@ -14,7 +14,7 @@
     "watch": "yarn workspaces foreach -p -i run watch",
     "dev": "yarn watch & yarn workspaces foreach -p -i run dev ",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
-    "build": "yarn workspaces foreach -pt run build",
+    "build": "turbo run build --no-cache",
     "i18n:sync": "yarn workspace translations sync",
     "database:migrate": "./scripts/docker-bootstrap.sh admin",
     "deploy": "./bin/deploy",

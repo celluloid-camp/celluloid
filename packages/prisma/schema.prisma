@@ -4,7 +4,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
   // binaryTargets = ["native", "linux-musl"]
   // output   = "../client-prisma"
 }
@@ -61,10 +62,9 @@ model Project {
   shareExpiresAt DateTime?       @db.Timestamptz(6)
   sharePassword  String?
   extra          Json?           @default("{}") @db.Json
-  annotation     Annotation[]
+  annotations    Annotation[]
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "project_userid_foreign")
-  TagToProject   TagToProject[]
-  UserToProject  UserToProject[] @ignore
+  members        UserToProject[]
 
   playlist   Playlist? @relation(fields: [playlistId], references: [id])
   playlistId String?   @db.Uuid
@@ -82,23 +82,6 @@ model Playlist {
   projects Project[]
 
   publishedAt DateTime @default(now()) @db.Timestamptz(6)
-}
-
-model Tag {
-  id           String         @id @unique(map: "tag_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  featured     Boolean        @default(false)
-  extra        Json?          @default("{}")
-  TagToProject TagToProject[]
-}
-
-model TagToProject {
-  tagId     String  @db.Uuid
-  projectId String  @db.Uuid
-  Project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tagtoproject_projectid_foreign")
-  Tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tagtoproject_tagid_foreign")
-
-  @@unique([tagId, projectId], map: "TagToProjectTagIdProjectIdUnique")
 }
 
 model User {

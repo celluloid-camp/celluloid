@@ -1,5 +1,5 @@
-import { UserRole } from '@celluloid/database';
-import { prisma } from "@celluloid/database"
+import { Prisma, UserRole } from '@celluloid/prisma';
+import { prisma } from "@celluloid/prisma"
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -13,36 +13,48 @@ import { protectedProcedure, publicProcedure, router } from '../trpc';
 //   updatedAt: true,
 // });
 
-
 export const projectRouter = router({
   list: publicProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(),
-        authoredOnly: z.boolean().nullish().default(false),
-      }),
+        term: z.string().nullish()
+      })
     )
     .query(async ({ ctx, input }) => {
-      /**
-       * For pagination docs you can have a look here
-       * @see https://trpc.io/docs/useInfiniteQuery
-       * @see https://www.prisma.io/docs/concepts/components/prisma-client/pagination
-       */
-
       const limit = input.limit ?? 50;
-      const { cursor } = input;
+      const { cursor, term } = input;
+
+      const withterm: Prisma.ProjectWhereInput = term ? {
+        title: {
+          search: `%${term}%`,
+        },
+      } : {};
 
       const items = await prisma.project.findMany({
         // select: defaultPostSelect,
         // get an extra item at the end which we'll use as next cursor
+        distinct: ["playlistId"],
         take: limit + 1,
         where: {
-          public: input.authoredOnly ? undefined : true,
-          userId: input.authoredOnly && ctx.user ? ctx.user.id : undefined,
+          ...withterm,
+          OR: [
+            {
+              public: true,
+            },
+            { userId: ctx.user ? ctx.user.id : undefined },
+          ]
         },
         include: {
-
+          user: true,
+          members: true,
+          playlist: {
+            include: {
+              _count: true
+            }
+          },
+          _count: true
         },
         cursor: cursor
           ? {

@@ -25,6 +25,7 @@ import { useDidUpdate } from "rooks";
 import { StyledTitle } from "~components/typography";
 import { useMe, useProjects } from "~hooks/use-user";
 import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
+import { ProjectList, trpc } from "~utils/trpc";
 
 import ProjectThumbnail from "./ProjectThumbnail";
 
@@ -42,8 +43,10 @@ export const ProjectGrid: React.FC = () => {
     }
   }, 1000);
 
-  const { data: user } = useMe();
-  const { data: projects = [], error, isLoading } = useProjects(searchTerm);
+  const { data: user } = trpc.user.me.useQuery();
+  const { data, isFetching, error } = trpc.project.list.useQuery({
+    term: searchTerm,
+  });
 
   const { t } = useTranslation();
 
@@ -53,12 +56,15 @@ export const ProjectGrid: React.FC = () => {
 
   const sort = R.sortWith([R.descend(R.prop("publishedAt"))]);
 
-  const sorted = sort(projects) as ProjectGraphRecord[];
+  console.log(data);
+
+  const sorted = sort(data?.items || []) as ProjectList;
 
   const userProjects = R.filter(
     (project: ProjectGraphRecord) =>
       !!user &&
-      (isOwner(project, user) || isMember(project, user) || isAdmin(user))
+      // (isOwner(project, user) || isMember(project, user) || isAdmin(user))
+      (isOwner(project, user) || isAdmin(user))
   )(sorted);
 
   const publicProjects = R.difference(sorted, userProjects);
@@ -109,7 +115,7 @@ export const ProjectGrid: React.FC = () => {
           ) : null}
         </Paper>
 
-        {isLoading ? (
+        {isFetching ? (
           <Box
             mx={2}
             my={10}
@@ -178,7 +184,7 @@ export const ProjectGrid: React.FC = () => {
             </>
           )}
 
-          {!isLoading && noProjects && (
+          {!isFetching && noProjects && (
             <Fade in={noProjects} appear={true}>
               <Typography
                 variant="h3"

@@ -73,7 +73,8 @@
   },
   "include": [
     "src/**/*",
-    "src/**/*.json"
+    "src/**/*.json",
+    "vite.config.ts"
   ],
   "exclude": [
     "node_modules"
@@ -81,6 +82,9 @@
   "references": [
     {
       "path": "./tsconfig.node.json"
-    }
+    },
+    {
+      "path": "../../packages/trpc"
+    },
   ]
 }

@@ -16,6 +16,9 @@ export function createSession() {
   log.info("redis connected");
   return session({
     store: redisStore,
+    name: process.env.CELLULOID_COOKIE_NAME
+      ? process.env.CELLULOID_COOKIE_NAME
+      : undefined,
     cookie: {
       domain: process.env.CELLULOID_COOKIE_DOMAIN
         ? process.env.CELLULOID_COOKIE_DOMAIN

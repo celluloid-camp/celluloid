@@ -9,11 +9,11 @@
   ],
   "scripts": {
     "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap",
-    "dev": "tsx watch --clear-screen=false src "
+    "dev": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap --watch"
   },
   "dependencies": {
     "@celluloid/prisma": "*",
-    "@trpc/server": "^10.38.4",
+    "@trpc/server": "^10.38.5",
     "bcryptjs": "^2.4.3",
     "change-case": "^4.1.2",
     "dotenv": "^16.3.1",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/uuid": "^9.0.4",
-    "esbuild": "^0.19.3",
+    "esbuild": "^0.19.4",
     "tsx": "^3.12.10"
   }
 }
