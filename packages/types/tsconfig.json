@@ -1,22 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "noEmit": false,
-    "rootDir": "./src",
-    "outDir": "dist",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "target": "es5",
-    "module": "commonjs"
-  },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
+  "extends": "@celluloid/config/tsconfig/node16.json",
   "include": [
-    "./src/**/*"
+    "**/*.ts",
+    "**/*.tsx",
+    "tsup.config.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

@@ -29,13 +29,9 @@
     "docker-build": "docker build -t celluloid:local  ."
   },
   "devDependencies": {
-    "@babel/core": "^7.14.3",
-    "@babel/preset-env": "^7.14.2",
-    "@babel/preset-typescript": "^7.13.0",
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
-    "babel-jest": "^27.0.1",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react": "^1.1.7",
