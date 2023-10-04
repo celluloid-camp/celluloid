@@ -10,7 +10,7 @@
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "incremental": true,
+    "incremental": false,
     "esModuleInterop": true,
     "module": "esnext",
     "resolveJsonModule": true,

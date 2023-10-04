@@ -1,25 +1,11 @@
 {
-  "compilerOptions": {
-    "jsx": "react",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "declaration": true,
-    "removeComments": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es6",
-    "lib": [
-      "esnext"
-    ],
-    "sourceMap": true,
-    "outDir": "dist",
-    "skipLibCheck": true,
-    "esModuleInterop": true
-  },
-  "exclude": [
-    "node_modules",
-    "src/**/theme.bundle.js"
-  ],
+  "extends": "@celluloid/config/tsconfig/react.json",
   "include": [
-    "src"
+    "**/*.ts",
+    "**/*.tsx",
+    "tsup.config.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

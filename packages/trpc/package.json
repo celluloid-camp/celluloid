@@ -2,13 +2,16 @@
   "name": "@celluloid/trpc",
   "private": true,
   "version": "2.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "type": "module",
-  "main": "dist/index.js",
   "files": [
-    "src/index.ts"
+    "dist"
   ],
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap",
+    "build": "tsup",
+    "build1": "esbuild src/index.ts --bundle --packages=external --platform=neutral --format=esm --outdir=dist --sourcemap",
     "dev": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap --watch"
   },
   "dependencies": {
@@ -24,7 +27,7 @@
   },
   "devDependencies": {
     "@types/uuid": "^9.0.4",
-    "esbuild": "^0.19.4",
+    "tsup": "^7.2.0",
     "tsx": "^3.12.10"
   }
 }

@@ -1,23 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "composite": true,
-    "strict": true,
-    "outDir": "dist"
-  },
+  "extends": "@celluloid/config/tsconfig/node16.json",
   "include": [
-    "src"
+    "**/*.ts",
+    "**/*.tsx",
+    "tsup.config.ts"
   ],
   "exclude": [
     "node_modules"
-  ],
-  "references": [
-    {
-      "path": "../../packages/trpc"
-    }
   ]
 }

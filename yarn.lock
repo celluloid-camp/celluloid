@@ -1837,7 +1837,6 @@ __metadata:
     "@types/dotenv": ^6.0.0
     copyfiles: ^2.4.1
     dotenv-cli: ^7.2.1
-    esbuild: ^0.19.4
     eslint: ^8.12.0
     prisma: ^5.3.1
     rimraf: ^5.0.1
@@ -1873,9 +1872,9 @@ __metadata:
     bcryptjs: ^2.4.3
     change-case: ^4.1.2
     dotenv: ^16.3.1
-    esbuild: ^0.19.4
     lodash: ^4.17.21
     trpc-openapi: ^1.2.0
+    tsup: ^7.2.0
     tsx: ^3.12.10
     uuid: ^9.0.1
     zod: ^3.22.2
@@ -5392,6 +5391,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.8.2":
+  version: 20.8.2
+  resolution: "@types/node@npm:20.8.2"
+  checksum: 3da73e25d821bfcdb7de98589027e08bb4848e55408671c4a83ec0341e124b5313a0b20e1e4b4eff1168ea17a86f622ad73fcb04b761abd77496b9a27cbd5de5
+  languageName: node
+  linkType: hard
+
 "@types/nodemailer-direct-transport@npm:*":
   version: 1.0.33
   resolution: "@types/nodemailer-direct-transport@npm:1.0.33"
@@ -7320,6 +7326,7 @@ __metadata:
     "@celluloid/trpc": "*"
     "@trpc/server": ^10.38.5
     "@types/express": ^4.17.17
+    "@types/node": ^20.8.2
     "@types/swagger-ui-express": ^4.1.3
     "@types/uuid": ^9.0.4
     bcryptjs: ^2.4.3
@@ -7328,15 +7335,19 @@ __metadata:
     cookie-parser: ^1.4.6
     cors: ^2.8.5
     dotenv: ^16.3.1
-    esbuild: ^0.19.4
     express: ^4.18.2
     express-session: ^1.17.3
     lodash: ^4.17.21
+    passport: ^0.6.0
+    passport-local: ^1.0.0
     redis: ^4.6.10
     start-server-and-test: ^2.0.0
     swagger-ui-express: ^5.0.0
     trpc-openapi: ^1.2.0
+    tslib: ^2.6.2
+    tsup: ^7.2.0
     tsx: ^3.12.10
+    typescript: ^5.2.2
     uuid: ^9.0.1
     wait-port: ^1.0.4
     zod: ^3.22.2
@@ -23566,7 +23577,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.2.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.6.2":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad
@@ -23922,7 +23933,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.0.2, typescript@npm:^5.0.4":
+"typescript@npm:^5.0.2, typescript@npm:^5.0.4, typescript@npm:^5.2.2":
   version: 5.2.2
   resolution: "typescript@npm:5.2.2"
   bin:
@@ -23942,7 +23953,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.0.2#~builtin<compat/typescript>, typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.0.2#~builtin<compat/typescript>, typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
   resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=1f5320"
   bin:

@@ -53,7 +53,8 @@ const loginStrategy = new LocalStrategy(
 
     const user = await prisma.user.findUnique({
       where: {
-        OR: [{ email: login }, { username: login, }]
+        //OR: [{ email: login }, { username: login, }]
+        email: login
       }
     });
 
