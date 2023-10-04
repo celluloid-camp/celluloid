@@ -44,7 +44,7 @@
     "start": "node --use-strict dist/index.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
+    "@celluloid/config": "*",
     "@celluloid/types": "*",
     "@celluloid/validators": "*",
     "@types/bcrypt": "^3.0.0",

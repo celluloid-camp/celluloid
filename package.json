@@ -11,13 +11,11 @@
     "packages/*"
   ],
   "scripts": {
-    "watch": "yarn workspaces foreach -p -i run watch",
     "dev": "yarn watch & yarn workspaces foreach -p -i run dev ",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "turbo run build --no-cache",
     "i18n:sync": "yarn workspace translations sync",
     "database:migrate": "./scripts/docker-bootstrap.sh admin",
-    "deploy": "./bin/deploy",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "--shortcuts to run commands in workspaces--": "",
