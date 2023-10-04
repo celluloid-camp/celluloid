@@ -57,7 +57,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@adminjs/express@npm:6.0.1":
+"@adminjs/express@npm:^6.0.1":
   version: 6.0.1
   resolution: "@adminjs/express@npm:6.0.1"
   peerDependencies:
@@ -1871,7 +1871,7 @@ __metadata:
     "@trpc/server": ^10.38.5
     "@types/uuid": ^9.0.4
     bcryptjs: ^2.4.3
-    change-case: ^5.0.2
+    change-case: ^4.1.2
     dotenv: ^16.3.1
     esbuild: ^0.19.4
     lodash: ^4.17.21
@@ -6391,7 +6391,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "admin@workspace:apps/admin"
   dependencies:
-    "@adminjs/express": 6.0.1
+    "@adminjs/express": ^6.0.1
     "@adminjs/import-export": ^3.0.0
     "@adminjs/prisma": ^5.0.1
     "@adminjs/themes": ^1.0.1
@@ -6400,7 +6400,7 @@ __metadata:
     "@types/cors": ^2.8.13
     "@types/express": ^4.17.17
     "@types/node": ^18.14.2
-    adminjs: 7.2.2
+    adminjs: ^7.2.2
     connect-redis: ^7.0.0
     copyfiles: ^2.4.1
     cors: ^2.8.5
@@ -6418,7 +6418,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"adminjs@npm:7.2.2":
+"adminjs@npm:^7.2.2":
   version: 7.2.2
   resolution: "adminjs@npm:7.2.2"
   dependencies:
@@ -21790,7 +21790,7 @@ __metadata:
     "@types/ramda": ^0.25.35
     bcryptjs: ^2.4.3
     body-parser: ^1.18.2
-    change-case: ^5.0.2
+    change-case: ^4.1.2
     compression: ^1.7.2
     connect-redis: ^7.1.0
     cookie-parser: ^1.4.3
@@ -21822,6 +21822,7 @@ __metadata:
     ts-node: ^10.9.1
     ts-node-dev: ^2.0.0
     tslib: ^2.2.0
+    tsup: ^7.2.0
     typescript: ^5.2.2
     unfurl.js: ^6.3.1
     validator: ^13.7.0
