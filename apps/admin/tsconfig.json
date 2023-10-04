@@ -1,9 +1,7 @@
 {
   "extends": "@celluloid/config/tsconfig/react.json",
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "tsup.config.ts"
+    "src"
   ],
   "exclude": [
     "node_modules"
