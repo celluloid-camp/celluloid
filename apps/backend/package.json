@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "tsx watch --clear-screen=false src ",
+    "dev": "dotenv -e ../../.env -- tsup --watch --silent --onSuccess 'node dist/index.js'",
     "start": "node dist/index",
     "test-start": "start-server-and-test 'node dist/index' 2021"
   },
@@ -18,7 +18,6 @@
     "connect-redis": "^7.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "lodash": "^4.17.21",
@@ -35,10 +34,10 @@
     "@types/node": "^20.8.2",
     "@types/swagger-ui-express": "^4.1.3",
     "@types/uuid": "^9.0.4",
+    "dotenv-cli": "^7.3.0",
     "start-server-and-test": "^2.0.0",
     "tslib": "^2.6.2",
     "tsup": "^7.2.0",
-    "tsx": "^3.12.10",
     "typescript": "^5.2.2",
     "wait-port": "^1.1.0"
   }
