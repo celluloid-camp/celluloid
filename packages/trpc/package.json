@@ -10,8 +10,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "build1": "esbuild src/index.ts --bundle --packages=external --platform=neutral --format=esm --outdir=dist --sourcemap",
+    "build1": "tsup",
+    "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap",
     "dev": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap --watch"
   },
   "dependencies": {
@@ -26,7 +26,9 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@celluloid/config": "*",
     "@types/uuid": "^9.0.4",
+    "esbuild": "^0.19.4",
     "tsup": "^7.2.0",
     "tsx": "^3.12.10"
   }
