@@ -55,6 +55,6 @@ ENV PORT=3000
 COPY --from=builder /app .
 
 HEALTHCHECK --interval=10s --timeout=3s \
-  CMD wait-port :$PORT -o silent -t 3000 /
+  CMD wait-port :$$PORT -o silent -t 3000 /
 
 CMD yarn workspace ${APP} ${START_COMMAND}
