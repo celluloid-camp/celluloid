@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 4000
 
 const start = async () => {
   const app = express();
-  app.use(cors());
+  app.enable('trust proxy');
+  app.use(cors({ credentials: true, origin: true }));
 
   // Define the CORS middleware function
   const corsMiddleware = (req: Request, res: Response, next: NextFunction) => {

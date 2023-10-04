@@ -29,7 +29,7 @@ passport.use(SigninStrategy.LOGIN, loginStrategy);
 passport.use(SigninStrategy.TEACHER_SIGNUP, teacherSignupStrategy);
 passport.use(SigninStrategy.STUDENT_SIGNUP, studentSignupStrategy);
 const app = express();
-
+app.enable('trust proxy');
 // app.use(express.static(publicDir));
 // app.use(express.static(clientDir));
 app.use(bodyParser.json());

@@ -18,6 +18,7 @@ const trpcApiEndpoint = '/trpc'
 async function main() {
   // express implementation
   const app = express();
+  app.enable('trust proxy');
 
   // parse cookies
   app.use(cookieParser());
