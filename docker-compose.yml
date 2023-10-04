@@ -26,22 +26,26 @@ services:
     networks:
       - local
 
-  # dbbackups:
-  #   image: kartoza/pg-backup:13.0
-  #   volumes:
-  #     - ./backups:/backups
-  #   environment:
-  #     - DUMPPREFIX=PG
-  #     - POSTGRES_HOST=postgres
-  #     - POSTGRES_USER=${POSTGRES_USER}
-  #     - POSTGRES_PASS=${POSTGRES_PASSWORD}
-  #     - POSTGRES_PORT=5432
-  #     #- CRON_SCHEDULE="*/5 * * * *"
-  #     #- DB_DUMP_ENCRYPTION=true
-  #   restart: on-failure
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
+  dbbackups:
+    image: kartoza/pg-backup:13.0
+    volumes:
+      - ./.backups:/backups
+    environment:
+      - DUMPPREFIX=PG
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=5432
+      - DBLIST=celluloid
+      - ARCHIVE_FILENAME=latest
+      #- CRON_SCHEDULE="*/5 * * * *"
+      #- DB_DUMP_ENCRYPTION=true
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - local
 
   # keycloak:
   #   image: quay.io/phasetwo/phasetwo-keycloak:20.0.1-alpha
