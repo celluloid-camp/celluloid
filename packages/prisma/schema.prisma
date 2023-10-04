@@ -7,7 +7,7 @@ generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
   // binaryTargets = ["native", "linux-musl"]
-  // output   = "../client-prisma"
+  // output          = "./client"
 }
 
 model Annotation {

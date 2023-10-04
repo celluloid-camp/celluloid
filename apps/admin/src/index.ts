@@ -6,6 +6,8 @@ import * as url from 'url'
 
 import getAdminRouter from "./server.js";
 
+const PORT = process.env.PORT || 4000
+
 const start = async () => {
   const app = express();
   app.use(cors());
@@ -36,9 +38,9 @@ const start = async () => {
 
   app.use("/admin", express.static(path.join(__dirname, "../public")));
 
-  app.listen(4000, () => {
+  app.listen(PORT, () => {
     console.log(
-      `AdminJS started on localhost:4000`
+      `AdminJS started on localhost:${PORT}`
     );
   });
 };

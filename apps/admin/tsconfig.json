@@ -1,8 +1,7 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
-    "module": "NodeNext",
+    "module": "nodenext",
     "moduleResolution": "nodenext",
     "declaration": true,
     "removeComments": true,

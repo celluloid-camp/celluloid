@@ -12,13 +12,13 @@
   },
   "scripts": {
     "dev": "tsx watch --clear-screen=false src ",
-    "build": "rm -rf dist && tsc",
-    "start": "node --use-strict dist/index.js"
+    "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --outdir=dist --sourcemap",
+    "start": "node dist"
   },
   "dependencies": {
     "@adminjs/express": "6.0.1",
     "@adminjs/import-export": "^3.0.0",
-    "@adminjs/prisma": "5.0.1",
+    "@adminjs/prisma": "^5.0.1",
     "@adminjs/themes": "^1.0.1",
     "@celluloid/prisma": "*",
     "adminjs": "7.2.2",
@@ -37,7 +37,9 @@
     "copyfiles": "^2.4.1",
     "del-cli": "^5.0.0",
     "dotenv-cli": "^7.2.1",
+    "esbuild": "^0.19.4",
     "np": "^7.7.0",
+    "tsup": "^7.2.0",
     "tsx": "^3.12.10",
     "typescript": "^5.0.4"
   },
