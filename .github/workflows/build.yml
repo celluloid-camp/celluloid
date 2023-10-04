@@ -35,6 +35,8 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}/backend:${{ github.event.inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
             APP=backend
@@ -46,6 +48,8 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}/admin:${{ github.event.inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
             APP=admin
@@ -57,6 +61,8 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}/server:${{ github.event.inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
             APP=server
@@ -68,6 +74,8 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}/frontend:${{ github.event.inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
             APP=frontend
