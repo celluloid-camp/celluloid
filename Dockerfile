@@ -1,7 +1,7 @@
 FROM  node:20-alpine  AS custom-node
 
 RUN apk add -f --update --no-cache --virtual .gyp nano bash libc6-compat python3 make g++ \
-      && yarn global add turbo \
+      && yarn global add turbo wait-port \
       && apk del .gyp
 
 
@@ -50,7 +50,11 @@ ARG COMMIT
 ENV APP=${APP}
 ENV START_COMMAND=${START_COMMAND}
 ENV COMMIT=${COMMIT}
+ENV PORT=3000
 
 COPY --from=builder /app .
+
+HEALTHCHECK --interval=10s --timeout=3s \
+  CMD wait-port :${PORT} -o silent -t 3000 /
 
 CMD yarn workspace ${APP} ${START_COMMAND}
