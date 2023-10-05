@@ -1,40 +1,19 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "@celluloid/config/tsconfig/node16.json",
   "compilerOptions": {
-    "noEmit": false,
-    "rootDir": "src",
-    "outDir": "dist",
-    "lib": [
-      "es2018",
-      "esnext.asynciterable"
-    ],
-    "target": "es6",
-    "module": "commonjs",
-    /* Experimental Options */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    /* Advanced Options */
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "strict": false,
     "paths": {
       /* IMPORTANT: this must be the same of 'src/aliases.ts' */
       "~/*": [
-        "src/*"
+        "./*"
       ]
     },
   },
   "include": [
-    "src"
+    "**/*.ts",
+    "**/*.tsx",
+    "tsup.config.ts"
   ],
-  "references": [
-    {
-      "path": "../../packages/types"
-    },
-    {
-      "path": "../../packages/validators"
-    }
-  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

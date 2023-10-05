@@ -38,7 +38,6 @@
     "validator": "^13.7.0"
   },
   "scripts": {
-    "clean": "rm -rf dist",
     "build": "tsup",
     "dev": "dotenv -e ../../.env -- tsup --watch --silent --onSuccess 'node dist/index.js'",
     "start": "node --use-strict dist/index.js"
