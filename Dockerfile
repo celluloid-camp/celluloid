@@ -22,7 +22,7 @@ COPY --from=pruned /app/out/yarn.lock /app/yarn.lock
 
 RUN \
       --mount=type=cache,target=/usr/local/share/.cache/yarn/v6,sharing=private \
-      yarn --prefer-offline
+      yarn
 
 FROM custom-node as builder
 WORKDIR /app
@@ -38,7 +38,7 @@ RUN turbo run build --no-cache --filter=${APP}
 
 RUN \
       --mount=type=cache,target=/usr/local/share/.cache/yarn/v6,sharing=private \
-      yarn --prefer-offline --frozen-lockfile
+      yarn --frozen-lockfile
 
 #############################################
 FROM node:20-alpine  AS runner
