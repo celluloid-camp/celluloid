@@ -46,8 +46,9 @@ jobs:
 
       - name: "Test docker"
         run: |
-          npm install node-fetch abort-controller
-          node .github/workflows/test-docker.js
+          cd .github/workflows/ &&
+          npm install node-fetch abort-controller &&
+          node test-docker.js
 
       - name: "Tear down docker"
         run: docker kill celluloid-frontend
