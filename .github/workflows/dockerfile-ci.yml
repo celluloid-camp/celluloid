@@ -44,7 +44,7 @@ jobs:
 
       - name: "Start docker server"
         run:
-          docker run -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
+          docker run --rm -d --init -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
 
 
       - name: "Test docker"
