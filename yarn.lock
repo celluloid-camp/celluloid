@@ -1891,7 +1891,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@celluloid/validators@workspace:packages/validators"
   dependencies:
-    "@celluloid/types": ^0.1.0
+    "@celluloid/types": "*"
     "@types/validator": 13.7.10
     tsup: ^7.2.0
     typescript: ^5.2.2

@@ -1,7 +1,7 @@
 FROM  node:20-alpine  AS custom-node
 
 RUN apk add -f --update --no-cache --virtual .gyp nano bash libc6-compat python3 make g++ \
-      && yarn global add turbo wait-port \
+      && yarn global add turbo \
       && apk del .gyp
 
 
