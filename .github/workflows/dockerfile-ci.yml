@@ -39,17 +39,13 @@ jobs:
       #     docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest .
 
       - name: "Run docker frontend build"
-          run:
-            docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
+        run: docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
 
       - name: "Start docker server"
-        run:
-          docker run --rm -d --init -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
-
+        run: docker run --rm -d --init -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
 
       - name: "Test docker"
         run: node .github/workflows/test-docker.js
-
 
       - name: "Tear down docker"
         run: docker kill celluloid-frontend
