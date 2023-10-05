@@ -38,15 +38,8 @@ jobs:
       # - name: "Run docker frontend build"
       #   run: docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
 
-      - name: Build frontend container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: false
-          tags: celluloid-frontend:latest
-          build-args: |
-            APP=admin
-            START_COMMAND=start
+      - name: "Run docker frontend build"
+        run: docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
 
       - name: "Start docker server"
         run: docker run --rm -d --init -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
