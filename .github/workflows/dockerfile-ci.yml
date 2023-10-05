@@ -44,8 +44,6 @@ jobs:
           context: .
           push: false
           tags: celluloid-frontend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           build-args: |
             APP=admin
             START_COMMAND=start
