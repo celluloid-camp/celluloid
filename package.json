@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn watch & yarn workspaces foreach -p -i run dev ",
+    "dev": "turbo run dev --concurrency  11",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "turbo run build --no-cache",
     "i18n:sync": "yarn workspace translations sync",
