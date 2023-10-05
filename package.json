@@ -17,6 +17,7 @@
     "i18n:sync": "yarn workspace translations sync",
     "database:migrate": "./scripts/docker-bootstrap.sh admin",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
+    "prepare": "husky install",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "--shortcuts to run commands in workspaces--": "",
     "frontend": "yarn workspace frontend",
@@ -27,6 +28,8 @@
     "docker-build": "docker build -t celluloid:local  ."
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.7.2",
+    "@commitlint/config-conventional": "^17.7.0",
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
@@ -40,7 +43,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "eslint_d": "^12.2.1",
+    "husky": "^8.0.3",
     "jest": "^27.0.1",
+    "lint-staged": "^14.0.1",
     "mock-req": "^0.2.0",
     "mock-res": "^0.5.0",
     "prettier": "^2.3.0",
@@ -76,5 +81,9 @@
   "packageManager": "yarn@3.4.1",
   "engines": {
     "node": ">=20"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx}": "eslint --cache --fix",
+    "*.{js,css,md,ts,tsx,jsx}": "prettier --write"
   }
 }

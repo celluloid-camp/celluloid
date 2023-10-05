@@ -10,20 +10,46 @@ jobs:
       matrix:
         node-version: [16.x]
 
+    services:
+      redis:
+        image: redis
+        ports:
+          - "0.0.0.0:6379:6379"
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - "0.0.0.0:5432:5432"
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: "Run docker server build"
-        run: docker compose -f stack.yml up
+      # - name: "Run docker backend build"
+      #   run:
+      #     docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest .
+
+      - name: "Run docker frontend build"
+          run:
+            docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
+
+      - name: "Start docker server"
+        run:
+          docker run -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
+
 
       - name: "Test docker"
         run: node .github/workflows/test-docker.js
 
+
       - name: "Tear down docker"
-        run: docker compose down
+        run: docker kill celluloid-frontend

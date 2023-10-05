@@ -83,7 +83,8 @@ export const Footer: React.FC<FooterProps> = (props) => (
               <Trans
                 i18nKey={"footer.copyright"}
                 defaults="© 2018 Institut Catholique de Paris"
-              />
+              />{" "}
+              version: {JSON.stringify(process.env)}
             </Typography>
           </Box>
         </Grid>
