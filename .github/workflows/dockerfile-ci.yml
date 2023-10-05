@@ -20,7 +20,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: "Run docker server build"
-        run: docker compose -f stack.yml
+        run: docker compose -f stack.yml up
 
       - name: "Test docker"
         run: node .github/workflows/test-docker.js
