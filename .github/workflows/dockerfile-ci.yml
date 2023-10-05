@@ -35,14 +35,28 @@ jobs:
       #   run:
       #     docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest .
 
-      - name: "Run docker frontend build"
-        run: docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
+      # - name: "Run docker frontend build"
+      #   run: docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
+
+      - name: Build frontend container
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: false
+          tags: celluloid-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            APP=admin
+            START_COMMAND=start
 
       - name: "Start docker server"
         run: docker run --rm -d --init -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
 
       - name: "Test docker"
-        run: node .github/workflows/test-docker.js
+        run: |
+          npm install node-fetch abort-controller
+          node .github/workflows/test-docker.js
 
       - name: "Tear down docker"
         run: docker kill celluloid-frontend
