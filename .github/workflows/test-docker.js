@@ -1,6 +1,6 @@
-import fetch from "node-fetch";
-import AbortController from "abort-controller";
-import { execSync } from "child_process";
+const fetch = require("node-fetch");
+const AbortController = require("abort-controller");
+const { execSync } = require("child_process");
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
