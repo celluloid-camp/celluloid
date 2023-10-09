@@ -8,5 +8,5 @@ export default defineConfig({
   entry: ["src/index.ts"],
   format: ["cjs"],
   minify: isProduction,
-  sourcemap: false,
+  sourcemap: true,
 });

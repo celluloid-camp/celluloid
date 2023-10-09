@@ -108,7 +108,7 @@ export const playlistRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.requirePermission(UserRole.Teacher)) {
+      if (ctx.user && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
         const userId = ctx.user.id;
 
         const project = await prisma.playlist.create({

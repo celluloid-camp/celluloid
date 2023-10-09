@@ -33,43 +33,6 @@ function fetchMembers(
 }
 
 
-router.get("/", (req, res) => {
-  if (req.query.keyword) {
-    return ProjectStore.searchAll(req.user as UserRecord, req.query.keyword as string)
-      .then((projects: ProjectGraphRecord[]) => {
-        return Promise.all(
-          projects.map((project) =>
-            fetchMembers(project, req.user).then((members: UserRecord[]) => ({
-              ...project,
-              members,
-            }))
-          )
-        );
-      })
-      .then((result: ProjectGraphRecord[]) => res.json(result))
-      .catch((error: Error) => {
-        console.log(error)
-        return res.status(500).send();
-      });
-  } else {
-    return ProjectStore.selectAll(req.user as UserRecord)
-      .then((projects: ProjectGraphRecord[]) => {
-        return Promise.all(
-          projects.map((project) =>
-            fetchMembers(project, req.user).then((members: UserRecord[]) => ({
-              ...project,
-              members,
-            }))
-          )
-        );
-      })
-      .then((result: ProjectGraphRecord[]) => res.json(result))
-      .catch((error: Error) => {
-        console.log(error)
-        return res.status(500).send();
-      });
-  }
-});
 
 router.get("/:projectId", (req, res) => {
   const projectId = req.params.projectId;
@@ -80,6 +43,7 @@ router.get("/:projectId", (req, res) => {
       return res.json(project);
     })
     .catch((error: Error) => {
+      console.error(error)
       log.error(`Failed to fetch project ${projectId}:`, error);
       if (error.message === "ProjectNotFound") {
         return res.status(404).json({ error: error.message });

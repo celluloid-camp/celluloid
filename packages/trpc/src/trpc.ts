@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid';
 export type Context = {
   user: User | null;
   requestId: string;
-  requirePermission: (role: UserRole) => boolean;
+  requirePermissions: (roles: UserRole[]) => boolean;
   logout: () => Promise<boolean>;
 };
 
@@ -19,11 +19,11 @@ export const createRPCContext = async ({
   const requestId = uuid();
   res.setHeader('x-request-id', requestId);
   const user: User | null = req.user as User;
-  const requirePermission = (role: UserRole) => {
-    if (user?.role !== role) {
+  const requirePermissions = (roles: UserRole[]) => {
+    if (!user?.role || !roles.includes(user?.role)) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
-        message: `Missing permission: '${role}'.`
+        message: `Missing permission: '${roles.join(",")}'.`
       })
     }
 
@@ -44,7 +44,7 @@ export const createRPCContext = async ({
       });
     })
   }
-  return { user, requirePermission, logout, requestId };
+  return { user, requirePermissions, logout, requestId };
 };
 
 const t = initTRPC.context<Context>().meta<OpenApiMeta>().create({

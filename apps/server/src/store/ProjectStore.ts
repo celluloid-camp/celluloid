@@ -14,7 +14,7 @@ import {
   hasConflictedOn,
 } from "../backends/Database";
 import { logger } from "../backends/Logger";
-import { Project, Tag, User } from "../knex";
+import { Project, User } from "../knex";
 import { tagProject } from "./TagStore";
 
 const log = logger("store/ProjectStore");
@@ -91,64 +91,26 @@ export function selectAll(user: UserRecord): Promise<ProjectRecord[]> {
   return database("projects")
     .select(
       database.raw('"Project".*'),
-      database.raw(`to_json(array_agg("Tag")) AS "tags"`),
+      // database.raw(`to_json(array_agg("Tag")) AS "tags"`),
       database.raw(`row_to_json("User") as "user"`)
     )
     .from("Project")
     .innerJoin("User", "User.id", "Project.userId")
-    .leftJoin("TagToProject", "Project.id", "TagToProject.projectId")
-    .leftJoin("Tag", "Tag.id", "TagToProject.tagId")
+    // .leftJoin("TagToProject", "Project.id", "TagToProject.projectId")
+    // .leftJoin("Tag", "Tag.id", "TagToProject.tagId")
     .where("Project.public", true)
     .modify(orIsOwner, user)
     .modify(orIsMember, user)
     .groupBy("Project.id", "User.id")
     .then((rows) =>
-      rows.map((r: any) =>
-        filterNull("tags")({
-          ...r,
-          user: filterUserProps(r.user),
-        })
+      rows.map((r: any) => ({
+        ...r,
+        user: filterUserProps(r.user),
+      })
       )
     );
 }
 
-export async function searchAll(user: UserRecord, keyword: string): Promise<ProjectRecord[]> {
-
-  const query = database("projects")
-    .select(
-      database.raw('"Project".*'),
-      database.raw(`to_json(array_agg("Tag")) AS "tags"`),
-      database.raw(`row_to_json("User") as "user"`)
-    )
-    .from("Project")
-    .innerJoin("User", "User.id", "Project.userId")
-    .leftJoin("TagToProject", "Project.id", "TagToProject.projectId")
-    .leftJoin("Tag", "Tag.id", "TagToProject.tagId")
-    .where((builder) => {
-      builder.where('Project.title', 'ilike', `%${keyword}%`)
-        .orWhere('Project.description', 'ilike', `%${keyword}%`)
-    })
-    // .where("Project.public", true)
-    // .modify(orIsOwner, user)
-    // .modify(orIsMember, user)
-    .groupBy("Project.id", "User.id");
-
-  const { sql, bindings } = query.toSQL();
-
-  console.log(sql); // Print the generated SQL query
-  console.log(bindings); // Print the query parameter bindings
-
-  const projects = await query;
-
-
-  return projects.map((r: any) =>
-    filterNull("tags")({
-      ...r,
-      user: filterUserProps(r.user),
-    })
-  )
-
-}
 
 
 export function selectOneByShareName(shareName: string) {
@@ -159,13 +121,13 @@ export function selectOne(projectId: string, user: Partial<UserRecord>) {
   return database
     .first(
       database.raw('"Project".*'),
-      database.raw(`to_json(array_agg("Tag")) as "tags"`),
+      // database.raw(`to_json(array_agg("Tag")) as "tags"`),
       database.raw(`row_to_json("User") as "user"`)
     )
     .from("Project")
     .innerJoin("User", "User.id", "Project.userId")
-    .leftJoin("TagToProject", "Project.id", "TagToProject.projectId")
-    .leftJoin("Tag", "Tag.id", "TagToProject.tagId")
+    // .leftJoin("TagToProject", "Project.id", "TagToProject.projectId")
+    // .leftJoin("Tag", "Tag.id", "TagToProject.tagId")
     .where((nested: Knex.QueryBuilder) => {
       nested.where("Project.public", true);
       nested.modify(orIsMember, user);
@@ -178,11 +140,11 @@ export function selectOne(projectId: string, user: Partial<UserRecord>) {
         if (row) {
           return selectProjectMembers(projectId).then((members) =>
             resolve(
-              filterNull("tags")({
+              {
                 user: filterUserProps(row.user),
                 members,
                 ...row,
-              })
+              }
             )
           );
         } else {

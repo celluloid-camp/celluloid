@@ -19,5 +19,5 @@ export default defineConfig({
       "/trpc": "http://localhost:2021",
     },
   },
-  logLevel: "error",
+  logLevel: "error"
 });

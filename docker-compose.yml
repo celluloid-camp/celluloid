@@ -38,6 +38,8 @@ services:
       - POSTGRES_PORT=5432
       - DBLIST=celluloid
       - ARCHIVE_FILENAME=latest
+      - TARGET_ARCHIVE=/backups/latest.celluloid.dmp
+      - TARGET_DB=celluloid
       #- CRON_SCHEDULE="*/5 * * * *"
       #- DB_DUMP_ENCRYPTION=true
     restart: on-failure

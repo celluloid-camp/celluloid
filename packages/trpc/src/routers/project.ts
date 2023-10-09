@@ -122,7 +122,7 @@ export const projectRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id && ctx.requirePermission(UserRole.Teacher)) {
+      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
         const project = await prisma.project.create({
           data: {
             userId: ctx.user?.id,
