@@ -33,7 +33,6 @@ export interface Member extends UserRecord {
 }
 
 interface Props {
-  user?: UserRecord;
   project: ProjectGraphRecord;
   members: Set<Member>;
   setPublicLoading: boolean;
@@ -57,7 +56,6 @@ interface Props {
 }
 
 const SideBarComponenent: React.FC<Props> = ({
-  user,
   project,
   members,
   setCollaborativeLoading,
@@ -78,6 +76,7 @@ const SideBarComponenent: React.FC<Props> = ({
 
   const { data: annotations } = useGetAnnotationsQuery(project.id);
 
+  const { data: user } = trpc.user.me.useQuery();
   const { data: dataproject } = trpc.project.byId.useQuery({ id: project.id });
 
   const handleDelete = () => {
@@ -122,7 +121,7 @@ const SideBarComponenent: React.FC<Props> = ({
           borderRadius: 2,
         }}
       >
-        {user && isOwner(project, user) ? (
+        {user && project.userId == user.id ? (
           <>
             <Typography variant="h6" mb={2}>
               {t("project.edit", "Modification")}

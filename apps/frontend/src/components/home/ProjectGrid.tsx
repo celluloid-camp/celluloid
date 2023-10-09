@@ -23,7 +23,6 @@ import { TransitionGroup } from "react-transition-group";
 import { useDidUpdate } from "rooks";
 
 import { StyledTitle } from "~components/typography";
-import { useMe, useProjects } from "~hooks/use-user";
 import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
 import { ProjectList, trpc } from "~utils/trpc";
 

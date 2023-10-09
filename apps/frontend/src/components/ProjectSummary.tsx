@@ -3,6 +3,8 @@ import { Box, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
+import { trpc } from "~utils/trpc";
+
 import { ProjectUserAvatar } from "./ProjectUserAvatar";
 
 interface Props {
@@ -11,9 +13,21 @@ interface Props {
 
 const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
   const { t } = useTranslation();
+
+  const { data: dataproject } = trpc.project.byId.useQuery({ id: project.id });
+
   return (
     <Box sx={{ padding: 0 }}>
-      <Typography align="left" variant="h3" gutterBottom={true}>
+      {dataproject && dataproject.playlist ? (
+        <Typography align="justify" variant="body1">
+          <Trans i18nKey="project.summary.playlist.title">
+            Liste de lecture :{" "}
+          </Trans>
+          {dataproject.playlist.title}
+        </Typography>
+      ) : null}
+
+      <Typography align="left" variant="h3">
         {project.title}
       </Typography>
 

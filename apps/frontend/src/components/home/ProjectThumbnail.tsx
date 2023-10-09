@@ -1,8 +1,13 @@
 import { ProjectGraphRecord } from "@celluloid/types";
+// import { connect } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+// import { AnyAction, Dispatch } from "redux";
+import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import {
   Box,
   Card,
   CardContent,
+  Chip,
   Grid,
   styled,
   Typography,
@@ -12,9 +17,6 @@ import * as React from "react";
 
 import { ProjectThumbnailImage } from "~components/ProjectThumbnailImage";
 import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
-// import { connect } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { AnyAction, Dispatch } from "redux";
 
 const StyledBox = styled(Box)(() => ({
   position: "relative",
@@ -46,6 +48,8 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
     window.location.assign(`/projects/${project.id}`);
   };
 
+  console.log(project);
+
   return (
     // <ThemeProvider theme={modalTheme}>
     // <Grow
@@ -70,18 +74,22 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
           height={"20vh"}
           bgColor="#000000"
         />
-        {/* <Box
+        {project.playlist && (
+          <Box
             sx={{
               position: "absolute",
-              top: 0,
-              left: 94,
-              right: 0,
+              right: 5,
+              bottom: 5,
             }}
           >
-            <PlayCircleIcon
-              sx={{ color: "white", fontSize: 100, opacity: 0.8 }}
+            <Chip
+              label={project.playlist?._count.projects}
+              icon={<PlaylistPlayIcon />}
+              color="secondary"
+              variant="outlined"
             />
-          </Box> */}
+          </Box>
+        )}
       </StyledBox>
 
       <StyledCardContent sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}>
