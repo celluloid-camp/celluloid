@@ -551,6 +551,7 @@ export const CreateProjectPage: React.FC = () => {
       sx={{
         paddingX: 5,
         paddingTop: 1,
+        paddingBottom: "70%",
         backgroundColor: "brand.orange",
         height: "100%",
       }}

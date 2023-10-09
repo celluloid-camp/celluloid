@@ -80,11 +80,9 @@ export const Footer: React.FC<FooterProps> = (props) => (
               color="white"
               textAlign={{ lg: "left", sm: "center" }}
             >
-              <Trans
-                i18nKey={"footer.copyright"}
-                defaults="© 2018 Institut Catholique de Paris"
-              />{" "}
-              version: {JSON.stringify(import.meta.env)}
+              <Trans i18nKey={"footer.copyright"} />{" "}
+              {!import.meta.env.VITE_VERSION ??
+                `version: ${import.meta.env.VITE_VERSION}`}
             </Typography>
           </Box>
         </Grid>
