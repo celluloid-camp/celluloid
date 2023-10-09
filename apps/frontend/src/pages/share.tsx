@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
 
 import { LoadingBig } from "~components/LoadingBig";
-import ProjectSummary from "~components/ProjectSummary";
+import ProjectSummary from "~components/project/ProjectSummary";
 import { ShareCredentials } from "~components/ShareCredentials";
 import ProjectService from "~services/ProjectService";
 

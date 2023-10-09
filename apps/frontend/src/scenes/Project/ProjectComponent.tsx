@@ -1,7 +1,7 @@
 import { ProjectGraphRecord } from "@celluloid/types";
 import { Box, Container, Grid } from "@mui/material";
 
-import ProjectSummary from "~components/ProjectSummary";
+import ProjectSummary from "~components/project/ProjectSummary";
 
 import SideBar from "./components/SideBar";
 import Video from "./scenes/Video";
