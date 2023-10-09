@@ -7,14 +7,14 @@
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "clean": "rm -rf build",
-    "build": "tsc -b",
-    "watch": "tsc -b --watch --preserveWatchOutput"
+    "build": "tsup",
+    "dev": "tsup --watch --silent"
   },
   "devDependencies": {
-    "@celluloid/types": "^0.1.0",
+    "@celluloid/types": "*",
     "@types/validator": "13.7.10",
-    "typescript": "^5.0.4",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
     "validator": "13.7.0"
   }
 }

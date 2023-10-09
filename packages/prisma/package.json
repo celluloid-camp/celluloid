@@ -1,0 +1,50 @@
+{
+  "name": "@celluloid/prisma",
+  "version": "2.0.6",
+  "description": "Celluloid backend",
+  "repository": "http://github.com/celluloid-edu/celluloid",
+  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "prisma": {
+    "schema": "schema.prisma",
+    "seed": "tsx src/seed.ts"
+  },
+  "scripts": {
+    "build": "yarn run generate && tsup",
+    "clean": "rimraf .turbo node_modules dist",
+    "dev": "tsup --watch --silent",
+    "setup": "yarn db:push && yarn migrate:init && migrate:deploy && yarn generate",
+    "migrate:init": "yarn prisma migrate resolve --applied 0_init",
+    "migrate:deploy": "yarn prisma migrate deploy",
+    "migrate:dev": "yarn prisma migrate dev",
+    "db:push": "yarn prisma db push",
+    "seed": "tsx src/seed.ts",
+    "format": "prisma format",
+    "generate": "yarn prisma generate",
+    "lint": "eslint \"src/**/*.ts\"",
+    "prebuild": "yarn run generate",
+    "predev": "yarn run generate",
+    "studio": "prisma studio",
+    "prisma": "dotenv -e ../../.env -- npx prisma"
+  },
+  "devDependencies": {
+    "@celluloid/config": "*",
+    "@types/dotenv": "^6.0.0",
+    "dotenv-cli": "^7.2.1",
+    "eslint": "^8.50.0",
+    "prisma": "^5.4.0",
+    "rimraf": "^5.0.1",
+    "tsup": "^5.11.13",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.4.0"
+  }
+}

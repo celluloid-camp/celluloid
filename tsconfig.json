@@ -45,13 +45,13 @@
   ],
   "references": [
     {
-      "path": "packages/client"
-    },
-    {
       "path": "packages/types"
     },
     {
-      "path": "packages/server"
+      "path": "packages/trpc"
+    },
+    {
+      "path": "packages/prisma"
     },
     {
       "path": "packages/validators"
