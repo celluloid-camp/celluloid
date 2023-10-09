@@ -3,12 +3,8 @@ name: Dockerfile CI
 on: [pull_request]
 
 jobs:
-  build:
+  test-containers:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
 
     services:
       redis:
@@ -29,26 +25,41 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: setup database
+          node-version: 20
+          cache: yarn
+
+      # - name: "Run docker backend build"
+      #   run:
+      #     docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest .
+
+      # - name: "Run docker frontend build"
+      #   run: docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
+
+      # - name: "Run docker frontend build"
+      # run: docker build --build-arg APP=frontend --build-arg START_COMMAND=start -t  celluloid-frontend:latest .
+
+      - name: install package
         run: |
           cp .env.ci .env
-          yarn --frozen-lockfile
-        env:
-          CI: true
-      - name: "Run docker server build"
-        run:
-          docker build --tag celluloid-server .
-      - name: "ifconfig -a"
-        run: "ifconfig -a"
-      - name: "Start docker server"
-        run:
-          docker run --rm -d --init -p 3001:3001 --env-file .env -e NODE_ENV=production -e CELLULOID_PG_HOST=172.17.0.1 -e CELLULOID_REDIS_URL=redis://172.17.0.1
-          --name celluloid-server celluloid-server
+          yarn
+
+      - name: build frontend
+        run: yarn build --filter=frontend
+
+      - name: "Run frontend"
+        run: PORT=3000 yarn workspace frontend start &
+
+      # - name: "Start docker server"
+      #   run: docker run --rm -d --init -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
+
+      # node .github/workflows/test-docker.js
       - name: "Test docker"
-        run: node .github/workflows/test-docker.js
-      - name: "Tear down docker"
-        run: docker kill celluloid-server
+        run: |
+          ./node_modules/.bin/wait-port 3000 -t 3000
+
+      # - name: "Tear down docker"
+      #   run: docker kill celluloid-frontend

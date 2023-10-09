@@ -8,10 +8,9 @@ volumes:
   postgres:
   redis:
 
-
 services:
   postgres:
-    image: postgres:11.3
+    image: postgres:13
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -23,10 +22,30 @@ services:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: "PGPASSWORD=${POSTGRES_PASSWORD} pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d celluloid"
+    networks:
+      - local
+
+  dbbackups:
+    image: kartoza/pg-backup:13.0
+    volumes:
+      - ./.backups:/backups
+    environment:
+      - DUMPPREFIX=PG
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=5432
+      - DBLIST=celluloid
+      - ARCHIVE_FILENAME=latest
+      - TARGET_ARCHIVE=/backups/latest.celluloid.dmp
+      - TARGET_DB=celluloid
+      #- CRON_SCHEDULE="*/5 * * * *"
+      #- DB_DUMP_ENCRYPTION=true
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - local
 

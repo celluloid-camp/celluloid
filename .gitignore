@@ -29,3 +29,16 @@ notes.txt
 .data
 # config
 tsconfig.tsbuildinfo
+
+
+out/
+build
+
+# other
+dist/
+
+# turbo
+.turbo
+
+.vscode
+.backups

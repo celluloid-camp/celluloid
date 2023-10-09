@@ -1,30 +1,38 @@
 # Celluloid
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker Build](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml)
 [![Gitter chat](https://badges.gitter.im/celluloid-camp.png)](https://gitter.im/celluloid-camp)
 
-## What is this?
+## Overview
 
-Celluloid is a collaborative video annotation application designed for educational purposes.
+Celluloid is a collaborative video annotation application designed for
+educational purposes.
 
-Find a [PeerTube](https://joinpeertube.org/) video, choose an educational objective, annotate the video, share it with your students,
-collect their answers, answer their questions.
+With Celluloid, you can find a [PeerTube](https://joinpeertube.org/) video,
+select an educational objective, annotate the video, share it with your
+students, collect their answers, and respond to their questions.
 
 ## ✨ Demo
 
-Head to https://celluloid.huma-num.fr/, create an account and click where you think you should!
+Visit https://celluloid.huma-num.fr/, create an account, and start using
+Celluloid.
 
-We'd appreciate your feedback about the application UX and design, as well as bug reports - don't hesitate to [report an issue!](https://github.com/celluloid-camp/celluloid/issues)
+We value your feedback on the application's user experience and design. If you
+encounter any bugs or issues, please don't hesitate to
+[report them](https://github.com/celluloid-camp/celluloid/issues).
 
+## Development Team
 
-## Who's behind it?
+Celluloid originated from a research project led by **Michaël Bourgatte** and
+**Laurent Tessier**, two senior lecturers at the
+[Catholic University of Paris](https://en.icp.fr/english-version/). Their work
+focuses on educational science and digital humanities.
 
-Celluloid was born from a research project lead by **Michaël Bourgatte** and **Laurent Tessier**,
-two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/).
-Their work focus on educational science and digital humanities.
-
-Celluloid is maintained by [Younes Benaomar](https://github.com/younes200), and **we are actively looking for contributors and maintainers**.
-Don't hesitate to [drop us a line on gitter!](https://gitter.im/celluloid-camp)
+Celluloid is currently maintained by
+[Younes Benaomar](https://github.com/younes200), and we actively encourage
+contributions and involvement from the community. Feel free to reach out to us
+on [Gitter](https://gitter.im/celluloid-camp).
 
 # Setup
 
@@ -32,116 +40,153 @@ Don't hesitate to [drop us a line on gitter!](https://gitter.im/celluloid-camp)
 
 ### Environment
 
-Celluloid was designed to run on a Linux server.
+Celluloid is designed to run on a Linux server. Proficiency with the
+command-line interface is necessary for deployment and installation. It's highly
+recommended to use an OSX or Linux workstation.
 
-To deploy and install Celluloid, knowing your way around the command-line is required. **Using an OSX or Linux workstation is highly recommended**.
+### 🔨 Tools
 
-### Tools
-
-- install the latest and greatest version of [git](https://git-scm.com/) (obviously)
-- install the latest version of [nodejs](https://nodejs.org/en/)
-- install the latest version of [Yarn](https://yarnpkg.com/en/) and use it instead of NPM. The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html) so it needs yarn to leverage [Yarn workspace](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/)
+- Install the latest version of [Git](https://git-scm.com/).
+- Install the latest version of [Node.js](https://nodejs.org/en/).
+- Install the latest version of [Yarn](https://yarnpkg.com/en/) and use it
+  instead of NPM. The project is organized as a
+  [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html),
+  so Yarn is required to leverage
+  [Yarn workspace](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/).
 
 ### 📦 Database
 
-You'll need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 9.6 or later.
+You will need a working
+[PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html),
+version 13 or later.
 
-For development purpose, you can use the provided Docker Compose [docker compose file](docker-compose.yml) and run the command: 
+For development purposes, you can use the provided Docker Compose
+[docker-compose.yml](docker-compose.yml) and run the command:
 
-    docker-compose up -d
+```bash
+docker-compose up -d
+```
 
-Then:
+Afterward:
 
-1. [create a user](https://www.postgresql.org/docs/current/static/app-createuser.html) for celluloid
-2. [create a database](https://www.postgresql.org/docs/current/static/manage-ag-createdb.html) owned by this user. You can follow [this tutorial](https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e) to get setup quickly.
+1. [Create a user](https://www.postgresql.org/docs/current/static/app-createuser.html)
+   for Celluloid.
+2. [Create a database](https://www.postgresql.org/docs/current/static/manage-ag-createdb.html)
+   owned by this user. You can follow
+   [this tutorial](https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e)
+   for quick setup.
 
 ### Emails
 
-A working SMTP server is required to send account confirmation emails.
+A functioning SMTP server is necessary for sending account confirmation emails.
 
-For development purpose, you could use your email account SMTP credentials, for instance [gmail](https://support.google.com/a/answer/176600?hl=en), or a dedicated service, such as [mailtrap](https://mailtrap.io/register/signup)
+For development purposes, you could use your email account SMTP credentials
+(e.g., [Gmail](https://support.google.com/a/answer/176600?hl=en)) or a dedicated
+service like [Mailtrap](https://mailtrap.io/register/signup).
 
-## Installation from source
+## Installation from Source
 
-### First steps
+### Initial Steps
 
-Fire up a terminal and run the following commands:
+Open your terminal and execute the following commands:
 
-    git clone https://github.com/celluloid-edu/celluloid
-    cd celluloid/
-    yarn
+```bash
+git clone https://github.com/celluloid-edu/celluloid
+cd celluloid/
+yarn
+```
 
 ### Configuration
 
-In a terminal, at the root of the repository, run
+In the terminal, at the repository's root, run:
 
-    cp sample.env .env
+```bash
+cp sample.env .env
+```
 
-Open the newly created .env file with your favorite text editor and set the values that'll work for you.
+Open the newly created .env file with your preferred text editor and configure
+the values according to your requirements.
 
+### Running the Application in Development Mode
 
-### Docker container
+First, ensure that the database is up and running. Then:
 
-For a quick run use the docker command line :
+```bash
+yarn database setup
+```
 
-    docker container run --rm --name celluloid \
-    -e CELLULOID_PG_HOST='localhost' \
-    -e CELLULOID_PG_PORT=5432  \
-    -e CELLULOID_PG_DATABASE='celluloid' \
-    -e CELLULOID_PG_USER='postgres' \
-    -e CELLULOID_PG_PASSWORD='root' \
-    -e CELLULOID_COOKIE_SECRET='XXX' \
-    --net=host \
-    ghcr.io/celluloid-camp/celluloid:v1
+At the root of your repository, run:
 
+```bash
+yarn dev
+```
 
-### Running the app in development mode
+This will initiate an interactive build and open the app in a browser window
+while continuously monitoring source files for modifications.
 
-At the root of your repository, run
+If everything worked without errors, you should be all set. Otherwise, please
+review the instructions above carefully.
 
-    yarn dev
+### Building and Starting the Application in Production Mode
 
-This will trigger an interactive build, open up the app in a browser window while continuously watching the source files for modifications.
+At the repository's root, execute:
 
-**that's it!** if everything worked without errors, you should be all set. If not, please carefully review the instructions above.
+```bash
+yarn build
+yarn start
+```
 
-### Building and starting the app in production mode
+You can access your app at http://localhost:3001.
 
-At the root of your repository, run
+### Building and Starting the Application as a Docker Container
 
-    yarn build
-    yarn start
+Open a terminal at the repository's root and run:
 
-You should be able to access your app at http://localhost:3001
+```bash
+docker-compose -f Dockerfile
+```
 
-### Building and starting the app as a docker container
+(Ensure that [Docker](https://www.docker.com/get-started) is correctly
+installed.)
 
-Open a terminal at the root of your repository, then run
+### Docker Container
 
-    docker compose -f Dockerfile
+For a quick run using the Docker command line:
 
-(make sure [Docker](https://www.docker.com/get-started) is properly installed beforehand!)
+```bash
+docker container run --rm --name celluloid \
+-e CELLULOID_PG_HOST='localhost' \
+-e CELLULOID_PG_PORT=5432  \
+-e CELLULOID_PG_DATABASE='celluloid' \
+-e CELLULOID_PG_USER='postgres' \
+-e CELLULOID_PG_PASSWORD='root' \
+-e CELLULOID_COOKIE_SECRET='XXX' \
+--net=host \
+ghcr.io/celluloid-camp/celluloid:v1
+```
 
 # Contributing
 
-**We are actively looking for motivated contributors!**.
+**We actively welcome motivated contributors!**
 
-Do not hesitate to open a pull request, [contact us on gitter](https://gitter.im) or [report a bug!](https://github.com/celluloid-camp/celluloid/issues)
+Feel free to open a pull request, [contact us on Gitter](https://gitter.im), or
+[report a bug](https://github.com/celluloid-camp/celluloid/issues).
 
 ## Roadmap
-- Administration GUI: content curation and moderation, user administration
-- Real-time annotation and comment updating using Websockets or SSE
 
+- Real-time annotation and comment updating using Websockets or SSE.
 
 ## Technical Stack
 
-Before contributing to the development of Celluloid, you should get familiar with some of the following technologies:
+Before contributing to Celluloid's development, it's essential to familiarize
+yourself with some of the following technologies:
 
-- everywhere: [TypeScript](https://www.typescriptlang.org/)
-- frontend: [React](https://reactjs.org/), [Redux](https://redux.js.org/) and [Material UI](https://material-ui.com/)
-- backend: [node.js](https://nodejs.org/en/), [Express](https://expressjs.com/) and [knex](https://knexjs.org/)
-- storage: [PostgreSQL](https://www.postgresql.org/)
+- TypeScript (used throughout the project).
+- Frontend: React, TRPC, and Material UI.
+- Backend: Node.js, Express, and Prisma.
+- Database: PostgreSQL.
 
-## V1 legacy
+## V1 Legacy
 
-Old celluloid version 1 that users Youtube videos still be found [here](https://github.com/celluloid-camp/celluloid/releases/tag/v1) 
+You can still find the old Celluloid version 1 that supports YouTube videos
+[here](https://github.com/celluloid-camp/celluloid/releases/tag/v1).

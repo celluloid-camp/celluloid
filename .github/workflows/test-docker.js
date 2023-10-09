@@ -14,7 +14,7 @@ async function main() {
         controller.abort();
       }, 3000);
       try {
-        response = await fetch("http://localhost:3001", {
+        response = await fetch("http://localhost:3000", {
           signal: controller.signal,
         });
       } finally {
@@ -28,7 +28,6 @@ async function main() {
       attempts++;
       if (attempts <= 30) {
         console.log(`Server is not ready yet: ${e.message}`);
-        execSync("docker logs celluloid-server", { stdio: "inherit" });
       } else {
         console.log(`Server never came up, aborting :(`);
         process.exit(1);
@@ -39,7 +38,7 @@ async function main() {
   const text = await response.text();
 
   // Check for known text on homepage
-  if (!text.includes("Institut Catholique de Paris")) {
+  if (!text.includes("application d'annotation vidéo")) {
     throw new Error("Failed to confirm server works.");
   }
 
