@@ -39,6 +39,7 @@ async function main() {
 
   // Check for known text on homepage
   if (!text.includes("Institut Catholique de Paris")) {
+    console.error("text not matching", text);
     throw new Error("Failed to confirm server works.");
   }
 
