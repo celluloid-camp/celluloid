@@ -56,9 +56,9 @@ jobs:
       # - name: "Start docker server"
       #   run: docker run --rm -d --init -p 3000:3000 -e PORT=3000 celluloid-frontend:latest
 
+      # node .github/workflows/test-docker.js
       - name: "Test docker"
         run: |
-          # node .github/workflows/test-docker.js
           wait-port 3000 -t 3000
 
       - name: "Tear down docker"
