@@ -1,4 +1,3 @@
-import { UserRecord } from "@celluloid/types";
 import { AppBar, Box, Button, styled, Toolbar } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -26,7 +25,6 @@ import { LanguageMenu } from "./LanguageMenu";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 type Props = React.PropsWithChildren & {
-  user?: UserRecord;
   signinDialog: SigninState;
   onClickLogin(): EmptyAction;
   onClickSignup(): EmptyAction;
@@ -35,7 +33,6 @@ type Props = React.PropsWithChildren & {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    user: state.user,
     signinDialog: state.signin.dialog,
   };
 };

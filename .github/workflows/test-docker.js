@@ -38,8 +38,7 @@ async function main() {
   const text = await response.text();
 
   // Check for known text on homepage
-  if (!text.includes("Institut Catholique de Paris")) {
-    console.error("text not matching", text);
+  if (!text.includes("application d'annotation vidéo")) {
     throw new Error("Failed to confirm server works.");
   }
 

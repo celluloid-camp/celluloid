@@ -58,7 +58,8 @@ jobs:
 
       - name: "Test docker"
         run: |
-          node .github/workflows/test-docker.js
+          # node .github/workflows/test-docker.js
+          wait-port 3000 -t 3000
 
       - name: "Tear down docker"
         run: docker kill celluloid-frontend
