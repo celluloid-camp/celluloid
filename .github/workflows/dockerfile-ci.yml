@@ -45,7 +45,7 @@ jobs:
       - name: install package
         run: |
           cp .env.ci .env
-          yarn --immutable-cache
+          yarn
 
       - name: build frontend
         run: yarn build --filter=frontend
