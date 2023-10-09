@@ -27,9 +27,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 20
+          cache: yarn
 
       # - name: "Run docker backend build"
       #   run:
@@ -44,7 +45,7 @@ jobs:
       - name: install package
         run: |
           cp .env.ci .env
-          yarn --frozen-lockfile
+          yarn --immutable-cache
 
       - name: build frontend
         run: yarn build --filter=frontend
