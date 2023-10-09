@@ -61,5 +61,5 @@ jobs:
         run: |
           ./node_modules/.bin/wait-port 3000 -t 3000
 
-      - name: "Tear down docker"
-        run: docker kill celluloid-frontend
+      # - name: "Tear down docker"
+      #   run: docker kill celluloid-frontend
