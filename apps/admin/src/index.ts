@@ -38,7 +38,7 @@ const start = async () => {
   });
 
   const isAuthenticated = function (req, res, next) {
-    if (req.user.role == UserRole.Admin)
+    if (req.user && req.user.role == UserRole.Admin)
       return next();
     res.redirect('/')
   }
