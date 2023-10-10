@@ -495,7 +495,8 @@ const PeerTubeVideoSnapshots: React.FC<{
             onDelete={() => onDelete(index)}
           />
         ))}
-        {!isPlaylist && <AddVideoButton onClick={onAddMore} />}
+        {/* {!isPlaylist && <AddVideoButton onClick={onAddMore} />} */}
+        <AddVideoButton onClick={onAddMore} />
       </Grid>
     </Box>
   );
@@ -546,6 +547,7 @@ export const CreateProjectPage: React.FC = () => {
     setOpenDialog(false);
   };
 
+  console.log(videoInfo);
   return (
     <Box
       sx={{

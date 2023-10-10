@@ -1,15 +1,13 @@
-import "./passport";
-
 import { appRouter, createRPCContext } from '@celluloid/trpc';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 
 import { openApiDocument } from './openapi';
+import passport from "./passport";
 import { createSession } from './session';
 
 const trpcApiEndpoint = '/trpc'
