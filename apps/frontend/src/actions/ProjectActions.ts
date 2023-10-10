@@ -93,15 +93,15 @@ export const failUnshareProject = (project: ProjectGraphRecord) =>
 
 export const listProjectsThunk =
   () =>
-  (dispatch: Dispatch): AsyncAction<ProjectGraphRecord[], string> => {
-    return ProjectService.list()
-      .then((projectList) => {
-        return dispatch(succeedListProjects(projectList));
-      })
-      .catch((error) => {
-        return dispatch(failListProjects(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<ProjectGraphRecord[], string> => {
+      return ProjectService.list()
+        .then((projectList) => {
+          return dispatch(succeedListProjects(projectList));
+        })
+        .catch((error) => {
+          return dispatch(failListProjects(error.message));
+        });
+    };
 
 export const loadProjectThunk = (projectId: string) => (dispatch: Dispatch) => {
   return ProjectService.get(projectId)
@@ -115,99 +115,100 @@ export const loadProjectThunk = (projectId: string) => (dispatch: Dispatch) => {
 
 export const createProjectThunk =
   (data: ProjectCreateData) =>
-  (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
-    dispatch(triggerUpsertProjectLoading());
-    return ProjectService.create(data)
-      .then((project) => {
-        // dispatch(push(`/projects/${project.id}`));
-        dispatch(discardNewVideo());
-        return dispatch(succeedUpsertProject(project));
-      })
-      .catch((error) => {
-        return dispatch(failUpsertProject(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
+      dispatch(triggerUpsertProjectLoading());
+      return ProjectService.create(data)
+        .then((project) => {
+          // dispatch(push(`/projects/${project.id}`));
+          dispatch(discardNewVideo());
+          return dispatch(succeedUpsertProject(project));
+        })
+        .catch((error) => {
+          return dispatch(failUpsertProject(error.message));
+        });
+    };
 
 export const updateProjectThunk =
   (projectId: string, data: ProjectUpdateData) =>
-  (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
-    dispatch(triggerUpsertProjectLoading());
-    return ProjectService.update(projectId, data)
-      .then((project) => {
-        return dispatch(succeedUpsertProject(project));
-      })
-      .catch((error) => {
-        return dispatch(failUpsertProject(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
+      dispatch(triggerUpsertProjectLoading());
+      return ProjectService.update(projectId, data)
+        .then((project) => {
+          return dispatch(succeedUpsertProject(project));
+        })
+        .catch((error) => {
+          return dispatch(failUpsertProject(error.message));
+        });
+    };
 
 export const deleteProjectThunk =
   (projectId: string) =>
-  (dispatch: Dispatch): AsyncAction<string, string> => {
-    dispatch(triggerDeleteProjectLoading());
-    return ProjectService.delete(projectId)
-      .then(() => {
-        dispatch(push("/"));
-        return dispatch(succeedDeleteProject(projectId));
-      })
-      .catch((error) => {
-        return dispatch(failDeleteProject(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<string, string> => {
+      dispatch(triggerDeleteProjectLoading());
+      return ProjectService.delete(projectId)
+        .then(() => {
+          // dispatch(push("/"));
+          window.location.assign(`/`);
+          return dispatch(succeedDeleteProject(projectId));
+        })
+        .catch((error) => {
+          return dispatch(failDeleteProject(error.message));
+        });
+    };
 
 export const unshareProjectThunk =
   (projectId: string) =>
-  (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
-    dispatch(triggerUnshareProjectLoading());
-    return ProjectService.unshare(projectId)
-      .then((project) => {
-        return dispatch(succeedUnshareProject(project));
-      })
-      .catch((error) => {
-        return dispatch(failUnshareProject(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
+      dispatch(triggerUnshareProjectLoading());
+      return ProjectService.unshare(projectId)
+        .then((project) => {
+          return dispatch(succeedUnshareProject(project));
+        })
+        .catch((error) => {
+          return dispatch(failUnshareProject(error.message));
+        });
+    };
 
 export const shareProjectThunk =
   (projectId: string, data: ProjectShareData) =>
-  (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
-    dispatch(triggerShareProjectLoading());
-    return ProjectService.share(projectId, data)
-      .then((project) => {
-        dispatch(succeedLoadProject(project));
-        return dispatch(succeedShareProject(project));
-      })
-      .catch((error) => {
-        return dispatch(failShareProject(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
+      dispatch(triggerShareProjectLoading());
+      return ProjectService.share(projectId, data)
+        .then((project) => {
+          dispatch(succeedLoadProject(project));
+          return dispatch(succeedShareProject(project));
+        })
+        .catch((error) => {
+          return dispatch(failShareProject(error.message));
+        });
+    };
 
 export const setProjectCollaborativeThunk =
   (projectId: string, collaborative: boolean) =>
-  (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
-    dispatch(triggerSetProjectCollaborativeLoading());
-    return ProjectService.setAttribute(
-      projectId,
-      "collaborative",
-      collaborative
-    )
-      .then((project) => {
-        return dispatch(succeedSetProjectCollaborative(project));
-      })
-      .catch((error) => {
-        return dispatch(failSetProjectCollaborative(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
+      dispatch(triggerSetProjectCollaborativeLoading());
+      return ProjectService.setAttribute(
+        projectId,
+        "collaborative",
+        collaborative
+      )
+        .then((project) => {
+          return dispatch(succeedSetProjectCollaborative(project));
+        })
+        .catch((error) => {
+          return dispatch(failSetProjectCollaborative(error.message));
+        });
+    };
 
 export const setProjectPublicThunk =
   (projectId: string, _public: boolean) =>
-  (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
-    dispatch(triggerSetProjectPublicLoading());
-    return ProjectService.setAttribute(projectId, "public", _public)
-      .then((project) => {
-        return dispatch(succeedSetProjectPublic(project));
-      })
-      .catch((error) => {
-        return dispatch(failSetProjectPublic(error.message));
-      });
-  };
+    (dispatch: Dispatch): AsyncAction<ProjectGraphRecord, string> => {
+      dispatch(triggerSetProjectPublicLoading());
+      return ProjectService.setAttribute(projectId, "public", _public)
+        .then((project) => {
+          return dispatch(succeedSetProjectPublic(project));
+        })
+        .catch((error) => {
+          return dispatch(failSetProjectPublic(error.message));
+        });
+    };

@@ -1,10 +1,12 @@
-// import RedisStore from 'connect-redis';
+import { UserRole } from '@celluloid/prisma';
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import path from "path";
 import * as url from 'url'
 
+import passport from "./passport"
 import getAdminRouter from "./server.js";
+import { createSession } from './session';
 
 const PORT = process.env.PORT || 4000
 
@@ -12,6 +14,9 @@ const start = async () => {
   const app = express();
   app.enable('trust proxy');
   app.use(cors({ credentials: true, origin: true }));
+  app.use(createSession());
+  app.use(passport.authenticate("session"));
+
 
   // Define the CORS middleware function
   const corsMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -32,8 +37,14 @@ const start = async () => {
     rootPath: "/admin"
   });
 
+  const isAuthenticated = function (req, res, next) {
+    if (req.user.role == UserRole.Admin)
+      return next();
+    res.redirect('/')
+  }
 
-  app.use('/admin', adminRouter);
+
+  app.use('/admin', isAuthenticated, adminRouter);
 
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
