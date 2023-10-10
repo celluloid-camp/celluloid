@@ -49,7 +49,7 @@ const ProjectComponent = ({ project }: Props) => (
       >
         <Grid container direction="row" alignItems="flex-start" spacing={4}>
           <Grid item xs={12} md={8} lg={8}>
-            <ProjectSummary project={project} />
+            {/* <ProjectSummary project={project} /> */}
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
             <SideBar project={project} />

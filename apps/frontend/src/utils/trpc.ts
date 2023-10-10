@@ -25,6 +25,10 @@ export function isTRPCClientError(
   return cause instanceof TRPCClientError;
 }
 
+type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
+  ? ElementType
+  : never;
+
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
@@ -33,3 +37,7 @@ export type UserMe = RouterOutput['user']['me'];
 export type ProjectById = RouterOutput['project']['byId'];
 
 export type ProjectList = RouterOutput['project']['list'];
+
+export type AnnotationByProjectId = RouterOutput["annotation"]["byProjectId"]
+
+export type AnnotationByProjectIdItem = ArrElement<AnnotationByProjectId>;

@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo run dev --concurrency  11",
+    "dev": "dotenv -- turbo run dev --parallel",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "turbo run build --no-cache",
     "i18n:sync": "yarn workspace translations sync",
@@ -88,6 +88,7 @@
   },
   "dependencies": {
     "abort-controller": "^3.0.0",
+    "dotenv-cli": "^7.3.0",
     "node-fetch": "2"
   }
 }

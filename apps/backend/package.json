@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "dotenv -e ../../.env -- tsup --watch --silent --onSuccess 'node dist/index.js'",
+    "dev": "tsup --watch --silent --onSuccess 'node dist/index.js'",
     "start": "node dist/index",
     "test-start": "start-server-and-test 'node dist/index' 2021"
   },

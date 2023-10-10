@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch --silent"
+    "dev": "tsup --watch"
   },
   "dependencies": {
     "@celluloid/prisma": "*",

@@ -46,7 +46,13 @@ export const projectRouter = router({
           ]
         },
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              role: true
+            }
+          },
           members: true,
           playlist: {
             include: {
@@ -89,9 +95,33 @@ export const projectRouter = router({
       const project = await prisma.project.findUnique({
         where: { id },
         include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              role: true
+            }
+          },
           playlist: {
             include: {
               projects: true,
+            }
+          },
+          _count: {
+            select: {
+              annotations: true,
+              members: true
+            }
+          },
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  role: true
+                }
+              },
             }
           }
         }

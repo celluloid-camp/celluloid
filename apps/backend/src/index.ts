@@ -10,6 +10,7 @@ import { openApiDocument } from './openapi';
 import passport from "./passport";
 import { createSession } from './session';
 
+
 const trpcApiEndpoint = '/trpc'
 
 

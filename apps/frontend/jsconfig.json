@@ -46,6 +46,12 @@
             ],
             "~profile/*": [
                 "src/components/profile/*"
+            ],
+            "~annotations/*": [
+                "src/components/annotations/*"
+            ],
+            "~annotation/*": [
+                "src/components/annotation/*"
             ]
         }
     }

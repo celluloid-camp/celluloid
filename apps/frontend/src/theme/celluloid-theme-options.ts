@@ -17,6 +17,7 @@ const neutral = {
 const background = {
   default: "#F9FAFC",
   paper: "#FFFFFF",
+  dark: "#292929"
 };
 
 const divider = "#E6E8F0";

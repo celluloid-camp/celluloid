@@ -24,6 +24,7 @@ import { CreateProjectPage } from "./pages/create";
 import { HomePage } from "./pages/home";
 import LegalNotice from "./pages/legal";
 import UserProfile from "./pages/profile";
+import ProjectPage from "./pages/project";
 import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
 import Project from "./scenes/Project";
@@ -100,6 +101,10 @@ const App = () => {
                         <Route
                           path="projects/:projectId"
                           element={<Project />}
+                        />
+                        <Route
+                          path="project/:projectId"
+                          element={<ProjectPage />}
                         />
                         <Route
                           path="shares/:projectId"
