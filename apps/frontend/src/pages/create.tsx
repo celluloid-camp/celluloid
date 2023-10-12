@@ -21,7 +21,6 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
-// import moment from "moment";
 import Image from "mui-image";
 import React, { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -91,6 +90,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     queryFn: () => getPeerTubeVideoData(formik.values.url),
     enabled: !formik.errors.url && formik.status != "submited",
     onSuccess: (data) => {
+      console.log(data);
       formik.setFieldValue("data", data);
       formik.setFieldTouched("data");
       formik.submitForm();
@@ -197,6 +197,9 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
             description: values.description,
             public: values.public,
             collaborative: values.collaborative,
+            duration: video.duration,
+            thumbnailURL: video.thumbnailURL,
+            metadata: video.metadata,
             objective: "",
             levelStart: 0,
             levelEnd: 5,
@@ -215,6 +218,9 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
               description: video.description,
               videoId: video.shortUUID,
               host: video.account.host,
+              duration: video.duration,
+              thumbnailURL: video.thumbnailURL,
+              metadata: video.metadata,
             })),
             description: values.description,
             public: values.public,

@@ -1,37 +1,111 @@
+import ReactPlayer from "@celluloid/react-player";
 import { Box, Container, Grid } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { AnnotationHints } from "~components/annotation/AnnotationHints";
 import { AnnotationPanel } from "~components/annotation/AnnotationPanel";
 import ProjectSummary from "~components/project/ProjectSummary";
 import { SideBar } from "~components/project/SideBar";
 import { VideoPlayer } from "~components/project/VideoPlayer";
+import { useVideoPlayerEvent } from "~hooks/use-video-player";
 import { trpc } from "~utils/trpc";
 import { ProjectById, UserMe } from "~utils/trpc";
 
 interface Props {
   project: ProjectById;
   user?: UserMe;
-  onVideoChange(): void;
 }
 
-const ProjectContent = ({ project, user }: Props) => (
-  <Box>
+const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
+  const videoPlayerRef = React.useRef<ReactPlayer>(null);
+
+  const [showHints, setShowHints] = useState(false);
+  const [videoProgress, setVideoProgress] = React.useState(0);
+  const [playerIsReady, setPlayerIsReady] = React.useState(false);
+
+  const { data: annotations } = trpc.annotation.byProjectId.useQuery({
+    id: project.id,
+  });
+
+  useVideoPlayerEvent((event) => {
+    console.log(event);
+    if (event.state == "READY") {
+      setPlayerIsReady(true);
+    }
+    setVideoProgress(event.progress);
+  });
+
+  const visibleAnnotations = useMemo(
+    () =>
+      playerIsReady && annotations
+        ? annotations.filter(
+            (annotation) =>
+              videoProgress >= annotation.startTime &&
+              videoProgress <= annotation.stopTime
+          )
+        : [],
+    [annotations, videoProgress, playerIsReady]
+  );
+
+  useEffect(() => {
+    const position = videoPlayerRef.current?.getCurrentTime();
+    const paused = visibleAnnotations.filter(
+      (annotation) =>
+        annotation.pause && annotation.startTime === Math.floor(videoProgress)
+    );
+
+    if (paused && position) {
+      videoPlayerRef.current?.getInternalPlayer().pause();
+      videoPlayerRef.current?.seekTo(position + 1, "seconds");
+    }
+  }, [visibleAnnotations, videoPlayerRef, videoProgress]);
+
+  const handleAnnotionHintClick = (annotation) => {};
+
+  if (!annotations) {
+    return null;
+  }
+
+  return (
     <Grid
       container
-      spacing={2}
-      px={10}
       sx={{
         backgroundColor: "black",
+        height: "60vh",
+        paddingX: 2,
       }}
     >
-      <Grid item xs={9}>
-        <VideoPlayer project={project} user={user} />
+      <Grid item xs={8}>
+        {showHints ? (
+          <AnnotationHints
+            project={project}
+            annotations={annotations}
+            onClick={handleAnnotionHintClick}
+            onClose={() => setShowHints(false)}
+          />
+        ) : null}
+        <VideoPlayer
+          ref={videoPlayerRef}
+          url={`https://${project.host}/w/${project.videoId}`}
+        />
       </Grid>
-      <Grid item xs={3}>
-        <AnnotationPanel project={project} user={user} />
+      <Grid item xs={4} sx={{ marginY: 2 }}>
+        <AnnotationPanel
+          project={project}
+          annotations={visibleAnnotations}
+          annotationCount={annotations.length}
+          user={user}
+          onShowHintsClick={() => setShowHints(!showHints)}
+        />
       </Grid>
     </Grid>
+  );
+};
+
+const ProjectContent = ({ project, user }: Props) => (
+  <Box display={"flex"} flexDirection={"column"}>
+    <ProjectMainGrid project={project} user={user} />
 
     <Box
       sx={{

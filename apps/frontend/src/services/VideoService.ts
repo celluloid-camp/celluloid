@@ -5,6 +5,8 @@ import { last } from "ramda";
 
 export type PeerTubeVideoWithThumbnail = PeerTubeVideo & {
   thumbnailURL: string;
+  duration: number;
+  metadata: JSON;
 }
 
 export type PeerTubeVideoDataResult = {
@@ -39,16 +41,18 @@ export const getPeerTubeVideoData = async (
 
   if (response.status === 200) {
     const data = await response.json();
+
+    console.log(data);
     return {
       isPlaylist,
       orignalURL: url,
       apiURL: apiUrl,
-      videos: isPlaylist ? data.data.map((d: Playlist) => ({ ...d.video, thumbnailURL: `https://${host}${d.video.thumbnailPath}` })) : [{ ...data, thumbnailURL: `https://${host}${data.thumbnailPath}` }],
+      videos: isPlaylist ? data.data.map((d: Playlist) => ({ ...d.video, duration: d.video.duration, thumbnailURL: `https://${host}${d.video.thumbnailPath}`, metadata: d.video })) : [{ ...data, duration: data.duration, thumbnailURL: `https://${host}${data.thumbnailPath}`, metadata: data }],
       _raw: data
     }
   } else {
     throw new Error(
-      `Could not perform YouTube API request (error ${response.status})`
+      `Could not perform PeerTube API request (error ${response.status})`
     );
   }
 
@@ -80,7 +84,7 @@ export const getPeerTubeThumbnail = async (
     return data.thumbnailPath;
   }
   throw new Error(
-    `Could not perform YouTube API request (error ${response.status})`
+    `Could not perform PeerTube API request (error ${response.status})`
   );
 }
 

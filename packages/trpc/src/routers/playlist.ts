@@ -97,6 +97,9 @@ export const playlistRouter = router({
           description: z.string(),
           videoId: z.string(),
           host: z.string(),
+          duration: z.number(),
+          thumbnailURL: z.string().url(),
+          metadata: z.any(),
         })),
         objective: z.string(),
         levelStart: z.number(),
@@ -132,6 +135,9 @@ export const playlistRouter = router({
                   public: input.public,
                   collaborative: input.collaborative,
                   shared: input.shared,
+                  duration: p.duration,
+                  thumbnailURL: p.thumbnailURL,
+                  metadata: p.metadata,
                   userId: userId,
                   shareName: generateUniqueShareName(p.title)
                 }))

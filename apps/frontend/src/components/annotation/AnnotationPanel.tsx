@@ -1,23 +1,22 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import { LoadingButton } from "@mui/lab";
+import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
+import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
 import {
+  Badge,
+  BadgeProps,
   Box,
   Button,
-  Chip,
-  Collapse,
+  Grow,
+  IconButton,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
   Stack,
+  styled,
   Typography,
 } from "@mui/material";
-import { useConfirm } from "material-ui-confirm";
+import { grey } from "@mui/material/colors";
 import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-import { UserAvatar } from "~components/UserAvatar";
 import {
   AnnotationByProjectIdItem,
   ProjectById,
@@ -25,105 +24,167 @@ import {
   UserMe,
 } from "~utils/trpc";
 
+import { AnnotationForm } from "./AnnotationForm";
+import { AnnotationItem } from "./AnnotationItem";
+
+const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.dark}`,
+    padding: "0 4px",
+  },
+}));
+
+const EmptyAnnotation = () => (
+  <Grow in={true}>
+    <Box
+      sx={{
+        paddingY: 0.5,
+        borderRadius: 1,
+        borderStyle: "dashed",
+        borderWidth: 1,
+        borderColor: grey[800],
+        marginBottom: 1,
+      }}
+    >
+      <Typography variant="body2" color="gray" sx={{ p: 2 }}>
+        <Trans i18next="project.annotaions.empty">
+          Les annotations correspondant aux différents temps de la vidéo seront
+          affichées ici.
+        </Trans>
+      </Typography>
+    </Box>
+  </Grow>
+);
+
 interface AnnotationPanelProps {
   project: ProjectById;
-  user: UserMe;
+  user?: UserMe;
+  annotations: AnnotationByProjectIdItem[];
+  annotationCount: number;
+  onShowHintsClick: () => void;
 }
 
 export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   project,
+  annotations = [],
+  annotationCount,
   user,
-}: Props) => {
+  onShowHintsClick,
+}) => {
   const { t } = useTranslation();
 
-  const { data } = trpc.annotation.byProjectId.useQuery({ id: project.id });
+  const containerRef = useRef<HTMLElement>(null);
+  const formRef = useRef<HTMLElement>(null);
 
-  if (!data) return;
+  const [listHeight, setListHeight] = useState<number | "auto">("auto");
+
+  const updateListHeight = () => {
+    if (containerRef.current && formRef.current) {
+      const containerHeight = containerRef.current.offsetHeight;
+      const formHeight = formRef.current.offsetHeight;
+      setListHeight(containerHeight - formHeight);
+    }
+  };
+
+  useEffect(() => {
+    // Initial calculation
+    updateListHeight();
+
+    // Listen to resize events
+    const resizeObserver = new ResizeObserver(() => {
+      updateListHeight();
+    });
+
+    if (formRef.current) {
+      resizeObserver.observe(formRef.current);
+    }
+
+    return () => {
+      if (formRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        resizeObserver.unobserve(formRef.current);
+      }
+    };
+  }, []);
 
   return (
     <Box
+      display="flex"
+      flexDirection={"column"}
       sx={{
         backgroundColor: "background.dark",
-        padding: 3,
-        marginY: 2,
+        paddingY: 3,
+        marginX: 2,
         borderRadius: 2,
-        height: "90%",
+        height: "100%",
       }}
     >
-      <Box>
-        <Typography variant="h6" color="white">
-          {t("project.annotation.title", "Annotations")}
-        </Typography>
-        <List sx={{ width: "100%" }}>
-          {data.map((annotation: AnnotationByProjectIdItem) => (
-            <>
-              <ListItem key={annotation.id} disableGutters>
-                <ListItemAvatar>
-                  <UserAvatar
-                    username={annotation.user.username}
-                    userId={annotation.user.id}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primaryTypographyProps={{
-                    color: "white",
-                    fontWeight: "medium",
-                    variant: "body1",
-                  }}
-                  primary={annotation.user.username}
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="gray"
-                      >
-                        {annotation.text}
-                      </Typography>
-                    </React.Fragment>
-                  }
+      <Box display="flex" flexDirection={"column"} height={"100%"}>
+        <Box
+          display="flex"
+          flexDirection={"row"}
+          justifyContent="space-between"
+          paddingX={2}
+        >
+          <Stack direction={"row"}>
+            <StyledBadge badgeContent={annotationCount} color="secondary">
+              <SpeakerNotesIcon sx={{ color: "white" }} />
+            </StyledBadge>
+            <Typography variant="h6" color="white" sx={{ pl: 2 }}>
+              {t("project.annotation.title", "Annotations")}
+            </Typography>
+          </Stack>
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{
+              borderRadius: "50%",
+              minWidth: "auto",
+              padding: "10px",
+            }}
+            onClick={() => onShowHintsClick()}
+          >
+            <ViewTimelineIcon />
+          </Button>
+        </Box>
+        <Box
+          ref={containerRef}
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <List
+            dense={true}
+            sx={{
+              flexGrow: 1,
+              overflow: "auto",
+              paddingX: 2,
+              height: `${listHeight}px`,
+              // minHeight: 600,
+              // maxHeight: 600,
+              "& ul": { padding: 0 },
+            }}
+          >
+            {annotations
+              // .flatMap((x) => [x, x, x, x, x, x, x, x])
+              .map((annotation: AnnotationByProjectIdItem) => (
+                <AnnotationItem
+                  annotation={annotation}
+                  key={annotation.id}
+                  user={user}
+                  project={project}
                 />
-              </ListItem>
-              <Collapse in={true} timeout="auto" unmountOnExit>
-                {annotation.comments.map(
-                  (comment: AnnotationByProjectIdItem) => (
-                    <List component="div" disablePadding>
-                      <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemAvatar>
-                          <UserAvatar
-                            username={comment.user.username}
-                            userId={comment.user.id}
-                          />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primaryTypographyProps={{
-                            color: "white",
-                            fontWeight: "medium",
-                            variant: "body1",
-                          }}
-                          primary={comment.user.username}
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                sx={{ display: "inline" }}
-                                component="span"
-                                variant="body2"
-                                color="gray"
-                              >
-                                {comment.text}
-                              </Typography>
-                            </React.Fragment>
-                          }
-                        />
-                      </ListItemButton>
-                    </List>
-                  )
-                )}
-              </Collapse>
-            </>
-          ))}
-        </List>
+              ))}
+
+            {annotations.length == 0 && <EmptyAnnotation />}
+          </List>
+
+          <AnnotationForm duration={project.duration} ref={formRef} />
+        </Box>
       </Box>
     </Box>
   );

@@ -76,7 +76,11 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
     navigate("/");
   };
   return (
-    <Box sx={{ height: "100vh", minHeight: "100vh" }}>
+    <Box
+      display={"flex"}
+      flexDirection={"column"}
+      sx={{ height: "100vh", minHeight: "100vh" }}
+    >
       <AppBar color="default" position="fixed">
         <Toolbar disableGutters>
           <Box flexGrow={1}>

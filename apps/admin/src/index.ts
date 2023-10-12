@@ -10,6 +10,7 @@ import { createSession } from './session';
 
 const PORT = process.env.PORT || 4000
 
+
 const start = async () => {
   const app = express();
   app.enable('trust proxy');
@@ -17,14 +18,12 @@ const start = async () => {
   app.use(createSession());
   app.use(passport.authenticate("session"));
 
-
   // Define the CORS middleware function
   const corsMiddleware = (req: Request, res: Response, next: NextFunction) => {
     // Set the CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
     // Call the next middleware function in the chain
     next();
   };

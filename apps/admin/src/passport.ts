@@ -1,6 +1,5 @@
 
-import { prisma } from "@celluloid/prisma"
-import { User } from '@celluloid/prisma';
+import { prisma, User } from "@celluloid/prisma"
 import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import {
@@ -21,7 +20,6 @@ passport.serializeUser((user: User, done) => {
 passport.deserializeUser(async (id: string, done) => {
   const user = await prisma.user.findUnique({ where: { id } })
   if (user) {
-    console.log("here", user)
     return done(null, user);
   } else {
     console.error(

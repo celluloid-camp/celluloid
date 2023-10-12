@@ -41,3 +41,5 @@ export type ProjectList = RouterOutput['project']['list'];
 export type AnnotationByProjectId = RouterOutput["annotation"]["byProjectId"]
 
 export type AnnotationByProjectIdItem = ArrElement<AnnotationByProjectId>;
+
+export type AnnotationCommentByProjectIdItem = ArrElement<AnnotationByProjectIdItem>["comments"];

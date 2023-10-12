@@ -1,8 +1,12 @@
-// import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-// import MomentUtils from "material-ui-pickers/utils/moment-utils";
+import "dayjs/locale/fr"; // import locale
+
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
+import * as dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import isLeapYear from "dayjs/plugin/isLeapYear"; // import plugin
+import relativeTime from "dayjs/plugin/relativeTime";
 import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { ConfirmProvider } from "material-ui-confirm";
@@ -30,6 +34,11 @@ import { TermsAndConditions } from "./pages/terms";
 import Project from "./scenes/Project";
 import createAppStore from "./store";
 import { createTheme } from "./theme";
+
+dayjs.extend(relativeTime);
+dayjs.extend(isLeapYear); // use plugin
+dayjs.extend(duration);
+dayjs.locale("fr-fr"); // use locale
 
 i18next
   .use(LanguageDetector)
@@ -75,13 +84,11 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      {/* <ConnectedRouter history={history}> */}
       <ThemeProvider theme={createTheme()}>
         <CssBaseline />
         <trpc.Provider client={trpcClient} queryClient={queryClient}>
           <QueryClientProvider client={queryClient}>
             <ConfirmProvider>
-              {/* <MuiPickersUtilsProvider utils={MomentUtils}> */}
               <React.Fragment>
                 <React.Fragment>
                   <UpdateIndicator />
@@ -120,12 +127,10 @@ const App = () => {
                   </BrowserRouter>
                 </React.Fragment>
               </React.Fragment>
-              {/* </MuiPickersUtilsProvider> */}
             </ConfirmProvider>
           </QueryClientProvider>
         </trpc.Provider>
       </ThemeProvider>
-      {/* </ConnectedRouter> */}
     </Provider>
   );
 };

@@ -68,6 +68,10 @@ model Project {
 
   playlist   Playlist? @relation(fields: [playlistId], references: [id])
   playlistId String?   @db.Uuid
+
+  duration     Float  @default(0)
+  thumbnailURL String @default("")
+  metadata     Json?  @default("{}") @db.Json
 }
 
 model Playlist {

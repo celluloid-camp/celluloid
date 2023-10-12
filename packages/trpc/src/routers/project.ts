@@ -148,6 +148,9 @@ export const projectRouter = router({
         shared: z.boolean(),
         userId: z.string(),
         videoId: z.string(),
+        duration: z.number(),
+        thumbnailURL: z.string().url(),
+        metadata: z.any(),
         host: z.string(),
       }),
     )
@@ -166,6 +169,9 @@ export const projectRouter = router({
             public: input.public,
             collaborative: input.collaborative,
             shared: input.shared,
+            duration: input.duration,
+            thumbnailURL: input.thumbnailURL,
+            metadata: input.metadata,
           }
           // select: defaultPostSelect,
         });

@@ -30,11 +30,9 @@ const SharedLayoutInner: React.FC<Props> = ({ onClickLogout, loadUser }) => {
   }, []);
 
   return (
-    <>
-      <AppBarMenu onClickLogout={onClickLogout}>
-        <Outlet />
-      </AppBarMenu>
-    </>
+    <AppBarMenu onClickLogout={onClickLogout}>
+      <Outlet />
+    </AppBarMenu>
   );
 };
 

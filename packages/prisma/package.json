@@ -32,7 +32,8 @@
     "prebuild": "yarn run generate",
     "predev": "yarn run generate",
     "studio": "prisma studio",
-    "prisma": "dotenv -e ../../.env -- npx prisma"
+    "prisma": "dotenv -e ../../.env -- npx prisma",
+    "migrate-project": "tsx ./src/migrate-projects.ts"
   },
   "devDependencies": {
     "@celluloid/config": "*",
@@ -45,6 +46,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.4.0"
+    "@prisma/client": "^5.4.0",
+    "tsx": "^3.13.0"
   }
 }

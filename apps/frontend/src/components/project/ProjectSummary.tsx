@@ -13,7 +13,6 @@ interface Props {
 const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
   const { t } = useTranslation();
 
-  console.log(project);
   return (
     <Box sx={{ padding: 0 }}>
       {project && project.playlist ? (

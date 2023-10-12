@@ -3,6 +3,7 @@
  */
 import { publicProcedure, router } from '../trpc';
 import { annotationRouter } from "./annotation"
+import { commentRouter } from "./comment"
 import { playlistRouter } from './playlist'
 import { projectRouter } from './project'
 import { userRouter } from './user';
@@ -13,7 +14,8 @@ export const appRouter = router({
   project: projectRouter,
   user: userRouter,
   playlist: playlistRouter,
-  annotation: annotationRouter
+  annotation: annotationRouter,
+  comment: commentRouter
 });
 
 export type AppRouter = typeof appRouter;
