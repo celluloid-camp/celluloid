@@ -10,6 +10,7 @@ import { formatDuration } from "~utils/DurationUtils";
 
 type DurationSliderProps = {
   duration: number;
+  onChange: (start: number, stop: number) => void;
 };
 
 const minDistance = 60;
@@ -38,8 +39,11 @@ function ValueLabelComponent(props: SliderValueLabelProps) {
   );
 }
 
-export const DurationSlider: React.FC<DurationSliderProps> = ({ duration }) => {
-  const [value, setValue] = React.useState<number[]>([20, 37]);
+export const DurationSlider: React.FC<DurationSliderProps> = ({
+  duration,
+  onChange,
+}) => {
+  const [value, setValue] = React.useState<number[]>([60, 1000]);
 
   const handleChange = (
     event: Event,
@@ -61,6 +65,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = ({ duration }) => {
     } else {
       setValue(newValue as number[]);
     }
+    onChange(newValue[0], newValue[1]);
   };
 
   return (

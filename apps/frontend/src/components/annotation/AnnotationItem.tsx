@@ -3,6 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import {
+  Avatar,
   Box,
   Collapse,
   Grow,
@@ -14,12 +15,16 @@ import {
   ListItemText,
   Stack,
   styled,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import * as dayjs from "dayjs";
+import { useConfirm } from "material-ui-confirm";
 import * as React from "react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
 
 import { UserAvatar } from "~components/UserAvatar";
 import { formatDuration } from "~utils/DurationUtils";
@@ -46,12 +51,58 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
   user,
   editable = true,
 }) => {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
 
+  const confirm = useConfirm();
+  const utils = trpc.useContext();
+
   const handleEdit = () => {};
 
-  const handleDelete = () => {};
+  const mutation = trpc.annotation.delete.useMutation({
+    onSuccess: () => {
+      utils.annotation.byProjectId.invalidate({ id: project.id });
+    },
+  });
+
+  const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
+    confirm({
+      title: t("annotation.confirm-delete.title", "Supprimer l'annotation"),
+      description: t(
+        "annotation.confirm-delete.description",
+        "Êtes-vous sûr(e) de vouloir supprimer l'annotation ?"
+      ),
+      confirmationText: t("deleteAction"),
+      cancellationText: t("cancelAction"),
+      confirmationButtonProps: {
+        variant: "contained",
+        color: "error",
+      },
+      contentProps: {
+        sx: {
+          color: "white",
+          backgroundColor: "background.dark",
+        },
+      },
+      titleProps: {
+        sx: {
+          color: "white",
+          backgroundColor: "background.dark",
+        },
+      },
+      dialogActionsProps: {
+        sx: {
+          backgroundColor: "background.dark",
+        },
+      },
+    }).then(() => {
+      mutation.mutateAsync({
+        annotationId: annotation.id,
+      });
+    });
+  };
 
   const canCreateComment = useMemo(() => user, [user]);
   return (
@@ -85,10 +136,9 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           }
         >
           <ListItemAvatar>
-            <UserAvatar
-              username={annotation.user.username}
-              userId={annotation.user.id}
-            />
+            <Avatar sx={{ background: annotation.user.color }}>
+              {annotation.user.initial}
+            </Avatar>
           </ListItemAvatar>
           <ListItemText
             primaryTypographyProps={{
@@ -128,12 +178,16 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           <Box display="flex" flexDirection="column" alignItems="flex-end">
             {hovering ? (
               <Stack direction={"row"}>
-                <IconButton onClick={handleEdit}>
-                  <EditIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-                <IconButton onClick={handleDelete}>
-                  <DeleteIcon sx={{ fontSize: 18 }} />
-                </IconButton>
+                <Tooltip title="Modifier" arrow>
+                  <IconButton onClick={handleEdit}>
+                    <EditIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Supprimer" arrow>
+                  <IconButton onClick={handleDelete}>
+                    <DeleteIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </Tooltip>
               </Stack>
             ) : (
               <Typography
@@ -161,6 +215,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           {annotation.comments.map((comment: AnnotationByProjectIdItem) => (
             <List component="div" disablePadding sx={{ padding: 0 }}>
               <CommentItem
+                user={user}
                 comment={comment}
                 project={project}
                 annotation={annotation}

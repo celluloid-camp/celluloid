@@ -2,6 +2,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SendIcon from "@mui/icons-material/Send";
 import {
+  Avatar,
   Box,
   ClickAwayListener,
   IconButton,
@@ -10,12 +11,15 @@ import {
   ListItemAvatar,
   ListItemText,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import * as dayjs from "dayjs";
+import { useFormik } from "formik";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
 
 import { TransparentInput } from "~components/TransparentInput";
 import { UserAvatar } from "~components/UserAvatar";
@@ -27,6 +31,7 @@ import {
 } from "~utils/trpc";
 
 interface CommentItemProps {
+  user: UserMe;
   project: ProjectById;
   comment: AnnotationCommentByProjectIdItem;
   annotation: AnnotationByProjectIdItem;
@@ -36,33 +41,58 @@ interface CommentItemProps {
 export const CommentItem: React.FC<CommentItemProps> = ({
   comment,
   project,
+  annotation,
+  user,
   editable = true,
 }) => {
   const { t } = useTranslation();
   const [hovering, setHovering] = useState(false);
   const [edition, setEdition] = useState(false);
 
-  const [text, setText] = useState(comment.text || "");
-
   const utils = trpc.useContext();
 
-  const mutation = trpc.comment.delete.useMutation({
+  const editMutation = trpc.comment.edit.useMutation({
     onSuccess: () => {
       utils.annotation.byProjectId.invalidate({ id: project.id });
     },
   });
 
+  const deleteMutation = trpc.comment.delete.useMutation({
+    onSuccess: () => {
+      utils.annotation.byProjectId.invalidate({ id: project.id });
+    },
+  });
+
+  const validationSchema = Yup.object().shape({
+    comment: Yup.string()
+      .min(5, "Comment doit comporter minimum 5 character")
+      .required("Commentaire est obligatoire"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      comment: comment.text,
+    },
+    validateOnMount: false,
+    validationSchema: validationSchema,
+    validateOnBlur: true,
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      await editMutation.mutateAsync({
+        id: comment.id,
+        annotationId: annotation.id,
+        projectId: project.id,
+        comment: values.comment,
+      });
+      formik.resetForm();
+      setEdition(false);
+    },
+  });
+
   const handleDelete = () => {
-    mutation.mutate({
+    deleteMutation.mutate({
       commentId: comment.id,
     });
-  };
-
-  const onTextChange = (value: string) => {
-    if (text === "") {
-      //onChange();
-    }
-    setText(value);
   };
 
   const handleEdit = () => {
@@ -77,11 +107,11 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         onMouseLeave={() => setHovering(false)}
       >
         <ListItemAvatar sx={{ minWidth: 35 }}>
-          <UserAvatar
-            username={comment.user.username}
-            userId={comment.user.id}
-            small
-          />
+          <Avatar
+            sx={{ background: comment.user.color, width: 24, height: 24 }}
+          >
+            {comment.user.initial}
+          </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={
@@ -113,15 +143,20 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                 </Typography>
               ) : (
                 <TransparentInput
-                  value={comment.text}
+                  id="comment"
+                  name="comment"
+                  value={formik.values.comment}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.errors.comment}
                   unpadded={true}
-                  onChange={onTextChange}
                   placeholder={t("annotation.commentPlaceholder") || ""}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="Send"
-                        onClick={handleEdit}
+                        onClick={() => formik.handleSubmit()}
+                        disabled={formik.isSubmitting}
                         edge="end"
                         color="success"
                       >
@@ -135,14 +170,21 @@ export const CommentItem: React.FC<CommentItemProps> = ({
           }
         />
         <Box display="flex" flexDirection="column" alignItems="flex-end">
-          {hovering && !edition && !mutation.isSubmitting ? (
+          {hovering &&
+          !edition &&
+          !deleteMutation.isSubmitting &&
+          !editMutation.isSubmitting ? (
             <Stack direction={"row"}>
-              <IconButton onClick={handleEdit}>
-                <EditIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-              <IconButton onClick={handleDelete}>
-                <DeleteIcon sx={{ fontSize: 18 }} />
-              </IconButton>
+              <Tooltip title="Modifier" arrow>
+                <IconButton onClick={handleEdit}>
+                  <EditIcon sx={{ fontSize: 18 }} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Supprimer" arrow>
+                <IconButton onClick={handleDelete}>
+                  <DeleteIcon sx={{ fontSize: 18 }} />
+                </IconButton>
+              </Tooltip>
             </Stack>
           ) : null}
         </Box>

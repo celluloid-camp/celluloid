@@ -12,6 +12,7 @@ import { protectedProcedure, publicProcedure, router } from '../trpc';
 //   updatedAt: true,
 // });
 
+
 export const annotationRouter = router({
   byProjectId: publicProcedure
     .input(
@@ -31,7 +32,9 @@ export const annotationRouter = router({
                 select: {
                   id: true,
                   username: true,
-                  role: true
+                  role: true,
+                  initial: true,
+                  color: true
                 }
               },
             }
@@ -40,7 +43,9 @@ export const annotationRouter = router({
             select: {
               id: true,
               username: true,
-              role: true
+              role: true,
+              initial: true,
+              color: true
             }
           },
         }
@@ -57,38 +62,42 @@ export const annotationRouter = router({
   add: protectedProcedure
     .input(
       z.object({
-        title: z.string().min(1),
-        description: z.string(),
-        objective: z.string(),
-        levelStart: z.number(),
-        levelEnd: z.number(),
-        public: z.boolean(),
-        collaborative: z.boolean(),
-        shared: z.boolean(),
-        userId: z.string(),
-        videoId: z.string(),
-        host: z.string(),
+        text: z.string().min(1),
+        startTime: z.number(),
+        stopTime: z.number(),
+        pause: z.boolean(),
+        projectId: z.string()
       }),
     )
     .mutation(async ({ input, ctx }) => {
       if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
-        const project = await prisma.project.create({
+        const annotation = await prisma.annotation.create({
           data: {
             userId: ctx.user?.id,
-            title: input.title,
-            description: input.description,
-            videoId: input.videoId,
-            host: input.host,
-            objective: input.objective,
-            levelStart: input.levelStart,
-            levelEnd: input.levelEnd,
-            public: input.public,
-            collaborative: input.collaborative,
-            shared: input.shared,
+            text: input.text,
+            startTime: input.startTime,
+            stopTime: input.stopTime,
+            pause: input.pause,
+            projectId: input.projectId
           }
           // select: defaultPostSelect,
         });
-        return project;
+        return annotation;
+      }
+    }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        annotationId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      //TODO : check if project owner or collaborator
+      if (ctx.user && ctx.user.id) {
+        const comment = await prisma.annotation.delete({
+          where: { id: input.annotationId },
+        });
+        return comment;
       }
     }),
 });

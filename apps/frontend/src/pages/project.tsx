@@ -61,7 +61,10 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     }
   }, [visibleAnnotations, videoPlayerRef, videoProgress]);
 
-  const handleAnnotionHintClick = (annotation) => {};
+  const handleAnnotionHintClick = (annotation) => {
+    videoPlayerRef.current?.seekTo(annotation.startTime, "seconds");
+    setShowHints(false);
+  };
 
   if (!annotations) {
     return null;
@@ -76,8 +79,8 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
         paddingX: 2,
       }}
     >
-      <Grid item xs={8}>
-        {showHints ? (
+      <Grid item xs={8} sx={{ position: "relative" }}>
+        {showHints && playerIsReady ? (
           <AnnotationHints
             project={project}
             annotations={annotations}
@@ -95,6 +98,7 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
           project={project}
           annotations={visibleAnnotations}
           annotationCount={annotations.length}
+          playerIsReady={playerIsReady}
           user={user}
           onShowHintsClick={() => setShowHints(!showHints)}
         />

@@ -3,15 +3,7 @@ import {
   useParentSize,
 } from "@cutting/use-get-parent-size";
 import CancelIcon from "@mui/icons-material/Clear";
-import {
-  alpha,
-  Avatar,
-  Box,
-  Fade,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { alpha, Box, Fade, IconButton, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
 import React, { useRef } from "react";
@@ -40,11 +32,11 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 type AnnotationHintsItemProps = {
-  index: number;
-  annotation: AnnotationByProjectIdItem;
-  leftPosition: string;
-  width: number;
-  onClick: () => void;
+  index: number,
+  annotation: AnnotationByProjectIdItem,
+  leftPosition: string,
+  width: number,
+  onClick: () => void,
 };
 
 const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
@@ -58,11 +50,6 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
     followCursor
     title={
       <React.Fragment>
-        <Avatar
-          sx={{ background: annotation.user.color, width: 24, height: 24 }}
-        >
-          {annotation.user.initial}
-        </Avatar>
         <Typography variant="body2">{annotation.user.username}</Typography>
         <Typography
           sx={{
@@ -80,7 +67,9 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
     <Paper
       sx={{
         cursor: "pointer",
+        pointerEvents: "auto",
         position: "absolute",
+        zIndex: 6,
         height: 10,
         minWidth: 10,
         margin: 0,
@@ -92,7 +81,7 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
           filter: "brightness(85%)",
         },
         color: "white",
-        top: index * 24,
+        top: 60 + index * 24,
         left: leftPosition,
         width: width,
         border: `2px solid ${getUserColor(annotation.user.id)}`,
@@ -105,7 +94,7 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
   </HtmlTooltip>
 );
 
-export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
+export const AnnotationContextuels: React.FC<AnnotationHintsProps> = ({
   project,
   annotations,
   onClick,
@@ -129,50 +118,47 @@ export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
   };
 
   return (
-    <Fade in={true}>
+    <Box
+      sx={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        margin: 0,
+        height: "100%",
+        width: "100%",
+        pointerEvents: "none",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        overflow: "hidden",
+      }}
+    >
       <Box
-        sx={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          margin: 0,
-          height: "100%",
-          width: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
-          overflow: "hidden",
-        }}
+        display={"flex"}
+        flexDirection={"row"}
+        paddingX={2}
+        paddingY={2}
+        justifyContent={"space-between"}
       >
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          paddingX={2}
-          paddingY={2}
-          justifyContent={"space-between"}
-          sx={{ backgroundColor: "black" }}
-        >
-          <Box>
-            <Typography align="left" variant="h5" color="white">
-              {annotations.length > 0
-                ? t("annotation.hintLabel", { count: annotations.length })
-                : t("annotation.hintLabelNone")}
-            </Typography>
-          </Box>
-
-          <Box>
-            <IconButton onClick={handleClose} sx={{ color: "white" }}>
-              <CancelIcon />
-            </IconButton>
-          </Box>
+        <Box>
+          <Typography align="left" variant="h5" color="white">
+            {annotations.length > 0
+              ? t("annotation.hintLabel", { count: annotations.length })
+              : t("annotation.hintLabelNone")}
+          </Typography>
         </Box>
-        <Box
-          sx={{
-            position: "relative",
-            height: "100%",
-            width: "100%",
-            overflowY: "auto",
-          }}
-        >
-          {annotations.map((annotation, index) => {
+
+        <Box>
+          <IconButton
+            onClick={handleClose}
+            sx={{ pointerEvents: "auto", color: "white" }}
+          >
+            <CancelIcon />
+          </IconButton>
+        </Box>
+      </Box>
+      <Box sx={{ height: "100%", overflow: "auto" }}>
+        {annotations
+          .flatMap((x) => [x, x, x, x, x, x, x, x])
+          .map((annotation, index) => {
             return (
               <AnnotationHintsItem
                 id={annotation.id}
@@ -184,8 +170,7 @@ export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
               />
             );
           })}
-        </Box>
       </Box>
-    </Fade>
+    </Box>
   );
 };

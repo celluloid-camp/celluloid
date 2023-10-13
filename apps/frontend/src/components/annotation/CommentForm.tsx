@@ -53,7 +53,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
-      console.log(project);
       const newComment = await mutation.mutateAsync({
         annotationId: annotation.id,
         projectId: project.id,

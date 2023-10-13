@@ -10,7 +10,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { ConfirmProvider } from "material-ui-confirm";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { initReactI18next } from "react-i18next";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -55,7 +55,6 @@ i18next
     },
     ns: ["translations"],
     defaultNS: "translations",
-
     fallbackLng: "fr_FR",
     interpolation: {
       escapeValue: false,
@@ -83,55 +82,63 @@ const App = () => {
   );
 
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={createTheme()}>
-        <CssBaseline />
-        <trpc.Provider client={trpcClient} queryClient={queryClient}>
-          <QueryClientProvider client={queryClient}>
-            <ConfirmProvider>
-              <React.Fragment>
+    <Suspense fallback="loading">
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <CssBaseline />
+          <trpc.Provider client={trpcClient} queryClient={queryClient}>
+            <QueryClientProvider client={queryClient}>
+              <ConfirmProvider>
                 <React.Fragment>
-                  <UpdateIndicator />
-                  <BrowserRouter>
-                    <ResetScroll />
-                    <Routes>
-                      <Route path="/" element={<SharedLayout />}>
-                        <Route index element={<HomePage />} />
-                        <Route path="create" element={<CreateProjectPage />} />
-                        <Route path="about" element={<About />} />
-                        <Route path="profile" element={<UserProfile />} />
-                        <Route path="legal-notice" element={<LegalNotice />} />
+                  <React.Fragment>
+                    <UpdateIndicator />
+                    <BrowserRouter>
+                      <ResetScroll />
+                      <Routes>
+                        <Route path="/" element={<SharedLayout />}>
+                          <Route index element={<HomePage />} />
+                          <Route
+                            path="create"
+                            element={<CreateProjectPage />}
+                          />
+                          <Route path="about" element={<About />} />
+                          <Route path="profile" element={<UserProfile />} />
+                          <Route
+                            path="legal-notice"
+                            element={<LegalNotice />}
+                          />
+                          <Route
+                            path="terms-and-conditions"
+                            element={<TermsAndConditions />}
+                          />
+                          <Route
+                            path="projects/:projectId"
+                            element={<Project />}
+                          />
+                          <Route
+                            path="project/:projectId"
+                            element={<ProjectPage />}
+                          />
+                          <Route
+                            path="shares/:projectId"
+                            element={<SharePage />}
+                          />
+                          {/* <Route path="*" element={<NotFound />} /> */}
+                        </Route>
                         <Route
-                          path="terms-and-conditions"
-                          element={<TermsAndConditions />}
-                        />
-                        <Route
-                          path="projects/:projectId"
-                          element={<Project />}
-                        />
-                        <Route
-                          path="project/:projectId"
-                          element={<ProjectPage />}
-                        />
-                        <Route
-                          path="shares/:projectId"
+                          path="/shares/:projectId"
                           element={<SharePage />}
                         />
-                        {/* <Route path="*" element={<NotFound />} /> */}
-                      </Route>
-                      <Route
-                        path="/shares/:projectId"
-                        element={<SharePage />}
-                      />
-                    </Routes>
-                  </BrowserRouter>
+                      </Routes>
+                    </BrowserRouter>
+                  </React.Fragment>
                 </React.Fragment>
-              </React.Fragment>
-            </ConfirmProvider>
-          </QueryClientProvider>
-        </trpc.Provider>
-      </ThemeProvider>
-    </Provider>
+              </ConfirmProvider>
+            </QueryClientProvider>
+          </trpc.Provider>
+        </ThemeProvider>
+      </Provider>
+    </Suspense>
   );
 };
 

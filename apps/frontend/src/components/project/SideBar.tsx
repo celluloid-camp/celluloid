@@ -1,6 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
 import {
+  Avatar,
   Box,
   Button,
   Chip,
@@ -177,13 +178,24 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
                 "& ul": { padding: 0 },
               }}
             >
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar sx={{ background: project.user.color }}>
+                    {project.user.initial}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={project.user.username}
+                  secondary={project.user.role}
+                />
+              </ListItem>
+
               {project.members.map((member: UserById) => (
                 <ListItem key={member.id}>
                   <ListItemAvatar>
-                    <UserAvatar
-                      username={member.user.username}
-                      userId={member.user.id}
-                    />
+                    <Avatar sx={{ background: member.user.color }}>
+                      {member.user.initial}
+                    </Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     primary={member.user.username}

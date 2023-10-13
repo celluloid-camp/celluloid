@@ -33,20 +33,22 @@
     "predev": "yarn run generate",
     "studio": "prisma studio",
     "prisma": "dotenv -e ../../.env -- npx prisma",
-    "migrate-project": "tsx ./src/migrate-projects.ts"
+    "migrate-project": "tsx ./src/migrate-projects.ts",
+    "tsx": "tsx"
   },
   "devDependencies": {
     "@celluloid/config": "*",
     "@types/dotenv": "^6.0.0",
     "dotenv-cli": "^7.2.1",
     "eslint": "^8.50.0",
-    "prisma": "^5.4.0",
+    "prisma": "^5.4.2",
     "rimraf": "^5.0.1",
     "tsup": "^5.11.13",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.4.0",
+    "@prisma/client": "^5.4.2",
+    "randomcolor": "^0.6.2",
     "tsx": "^3.13.0"
   }
 }

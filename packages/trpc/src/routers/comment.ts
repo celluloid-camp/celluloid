@@ -36,6 +36,30 @@ export const commentRouter = router({
         return comment;
       }
     }),
+  edit: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        annotationId: z.string(),
+        projectId: z.string(),
+        comment: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      //TODO : check if project owner or collaborator
+      if (ctx.user && ctx.user.id) {
+        const comment = await prisma.comment.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            text: input.comment,
+          }
+          // select: defaultPostSelect,
+        });
+        return comment;
+      }
+    }),
   delete: protectedProcedure
     .input(
       z.object({

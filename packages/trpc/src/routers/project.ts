@@ -50,7 +50,9 @@ export const projectRouter = router({
             select: {
               id: true,
               username: true,
-              role: true
+              role: true,
+              initial: true,
+              color: true
             }
           },
           members: true,
@@ -99,7 +101,9 @@ export const projectRouter = router({
             select: {
               id: true,
               username: true,
-              role: true
+              role: true,
+              initial: true,
+              color: true
             }
           },
           playlist: {
@@ -119,7 +123,9 @@ export const projectRouter = router({
                 select: {
                   id: true,
                   username: true,
-                  role: true
+                  role: true,
+                  initial: true,
+                  color: true
                 }
               },
             }

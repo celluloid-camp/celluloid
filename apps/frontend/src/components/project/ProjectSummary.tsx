@@ -1,10 +1,8 @@
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { ProjectById, trpc } from "~utils/trpc";
-
-import { ProjectUserAvatar } from "./ProjectUserAvatar";
 
 interface Props {
   project: ProjectById;
@@ -28,7 +26,17 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
         {project.title}
       </Typography>
 
-      <ProjectUserAvatar project={project} />
+      <Box display="flex" alignItems={"center"}>
+        <Avatar sx={{ background: project.user.color }}>
+          {project.user.initial}
+        </Avatar>
+        <Box display="flex" flexDirection={"column"} sx={{ marginLeft: 1 }}>
+          <Typography>{project.user.username}</Typography>
+          <Typography variant="caption">
+            {new Date(project.publishedAt).toLocaleDateString()}
+          </Typography>
+        </Box>
+      </Box>
 
       <Box
         sx={{

@@ -64,6 +64,7 @@ interface AnnotationPanelProps {
   annotations: AnnotationByProjectIdItem[];
   annotationCount: number;
   onShowHintsClick: () => void;
+  playerIsReady: boolean;
 }
 
 export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
@@ -72,6 +73,7 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   annotationCount,
   user,
   onShowHintsClick,
+  playerIsReady,
 }) => {
   const { t } = useTranslation();
 
@@ -136,18 +138,20 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
               {t("project.annotation.title", "Annotations")}
             </Typography>
           </Stack>
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{
-              borderRadius: "50%",
-              minWidth: "auto",
-              padding: "10px",
-            }}
-            onClick={() => onShowHintsClick()}
-          >
-            <ViewTimelineIcon />
-          </Button>
+          {playerIsReady && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{
+                borderRadius: "50%",
+                minWidth: "auto",
+                padding: "10px",
+              }}
+              onClick={() => onShowHintsClick()}
+            >
+              <ViewTimelineIcon />
+            </Button>
+          )}
         </Box>
         <Box
           ref={containerRef}
@@ -183,7 +187,12 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
             {annotations.length == 0 && <EmptyAnnotation />}
           </List>
 
-          <AnnotationForm duration={project.duration} ref={formRef} />
+          <AnnotationForm
+            duration={project.duration}
+            ref={formRef}
+            project={project}
+            user={user}
+          />
         </Box>
       </Box>
     </Box>
