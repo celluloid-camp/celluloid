@@ -72,15 +72,8 @@ export const projectRouter = router({
         nextCursor = nextItem.id;
       }
 
-      // Extract unique playlistIds, including NULL
-      const uniquePlaylistIds = [...new Set(items.map(item => item.playlistId))];
-
-      // Filter out NULL playlistIds if needed
-      const distinctPlaylistIds = uniquePlaylistIds.filter(id => id !== null);
-
-
       return {
-        items: distinctPlaylistIds.reverse(),
+        items: items.reverse(),
         nextCursor,
       };
     }),
