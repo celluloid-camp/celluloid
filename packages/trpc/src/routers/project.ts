@@ -83,7 +83,6 @@ export const projectRouter = router({
       const items = await prisma.project.findMany({
         // select: defaultPostSelect,
         // get an extra item at the end which we'll use as next cursor
-        distinct: ["playlistId"],
         take: limit + 1,
         where: {
           ...withterm,
