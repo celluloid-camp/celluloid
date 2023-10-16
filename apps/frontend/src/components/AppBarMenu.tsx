@@ -2,7 +2,8 @@ import { AppBar, Box, Button, styled, Toolbar } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect, useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { Dispatch } from "redux";
 
 import {
@@ -56,6 +57,7 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
   const navigate = useNavigate();
   const meQuery = trpc.user.me.useQuery();
   const logoutMutation = trpc.user.logout.useMutation();
+  const location = useLocation();
 
   const dispatch = useDispatch();
 
@@ -116,6 +118,12 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
           >
             {t("menu.about")}
           </Button>
+          {/* <Link to={`login`} state={{ backgroundLocation: location }}>
+            <Button>test {location.pathname}</Button>
+          </Link>
+          <Link to={`signup`} state={{ backgroundLocation: location }}>
+            <Button>test {location.pathname}</Button>
+          </Link> */}
           <SigninMenu
             user={meQuery.data}
             onClickLogin={onClickLogin}

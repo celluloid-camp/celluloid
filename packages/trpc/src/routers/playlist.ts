@@ -15,6 +15,36 @@ import { generateUniqueShareName } from '../utils';
 // });
 
 
+export const PlaylistProjectSchema = z.object({
+  id: z.string(),
+  videoId: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  host: z.string(),
+  publishedAt: z.string(),
+  public: z.boolean(),
+  collaborative: z.boolean(),
+  shared: z.boolean(),
+  shareName: z.string().nullable(),
+  shareExpiresAt: z.null().nullable(),
+  extra: z.record(z.unknown()),
+  playlistId: z.string(),
+  duration: z.number(),
+  thumbnailURL: z.string(),
+});
+
+export const PlaylistSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  userId: z.string(),
+  publishedAt: z.string(),
+  projects: z.array(PlaylistProjectSchema),
+});
+
+
+
 export const playlistRouter = router({
   list: publicProcedure
     .input(

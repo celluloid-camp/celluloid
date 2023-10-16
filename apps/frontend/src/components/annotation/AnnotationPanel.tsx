@@ -1,3 +1,5 @@
+import { useParentSize } from "@cutting/use-get-parent-size";
+import InfoIcon from "@mui/icons-material/Info";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
 import {
@@ -5,11 +7,15 @@ import {
   BadgeProps,
   Box,
   Button,
+  Fab,
   Grow,
   IconButton,
   List,
+  ListSubheader,
+  Paper,
   Stack,
   styled,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
@@ -26,6 +32,7 @@ import {
 
 import { AnnotationForm } from "./AnnotationForm";
 import { AnnotationItem } from "./AnnotationItem";
+import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -38,9 +45,13 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 
 const EmptyAnnotation = () => (
   <Grow in={true}>
-    <Box
+    <Stack
+      spacing={1}
+      alignContent={"center"}
+      alignItems={"center"}
       sx={{
-        paddingY: 0.5,
+        paddingY: 5,
+        paddingX: 10,
         borderRadius: 1,
         borderStyle: "dashed",
         borderWidth: 1,
@@ -48,13 +59,14 @@ const EmptyAnnotation = () => (
         marginBottom: 1,
       }}
     >
-      <Typography variant="body2" color="gray" sx={{ p: 2 }}>
+      <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
+      <Typography variant="body2" color="gray" textAlign={"center"}>
         <Trans i18next="project.annotaions.empty">
           Les annotations correspondant aux différents temps de la vidéo seront
           affichées ici.
         </Trans>
       </Typography>
-    </Box>
+    </Stack>
   </Grow>
 );
 
@@ -63,20 +75,12 @@ interface AnnotationPanelProps {
   user?: UserMe;
   annotations: AnnotationByProjectIdItem[];
   annotationCount: number;
-  onShowHintsClick: () => void;
   playerIsReady: boolean;
 }
 
-export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
-  project,
-  annotations = [],
-  annotationCount,
-  user,
-  onShowHintsClick,
-  playerIsReady,
-}) => {
-  const { t } = useTranslation();
-
+const AnnotationList: React.FC<
+  Omit<AnnotationPanelProps, "annotationCount" | "onShowHintsClick">
+> = ({ project, annotations = [], user, playerIsReady }) => {
   const containerRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLElement>(null);
 
@@ -85,10 +89,14 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   const updateListHeight = () => {
     if (containerRef.current && formRef.current) {
       const containerHeight = containerRef.current.offsetHeight;
-      const formHeight = formRef.current.offsetHeight;
+      const formHeight = formRef.current.offsetHeight + 20;
       setListHeight(containerHeight - formHeight);
     }
   };
+
+  useEffect(() => {
+    updateListHeight();
+  }, [playerIsReady]);
 
   useEffect(() => {
     // Initial calculation
@@ -113,22 +121,83 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
 
   return (
     <Box
-      display="flex"
-      flexDirection={"column"}
+      ref={containerRef}
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <List
+        dense={true}
+        sx={{
+          overflow: "auto",
+          paddingX: 2,
+          height: `${listHeight}px`,
+          maxHeight: `${listHeight}px`,
+          // minHeight: 600,
+          // maxHeight: 600,
+          "& ul": { padding: 0 },
+        }}
+      >
+        {annotations
+          // .flatMap((x) => [x, x, x, x, x, x, x, x])
+          .map((annotation: AnnotationByProjectIdItem) => (
+            <AnnotationItem
+              annotation={annotation}
+              key={annotation.id}
+              user={user}
+              project={project}
+            />
+          ))}
+
+        {annotations.length == 0 && <EmptyAnnotation />}
+      </List>
+
+      <Box ref={formRef} display={"flex"} flexDirection={"column"}>
+        {project.annotable && playerIsReady && (
+          <AnnotationForm
+            duration={project.duration}
+            project={project}
+            user={user}
+          />
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
+  annotationCount,
+  playerIsReady,
+  ...props
+}) => {
+  const { t } = useTranslation();
+
+  const ref = useRef<HTMLDivElement>(null);
+  const { height } = useParentSize(ref);
+
+  const [hintsVisible, setHintsVisible] = useAnnotationHintsVisible();
+
+  return (
+    <Paper
+      ref={ref}
       sx={{
         backgroundColor: "background.dark",
         paddingY: 3,
         marginX: 2,
-        borderRadius: 2,
         height: "100%",
+        maxHeight: "100%",
       }}
     >
-      <Box display="flex" flexDirection={"column"} height={"100%"}>
+      <Box display="flex" flexDirection={"column"} height={height}>
         <Box
           display="flex"
           flexDirection={"row"}
           justifyContent="space-between"
-          paddingX={2}
+          paddingX={3}
+          alignContent={"center"}
+          alignItems={"center"}
         >
           <Stack direction={"row"}>
             <StyledBadge badgeContent={annotationCount} color="secondary">
@@ -138,63 +207,24 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
               {t("project.annotation.title", "Annotations")}
             </Typography>
           </Stack>
-          {playerIsReady && (
-            <Button
-              variant="contained"
+          <Tooltip
+            title={t(
+              "project.annotation.hints.label",
+              "Afficher la chronologie des annotations."
+            )}
+          >
+            <Fab
               color="secondary"
-              sx={{
-                borderRadius: "50%",
-                minWidth: "auto",
-                padding: "10px",
-              }}
-              onClick={() => onShowHintsClick()}
+              size="small"
+              onClick={() => setHintsVisible(!hintsVisible)}
             >
               <ViewTimelineIcon />
-            </Button>
-          )}
+            </Fab>
+          </Tooltip>
         </Box>
-        <Box
-          ref={containerRef}
-          sx={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <List
-            dense={true}
-            sx={{
-              flexGrow: 1,
-              overflow: "auto",
-              paddingX: 2,
-              height: `${listHeight}px`,
-              // minHeight: 600,
-              // maxHeight: 600,
-              "& ul": { padding: 0 },
-            }}
-          >
-            {annotations
-              // .flatMap((x) => [x, x, x, x, x, x, x, x])
-              .map((annotation: AnnotationByProjectIdItem) => (
-                <AnnotationItem
-                  annotation={annotation}
-                  key={annotation.id}
-                  user={user}
-                  project={project}
-                />
-              ))}
 
-            {annotations.length == 0 && <EmptyAnnotation />}
-          </List>
-
-          <AnnotationForm
-            duration={project.duration}
-            ref={formRef}
-            project={project}
-            user={user}
-          />
-        </Box>
+        <AnnotationList playerIsReady={playerIsReady} {...props} />
       </Box>
-    </Box>
+    </Paper>
   );
 };

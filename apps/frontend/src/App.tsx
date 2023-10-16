@@ -13,9 +13,12 @@ import { ConfirmProvider } from "material-ui-confirm";
 import React, { Suspense, useState } from "react";
 import { initReactI18next } from "react-i18next";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { RecoilRoot } from "recoil";
 
+import { LogintDialog } from "~components/LoginDialog";
 import { SharedLayout } from "~components/SharedLayout";
+import { SignupDialog } from "~components/SignupDialog";
 import { trpc } from "~utils/trpc";
 
 import ResetScroll from "./components/ResetScroll";
@@ -63,6 +66,36 @@ i18next
 
 const store = createAppStore();
 
+const AppRouters = () => {
+  const location = useLocation();
+  const { state } = location;
+
+  return (
+    <div>
+      <Routes location={state?.backgroundLocation || location}>
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="create" element={<CreateProjectPage />} />
+          <Route path="about" element={<About />} />
+          <Route path="profile" element={<UserProfile />} />
+          <Route path="legal-notice" element={<LegalNotice />} />
+          <Route path="terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="projects/:projectId" element={<Project />} />
+          <Route path="project/:projectId" element={<ProjectPage />} />
+          <Route path="shares/:projectId" element={<SharePage />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
+        </Route>
+        <Route path="/shares/:projectId" element={<SharePage />} />
+      </Routes>
+      {state?.backgroundLocation && (
+        <Routes>
+          <Route path="login" element={<LogintDialog />} />
+          <Route path="signup" element={<SignupDialog />} />
+        </Routes>
+      )}
+    </div>
+  );
+};
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -83,61 +116,28 @@ const App = () => {
 
   return (
     <Suspense fallback="loading">
-      <Provider store={store}>
-        <ThemeProvider theme={createTheme()}>
-          <CssBaseline />
-          <trpc.Provider client={trpcClient} queryClient={queryClient}>
-            <QueryClientProvider client={queryClient}>
-              <ConfirmProvider>
-                <React.Fragment>
+      <RecoilRoot>
+        <Provider store={store}>
+          <ThemeProvider theme={createTheme()}>
+            <CssBaseline />
+            <trpc.Provider client={trpcClient} queryClient={queryClient}>
+              <QueryClientProvider client={queryClient}>
+                <ConfirmProvider>
                   <React.Fragment>
-                    <UpdateIndicator />
-                    <BrowserRouter>
-                      <ResetScroll />
-                      <Routes>
-                        <Route path="/" element={<SharedLayout />}>
-                          <Route index element={<HomePage />} />
-                          <Route
-                            path="create"
-                            element={<CreateProjectPage />}
-                          />
-                          <Route path="about" element={<About />} />
-                          <Route path="profile" element={<UserProfile />} />
-                          <Route
-                            path="legal-notice"
-                            element={<LegalNotice />}
-                          />
-                          <Route
-                            path="terms-and-conditions"
-                            element={<TermsAndConditions />}
-                          />
-                          <Route
-                            path="projects/:projectId"
-                            element={<Project />}
-                          />
-                          <Route
-                            path="project/:projectId"
-                            element={<ProjectPage />}
-                          />
-                          <Route
-                            path="shares/:projectId"
-                            element={<SharePage />}
-                          />
-                          {/* <Route path="*" element={<NotFound />} /> */}
-                        </Route>
-                        <Route
-                          path="/shares/:projectId"
-                          element={<SharePage />}
-                        />
-                      </Routes>
-                    </BrowserRouter>
+                    <React.Fragment>
+                      <UpdateIndicator />
+                      <BrowserRouter>
+                        <ResetScroll />
+                        <AppRouters />
+                      </BrowserRouter>
+                    </React.Fragment>
                   </React.Fragment>
-                </React.Fragment>
-              </ConfirmProvider>
-            </QueryClientProvider>
-          </trpc.Provider>
-        </ThemeProvider>
-      </Provider>
+                </ConfirmProvider>
+              </QueryClientProvider>
+            </trpc.Provider>
+          </ThemeProvider>
+        </Provider>
+      </RecoilRoot>
     </Suspense>
   );
 };

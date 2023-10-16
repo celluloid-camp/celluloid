@@ -1,10 +1,13 @@
 import ReactPlayer from "@celluloid/react-player";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, CircularProgress, Container, Grid, Paper } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { AnnotationHints } from "~components/annotation/AnnotationHints";
 import { AnnotationPanel } from "~components/annotation/AnnotationPanel";
+import { ContextualAnnotations } from "~components/annotation/ContextualAnnotations";
+import { ContextualEditor } from "~components/annotation/ContextualEditor";
+import { useAnnotationEditorState } from "~components/annotation/useAnnotationEditor";
 import ProjectSummary from "~components/project/ProjectSummary";
 import { SideBar } from "~components/project/SideBar";
 import { VideoPlayer } from "~components/project/VideoPlayer";
@@ -20,7 +23,6 @@ interface Props {
 const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
   const videoPlayerRef = React.useRef<ReactPlayer>(null);
 
-  const [showHints, setShowHints] = useState(false);
   const [videoProgress, setVideoProgress] = React.useState(0);
   const [playerIsReady, setPlayerIsReady] = React.useState(false);
 
@@ -28,8 +30,11 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     id: project.id,
   });
 
+  const { contextualEditorVisible, formVisible, showHints } =
+    useAnnotationEditorState();
+
   useVideoPlayerEvent((event) => {
-    console.log(event);
+    // console.log(event);
     if (event.state == "READY") {
       setPlayerIsReady(true);
     }
@@ -55,19 +60,33 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
         annotation.pause && annotation.startTime === Math.floor(videoProgress)
     );
 
-    if (paused && position) {
-      videoPlayerRef.current?.getInternalPlayer().pause();
-      videoPlayerRef.current?.seekTo(position + 1, "seconds");
-    }
+    // if (paused && position) {
+    //   videoPlayerRef.current?.getInternalPlayer().pause();
+    //   videoPlayerRef.current?.seekTo(position + 1, "seconds");
+    // }
   }, [visibleAnnotations, videoPlayerRef, videoProgress]);
 
   const handleAnnotionHintClick = (annotation) => {
+    console.log("handleAnnotionHintClick", annotation);
     videoPlayerRef.current?.seekTo(annotation.startTime, "seconds");
-    setShowHints(false);
   };
 
   if (!annotations) {
-    return null;
+    return (
+      <Box
+        display={"flex"}
+        alignContent={"center"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        sx={{
+          backgroundColor: "black",
+          height: "60vh",
+          minHeight: "60vh",
+        }}
+      >
+        <CircularProgress sx={{ color: "white" }} />
+      </Box>
+    );
   }
 
   return (
@@ -76,16 +95,20 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
       sx={{
         backgroundColor: "black",
         height: "60vh",
+        minHeight: "60vh",
         paddingX: 2,
       }}
     >
       <Grid item xs={8} sx={{ position: "relative" }}>
-        {showHints && playerIsReady ? (
+        {contextualEditorVisible ? <ContextualEditor /> : null}
+        {!formVisible ? (
+          <ContextualAnnotations annotations={visibleAnnotations} />
+        ) : null}
+        {showHints ? (
           <AnnotationHints
             project={project}
             annotations={annotations}
             onClick={handleAnnotionHintClick}
-            onClose={() => setShowHints(false)}
           />
         ) : null}
         <VideoPlayer
@@ -100,7 +123,6 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
           annotationCount={annotations.length}
           playerIsReady={playerIsReady}
           user={user}
-          onShowHintsClick={() => setShowHints(!showHints)}
         />
       </Grid>
     </Grid>
@@ -117,23 +139,24 @@ const ProjectContent = ({ project, user }: Props) => (
         paddingY: 3,
       }}
     >
-      <Container
-        sx={{
-          paddingTop: 4,
-          paddingBottom: 10,
-          borderRadius: 2,
-          backgroundColor: "brand.green",
-        }}
-        maxWidth="lg"
-      >
-        <Grid container direction="row" alignItems="flex-start" spacing={4}>
-          <Grid item xs={12} md={8} lg={8}>
-            <ProjectSummary project={project} />
+      <Container maxWidth="lg">
+        <Paper
+          sx={{
+            paddingY: 2,
+            paddingX: 4,
+            margin: 0,
+            backgroundColor: "brand.green",
+          }}
+        >
+          <Grid container direction="row" alignItems="flex-start" spacing={4}>
+            <Grid item xs={12} md={8} lg={8}>
+              <ProjectSummary project={project} />
+            </Grid>
+            <Grid item xs={12} md={4} lg={4}>
+              <SideBar project={project} user={user} />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={4} lg={4}>
-            <SideBar project={project} user={user} />
-          </Grid>
-        </Grid>
+        </Paper>
       </Container>
     </Box>
   </Box>

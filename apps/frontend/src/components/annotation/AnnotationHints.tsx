@@ -7,35 +7,43 @@ import {
   alpha,
   Avatar,
   Box,
+  Chip,
+  Divider,
   Fade,
   IconButton,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import { MultiLineTypography } from "~components/MultiLineTypography";
 import { AnnotationByProjectIdItem, ProjectById, trpc } from "~utils/trpc";
 import { getUserColor } from "~utils/UserUtils";
+
+import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 
 interface AnnotationHintsProps {
   project: ProjectById;
   annotations: AnnotationByProjectIdItem[];
   onClick: (annotation: AnnotationByProjectIdItem) => void;
-  onClose: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#f5f5f9",
-    color: "rgba(0, 0, 0, 0.87)",
+    color: "#f5f5f9",
     maxWidth: 300,
-    // fontSize: theme.typography.pxToRem(12),
-    // border: "1px solid #dadde9",
+    minWidth: 150,
+    backgroundColor: grey[900],
+    borderColor: grey[800],
+    borderWidth: 1,
+    borderStyle: "solid",
   },
 }));
 
@@ -55,25 +63,34 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
   width,
 }) => (
   <HtmlTooltip
-    followCursor
+    arrow
     title={
       <React.Fragment>
-        <Avatar
-          sx={{ background: annotation.user.color, width: 24, height: 24 }}
-        >
-          {annotation.user.initial}
-        </Avatar>
-        <Typography variant="body2">{annotation.user.username}</Typography>
-        <Typography
-          sx={{
-            display: "-webkit-box",
-            overflow: "hidden",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 3,
-          }}
-        >
-          {annotation.text}
-        </Typography>
+        <Stack sx={{ py: 1 }} spacing={1}>
+          <Box>
+            <Chip
+              variant="outlined"
+              sx={{
+                "& .MuiChip-label": {
+                  color: "white",
+                },
+              }}
+              avatar={
+                <Avatar sx={{ background: annotation.user.color }}>
+                  {annotation.user.initial}
+                </Avatar>
+              }
+              label={annotation.user.username}
+              size="small"
+            />
+          </Box>
+          <MultiLineTypography
+            variant="caption"
+            color="gray"
+            lineLimit={1}
+            text={annotation.text}
+          />
+        </Stack>
       </React.Fragment>
     }
   >
@@ -109,12 +126,13 @@ export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
   project,
   annotations,
   onClick,
-  onClose,
 }) => {
   const { t } = useTranslation();
 
   // const ref = useRef<HTMLDivElement>(null);
   // const { width, height } = useParentSize(ref);
+
+  const [_, setHintsVisible] = useAnnotationHintsVisible();
 
   const getHintStartPosition = (annotation: AnnotationByProjectIdItem) =>
     `${(annotation.startTime * 100) / project.duration}%`;
@@ -125,7 +143,12 @@ export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
 
   const handleClose: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
-    onClose(event);
+    setHintsVisible(false);
+  };
+
+  const handleClick = (annotation) => {
+    onClick(annotation);
+    setHintsVisible(false);
   };
 
   return (
@@ -175,12 +198,12 @@ export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
           {annotations.map((annotation, index) => {
             return (
               <AnnotationHintsItem
-                id={annotation.id}
+                key={annotation.id}
                 leftPosition={getHintStartPosition(annotation)}
                 width={getHintWidth(annotation)}
                 index={index}
                 annotation={annotation}
-                onClick={() => onClick(annotation)}
+                onClick={() => handleClick(annotation)}
               />
             );
           })}

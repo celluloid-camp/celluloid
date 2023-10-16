@@ -1,4 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import GroupsIcon from "@mui/icons-material/Groups";
+import PublicIcon from "@mui/icons-material/Public";
 import { LoadingButton } from "@mui/lab";
 import {
   Avatar,
@@ -9,6 +11,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Paper,
   Stack,
   Typography,
 } from "@mui/material";
@@ -57,25 +60,33 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
 
   return (
     <Box>
-      <Stack direction={"row"} spacing={1}>
+      <Stack direction={"row"} spacing={1} sx={{ mb: 2 }}>
         {project.public && (
-          <Chip label={t("project.public").toUpperCase()} size="small" />
+          <Chip
+            label={t("project.public")}
+            size="small"
+            icon={<PublicIcon />}
+          />
         )}
 
         {project.collaborative && (
-          <Chip label={t("project.collaborative").toUpperCase()} size="small" />
+          <Chip
+            label={t("project.collaborative")}
+            size="small"
+            icon={<GroupsIcon />}
+          />
         )}
       </Stack>
 
-      {project ? <PlaylistSideBar project={project} /> : null}
+      {project && project.playlist ? (
+        <PlaylistSideBar project={project} />
+      ) : null}
 
-      <Box
+      <Paper
         sx={{
-          backgroundColor: "white",
           paddingX: 3,
           marginY: 2,
           paddingY: 3,
-          borderRadius: 2,
         }}
       >
         {user && project.userId == user.id ? (
@@ -207,7 +218,7 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
           </>
         )}
 
-        {((user && isOwner(project, user)) || (user && isAdmin(user))) && (
+        {project.deletable && (
           <Box
             sx={{
               padding: 2,
@@ -228,7 +239,7 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
           </Box>
         )}
 
-        {project._count.members > 0 ? (
+        {project._count.annotations > 0 ? (
           <>
             <Typography variant="h6" mb={2}>
               {t("project.export", "Export annotations")}
@@ -262,7 +273,7 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
             </Stack>
           </>
         ) : null}
-      </Box>
+      </Paper>
     </Box>
   );
 };

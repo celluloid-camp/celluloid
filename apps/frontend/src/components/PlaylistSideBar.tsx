@@ -1,11 +1,16 @@
 import {
   Box,
   ButtonBase,
+  Card,
+  CardContent,
+  CircularProgress,
   List,
   ListItem,
+  Paper,
   Stack,
   Typography,
 } from "@mui/material";
+import Image from "mui-image";
 import * as React from "react";
 import { Trans } from "react-i18next";
 
@@ -21,79 +26,70 @@ export const PlaylistSideBar: React.FC<{ project: ProjectById }> = ({
     window.location.assign(`/projects/${id}`);
   };
 
-  if (!project.playlist) return null;
-
   return (
-    <Box
-      sx={{
-        backgroundColor: "white",
-        paddingX: 3,
-        marginY: 2,
-        paddingY: 3,
-        borderRadius: 2,
-      }}
-    >
-      <Typography variant="h6" mb={2}>
-        <Trans i18nKey={"project.playlist"}>Liste de lecture</Trans>
-      </Typography>
+    <Card>
+      <CardContent sx={{ paddingY: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          <Trans i18nKey={"project.playlist"}>Liste de lecture</Trans>
+        </Typography>
 
-      <List
-        dense={true}
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
-          bgcolor: "neutral.100",
-          position: "relative",
-          overflow: "auto",
-          borderRadius: 2,
-          "& ul": { padding: 0 },
-        }}
-      >
-        {project.playlist.projects?.map((p) => (
-          <ListItem key={p.id}>
-            <ButtonBase
-              sx={{ height: "100%" }}
-              onClick={() => handleClick(p.id)}
-            >
-              <Stack
-                sx={[
-                  { backgroundColor: "black" },
-                  project.id == p.id
-                    ? {
-                        borderWidth: 2,
-                        borderStyle: "solid",
-                        borderColor: "primary.main",
-                      }
-                    : {},
-                ]}
-                width={150}
-                height={100}
+        <List
+          dense={true}
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            bgcolor: "neutral.100",
+            position: "relative",
+            overflow: "auto",
+            borderRadius: 2,
+            "& ul": { padding: 0 },
+          }}
+        >
+          {project.playlist.projects?.map((p) => (
+            <ListItem key={p.id}>
+              <ButtonBase
+                sx={{
+                  height: "100%",
+                  overflow: "hidden",
+                  borderRadius: 1,
+                  borderColor: project.id == p.id ? "black" : "secondary.main",
+                  borderWidth: 2,
+                  borderStyle: "solid",
+                }}
+                onClick={() => handleClick(p.id)}
               >
-                <ProjectThumbnailImage
-                  bgColor="#000000"
-                  host={p.host}
-                  videoId={p.videoId}
-                />
-                <Stack flex={1} marginX={1} marginBottom={1}>
-                  <Typography
-                    variant="caption"
-                    color={"white"}
-                    sx={{
-                      display: "-webkit-box",
-                      overflow: "hidden",
-                      WebkitBoxOrient: "vertical",
-                      WebkitLineClamp: 1,
-                    }}
-                  >
-                    {p.title}
-                  </Typography>
+                <Stack
+                  sx={[{ backgroundColor: "black" }]}
+                  width={150}
+                  height={100}
+                >
+                  <Image
+                    src={p.thumbnailURL}
+                    showLoading={<CircularProgress />}
+                    bgColor="#000000"
+                  />
+
+                  <Stack flex={1} marginX={1} paddingBottom={3}>
+                    <Typography
+                      variant="caption"
+                      color={"white"}
+                      sx={{
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 1,
+                      }}
+                    >
+                      {p.title}
+                    </Typography>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </ButtonBase>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+              </ButtonBase>
+            </ListItem>
+          ))}
+        </List>
+      </CardContent>
+    </Card>
   );
 };

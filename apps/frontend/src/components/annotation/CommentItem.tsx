@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   ClickAwayListener,
+  Divider,
   IconButton,
   InputAdornment,
   ListItem,
@@ -21,8 +22,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
+import { MultiLineTypography } from "~components/MultiLineTypography";
 import { TransparentInput } from "~components/TransparentInput";
-import { UserAvatar } from "~components/UserAvatar";
 import {
   AnnotationByProjectIdItem,
   AnnotationCommentByProjectIdItem,
@@ -102,11 +103,11 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   return (
     <ClickAwayListener onClickAway={() => setEdition(false)}>
       <ListItem
-        sx={{ pl: 4, py: 0 }}
+        sx={{ pl: 4, py: 0, alignItems: "flex-start" }}
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
       >
-        <ListItemAvatar sx={{ minWidth: 35 }}>
+        <ListItemAvatar sx={{ minWidth: 35, marginTop: 2 }}>
           <Avatar
             sx={{ background: comment.user.color, width: 24, height: 24 }}
           >
@@ -133,14 +134,11 @@ export const CommentItem: React.FC<CommentItemProps> = ({
           secondary={
             <React.Fragment>
               {!edition ? (
-                <Typography
-                  sx={{ display: "inline" }}
-                  component="span"
+                <MultiLineTypography
                   variant="body2"
                   color="gray"
-                >
-                  {comment.text}
-                </Typography>
+                  text={comment.text}
+                />
               ) : (
                 <TransparentInput
                   id="comment"
@@ -172,6 +170,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         <Box display="flex" flexDirection="column" alignItems="flex-end">
           {hovering &&
           !edition &&
+          comment.user.id == user?.id &&
           !deleteMutation.isSubmitting &&
           !editMutation.isSubmitting ? (
             <Stack direction={"row"}>
@@ -180,6 +179,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                   <EditIcon sx={{ fontSize: 18 }} />
                 </IconButton>
               </Tooltip>
+              <Divider orientation="vertical" flexItem light />
               <Tooltip title="Supprimer" arrow>
                 <IconButton onClick={handleDelete}>
                   <DeleteIcon sx={{ fontSize: 18 }} />

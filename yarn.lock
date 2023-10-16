@@ -8668,7 +8668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.0.2":
+"clsx@npm:^1.0.2, clsx@npm:^1.1.1":
   version: 1.2.1
   resolution: "clsx@npm:1.2.1"
   checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
@@ -12510,6 +12510,7 @@ __metadata:
     react: 18
     react-autosuggest: ^9.3.2
     react-dom: 18
+    react-draggable: ^4.4.6
     react-full-screen: ^0.2.2
     react-i18next: ^13.2.2
     react-redux: ^8.0.4
@@ -12518,6 +12519,7 @@ __metadata:
     react-scripts: 5.0.1
     react-transition-group: ^2.3.1
     react-use-event: ^1.1.1
+    recoil: ^0.7.7
     redux: ^4.0.0
     redux-devtools-extension: ^2.13.5
     redux-thunk: ^2.3.0
@@ -13264,6 +13266,13 @@ __metadata:
     uncrypto: ^0.1.3
     unenv: ^1.7.4
   checksum: 9e57860d54b17d48439242992b9cc5b7f2cf220c2a9d22cabec8ef3e17a5bfef1ffa9bf681891dbcabbef40a35143965908cb01eb51b760705b3dfbae9366abf
+  languageName: node
+  linkType: hard
+
+"hamt_plus@npm:1.0.2":
+  version: 1.0.2
+  resolution: "hamt_plus@npm:1.0.2"
+  checksum: af26ea32db03009019cc83dfa9411521a2fa16079443de1a502c9be46d8b3c975acda8ed93fc5750ef08d3186d35901e2d8cfe717dd54bea67b358601fa74e4c
   languageName: node
   linkType: hard
 
@@ -20740,6 +20749,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-draggable@npm:^4.4.6":
+  version: 4.4.6
+  resolution: "react-draggable@npm:4.4.6"
+  dependencies:
+    clsx: ^1.1.1
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: 9b15aac59244873ac4561c5a2bead43a56e18d406e0a5f242bd4f9d151c074530c02b99387983104bf43417292f9cf8d063e554ed08d88792235e3fbc965f1b8
+  languageName: node
+  linkType: hard
+
 "react-error-overlay@npm:^6.0.11":
   version: 6.0.11
   resolution: "react-error-overlay@npm:6.0.11"
@@ -21263,6 +21285,22 @@ __metadata:
   dependencies:
     resolve: ^1.20.0
   checksum: ad3caed8afdefbc33fbc30e6d22b86c35b3d51c2005546f4e79bcc03c074df804b3640ad18945e6bef9ed12caedc035655ec1082f64a5e94c849ff939dc0a788
+  languageName: node
+  linkType: hard
+
+"recoil@npm:^0.7.7":
+  version: 0.7.7
+  resolution: "recoil@npm:0.7.7"
+  dependencies:
+    hamt_plus: 1.0.2
+  peerDependencies:
+    react: ">=16.13.1"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 65edecbcb8d2cde89bfd61ec679c200483472a6cd343c33e4e9142b6ce524fb17d1fecc2bfd8c392926aaa8178c81457f165b32abce2a9662f51f98822c0a9cc
   languageName: node
   linkType: hard
 

@@ -9,6 +9,7 @@ type Props = InputProps & {
 export const TransparentInput: React.FC<Props> = ({
   error,
   unpadded,
+  sx,
   ...props
 }) => (
   <Box
@@ -33,6 +34,7 @@ export const TransparentInput: React.FC<Props> = ({
         paddingX: 2,
         borderRadius: 2,
         backgroundColor: "rgba(100, 100, 100, 0.2)",
+        ...sx,
       }}
       fullWidth={true}
       {...props}

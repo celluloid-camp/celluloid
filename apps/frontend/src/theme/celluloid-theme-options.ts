@@ -192,6 +192,7 @@ export const celluloidThemeOptions: ThemeOptions = {
       green: "#C2CCAB",
       orange: "#FFE7DB"
     },
+
   },
   shadows: [
     "none",

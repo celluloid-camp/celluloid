@@ -3,14 +3,63 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
+import { PlaylistSchema } from './playlist';
+import { UserSchema } from './user';
 
-// const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
-//   id: true,
-//   title: true,
-//   text: true,
-//   createdAt: true,
-//   updatedAt: true,
-// });
+export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
+  id: true,
+  videoId: true,
+  userId: true,
+  title: true,
+  description: true,
+  host: true,
+  publishedAt: true,
+  public: true,
+  collaborative: true,
+  shared: true,
+  shareName: true,
+  shareExpiresAt: true,
+  extra: true,
+  playlistId: true,
+  duration: true,
+  thumbnailURL: true,
+});
+
+const MemberSchema = z.object({
+  id: z.number(),
+  userId: z.string(),
+  projectId: z.string(),
+  user: UserSchema,
+});
+
+
+export const ProjectSchema = z.object({
+  id: z.string(),
+  videoId: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  host: z.string(),
+  publishedAt: z.string(),
+  public: z.boolean(),
+  collaborative: z.boolean(),
+  shared: z.boolean(),
+  shareName: z.string().nullable(),
+  shareExpiresAt: z.null().nullable(),
+  extra: z.record(z.unknown()),
+  playlistId: z.string(),
+  duration: z.number(),
+  thumbnailURL: z.string(),
+  user: UserSchema,
+  playlist: PlaylistSchema,
+  members: z.array(MemberSchema),
+  _count: z.object({
+    annotations: z.number(),
+    members: z.number(),
+  }),
+});
+
+
 
 export const projectRouter = router({
   list: publicProcedure
@@ -92,11 +141,12 @@ export const projectRouter = router({
         id: z.string(),
       }),
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { id } = input;
       const project = await prisma.project.findUnique({
         where: { id },
-        include: {
+        select: {
+          ...defaultProjectSelect,
           user: {
             select: {
               id: true,
@@ -108,7 +158,9 @@ export const projectRouter = router({
           },
           playlist: {
             include: {
-              projects: true,
+              projects: {
+                select: defaultProjectSelect
+              },
             }
           },
           _count: {
@@ -130,7 +182,7 @@ export const projectRouter = router({
               },
             }
           }
-        }
+        },
         // select: defaultPostSelect,
       });
       if (!project) {
@@ -139,6 +191,10 @@ export const projectRouter = router({
           message: `No project with id '${id}'`,
         });
       }
+      project.editable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin
+      project.deletable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin
+      project.annotable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id)
+      project.commentable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id)
       return project;
     }),
   add: protectedProcedure

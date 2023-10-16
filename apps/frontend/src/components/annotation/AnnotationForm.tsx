@@ -1,20 +1,25 @@
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import CenterFocusStrongOutlinedIcon from "@mui/icons-material/CenterFocusStrongOutlined";
+import PauseCircleIcon from "@mui/icons-material/PauseCircle";
+import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
+import RateReviewIcon from "@mui/icons-material/RateReview";
 import SendIcon from "@mui/icons-material/Send";
 import {
   Box,
   Button,
   Checkbox,
   ClickAwayListener,
+  Divider,
   FormControlLabel,
   IconButton,
   InputBase,
   Slider,
+  Tooltip,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
 import * as React from "react";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import * as Yup from "yup";
 
 import {
@@ -25,6 +30,11 @@ import {
 } from "~utils/trpc";
 
 import { DurationSlider } from "./DurationSlider";
+import {
+  useAnnotationFormVisible,
+  useContextualEditorPosition,
+  useContextualEditorVisibleState,
+} from "./useAnnotationEditor";
 
 type AnnotationFormProps = {
   duration: number;
@@ -34,10 +44,25 @@ type AnnotationFormProps = {
 
 export const AnnotationForm = forwardRef(
   ({ duration, project }: AnnotationFormProps, ref) => {
-    const [showForm, setShowForm] = useState(false);
+    const [showForm, setShowForm] = useAnnotationFormVisible();
 
     const utils = trpc.useContext();
     const mutation = trpc.annotation.add.useMutation();
+
+    const [contextEditorVisible, setContextualEditorVisible] =
+      useContextualEditorVisibleState();
+
+    const [contextualEditorPosition, setContextualEditorPosition] =
+      useContextualEditorPosition();
+
+    const handleOpen = () => {
+      setShowForm(true);
+    };
+
+    const handleClose = () => {
+      setContextualEditorVisible(false);
+      setShowForm(false);
+    };
 
     const validationSchema = Yup.object().shape({
       startTime: Yup.number(),
@@ -66,98 +91,148 @@ export const AnnotationForm = forwardRef(
           startTime: values.startTime,
           stopTime: values.stopTime,
           pause: values.pause,
+          extra: contextualEditorPosition,
         });
         if (newAnnotation) {
           formik.resetForm();
+          setContextualEditorPosition(undefined);
+          handleClose();
         }
         utils.annotation.byProjectId.invalidate({ id: project.id });
       },
     });
 
+    const handleClickAway = () => {};
+
     if (!showForm) {
       return (
-        <Button onClick={() => setShowForm(true)}>
+        <Button
+          variant="outlined"
+          onClick={handleOpen}
+          color="secondary"
+          sx={{ mx: 5 }}
+          startIcon={<RateReviewIcon />}
+        >
           Ajouter une annotation
         </Button>
       );
     } else {
       return (
-        <form onSubmit={formik.handleSubmit}>
-          <ClickAwayListener onClickAway={() => setShowForm(false)}>
-            <Box
-              component="form"
-              ref={ref}
-              sx={{ flexShrink: 0, pt: 5, paddingX: 2 }}
-            >
-              <Box sx={{ paddingX: 2 }}>
-                <DurationSlider
-                  duration={duration}
-                  onChange={(start, stop) => {
-                    formik.setFieldValue("startTime", start);
-                    formik.setFieldValue("stopTime", stop);
-                  }}
-                />
-              </Box>
-              <Box
-                sx={{
-                  p: "2px 4px",
-                  display: "flex",
-                  alignItems: "center",
-                  backgroundColor: grey[800],
-                  borderRadius: 1,
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Box
+            component="form"
+            onSubmit={formik.handleSubmit}
+            ref={ref}
+            sx={{ flexShrink: 0, pt: 5, paddingX: 2 }}
+          >
+            <Box sx={{ paddingX: 2 }}>
+              <DurationSlider
+                duration={duration}
+                onChange={(start, stop) => {
+                  formik.setFieldValue("startTime", start);
+                  formik.setFieldValue("stopTime", stop);
                 }}
-              >
-                <InputBase
-                  id="text"
-                  name="text"
-                  sx={{ ml: 1, flex: 1, color: "white" }}
-                  placeholder="Saissez votre annotation"
-                  multiline
-                  value={formik.values.text}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.errors.comment}
-                  disabled={formik.isSubmitting}
-                  inputProps={{ "aria-label": "Saissez votre annotation" }}
-                />
-                <IconButton
-                  color="primary"
-                  sx={{ p: "10px" }}
+              />
+            </Box>
+            <Box
+              sx={{
+                p: "2px 4px",
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: grey[800],
+                borderRadius: 3,
+              }}
+            >
+              <InputBase
+                id="text"
+                name="text"
+                sx={{ ml: 1, flex: 1, color: "white" }}
+                placeholder="Saissez votre annotation"
+                multiline
+                value={formik.values.text}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.errors.text}
+                disabled={formik.isSubmitting}
+                inputProps={{ "aria-label": "Saissez votre annotation" }}
+              />
+            </Box>
+
+            <Box
+              display={"flex"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <Box>
+                <Tooltip title="Placer un repère visuel" arrow>
+                  <FormControlLabel
+                    label="Contexte"
+                    sx={{ color: "white" }}
+                    checked={contextEditorVisible}
+                    onChange={(_, v) =>
+                      setContextualEditorVisible(!contextEditorVisible)
+                    }
+                    control={
+                      <Checkbox
+                        size="small"
+                        icon={<CenterFocusStrongOutlinedIcon />}
+                        checkedIcon={
+                          <CenterFocusStrongIcon color="secondary" />
+                        }
+                      />
+                    }
+                  />
+                </Tooltip>
+
+                <Tooltip title={"Pause automatique à l'ouverture"} arrow>
+                  <FormControlLabel
+                    sx={{ color: "white" }}
+                    label="Pause"
+                    control={
+                      <Checkbox
+                        size="small"
+                        color="secondary"
+                        id="pause"
+                        name="pause"
+                        checked={formik.values.pause}
+                        onChange={formik.handleChange}
+                        icon={<PauseCircleOutlineOutlinedIcon />}
+                        checkedIcon={<PauseCircleIcon />}
+                      />
+                    }
+                  />
+                </Tooltip>
+              </Box>
+              <Box sx={{ marginY: 1 }}>
+                <Button
+                  size="small"
+                  onClick={handleClose}
+                  sx={{
+                    color: grey[500],
+                  }}
+                >
+                  Annuler
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  disabled={formik.isValid}
+                  disableElevation
+                  sx={{
+                    borderRadius: 10,
+                    "&:disabled": {
+                      color: grey[500],
+                      backgroundColor: grey[700],
+                    },
+                  }}
                   onClick={() => formik.handleSubmit()}
                 >
-                  <SendIcon />
-                </IconButton>
+                  Envoyer
+                </Button>
               </Box>
-
-              <div>
-                <FormControlLabel
-                  label="Ajouter contexte"
-                  sx={{ color: "white" }}
-                  control={
-                    <Checkbox
-                      icon={<CenterFocusStrongOutlinedIcon />}
-                      checkedIcon={<CenterFocusStrongIcon color="secondary" />}
-                    />
-                  }
-                />
-
-                <FormControlLabel
-                  sx={{ color: "white" }}
-                  label="Mettre en pause ?"
-                  control={
-                    <Checkbox
-                      color="secondary"
-                      id="pause"
-                      name="pause"
-                      checked={formik.values.pause}
-                      onChange={formik.handleChange}
-                    />
-                  }
-                />
-              </div>
             </Box>
-          </ClickAwayListener>
-        </form>
+          </Box>
+        </ClickAwayListener>
       );
     }
   }

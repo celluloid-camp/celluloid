@@ -22,10 +22,9 @@ export const annotationRouter = router({
     )
     .query(async ({ input }) => {
       const { id } = input;
-      const project = await prisma.annotation.findMany({
+      const annotations = await prisma.annotation.findMany({
         where: { projectId: id },
         include: {
-          project: true,
           comments: {
             include: {
               user: {
@@ -37,7 +36,10 @@ export const annotationRouter = router({
                   color: true
                 }
               },
-            }
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
           },
           user: {
             select: {
@@ -48,16 +50,18 @@ export const annotationRouter = router({
               color: true
             }
           },
-        }
-        // select: defaultPostSelect,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
-      if (!project) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `No project with id '${id}'`,
-        });
-      }
-      return project;
+      // if (!project) {
+      //   throw new TRPCError({
+      //     code: 'NOT_FOUND',
+      //     message: `No project with id '${id}'`,
+      //   });
+      // }
+      return annotations;
     }),
   add: protectedProcedure
     .input(
@@ -66,7 +70,8 @@ export const annotationRouter = router({
         startTime: z.number(),
         stopTime: z.number(),
         pause: z.boolean(),
-        projectId: z.string()
+        projectId: z.string(),
+        extra: z.any()
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -78,7 +83,8 @@ export const annotationRouter = router({
             startTime: input.startTime,
             stopTime: input.stopTime,
             pause: input.pause,
-            projectId: input.projectId
+            projectId: input.projectId,
+            extra: input.extra
           }
           // select: defaultPostSelect,
         });

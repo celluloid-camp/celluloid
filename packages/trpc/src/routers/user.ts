@@ -4,6 +4,14 @@ import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
 
 
+export const UserSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  role: z.string(),
+  initial: z.string(),
+  color: z.string(),
+});
+
 
 export const userRouter = router({
   list: protectedProcedure.query(async () => {

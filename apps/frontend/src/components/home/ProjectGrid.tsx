@@ -84,7 +84,7 @@ export const ProjectGrid: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: 5, backgroundColor: "brand.orange" }}>
+    <Box sx={{ padding: 5, backgroundColor: "brand.orange", minHeight: 500 }}>
       <Container maxWidth="lg">
         <Paper
           sx={{
