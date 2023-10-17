@@ -22,8 +22,7 @@ import { TransitionGroup } from "react-transition-group";
 import { useDidUpdate } from "rooks";
 
 import { StyledTitle } from "~components/typography";
-import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
-import { ProjectList, trpc } from "~utils/trpc";
+import { trpc } from "~utils/trpc";
 
 import ProjectThumbnail from "./ProjectThumbnail";
 
@@ -78,8 +77,6 @@ export const ProjectGrid: React.FC = () => {
       sx={{
         padding: 5,
         backgroundColor: "brand.orange",
-        display: "flex",
-        minHeight: "100%",
       }}
     >
       <Container maxWidth="lg">
@@ -125,15 +122,17 @@ export const ProjectGrid: React.FC = () => {
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
-                  {userProjects.map((project: ProjectGraphRecord) => (
-                    <Grid xs={12} sm={6} lg={4} xl={3} item>
-                      <ProjectThumbnail
-                        showPublic={true}
-                        project={project}
-                        key={project.id}
-                      />
-                    </Grid>
-                  ))}
+                  {[...userProjects, ...userProjects, ...userProjects].map(
+                    (project) => (
+                      <Grid xs={12} sm={6} lg={4} xl={3} item>
+                        <ProjectThumbnail
+                          showPublic={true}
+                          project={project}
+                          key={project.id}
+                        />
+                      </Grid>
+                    )
+                  )}
                 </TransitionGroup>
               </Grid>
             </>
@@ -151,7 +150,11 @@ export const ProjectGrid: React.FC = () => {
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
-                  {publicProjects.map((project: ProjectGraphRecord) => (
+                  {[
+                    ...publicProjects,
+                    ...publicProjects,
+                    ...publicProjects,
+                  ].map((project) => (
                     <Grid xs={12} sm={6} lg={4} xl={3} item>
                       <ProjectThumbnail
                         showPublic={false}

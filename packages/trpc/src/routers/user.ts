@@ -1,7 +1,8 @@
 import { prisma } from "@celluloid/prisma"
+import { TRPCError } from "@trpc/server";
 import { z } from 'zod';
 
-import { protectedProcedure, router } from '../trpc';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 
 export const UserSchema = z.object({
@@ -14,6 +15,18 @@ export const UserSchema = z.object({
 
 
 export const userRouter = router({
+  login: publicProcedure.input(
+    z.object({
+      username: z.string(),
+      password: z.string()
+    }),
+  ).mutation(async ({ input }) => {
+    ;
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+    });
+  }),
+
   list: protectedProcedure.query(async () => {
     // Retrieve users from a datasource, this is an imaginary database
     const users = await prisma.user.findMany({

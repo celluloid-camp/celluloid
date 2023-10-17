@@ -45,8 +45,8 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <Box sx={{ backgroundColor: "brand.green", height: "100%" }}>
+    <Box>
+      <Box sx={{ backgroundColor: "brand.green" }}>
         <Container maxWidth="lg">
           <Grid container={true}>
             <Grid item xs={12} sm={6}>
@@ -245,6 +245,6 @@ export const HomePage: React.FC = () => {
           )}
         </QueryErrorResetBoundary>
       </Suspense>
-    </React.Fragment>
+    </Box>
   );
 };
