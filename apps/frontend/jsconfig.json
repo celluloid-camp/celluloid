@@ -8,17 +8,20 @@
             "~components/*": [
                 "src/components/*"
             ],
+            "~hooks/*": [
+                "src/hooks/*"
+            ],
             "~images/*": [
                 "src/images/*"
             ],
             "~locales/*": [
                 "src/locales/*"
             ],
+            "~pages/*": [
+                "src/pages/*"
+            ],
             "~reducers/*": [
                 "src/reducers/*"
-            ],
-            "~scenes/*": [
-                "src/scenes/*"
             ],
             "~services/*": [
                 "src/services/*"
@@ -38,20 +41,13 @@
             "~/*": [
                 "src/*"
             ],
-            "~pages/*": [
-                "src/pages/*"
-            ],
-            "~hooks/*": [
-                "src/hooks/*"
-            ],
-            "~profile/*": [
-                "src/components/profile/*"
-            ],
-            "~annotations/*": [
-                "src/components/annotations/*"
-            ],
-            "~annotation/*": [
-                "src/components/annotation/*"
+            "~key/*": [
+                "src/locales/key/*"
+            ]
+        }
+    }
+}*": [
+                "src/locales/key/*"
             ]
         }
     }

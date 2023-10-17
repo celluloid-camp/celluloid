@@ -1,8 +1,11 @@
-import { Prisma, prisma, UserRole } from '@celluloid/prisma';
+import { prisma, UserRole } from '@celluloid/prisma';
 import { TRPCError } from '@trpc/server';
+import { parse as toXML } from 'js2xmlparser';
+import Papa from 'papaparse';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
+import { toSrt } from '../utils/srt';
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
 //   id: true,
@@ -106,4 +109,42 @@ export const annotationRouter = router({
         return comment;
       }
     }),
+  export: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        format: z.enum(["csv", "xml", "srt"])
+      })
+    ).query(async ({ input }) => {
+      const { format, projectId } = input;
+
+      const annotations = await prisma.annotation.findMany({
+        where: { projectId: projectId },
+        include: {
+          comments: true
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+
+      const formated = annotations.map((a) => ({
+        startTime: a.startTime,
+        endTime: a.stopTime,
+        text: a.text,
+        comments: a.comments.map((c) => c.text)
+      }))
+
+      let content = "";
+      if (format === 'xml') {
+        content = toXML("annotations", formated);
+      } else if (format == "csv") {
+        content = Papa.unparse(formated);
+      } else if (format == "srt") {
+        content = toSrt(formated);
+      }
+      return content
+    })
+
 });

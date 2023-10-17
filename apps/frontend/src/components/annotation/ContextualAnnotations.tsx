@@ -1,33 +1,11 @@
-import {
-  type UseParentSizeOptions,
-  useParentSize,
-} from "@cutting/use-get-parent-size";
-import CancelIcon from "@mui/icons-material/Clear";
-import { alpha, Box, Fade, IconButton, Paper, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
+import { useParentSize } from "@cutting/use-get-parent-size";
+import { Box, Paper } from "@mui/material";
 import React, { memo, useMemo, useRef } from "react";
-import { useTranslation } from "react-i18next";
 
-import { AnnotationByProjectIdItem, ProjectById, trpc } from "~utils/trpc";
-import { getUserColor } from "~utils/UserUtils";
-
-function toAbsolutePosition(
-  relativeX: number,
-  relativeY: number,
-  parentWidth: number,
-  parentHeight: number
-) {
-  // Calculate the absolute position based on parent's dimensions
-  const absoluteX = relativeX * parentWidth;
-  const absoluteY = relativeY * parentHeight;
-
-  return { absoluteX, absoluteY };
-}
+import { AnnotationByProjectIdItem } from "~utils/trpc";
 
 interface ContextualAnnotationsProps {
   annotations: AnnotationByProjectIdItem[];
-  onClick: (annotation: AnnotationByProjectIdItem) => void;
 }
 
 type ContextualItemProps = {
@@ -77,9 +55,12 @@ const ContextualItem: React.FC<ContextualItemProps> = ({
 );
 
 const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(
-  ({ annotations, onClick }) => {
+  ({ annotations }) => {
     const ref = useRef<HTMLDivElement>(null);
     const { width, height } = useParentSize(ref);
+
+    const handleFocus = (_: AnnotationByProjectIdItem) => {};
+
     return (
       <Box
         ref={ref}
@@ -111,7 +92,7 @@ const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(
                     y={annotation.extra.relativeY * height}
                     index={index}
                     annotation={annotation}
-                    onClick={() => onClick(annotation)}
+                    onClick={() => handleFocus(annotation)}
                   />
                 );
               })}
@@ -124,7 +105,7 @@ const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(
 );
 
 export const ContextualAnnotations: React.FC<ContextualAnnotationsProps> = memo(
-  ({ annotations, onClick }) => {
+  ({ annotations }) => {
     const filteredAnnotations = useMemo(
       () =>
         annotations.filter((item) => {
@@ -137,11 +118,6 @@ export const ContextualAnnotations: React.FC<ContextualAnnotationsProps> = memo(
 
     if (filteredAnnotations.length == 0) return null;
 
-    return (
-      <ContextualAnnotationsContent
-        annotations={filteredAnnotations}
-        onClick={onClick}
-      />
-    );
+    return <ContextualAnnotationsContent annotations={filteredAnnotations} />;
   }
 );

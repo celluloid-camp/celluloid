@@ -55,8 +55,6 @@ export const ProjectGrid: React.FC = () => {
 
   const sort = R.sortWith([R.descend(R.prop("publishedAt"))]);
 
-  console.log(data);
-
   const sorted = sort(data?.items || []) as ProjectList;
 
   const userProjects = R.filter(

@@ -4,7 +4,6 @@ import { inferRouterOutputs } from "@trpc/server";
 
 export const trpc = createTRPCReact<AppRouter>();
 
-
 /**
  async function main() {
   try {
@@ -35,6 +34,7 @@ type RouterOutput = inferRouterOutputs<AppRouter>;
 export type UserMe = RouterOutput['user']['me'];
 
 export type ProjectById = RouterOutput['project']['byId'];
+export type ProjectMember = ArrElement<ProjectById["members"]>;
 
 export type ProjectList = RouterOutput['project']['list'];
 
@@ -42,4 +42,6 @@ export type AnnotationByProjectId = RouterOutput["annotation"]["byProjectId"]
 
 export type AnnotationByProjectIdItem = ArrElement<AnnotationByProjectId>;
 
-export type AnnotationCommentByProjectIdItem = ArrElement<AnnotationByProjectIdItem>["comments"];
+export type AnnotationCommentByProjectIdItem = ArrElement<AnnotationByProjectIdItem["comments"]>;
+
+

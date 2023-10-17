@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import FilterTiltShiftIcon from "@mui/icons-material/FilterTiltShift";
+import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
 import ReplyIcon from "@mui/icons-material/Reply";
 import {
   Avatar,
@@ -27,17 +28,17 @@ import {
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import { useConfirm } from "material-ui-confirm";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import * as Yup from "yup";
 
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { formatDuration } from "~utils/DurationUtils";
 import {
   AnnotationByProjectIdItem,
+  AnnotationCommentByProjectIdItem,
   ProjectById,
   trpc,
   UserMe,
@@ -135,7 +136,9 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           sx={{
             paddingX: 2,
             display: "flex",
-            alignItems: "flex-start",
+            alignItems: "center",
+            justifyContent: "center",
+            alignContent: "center",
           }}
         >
           <ListItemAvatar>
@@ -174,6 +177,8 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             display="flex"
             flexDirection="column"
             alignItems="flex-end"
+            alignContent={"center"}
+            justifyContent={"center"}
             sx={{ minWidth: 100 }}
           >
             {hovering && annotation.user.id == user?.id ? (
@@ -209,6 +214,11 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                       sx={{ color: "warning.main", fontSize: 15 }}
                     />
                   ) : null}
+                  {annotation.pause ? (
+                    <PauseCircleOutlineOutlinedIcon
+                      sx={{ color: "grey.600", fontSize: 15 }}
+                    />
+                  ) : null}
                   {annotation.comments.length > 0 ? (
                     <Stack
                       direction={"row"}
@@ -242,21 +252,23 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
         {annotation.comments.length > 0 || project.commentable ? (
           <Collapse in={collapsed} timeout="auto" unmountOnExit>
             <Divider light textAlign="left"></Divider>
-            {annotation.comments.map((comment: AnnotationByProjectIdItem) => (
-              <List
-                component="div"
-                disablePadding
-                sx={{ padding: 0 }}
-                key={comment.id}
-              >
-                <CommentItem
-                  user={user}
-                  comment={comment}
-                  project={project}
-                  annotation={annotation}
-                />
-              </List>
-            ))}
+            {annotation.comments.map(
+              (comment: AnnotationCommentByProjectIdItem) => (
+                <List
+                  component="div"
+                  disablePadding
+                  sx={{ padding: 0 }}
+                  key={comment.id}
+                >
+                  <CommentItem
+                    user={user}
+                    comment={comment}
+                    project={project}
+                    annotation={annotation}
+                  />
+                </List>
+              )
+            )}
             {project.commentable ? (
               <React.Fragment>
                 {!showReplyForm ? (
@@ -268,7 +280,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                       onClick={() => setShowReplyForm(true)}
                       startIcon={<ReplyIcon />}
                     >
-                      Répondre
+                      <Trans i18nKey="annotation.comment.reply">Répondre</Trans>
                     </Button>
                   </ListItem>
                 ) : (

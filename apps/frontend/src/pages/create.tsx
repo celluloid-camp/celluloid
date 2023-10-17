@@ -204,7 +204,6 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
             levelStart: 0,
             levelEnd: 5,
             shared: false,
-            userId: "",
           });
           if (project) {
             formik.resetForm();

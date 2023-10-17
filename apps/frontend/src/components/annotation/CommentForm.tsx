@@ -15,7 +15,7 @@ import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
 import * as React from "react";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 import { TransparentInput } from "~components/TransparentInput";
@@ -83,8 +83,8 @@ export const CommentForm: React.FC<CommentFormProps> = ({
         <React.Fragment>
           <ListItem sx={{ pl: 4, py: 0 }}>
             <ListItemAvatar sx={{ minWidth: 35 }}>
-              <Avatar sx={{ background: user.color, width: 24, height: 24 }}>
-                {user.initial}
+              <Avatar sx={{ background: user?.color, width: 24, height: 24 }}>
+                {user?.initial}
               </Avatar>
             </ListItemAvatar>
             <ListItemText
@@ -130,12 +130,12 @@ export const CommentForm: React.FC<CommentFormProps> = ({
                   fontSize: 12,
                 }}
               >
-                Annuler
+                <Trans i18nKey="annotation.comment.cancel">Annuler</Trans>
               </Button>
               <Button
                 size="small"
                 variant="contained"
-                disabled={formik.isValid}
+                disabled={!formik.isValid || formik.isSubmitting}
                 disableElevation
                 sx={{
                   borderRadius: 10,
@@ -147,7 +147,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
                 }}
                 onClick={() => formik.handleSubmit()}
               >
-                Envoyer
+                <Trans i18nKey="annotation.comment.send">Envoyer</Trans>
               </Button>
             </Box>
           </ListItem>

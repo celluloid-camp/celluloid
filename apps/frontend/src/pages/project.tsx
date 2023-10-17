@@ -1,6 +1,19 @@
 import ReactPlayer from "@celluloid/react-player";
-import { Box, CircularProgress, Container, Grid, Paper } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useParams } from "react-router-dom";
 
 import { AnnotationHints } from "~components/annotation/AnnotationHints";
@@ -12,7 +25,7 @@ import ProjectSummary from "~components/project/ProjectSummary";
 import { SideBar } from "~components/project/SideBar";
 import { VideoPlayer } from "~components/project/VideoPlayer";
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
-import { trpc } from "~utils/trpc";
+import { AnnotationByProjectIdItem, trpc } from "~utils/trpc";
 import { ProjectById, UserMe } from "~utils/trpc";
 
 interface Props {
@@ -26,7 +39,7 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
   const [videoProgress, setVideoProgress] = React.useState(0);
   const [playerIsReady, setPlayerIsReady] = React.useState(false);
 
-  const { data: annotations } = trpc.annotation.byProjectId.useQuery({
+  const [annotations] = trpc.annotation.byProjectId.useSuspenseQuery({
     id: project.id,
   });
 
@@ -34,7 +47,7 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     useAnnotationEditorState();
 
   useVideoPlayerEvent((event) => {
-    // console.log(event);
+    // console.log("useVideoPlayerEvent", event);
     if (event.state == "READY") {
       setPlayerIsReady(true);
     }
@@ -60,34 +73,16 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
         annotation.pause && annotation.startTime === Math.floor(videoProgress)
     );
 
-    // if (paused && position) {
-    //   videoPlayerRef.current?.getInternalPlayer().pause();
-    //   videoPlayerRef.current?.seekTo(position + 1, "seconds");
-    // }
+    if (paused.length > 0 && position) {
+      console.log("paused");
+      videoPlayerRef.current?.getInternalPlayer().pause();
+      videoPlayerRef.current?.seekTo(position + 1, "seconds");
+    }
   }, [visibleAnnotations, videoPlayerRef, videoProgress]);
 
-  const handleAnnotionHintClick = (annotation) => {
-    console.log("handleAnnotionHintClick", annotation);
+  const handleAnnotionHintClick = (annotation: AnnotationByProjectIdItem) => {
     videoPlayerRef.current?.seekTo(annotation.startTime, "seconds");
   };
-
-  if (!annotations) {
-    return (
-      <Box
-        display={"flex"}
-        alignContent={"center"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        sx={{
-          backgroundColor: "black",
-          height: "60vh",
-          minHeight: "60vh",
-        }}
-      >
-        <CircularProgress sx={{ color: "white" }} />
-      </Box>
-    );
-  }
 
   return (
     <Grid
@@ -131,7 +126,25 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
 
 const ProjectContent = ({ project, user }: Props) => (
   <Box display={"flex"} flexDirection={"column"}>
-    <ProjectMainGrid project={project} user={user} />
+    <Suspense
+      fallback={
+        <Box
+          display={"flex"}
+          alignContent={"center"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          sx={{
+            backgroundColor: "black",
+            height: "60vh",
+            minHeight: "60vh",
+          }}
+        >
+          <CircularProgress sx={{ color: "white" }} />
+        </Box>
+      }
+    >
+      <ProjectMainGrid project={project} user={user} />
+    </Suspense>
 
     <Box
       sx={{
@@ -169,6 +182,6 @@ const ProjectPage: React.FC = () => {
 
   if (!project) return null;
 
-  return <ProjectContent project={project} user={user} />;
+  return <ProjectContent project={project} user={user} key={projectId} />;
 };
 export default ProjectPage;

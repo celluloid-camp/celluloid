@@ -2,9 +2,8 @@
   "name": "@celluloid/trpc",
   "private": true,
   "version": "2.0.1",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "files": [
     "dist"
@@ -19,7 +18,9 @@
     "bcryptjs": "^2.4.3",
     "change-case": "^4.1.2",
     "dotenv": "^16.3.1",
+    "js2xmlparser": "^5.0.0",
     "lodash": "^4.17.21",
+    "papaparse": "^5.4.1",
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"

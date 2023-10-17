@@ -4,6 +4,7 @@ import SendIcon from "@mui/icons-material/Send";
 import {
   Avatar,
   Box,
+  Button,
   ClickAwayListener,
   Divider,
   IconButton,
@@ -15,11 +16,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import * as dayjs from "dayjs";
+import { grey } from "@mui/material/colors";
+import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as React from "react";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 import { MultiLineTypography } from "~components/MultiLineTypography";
@@ -29,22 +31,21 @@ import {
   AnnotationCommentByProjectIdItem,
   ProjectById,
   trpc,
+  UserMe,
 } from "~utils/trpc";
 
 interface CommentItemProps {
-  user: UserMe;
+  user?: UserMe;
   project: ProjectById;
   comment: AnnotationCommentByProjectIdItem;
   annotation: AnnotationByProjectIdItem;
-  editable: boolean;
 }
 
 export const CommentItem: React.FC<CommentItemProps> = ({
   comment,
   project,
-  annotation,
   user,
-  editable = true,
+  annotation,
 }) => {
   const { t } = useTranslation();
   const [hovering, setHovering] = useState(false);
@@ -100,46 +101,48 @@ export const CommentItem: React.FC<CommentItemProps> = ({
     setEdition(true);
   };
 
+  const handleClose = () => {
+    setEdition(false);
+  };
+
   return (
-    <ClickAwayListener onClickAway={() => setEdition(false)}>
-      <ListItem
-        sx={{ pl: 4, py: 0, alignItems: "flex-start" }}
-        onMouseEnter={() => setHovering(true)}
-        onMouseLeave={() => setHovering(false)}
-      >
-        <ListItemAvatar sx={{ minWidth: 35, marginTop: 2 }}>
-          <Avatar
-            sx={{ background: comment.user.color, width: 24, height: 24 }}
-          >
-            {comment.user.initial}
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={
-            <React.Fragment>
-              <Typography component="span" color="white" variant="body2">
-                {comment.user.username}
-              </Typography>{" "}
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                fontWeight="medium"
-                variant="caption"
+    <ListItem
+      sx={{ pl: 4, py: 0, alignItems: "flex-start" }}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+    >
+      <ListItemAvatar sx={{ minWidth: 35, marginTop: 2 }}>
+        <Avatar sx={{ background: comment.user.color, width: 24, height: 24 }}>
+          {comment.user.initial}
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={
+          <React.Fragment>
+            <Typography component="span" color="white" variant="body2">
+              {comment.user.username}
+            </Typography>{" "}
+            <Typography
+              sx={{ display: "inline" }}
+              component="span"
+              fontWeight="medium"
+              variant="caption"
+              color="gray"
+            >
+              {"-"} {dayjs(comment.createdAt).fromNow()}
+            </Typography>
+          </React.Fragment>
+        }
+        secondary={
+          <React.Fragment>
+            {!edition ? (
+              <MultiLineTypography
+                variant="body2"
                 color="gray"
-              >
-                {"-"} {dayjs(comment.createdAt).fromNow()}
-              </Typography>
-            </React.Fragment>
-          }
-          secondary={
-            <React.Fragment>
-              {!edition ? (
-                <MultiLineTypography
-                  variant="body2"
-                  color="gray"
-                  text={comment.text}
-                />
-              ) : (
+                text={comment.text}
+              />
+            ) : (
+              <React.Fragment>
                 <TransparentInput
                   id="comment"
                   name="comment"
@@ -149,46 +152,67 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                   error={formik.errors.comment}
                   unpadded={true}
                   placeholder={t("annotation.commentPlaceholder") || ""}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="Send"
-                        onClick={() => formik.handleSubmit()}
-                        disabled={formik.isSubmitting}
-                        edge="end"
-                        color="success"
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  }
                 />
-              )}
-            </React.Fragment>
-          }
-        />
-        <Box display="flex" flexDirection="column" alignItems="flex-end">
-          {hovering &&
-          !edition &&
-          comment.user.id == user?.id &&
-          !deleteMutation.isSubmitting &&
-          !editMutation.isSubmitting ? (
-            <Stack direction={"row"}>
-              <Tooltip title="Modifier" arrow>
-                <IconButton onClick={handleEdit}>
-                  <EditIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              </Tooltip>
-              <Divider orientation="vertical" flexItem light />
-              <Tooltip title="Supprimer" arrow>
-                <IconButton onClick={handleDelete}>
-                  <DeleteIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          ) : null}
-        </Box>
-      </ListItem>
-    </ClickAwayListener>
+                <Box
+                  display={"flex"}
+                  justifyContent={"flex-end"}
+                  sx={{ pt: 1 }}
+                >
+                  <Button
+                    size="small"
+                    onClick={handleClose}
+                    sx={{
+                      color: grey[500],
+                      borderRadius: 10,
+                      fontSize: 12,
+                    }}
+                  >
+                    <Trans i18nKey="annotation.comment.cancel">Annuler</Trans>
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    disabled={!formik.isValid || formik.isSubmitting}
+                    disableElevation
+                    sx={{
+                      borderRadius: 10,
+                      fontSize: 12,
+                      "&:disabled": {
+                        color: grey[500],
+                        backgroundColor: grey[700],
+                      },
+                    }}
+                    onClick={() => formik.handleSubmit()}
+                  >
+                    <Trans i18nKey="annotation.comment.send">Envoyer</Trans>
+                  </Button>
+                </Box>
+              </React.Fragment>
+            )}
+          </React.Fragment>
+        }
+      />
+      <Box display="flex" flexDirection="column" alignItems="flex-end">
+        {hovering &&
+        !edition &&
+        comment.user.id == user?.id &&
+        !deleteMutation.isLoading &&
+        !editMutation.isLoading ? (
+          <Stack direction={"row"}>
+            <Tooltip title="Modifier" arrow>
+              <IconButton onClick={handleEdit}>
+                <EditIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+            <Divider orientation="vertical" flexItem light />
+            <Tooltip title="Supprimer" arrow>
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ) : null}
+      </Box>
+    </ListItem>
   );
 };

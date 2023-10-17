@@ -37,6 +37,7 @@
     "connected-react-router": "6.9.3",
     "dayjs": "^1.11.10",
     "enzyme": "^3.3.0",
+    "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "get-urls": "^11.0.0",
     "history": "^4.7.2",
@@ -48,6 +49,7 @@
     "material-ui-pickers": "^2.2.4",
     "moment-duration-format": "^2.2.2",
     "mui-image": "^1.0.7",
+    "notistack": "^3.0.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "prop-types": "^15.6.2",
@@ -62,8 +64,8 @@
     "react-full-screen": "^0.2.2",
     "react-i18next": "^13.2.2",
     "react-redux": "^8.0.4",
-    "react-router": "^6.4.3",
-    "react-router-dom": "^6.4.3",
+    "react-router": "^6.17.0",
+    "react-router-dom": "^6.17.0",
     "react-scripts": "5.0.1",
     "react-transition-group": "^2.3.1",
     "react-use-event": "^1.1.1",
@@ -95,6 +97,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/autosuggest-highlight": "^3.2.0",
     "@types/classnames": "^2.2.4",
+    "@types/file-saver": "^2.0.5",
     "@types/get-urls": "^9.1.3",
     "@types/history": "^4.7.2",
     "@types/i18next": "^13.0.0",
@@ -123,6 +126,6 @@
     "eslint-plugin-react-refresh": "^0.3.5",
     "typescript": "^5.2.2",
     "vite": "^4.4.11",
-    "vite-aliases": "^0.11.0"
+    "vite-aliases": "^0.11.3"
   }
 }

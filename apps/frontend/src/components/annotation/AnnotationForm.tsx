@@ -3,31 +3,22 @@ import CenterFocusStrongOutlinedIcon from "@mui/icons-material/CenterFocusStrong
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import SendIcon from "@mui/icons-material/Send";
 import {
   Box,
   Button,
   Checkbox,
   ClickAwayListener,
-  Divider,
   FormControlLabel,
-  IconButton,
   InputBase,
-  Slider,
   Tooltip,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
-import * as React from "react";
 import { forwardRef } from "react";
+import { Trans } from "react-i18next";
 import * as Yup from "yup";
 
-import {
-  AnnotationByProjectIdItem,
-  ProjectById,
-  trpc,
-  UserMe,
-} from "~utils/trpc";
+import { ProjectById, trpc, UserMe } from "~utils/trpc";
 
 import { DurationSlider } from "./DurationSlider";
 import {
@@ -69,7 +60,7 @@ export const AnnotationForm = forwardRef(
       stopTime: Yup.number(),
       pause: Yup.boolean(),
       text: Yup.string()
-        .min(5, "Comment doit comporter minimum 5 character")
+        .min(2, "Comment doit comporter minimum 5 character")
         .required("Commentaire est obligatoire"),
     });
 
@@ -211,12 +202,12 @@ export const AnnotationForm = forwardRef(
                     color: grey[500],
                   }}
                 >
-                  Annuler
+                  <Trans i18nKey="annotation.create.cancel">Annuler</Trans>
                 </Button>
                 <Button
                   size="small"
                   variant="contained"
-                  disabled={formik.isValid}
+                  disabled={!formik.isValid || formik.isSubmitting}
                   disableElevation
                   sx={{
                     borderRadius: 10,
@@ -227,7 +218,7 @@ export const AnnotationForm = forwardRef(
                   }}
                   onClick={() => formik.handleSubmit()}
                 >
-                  Envoyer
+                  <Trans i18nKey="annotation.create.send">Envoyer</Trans>
                 </Button>
               </Box>
             </Box>

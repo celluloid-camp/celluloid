@@ -190,11 +190,14 @@ export const projectRouter = router({
           message: `No project with id '${id}'`,
         });
       }
-      project.editable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin
-      project.deletable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin
-      project.annotable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id)
-      project.commentable = ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id)
-      return project;
+
+      return {
+        ...project,
+        editable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin,
+        deletable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin,
+        annotable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id),
+        commentable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id)
+      };
     }),
   add: protectedProcedure
     .input(
@@ -207,7 +210,6 @@ export const projectRouter = router({
         public: z.boolean(),
         collaborative: z.boolean(),
         shared: z.boolean(),
-        userId: z.string(),
         videoId: z.string(),
         duration: z.number(),
         thumbnailURL: z.string().url(),
@@ -237,6 +239,78 @@ export const projectRouter = router({
           // select: defaultPostSelect,
         });
         return project;
+      }
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        title: z.string().nullish(),
+        description: z.string().nullish(),
+        public: z.boolean().nullish(),
+        collaborative: z.boolean().nullish(),
+        shared: z.boolean().nullish(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+
+        // Find the project by its ID (you need to replace 'projectId' with the actual ID)
+        const project = await prisma.project.findUnique({
+          where: {
+            id: input.projectId,
+            userId: ctx.user.id
+          }
+        });
+
+        if (!project) {
+          throw new Error('Project not found');
+        }
+
+        const updatedProject = await prisma.project.update({
+          where: {
+            id: project.id
+          },
+          data: {
+            title: input.title || project.title,
+            description: input.description || project.description,
+            public: input.public !== null ? input.public : false,
+            collaborative: input.collaborative !== null ? input.collaborative : false,
+            shared: input.shared !== null ? input.shared : false
+          }
+        });
+
+        return updatedProject;
+      }
+    }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+
+        // Find the project by its ID (you need to replace 'projectId' with the actual ID)
+        const project = await prisma.project.findUnique({
+          where: {
+            id: input.projectId,
+            userId: ctx.user.id
+          }
+        });
+
+        if (!project) {
+          throw new Error('Project not found');
+        }
+
+        const deletedProject = await prisma.project.delete({
+          where: {
+            id: input.projectId // Replace projectId with the actual ID of the project you want to delete
+          }
+        });
+
+        return deletedProject;
       }
     }),
 });

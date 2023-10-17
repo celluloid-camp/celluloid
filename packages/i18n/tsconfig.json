@@ -1,8 +1,5 @@
 {
   "extends": "@celluloid/config/tsconfig/node16.json",
-  "compilerOptions": {
-    "resolveJsonModule": true
-  },
   "include": [
     "**/*.ts",
     "**/*.tsx",

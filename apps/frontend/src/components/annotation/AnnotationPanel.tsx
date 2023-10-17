@@ -6,12 +6,9 @@ import {
   Badge,
   BadgeProps,
   Box,
-  Button,
   Fab,
   Grow,
-  IconButton,
   List,
-  ListSubheader,
   Paper,
   Stack,
   styled,
@@ -20,15 +17,10 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-import {
-  AnnotationByProjectIdItem,
-  ProjectById,
-  trpc,
-  UserMe,
-} from "~utils/trpc";
+import { AnnotationByProjectIdItem, ProjectById, UserMe } from "~utils/trpc";
 
 import { AnnotationForm } from "./AnnotationForm";
 import { AnnotationItem } from "./AnnotationItem";
@@ -51,7 +43,7 @@ const EmptyAnnotation = () => (
       alignItems={"center"}
       sx={{
         paddingY: 5,
-        paddingX: 10,
+        paddingX: 5,
         borderRadius: 1,
         borderStyle: "dashed",
         borderWidth: 1,
@@ -155,13 +147,13 @@ const AnnotationList: React.FC<
       </List>
 
       <Box ref={formRef} display={"flex"} flexDirection={"column"}>
-        {project.annotable && playerIsReady && (
+        {project.annotable && playerIsReady && user ? (
           <AnnotationForm
             duration={project.duration}
             project={project}
             user={user}
           />
-        )}
+        ) : null}
       </Box>
     </Box>
   );
@@ -203,7 +195,11 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
             <StyledBadge badgeContent={annotationCount} color="secondary">
               <SpeakerNotesIcon sx={{ color: "white" }} />
             </StyledBadge>
-            <Typography variant="h6" color="white" sx={{ pl: 2 }}>
+            <Typography
+              variant="h6"
+              color="white"
+              sx={{ pl: annotationCount > 0 ? 2 : 1 }}
+            >
               {t("project.annotation.title", "Annotations")}
             </Typography>
           </Stack>
@@ -217,6 +213,7 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
               color="secondary"
               size="small"
               onClick={() => setHintsVisible(!hintsVisible)}
+              disabled={!playerIsReady}
             >
               <ViewTimelineIcon />
             </Fab>

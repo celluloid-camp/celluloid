@@ -10,6 +10,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { ConfirmProvider } from "material-ui-confirm";
+import { SnackbarProvider } from "notistack";
 import React, { Suspense, useState } from "react";
 import { initReactI18next } from "react-i18next";
 import { Provider } from "react-redux";
@@ -34,7 +35,6 @@ import UserProfile from "./pages/profile";
 import ProjectPage from "./pages/project";
 import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
-import Project from "./scenes/Project";
 import createAppStore from "./store";
 import { createTheme } from "./theme";
 
@@ -80,7 +80,6 @@ const AppRouters = () => {
           <Route path="profile" element={<UserProfile />} />
           <Route path="legal-notice" element={<LegalNotice />} />
           <Route path="terms-and-conditions" element={<TermsAndConditions />} />
-          <Route path="projects/:projectId" element={<Project />} />
           <Route path="project/:projectId" element={<ProjectPage />} />
           <Route path="shares/:projectId" element={<SharePage />} />
           {/* <Route path="*" element={<NotFound />} /> */}
@@ -120,21 +119,23 @@ const App = () => {
         <Provider store={store}>
           <ThemeProvider theme={createTheme()}>
             <CssBaseline />
-            <trpc.Provider client={trpcClient} queryClient={queryClient}>
-              <QueryClientProvider client={queryClient}>
-                <ConfirmProvider>
-                  <React.Fragment>
+            <SnackbarProvider>
+              <trpc.Provider client={trpcClient} queryClient={queryClient}>
+                <QueryClientProvider client={queryClient}>
+                  <ConfirmProvider>
                     <React.Fragment>
-                      <UpdateIndicator />
-                      <BrowserRouter>
-                        <ResetScroll />
-                        <AppRouters />
-                      </BrowserRouter>
+                      <React.Fragment>
+                        <UpdateIndicator />
+                        <BrowserRouter>
+                          <ResetScroll />
+                          <AppRouters />
+                        </BrowserRouter>
+                      </React.Fragment>
                     </React.Fragment>
-                  </React.Fragment>
-                </ConfirmProvider>
-              </QueryClientProvider>
-            </trpc.Provider>
+                  </ConfirmProvider>
+                </QueryClientProvider>
+              </trpc.Provider>
+            </SnackbarProvider>
           </ThemeProvider>
         </Provider>
       </RecoilRoot>

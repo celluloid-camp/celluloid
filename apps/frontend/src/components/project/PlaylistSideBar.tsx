@@ -1,12 +1,11 @@
 import {
-  Box,
   ButtonBase,
   Card,
   CardContent,
+  CardHeader,
   CircularProgress,
   List,
   ListItem,
-  Paper,
   Stack,
   Typography,
 } from "@mui/material";
@@ -16,15 +15,15 @@ import { Trans } from "react-i18next";
 
 import { ProjectById } from "~utils/trpc";
 
-import { ProjectThumbnailImage } from "./ProjectThumbnailImage";
-
 export const PlaylistSideBar: React.FC<{ project: ProjectById }> = ({
   project,
 }) => {
   const handleClick = (id: string) => {
     // navigate(`/projects/${id}`, { replace: true });
-    window.location.assign(`/projects/${id}`);
+    window.location.assign(`/project/${id}`);
   };
+
+  if (!project.playlist) return null;
 
   return (
     <Card>

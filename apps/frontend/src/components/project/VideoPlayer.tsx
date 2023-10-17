@@ -1,7 +1,7 @@
 import ReactPlayer from "@celluloid/react-player";
 import { OnProgressProps } from "@celluloid/react-player/base";
 import * as React from "react";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
 
@@ -15,17 +15,37 @@ export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
 
   useImperativeHandle(ref, () => playerRef.current);
 
+  // useEffect(()=>{
+
+  //   const player = playerRef.current?.getInternalPlayer()
+  //   console.log(player)
+  // },[])
+
   const dispatcher = useVideoPlayerEvent();
 
   const handleReady = (player: ReactPlayer) => {
-    // console.log("ready", player);
+    console.log("ready", player.forceUpdate());
     // console.log("getCurrentTime", player.getCurrentTime());
     // console.log("getSecondsLoaded", player.getSecondsLoaded());
     // console.log("getDuration", player.getDuration());
-    setIsReady(true);
+    // setIsReady(true);
+    // dispatcher({
+    //   state: "READY",
+    //   progress: 0,
+    // });
+  };
+
+  const handlePlay = () => {
+    if (!isReady) {
+      setIsReady(true);
+      dispatcher({
+        state: "READY",
+        progress: playerRef.current?.getCurrentTime() || 0,
+      });
+    }
     dispatcher({
-      state: "READY",
-      progress: 0,
+      state: "PLAYING",
+      progress: playerRef.current?.getCurrentTime() || 0,
     });
   };
 
@@ -79,7 +99,7 @@ export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
           title: 0,
           warningTitle: 0,
           p2p: 0,
-          autoplay: 1,
+          autoplay: 0,
         },
       }}
       onReady={handleReady}
@@ -88,7 +108,7 @@ export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
       onBuffer={handleBuffer}
       onError={handleError}
       onSeek={handleSeek}
-      playing={true}
+      onPlay={handlePlay}
       style={{
         width: "100%",
         height: "100%",

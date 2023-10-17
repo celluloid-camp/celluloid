@@ -18,10 +18,12 @@ import {
 import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
+import dayjs from "dayjs";
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MultiLineTypography } from "~components/MultiLineTypography";
+import { formatDuration } from "~utils/DurationUtils";
 import { AnnotationByProjectIdItem, ProjectById, trpc } from "~utils/trpc";
 import { getUserColor } from "~utils/UserUtils";
 
@@ -68,22 +70,24 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
       <React.Fragment>
         <Stack sx={{ py: 1 }} spacing={1}>
           <Box>
-            <Chip
-              variant="outlined"
-              sx={{
-                "& .MuiChip-label": {
-                  color: "white",
-                },
-              }}
-              avatar={
-                <Avatar sx={{ background: annotation.user.color }}>
-                  {annotation.user.initial}
-                </Avatar>
-              }
-              label={annotation.user.username}
-              size="small"
-            />
+            <Stack direction={"row"} spacing={1} alignItems={"center"}>
+              <Avatar
+                sx={{
+                  background: annotation.user.color,
+                  width: 24,
+                  height: 24,
+                }}
+              >
+                {annotation.user.initial}
+              </Avatar>
+              <Stack>
+                <Typography component="span" color="white" variant="body2">
+                  {annotation.user.username}
+                </Typography>
+              </Stack>
+            </Stack>
           </Box>
+
           <MultiLineTypography
             variant="caption"
             color="gray"
