@@ -27,8 +27,8 @@ import * as Yup from "yup";
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { TransparentInput } from "~components/TransparentInput";
 import {
-  AnnotationByProjectIdItem,
-  AnnotationCommentByProjectIdItem,
+  AnnotationByProjectId,
+  AnnotationCommentByProjectId,
   ProjectById,
   trpc,
   UserMe,
@@ -37,8 +37,8 @@ import {
 interface CommentItemProps {
   user?: UserMe;
   project: ProjectById;
-  comment: AnnotationCommentByProjectIdItem;
-  annotation: AnnotationByProjectIdItem;
+  comment: AnnotationCommentByProjectId;
+  annotation: AnnotationByProjectId;
 }
 
 export const CommentItem: React.FC<CommentItemProps> = ({

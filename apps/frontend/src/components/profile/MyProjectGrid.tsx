@@ -3,17 +3,14 @@ import Grid from "@mui/material/Grid";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import ProjectThumbnail from "~components/home/ProjectThumbnail";
 import { StyledTitle } from "~components/typography";
 import { trpc } from "~utils/trpc";
-
-import { ProjectThumbnail } from "./ProjectThumbnail";
 
 export const MyProjectGrid: React.FC = () => {
   const { t } = useTranslation();
 
-  const { data, error, isFetching } = trpc.project.list.useQuery({
-    authoredOnly: true,
-  });
+  const { data, error, isFetching } = trpc.user.projects.useQuery({});
 
   return (
     <Box sx={{ padding: 5, backgroundColor: "brand.orange" }}>
@@ -62,7 +59,7 @@ export const MyProjectGrid: React.FC = () => {
                   pb: 1,
                 }}
               >
-                {t("home.emptySearchResult")}
+                {t("profile.me.project.empty", "Vous n'avez aucun projet")}
               </Typography>
             )}
             {error ? (

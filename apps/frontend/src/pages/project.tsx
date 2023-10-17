@@ -25,7 +25,7 @@ import ProjectSummary from "~components/project/ProjectSummary";
 import { SideBar } from "~components/project/SideBar";
 import { VideoPlayer } from "~components/project/VideoPlayer";
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
-import { AnnotationByProjectIdItem, trpc } from "~utils/trpc";
+import { AnnotationByProjectId, trpc } from "~utils/trpc";
 import { ProjectById, UserMe } from "~utils/trpc";
 
 interface Props {
@@ -80,7 +80,7 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     }
   }, [visibleAnnotations, videoPlayerRef, videoProgress]);
 
-  const handleAnnotionHintClick = (annotation: AnnotationByProjectIdItem) => {
+  const handleAnnotionHintClick = (annotation: AnnotationByProjectId) => {
     videoPlayerRef.current?.seekTo(annotation.startTime, "seconds");
   };
 

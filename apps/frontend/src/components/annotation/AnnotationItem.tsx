@@ -37,8 +37,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { formatDuration } from "~utils/DurationUtils";
 import {
-  AnnotationByProjectIdItem,
-  AnnotationCommentByProjectIdItem,
+  AnnotationByProjectId,
+  AnnotationCommentByProjectId,
   ProjectById,
   trpc,
   UserMe,
@@ -49,7 +49,7 @@ import { CommentItem } from "./CommentItem";
 
 interface AnnotationItemProps {
   project: ProjectById;
-  annotation: AnnotationByProjectIdItem;
+  annotation: AnnotationByProjectId;
   user?: UserMe;
 }
 
@@ -253,7 +253,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           <Collapse in={collapsed} timeout="auto" unmountOnExit>
             <Divider light textAlign="left"></Divider>
             {annotation.comments.map(
-              (comment: AnnotationCommentByProjectIdItem) => (
+              (comment: AnnotationCommentByProjectId) => (
                 <List
                   component="div"
                   disablePadding

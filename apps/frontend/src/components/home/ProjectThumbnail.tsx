@@ -1,4 +1,5 @@
 import { ProjectGraphRecord } from "@celluloid/types";
+import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import PublicIcon from "@mui/icons-material/Public";
@@ -76,11 +77,18 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
             <Box
               sx={{
                 position: "absolute",
-                right: 5,
-                bottom: 5,
+                right: 10,
+                bottom: 10,
               }}
             >
               <Stack direction={"row"} spacing={1}>
+                {project._count.annotations > 0 ? (
+                  <Chip
+                    size="small"
+                    label={project._count.annotations}
+                    icon={<CommentOutlinedIcon />}
+                  />
+                ) : null}
                 <Chip
                   size="small"
                   label={project.playlist?._count.projects}
@@ -108,10 +116,6 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
                 {project.public && (
                   <Chip size="small" label={"public"} icon={<PublicIcon />} />
                 )}
-                 <VisibilityChip
-                  show={project.collaborative}
-                  label="collaboratif"
-                />
               </Stack>
             </Grid> */}
           </Grid>

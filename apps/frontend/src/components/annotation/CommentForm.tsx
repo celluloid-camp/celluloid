@@ -20,17 +20,12 @@ import * as Yup from "yup";
 
 import { TransparentInput } from "~components/TransparentInput";
 import { UserAvatar } from "~components/UserAvatar";
-import {
-  AnnotationByProjectIdItem,
-  ProjectById,
-  trpc,
-  UserMe,
-} from "~utils/trpc";
+import { AnnotationByProjectId, ProjectById, trpc, UserMe } from "~utils/trpc";
 
 interface CommentFormProps {
   user: UserMe;
   project: ProjectById;
-  annotation: AnnotationByProjectIdItem;
+  annotation: AnnotationByProjectId;
   onClose: () => void;
 }
 

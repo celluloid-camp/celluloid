@@ -34,7 +34,7 @@ import {
   getPeerTubeVideoData,
   PeerTubeVideoDataResult,
   PeerTubeVideoWithThumbnail,
-} from "~services/VideoService";
+} from "~services/peertube";
 // import { formatDuration } from "~utils/DurationUtils";
 import { humanizeError } from "~utils/errors";
 import { trpc } from "~utils/trpc";
@@ -90,7 +90,6 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     queryFn: () => getPeerTubeVideoData(formik.values.url),
     enabled: !formik.errors.url && formik.status != "submited",
     onSuccess: (data) => {
-      console.log(data);
       formik.setFieldValue("data", data);
       formik.setFieldTouched("data");
       formik.submitForm();
@@ -207,7 +206,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
           });
           if (project) {
             formik.resetForm();
-            navigate(`/projects/${project.id}`);
+            navigate(`/project/${project.id}`);
           }
         } else {
           const playlist = await playlistMutation.mutateAsync({

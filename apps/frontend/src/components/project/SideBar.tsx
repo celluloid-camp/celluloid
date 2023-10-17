@@ -17,7 +17,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 import { isOwner } from "~utils/ProjectUtils";
-import { ProjectById, ProjectMember, UserMe } from "~utils/trpc";
+import { ProjectById, ProjectMembers, UserMe } from "~utils/trpc";
 
 import { ExportPanel } from "./ExportPanel";
 import { PlaylistSideBar } from "./PlaylistSideBar";
@@ -108,7 +108,7 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
                 />
               </ListItem>
 
-              {project.members.map((member: ProjectMember) => (
+              {project.members.map((member: ProjectMembers) => (
                 <ListItem key={member.id}>
                   <ListItemAvatar>
                     <Avatar sx={{ background: member.user?.color }}>

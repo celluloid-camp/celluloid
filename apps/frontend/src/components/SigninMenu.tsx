@@ -67,6 +67,12 @@ export const SigninMenu = ({
           </Button>
         </div>
       )}
+      {/* <Link to={`login`} state={{ backgroundLocation: location }}>
+            <Button>test {location.pathname}</Button>
+          </Link>
+          <Link to={`signup`} state={{ backgroundLocation: location }}>
+            <Button>test {location.pathname}</Button>
+          </Link> */}
       <Menu
         id="account-menu"
         anchorEl={anchorEl}

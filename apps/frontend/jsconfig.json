@@ -40,14 +40,6 @@
             ],
             "~/*": [
                 "src/*"
-            ],
-            "~key/*": [
-                "src/locales/key/*"
-            ]
-        }
-    }
-}*": [
-                "src/locales/key/*"
             ]
         }
     }

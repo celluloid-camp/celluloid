@@ -2,15 +2,15 @@ import { useParentSize } from "@cutting/use-get-parent-size";
 import { Box, Paper } from "@mui/material";
 import React, { memo, useMemo, useRef } from "react";
 
-import { AnnotationByProjectIdItem } from "~utils/trpc";
+import { AnnotationByProjectId } from "~utils/trpc";
 
 interface ContextualAnnotationsProps {
-  annotations: AnnotationByProjectIdItem[];
+  annotations: AnnotationByProjectId[];
 }
 
 type ContextualItemProps = {
   index: number;
-  annotation: AnnotationByProjectIdItem;
+  annotation: AnnotationByProjectId;
   x: number;
   y: number;
   onClick: () => void;
@@ -59,7 +59,7 @@ const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(
     const ref = useRef<HTMLDivElement>(null);
     const { width, height } = useParentSize(ref);
 
-    const handleFocus = (_: AnnotationByProjectIdItem) => {};
+    const handleFocus = (_: AnnotationByProjectId) => {};
 
     return (
       <Box

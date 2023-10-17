@@ -1,4 +1,3 @@
-import { ProjectGraphRecord } from "@celluloid/types";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -17,7 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import * as R from "ramda";
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TransitionGroup } from "react-transition-group";
 import { useDidUpdate } from "rooks";
@@ -43,7 +42,7 @@ export const ProjectGrid: React.FC = () => {
   }, 1000);
 
   const { data: user } = trpc.user.me.useQuery();
-  const { data, isFetching, error } = trpc.project.list.useQuery({
+  const [data] = trpc.project.list.useSuspenseQuery({
     term: searchTerm,
   });
 
@@ -53,21 +52,14 @@ export const ProjectGrid: React.FC = () => {
     queryClient.invalidateQueries(["projects"]);
   }, [user]);
 
-  const sort = R.sortWith([R.descend(R.prop("publishedAt"))]);
+  const userProjects = useMemo(
+    () => data.items.filter((project) => user && project.userId == user.id),
+    [user, data]
+  );
 
-  const sorted = sort(data?.items || []) as ProjectList;
+  const publicProjects = R.difference(data.items, userProjects);
 
-  const userProjects = R.filter(
-    (project: ProjectGraphRecord) =>
-      !!user &&
-      // (isOwner(project, user) || isMember(project, user) || isAdmin(user))
-      (isOwner(project, user) || isAdmin(user))
-  )(sorted);
-
-  const publicProjects = R.difference(sorted, userProjects);
-
-  const noProjects =
-    !error && publicProjects.length === 0 && userProjects.length === 0;
+  const noProjects = publicProjects.length === 0 && userProjects.length === 0;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -82,7 +74,14 @@ export const ProjectGrid: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: 5, backgroundColor: "brand.orange", minHeight: 500 }}>
+    <Box
+      sx={{
+        padding: 5,
+        backgroundColor: "brand.orange",
+        display: "flex",
+        minHeight: "100%",
+      }}
+    >
       <Container maxWidth="lg">
         <Paper
           sx={{
@@ -111,21 +110,6 @@ export const ProjectGrid: React.FC = () => {
             </IconButton>
           ) : null}
         </Paper>
-
-        {isFetching ? (
-          <Box
-            mx={2}
-            my={10}
-            display={"flex"}
-            alignContent={"center"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Box>
-              <CircularProgress />
-            </Box>
-          </Box>
-        ) : null}
 
         <Box
           sx={{
@@ -181,7 +165,7 @@ export const ProjectGrid: React.FC = () => {
             </>
           )}
 
-          {!isFetching && noProjects && (
+          {noProjects && (
             <Fade in={noProjects} appear={true}>
               <Typography
                 variant="h3"
@@ -196,21 +180,6 @@ export const ProjectGrid: React.FC = () => {
               </Typography>
             </Fade>
           )}
-          {error ? (
-            <Fade in={!!error} appear={true}>
-              <Typography
-                variant="h6"
-                align="center"
-                gutterBottom={true}
-                sx={{
-                  pt: 4,
-                  pb: 1,
-                }}
-              >
-                {t("ERR_UNKOWN")}
-              </Typography>
-            </Fade>
-          ) : null}
         </Box>
       </Container>
     </Box>

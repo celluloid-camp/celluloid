@@ -12600,6 +12600,7 @@ __metadata:
     react-autosuggest: ^9.3.2
     react-dom: 18
     react-draggable: ^4.4.6
+    react-error-boundary: ^4.0.11
     react-full-screen: ^0.2.2
     react-i18next: ^13.2.2
     react-redux: ^8.0.4
@@ -20758,6 +20759,17 @@ __metadata:
     react: ">= 16.3.0"
     react-dom: ">= 16.3.0"
   checksum: 9b15aac59244873ac4561c5a2bead43a56e18d406e0a5f242bd4f9d151c074530c02b99387983104bf43417292f9cf8d063e554ed08d88792235e3fbc965f1b8
+  languageName: node
+  linkType: hard
+
+"react-error-boundary@npm:^4.0.11":
+  version: 4.0.11
+  resolution: "react-error-boundary@npm:4.0.11"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+  peerDependencies:
+    react: ">=16.13.1"
+  checksum: b3c157fea4e8f78411e9aa0fbf5241f6907b66ede1cd8b7bb22faaeb0339ebeb3dc8e63bf90ef3f740bfa8fd994ca6edf975089cd371b664ad6c2735e7512d38
   languageName: node
   linkType: hard
 

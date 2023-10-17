@@ -1,8 +1,19 @@
-import { Box, Container, Link, Paper, Stack } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Fade,
+  Link,
+  Paper,
+  Stack,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import * as React from "react";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Trans, useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +46,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <React.Fragment>
-      <Box sx={{ backgroundColor: "brand.green" }}>
+      <Box sx={{ backgroundColor: "brand.green", height: "100%" }}>
         <Container maxWidth="lg">
           <Grid container={true}>
             <Grid item xs={12} sm={6}>
@@ -190,7 +201,50 @@ export const HomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <ProjectGrid />
+      <Suspense
+        fallback={
+          <Box
+            mx={2}
+            my={10}
+            display={"flex"}
+            alignContent={"center"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box>
+              <CircularProgress />
+            </Box>
+          </Box>
+        }
+      >
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary
+              onReset={reset}
+              fallbackRender={({ resetErrorBoundary, error }) => (
+                <Fade in={true} appear={true}>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    gutterBottom={true}
+                    sx={{
+                      pt: 4,
+                      pb: 1,
+                    }}
+                  >
+                    <Trans i18nKey="ERR_UNKOWN" />
+                    <Button onClick={() => resetErrorBoundary()}>
+                      Try again
+                    </Button>
+                  </Typography>
+                </Fade>
+              )}
+            >
+              <ProjectGrid />
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
+      </Suspense>
     </React.Fragment>
   );
 };

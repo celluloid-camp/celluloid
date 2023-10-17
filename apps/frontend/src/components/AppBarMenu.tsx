@@ -118,12 +118,7 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
           >
             {t("menu.about")}
           </Button>
-          {/* <Link to={`login`} state={{ backgroundLocation: location }}>
-            <Button>test {location.pathname}</Button>
-          </Link>
-          <Link to={`signup`} state={{ backgroundLocation: location }}>
-            <Button>test {location.pathname}</Button>
-          </Link> */}
+
           <SigninMenu
             user={meQuery.data}
             onClickLogin={onClickLogin}

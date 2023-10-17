@@ -24,15 +24,15 @@ import { useTranslation } from "react-i18next";
 
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { formatDuration } from "~utils/DurationUtils";
-import { AnnotationByProjectIdItem, ProjectById, trpc } from "~utils/trpc";
+import { AnnotationByProjectId, ProjectById, trpc } from "~utils/trpc";
 import { getUserColor } from "~utils/UserUtils";
 
 import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 
 interface AnnotationHintsProps {
   project: ProjectById;
-  annotations: AnnotationByProjectIdItem[];
-  onClick: (annotation: AnnotationByProjectIdItem) => void;
+  annotations: AnnotationByProjectId[];
+  onClick: (annotation: AnnotationByProjectId) => void;
 }
 
 const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -51,7 +51,7 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
 
 type AnnotationHintsItemProps = {
   index: number;
-  annotation: AnnotationByProjectIdItem;
+  annotation: AnnotationByProjectId;
   leftPosition: string;
   width: number;
   onClick: () => void;
@@ -138,9 +138,9 @@ export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
 
   const [_, setHintsVisible] = useAnnotationHintsVisible();
 
-  const getHintStartPosition = (annotation: AnnotationByProjectIdItem) =>
+  const getHintStartPosition = (annotation: AnnotationByProjectId) =>
     `${(annotation.startTime * 100) / project.duration}%`;
-  const getHintWidth = (annotation: AnnotationByProjectIdItem) =>
+  const getHintWidth = (annotation: AnnotationByProjectId) =>
     `${
       ((annotation.stopTime - annotation.startTime) * 100) / project.duration
     }%`;

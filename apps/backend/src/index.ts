@@ -12,7 +12,6 @@ import { createSession } from './session';
 
 const trpcApiEndpoint = '/trpc'
 
-
 async function main() {
   // express implementation
   const app = express();

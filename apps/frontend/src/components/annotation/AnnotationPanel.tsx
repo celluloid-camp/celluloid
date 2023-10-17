@@ -20,7 +20,7 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-import { AnnotationByProjectIdItem, ProjectById, UserMe } from "~utils/trpc";
+import { AnnotationByProjectId, ProjectById, UserMe } from "~utils/trpc";
 
 import { AnnotationForm } from "./AnnotationForm";
 import { AnnotationItem } from "./AnnotationItem";
@@ -65,7 +65,7 @@ const EmptyAnnotation = () => (
 interface AnnotationPanelProps {
   project: ProjectById;
   user?: UserMe;
-  annotations: AnnotationByProjectIdItem[];
+  annotations: AnnotationByProjectId[];
   annotationCount: number;
   playerIsReady: boolean;
 }
@@ -134,7 +134,7 @@ const AnnotationList: React.FC<
       >
         {annotations
           // .flatMap((x) => [x, x, x, x, x, x, x, x])
-          .map((annotation: AnnotationByProjectIdItem) => (
+          .map((annotation: AnnotationByProjectId) => (
             <AnnotationItem
               annotation={annotation}
               key={annotation.id}

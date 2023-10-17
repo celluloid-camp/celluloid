@@ -29,7 +29,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 const mapStateToProps = (state: AppState) => {
   return {
     user: state.user,
-    video: state.home.video,
     errors: state.signin.errors,
   };
 };

@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import {
   getPeerTubeVideoData,
   PeerTubeVideoWithThumbnail,
-} from "~services/VideoService";
+} from "~services/peertube";
 
 export type AddVideoToPlaylistDialogProps = DialogProps & {
   onClose: () => void;
