@@ -193,10 +193,10 @@ export const projectRouter = router({
 
       return {
         ...project,
-        editable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin,
-        deletable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin,
-        annotable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id),
-        commentable: ctx.user && ctx.user?.id == project.userId || ctx.user?.role == UserRole.Admin || project.members.some(m => m.id == ctx.user?.id)
+        editable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
+        deletable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
+        annotable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin || project.members.some(m => ctx.user && m.userId == ctx.user.id)),
+        commentable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin || project.members.some(m => ctx.user && m.userId == ctx.user.id))
       };
     }),
   add: protectedProcedure

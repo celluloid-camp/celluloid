@@ -25,7 +25,7 @@
     "admin": "yarn workspace admin",
     "backend": "yarn workspace backend",
     "prisma": "yarn workspace @celluloid/prisma",
-    "docker-build": "docker build -t celluloid:local  ."
+    "docker-build": "DOCKER_BUILDKIT=1 docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest --cache-from=celluloid-backend:latest  . "
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",

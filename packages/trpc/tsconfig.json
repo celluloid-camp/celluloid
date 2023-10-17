@@ -3,7 +3,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "tsup.config.ts"
+    "tsup.config.ts",
+    "src/global.d.ts"
   ],
   "exclude": [
     "node_modules"

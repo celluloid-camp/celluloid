@@ -1,9 +1,12 @@
+import "express-session"
+
 import { User, UserRole } from '@celluloid/prisma';
 import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
+import { Request } from "express";
+import { Session } from "express-session";
 import { OpenApiMeta } from 'trpc-openapi';
 import { v4 as uuid } from 'uuid';
-
 
 export type Context = {
   user: User | null;
@@ -32,7 +35,7 @@ export const createRPCContext = async ({
 
   const logout = (): Promise<boolean> => {
     return new Promise((resolve) => {
-      req.session.destroy((err) => {
+      req.session?.destroy((err: Error | null) => {
         if (err) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
