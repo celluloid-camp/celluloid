@@ -1,5 +1,6 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
   Box,
   CircularProgress,
@@ -9,6 +10,7 @@ import {
   IconButton,
   InputBase,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -160,17 +162,29 @@ export const ProjectGrid: React.FC = () => {
 
           {noProjects && (
             <Fade in={noProjects} appear={true}>
-              <Typography
-                variant="h6"
-                align="center"
-                gutterBottom={true}
-                sx={{
-                  pt: 4,
-                  pb: 1,
-                }}
+              <Box
+                display={"flex"}
+                alignContent={"center"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                sx={{ minHeight: 200 }}
               >
-                {t("home.emptySearchResult")}
-              </Typography>
+                <Stack
+                  alignContent={"center"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  sx={{
+                    py: 4,
+                  }}
+                >
+                  <SearchOutlinedIcon
+                    sx={{ width: 100, height: 100, color: "grey.800" }}
+                  />
+                  <Typography variant="h6" align="center">
+                    {t("home.emptySearchResult")}
+                  </Typography>
+                </Stack>
+              </Box>
             </Fade>
           )}
         </Box>
