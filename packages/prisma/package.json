@@ -39,6 +39,7 @@
   "devDependencies": {
     "@celluloid/config": "*",
     "@types/dotenv": "^6.0.0",
+    "@types/randomcolor": "^0.5.7",
     "dotenv-cli": "^7.2.1",
     "eslint": "^8.50.0",
     "prisma": "^5.4.2",
