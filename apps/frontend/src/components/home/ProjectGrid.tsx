@@ -12,14 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import * as R from "ramda";
 import * as React from "react";
 import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TransitionGroup } from "react-transition-group";
-import { useDidUpdate } from "rooks";
 
 import { StyledTitle } from "~components/typography";
 import { trpc } from "~utils/trpc";
@@ -27,7 +25,6 @@ import { trpc } from "~utils/trpc";
 import ProjectThumbnail from "./ProjectThumbnail";
 
 export const ProjectGrid: React.FC = () => {
-  const queryClient = useQueryClient();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
 
@@ -41,15 +38,11 @@ export const ProjectGrid: React.FC = () => {
   }, 1000);
 
   const { data: user } = trpc.user.me.useQuery();
-  const [data] = trpc.project.list.useSuspenseQuery({
+  const [data, mutation] = trpc.project.list.useSuspenseQuery({
     term: searchTerm,
   });
 
   const { t } = useTranslation();
-
-  useDidUpdate(() => {
-    queryClient.invalidateQueries(["projects"]);
-  }, [user]);
 
   const userProjects = useMemo(
     () => data.items.filter((project) => user && project.userId == user.id),
@@ -90,10 +83,13 @@ export const ProjectGrid: React.FC = () => {
             height: 50,
           }}
         >
-          <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
-            <SearchIcon />
-          </IconButton>
-          {/* <CircularProgress sx={{ p: "10px", ml: 1 }} /> */}
+          {mutation.isFetching ? (
+            <CircularProgress sx={{ p: "10px", ml: 1 }} />
+          ) : (
+            <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
+              <SearchIcon />
+            </IconButton>
+          )}
           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
           <InputBase
             sx={{ ml: 1, flex: 1 }}
@@ -122,17 +118,15 @@ export const ProjectGrid: React.FC = () => {
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
-                  {[...userProjects, ...userProjects, ...userProjects].map(
-                    (project) => (
-                      <Grid xs={12} sm={6} lg={4} xl={3} item>
-                        <ProjectThumbnail
-                          showPublic={true}
-                          project={project}
-                          key={project.id}
-                        />
-                      </Grid>
-                    )
-                  )}
+                  {userProjects.map((project) => (
+                    <Grid xs={12} sm={6} lg={4} xl={3} item>
+                      <ProjectThumbnail
+                        showPublic={true}
+                        project={project}
+                        key={project.id}
+                      />
+                    </Grid>
+                  ))}
                 </TransitionGroup>
               </Grid>
             </>
@@ -150,11 +144,7 @@ export const ProjectGrid: React.FC = () => {
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
-                  {[
-                    ...publicProjects,
-                    ...publicProjects,
-                    ...publicProjects,
-                  ].map((project) => (
+                  {publicProjects.map((project) => (
                     <Grid xs={12} sm={6} lg={4} xl={3} item>
                       <ProjectThumbnail
                         showPublic={false}
@@ -171,7 +161,7 @@ export const ProjectGrid: React.FC = () => {
           {noProjects && (
             <Fade in={noProjects} appear={true}>
               <Typography
-                variant="h3"
+                variant="h6"
                 align="center"
                 gutterBottom={true}
                 sx={{

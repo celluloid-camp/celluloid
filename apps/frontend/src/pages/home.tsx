@@ -234,7 +234,7 @@ export const HomePage: React.FC = () => {
                   >
                     <Trans i18nKey="ERR_UNKOWN" />
                     <Button onClick={() => resetErrorBoundary()}>
-                      Try again
+                      <Trans i18nKey={"home.projects.retry"}>Réessayer</Trans>
                     </Button>
                   </Typography>
                 </Fade>
