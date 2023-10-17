@@ -1,10 +1,12 @@
 
-import { prisma } from "@celluloid/prisma"
+import { prisma, User, UserRole } from "@celluloid/prisma"
 import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import {
   Strategy as LocalStrategy,
 } from "passport-local";
+
+import { InvalidUserError, UserNotConfirmed } from "./errors";
 
 export enum SigninStrategy {
   LOGIN = "login",
@@ -13,8 +15,8 @@ export enum SigninStrategy {
 }
 
 
-passport.serializeUser((user: any, done) => {
-  done(null, user.id)
+passport.serializeUser((user, done) => {
+  done(null, (user as User).id)
 });
 
 passport.deserializeUser(async (id: string, done) => {
@@ -22,10 +24,7 @@ passport.deserializeUser(async (id: string, done) => {
   if (user) {
     return done(null, user);
   } else {
-    console.error(
-      `Deserialize user failed: user with id` + ` ${id} does not exist`
-    );
-    return done(new Error("InvalidUser"));
+    return done(new InvalidUserError(`Deserialize user failed: user does not exist`));
   }
 });
 
@@ -33,13 +32,13 @@ passport.use(
   new LocalStrategy(async (username: string, password: string, done) => {
     const user = await prisma.user.findUnique({ where: { username: username } })
     if (!user) {
-      return done(new Error("InvalidUser"));
+      return done(new InvalidUserError("User not found"));
     }
     if (!bcrypt.compareSync(password, user.password)) {
-      return done(new Error("InvalidUser"));
+      return Promise.resolve(done(new InvalidUserError(`Login failed for user ${user.username}: incorrect password`)));
     }
-    if (!user.confirmed && user.role !== "Student") {
-      return done(new Error("UserNotConfirmed"));
+    if (!user.confirmed && user.role !== UserRole.Student) {
+      return done(new UserNotConfirmed());
     }
     return done(null, user);
 
@@ -51,23 +50,20 @@ const loginStrategy = new LocalStrategy(
   { usernameField: "login" },
   async (login, password, done) => {
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        //OR: [{ email: login }, { username: login, }]
-        email: login
+        OR: [{ email: login }, { username: login, }]
       }
     });
 
     if (!user) {
-      return Promise.resolve(done(new Error("InvalidUser")));
+      return Promise.resolve(done(new InvalidUserError("User not found")));
     }
     if (!bcrypt.compareSync(password, user.password)) {
-      console.error(`Login failed for user ${user.username}: incorrect password`);
-      return Promise.resolve(done(new Error("InvalidUser")));
+      return Promise.resolve(done(new InvalidUserError(`Login failed for user ${user.username}: incorrect password`)));
     }
-    if (!user.confirmed && user.role !== "Student") {
-      console.error(`Login failed: ${user.username} is not confirmed`);
-      return Promise.resolve(done(new Error("UserNotConfirmed")));
+    if (!user.confirmed && user.role !== UserRole.Student) {
+      return Promise.resolve(done(new UserNotConfirmed(`Login failed: ${user.username} is not confirmed`)));
     }
     return Promise.resolve(done(null, user));
   }

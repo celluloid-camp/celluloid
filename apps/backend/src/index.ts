@@ -1,3 +1,4 @@
+import { createSession, passport } from '@celluloid/passport';
 import { appRouter, createRPCContext } from '@celluloid/trpc';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import cookieParser from 'cookie-parser';
@@ -7,8 +8,6 @@ import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 
 import { openApiDocument } from './openapi';
-import passport from "./passport";
-import { createSession } from './session';
 
 const trpcApiEndpoint = '/trpc'
 
@@ -54,8 +53,6 @@ async function main() {
   // Serve Swagger UI with our OpenAPI schema
   app.use('/', swaggerUi.serve);
   app.get('/', swaggerUi.setup(openApiDocument));
-
-
 
   app.listen(process.env.PORT || 2021, () => {
     console.log('listening on port 2021');

@@ -1,0 +1,32 @@
+{
+  "name": "@celluloid/passport",
+  "private": true,
+  "version": "2.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@celluloid/prisma": "*",
+    "bcryptjs": "^2.4.3",
+    "connect-redis": "^7.1.0",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "redis": "^4.6.10"
+  },
+  "devDependencies": {
+    "@celluloid/config": "*",
+    "@types/express": "^4.17.17",
+    "@types/express-session": "^1.17.8",
+    "@types/node": "^18.14.2",
+    "tsup": "^7.2.0"
+  }
+}
