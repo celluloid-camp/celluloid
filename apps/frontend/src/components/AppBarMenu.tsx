@@ -92,28 +92,44 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
           </Box>
 
           <Button
-            sx={{ textTransform: "uppercase", color: "text.primary" }}
+            sx={{
+              textTransform: "uppercase",
+              color: "text.primary",
+              fontSize: 13,
+            }}
             onClick={() => handleCreate()}
           >
             {t("menu.create", "Créer")}
           </Button>
 
           <Button
-            sx={{ textTransform: "uppercase", color: "text.primary" }}
+            sx={{
+              textTransform: "uppercase",
+              color: "text.primary",
+              fontSize: 13,
+            }}
             onClick={() => handleJoin()}
           >
             {t("menu.join", "Rejoindre")}
           </Button>
 
           <Button
-            sx={{ textTransform: "uppercase", color: "text.primary" }}
+            sx={{
+              textTransform: "uppercase",
+              color: "text.primary",
+              fontSize: 13,
+            }}
             href="/"
           >
             {t("menu.explore", "Explorer")}
           </Button>
 
           <Button
-            sx={{ textTransform: "uppercase", color: "text.primary" }}
+            sx={{
+              textTransform: "uppercase",
+              color: "text.primary",
+              fontSize: 13,
+            }}
             href="/about"
           >
             {t("menu.about")}

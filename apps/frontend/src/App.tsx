@@ -119,7 +119,7 @@ const App = () => {
         <Provider store={store}>
           <ThemeProvider theme={createTheme()}>
             <CssBaseline />
-            <SnackbarProvider>
+            <SnackbarProvider maxSnack={3}>
               <trpc.Provider client={trpcClient} queryClient={queryClient}>
                 <QueryClientProvider client={queryClient}>
                   <ConfirmProvider>

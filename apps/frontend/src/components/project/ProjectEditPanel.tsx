@@ -1,6 +1,8 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Paper, Typography } from "@mui/material";
+import copy from "copy-to-clipboard";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import * as React from "react";
@@ -11,7 +13,6 @@ import LabeledProgressSwitch from "~components/LabeledProgressSwitch";
 import { ProjectById, trpc, UserMe } from "~utils/trpc";
 
 import { ShareDialog } from "./ShareDialog";
-
 interface ProjectEditPanelProps {
   project: ProjectById;
   user: UserMe;
@@ -31,12 +32,16 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
   const updateMutation = trpc.project.update.useMutation({
     onSuccess: () => {
       utils.project.byId.invalidate({ id: project.id });
-      enqueueSnackbar(t("project.edit.success", "Project a été mise à jour"));
+      enqueueSnackbar(t("project.edit.success", "Project a été mise à jour"), {
+        variant: "success",
+        key: "project.edit.success",
+      });
     },
     onError: (e) => {
       console.log(e);
       enqueueSnackbar(
-        t("project.edit.error", "Project n'a pas été mise à jour")
+        t("project.edit.error", "Project n'a pas été mise à jour"),
+        { variant: "error", key: "project.edit.error" }
       );
     },
   });
@@ -49,7 +54,10 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
     onError: (e) => {
       console.log(e);
       enqueueSnackbar(
-        t("project.edit.error", "Project n'a pas pu être supprimé")
+        t("project.delete.error", "Project n'a pas pu être supprimé", {
+          variant: "error",
+          key: "project.delete.error",
+        })
       );
     },
   });
@@ -75,6 +83,14 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
     });
   };
 
+  const handleCopyUrl = (e, text: string) => {
+    e.stopPropagation();
+    copy(text);
+    enqueueSnackbar(t("project.sharecode.copied", "Code du projet copié"), {
+      variant: "success",
+    });
+  };
+
   return (
     <Paper
       sx={{
@@ -85,7 +101,7 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
     >
       {user && project.userId == user.id ? (
         <>
-          <Typography variant="h6" mb={2}>
+          <Typography gutterBottom variant="h6">
             {t("project.edit", "Modification")}
           </Typography>
           <LabeledProgressSwitch
@@ -134,12 +150,22 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
                   textAlign={"center"}
                   sx={{
                     fontFamily: "monospace",
+                    borderRadius: 2,
                     padding: 1,
-                    borderRadius: 10,
                     backgroundColor: "#F7EEC0",
                   }}
                 >
                   {`${project.shareName}-${project.sharePassword}`}
+                  <IconButton
+                    onClick={(e) =>
+                      handleCopyUrl(
+                        e,
+                        `${project.shareName}-${project.sharePassword}`
+                      )
+                    }
+                  >
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
                 </Typography>
               </Box>
               <Typography variant="body2">
@@ -152,7 +178,6 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
                   {t("project.share.dialog.linkText")}
                 </a>
               </Typography>
-              .
             </Box>
           )}
         </>
@@ -161,20 +186,24 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
       {project.deletable && (
         <Box
           sx={{
-            padding: 2,
+            width: "100%",
+            mt: 2,
           }}
         >
-          <LoadingButton
-            variant="contained"
-            color="error"
-            size="small"
-            fullWidth={true}
-            // loading={deleteLoading}
-            onClick={confirmDelete}
-          >
-            <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
-            {t("deleteAction")}
-          </LoadingButton>
+          <Divider variant="middle" />
+          <Box sx={{ m: 2 }}>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              size="small"
+              fullWidth={true}
+              // loading={deleteLoading}
+              onClick={confirmDelete}
+            >
+              <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
+              {t("deleteAction")}
+            </LoadingButton>
+          </Box>
           {/* {deleteError && <DialogError error={deleteError} />} */}
         </Box>
       )}

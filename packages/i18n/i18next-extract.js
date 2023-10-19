@@ -13,7 +13,6 @@ const { difference } = require("lodash");
 const { JWT } = require("google-auth-library");
 
 const SPREADSHEET_TITLE = "Translations";
-const SPREADSHEET_ID = "1gp65aIFlL5x2K8znQ81WjDbXgVtRiCJ9fLCNPw2gYF0";
 
 const LOCALES = ["fr", "en"];
 
@@ -26,17 +25,31 @@ const globs = path.resolve(
   "../../apps/frontend/src/**/*.{ts,tsx}"
 );
 
-// Spreadsheet from https://docs.google.com/spreadsheets/d/1gp65aIFlL5x2K8znQ81WjDbXgVtRiCJ9fLCNPw2gYF0/edit#gid=0
+// Validate environment variables
+function validateEnvVariable(name) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return value;
+}
+
 async function main() {
   console.log("Working directory:", process.cwd());
 
+  const googleServiceAccountEmail = validateEnvVariable(
+    "GOOGLE_SERVICE_ACCOUNT_EMAIL"
+  );
+  const googlePrivateKey = validateEnvVariable("GOOGLE_PRIVATE_KEY");
+  const googleSpreadsheetId = validateEnvVariable("GOOGLE_SPREADSHEET_ID");
+
   const serviceAccountAuth = new JWT({
-    email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    key: process.env.GOOGLE_PRIVATE_KEY,
+    email: googleServiceAccountEmail,
+    key: googlePrivateKey,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 
-  var doc = new GoogleSpreadsheet(SPREADSHEET_ID, serviceAccountAuth);
+  var doc = new GoogleSpreadsheet(googleSpreadsheetId, serviceAccountAuth);
   try {
     await doc.loadInfo();
   } catch (e) {
@@ -83,7 +96,6 @@ async function main() {
   LOCALES.forEach(async (l) => {
     await mkdirp(path.resolve(LOCALES_FOLDER, l));
   });
-  console.log("LOCALES_FOLDER", LOCALES_FOLDER);
   // 2 - remplace translations in src/locales/[locale]/[ns].json
   Object.keys(namespaces).forEach((n) => {
     Object.keys(namespaces[n]).forEach(async (l) => {
@@ -143,14 +155,15 @@ function extractTranslationFromCode(locales) {
       .pipe(sort())
       .pipe(
         new i18nTransform(config)
-          .on("reading", (file) => {
+          .on("reading", () => {
             count++;
           })
           .on("error", (message, region) => {
+            var error = message;
             if (typeof region === "string") {
-              message += ": " + region.trim();
+              error += ": " + region.trim();
             }
-            console.log("  [error]   ".red + message);
+            console.log("  [error]   ".red + error);
           })
           .on("warning", (message) => {
             console.log("  [warning] ".yellow + message);

@@ -1,9 +1,9 @@
-import { ProjectGraphRecord } from "@celluloid/types";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import PublicIcon from "@mui/icons-material/Public";
 import {
+  Avatar,
   Box,
   Card,
   CardContent,
@@ -15,11 +15,12 @@ import {
   styled,
   Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
 import Image from "mui-image";
 import * as React from "react";
 import { useNavigate } from "react-router";
 
-import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
+import { ProjectListItem } from "~utils/trpc";
 
 const StyledBox = styled(Box)(() => ({
   position: "relative",
@@ -42,7 +43,7 @@ const StyledCardContent = styled(CardContent)(() => ({
 
 interface Props {
   showPublic?: boolean;
-  project: ProjectGraphRecord;
+  project: ProjectListItem;
 }
 
 const ProjectThumbnail: React.FC<Props> = ({ project }) => {
@@ -102,14 +103,30 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
         <StyledCardContent
           sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}
         >
-          <Grid container>
+          <Grid container spacing={1}>
             <Grid item={true} xs={12}>
-              <Typography variant="body2" fontWeight={"bold"} noWrap>
+              <Typography fontWeight={"bold"} noWrap>
                 {project.title}
               </Typography>
             </Grid>
             <Grid item={true} xs={12}>
-              <ProjectUserAvatar project={project} />
+              <Box display="flex" alignItems={"center"}>
+                <Avatar
+                  sx={{
+                    backgroundColor: project.user.color,
+                  }}
+                >
+                  {project.user.initial}
+                </Avatar>
+                <Stack sx={{ ml: 1 }} spacing={0}>
+                  <Typography variant="body2">
+                    {project.user.username}
+                  </Typography>
+                  <Typography variant="caption" color={"grey.700"}>
+                    {dayjs(project.publishedAt).fromNow(true)}
+                  </Typography>
+                </Stack>
+              </Box>
             </Grid>
             {/* <Grid item={true} xs={12}>
               <Stack direction="row" spacing={1}>

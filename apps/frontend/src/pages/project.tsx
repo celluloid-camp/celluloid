@@ -182,6 +182,6 @@ const ProjectPage: React.FC = () => {
 
   if (!project) return null;
 
-  return <ProjectContent project={project} user={user} key={projectId} />;
+  return <ProjectContent project={project} user={user} />;
 };
 export default ProjectPage;

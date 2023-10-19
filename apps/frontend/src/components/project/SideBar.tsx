@@ -16,19 +16,18 @@ import {
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { isOwner } from "~utils/ProjectUtils";
 import { ProjectById, ProjectMembers, UserMe } from "~utils/trpc";
 
 import { ExportPanel } from "./ExportPanel";
 import { PlaylistSideBar } from "./PlaylistSideBar";
 import { ProjectEditPanel } from "./ProjectEditPanel";
 
-interface Props {
+interface SideBarProps {
   project: ProjectById;
   user?: UserMe;
 }
 
-export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
+export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
   const { t } = useTranslation();
 
   return (
@@ -54,14 +53,16 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
       <PlaylistSideBar project={project} />
 
       {user && <ProjectEditPanel project={project} user={user} />}
-      <Paper
-        sx={{
-          paddingX: 3,
-          marginY: 2,
-          paddingY: 3,
-        }}
-      >
-        {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
+
+      {user && project.userId == user.id ? (
+        <Paper
+          sx={{
+            paddingX: 3,
+            marginY: 2,
+            paddingY: 3,
+          }}
+        >
+          {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
       && (user && !isAdmin(user)) && project.shared) &&
         <div className={classes.button}>
           <ButtonProgress
@@ -77,54 +78,52 @@ export const SideBar: React.FC<Props> = ({ project, user }: Props) => {
         </div>
       } */}
 
-        {user && isOwner(project, user) && (
-          <>
-            <Typography variant="h6" mb={2}>
-              {t("project.members", { count: project._count.members })}
-            </Typography>
-            <List
-              dense={true}
-              sx={{
-                width: "100%",
-                maxWidth: 360,
-                bgcolor: "neutral.100",
-                position: "relative",
-                overflow: "auto",
-                borderRadius: 2,
-                minHeight: 300,
-                maxHeight: 300,
-                "& ul": { padding: 0 },
-              }}
-            >
-              <ListItem>
+          <Typography variant="h6" mb={2}>
+            {t("project.members", { count: project._count.members })}
+          </Typography>
+          <List
+            dense={true}
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "neutral.100",
+              position: "relative",
+              overflow: "auto",
+              borderRadius: 2,
+              minHeight: 300,
+              maxHeight: 300,
+              "& ul": { padding: 0 },
+            }}
+          >
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar sx={{ background: project.user.color }}>
+                  {project.user.initial}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={project.user.username}
+                secondary={project.user.role}
+              />
+            </ListItem>
+
+            {project.members.map((member: ProjectMembers) => (
+              <ListItem key={member.id}>
                 <ListItemAvatar>
-                  <Avatar sx={{ background: project.user.color }}>
-                    {project.user.initial}
+                  <Avatar sx={{ background: member.user?.color }}>
+                    {member.user?.initial}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  primary={project.user.username}
-                  secondary={project.user.role}
+                  primary={member.user?.username}
+                  secondary={member.user?.role}
                 />
               </ListItem>
+            ))}
+          </List>
+        </Paper>
+      ) : null}
 
-              {project.members.map((member: ProjectMembers) => (
-                <ListItem key={member.id}>
-                  <ListItemAvatar>
-                    <Avatar sx={{ background: member.user?.color }}>
-                      {member.user?.initial}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={member.user?.username}
-                    secondary={member.user?.role}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </>
-        )}
-      </Paper>
       {user && <ExportPanel project={project} user={user} />}
     </Box>
   );

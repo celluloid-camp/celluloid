@@ -37,6 +37,8 @@ export type ProjectById = RouterOutput['project']['byId'];
 export type ProjectMembers = ArrElement<ProjectById["members"]>;
 
 export type ProjectList = RouterOutput['project']['list'];
+export type ProjectListItem = ArrElement<RouterOutput['project']['list']>;
+
 export type AnnotationsByProjectId = RouterOutput["annotation"]["byProjectId"]
 export type AnnotationByProjectId = ArrElement<AnnotationsByProjectId>;
 export type AnnotationCommentByProjectId = ArrElement<AnnotationByProjectId["comments"]>;

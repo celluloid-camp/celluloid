@@ -13,6 +13,7 @@
     "@celluloid/passport": "*",
     "@celluloid/prisma": "*",
     "@celluloid/trpc": "*",
+    "@godaddy/terminus": "^4.12.1",
     "@trpc/server": "^10.40.0",
     "change-case": "^5.0.2",
     "cookie-parser": "^1.4.6",

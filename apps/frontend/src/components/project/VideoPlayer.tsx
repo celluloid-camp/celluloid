@@ -1,7 +1,13 @@
 import ReactPlayer from "@celluloid/react-player";
 import { OnProgressProps } from "@celluloid/react-player/base";
 import * as React from "react";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
 
@@ -10,21 +16,36 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
-  const playerRef = React.useRef<ReactPlayer>(null);
+  const playerRef = useRef<ReactPlayer>(null);
   const [isReady, setIsReady] = useState(false);
+  const skipFirstCleanup = useRef(true);
 
   useImperativeHandle(ref, () => playerRef.current);
 
-  // useEffect(()=>{
+  // useEffect(() => {
+  //   return () => {
+  //     if (skipFirstCleanup.current) {
+  //       skipFirstCleanup.current = false;
+  //       return;
+  //     }
 
-  //   const player = playerRef.current?.getInternalPlayer()
-  //   console.log(player)
-  // },[])
+  //     const scriptToRemove = Array.from(
+  //       document.querySelectorAll("script")
+  //     ).find((s) => s.src && s.src.includes("peertube"));
+
+  //     scriptToRemove?.remove();
+  //     window["PeerTubePlayer"] = null;
+  //     const peerTubeContainer = document.getElementById("peerTubeContainer");
+  //     peerTubeContainer?.remove();
+  //     console.log("unload peertube");
+  //   };
+  // }, []);
 
   const dispatcher = useVideoPlayerEvent();
 
   const handleReady = (player: ReactPlayer) => {
-    console.log("ready", player.forceUpdate());
+    console.log("ready");
+    // player.forceUpdate()
     // console.log("getCurrentTime", player.getCurrentTime());
     // console.log("getSecondsLoaded", player.getSecondsLoaded());
     // console.log("getDuration", player.getDuration());

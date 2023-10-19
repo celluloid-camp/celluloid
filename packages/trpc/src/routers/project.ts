@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
+import { generateShareCode, generateUniqueShareName } from '../utils/share';
 import { PlaylistSchema } from './playlist';
 import { UserSchema } from './user';
 
@@ -19,6 +20,7 @@ export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   shared: true,
   shareName: true,
   shareExpiresAt: true,
+  sharePassword: true,
   extra: true,
   playlistId: true,
   duration: true,
@@ -45,6 +47,7 @@ export const ProjectSchema = z.object({
   collaborative: z.boolean(),
   shared: z.boolean(),
   shareName: z.string().nullable(),
+  shareCode: z.string().nullable(),
   shareExpiresAt: z.null().nullable(),
   extra: z.record(z.unknown()),
   playlistId: z.string(),
@@ -219,6 +222,7 @@ export const projectRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+
         const project = await prisma.project.create({
           data: {
             userId: ctx.user?.id,
@@ -235,6 +239,7 @@ export const projectRouter = router({
             duration: input.duration,
             thumbnailURL: input.thumbnailURL,
             metadata: input.metadata,
+            shareName: generateUniqueShareName(input.title)
           }
           // select: defaultPostSelect,
         });
@@ -266,7 +271,21 @@ export const projectRouter = router({
         if (!project) {
           throw new Error('Project not found');
         }
+        let sharePassword = null;
+        let shareName = project.shareName;
 
+        if (project.shared != input.shared) {
+          if (input.shared) {
+            sharePassword = generateShareCode();
+            if (!shareName) {
+              shareName = generateUniqueShareName(project.title)
+            }
+          } else {
+            sharePassword = null;
+            shareName = null;
+          }
+
+        }
         const updatedProject = await prisma.project.update({
           where: {
             id: project.id
@@ -276,7 +295,9 @@ export const projectRouter = router({
             description: input.description || project.description,
             public: input.public !== null ? input.public : false,
             collaborative: input.collaborative !== null ? input.collaborative : false,
-            shared: input.shared !== null ? input.shared : false
+            shared: input.shared !== null ? input.shared : false,
+            sharePassword,
+            shareName
           }
         });
 
