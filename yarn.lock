@@ -1862,9 +1862,12 @@ __metadata:
   dependencies:
     "@celluloid/config": "*"
     "@celluloid/prisma": "*"
+    "@types/bcryptjs": ^2.4.5
     "@types/express": ^4.17.17
     "@types/express-session": ^1.17.8
     "@types/node": ^18.14.2
+    "@types/passport": ^1.0.14
+    "@types/passport-local": ^1.0.37
     bcryptjs: ^2.4.3
     connect-redis: ^7.1.0
     express: ^4.18.2
@@ -5094,6 +5097,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/bcryptjs@npm:^2.4.5":
+  version: 2.4.5
+  resolution: "@types/bcryptjs@npm:2.4.5"
+  checksum: f721d72d8e1374ee2a342ce90cc902e2308cd059317af6e663d752537e704ea73bb119a2d34a6a68475f80abc1342635f48570119e0381f83a202724974f1e9f
+  languageName: node
+  linkType: hard
+
 "@types/body-parser@npm:*":
   version: 1.19.3
   resolution: "@types/body-parser@npm:1.19.3"
@@ -5658,6 +5668,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/passport-local@npm:^1.0.37":
+  version: 1.0.37
+  resolution: "@types/passport-local@npm:1.0.37"
+  dependencies:
+    "@types/express": "*"
+    "@types/passport": "*"
+    "@types/passport-strategy": "*"
+  checksum: 53505ad5880f0d6660ea4dd14375639812e17557aeae6e428068d71f7506cd827f2053c8bbed28d6350d0b2c69c80526dca689261bf6891602e56fca2edfdc6d
+  languageName: node
+  linkType: hard
+
 "@types/passport-strategy@npm:*":
   version: 0.2.36
   resolution: "@types/passport-strategy@npm:0.2.36"
@@ -5674,6 +5695,15 @@ __metadata:
   dependencies:
     "@types/express": "*"
   checksum: 84330bedb330302ffd92b009b9b88eb20d3c66b659b383badb9aa3035612b40b47052153858b2498a95d9979d668443bdee3182345819cb18635dfb7f24c109c
+  languageName: node
+  linkType: hard
+
+"@types/passport@npm:^1.0.14":
+  version: 1.0.14
+  resolution: "@types/passport@npm:1.0.14"
+  dependencies:
+    "@types/express": "*"
+  checksum: 8e89c99d770db8acac54f15e06867a4795c441ef17007784dbb4494f5c5c371154d1ee7ef2abbadbcd10619e0ed3304f837cb78a1be478cb783a6ca98d49f3f9
   languageName: node
   linkType: hard
 
