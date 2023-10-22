@@ -10,6 +10,8 @@ import { formatDuration } from "~utils/DurationUtils";
 
 type DurationSliderProps = {
   duration: number;
+  startTime: number;
+  stopTime: number;
   onChange: (start: number, stop: number) => void;
 };
 
@@ -41,9 +43,11 @@ function ValueLabelComponent(props: SliderValueLabelProps) {
 
 export const DurationSlider: React.FC<DurationSliderProps> = ({
   duration,
+  startTime = 60,
+  stopTime = 1000,
   onChange,
 }) => {
-  const [value, setValue] = React.useState<number[]>([60, 1000]);
+  const [value, setValue] = React.useState<number[]>([startTime, stopTime]);
 
   const handleChange = (
     event: Event,
@@ -69,21 +73,23 @@ export const DurationSlider: React.FC<DurationSliderProps> = ({
   };
 
   return (
-    <Slider
-      getAriaLabel={() => "Temperature range"}
-      value={value}
-      onChange={handleChange}
-      valueLabelFormat={formatDuration}
-      step={60}
-      size="small"
-      valueLabelDisplay="on"
-      min={0}
-      max={duration}
-      color="secondary"
-      disableSwap
-      slots={{
-        valueLabel: ValueLabelComponent,
-      }}
-    />
+    <>
+      <Slider
+        getAriaLabel={() => "Annotation slider"}
+        value={value}
+        onChange={handleChange}
+        valueLabelFormat={formatDuration}
+        step={60}
+        size="small"
+        valueLabelDisplay="on"
+        min={0}
+        max={duration}
+        color="secondary"
+        disableSwap
+        slots={{
+          valueLabel: ValueLabelComponent,
+        }}
+      />
+    </>
   );
 };

@@ -155,14 +155,9 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
                     backgroundColor: "#F7EEC0",
                   }}
                 >
-                  {`${project.shareName}-${project.sharePassword}`}
+                  {project.shareCode}
                   <IconButton
-                    onClick={(e) =>
-                      handleCopyUrl(
-                        e,
-                        `${project.shareName}-${project.sharePassword}`
-                      )
-                    }
+                    onClick={(e) => handleCopyUrl(e, `${project.shareCode}`)}
                   >
                     <ContentCopyIcon fontSize="small" />
                   </IconButton>
@@ -171,7 +166,7 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
               <Typography variant="body2">
                 {t("project.share.dialog.description")}
                 <a
-                  href={`/shares/${project.id}?p=${project.sharePassword}`}
+                  href={`/shares/${project.id}?p=${project.shareCode}`}
                   target="_blank"
                   rel="noreferrer"
                 >

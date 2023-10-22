@@ -11,6 +11,8 @@ import {
 
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
 
+import { useSetVideoPlayerProgress } from "./useVideoPlayer";
+
 interface VideoPlayerProps {
   url: string;
 }
@@ -19,6 +21,8 @@ export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
   const playerRef = useRef<ReactPlayer>(null);
   const [isReady, setIsReady] = useState(false);
   const skipFirstCleanup = useRef(true);
+
+  const setVideoPlayerProgress = useSetVideoPlayerProgress();
 
   useImperativeHandle(ref, () => playerRef.current);
 
@@ -71,10 +75,7 @@ export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
   };
 
   const handleProgress = ({ playedSeconds }: OnProgressProps) => {
-    dispatcher({
-      state: "PROGRESS",
-      progress: playedSeconds,
-    });
+    setVideoPlayerProgress(playedSeconds);
   };
 
   const handlePause = () => {
@@ -96,6 +97,7 @@ export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
       state: "SEEK",
       progress: seconds,
     });
+    setVideoPlayerProgress(seconds);
   };
 
   const handleError = (error: Error) => {

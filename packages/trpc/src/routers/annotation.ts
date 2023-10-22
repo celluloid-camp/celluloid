@@ -1,7 +1,7 @@
 import { prisma, UserRole } from '@celluloid/prisma';
 import { TRPCError } from '@trpc/server';
 import { parse as toXML } from 'js2xmlparser';
-import Papa from 'papaparse';
+import * as Papa from 'papaparse';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
@@ -94,6 +94,60 @@ export const annotationRouter = router({
         return annotation;
       }
     }),
+  edit: protectedProcedure
+    .input(
+      z.object({
+        annotationId: z.string(), // identifier for the annotation to be edited
+        text: z.string().min(1).optional(),
+        startTime: z.number().optional(),
+        stopTime: z.number().optional(),
+        pause: z.boolean().optional(),
+        projectId: z.string().optional(),
+        extra: z.any().optional()
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+
+
+      // Check if the annotation with the given ID exists
+      const existingAnnotation = await prisma.annotation.findUnique({
+        where: { id: input.annotationId },
+      });
+
+      if (!existingAnnotation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Annotation not found"
+        }
+        );
+      }
+
+      if (existingAnnotation.userId == ctx.user?.id) {
+        // Perform the update
+        const updatedAnnotation = await prisma.annotation.update({
+          where: { id: input.annotationId },
+          data: {
+            userId: ctx.user?.id,
+            text: input.text ?? existingAnnotation.text,
+            startTime: input.startTime ?? existingAnnotation.startTime,
+            stopTime: input.stopTime ?? existingAnnotation.stopTime,
+            pause: input.pause ?? existingAnnotation.pause,
+            projectId: input.projectId ?? existingAnnotation.projectId,
+            extra: input.extra ?? existingAnnotation.extra
+          },
+        });
+
+        return updatedAnnotation;
+      } else {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Can't edit this annotation"
+        }
+        );
+      }
+
+    }),
+
   delete: protectedProcedure
     .input(
       z.object({
@@ -101,12 +155,32 @@ export const annotationRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      //TODO : check if project owner or collaborator
-      if (ctx.user && ctx.user.id) {
-        const comment = await prisma.annotation.delete({
+
+      // Check if the annotation with the given ID exists
+      const existingAnnotation = await prisma.annotation.findUnique({
+        where: { id: input.annotationId },
+      });
+
+      if (!existingAnnotation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Annotation not found"
+        }
+        );
+      }
+
+      if (existingAnnotation.userId == ctx.user?.id) {
+        const annotation = await prisma.annotation.delete({
           where: { id: input.annotationId },
         });
-        return comment;
+        return annotation;
+      } else {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Can't edit this annotation"
+        }
+        );
+
       }
     }),
   export: protectedProcedure

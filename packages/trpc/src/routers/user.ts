@@ -73,7 +73,16 @@ export const userRouter = router({
         // get an extra item at the end which we'll use as next cursor
         take: limit + 1,
         where: {
-          userId: ctx.user.id
+          OR: [
+            { userId: ctx.user ? ctx.user.id : undefined },
+            ctx.user ? {
+              members: {
+                some: {
+                  userId: ctx.user.id
+                }
+              }
+            } : {}
+          ]
         },
         include: {
           user: {

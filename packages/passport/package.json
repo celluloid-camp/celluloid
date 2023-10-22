@@ -1,7 +1,17 @@
 {
   "name": "@celluloid/passport",
-  "private": true,
   "version": "2.0.1",
+  "private": true,
+  "license": "MIT",
+  "homepage": "https://celluloid.huma-num.fr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celluloid-camp/celluloid.git",
+    "directory": "packages/passport"
+  },
+  "bugs": {
+    "url": "https://github.com/udecode/plate/celluloid/issues"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",

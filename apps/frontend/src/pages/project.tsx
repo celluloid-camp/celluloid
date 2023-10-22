@@ -23,6 +23,7 @@ import { ContextualEditor } from "~components/annotation/ContextualEditor";
 import { useAnnotationEditorState } from "~components/annotation/useAnnotationEditor";
 import ProjectSummary from "~components/project/ProjectSummary";
 import { SideBar } from "~components/project/SideBar";
+import { useVideoPlayerProgressValue } from "~components/project/useVideoPlayer";
 import { VideoPlayer } from "~components/project/VideoPlayer";
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
 import { AnnotationByProjectId, trpc } from "~utils/trpc";
@@ -36,7 +37,7 @@ interface Props {
 const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
   const videoPlayerRef = React.useRef<ReactPlayer>(null);
 
-  const [videoProgress, setVideoProgress] = React.useState(0);
+  const videoProgress = useVideoPlayerProgressValue();
   const [playerIsReady, setPlayerIsReady] = React.useState(false);
 
   const [annotations] = trpc.annotation.byProjectId.useSuspenseQuery({
@@ -51,7 +52,6 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     if (event.state == "READY") {
       setPlayerIsReady(true);
     }
-    setVideoProgress(event.progress);
   });
 
   const visibleAnnotations = useMemo(
@@ -74,7 +74,6 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     );
 
     if (paused.length > 0 && position) {
-      console.log("paused");
       videoPlayerRef.current?.getInternalPlayer().pause();
       videoPlayerRef.current?.seekTo(position + 1, "seconds");
     }

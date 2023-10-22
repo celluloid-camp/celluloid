@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { generateShareCode, generateUniqueShareName } from '../utils/share';
+import { generateUniqueShareName } from '../utils/share';
 import { PlaylistSchema } from './playlist';
 import { UserSchema } from './user';
 
@@ -18,13 +18,13 @@ export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   public: true,
   collaborative: true,
   shared: true,
-  shareName: true,
+  shareCode: true,
   shareExpiresAt: true,
-  sharePassword: true,
   extra: true,
   playlistId: true,
   duration: true,
   thumbnailURL: true,
+  metadata: false
 });
 
 const MemberSchema = z.object({
@@ -46,7 +46,6 @@ export const ProjectSchema = z.object({
   public: z.boolean(),
   collaborative: z.boolean(),
   shared: z.boolean(),
-  shareName: z.string().nullable(),
   shareCode: z.string().nullable(),
   shareExpiresAt: z.null().nullable(),
   extra: z.record(z.unknown()),
@@ -94,9 +93,17 @@ export const projectRouter = router({
               public: true,
             },
             { userId: ctx.user ? ctx.user.id : undefined },
+            ctx.user ? {
+              members: {
+                some: {
+                  userId: ctx.user.id
+                }
+              }
+            } : {}
           ]
         },
-        include: {
+        select: {
+          ...defaultProjectSelect,
           user: {
             select: {
               id: true,
@@ -198,7 +205,7 @@ export const projectRouter = router({
         ...project,
         editable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
         deletable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
-        annotable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin || project.members.some(m => ctx.user && m.userId == ctx.user.id)),
+        annotable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
         commentable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin || project.members.some(m => ctx.user && m.userId == ctx.user.id))
       };
     }),
@@ -239,7 +246,7 @@ export const projectRouter = router({
             duration: input.duration,
             thumbnailURL: input.thumbnailURL,
             metadata: input.metadata,
-            shareName: generateUniqueShareName(input.title)
+            shareCode: input.shared ? generateUniqueShareName(input.title) : null
           }
           // select: defaultPostSelect,
         });
@@ -271,18 +278,15 @@ export const projectRouter = router({
         if (!project) {
           throw new Error('Project not found');
         }
-        let sharePassword = null;
-        let shareName = project.shareName;
+
+        let shareCode = project.shareCode;
 
         if (project.shared != input.shared) {
           if (input.shared) {
-            sharePassword = generateShareCode();
-            if (!shareName) {
-              shareName = generateUniqueShareName(project.title)
-            }
+            shareCode = generateUniqueShareName(project.title);
+
           } else {
-            sharePassword = null;
-            shareName = null;
+            shareCode = null;
           }
 
         }
@@ -296,8 +300,7 @@ export const projectRouter = router({
             public: input.public !== null ? input.public : false,
             collaborative: input.collaborative !== null ? input.collaborative : false,
             shared: input.shared !== null ? input.shared : false,
-            sharePassword,
-            shareName
+            shareCode
           }
         });
 

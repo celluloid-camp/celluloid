@@ -1,7 +1,5 @@
-
-
+import { prisma, Project } from '@celluloid/prisma'
 import fetch from 'node-fetch';
-import { Project, prisma } from '@celluloid/prisma'
 
 
 const getProjectMetadata = async (project: Project) => {

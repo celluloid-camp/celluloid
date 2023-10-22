@@ -26,7 +26,7 @@ export const PlaylistProjectSchema = z.object({
   public: z.boolean(),
   collaborative: z.boolean(),
   shared: z.boolean(),
-  shareName: z.string().nullable(),
+  shareCode: z.string().nullable(),
   shareExpiresAt: z.null().nullable(),
   extra: z.record(z.unknown()),
   playlistId: z.string(),
@@ -169,7 +169,7 @@ export const playlistRouter = router({
                   thumbnailURL: p.thumbnailURL,
                   metadata: p.metadata,
                   userId: userId,
-                  shareName: generateUniqueShareName(p.title)
+                  shareCode: generateUniqueShareName(p.title)
                 }))
               }
             }

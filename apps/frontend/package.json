@@ -1,8 +1,16 @@
 {
   "name": "frontend",
-  "version": "2.0.1-alpha-6",
-  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
+  "version": "2.0.2",
   "license": "MIT",
+  "homepage": "https://celluloid.huma-num.fr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celluloid-camp/celluloid.git",
+    "directory": "apps/frontend"
+  },
+  "bugs": {
+    "url": "https://github.com/udecode/plate/celluloid/issues"
+  },
   "type": "module",
   "private": true,
   "scripts": {

@@ -1,10 +1,16 @@
 {
   "name": "@celluloid/prisma",
   "version": "2.0.6",
-  "description": "Celluloid backend",
-  "repository": "http://github.com/celluloid-edu/celluloid",
-  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
+  "homepage": "https://celluloid.huma-num.fr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celluloid-camp/celluloid.git",
+    "directory": "packages/passport"
+  },
+  "bugs": {
+    "url": "https://github.com/udecode/plate/celluloid/issues"
+  },
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

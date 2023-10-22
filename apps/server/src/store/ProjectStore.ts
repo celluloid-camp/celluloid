@@ -113,8 +113,8 @@ export function selectAll(user: UserRecord): Promise<ProjectRecord[]> {
 
 
 
-export function selectOneByShareName(shareName: string) {
-  return database.first("*").from("Project").where("shareName", shareName);
+export function selectOneByShareName(shareCode: string) {
+  return database.first("*").from("Project").where("shareCode", shareCode);
 }
 
 export function selectOne(projectId: string, user: Partial<UserRecord>) {

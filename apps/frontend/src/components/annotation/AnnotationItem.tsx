@@ -46,6 +46,7 @@ import {
 
 import { CommentForm } from "./CommentForm";
 import { CommentItem } from "./CommentItem";
+import { useEditAnnotation } from "./useAnnotationEditor";
 
 interface AnnotationItemProps {
   project: ProjectById;
@@ -63,11 +64,15 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
   const [hovering, setHovering] = useState(false);
 
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [editedAnnotation, setEditedAnnotation] = useEditAnnotation();
 
   const confirm = useConfirm();
   const utils = trpc.useContext();
 
-  const handleEdit = () => {};
+  const handleEdit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
+    setEditedAnnotation(annotation);
+  };
 
   const mutation = trpc.annotation.delete.useMutation({
     onSuccess: () => {
@@ -184,7 +189,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             {hovering && annotation.user.id == user?.id ? (
               <Stack direction={"row"}>
                 <Tooltip title="Modifier" arrow>
-                  <IconButton onClick={handleEdit} disabled>
+                  <IconButton onClick={handleEdit}>
                     <EditIcon sx={{ fontSize: 18 }} />
                   </IconButton>
                 </Tooltip>

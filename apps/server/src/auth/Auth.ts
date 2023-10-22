@@ -56,19 +56,12 @@ const signStudentUp: VerifyFunctionWithRequest = (
 ) => {
   const { shareCode } = req.body;
 
-  const parts = shareCode.split("-");
-  const sharePassword = parts.slice(-2).join("-");
-  const shareName = parts.slice(0, -1).slice(0, -1).join("-");
-
-  return ProjectStore.selectOneByShareName(shareName)
+  return ProjectStore.selectOneByShareName(shareCode)
     .then((result) => {
       if (result) {
-        if (sharePassword === result.sharePassword) {
-          return UserStore.createStudent(username, password, result.id);
-        }
+        return UserStore.createStudent(username, password, result.id);
         return Promise.reject(new Error("IncorrectProjectPassword"));
       }
-      return Promise.reject(new Error("ProjectNotFound"));
     })
     .then((user: any) => Promise.resolve(done(null, user)))
     .catch((error: Error) => {

@@ -4,6 +4,15 @@
   "description": "",
   "main": "index.js",
   "bin": "index.js",
+  "homepage": "https://celluloid.huma-num.fr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celluloid-camp/celluloid.git",
+    "directory": "packages/i18n"
+  },
+  "bugs": {
+    "url": "https://github.com/udecode/plate/celluloid/issues"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "scanner": "npx i18next-scanner",
