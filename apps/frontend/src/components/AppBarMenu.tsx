@@ -16,12 +16,12 @@ const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data, isError } = trpc.user.me.useQuery();
+  const { data } = trpc.user.me.useQuery();
 
   const location = useLocation();
 
   const handleCreate = () => {
-    if (!isError) {
+    if (data) {
       navigate(`/create`);
     } else {
       navigate("/signup", { state: { backgroundLocation: location } });
@@ -29,7 +29,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
   };
 
   const handleJoin = () => {
-    if (isError) {
+    if (!data) {
       navigate("/signup-student", { state: { backgroundLocation: location } });
     } else {
       navigate("/join", { state: { backgroundLocation: location } });

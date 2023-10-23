@@ -24,14 +24,14 @@ import { TeacherIcon } from "~components/TeacherIcon";
 import { trpc } from "~utils/trpc";
 
 export const HomePage: React.FC = () => {
-  const { isError } = trpc.user.me.useQuery();
+  const { data } = trpc.user.me.useQuery();
   const location = useLocation();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleJoin = () => {
-    if (isError) {
+    if (!data) {
       navigate("/signup-student", { state: { backgroundLocation: location } });
     } else {
       navigate("/join", { state: { backgroundLocation: location } });

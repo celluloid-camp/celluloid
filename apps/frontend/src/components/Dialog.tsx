@@ -44,7 +44,7 @@ const BootstrapDialogTitle: React.FC<BootstrapDialogTitleProps> = ({
   return (
     <>
       <DialogTitle
-        sx={{ m: 0, p: 2, borderBottom: 1, borderBottomColor: "neutral.100" }}
+        sx={{ m: 0, py: 2, borderBottom: 1, borderBottomColor: "neutral.100" }}
         {...other}
       >
         {children}
@@ -68,10 +68,12 @@ const BootstrapDialogTitle: React.FC<BootstrapDialogTitleProps> = ({
           {error}
         </Alert>
       ) : null}
-      <LinearProgress
-        variant="query"
-        sx={{ visibility: loading ? "visible" : "hidden", flexGrow: 1 }}
-      />
+      {loading ? (
+        <LinearProgress
+          variant="query"
+          sx={{ visibility: loading ? "visible" : "hidden", flexGrow: 1 }}
+        />
+      ) : null}
     </>
   );
 };

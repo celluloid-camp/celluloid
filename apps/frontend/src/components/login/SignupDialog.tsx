@@ -25,12 +25,13 @@ export const SignupDialog: React.FC = () => {
   const mutation = trpc.user.register.useMutation();
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required(),
-    email: Yup.string().email().required(),
-    password: Yup.string().min(8).required(),
+    username: Yup.string().required().label(t("signup.username.label")),
+    email: Yup.string().email().required().label(t("signup.email.label")),
+    password: Yup.string().min(8).required().label(t("signup.password.label")),
     passwordConfirmation: Yup.string()
-      .oneOf([Yup.ref("password")], "Passwords must match")
-      .required(),
+      .oneOf([Yup.ref("password")], t("password.unmatch"))
+      .required()
+      .label(t("signup.password.label")),
   });
 
   const formik = useFormik({
@@ -176,10 +177,11 @@ export const SignupDialog: React.FC = () => {
             }
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ mx: 2 }}>
           <LoadingButton
             variant="contained"
             color="primary"
+            size="large"
             type="submit"
             loading={mutation.isLoading}
             disabled={mutation.isLoading}

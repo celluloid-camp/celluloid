@@ -92,7 +92,7 @@ export const StudentSignupDialog: React.FC = () => {
       loading={formik.isSubmitting}
     >
       <form onSubmit={formik.handleSubmit}>
-        <DialogContent>
+        <DialogContent sx={{ mt: 0 }}>
           <TextField
             id="shareCode"
             name="shareCode"
@@ -158,13 +158,14 @@ export const StudentSignupDialog: React.FC = () => {
             helperText={formik.touched.password && formik.errors.password}
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ mx: 2, mt: 2 }}>
           <Box display="flex" justifyContent={"space-between"} flex={1}>
             <Box>
               <Button
                 color="primary"
                 onClick={handleSignin}
                 size="small"
+                variant="outlined"
                 sx={{ textTransform: "uppercase", color: "text.secondary" }}
               >
                 <Trans i18nKey="student-signup.login.button">

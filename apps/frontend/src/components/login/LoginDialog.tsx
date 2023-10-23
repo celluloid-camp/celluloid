@@ -25,8 +25,8 @@ export const LoginDialog: React.FC = () => {
   const mutation = trpc.user.login.useMutation();
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required(t("signin.username.required")),
-    password: Yup.string().required(t("signin.password.required")),
+    username: Yup.string().required().label(t("signin.username")),
+    password: Yup.string().required().label(t("signin.password")),
   });
 
   const handlePasswordReset = () => {
@@ -139,16 +139,17 @@ export const LoginDialog: React.FC = () => {
         <DialogActions sx={{ marginTop: 4 }}>
           <Box display="flex" justifyContent={"space-between"} flex={1}>
             <Box>
-              <Button
+              {/* <Button
                 color="primary"
                 onClick={handleConfirm}
                 size="small"
                 sx={{ textTransform: "uppercase", color: "text.secondary" }}
               >
                 <Trans i18nKey="signin.confirm.button">Confirm</Trans>
-              </Button>
+              </Button> */}
               <Button
                 color="primary"
+                variant="outlined"
                 onClick={handleSignup}
                 size="small"
                 sx={{ textTransform: "uppercase", color: "text.secondary" }}
