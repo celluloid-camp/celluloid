@@ -13,7 +13,13 @@ import { ConfirmProvider } from "material-ui-confirm";
 import { SnackbarProvider } from "notistack";
 import React, { Suspense, useState } from "react";
 import { initReactI18next } from "react-i18next";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  createBrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import { setLocale } from "yup";
 import { fr } from "yup-locales";
@@ -69,13 +75,56 @@ i18next
     },
   } as i18next.InitOptions);
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    Component: SharedLayout,
+    children: [
+      {
+        path: "/",
+        index: true,
+        Component: HomePage,
+      },
+      {
+        path: "create",
+        Component: CreateProjectPage,
+      },
+      {
+        path: "about",
+        Component: About,
+      },
+      {
+        path: "profile",
+        Component: UserProfile,
+      },
+      {
+        path: "legal-notice",
+        Component: LegalNotice,
+      },
+      {
+        path: "terms-and-conditions",
+        Component: LegalNotice,
+      },
+      {
+        path: "project/:projectId",
+        Component: ProjectPage,
+      },
+      {
+        path: "shares/:projectId",
+        Component: SharePage,
+      },
+    ],
+  },
+]);
+
 const AppRouters = () => {
   const location = useLocation();
-  const { state } = location;
+  const backgroundLocation =
+    location.state && location.state.backgroundLocation;
 
   return (
     <div>
-      <Routes location={state?.backgroundLocation || location}>
+      <Routes location={backgroundLocation || location}>
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<HomePage />} />
           <Route path="create" element={<CreateProjectPage />} />
@@ -89,13 +138,14 @@ const AppRouters = () => {
         </Route>
         <Route path="/shares/:projectId" element={<SharePage />} />
       </Routes>
-      {state?.backgroundLocation && (
+
+      {backgroundLocation && (
         <Routes>
           <Route path="login" element={<LoginDialog />} />
-          <Route path="forgot" element={<ForgotDialog />} />
+          <Route path="signup" element={<SignupDialog />} />
           <Route path="recover" element={<RecoverDialog />} />
           <Route path="confirm" element={<ConfirmDialog />} />
-          <Route path="signup" element={<SignupDialog />} />
+          <Route path="forgot" element={<ForgotDialog />} />
           <Route path="signup-student" element={<StudentSignupDialog />} />
           <Route path="join" element={<JoinDialog />} />
         </Routes>
@@ -130,14 +180,10 @@ const App = () => {
             <trpc.Provider client={trpcClient} queryClient={queryClient}>
               <QueryClientProvider client={queryClient}>
                 <ConfirmProvider>
-                  <React.Fragment>
-                    <React.Fragment>
-                      <BrowserRouter>
-                        <ResetScroll />
-                        <AppRouters />
-                      </BrowserRouter>
-                    </React.Fragment>
-                  </React.Fragment>
+                  <BrowserRouter>
+                    <ResetScroll />
+                    <AppRouters />
+                  </BrowserRouter>
                 </ConfirmProvider>
               </QueryClientProvider>
             </trpc.Provider>
