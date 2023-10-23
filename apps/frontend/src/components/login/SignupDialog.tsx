@@ -56,7 +56,7 @@ export const SignupDialog: React.FC = () => {
 
         utils.user.me.invalidate();
         navigate(`/confirm?email=${values.email}`, {
-          state: { backgroundLocation: location },
+          state: { backgroundLocation: "/" },
         });
         formik.setStatus("submited");
       } catch (e) {

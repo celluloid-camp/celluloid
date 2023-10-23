@@ -32,9 +32,9 @@ export const HomePage: React.FC = () => {
 
   const handleJoin = () => {
     if (!data) {
-      navigate("/signup-student", { state: { backgroundLocation: location } });
+      navigate("/signup-student", { state: { backgroundLocation: "/" } });
     } else {
-      navigate("/join", { state: { backgroundLocation: location } });
+      navigate("/join", { state: { backgroundLocation: "/" } });
     }
   };
 

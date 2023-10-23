@@ -32,7 +32,7 @@ export const StudentSignupDialog: React.FC = () => {
 
   const handleSignin = () => {
     navigate(`/login`, {
-      state: { backgroundLocation: location },
+      state: { backgroundLocation: "/" },
     });
   };
 

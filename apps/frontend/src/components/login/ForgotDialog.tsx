@@ -23,7 +23,7 @@ export const ForgotDialog: React.FC = () => {
 
   const handleRecover = () => {
     navigate("/recover", {
-      state: { backgroundLocation: location },
+      state: { backgroundLocation: "/" },
       replace: true,
     });
   };

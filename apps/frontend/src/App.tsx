@@ -1,6 +1,6 @@
 import "dayjs/locale/fr"; // import locale
 
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, Dialog, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import * as dayjs from "dayjs";
@@ -11,19 +11,23 @@ import * as i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { ConfirmProvider } from "material-ui-confirm";
 import { SnackbarProvider } from "notistack";
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useCallback, useState } from "react";
 import { initReactI18next } from "react-i18next";
 import {
   BrowserRouter,
   createBrowserRouter,
+  Navigate,
   Route,
   Routes,
   useLocation,
+  useNavigate,
+  useRoutes,
 } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import { setLocale } from "yup";
 import { fr } from "yup-locales";
 
+import { BootstrapDialog } from "~components/Dialog";
 import { ConfirmDialog } from "~components/login/ConfirmDialog";
 import { ForgotDialog } from "~components/login/ForgotDialog";
 import { JoinDialog } from "~components/login/JoinDialog";
@@ -118,13 +122,52 @@ const router = createBrowserRouter([
 ]);
 
 const AppRouters = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const backgroundLocation =
-    location.state && location.state.backgroundLocation;
+
+  const state = location.state as { backgroundPath?: string };
+
+  const background = state?.backgroundPath ?? "/";
+
+  const dismissHandler = useCallback(
+    () => navigate(background),
+    [navigate, background]
+  );
+
+  const modalElement = useRoutes([
+    {
+      path: "/login",
+      element: <LoginDialog />,
+    },
+    {
+      path: "/signup",
+      element: <SignupDialog />,
+    },
+    {
+      path: "/recover",
+      element: <RecoverDialog />,
+    },
+    {
+      path: "/confirm",
+      element: <ConfirmDialog />,
+    },
+    {
+      path: "/forgot",
+      element: <ForgotDialog />,
+    },
+    {
+      path: "/signup-student",
+      element: <StudentSignupDialog />,
+    },
+    {
+      path: "/join",
+      element: <JoinDialog />,
+    },
+  ]);
 
   return (
     <div>
-      <Routes location={backgroundLocation || location}>
+      <Routes location={modalElement !== null ? background : undefined}>
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<HomePage />} />
           <Route path="create" element={<CreateProjectPage />} />
@@ -134,22 +177,20 @@ const AppRouters = () => {
           <Route path="terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="project/:projectId" element={<ProjectPage />} />
           <Route path="shares/:projectId" element={<SharePage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
         <Route path="/shares/:projectId" element={<SharePage />} />
       </Routes>
-
-      {backgroundLocation && (
-        <Routes>
-          <Route path="login" element={<LoginDialog />} />
-          <Route path="signup" element={<SignupDialog />} />
-          <Route path="recover" element={<RecoverDialog />} />
-          <Route path="confirm" element={<ConfirmDialog />} />
-          <Route path="forgot" element={<ForgotDialog />} />
-          <Route path="signup-student" element={<StudentSignupDialog />} />
-          <Route path="join" element={<JoinDialog />} />
-        </Routes>
-      )}
+      <BootstrapDialog
+        open={modalElement !== null}
+        scroll="body"
+        maxWidth="xs"
+        fullWidth={true}
+        onClose={dismissHandler}
+      >
+        {modalElement}
+      </BootstrapDialog>
     </div>
   );
 };

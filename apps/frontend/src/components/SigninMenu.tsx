@@ -47,11 +47,11 @@ export const SigninMenu = ({ user }: Props) => {
   };
 
   const handleLogin = () => {
-    navigate("/login", { state: { backgroundLocation: location } });
+    navigate("/login", { state: { backgroundPath: location.pathname } });
   };
 
   const handleSignup = () => {
-    navigate("/signup", { state: { backgroundLocation: location } });
+    navigate("/signup", { state: { backgroundPath: location.pathname } });
   };
 
   return (

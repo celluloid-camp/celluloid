@@ -31,22 +31,19 @@ export const LoginDialog: React.FC = () => {
 
   const handlePasswordReset = () => {
     navigate("/forgot", {
-      state: { backgroundLocation: location },
-      replace: true,
+      state: { backgroundPath: "/" },
     });
   };
 
   const handleConfirm = () => {
     navigate("/confirm", {
-      state: { backgroundLocation: location },
-      replace: true,
+      state: { backgroundPath: "/" },
     });
   };
 
   const handleSignup = () => {
     navigate("/signup", {
-      state: { backgroundLocation: location },
-      replace: true,
+      state: { backgroundPath: "/" },
     });
   };
 

@@ -24,15 +24,15 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
     if (data) {
       navigate(`/create`);
     } else {
-      navigate("/signup", { state: { backgroundLocation: location } });
+      navigate("/signup", { state: { backgroundLocation: "/" } });
     }
   };
 
   const handleJoin = () => {
     if (!data) {
-      navigate("/signup-student", { state: { backgroundLocation: location } });
+      navigate("/signup-student", { state: { backgroundLocation: "/" } });
     } else {
-      navigate("/join", { state: { backgroundLocation: location } });
+      navigate("/join", { state: { backgroundLocation: "/" } });
     }
   };
 
