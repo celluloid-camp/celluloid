@@ -1960,7 +1960,7 @@ __metadata:
   resolution: "@celluloid/utils@workspace:packages/utils"
   dependencies:
     bcryptjs: ^2.4.3
-    change-case: ^5.1.2
+    change-case: ^4.1.2
     tsup: ^7.2.0
     typescript: ^5.2.2
   languageName: unknown
@@ -7936,13 +7936,6 @@ __metadata:
   version: 5.0.2
   resolution: "change-case@npm:5.0.2"
   checksum: 6c5e0cc2d526be82fa354de51f5293e7e9f00f67b79a61950c980b8b8ae57f7fbb110a8a4eb3178e6a6f6a487f774696bdb1d43b9543d6938080428f28953c78
-  languageName: node
-  linkType: hard
-
-"change-case@npm:^5.1.2":
-  version: 5.1.2
-  resolution: "change-case@npm:5.1.2"
-  checksum: b3a5bdd59b50b96bc3e42f4cb3876aa75178dcc0aa9a5a44975e569c9cd809fc4fc15345a887fb45b9656e0fde98ffe028a41fc3d97c4748c6ab80422eea6e7a
   languageName: node
   linkType: hard
 
