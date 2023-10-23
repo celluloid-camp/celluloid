@@ -2,9 +2,6 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "~actions/*": [
-                "src/actions/*"
-            ],
             "~components/*": [
                 "src/components/*"
             ],
@@ -20,20 +17,11 @@
             "~pages/*": [
                 "src/pages/*"
             ],
-            "~reducers/*": [
-                "src/reducers/*"
-            ],
             "~services/*": [
                 "src/services/*"
             ],
-            "~store/*": [
-                "src/store/*"
-            ],
             "~theme/*": [
                 "src/theme/*"
-            ],
-            "~types/*": [
-                "src/types/*"
             ],
             "~utils/*": [
                 "src/utils/*"

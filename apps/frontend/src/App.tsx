@@ -29,7 +29,6 @@ import { SharedLayout } from "~components/SharedLayout";
 import { trpc } from "~utils/trpc";
 
 import ResetScroll from "./components/ResetScroll";
-import { UpdateIndicator } from "./components/UpdateIndicator";
 import commonEN from "./locales/en/common.json";
 import commonFR from "./locales/fr/common.json";
 import { About } from "./pages/about";
@@ -133,7 +132,6 @@ const App = () => {
                 <ConfirmProvider>
                   <React.Fragment>
                     <React.Fragment>
-                      <UpdateIndicator />
                       <BrowserRouter>
                         <ResetScroll />
                         <AppRouters />

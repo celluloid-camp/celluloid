@@ -26,7 +26,7 @@
   "dependencies": {
     "@celluloid/passport": "*",
     "@celluloid/prisma": "*",
-    "@trpc/server": "^10.40.0",
+    "@trpc/server": "^10.41.0",
     "bcryptjs": "^2.4.3",
     "change-case": "^4.1.2",
     "dotenv": "^16.3.1",

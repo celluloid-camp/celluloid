@@ -46,16 +46,16 @@
     "@celluloid/config": "*",
     "@types/dotenv": "^6.0.0",
     "@types/randomcolor": "^0.5.7",
-    "dotenv-cli": "^7.2.1",
+    "dotenv-cli": "^7.3.0",
     "eslint": "^8.50.0",
     "prisma": "^5.4.2",
     "rimraf": "^5.0.1",
-    "tsup": "^5.11.13",
+    "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@prisma/client": "^5.4.2",
     "randomcolor": "^0.6.2",
-    "tsx": "^3.13.0"
+    "tsx": "^3.14.0"
   }
 }
