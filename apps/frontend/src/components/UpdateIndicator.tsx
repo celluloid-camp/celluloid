@@ -2,19 +2,12 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import * as React from "react";
 import { Trans } from "react-i18next";
-import { connect } from "react-redux";
-
-import { AppState } from "~types/StateTypes";
-
-const mapStateToProps = (state: AppState) => ({
-  open: state.updated,
-});
 
 interface Props {
   open: boolean;
 }
 
-const UpdateIndicator: React.FC<Props> = ({ open }: Props) => (
+export const UpdateIndicator: React.FC<Props> = ({ open }: Props) => (
   <Snackbar
     anchorOrigin={{
       vertical: "top",
@@ -37,5 +30,3 @@ const UpdateIndicator: React.FC<Props> = ({ open }: Props) => (
     }
   />
 );
-
-export default connect(mapStateToProps)(UpdateIndicator);

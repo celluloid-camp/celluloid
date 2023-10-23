@@ -21,7 +21,6 @@
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "--shortcuts to run commands in workspaces--": "",
     "frontend": "yarn workspace frontend",
-    "server": "yarn workspace server",
     "admin": "yarn workspace admin",
     "backend": "yarn workspace backend",
     "prisma": "yarn workspace @celluloid/prisma",

@@ -40,9 +40,6 @@
             ],
             "~/*": [
                 "src/*"
-            ],
-            "~login/*": [
-                "src/components/login/*"
             ]
         }
     }

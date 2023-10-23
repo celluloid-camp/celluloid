@@ -16,7 +16,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Trans, useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { openStudentSignup } from "~actions/Signin";
 import { ProjectGrid } from "~components/home/ProjectGrid";
@@ -27,21 +27,21 @@ import { trpc } from "~utils/trpc";
 
 export const HomePage: React.FC = () => {
   const { isError } = trpc.user.me.useQuery();
+  const location = useLocation();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
   const handleJoin = () => {
-    dispatch(openStudentSignup());
+    if (isError) {
+      navigate("/signup-student", { state: { backgroundLocation: location } });
+    } else {
+      navigate("/join", { state: { backgroundLocation: location } });
+    }
   };
 
   const handleCreate = () => {
-    if (!isError) {
-      navigate(`/create`);
-    } else {
-      dispatch(openStudentSignup());
-    }
+    navigate(`/create`);
   };
 
   return (

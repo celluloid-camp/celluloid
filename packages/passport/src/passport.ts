@@ -46,27 +46,25 @@ passport.use(
 );
 
 
-const loginStrategy = new LocalStrategy(
-  { usernameField: "login" },
-  async (login, password, done) => {
+const loginStrategy = new LocalStrategy(async (login, password, done) => {
 
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [{ email: login }, { username: login, }]
-      }
-    });
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [{ email: login }, { username: login, }]
+    }
+  });
 
-    if (!user) {
-      return Promise.resolve(done(new InvalidUserError("User not found")));
-    }
-    if (!bcrypt.compareSync(password, user.password)) {
-      return Promise.resolve(done(new InvalidUserError(`Login failed for user ${user.username}: incorrect password`)));
-    }
-    if (!user.confirmed && user.role !== UserRole.Student) {
-      return Promise.resolve(done(new UserNotConfirmed(`Login failed: ${user.username} is not confirmed`)));
-    }
-    return Promise.resolve(done(null, user));
+  if (!user) {
+    return done(new InvalidUserError("User not found"));
   }
+  if (!bcrypt.compareSync(password, user.password)) {
+    return done(new InvalidUserError(`Login failed for user ${user.username}: incorrect password`));
+  }
+  if (!user.confirmed && user.role !== UserRole.Student) {
+    return done(new UserNotConfirmed(`Login failed: ${user.username} is not confirmed`));
+  }
+  return done(null, user);
+}
 );
 
 passport.use(SigninStrategy.LOGIN, loginStrategy);

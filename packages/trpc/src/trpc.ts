@@ -3,7 +3,7 @@ import "express-session"
 import { User, UserRole } from '@celluloid/prisma';
 import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { Request } from "express";
+import { type Request, type Response } from 'express';
 import { Session } from "express-session";
 import { OpenApiMeta } from 'trpc-openapi';
 import { v4 as uuid } from 'uuid';
@@ -13,6 +13,8 @@ export type Context = {
   requestId: string;
   requirePermissions: (roles: UserRole[]) => boolean;
   logout: () => Promise<boolean>;
+  req: Request;
+  res: Response;
 };
 
 export const createRPCContext = async ({
@@ -47,8 +49,12 @@ export const createRPCContext = async ({
       });
     })
   }
-  return { user, requirePermissions, logout, requestId };
+  return {
+    user, requirePermissions, logout, requestId, req,
+    res,
+  };
 };
+
 
 const t = initTRPC.context<Context>().meta<OpenApiMeta>().create({
   // transformer: SuperJSON

@@ -2,27 +2,25 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import * as React from "react";
 import { Trans } from "react-i18next";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 import { UserAvatar } from "~components/UserAvatar";
-import { UserMe } from "~utils/trpc";
+import { trpc, UserMe } from "~utils/trpc";
 
 interface Props {
   user?: UserMe;
-  onClickLogin(): void;
-  onClickSignup(): void;
-  onClickLogout(): void;
 }
 
-export const SigninMenu = ({
-  user,
-  onClickLogin,
-  onClickSignup,
-  onClickLogout,
-}: Props) => {
+export const SigninMenu = ({ user }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const utils = trpc.useContext();
+  const mutation = trpc.user.logout.useMutation();
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,9 +28,12 @@ export const SigninMenu = ({
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await mutation.mutateAsync();
+    utils.user.me.invalidate();
+    utils.project.list.invalidate();
     handleClose();
-    onClickLogout();
+    navigate("/");
   };
 
   const handleProfile = () => {
@@ -45,6 +46,14 @@ export const SigninMenu = ({
     handleClose();
   };
 
+  const handleLogin = () => {
+    navigate("/login", { state: { backgroundLocation: location } });
+  };
+
+  const handleSignup = () => {
+    navigate("/signup", { state: { backgroundLocation: location } });
+  };
+
   return (
     <div>
       {user ? (
@@ -54,7 +63,7 @@ export const SigninMenu = ({
       ) : (
         <div>
           <Button
-            onClick={onClickSignup}
+            onClick={handleSignup}
             sx={{
               textTransform: "uppercase",
               color: "text.primary",
@@ -64,7 +73,7 @@ export const SigninMenu = ({
             <Trans i18nKey={"menu.signup"} />
           </Button>
           <Button
-            onClick={onClickLogin}
+            onClick={handleLogin}
             sx={{
               textTransform: "uppercase",
               color: "text.primary",
@@ -75,12 +84,6 @@ export const SigninMenu = ({
           </Button>
         </div>
       )}
-      {/* <Link to={`login`} state={{ backgroundLocation: location }}>
-            <Button>test {location.pathname}</Button>
-          </Link>
-          <Link to={`signup`} state={{ backgroundLocation: location }}>
-            <Button>test {location.pathname}</Button>
-          </Link> */}
       <Menu
         id="account-menu"
         anchorEl={anchorEl}

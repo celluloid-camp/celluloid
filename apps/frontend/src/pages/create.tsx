@@ -29,12 +29,12 @@ import * as Yup from "yup";
 
 import { AddVideoToPlaylistDialog } from "~components/AddVideoToPlaylistDialog";
 import { StyledTitle } from "~components/typography";
-import { ERR_ALREADY_EXISTING_PROJECT } from "~services/Constants";
 import {
   getPeerTubeVideoData,
   PeerTubeVideoDataResult,
   PeerTubeVideoWithThumbnail,
 } from "~services/peertube";
+import { ERR_ALREADY_EXISTING_PROJECT } from "~utils/Constants";
 // import { formatDuration } from "~utils/DurationUtils";
 import { humanizeError } from "~utils/errors";
 import { trpc } from "~utils/trpc";

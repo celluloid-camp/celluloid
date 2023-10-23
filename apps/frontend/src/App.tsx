@@ -13,20 +13,25 @@ import { ConfirmProvider } from "material-ui-confirm";
 import { SnackbarProvider } from "notistack";
 import React, { Suspense, useState } from "react";
 import { initReactI18next } from "react-i18next";
-import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { RecoilRoot } from "recoil";
+import { setLocale } from "yup";
+import { fr } from "yup-locales";
 
-import { LogintDialog } from "~components/LoginDialog";
+import { ConfirmDialog } from "~components/login/ConfirmDialog";
+import { ForgotDialog } from "~components/login/ForgotDialog";
+import { JoinDialog } from "~components/login/JoinDialog";
+import { LoginDialog } from "~components/login/LoginDialog";
+import { RecoverDialog } from "~components/login/RecoverDialog";
+import { SignupDialog } from "~components/login/SignupDialog";
+import { StudentSignupDialog } from "~components/login/StudentSignupDialog";
 import { SharedLayout } from "~components/SharedLayout";
-import { SignupDialog } from "~components/SignupDialog";
 import { trpc } from "~utils/trpc";
 
 import ResetScroll from "./components/ResetScroll";
-import UpdateIndicator from "./components/UpdateIndicator";
-// import { ConnectedRouter } from "connected-react-router";
-import en from "./locales/en/common.json";
-import fr from "./locales/fr/common.json";
+import { UpdateIndicator } from "./components/UpdateIndicator";
+import commonEN from "./locales/en/common.json";
+import commonFR from "./locales/fr/common.json";
 import { About } from "./pages/about";
 import { CreateProjectPage } from "./pages/create";
 import { HomePage } from "./pages/home";
@@ -35,13 +40,14 @@ import UserProfile from "./pages/profile";
 import ProjectPage from "./pages/project";
 import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
-import createAppStore from "./store";
 import { createTheme } from "./theme";
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear); // use plugin
 dayjs.extend(duration);
 dayjs.locale("fr-fr"); // use locale
+
+setLocale(fr);
 
 i18next
   .use(LanguageDetector)
@@ -50,10 +56,10 @@ i18next
     debug: false,
     resources: {
       en_US: {
-        translations: en,
+        translations: commonEN,
       },
       fr_FR: {
-        translations: fr,
+        translations: commonFR,
       },
     },
     ns: ["translations"],
@@ -63,8 +69,6 @@ i18next
       escapeValue: false,
     },
   } as i18next.InitOptions);
-
-const store = createAppStore();
 
 const AppRouters = () => {
   const location = useLocation();
@@ -88,8 +92,13 @@ const AppRouters = () => {
       </Routes>
       {state?.backgroundLocation && (
         <Routes>
-          <Route path="login" element={<LogintDialog />} />
+          <Route path="login" element={<LoginDialog />} />
+          <Route path="forgot" element={<ForgotDialog />} />
+          <Route path="recover" element={<RecoverDialog />} />
+          <Route path="confirm" element={<ConfirmDialog />} />
           <Route path="signup" element={<SignupDialog />} />
+          <Route path="signup-student" element={<StudentSignupDialog />} />
+          <Route path="join" element={<JoinDialog />} />
         </Routes>
       )}
     </div>
@@ -116,28 +125,26 @@ const App = () => {
   return (
     <Suspense fallback="loading">
       <RecoilRoot>
-        <Provider store={store}>
-          <ThemeProvider theme={createTheme()}>
-            <CssBaseline />
-            <SnackbarProvider maxSnack={3}>
-              <trpc.Provider client={trpcClient} queryClient={queryClient}>
-                <QueryClientProvider client={queryClient}>
-                  <ConfirmProvider>
+        <ThemeProvider theme={createTheme()}>
+          <CssBaseline />
+          <SnackbarProvider maxSnack={3}>
+            <trpc.Provider client={trpcClient} queryClient={queryClient}>
+              <QueryClientProvider client={queryClient}>
+                <ConfirmProvider>
+                  <React.Fragment>
                     <React.Fragment>
-                      <React.Fragment>
-                        <UpdateIndicator />
-                        <BrowserRouter>
-                          <ResetScroll />
-                          <AppRouters />
-                        </BrowserRouter>
-                      </React.Fragment>
+                      <UpdateIndicator />
+                      <BrowserRouter>
+                        <ResetScroll />
+                        <AppRouters />
+                      </BrowserRouter>
                     </React.Fragment>
-                  </ConfirmProvider>
-                </QueryClientProvider>
-              </trpc.Provider>
-            </SnackbarProvider>
-          </ThemeProvider>
-        </Provider>
+                  </React.Fragment>
+                </ConfirmProvider>
+              </QueryClientProvider>
+            </trpc.Provider>
+          </SnackbarProvider>
+        </ThemeProvider>
       </RecoilRoot>
     </Suspense>
   );

@@ -1,82 +1,41 @@
-import { AppBar, Box, Button, styled, Toolbar } from "@mui/material";
+import { AppBar, Box, BoxProps, Button, styled, Toolbar } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { connect, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
-import { Link } from "react-router-dom";
-import { Dispatch } from "redux";
 
-import {
-  closeSignin,
-  openLogin,
-  openSignup,
-  openStudentSignup,
-} from "~actions/Signin";
 import { getButtonLink } from "~components/ButtonLink";
 import { Footer } from "~components/Footer";
 import { LogoWithLabel } from "~components/LogoWithLabel";
-import SigninDialog, { SigninState } from "~components/Signin";
 import { SigninMenu } from "~components/SigninMenu";
-import { EmptyAction } from "~types/ActionTypes";
-import { AppState } from "~types/StateTypes";
 import { trpc } from "~utils/trpc";
 
 import { LanguageMenu } from "./LanguageMenu";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
-type Props = React.PropsWithChildren & {
-  signinDialog: SigninState;
-  onClickLogin(): EmptyAction;
-  onClickSignup(): EmptyAction;
-  onCloseSignin(): EmptyAction;
-};
-
-const mapStateToProps = (state: AppState) => {
-  return {
-    signinDialog: state.signin.dialog,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    onClickLogin: () => dispatch(openLogin()),
-    onClickSignup: () => dispatch(openSignup()),
-    onCloseSignin: () => dispatch(closeSignin()),
-  };
-};
-
-export const AppBarMenuWrapper: React.FC<Props> = ({
-  onClickLogin,
-  onClickSignup,
-  onCloseSignin,
-  signinDialog,
-  children,
-}) => {
+export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const meQuery = trpc.user.me.useQuery();
-  const logoutMutation = trpc.user.logout.useMutation();
+  const { data, isError } = trpc.user.me.useQuery();
+
   const location = useLocation();
 
-  const dispatch = useDispatch();
-
   const handleCreate = () => {
-    if (!meQuery.error) {
+    if (!isError) {
       navigate(`/create`);
     } else {
-      dispatch(openStudentSignup());
+      navigate("/signup", { state: { backgroundLocation: location } });
     }
   };
 
   const handleJoin = () => {
-    dispatch(openStudentSignup());
+    if (isError) {
+      navigate("/signup-student", { state: { backgroundLocation: location } });
+    } else {
+      navigate("/join", { state: { backgroundLocation: location } });
+    }
   };
 
-  const handleLogout = async () => {
-    await logoutMutation.mutateAsync();
-    navigate("/");
-  };
   return (
     <Box
       display={"flex"}
@@ -135,23 +94,13 @@ export const AppBarMenuWrapper: React.FC<Props> = ({
             {t("menu.about")}
           </Button>
 
-          <SigninMenu
-            user={meQuery.data}
-            onClickLogin={onClickLogin}
-            onClickSignup={onClickSignup}
-            onClickLogout={handleLogout}
-          />
+          <SigninMenu user={data} />
           <LanguageMenu />
         </Toolbar>
       </AppBar>
-      <SigninDialog onCancel={onCloseSignin} state={signinDialog} />
       <Offset />
       {children}
       <Footer />
     </Box>
   );
 };
-export const AppBarMenu = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppBarMenuWrapper);

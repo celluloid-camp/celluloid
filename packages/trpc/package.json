@@ -24,6 +24,7 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
+    "@celluloid/passport": "*",
     "@celluloid/prisma": "*",
     "@trpc/server": "^10.40.0",
     "bcryptjs": "^2.4.3",
@@ -33,6 +34,9 @@
     "express-session": "^1.17.3",
     "js2xmlparser": "^5.0.0",
     "lodash": "^4.17.21",
+    "mjml": "^4.14.1",
+    "nodemailer": "^6.9.7",
+    "nodemailer-smtp-transport": "^2.7.4",
     "papaparse": "^5.4.1",
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.1",
@@ -41,6 +45,7 @@
   "devDependencies": {
     "@celluloid/config": "*",
     "@types/express-session": "^1.17.8",
+    "@types/mjml": "^4.7.3",
     "@types/uuid": "^9.0.4",
     "tsup": "^7.2.0"
   }

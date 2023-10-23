@@ -1,5 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {
+  Alert,
   Box,
   DialogTitle,
   DialogTitleProps,
@@ -29,6 +30,7 @@ type StyledDialogProps = DialogProps & {
 
 type BootstrapDialogTitleProps = DialogTitleProps & {
   loading?: boolean;
+  error?: string | undefined;
   onClose: () => void;
 };
 
@@ -36,12 +38,13 @@ const BootstrapDialogTitle: React.FC<BootstrapDialogTitleProps> = ({
   children,
   onClose,
   loading,
+  error,
   ...other
 }) => {
   return (
     <>
       <DialogTitle
-        sx={{ m: 0, p: 2, borderBottom: 1, borderBottomColor: "neutral.200" }}
+        sx={{ m: 0, p: 2, borderBottom: 1, borderBottomColor: "neutral.100" }}
         {...other}
       >
         {children}
@@ -60,6 +63,11 @@ const BootstrapDialogTitle: React.FC<BootstrapDialogTitleProps> = ({
           </IconButton>
         ) : null}
       </DialogTitle>
+      {error ? (
+        <Alert severity="error" sx={{ borderRadius: 0, mt: 0 }}>
+          {error}
+        </Alert>
+      ) : null}
       <LinearProgress
         variant="query"
         sx={{ visibility: loading ? "visible" : "hidden", flexGrow: 1 }}
@@ -84,24 +92,9 @@ export const StyledDialog: React.FC<StyledDialogProps> = ({
       onClose={onClose}
       {...props}
     >
-      <BootstrapDialogTitle loading={loading} onClose={onClose}>
+      <BootstrapDialogTitle loading={loading} error={error} onClose={onClose}>
         {title}
       </BootstrapDialogTitle>
-      {error ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            paddingTop: 1,
-            paddingBottom: 2,
-            justifyContent: "left",
-          }}
-        >
-          <Typography align={"left"} color="error" variant={"caption"}>
-            {error}
-          </Typography>
-        </Box>
-      ) : null}
 
       <DialogContent sx={{ margin: 1, padding: 2 }}>{children}</DialogContent>
     </BootstrapDialog>

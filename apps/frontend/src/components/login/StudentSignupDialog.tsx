@@ -16,37 +16,23 @@ import * as Yup from "yup";
 import { StyledDialog } from "~components/Dialog";
 import { isTRPCClientError, trpc } from "~utils/trpc";
 
-export const LoginDialog: React.FC = () => {
+export const StudentSignupDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
   const utils = trpc.useContext();
-  const mutation = trpc.user.login.useMutation();
+  const mutation = trpc.user.registerAsStudent.useMutation();
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required(t("signin.username.required")),
-    password: Yup.string().required(t("signin.password.required")),
+    shareCode: Yup.string().required(),
+    username: Yup.string().min(4).required(),
+    password: Yup.string().min(8).required(),
   });
 
-  const handlePasswordReset = () => {
-    navigate("/forgot", {
+  const handleSignin = () => {
+    navigate(`/login`, {
       state: { backgroundLocation: location },
-      replace: true,
-    });
-  };
-
-  const handleConfirm = () => {
-    navigate("/confirm", {
-      state: { backgroundLocation: location },
-      replace: true,
-    });
-  };
-
-  const handleSignup = () => {
-    navigate("/signup", {
-      state: { backgroundLocation: location },
-      replace: true,
     });
   };
 
@@ -54,6 +40,7 @@ export const LoginDialog: React.FC = () => {
     initialValues: {
       username: "",
       password: "",
+      shareCode: "",
       error: null,
     },
     validateOnMount: false,
@@ -62,32 +49,43 @@ export const LoginDialog: React.FC = () => {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        await mutation.mutateAsync({
+        const data = await mutation.mutateAsync({
           username: values.username,
-          email: values.email,
           password: values.password,
+          shareCode: values.shareCode,
         });
 
-        utils.user.me.invalidate();
-        utils.project.list.invalidate();
-        navigate(-1);
         formik.setStatus("submited");
+        utils.user.me.invalidate();
+
+        if (data.projectId) {
+          navigate(`/project/${data.projectId}`);
+        } else {
+          navigate("/");
+        }
       } catch (e) {
         if (isTRPCClientError(e)) {
           // `cause` is now typed as your router's `TRPCClientError`
-          console.log("e.message", e.message);
-          if (e.message === "UserNotConfirmed") {
-            handleConfirm();
+          if (e.message === "ACCOUNT_EXISTS") {
+            formik.setFieldError(
+              "error",
+              t(
+                "student-student-signup.error.username-exists",
+                "Email exists dejà"
+              )
+            );
           }
         }
+
         formik.setFieldError("error", e.message);
+        console.log(e);
       }
     },
   });
 
   return (
     <StyledDialog
-      title={t("signin.title", "Login")}
+      title={t("student-signup.title", "Inscription")}
       onClose={() => navigate(-1)}
       error={formik.errors.error}
       open={true}
@@ -96,77 +94,93 @@ export const LoginDialog: React.FC = () => {
       <form onSubmit={formik.handleSubmit}>
         <DialogContent>
           <TextField
+            id="shareCode"
+            name="shareCode"
+            margin="dense"
+            fullWidth={true}
+            label={t(
+              "student-student-signup.shareCode.label",
+              "Code du projet"
+            )}
+            required={true}
+            value={formik.values.shareCode}
+            placeholder={
+              t("student-signup.shareCode.placeholder", "Code du projet") || ""
+            }
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            onBlur={formik.handleBlur}
+            error={formik.touched.shareCode && Boolean(formik.errors.shareCode)}
+            helperText={formik.touched.shareCode && formik.errors.shareCode}
+          />
+
+          <TextField
             id="username"
             name="username"
             margin="dense"
             fullWidth={true}
-            label={t("signin.login")}
+            label={t(
+              "student-student-signup.username.label",
+              "Prenom ou pseudo"
+            )}
             required={true}
             value={formik.values.username}
-            placeholder={t("signin.username") || ""}
+            placeholder={
+              t(
+                "student-student-signup.username.paceholder",
+                "Prenom ou pseudo"
+              ) || ""
+            }
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             onBlur={formik.handleBlur}
             error={formik.touched.username && Boolean(formik.errors.username)}
             helperText={formik.touched.username && formik.errors.username}
           />
+
           <TextField
             id="password"
             name="password"
             margin="dense"
-            fullWidth={true}
-            label={t("signin.password")}
-            required={true}
             type="password"
+            fullWidth={true}
+            label={t("student-signup.password.label", "Mot de passe")}
+            required={true}
             value={formik.values.password}
-            placeholder={t("signin.password") || ""}
+            placeholder={t(
+              "student-signup.password.placeholder",
+              "Mot de passe"
+            )}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             onBlur={formik.handleBlur}
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
           />
-          <Box display={"flex"} flex={1} justifyContent={"flex-end"}>
-            <Button
-              onClick={handlePasswordReset}
-              size="small"
-              sx={{ textTransform: "uppercase", color: "text.secondary" }}
-            >
-              <Trans i18nKey="signin.forgotPasswordAction" />
-            </Button>
-          </Box>
         </DialogContent>
-        <DialogActions sx={{ marginTop: 4 }}>
+        <DialogActions>
           <Box display="flex" justifyContent={"space-between"} flex={1}>
             <Box>
               <Button
                 color="primary"
-                onClick={handleConfirm}
+                onClick={handleSignin}
                 size="small"
                 sx={{ textTransform: "uppercase", color: "text.secondary" }}
               >
-                <Trans i18nKey="signin.confirm.button">Confirm</Trans>
-              </Button>
-              <Button
-                color="primary"
-                onClick={handleSignup}
-                size="small"
-                sx={{ textTransform: "uppercase", color: "text.secondary" }}
-              >
-                <Trans i18nKey="signin.signupAction" />
+                <Trans i18nKey="student-signup.login.button">
+                  Se connecter
+                </Trans>
               </Button>
             </Box>
 
             <LoadingButton
               variant="contained"
-              size="small"
               color="primary"
               type="submit"
               loading={mutation.isLoading}
               disabled={mutation.isLoading}
-              sx={{ textTransform: "uppercase" }}
             >
-              <Trans i18nKey="signin.loginAction" />
+              <Trans i18nKey="student-signup.button.submit">Rejoindre</Trans>
             </LoadingButton>
           </Box>
         </DialogActions>

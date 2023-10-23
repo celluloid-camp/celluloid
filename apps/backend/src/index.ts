@@ -13,7 +13,6 @@ import { openApiDocument } from './openapi';
 
 const trpcApiEndpoint = '/trpc'
 
-
 async function main() {
   // express implementation
   const app = express();
@@ -48,7 +47,6 @@ async function main() {
       createContext: createRPCContext,
     }),
   );
-
   // Handle incoming OpenAPI requests
   app.use('/api', createOpenApiExpressMiddleware({ router: appRouter, createContext: createRPCContext }));
 
