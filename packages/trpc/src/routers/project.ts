@@ -1,9 +1,9 @@
 import { Prisma, prisma, UserRole } from '@celluloid/prisma';
+import { generateUniqueShareName } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { generateUniqueShareName } from '../utils/share';
 import { PlaylistSchema } from './playlist';
 import { UserSchema } from './user';
 

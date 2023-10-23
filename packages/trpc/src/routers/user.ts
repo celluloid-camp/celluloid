@@ -1,11 +1,11 @@
 import { passport, SigninStrategy } from "@celluloid/passport";
 import { Prisma, prisma, UserRole } from "@celluloid/prisma"
+import { compareCodes, generateOtp, hashPassword } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { z } from 'zod';
 
 import { sendConfirmationCode, sendPasswordReset } from "../mailer/sendMail";
 import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { compareCodes, generateOtp, hashPassword } from "../utils/forgot";
 
 export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,

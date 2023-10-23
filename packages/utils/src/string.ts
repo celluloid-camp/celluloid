@@ -1,22 +1,5 @@
 import { paramCase } from "change-case";
 
-export function generateShareCode(
-  length = 6,
-  allowSymbols = false,
-  allowedChars = /[\w\d]/g
-): string {
-  let result = "";
-  let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  if (allowSymbols) {
-    chars += "!@#$%^&*()_+~`|}{[]:;?><,./-=";
-  }
-  const charArray = [...chars.matchAll(allowedChars)].map((match) => match[0]);
-  for (let i = 0; i < length; i++) {
-    result += charArray[Math.floor(Math.random() * charArray.length)];
-  }
-  return result;
-}
-
 
 export function generateUniqueShareName(title: string) {
   const compare = (a: string, b: string) => b.length - a.length;

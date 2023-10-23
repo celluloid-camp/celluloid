@@ -1,5 +1,4 @@
-import { Prisma, prisma, UserRole } from '@celluloid/prisma';
-import { TRPCError } from '@trpc/server';
+import { prisma } from '@celluloid/prisma';
 import { z } from 'zod';
 
 import { protectedProcedure, router } from '../trpc';

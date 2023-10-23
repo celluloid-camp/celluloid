@@ -18,18 +18,18 @@ export function createSession() {
 
   return session({
     store: redisStore,
-    name: process.env.CELLULOID_COOKIE_NAME
-      ? process.env.CELLULOID_COOKIE_NAME
+    name: process.env.COOKIE_NAME
+      ? process.env.COOKIE_NAME
       : undefined,
     cookie: {
-      domain: process.env.CELLULOID_COOKIE_DOMAIN
-        ? process.env.CELLULOID_COOKIE_DOMAIN
+      domain: process.env.COOKIE_DOMAIN
+        ? process.env.COOKIE_DOMAIN
         : undefined,
-      secure: process.env.CELLULOID_COOKIE_SECURE === "true",
+      secure: process.env.COOKIE_SECURE === "true",
       maxAge: 30 * 24 * 3600 * 1000,
       httpOnly: true,
     },
-    secret: process.env.CELLULOID_COOKIE_SECRET as string,
+    secret: process.env.COOKIE_SECRET as string,
     resave: false,
     saveUninitialized: true,
   });

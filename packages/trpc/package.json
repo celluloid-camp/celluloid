@@ -26,6 +26,7 @@
   "dependencies": {
     "@celluloid/passport": "*",
     "@celluloid/prisma": "*",
+    "@celluloid/utils": "*",
     "@trpc/server": "^10.41.0",
     "bcryptjs": "^2.4.3",
     "change-case": "^4.1.2",
@@ -46,6 +47,7 @@
     "@celluloid/config": "*",
     "@types/express-session": "^1.17.8",
     "@types/mjml": "^4.7.3",
+    "@types/papaparse": "^5.3.10",
     "@types/uuid": "^9.0.4",
     "tsup": "^7.2.0"
   }
