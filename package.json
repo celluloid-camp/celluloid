@@ -14,7 +14,7 @@
     "dev": "dotenv -- turbo run dev --parallel",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "turbo run build --no-cache",
-    "i18n:sync": "yarn workspace translations sync",
+    "i18n:sync": "yarn workspace @celluloid/i18n sync",
     "database:migrate": "./scripts/docker-bootstrap.sh admin",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install",

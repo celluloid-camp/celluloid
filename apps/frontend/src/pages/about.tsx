@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -25,15 +25,31 @@ export const About: React.FC = () => {
         {t("about.title")}
       </Typography>
       <Typography variant="subtitle1" gutterBottom={true}>
-        {t("about.intro.prefix")}
-        <b>Celluloid</b>
-        {t("about.intro.suffix")}
+        <Trans i18nKey={"about.intro"}>
+          <b></b>
+          <Link
+            href="https://www.huma-num.fr/les-consortiums-hn/"
+            target="_blank"
+            rel="noreferrer"
+          />
+        </Trans>
       </Typography>
       <Typography variant="subtitle1" gutterBottom={true}>
         {t("about.support")}
       </Typography>
       <Typography variant="subtitle1" gutterBottom={true} pt={1}>
-        {t("about.opensource.prefix")}
+        <Trans i18nKey={"about.opensource.prefix"}>
+          <Link
+            href="https://canevas.hypotheses.org/a-propos"
+            target="_blank"
+            rel="noreferrer"
+          />
+          <Link
+            href="https://www.mshparisnord.fr/programmes/consortium-humanum-cannevas/"
+            target="_blank"
+            rel="noreferrer"
+          />
+        </Trans>
       </Typography>
 
       <Trans i18nKey="about.opensource.github" pt={2}>

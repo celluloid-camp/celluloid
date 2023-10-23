@@ -15,10 +15,8 @@ import * as React from "react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Trans, useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { openStudentSignup } from "~actions/Signin";
 import { ProjectGrid } from "~components/home/ProjectGrid";
 import { LogoSign } from "~components/LogoSign";
 import { StudentsIcon } from "~components/StudentsIcon";
@@ -79,7 +77,13 @@ export const HomePage: React.FC = () => {
                     {t("home.tutoriel.title")}
                   </Typography>
                   <Typography variant="subtitle1" gutterBottom={true}>
-                    {t("home.tutoriel.description")}
+                    <Trans i18nKey={"home.tutoriel.description"}>
+                      <Link
+                        href="https://joinpeertube.org/fr_FR"
+                        target="_blank"
+                        rel="noreferrer"
+                      />
+                    </Trans>
                   </Typography>
                   <Typography
                     variant="h6"
@@ -91,14 +95,11 @@ export const HomePage: React.FC = () => {
 
                   <Typography variant="subtitle1" gutterBottom={true}>
                     <Trans i18nKey={"home.tutoriel.link"}>
-                      default
                       <Link
                         href="https://canevas.hypotheses.org/560"
                         target="_blank"
                         rel="noreferrer"
-                      >
-                        https://canevas.hypotheses.org/560
-                      </Link>
+                      />
                     </Trans>
                   </Typography>
                 </Box>
