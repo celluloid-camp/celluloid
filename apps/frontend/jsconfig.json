@@ -2,11 +2,11 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "~actions/*": [
-                "src/actions/*"
-            ],
             "~components/*": [
                 "src/components/*"
+            ],
+            "~hooks/*": [
+                "src/hooks/*"
             ],
             "~images/*": [
                 "src/images/*"
@@ -14,38 +14,20 @@
             "~locales/*": [
                 "src/locales/*"
             ],
-            "~reducers/*": [
-                "src/reducers/*"
-            ],
-            "~scenes/*": [
-                "src/scenes/*"
+            "~pages/*": [
+                "src/pages/*"
             ],
             "~services/*": [
                 "src/services/*"
             ],
-            "~store/*": [
-                "src/store/*"
-            ],
             "~theme/*": [
                 "src/theme/*"
-            ],
-            "~types/*": [
-                "src/types/*"
             ],
             "~utils/*": [
                 "src/utils/*"
             ],
             "~/*": [
                 "src/*"
-            ],
-            "~pages/*": [
-                "src/pages/*"
-            ],
-            "~hooks/*": [
-                "src/hooks/*"
-            ],
-            "~profile/*": [
-                "src/components/profile/*"
             ]
         }
     }

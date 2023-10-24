@@ -22,7 +22,7 @@ model Annotation {
   extra     Json?     @default("{}")
   project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_projectid_foreign")
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_userid_foreign")
-  comment   Comment[]
+  comments  Comment[]
 
   orignalURL String?
 }
@@ -44,30 +44,35 @@ model Language {
 }
 
 model Project {
-  id             String          @id @unique(map: "project_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  videoId        String
-  userId         String          @db.Uuid
-  title          String
-  description    String
-  host           String?
-  assignments    String[]
-  publishedAt    DateTime        @default(now()) @db.Timestamptz(6)
-  objective      String?
-  levelStart     Int?
-  levelEnd       Int?
-  public         Boolean         @default(false)
-  collaborative  Boolean
-  shared         Boolean         @default(false)
-  shareName      String?         @unique(map: "project_sharename_unique")
-  shareExpiresAt DateTime?       @db.Timestamptz(6)
-  sharePassword  String?
-  extra          Json?           @default("{}") @db.Json
-  annotations    Annotation[]
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "project_userid_foreign")
-  members        UserToProject[]
+  id            String   @id @unique(map: "project_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  videoId       String
+  userId        String   @db.Uuid
+  title         String
+  description   String
+  host          String?
+  assignments   String[]
+  publishedAt   DateTime @default(now()) @db.Timestamptz(6)
+  objective     String?
+  levelStart    Int?
+  levelEnd      Int?
+  public        Boolean  @default(false)
+  collaborative Boolean
+  shared        Boolean  @default(false)
+
+  shareCode      String?   @unique(map: "project_share_code_unique")
+  shareExpiresAt DateTime? @db.Timestamptz(6)
+
+  extra       Json?           @default("{}") @db.Json
+  annotations Annotation[]
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "project_userid_foreign")
+  members     UserToProject[]
 
   playlist   Playlist? @relation(fields: [playlistId], references: [id])
   playlistId String?   @db.Uuid
+
+  duration     Float  @default(0)
+  thumbnailURL String @default("")
+  metadata     Json?  @default("{}") @db.Json
 }
 
 model Playlist {

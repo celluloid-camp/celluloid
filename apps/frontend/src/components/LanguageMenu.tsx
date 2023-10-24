@@ -1,4 +1,5 @@
-import { Button, Menu, MenuItem } from "@mui/material";
+import TranslateOutlinedIcon from "@mui/icons-material/TranslateOutlined";
+import { Button, IconButton, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,12 +21,13 @@ export const LanguageMenu = () => {
 
   return (
     <React.Fragment>
-      <Button
+      <IconButton
         onClick={(event) => handleClick(event)}
-        sx={{ color: "text.primary" }}
+        sx={{ color: "text.primary", mx: 1 }}
       >
-        {i18n.language.split("_")[0].toUpperCase()}
-      </Button>
+        {/* {i18n.language.split("_")[0].toUpperCase()} */}
+        <TranslateOutlinedIcon sx={{ width: 20, height: 20 }} />
+      </IconButton>
 
       <Menu
         id="language-menu"

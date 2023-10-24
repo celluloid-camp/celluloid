@@ -1,6 +1,6 @@
-import { ProjectGraphRecord } from "@celluloid/types";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
   Box,
   CircularProgress,
@@ -10,26 +10,23 @@ import {
   IconButton,
   InputBase,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import * as R from "ramda";
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TransitionGroup } from "react-transition-group";
-import { useDidUpdate } from "rooks";
 
 import { StyledTitle } from "~components/typography";
-import { isAdmin, isMember, isOwner } from "~utils/ProjectUtils";
-import { ProjectList, trpc } from "~utils/trpc";
+import { trpc } from "~utils/trpc";
 
 import ProjectThumbnail from "./ProjectThumbnail";
 
 export const ProjectGrid: React.FC = () => {
-  const queryClient = useQueryClient();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
 
@@ -43,33 +40,20 @@ export const ProjectGrid: React.FC = () => {
   }, 1000);
 
   const { data: user } = trpc.user.me.useQuery();
-  const { data, isFetching, error } = trpc.project.list.useQuery({
+  const [data, mutation] = trpc.project.list.useSuspenseQuery({
     term: searchTerm,
   });
 
   const { t } = useTranslation();
 
-  useDidUpdate(() => {
-    queryClient.invalidateQueries(["projects"]);
-  }, [user]);
+  const userProjects = useMemo(
+    () => data.items.filter((project) => user && project.userId == user.id),
+    [user, data]
+  );
 
-  const sort = R.sortWith([R.descend(R.prop("publishedAt"))]);
+  const publicProjects = R.difference(data.items, userProjects);
 
-  console.log(data);
-
-  const sorted = sort(data?.items || []) as ProjectList;
-
-  const userProjects = R.filter(
-    (project: ProjectGraphRecord) =>
-      !!user &&
-      // (isOwner(project, user) || isMember(project, user) || isAdmin(user))
-      (isOwner(project, user) || isAdmin(user))
-  )(sorted);
-
-  const publicProjects = R.difference(sorted, userProjects);
-
-  const noProjects =
-    !error && publicProjects.length === 0 && userProjects.length === 0;
+  const noProjects = publicProjects.length === 0 && userProjects.length === 0;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -84,7 +68,12 @@ export const ProjectGrid: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: 5, backgroundColor: "brand.orange" }}>
+    <Box
+      sx={{
+        padding: 5,
+        backgroundColor: "brand.orange",
+      }}
+    >
       <Container maxWidth="lg">
         <Paper
           sx={{
@@ -96,10 +85,13 @@ export const ProjectGrid: React.FC = () => {
             height: 50,
           }}
         >
-          <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
-            <SearchIcon />
-          </IconButton>
-          {/* <CircularProgress sx={{ p: "10px", ml: 1 }} /> */}
+          {mutation.isFetching ? (
+            <CircularProgress sx={{ p: "10px", ml: 1 }} />
+          ) : (
+            <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
+              <SearchIcon />
+            </IconButton>
+          )}
           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
           <InputBase
             sx={{ ml: 1, flex: 1 }}
@@ -113,21 +105,6 @@ export const ProjectGrid: React.FC = () => {
             </IconButton>
           ) : null}
         </Paper>
-
-        {isFetching ? (
-          <Box
-            mx={2}
-            my={10}
-            display={"flex"}
-            alignContent={"center"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Box>
-              <CircularProgress />
-            </Box>
-          </Box>
-        ) : null}
 
         <Box
           sx={{
@@ -143,13 +120,9 @@ export const ProjectGrid: React.FC = () => {
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
-                  {userProjects.map((project: ProjectGraphRecord) => (
-                    <Grid xs={12} sm={6} lg={4} xl={3} item>
-                      <ProjectThumbnail
-                        showPublic={true}
-                        project={project}
-                        key={project.id}
-                      />
+                  {userProjects.map((project) => (
+                    <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                      <ProjectThumbnail showPublic={true} project={project} />
                     </Grid>
                   ))}
                 </TransitionGroup>
@@ -169,13 +142,9 @@ export const ProjectGrid: React.FC = () => {
               </Fade>
               <Grid container={true} spacing={5} direction="row">
                 <TransitionGroup component={null} appear={true}>
-                  {publicProjects.map((project: ProjectGraphRecord) => (
-                    <Grid xs={12} sm={6} lg={4} xl={3} item>
-                      <ProjectThumbnail
-                        showPublic={false}
-                        project={project}
-                        key={project.id}
-                      />
+                  {publicProjects.map((project) => (
+                    <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                      <ProjectThumbnail showPublic={false} project={project} />
                     </Grid>
                   ))}
                 </TransitionGroup>
@@ -183,36 +152,33 @@ export const ProjectGrid: React.FC = () => {
             </>
           )}
 
-          {!isFetching && noProjects && (
+          {noProjects && (
             <Fade in={noProjects} appear={true}>
-              <Typography
-                variant="h3"
-                align="center"
-                gutterBottom={true}
-                sx={{
-                  pt: 4,
-                  pb: 1,
-                }}
+              <Box
+                display={"flex"}
+                alignContent={"center"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                sx={{ minHeight: 200 }}
               >
-                {t("home.emptySearchResult")}
-              </Typography>
+                <Stack
+                  alignContent={"center"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  sx={{
+                    py: 4,
+                  }}
+                >
+                  <SearchOutlinedIcon
+                    sx={{ width: 100, height: 100, color: "grey.800" }}
+                  />
+                  <Typography variant="h6" align="center">
+                    {t("home.emptySearchResult")}
+                  </Typography>
+                </Stack>
+              </Box>
             </Fade>
           )}
-          {error ? (
-            <Fade in={!!error} appear={true}>
-              <Typography
-                variant="h6"
-                align="center"
-                gutterBottom={true}
-                sx={{
-                  pt: 4,
-                  pb: 1,
-                }}
-              >
-                {t("ERR_UNKOWN")}
-              </Typography>
-            </Fade>
-          ) : null}
         </Box>
       </Container>
     </Box>

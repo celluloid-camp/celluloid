@@ -1,16 +1,67 @@
 import { Prisma, prisma, UserRole } from '@celluloid/prisma';
+import { generateUniqueShareName } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
+import { PlaylistSchema } from './playlist';
+import { UserSchema } from './user';
 
-// const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
-//   id: true,
-//   title: true,
-//   text: true,
-//   createdAt: true,
-//   updatedAt: true,
-// });
+export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
+  id: true,
+  videoId: true,
+  userId: true,
+  title: true,
+  description: true,
+  host: true,
+  publishedAt: true,
+  public: true,
+  collaborative: true,
+  shared: true,
+  shareCode: true,
+  shareExpiresAt: true,
+  extra: true,
+  playlistId: true,
+  duration: true,
+  thumbnailURL: true,
+  metadata: false
+});
+
+const MemberSchema = z.object({
+  id: z.number(),
+  userId: z.string(),
+  projectId: z.string(),
+  user: UserSchema,
+});
+
+
+export const ProjectSchema = z.object({
+  id: z.string(),
+  videoId: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  host: z.string(),
+  publishedAt: z.string(),
+  public: z.boolean(),
+  collaborative: z.boolean(),
+  shared: z.boolean(),
+  shareCode: z.string().nullable(),
+  shareExpiresAt: z.null().nullable(),
+  extra: z.record(z.unknown()),
+  playlistId: z.string(),
+  duration: z.number(),
+  thumbnailURL: z.string(),
+  user: UserSchema,
+  playlist: PlaylistSchema,
+  members: z.array(MemberSchema),
+  _count: z.object({
+    annotations: z.number(),
+    members: z.number(),
+  }),
+});
+
+
 
 export const projectRouter = router({
   list: publicProcedure
@@ -42,10 +93,26 @@ export const projectRouter = router({
               public: true,
             },
             { userId: ctx.user ? ctx.user.id : undefined },
+            ctx.user ? {
+              members: {
+                some: {
+                  userId: ctx.user.id
+                }
+              }
+            } : {}
           ]
         },
-        include: {
-          user: true,
+        select: {
+          ...defaultProjectSelect,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              role: true,
+              initial: true,
+              color: true
+            }
+          },
           members: true,
           playlist: {
             include: {
@@ -83,17 +150,48 @@ export const projectRouter = router({
         id: z.string(),
       }),
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { id } = input;
       const project = await prisma.project.findUnique({
         where: { id },
-        include: {
+        select: {
+          ...defaultProjectSelect,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              role: true,
+              initial: true,
+              color: true
+            }
+          },
           playlist: {
             include: {
-              projects: true,
+              projects: {
+                select: defaultProjectSelect
+              },
+            }
+          },
+          _count: {
+            select: {
+              annotations: true,
+              members: true
+            }
+          },
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  role: true,
+                  initial: true,
+                  color: true
+                }
+              },
             }
           }
-        }
+        },
         // select: defaultPostSelect,
       });
       if (!project) {
@@ -102,7 +200,14 @@ export const projectRouter = router({
           message: `No project with id '${id}'`,
         });
       }
-      return project;
+
+      return {
+        ...project,
+        editable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
+        deletable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
+        annotable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
+        commentable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin || project.members.some(m => ctx.user && m.userId == ctx.user.id))
+      };
     }),
   add: protectedProcedure
     .input(
@@ -115,13 +220,16 @@ export const projectRouter = router({
         public: z.boolean(),
         collaborative: z.boolean(),
         shared: z.boolean(),
-        userId: z.string(),
         videoId: z.string(),
+        duration: z.number(),
+        thumbnailURL: z.string().url(),
+        metadata: z.any(),
         host: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+
         const project = await prisma.project.create({
           data: {
             userId: ctx.user?.id,
@@ -135,10 +243,98 @@ export const projectRouter = router({
             public: input.public,
             collaborative: input.collaborative,
             shared: input.shared,
+            duration: input.duration,
+            thumbnailURL: input.thumbnailURL,
+            metadata: input.metadata,
+            shareCode: input.shared ? generateUniqueShareName(input.title) : null
           }
           // select: defaultPostSelect,
         });
         return project;
+      }
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        title: z.string().nullish(),
+        description: z.string().nullish(),
+        public: z.boolean().nullish(),
+        collaborative: z.boolean().nullish(),
+        shared: z.boolean().nullish(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+
+        // Find the project by its ID (you need to replace 'projectId' with the actual ID)
+        const project = await prisma.project.findUnique({
+          where: {
+            id: input.projectId,
+            userId: ctx.user.id
+          }
+        });
+
+        if (!project) {
+          throw new Error('Project not found');
+        }
+
+        let shareCode = project.shareCode;
+
+        if (project.shared != input.shared) {
+          if (input.shared) {
+            shareCode = generateUniqueShareName(project.title);
+
+          } else {
+            shareCode = null;
+          }
+
+        }
+        const updatedProject = await prisma.project.update({
+          where: {
+            id: project.id
+          },
+          data: {
+            title: input.title || project.title,
+            description: input.description || project.description,
+            public: input.public !== null ? input.public : false,
+            collaborative: input.collaborative !== null ? input.collaborative : false,
+            shared: input.shared !== null ? input.shared : false,
+            shareCode
+          }
+        });
+
+        return updatedProject;
+      }
+    }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+
+        // Find the project by its ID (you need to replace 'projectId' with the actual ID)
+        const project = await prisma.project.findUnique({
+          where: {
+            id: input.projectId,
+            userId: ctx.user.id
+          }
+        });
+
+        if (!project) {
+          throw new Error('Project not found');
+        }
+
+        const deletedProject = await prisma.project.delete({
+          where: {
+            id: input.projectId // Replace projectId with the actual ID of the project you want to delete
+          }
+        });
+
+        return deletedProject;
       }
     }),
 });

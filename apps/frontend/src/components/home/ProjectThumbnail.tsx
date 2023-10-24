@@ -1,22 +1,26 @@
-import { ProjectGraphRecord } from "@celluloid/types";
-// import { connect } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { AnyAction, Dispatch } from "redux";
+import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import GroupsIcon from "@mui/icons-material/Groups";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
+import PublicIcon from "@mui/icons-material/Public";
 import {
+  Avatar,
   Box,
   Card,
   CardContent,
   Chip,
+  CircularProgress,
   Grid,
+  Grow,
+  Stack,
   styled,
   Typography,
 } from "@mui/material";
-// import PlayIcon from "@mui/icons-material/PlayCircleOutline";
+import dayjs from "dayjs";
+import Image from "mui-image";
 import * as React from "react";
+import { useNavigate } from "react-router";
 
-import { ProjectThumbnailImage } from "~components/ProjectThumbnailImage";
-import { ProjectUserAvatar } from "~components/ProjectUserAvatar";
+import { ProjectListItem } from "~utils/trpc";
 
 const StyledBox = styled(Box)(() => ({
   position: "relative",
@@ -39,87 +43,102 @@ const StyledCardContent = styled(CardContent)(() => ({
 
 interface Props {
   showPublic?: boolean;
-  project: ProjectGraphRecord;
+  project: ProjectListItem;
 }
 
 const ProjectThumbnail: React.FC<Props> = ({ project }) => {
-  const onClick = () => {
-    // navigate(`/projects/${project.id}`);
-    window.location.assign(`/projects/${project.id}`);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    // navigate(`/project/${project.id}`);
+    window.location.assign(`/project/${project.id}`);
+    // navigate(`/project/${project.id}`, { replace: true });
   };
 
-  console.log(project);
-
   return (
-    // <ThemeProvider theme={modalTheme}>
-    // <Grow
-    //   style={{ transformOrigin: "0 0 0" }}
-    //   in={true}
-    //   appear={true}
-    //   key={project.id}
-    // >
-    <Card
-      elevation={0}
-      sx={{
-        borderRadius: 0,
-        backgroundColor: "transparent",
-        overflow: "visible",
-      }}
-      onClick={() => onClick()}
-    >
-      <StyledBox>
-        <ProjectThumbnailImage
-          host={project.host}
-          videoId={project.videoId}
-          height={"20vh"}
-          bgColor="#000000"
-        />
-        {project.playlist && (
-          <Box
-            sx={{
-              position: "absolute",
-              right: 5,
-              bottom: 5,
-            }}
-          >
-            <Chip
-              label={project.playlist?._count.projects}
-              icon={<PlaylistPlayIcon />}
-              color="secondary"
-              variant="outlined"
-            />
-          </Box>
-        )}
-      </StyledBox>
+    <Grow in={true} appear={true} key={project.id}>
+      <Card
+        elevation={0}
+        sx={{
+          borderRadius: 0,
+          backgroundColor: "transparent",
+          overflow: "visible",
+        }}
+        onClick={handleClick}
+      >
+        <StyledBox>
+          <Image
+            src={project.thumbnailURL}
+            duration={500}
+            showLoading={<CircularProgress />}
+            bgColor="#000000"
+          />
 
-      <StyledCardContent sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}>
-        <Grid container>
-          <Grid item={true} xs={12}>
-            <Typography variant="h6" noWrap>
-              {project.title}
-            </Typography>
-            <Typography gutterBottom={true} noWrap>
-              {project.objective}
-            </Typography>
-          </Grid>
-          <Grid item={true} xs={12}>
-            <ProjectUserAvatar project={project} />
-          </Grid>
-          {/* <Grid item={true} xs={12}>
-              <Stack direction="row" spacing={1}>
-                {showPublic && (
-                  <VisibilityChip show={project.public} label="public" />
-                )}
-                <VisibilityChip
-                  show={project.collaborative}
-                  label="collaboratif"
+          {project.playlist && (
+            <Box
+              sx={{
+                position: "absolute",
+                right: 10,
+                bottom: 10,
+              }}
+            >
+              <Stack direction={"row"} spacing={1}>
+                {project._count.annotations > 0 ? (
+                  <Chip
+                    size="small"
+                    label={project._count.annotations}
+                    icon={<CommentOutlinedIcon />}
+                  />
+                ) : null}
+                <Chip
+                  size="small"
+                  label={project.playlist?._count.projects}
+                  icon={<PlaylistPlayIcon />}
                 />
               </Stack>
+            </Box>
+          )}
+        </StyledBox>
+
+        <StyledCardContent
+          sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}
+        >
+          <Grid container spacing={1}>
+            <Grid item={true} xs={12}>
+              <Typography fontWeight={"bold"} noWrap>
+                {project.title}
+              </Typography>
+            </Grid>
+            <Grid item={true} xs={12}>
+              <Box display="flex" alignItems={"center"}>
+                <Avatar
+                  sx={{
+                    backgroundColor: project.user.color,
+                  }}
+                >
+                  {project.user.initial}
+                </Avatar>
+                <Stack sx={{ ml: 1 }} spacing={0}>
+                  <Typography variant="body2">
+                    {project.user.username}
+                  </Typography>
+                  <Typography variant="caption" color={"grey.700"}>
+                    {dayjs(project.publishedAt).fromNow(true)}
+                  </Typography>
+                </Stack>
+              </Box>
+            </Grid>
+            {/* <Grid item={true} xs={12}>
+              <Stack direction="row" spacing={1}>
+                {project.public && (
+                  <Chip size="small" label={"public"} icon={<PublicIcon />} />
+                )}
+              </Stack>
             </Grid> */}
-        </Grid>
-      </StyledCardContent>
-    </Card>
-    // </Grow>
+          </Grid>
+        </StyledCardContent>
+      </Card>
+    </Grow>
     // </ThemeProvider>
   );
 };

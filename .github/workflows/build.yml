@@ -55,19 +55,6 @@ jobs:
             APP=admin
             START_COMMAND=start
 
-      - name: Build Server
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}/server:${{ github.event.inputs.tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            COMMIT=${{ steps.vars.outputs.sha_short }}
-            APP=server
-            START_COMMAND=start
-
       - name: Build Frontend
         uses: docker/build-push-action@v3
         with:

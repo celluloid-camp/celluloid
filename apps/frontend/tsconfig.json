@@ -26,6 +26,9 @@
     "noFallthroughCasesInSwitch": true,
     "declaration": false,
     "declarationMap": false,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "~actions/*": [
         "src/actions/*"
@@ -78,13 +81,5 @@
   ],
   "exclude": [
     "node_modules"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "../../packages/trpc"
-    },
   ]
 }

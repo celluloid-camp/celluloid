@@ -1,14 +1,15 @@
+import { createSession, passport } from '@celluloid/passport';
 import { UserRole } from '@celluloid/prisma';
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import path from "path";
 import * as url from 'url'
 
-import passport from "./passport"
 import getAdminRouter from "./server.js";
-import { createSession } from './session';
+
 
 const PORT = process.env.PORT || 4000
+
 
 const start = async () => {
   const app = express();
@@ -17,21 +18,18 @@ const start = async () => {
   app.use(createSession());
   app.use(passport.authenticate("session"));
 
-
   // Define the CORS middleware function
   const corsMiddleware = (req: Request, res: Response, next: NextFunction) => {
     // Set the CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
     // Call the next middleware function in the chain
     next();
   };
 
   // Add the CORS middleware function to the application
   app.use(corsMiddleware);
-
 
   const adminRouter = await getAdminRouter({
     rootPath: "/admin"

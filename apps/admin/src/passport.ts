@@ -1,6 +1,5 @@
 
-import { prisma } from "@celluloid/prisma"
-import { User } from '@celluloid/prisma';
+import { prisma, User, UserRole } from "@celluloid/prisma"
 import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import {
@@ -21,7 +20,6 @@ passport.serializeUser((user: User, done) => {
 passport.deserializeUser(async (id: string, done) => {
   const user = await prisma.user.findUnique({ where: { id } })
   if (user) {
-    console.log("here", user)
     return done(null, user);
   } else {
     console.error(
@@ -40,7 +38,7 @@ passport.use(
     if (!bcrypt.compareSync(password, user.password)) {
       return done(new Error("InvalidUser"));
     }
-    if (!user.confirmed && user.role !== "Student") {
+    if (!user.confirmed && user.role !== UserRole.Student) {
       return done(new Error("UserNotConfirmed"));
     }
     return done(null, user);
@@ -55,8 +53,7 @@ const loginStrategy = new LocalStrategy(
 
     const user = await prisma.user.findUnique({
       where: {
-        //OR: [{ email: login }, { username: login, }]
-        email: login
+        OR: [{ email: login }, { username: login, }]
       }
     });
 
@@ -67,7 +64,7 @@ const loginStrategy = new LocalStrategy(
       console.error(`Login failed for user ${user.username}: incorrect password`);
       return Promise.resolve(done(new Error("InvalidUser")));
     }
-    if (!user.confirmed && user.role !== "Student") {
+    if (!user.confirmed && user.role !== UserRole.Student) {
       console.error(`Login failed: ${user.username} is not confirmed`);
       return Promise.resolve(done(new Error("UserNotConfirmed")));
     }
