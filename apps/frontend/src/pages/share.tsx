@@ -1,20 +1,20 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import * as queryString from "query-string";
-import React from "react";
+import React, { Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
 
 import { LoadingBig } from "~components/LoadingBig";
-import ProjectSummary from "~components/ProjectSummary";
+import ProjectSummary from "~components/project/ProjectSummary";
 import { ShareCredentials } from "~components/ShareCredentials";
-import ProjectService from "~services/ProjectService";
+import { trpc } from "~utils/trpc";
 
 import { NotFound } from "./NotFound";
 
-export const SharePage: React.FC = () => {
+export const ShaprePageContent: React.FC<{ projectId: string }> = ({
+  projectId,
+}) => {
   const { t } = useTranslation();
-  const { projectId = "" } = useParams();
 
   const href = window.location.host;
   const protocol = window.location.protocol;
@@ -24,14 +24,12 @@ export const SharePage: React.FC = () => {
 
   const password = typeof parsedUrl.p === "string" ? parsedUrl.p : undefined;
 
-  const { data, error } = useQuery({
-    queryKey: ["project", projectId],
-    queryFn: () => ProjectService.get(projectId),
+  const [project] = trpc.project.byId.useSuspenseQuery({
+    id: projectId,
   });
-
   const handleClickPrint = () => window.print();
 
-  if (data && password) {
+  if (project && password) {
     const steps = [
       {
         title: (
@@ -46,7 +44,7 @@ export const SharePage: React.FC = () => {
       },
       {
         title: <span>{t("project.share.guide.step3")}</span>,
-        body: <ShareCredentials name={data.shareName} password={password} />,
+        body: <ShareCredentials name={project.shareName} password={password} />,
       },
       {
         title: <span>{t("project.share.guide.step4")}</span>,
@@ -74,7 +72,7 @@ export const SharePage: React.FC = () => {
             {t("project.share.guide.title")}
           </Typography>
 
-          <ProjectSummary project={data} />
+          <ProjectSummary project={project} />
           <Typography variant="h3" gutterBottom={true}>
             {t("project.share.guide.subtitle")}
           </Typography>
@@ -97,9 +95,17 @@ export const SharePage: React.FC = () => {
         </Paper>
       </>
     );
-  } else if (error || !password) {
+  } else if (!password) {
     return <NotFound />;
-  } else {
-    return <LoadingBig />;
   }
+};
+
+export const SharePage: React.FC = () => {
+  const { projectId = "" } = useParams();
+
+  return (
+    <Suspense fallback={<LoadingBig />}>
+      <ShaprePageContent projectId={projectId} />
+    </Suspense>
+  );
 };

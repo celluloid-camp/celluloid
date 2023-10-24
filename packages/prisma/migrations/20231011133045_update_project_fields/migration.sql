@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Project" ADD COLUMN     "duration" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ADD COLUMN     "metadata" JSON DEFAULT '{}',
+ADD COLUMN     "thumbnailURL" TEXT NOT NULL DEFAULT '';

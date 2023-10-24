@@ -1,4 +1,10 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
 import * as React from "react";
 
 import { MyProjectGrid } from "~components/profile/MyProjectGrid";
@@ -10,39 +16,40 @@ const UserProfile: React.FC = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100vh",
+        width: "100%",
+        height: "100%",
         bgcolor: "brand.orange",
         pt: 8,
       }}
     >
-      {isFetching || !data ? (
-        <Box
-          mx={2}
-          my={10}
-          display={"flex"}
-          alignContent={"center"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Box>
-            <CircularProgress />
+      <Container>
+        {isFetching || !data ? (
+          <Box
+            mx={2}
+            my={10}
+            display={"flex"}
+            alignContent={"center"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box>
+              <CircularProgress />
+            </Box>
           </Box>
-        </Box>
-      ) : (
-        <>
-          <UserAvatar username={data.username} userId={data.id} />
-          <Typography variant="h4" color="textPrimary" sx={{ mt: 1 }}>
-            {data.username}
-          </Typography>
-          <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>
-            {data.email} - {data.role}
-          </Typography>
+        ) : (
+          <>
+            <Stack alignItems={"center"}>
+              <UserAvatar username={data.username} userId={data.id} />
+              <Typography variant="h4" color="textPrimary" sx={{ mt: 1 }}>
+                {data.username}
+              </Typography>
+              <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>
+                {data.email} - {data.role}
+              </Typography>
+            </Stack>
 
-          <MyProjectGrid />
-          {/* <Grid container spacing={2} sx={{ mt: 3 }}>
+            <MyProjectGrid />
+            {/* <Grid container spacing={2} sx={{ mt: 3 }}>
         {userProjects.map((project) => (
           <Grid item xs={12} sm={6} md={4} key={project.id}>
             <Card>
@@ -58,8 +65,9 @@ const UserProfile: React.FC = () => {
           </Grid>
         ))}
       </Grid> */}
-        </>
-      )}
+          </>
+        )}
+      </Container>
     </Box>
   );
 };

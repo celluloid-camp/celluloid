@@ -1,10 +1,11 @@
 import { UserRole } from '@celluloid/prisma';
 import { prisma } from "@celluloid/prisma"
+import { generateUniqueShareName } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { generateUniqueShareName } from '../utils';
+
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
 //   id: true,
@@ -13,6 +14,36 @@ import { generateUniqueShareName } from '../utils';
 //   createdAt: true,
 //   updatedAt: true,
 // });
+
+
+export const PlaylistProjectSchema = z.object({
+  id: z.string(),
+  videoId: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  host: z.string(),
+  publishedAt: z.string(),
+  public: z.boolean(),
+  collaborative: z.boolean(),
+  shared: z.boolean(),
+  shareCode: z.string().nullable(),
+  shareExpiresAt: z.null().nullable(),
+  extra: z.record(z.unknown()),
+  playlistId: z.string(),
+  duration: z.number(),
+  thumbnailURL: z.string(),
+});
+
+export const PlaylistSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  userId: z.string(),
+  publishedAt: z.string(),
+  projects: z.array(PlaylistProjectSchema),
+});
+
 
 
 export const playlistRouter = router({
@@ -97,6 +128,9 @@ export const playlistRouter = router({
           description: z.string(),
           videoId: z.string(),
           host: z.string(),
+          duration: z.number(),
+          thumbnailURL: z.string().url(),
+          metadata: z.any(),
         })),
         objective: z.string(),
         levelStart: z.number(),
@@ -132,8 +166,11 @@ export const playlistRouter = router({
                   public: input.public,
                   collaborative: input.collaborative,
                   shared: input.shared,
+                  duration: p.duration,
+                  thumbnailURL: p.thumbnailURL,
+                  metadata: p.metadata,
                   userId: userId,
-                  shareName: generateUniqueShareName(p.title)
+                  shareCode: generateUniqueShareName(p.title)
                 }))
               }
             }

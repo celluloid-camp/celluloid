@@ -4,7 +4,6 @@ import { inferRouterOutputs } from "@trpc/server";
 
 export const trpc = createTRPCReact<AppRouter>();
 
-
 /**
  async function main() {
   try {
@@ -25,11 +24,23 @@ export function isTRPCClientError(
   return cause instanceof TRPCClientError;
 }
 
+type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
+  ? ElementType
+  : never;
+
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
 export type UserMe = RouterOutput['user']['me'];
 
 export type ProjectById = RouterOutput['project']['byId'];
+export type ProjectMembers = ArrElement<ProjectById["members"]>;
 
 export type ProjectList = RouterOutput['project']['list'];
+export type ProjectListItem = ArrElement<RouterOutput['project']['list']>;
+
+export type AnnotationsByProjectId = RouterOutput["annotation"]["byProjectId"]
+export type AnnotationByProjectId = ArrElement<AnnotationsByProjectId>;
+export type AnnotationCommentByProjectId = ArrElement<AnnotationByProjectId["comments"]>;
+
+

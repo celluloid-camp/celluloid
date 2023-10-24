@@ -92,7 +92,7 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
             name: 'Projects',
             icon: 'Play',
           },
-          listProperties: ['title', 'description', 'public', 'shared', 'publishedAt', 'user'],
+          listProperties: ['title', 'description', 'public', 'shared', 'publishedAt', 'user', 'duration', 'thumbnailURL', 'metadata'],
           filterProperties: ['title', 'description', 'user'],
           editProperties: ['title', 'description', 'public', 'shared'],
           actions: {

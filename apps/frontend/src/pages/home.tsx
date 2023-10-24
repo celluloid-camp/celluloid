@@ -1,13 +1,22 @@
-import { Box, Container, Link, Paper, Stack } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Fade,
+  Link,
+  Paper,
+  Stack,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import * as React from "react";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Trans, useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { openStudentSignup } from "~actions/Signin";
 import { ProjectGrid } from "~components/home/ProjectGrid";
 import { LogoSign } from "~components/LogoSign";
 import { StudentsIcon } from "~components/StudentsIcon";
@@ -15,26 +24,26 @@ import { TeacherIcon } from "~components/TeacherIcon";
 import { trpc } from "~utils/trpc";
 
 export const HomePage: React.FC = () => {
-  const { isError } = trpc.user.me.useQuery();
+  const { data } = trpc.user.me.useQuery();
+  const location = useLocation();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
   const handleJoin = () => {
-    dispatch(openStudentSignup());
-  };
-
-  const handleCreate = () => {
-    if (!isError) {
-      navigate(`/create`);
+    if (!data) {
+      navigate("/signup-student", { state: { backgroundLocation: "/" } });
     } else {
-      dispatch(openStudentSignup());
+      navigate("/join", { state: { backgroundLocation: "/" } });
     }
   };
 
+  const handleCreate = () => {
+    navigate(`/create`);
+  };
+
   return (
-    <React.Fragment>
+    <Box>
       <Box sx={{ backgroundColor: "brand.green" }}>
         <Container maxWidth="lg">
           <Grid container={true}>
@@ -68,7 +77,13 @@ export const HomePage: React.FC = () => {
                     {t("home.tutoriel.title")}
                   </Typography>
                   <Typography variant="subtitle1" gutterBottom={true}>
-                    {t("home.tutoriel.description")}
+                    <Trans i18nKey={"home.tutoriel.description"}>
+                      <Link
+                        href="https://joinpeertube.org/fr_FR"
+                        target="_blank"
+                        rel="noreferrer"
+                      />
+                    </Trans>
                   </Typography>
                   <Typography
                     variant="h6"
@@ -80,14 +95,11 @@ export const HomePage: React.FC = () => {
 
                   <Typography variant="subtitle1" gutterBottom={true}>
                     <Trans i18nKey={"home.tutoriel.link"}>
-                      default
                       <Link
                         href="https://canevas.hypotheses.org/560"
                         target="_blank"
                         rel="noreferrer"
-                      >
-                        https://canevas.hypotheses.org/560
-                      </Link>
+                      />
                     </Trans>
                   </Typography>
                 </Box>
@@ -190,7 +202,50 @@ export const HomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <ProjectGrid />
-    </React.Fragment>
+      <Suspense
+        fallback={
+          <Box
+            mx={2}
+            my={10}
+            display={"flex"}
+            alignContent={"center"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box>
+              <CircularProgress />
+            </Box>
+          </Box>
+        }
+      >
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary
+              onReset={reset}
+              fallbackRender={({ resetErrorBoundary, error }) => (
+                <Fade in={true} appear={true}>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    gutterBottom={true}
+                    sx={{
+                      pt: 4,
+                      pb: 1,
+                    }}
+                  >
+                    <Trans i18nKey="ERR_UNKOWN" />
+                    <Button onClick={() => resetErrorBoundary()}>
+                      <Trans i18nKey={"home.projects.retry"}>Réessayer</Trans>
+                    </Button>
+                  </Typography>
+                </Fade>
+              )}
+            >
+              <ProjectGrid />
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
+      </Suspense>
+    </Box>
   );
 };

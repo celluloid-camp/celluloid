@@ -21,7 +21,6 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
-// import moment from "moment";
 import Image from "mui-image";
 import React, { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -30,12 +29,12 @@ import * as Yup from "yup";
 
 import { AddVideoToPlaylistDialog } from "~components/AddVideoToPlaylistDialog";
 import { StyledTitle } from "~components/typography";
-import { ERR_ALREADY_EXISTING_PROJECT } from "~services/Constants";
 import {
   getPeerTubeVideoData,
   PeerTubeVideoDataResult,
   PeerTubeVideoWithThumbnail,
-} from "~services/VideoService";
+} from "~services/peertube";
+import { ERR_ALREADY_EXISTING_PROJECT } from "~utils/Constants";
 // import { formatDuration } from "~utils/DurationUtils";
 import { humanizeError } from "~utils/errors";
 import { trpc } from "~utils/trpc";
@@ -197,15 +196,17 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
             description: values.description,
             public: values.public,
             collaborative: values.collaborative,
+            duration: video.duration,
+            thumbnailURL: video.thumbnailURL,
+            metadata: video.metadata,
             objective: "",
             levelStart: 0,
             levelEnd: 5,
             shared: false,
-            userId: "",
           });
           if (project) {
             formik.resetForm();
-            navigate(`/projects/${project.id}`);
+            navigate(`/project/${project.id}`);
           }
         } else {
           const playlist = await playlistMutation.mutateAsync({
@@ -215,6 +216,9 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
               description: video.description,
               videoId: video.shortUUID,
               host: video.account.host,
+              duration: video.duration,
+              thumbnailURL: video.thumbnailURL,
+              metadata: video.metadata,
             })),
             description: values.description,
             public: values.public,

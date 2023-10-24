@@ -80,9 +80,14 @@ export const Footer: React.FC<FooterProps> = (props) => (
               color="white"
               textAlign={{ lg: "left", sm: "center" }}
             >
-              <Trans i18nKey={"footer.copyright"} />{" "}
-              {!import.meta.env.VITE_VERSION ??
-                `version: ${import.meta.env.VITE_VERSION}`}
+              <Trans i18nKey={"footer.copyright"}>
+                <Link
+                  href="https://creativecommons.org/licenses/by-nc/2.0/fr/"
+                  target="_blank"
+                  rel="noreferrer"
+                  sx={{ color: "white" }}
+                />
+              </Trans>
             </Typography>
           </Box>
         </Grid>
