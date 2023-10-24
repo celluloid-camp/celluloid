@@ -19,8 +19,7 @@ export const PlaylistSideBar: React.FC<{ project: ProjectById }> = ({
   project,
 }) => {
   const handleClick = (id: string) => {
-    // navigate(`/projects/${id}`, { replace: true });
-    window.location.assign(`/project/${id}`);
+    navigate(`/projects/${id}`);
   };
 
   if (!project.playlist) return null;

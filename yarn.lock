@@ -1900,9 +1900,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@celluloid/react-player@npm:2.13.0":
-  version: 2.13.0
-  resolution: "@celluloid/react-player@npm:2.13.0"
+"@celluloid/react-player@npm:2.14.0":
+  version: 2.14.0
+  resolution: "@celluloid/react-player@npm:2.14.0"
   dependencies:
     deepmerge: ^4.0.0
     load-script: ^1.0.0
@@ -1911,7 +1911,7 @@ __metadata:
     react-fast-compare: ^3.0.1
   peerDependencies:
     react: ">=16.6.0"
-  checksum: 671d9a89177b28c8b3ad532def118ba112e955210784572d395ff24d348cfd3a0051cd5c42ba99c55ccfac9f7377ce67dfa8d0cd197bff63aa5957bb474ef4ec
+  checksum: cd7e96ed08fbd1dae33c1357d21053b575e8574380cff3ee74cb0e71285e3e9601ea5102c2412d5ea820e5244de2ee91cfeed465f28763804ee28f1fb76cda94
   languageName: node
   linkType: hard
 
@@ -11641,7 +11641,7 @@ __metadata:
   resolution: "frontend@workspace:apps/frontend"
   dependencies:
     "@celluloid/prisma": "*"
-    "@celluloid/react-player": 2.13.0
+    "@celluloid/react-player": 2.14.0
     "@celluloid/trpc": "*"
     "@celluloid/types": ^0.1.0
     "@cutting/use-get-parent-size": ^2.1.4
