@@ -50,9 +50,7 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    // navigate(`/project/${project.id}`);
-    window.location.assign(`/project/${project.id}`);
-    // navigate(`/project/${project.id}`, { replace: true });
+    navigate(`/project/${project.id}`);
   };
 
   return (

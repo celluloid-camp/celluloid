@@ -22,7 +22,7 @@ services:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
-      test: "PGPASSWORD=${POSTGRES_PASSWORD} pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d celluloid"
+      test: "PGPASSWORD=${POSTGRES_PASSWORD} pg_isready -h 127.0.0.1 -U postgres -d celluloid"
     networks:
       - local
 

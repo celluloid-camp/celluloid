@@ -10,17 +10,15 @@ import {
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import { StyledDialog } from "~components/Dialog";
-import { usePreviousLocation } from "~utils/router";
 import { isTRPCClientError, trpc } from "~utils/trpc";
 
 export const LoginDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = usePreviousLocation();
 
   const utils = trpc.useContext();
   const mutation = trpc.user.login.useMutation();
