@@ -281,14 +281,13 @@ export const projectRouter = router({
 
         let shareCode = project.shareCode;
 
-        if (project.shared != input.shared) {
+        if (project.shared != input.shared && input.shared != null) {
           if (input.shared) {
             shareCode = generateUniqueShareName(project.title);
 
           } else {
             shareCode = null;
           }
-
         }
         const updatedProject = await prisma.project.update({
           where: {
