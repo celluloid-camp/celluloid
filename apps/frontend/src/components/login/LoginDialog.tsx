@@ -14,12 +14,13 @@ import { useLocation, useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import { StyledDialog } from "~components/Dialog";
+import { usePreviousLocation } from "~utils/router";
 import { isTRPCClientError, trpc } from "~utils/trpc";
 
 export const LoginDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = usePreviousLocation();
 
   const utils = trpc.useContext();
   const mutation = trpc.user.login.useMutation();

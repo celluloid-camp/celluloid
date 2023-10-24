@@ -36,6 +36,7 @@ import { RecoverDialog } from "~components/login/RecoverDialog";
 import { SignupDialog } from "~components/login/SignupDialog";
 import { StudentSignupDialog } from "~components/login/StudentSignupDialog";
 import { SharedLayout } from "~components/SharedLayout";
+import { RouteHistoryProvider } from "~utils/router";
 import { trpc } from "~utils/trpc";
 
 import ResetScroll from "./components/ResetScroll";
@@ -78,48 +79,6 @@ i18next
       escapeValue: false,
     },
   } as i18next.InitOptions);
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    Component: SharedLayout,
-    children: [
-      {
-        path: "/",
-        index: true,
-        Component: HomePage,
-      },
-      {
-        path: "create",
-        Component: CreateProjectPage,
-      },
-      {
-        path: "about",
-        Component: About,
-      },
-      {
-        path: "profile",
-        Component: UserProfile,
-      },
-      {
-        path: "legal-notice",
-        Component: LegalNotice,
-      },
-      {
-        path: "terms-and-conditions",
-        Component: LegalNotice,
-      },
-      {
-        path: "project/:projectId",
-        Component: ProjectPage,
-      },
-      {
-        path: "shares/:projectId",
-        Component: SharePage,
-      },
-    ],
-  },
-]);
 
 const AppRouters = () => {
   const navigate = useNavigate();
