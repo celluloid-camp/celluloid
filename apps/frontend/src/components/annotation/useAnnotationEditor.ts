@@ -109,4 +109,6 @@ export const useAnnotationEditorState = () => useRecoilValue(annotationEditorSta
 
 
 export const useAnnotationFormVisible = () => useRecoilState(annotationFormVisible);
+
 export const useEditAnnotation = () => useRecoilState(editedAnnotation);
+export const useEditAnnotationValue = () => useRecoilValue(editedAnnotation);
