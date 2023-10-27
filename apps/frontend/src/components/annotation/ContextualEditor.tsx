@@ -1,7 +1,7 @@
 import { useParentSize } from "@cutting/use-get-parent-size";
 import { Box, Paper, Typography } from "@mui/material";
 import { alpha } from "@mui/system";
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import Draggable, {
   DraggableData,
   DraggableEvent,
@@ -9,7 +9,10 @@ import Draggable, {
 } from "react-draggable";
 import { useTranslation } from "react-i18next";
 
-import { useContextualEditorPosition } from "./useAnnotationEditor";
+import {
+  useContextualEditorPosition,
+  useEditAnnotationValue,
+} from "./useAnnotationEditor";
 
 type ContextualEditorProps = {};
 
@@ -32,6 +35,8 @@ export const ContextualEditor: React.FC<ContextualEditorProps> = () => {
   const { width, height } = useParentSize(ref);
   const nodeRef = React.useRef(null);
 
+  const editedAnnotation = useEditAnnotationValue();
+
   const [contextualEditorState, setContextualEditorState] =
     useContextualEditorPosition();
 
@@ -42,6 +47,17 @@ export const ContextualEditor: React.FC<ContextualEditorProps> = () => {
       setContextualEditorState(position);
     }
   };
+
+  const defaultPosition = useMemo(() => {
+    if (editedAnnotation && width && height) {
+      return {
+        x: editedAnnotation.extra.relativeX * width,
+        y: editedAnnotation.extra.relativeY * height,
+      };
+    } else {
+      return { x: 0, y: 0 };
+    }
+  }, [editedAnnotation, width, height]);
 
   return (
     <Box
@@ -64,12 +80,12 @@ export const ContextualEditor: React.FC<ContextualEditorProps> = () => {
         overflow: "hidden",
       }}
     >
+      <Typography color="white">
+        {JSON.stringify(contextualEditorState)}
+      </Typography>
       <Box sx={{ height: height, width: width, overflow: "hidden" }}>
         <Draggable
-          defaultPosition={{
-            x: contextualEditorState?.x || 0,
-            y: contextualEditorState?.y || 0,
-          }}
+          defaultPosition={defaultPosition}
           nodeRef={nodeRef}
           grid={[10, 10]}
           onStop={handleDrag}

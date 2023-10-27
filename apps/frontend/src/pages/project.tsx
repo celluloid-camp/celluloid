@@ -79,6 +79,12 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     }
   }, [visibleAnnotations, videoPlayerRef, videoProgress]);
 
+  useEffect(() => {
+    if (formVisible && videoPlayerRef) {
+      videoPlayerRef.current?.getInternalPlayer().pause();
+    }
+  }, [formVisible, videoPlayerRef]);
+
   const handleAnnotionHintClick = (annotation: AnnotationByProjectId) => {
     videoPlayerRef.current?.seekTo(annotation.startTime, "seconds");
   };
@@ -95,7 +101,7 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     >
       <Grid item xs={8} sx={{ position: "relative" }}>
         {contextualEditorVisible ? <ContextualEditor /> : null}
-        {!formVisible ? (
+        {!formVisible && !showHints ? (
           <ContextualAnnotations annotations={visibleAnnotations} />
         ) : null}
         {showHints ? (
