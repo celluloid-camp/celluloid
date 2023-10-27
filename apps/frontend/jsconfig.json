@@ -28,6 +28,12 @@
             ],
             "~/*": [
                 "src/*"
+            ],
+            "~state/*": [
+                "src/state/*"
+            ],
+            "~recoil/*": [
+                "src/state/recoil/*"
             ]
         }
     }

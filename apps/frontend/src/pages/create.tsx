@@ -22,9 +22,15 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import Image from "mui-image";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import {
+  atom,
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+} from "recoil";
 import * as Yup from "yup";
 
 import { AddVideoToPlaylistDialog } from "~components/AddVideoToPlaylistDialog";
@@ -41,17 +47,39 @@ import { trpc } from "~utils/trpc";
 
 const THUMBNAIL_WIDTH = 250;
 
+type ProjectFormInput = {
+  title: string;
+  description: string;
+  keywords: string[];
+  public: boolean;
+  collaborative: boolean;
+  videoInfo: PeerTubeVideoDataResult | undefined;
+};
+
+export const projectInputInitialValieAtom = atom<ProjectFormInput>({
+  key: `ProjectFormInput`,
+  default: {
+    title: "",
+    description: "",
+    keywords: [],
+    public: false,
+    collaborative: false,
+    videoInfo: undefined,
+  },
+});
+
 type PeerTubeVideoUrlFormProps = {
   onLoaded: (data: PeerTubeVideoDataResult | null) => void;
+  onReset: () => void;
   data: PeerTubeVideoDataResult | null;
 };
 
 const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
   onLoaded,
+  onReset,
   data,
 }) => {
   const { t } = useTranslation();
-
   const validationSchema = Yup.object().shape({
     data: Yup.object(),
     url: Yup.string()
@@ -61,8 +89,8 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
 
   const formik = useFormik({
     initialValues: {
-      url: "",
-      data: null,
+      url: data?.orignalURL || "",
+      data: data,
     },
     validateOnMount: false,
     validationSchema: validationSchema,
@@ -76,6 +104,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     },
     onReset: () => {
       onLoaded(null);
+      onReset();
     },
   });
 
@@ -153,9 +182,17 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { data: user } = trpc.user.me.useQuery();
 
   const playlistMutation = trpc.playlist.add.useMutation();
   const projectMutation = trpc.project.add.useMutation();
+
+  const [initialValue, setInitialValue] = useRecoilState(
+    projectInputInitialValieAtom
+  );
+  const resetSavedValue = useResetRecoilState(projectInputInitialValieAtom);
 
   // const mutation = useMutation({
   //   mutationFn: (newProject: ProjectCreateData) => {
@@ -173,81 +210,92 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
     keywords: Yup.array().of(Yup.string()),
     public: Yup.bool(),
     collaborative: Yup.bool(),
+    videoInfo: Yup.object().required(),
   });
 
   const formik = useFormik({
     initialValues: {
-      title: "",
-      description: "",
-      keywords: [],
-      public: false,
-      collaborative: false,
+      ...initialValue,
+      videoInfo: initialValue.videoInfo || data,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setIsSubmitting(true);
-      try {
-        if (!data.isPlaylist) {
-          const video = data.videos[0];
-          const project = await projectMutation.mutateAsync({
-            title: values.title,
-            videoId: video.shortUUID,
-            host: video.account.host,
-            description: values.description,
-            public: values.public,
-            collaborative: values.collaborative,
-            duration: video.duration,
-            thumbnailURL: video.thumbnailURL,
-            metadata: video.metadata,
-            objective: "",
-            levelStart: 0,
-            levelEnd: 5,
-            shared: false,
-          });
-          if (project) {
-            formik.resetForm();
-            navigate(`/project/${project.id}`);
-          }
-        } else {
-          const playlist = await playlistMutation.mutateAsync({
-            title: values.title,
-            projects: data.videos.map((video) => ({
-              title: video.name,
-              description: video.description,
+      if (!user) {
+        setInitialValue({
+          title: values.title,
+          description: values.description,
+          public: values.public,
+          collaborative: values.collaborative,
+          keywords: values.keywords,
+          videoInfo: data,
+        });
+        navigate("/login", { state: { backgroundPath: location.pathname } });
+      } else {
+        try {
+          resetSavedValue();
+          if (!data.isPlaylist) {
+            const video = values.videoInfo?.videos[0];
+            const project = await projectMutation.mutateAsync({
+              title: values.title,
               videoId: video.shortUUID,
               host: video.account.host,
+              description: values.description,
+              public: values.public,
+              collaborative: values.collaborative,
               duration: video.duration,
               thumbnailURL: video.thumbnailURL,
               metadata: video.metadata,
-            })),
-            description: values.description,
-            public: values.public,
-            collaborative: values.collaborative,
-            objective: "",
-            levelStart: 0,
-            levelEnd: 5,
-            shared: false,
-            userId: "",
-          });
-          if (playlist) {
-            formik.resetForm();
-            navigate(`/projects/${playlist.projects[0].id}`);
+              objective: "",
+              levelStart: 0,
+              levelEnd: 5,
+              shared: false,
+            });
+            if (project) {
+              formik.resetForm();
+              navigate(`/project/${project.id}`);
+            }
+          } else {
+            const playlist = await playlistMutation.mutateAsync({
+              title: values.title,
+              projects: values.videoInfo?.videos.map((video) => ({
+                title: video.name,
+                description: video.description,
+                videoId: video.shortUUID,
+                host: video.account.host,
+                duration: video.duration,
+                thumbnailURL: video.thumbnailURL,
+                metadata: video.metadata,
+              })),
+              description: values.description,
+              public: values.public,
+              collaborative: values.collaborative,
+              objective: "",
+              levelStart: 0,
+              levelEnd: 5,
+              shared: false,
+              userId: "",
+            });
+            if (playlist) {
+              console.log("here ", playlist);
+              formik.resetForm();
+              navigate(`/project/${playlist.projects[0].id}`, {
+                replace: true,
+              });
+            }
           }
+        } catch (e) {
+          if (e.message == ERR_ALREADY_EXISTING_PROJECT) {
+            formik.setFieldError(
+              "title",
+              humanizeError("ERR_ALREADY_EXISTING_PROJECT")
+            );
+          } else {
+            formik.setFieldError("title", humanizeError("ERR_UNKOWN"));
+          }
+        } finally {
+          setIsSubmitting(false);
         }
-      } catch (e) {
-        if (e.message == ERR_ALREADY_EXISTING_PROJECT) {
-          formik.setFieldError(
-            "title",
-            humanizeError(ERR_ALREADY_EXISTING_PROJECT)
-          );
-        } else {
-          formik.setFieldError(
-            "title",
-            humanizeError(ERR_ALREADY_EXISTING_PROJECT)
-          );
-        }
-      } finally {
-        setIsSubmitting(false);
       }
     },
   });
@@ -513,7 +561,21 @@ export const CreateProjectPage: React.FC = () => {
 
   const handleVideoInfoLoaded = (data: PeerTubeVideoDataResult | null) => {
     setVideoInfo(data);
+    resetSavedValue();
   };
+
+  const savedValue = useRecoilValue(projectInputInitialValieAtom);
+  const resetSavedValue = useResetRecoilState(projectInputInitialValieAtom);
+
+  useEffect(() => {
+    if (savedValue && savedValue.videoInfo && !videoInfo) {
+      setVideoInfo(savedValue.videoInfo);
+    }
+  }, [savedValue, videoInfo]);
+
+  const handleReset = useCallback(() => {
+    resetSavedValue();
+  }, [resetSavedValue]);
 
   const handleDelete = (index: number) => {
     if (videoInfo) {
@@ -551,7 +613,6 @@ export const CreateProjectPage: React.FC = () => {
     setOpenDialog(false);
   };
 
-  console.log(videoInfo);
   return (
     <Box
       sx={{
@@ -571,6 +632,7 @@ export const CreateProjectPage: React.FC = () => {
           <PeerTubeVideoUrlForm
             onLoaded={handleVideoInfoLoaded}
             data={videoInfo}
+            onReset={handleReset}
           />
 
           {videoInfo ? (

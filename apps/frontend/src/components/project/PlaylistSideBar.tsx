@@ -12,14 +12,17 @@ import {
 import Image from "mui-image";
 import * as React from "react";
 import { Trans } from "react-i18next";
+import { useNavigate } from "react-router";
 
 import { ProjectById } from "~utils/trpc";
 
 export const PlaylistSideBar: React.FC<{ project: ProjectById }> = ({
   project,
 }) => {
+  const navigate = useNavigate();
+
   const handleClick = (id: string) => {
-    navigate(`/projects/${id}`);
+    navigate(`/project/${id}`);
   };
 
   if (!project.playlist) return null;
