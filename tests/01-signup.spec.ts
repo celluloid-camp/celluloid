@@ -42,7 +42,7 @@ test('test signup', async () => {
   await page.goto('http://127.0.0.1:3000/');
 
   await page.getByTestId('header-account-menu').click();
-  await page.getByTestId('header-logout-button').click();
+  await page.getByTestId('header-profile-button').click();
 
   await expect(page.getByTestId('profile-header-title')).toHaveText(TEST_USERNANE)
 
