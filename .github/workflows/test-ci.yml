@@ -1,4 +1,4 @@
-name: Dockerfile CI
+name: CI e2e Testing
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main, master]
 
 jobs:
-  test:
+  running-tests-with-playwrite:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
@@ -34,13 +34,13 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 18
           cache: yarn
 
       - name: install package
         run: |
           cp .env.ci .env
-          yarn
+          yarn --immutable
 
       - name: build
         run: yarn build --filter=frontend --filter=backend
@@ -57,3 +57,13 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - name: Publish HTML report to gh-pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3.7.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: playwright-report/
+          keep_files: true
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
