@@ -104,7 +104,6 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
         formik.setFieldValue("data", data);
         formik.setFieldTouched("data");
         formik.submitForm();
-        alert("submited");
       }
     },
     onError: () => {
