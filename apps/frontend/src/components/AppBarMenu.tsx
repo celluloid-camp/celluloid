@@ -16,7 +16,7 @@ const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data } = trpc.user.me.useQuery();
+  const { data } = trpc.user.me.useQuery({}, { retry: false });
 
   const location = useLocation();
 

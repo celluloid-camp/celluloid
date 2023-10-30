@@ -144,6 +144,7 @@ export const HomePage: React.FC = () => {
                     </Box>
 
                     <Button
+                      data-testid="create"
                       variant="contained"
                       color="primary"
                       size="large"

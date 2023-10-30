@@ -7,11 +7,7 @@ import { useLocation, useNavigate } from "react-router";
 import { UserAvatar } from "~components/UserAvatar";
 import { trpc, UserMe } from "~utils/trpc";
 
-interface Props {
-  user?: UserMe;
-}
-
-export const SigninMenu = ({ user }: Props) => {
+export const SigninMenu = ({ user }: { user: UserMe }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,7 +29,7 @@ export const SigninMenu = ({ user }: Props) => {
     utils.user.me.invalidate();
     utils.project.list.invalidate();
     handleClose();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   const handleProfile = () => {

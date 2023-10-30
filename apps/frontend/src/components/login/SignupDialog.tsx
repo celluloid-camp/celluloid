@@ -102,12 +102,11 @@ export const SignupDialog: React.FC = () => {
             name="username"
             margin="dense"
             fullWidth={true}
-            label={t("signup.username.label", "Email ou nom d'utilisateur")}
+            label={t("signup.username.label", "Nom d'utilisateur")}
             required={true}
             value={formik.values.username}
             placeholder={
-              t("signup.username.paceholder", "Email ou nom d'utilisateur") ||
-              ""
+              t("signup.username.paceholder", "Nom d'utilisateur") || ""
             }
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
@@ -183,6 +182,7 @@ export const SignupDialog: React.FC = () => {
             color="primary"
             size="large"
             type="submit"
+            data-testid="submit"
             loading={mutation.isLoading}
             disabled={mutation.isLoading}
           >

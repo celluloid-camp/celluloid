@@ -10,7 +10,7 @@ import {
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import { StyledDialog } from "~components/Dialog";
@@ -19,6 +19,7 @@ import { isTRPCClientError, trpc } from "~utils/trpc";
 export const LoginDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const utils = trpc.useContext();
   const mutation = trpc.user.login.useMutation();
@@ -31,18 +32,21 @@ export const LoginDialog: React.FC = () => {
   const handlePasswordReset = () => {
     navigate("/forgot", {
       state: { backgroundPath: "/" },
+      replace: true,
     });
   };
 
   const handleConfirm = () => {
     navigate("/confirm", {
       state: { backgroundPath: "/" },
+      replace: true,
     });
   };
 
   const handleSignup = () => {
     navigate("/signup", {
       state: { backgroundPath: "/" },
+      replace: true,
     });
   };
 
@@ -93,6 +97,7 @@ export const LoginDialog: React.FC = () => {
         <DialogContent>
           <TextField
             id="username"
+            data-testid="username"
             name="username"
             margin="dense"
             fullWidth={true}
@@ -108,6 +113,7 @@ export const LoginDialog: React.FC = () => {
           />
           <TextField
             id="password"
+            data-testid="password"
             name="password"
             margin="dense"
             fullWidth={true}
@@ -145,6 +151,7 @@ export const LoginDialog: React.FC = () => {
               </Button> */}
               <Button
                 color="primary"
+                data-testid="signup"
                 variant="outlined"
                 onClick={handleSignup}
                 size="small"
@@ -159,6 +166,7 @@ export const LoginDialog: React.FC = () => {
               size="small"
               color="primary"
               type="submit"
+              data-testid="submit"
               loading={mutation.isLoading}
               disabled={mutation.isLoading}
               sx={{ textTransform: "uppercase" }}
