@@ -1,22 +1,33 @@
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 
 const randomNum = Math.floor(Math.random() * 10000);
 const TEST_USERNANE = `test${randomNum}`
 const TEST_USER_EMAIL = `${TEST_USERNANE}@server.com`;
 
-test('test signup', async ({ page }) => {
+let page: Page;
+test.describe.configure({ mode: 'serial' });
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage();
+});
+
+test.afterAll(async () => {
+  await page.close();
+});
+
+test('test signup', async () => {
   await page.goto('http://127.0.0.1:3000/');
   await page.getByTestId('header-login-button').click();
   await page.getByTestId('signup').click();
   await expect(page).toHaveURL(/.*\/signup/);
 
   await page.getByTestId('username').click();
-  await page.getByTestId('username').fill('test5');
+  await page.getByTestId('username').fill(TEST_USERNANE);
   await page.getByTestId('email').click();
   await page.getByTestId('email').fill(TEST_USER_EMAIL);
   await page.getByTestId('password').click();
-  await page.getByTestId('password').fill(TEST_USERNANE);
+  await page.getByTestId('password').fill('testtest');
   await page.getByTestId('passwordConfirmation').click();
   await page.getByTestId('passwordConfirmation').fill('testtest');
 
@@ -40,7 +51,7 @@ test('test signup', async ({ page }) => {
 });
 
 
-test('test reconnect with existing account without confirmation', async ({ page }) => {
+test('test reconnect with existing account without confirmation', async () => {
 
 
   await page.goto('http://127.0.0.1:3000/');
