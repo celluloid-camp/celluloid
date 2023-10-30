@@ -1,9 +1,11 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import LinkIcon from "@mui/icons-material/Link";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { LoadingButton } from "@mui/lab";
 import {
+  Alert,
   Autocomplete,
   Box,
   ButtonBase,
@@ -25,12 +27,6 @@ import Image from "mui-image";
 import React, { useCallback, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
-import {
-  atom,
-  useRecoilState,
-  useRecoilValue,
-  useResetRecoilState,
-} from "recoil";
 import * as Yup from "yup";
 
 import {
@@ -75,6 +71,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     initialValues: {
       url: data?.orignalURL || "",
       data: data,
+      error: null,
     },
     validateOnMount: false,
     validationSchema: validationSchema,
@@ -103,14 +100,17 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     queryFn: () => getPeerTubeVideoData(formik.values.url),
     enabled: !formik.errors.url && formik.status != "submited",
     onSuccess: (data) => {
-      formik.setFieldValue("data", data);
-      formik.setFieldTouched("data");
-      formik.submitForm();
+      if (data) {
+        formik.setFieldValue("data", data);
+        formik.setFieldTouched("data");
+        formik.submitForm();
+        alert("submited");
+      }
     },
     onError: () => {
       formik.setFieldError(
-        "url",
-        t("project.create.error.video-info-failed") || ""
+        "error",
+        t("project.create.error.video-info-failed")
       );
     },
   });
@@ -123,7 +123,6 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     <form onSubmit={formik.handleSubmit}>
       <TextField
         id="url"
-        data-testid="url"
         name="url"
         label={t("home.addVideo")}
         fullWidth
@@ -155,9 +154,26 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
                   <ClearIcon />
                 </IconButton>
               </InputAdornment>
-            ) : null,
+            ) : (
+              <IconButton
+                data-testid="submit-url"
+                onClick={() => formik.handleSubmit()}
+                color="primary"
+                edge="end"
+              >
+                <KeyboardReturnIcon />
+              </IconButton>
+            ),
+        }}
+        inputProps={{
+          "data-testid": "url",
         }}
       />
+      {formik.values.error ? (
+        <Alert severity="error" sx={{ borderRadius: 0, mt: 0 }}>
+          {formik.values.error}
+        </Alert>
+      ) : null}
     </form>
   );
 };
@@ -287,7 +303,6 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
     <form onSubmit={formik.handleSubmit}>
       <TextField
         id="title"
-        data-testid="title"
         name="title"
         label={t("project.title")}
         fullWidth
@@ -295,6 +310,9 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
         autoComplete="none"
         spellCheck={false}
         margin="normal"
+        inputProps={{
+          "data-testid": "title",
+        }}
         value={formik.values.title}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
@@ -304,13 +322,15 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
       />
       <TextField
         id="description"
-        data-testid="description"
         name="description"
         label={t("project.description")}
         multiline
         rows={3}
         fullWidth
         autoComplete="none"
+        inputProps={{
+          "data-testid": "description",
+        }}
         spellCheck={false}
         margin="normal"
         value={formik.values.description}
@@ -323,7 +343,6 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
       <Autocomplete
         multiple
         id="keywords"
-        data-testid="keywords"
         options={[""]}
         freeSolo
         onChange={(_event, newValue) => {
@@ -344,6 +363,9 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
           <TextField
             {...params}
             margin="normal"
+            inputProps={{
+              "data-testid": "keywords",
+            }}
             label={t("project.keywords")}
           />
         )}

@@ -13,10 +13,7 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
-    host: "localhost",
-    proxy: {
-      "/trpc": "http://localhost:2021",
-    },
+    host: "localhost"
   },
   logLevel: "error"
 });

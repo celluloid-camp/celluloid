@@ -51,6 +51,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
           </Box>
 
           <Button
+            data-testid="header-create-button"
             sx={{
               textTransform: "uppercase",
               color: "text.primary",
@@ -62,6 +63,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
           </Button>
 
           <Button
+            data-testid="header-join-button"
             sx={{
               textTransform: "uppercase",
               color: "text.primary",

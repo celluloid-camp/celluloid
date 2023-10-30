@@ -19,9 +19,16 @@ export type PeerTubeVideoDataResult = {
 
 export const getPeerTubeVideoData = async (
   url: string
-): Promise<PeerTubeVideoDataResult> => {
+): Promise<PeerTubeVideoDataResult | null> => {
 
-  const parsed = new URL(url);
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch (e) {
+    //throw new Error("Invalid URL provided.");
+    return null;
+  }
+
   const host = parsed.host;
   const videoId = last(parsed.pathname.split("/"));
 

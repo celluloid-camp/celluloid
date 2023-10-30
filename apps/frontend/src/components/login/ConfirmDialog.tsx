@@ -72,13 +72,15 @@ export const ConfirmDialog: React.FC = () => {
       <form onSubmit={formik.handleSubmit}>
         <TextField
           id="username"
-          data-testid="username"
           name="username"
           margin="dense"
           fullWidth={true}
           label={t("confirm.username.label", "Email ou nom d'utilisateur")}
           required={true}
           value={formik.values.username}
+          inputProps={{
+            "data-testid": "username",
+          }}
           placeholder={
             t("confirm.username.paceholder", "Email ou nom d'utilisateur") || ""
           }
@@ -97,6 +99,9 @@ export const ConfirmDialog: React.FC = () => {
           label={t("confirm.code.label", "Code de confirmation")}
           required={true}
           value={formik.values.code}
+          inputProps={{
+            "data-testid": "code",
+          }}
           placeholder={
             t("confirm.code.placeholder", "Code de confirmation") || ""
           }

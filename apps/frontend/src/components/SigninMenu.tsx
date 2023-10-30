@@ -53,12 +53,13 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
   return (
     <div>
       {user ? (
-        <IconButton onClick={handleClick}>
+        <IconButton onClick={handleClick} data-testid="header-account-menu">
           <UserAvatar username={user.username} userId={user.id} />
         </IconButton>
       ) : (
         <div>
           <Button
+            data-testid="header-signup-button"
             onClick={handleSignup}
             sx={{
               textTransform: "uppercase",
@@ -69,6 +70,7 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
             <Trans i18nKey={"menu.signup"} />
           </Button>
           <Button
+            data-testid="header-login-button"
             onClick={handleLogin}
             sx={{
               textTransform: "uppercase",
@@ -117,14 +119,14 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
         }}
       >
         {user && user.role == "Admin" ? (
-          <MenuItem onClick={handleOpenAdmin}>
+          <MenuItem onClick={handleOpenAdmin} data-testid="header-admin-button">
             <Trans i18nKey={"menu.admin"} />
           </MenuItem>
         ) : null}
-        <MenuItem onClick={handleProfile}>
+        <MenuItem onClick={handleProfile} data-testid="header-profile-button">
           <Trans i18nKey={"menu.profile"} />
         </MenuItem>
-        <MenuItem onClick={handleLogout}>
+        <MenuItem onClick={handleLogout} data-testid="header-logout-button">
           <Trans i18nKey={"menu.logout"} />
         </MenuItem>
       </Menu>
