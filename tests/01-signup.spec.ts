@@ -19,6 +19,7 @@ test('test signup', async ({ page }) => {
 
   await page.getByTestId('submit').click();
 
+  await expect(page).toHaveURL(/.*\/confirm/, { timeout: 5000 });
 
   await page.getByTestId('code').click();
   await page.getByTestId('code').fill('0000');

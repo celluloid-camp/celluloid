@@ -27,6 +27,8 @@
     "clean": "rimraf .turbo node_modules dist",
     "dev": "tsup --watch --silent",
     "setup": "yarn db:push && yarn migrate:init && migrate:deploy && yarn generate",
+    "migrate": "yarn prisma migrate",
+    "db": "yarn prisma db",
     "migrate:init": "yarn prisma migrate resolve --applied 0_init",
     "migrate:deploy": "yarn prisma migrate deploy",
     "migrate:dev": "yarn prisma migrate dev",
