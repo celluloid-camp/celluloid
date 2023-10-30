@@ -33,6 +33,11 @@ import {
 } from "recoil";
 import * as Yup from "yup";
 
+import {
+  useProjectInputIntialState,
+  useProjectInputIntialValue,
+  userResetProjectInputIntialState,
+} from "~/state";
 import { AddVideoToPlaylistDialog } from "~components/AddVideoToPlaylistDialog";
 import { StyledTitle } from "~components/typography";
 import {
@@ -46,27 +51,6 @@ import { humanizeError } from "~utils/errors";
 import { trpc } from "~utils/trpc";
 
 const THUMBNAIL_WIDTH = 250;
-
-type ProjectFormInput = {
-  title: string;
-  description: string;
-  keywords: string[];
-  public: boolean;
-  collaborative: boolean;
-  videoInfo: PeerTubeVideoDataResult | undefined;
-};
-
-export const projectInputInitialValieAtom = atom<ProjectFormInput>({
-  key: `ProjectFormInput`,
-  default: {
-    title: "",
-    description: "",
-    keywords: [],
-    public: false,
-    collaborative: false,
-    videoInfo: undefined,
-  },
-});
 
 type PeerTubeVideoUrlFormProps = {
   onLoaded: (data: PeerTubeVideoDataResult | null) => void;
@@ -139,6 +123,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
     <form onSubmit={formik.handleSubmit}>
       <TextField
         id="url"
+        data-testid="url"
         name="url"
         label={t("home.addVideo")}
         fullWidth
@@ -189,10 +174,8 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
   const playlistMutation = trpc.playlist.add.useMutation();
   const projectMutation = trpc.project.add.useMutation();
 
-  const [initialValue, setInitialValue] = useRecoilState(
-    projectInputInitialValieAtom
-  );
-  const resetSavedValue = useResetRecoilState(projectInputInitialValieAtom);
+  const [initialValue, setInitialValue] = useProjectInputIntialState();
+  const resetSavedValue = userResetProjectInputIntialState();
 
   // const mutation = useMutation({
   //   mutationFn: (newProject: ProjectCreateData) => {
@@ -304,6 +287,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
     <form onSubmit={formik.handleSubmit}>
       <TextField
         id="title"
+        data-testid="title"
         name="title"
         label={t("project.title")}
         fullWidth
@@ -320,6 +304,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
       />
       <TextField
         id="description"
+        data-testid="description"
         name="description"
         label={t("project.description")}
         multiline
@@ -338,6 +323,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
       <Autocomplete
         multiple
         id="keywords"
+        data-testid="keywords"
         options={[""]}
         freeSolo
         onChange={(_event, newValue) => {
@@ -386,6 +372,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
         </Grid>
         <Grid item xs={2}>
           <Switch
+            data-testid="public-switch"
             checked={formik.values.public}
             onChange={(_, value) => {
               formik.setFieldValue("public", value);
@@ -420,6 +407,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
         <Grid item xs={2}>
           <Switch
             checked={formik.values.collaborative}
+            data-testid="collaborative-switch"
             onChange={(_, value) => {
               formik.setFieldValue("collaborative", value);
             }}
@@ -441,6 +429,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
       <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
         <LoadingButton
           variant="contained"
+          data-testid="submit"
           size="large"
           color="primary"
           type="submit"
@@ -467,7 +456,11 @@ const AddVideoButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
         width={THUMBNAIL_WIDTH}
         height={180}
       >
-        <ButtonBase sx={{ height: "100%" }} onClick={onClick}>
+        <ButtonBase
+          sx={{ height: "100%" }}
+          onClick={onClick}
+          data-testid="add-video"
+        >
           <Stack
             flex={1}
             marginX={1}
@@ -495,7 +488,11 @@ const VideoSnap: React.FC<{
     <Grid item>
       <Box sx={{ position: "absolute", zIndex: 1 }} width={THUMBNAIL_WIDTH}>
         <Box display={"flex"} justifyContent="flex-end">
-          <IconButton aria-label="delete" onClick={onDelete}>
+          <IconButton
+            aria-label="delete"
+            onClick={onDelete}
+            data-testid="delete-video"
+          >
             <CloseIcon sx={{ color: "white" }} />
           </IconButton>
         </Box>
@@ -564,8 +561,8 @@ export const CreateProjectPage: React.FC = () => {
     resetSavedValue();
   };
 
-  const savedValue = useRecoilValue(projectInputInitialValieAtom);
-  const resetSavedValue = useResetRecoilState(projectInputInitialValieAtom);
+  const savedValue = useProjectInputIntialValue();
+  const resetSavedValue = userResetProjectInputIntialState();
 
   useEffect(() => {
     if (savedValue && savedValue.videoInfo && !videoInfo) {

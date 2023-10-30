@@ -6,6 +6,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router";
 import * as Yup from "yup";
 
+import { useProjectInputIntialValue } from "~/state";
 import { StyledDialog } from "~components/Dialog";
 import { useRouteQuery } from "~hooks/useRouteQuery";
 import { trpc } from "~utils/trpc";
@@ -18,6 +19,7 @@ export const ConfirmDialog: React.FC = () => {
 
   const utils = trpc.useContext();
   const mutation = trpc.user.confirm.useMutation();
+  const savedProjectValue = useProjectInputIntialValue();
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required(t("confirm.username.required")),
@@ -44,7 +46,13 @@ export const ConfirmDialog: React.FC = () => {
         });
 
         utils.user.me.invalidate();
-        navigate("/");
+
+        if (savedProjectValue.videoInfo) {
+          navigate("/create", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+
         formik.setStatus("submited");
       } catch (e) {
         formik.setFieldError("error", e.message);
@@ -64,6 +72,7 @@ export const ConfirmDialog: React.FC = () => {
       <form onSubmit={formik.handleSubmit}>
         <TextField
           id="username"
+          data-testid="username"
           name="username"
           margin="dense"
           fullWidth={true}
@@ -82,6 +91,7 @@ export const ConfirmDialog: React.FC = () => {
         <TextField
           id="code"
           name="code"
+          data-testid="code"
           margin="dense"
           fullWidth={true}
           label={t("confirm.code.label", "Code de confirmation")}
@@ -103,6 +113,7 @@ export const ConfirmDialog: React.FC = () => {
             size="large"
             color="primary"
             type="submit"
+            data-testid="submit"
             loading={mutation.isLoading}
             disabled={mutation.isLoading}
           >

@@ -19,6 +19,7 @@
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
+    "test": "npx playwright test",
     "--shortcuts to run commands in workspaces--": "",
     "frontend": "yarn workspace frontend",
     "admin": "yarn workspace admin",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
+    "@playwright/test": "^1.39.0",
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",

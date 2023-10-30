@@ -2,6 +2,7 @@ import "dayjs/locale/fr"; // import locale
 
 import { CssBaseline, Dialog, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { httpBatchLink } from "@trpc/client";
 import * as dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -36,7 +37,6 @@ import { RecoverDialog } from "~components/login/RecoverDialog";
 import { SignupDialog } from "~components/login/SignupDialog";
 import { StudentSignupDialog } from "~components/login/StudentSignupDialog";
 import { SharedLayout } from "~components/SharedLayout";
-import { RouteHistoryProvider } from "~utils/router";
 import { trpc } from "~utils/trpc";
 
 import ResetScroll from "./components/ResetScroll";
@@ -185,6 +185,7 @@ const App = () => {
                     <AppRouters />
                   </BrowserRouter>
                 </ConfirmProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>
             </trpc.Provider>
           </SnackbarProvider>

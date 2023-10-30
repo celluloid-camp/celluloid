@@ -43,3 +43,11 @@ dist/
 .vscode
 .backups
 .ethereal
+
+
+node_modules/
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+
