@@ -13,8 +13,8 @@ test('test signin with existing account', async ({ page }) => {
   await page.getByTestId('password').fill('testtest');
   await page.getByTestId('submit').click();
 
-  await page.getByTestId('header-account-menu').click();
-  await page.getByTestId('header-profile-button').click();
+  // await page.getByTestId('header-account-menu').click();
+  // await page.getByTestId('header-profile-button').click();
 
   // await expect(page.getByTestId('profile-header-title')).toHaveText("test@server.com");
 

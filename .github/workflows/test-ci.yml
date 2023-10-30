@@ -52,20 +52,12 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-
       - name: Publish HTML report to gh-pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3.9.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: playwright-report/
-          destination_dir: playwright-report/
           keep_files: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
