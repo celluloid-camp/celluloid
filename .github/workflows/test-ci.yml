@@ -38,11 +38,6 @@ jobs:
           node-version: 18
           cache: yarn
 
-      - name: Test PostgreSQL Connection
-        run: psql -h 127.0.0.1 -U postgres -d celluloid -c 'SELECT 1;'
-        env:
-          PGPASSWORD: postgres
-
       - name: install package
         run: |
           cp .env.ci .env
@@ -50,9 +45,6 @@ jobs:
 
       - name: build
         run: yarn build --filter=frontend --filter=backend
-
-      - name: test
-        run: yarn backend start
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps

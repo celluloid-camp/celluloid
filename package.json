@@ -21,9 +21,9 @@
     "test": "npx playwright test",
     "--shortcuts to run commands in workspaces--": "",
     "frontend": "yarn workspace frontend",
-    "admin": "yarn workspace admin",
-    "backend": "yarn workspace backend",
-    "prisma": "yarn workspace @celluloid/prisma",
+    "admin": "dotenv -- yarn workspace admin",
+    "backend": "dotenv -- yarn workspace backend",
+    "prisma": "dotenv -- yarn workspace @celluloid/prisma",
     "docker-build": "DOCKER_BUILDKIT=1 docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest --cache-from=celluloid-backend:latest  . "
   },
   "devDependencies": {
