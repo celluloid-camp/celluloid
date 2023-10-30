@@ -189,7 +189,7 @@ const App = () => {
                     <AppRouters />
                   </BrowserRouter>
                 </ConfirmProvider>
-                <ReactQueryDevtools initialIsOpen={false} />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
               </QueryClientProvider>
             </trpc.Provider>
           </SnackbarProvider>

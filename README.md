@@ -9,6 +9,8 @@ educational purposes." src="./apps/frontend/src/images/logo-sign.svg">
 
 ## Overview
 
+<img width="80%" alt="" src="./docs/assets/screencapture_1.png">
+
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
 With Celluloid, you can find a [PeerTube](https://joinpeertube.org/) video, select an educational objective, annotate the video, share it with your students, collect their answers, and respond to their questions.

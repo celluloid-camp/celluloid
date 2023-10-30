@@ -80,9 +80,6 @@ export const ContextualEditor: React.FC<ContextualEditorProps> = () => {
         overflow: "hidden",
       }}
     >
-      <Typography color="white">
-        {JSON.stringify(contextualEditorState)}
-      </Typography>
       <Box sx={{ height: height, width: width, overflow: "hidden" }}>
         <Draggable
           defaultPosition={defaultPosition}
