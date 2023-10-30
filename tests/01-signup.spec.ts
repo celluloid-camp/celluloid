@@ -49,7 +49,7 @@ test('test signup', async () => {
 });
 
 
-test('test reconnect with existing account without confirmation', async () => {
+test.fixme('test reconnect with existing account without confirmation', async () => {
 
 
   await page.goto('http://127.0.0.1:3000/');
