@@ -1,10 +1,11 @@
-name: CI e2e Testing
+name: CI Testing
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   tests:
@@ -60,11 +61,12 @@ jobs:
 
       - name: Publish HTML report to gh-pages
         if: always()
-        uses: peaceiris/actions-gh-pages@v3.7.3
+        uses: peaceiris/actions-gh-pages@v3.9.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: playwright-report/
-          destination_dir: playwright-report/
+          # destination_dir: playwright-report/
           keep_files: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: ${{ github.event.head_commit.message }}

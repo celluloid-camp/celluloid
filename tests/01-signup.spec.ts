@@ -1,17 +1,31 @@
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
-test('test signup', async ({ page }) => {
-  await page.goto('http://localhost:3000/');
+
+const randomNum = Math.floor(Math.random() * 10000);
+const TEST_USERNANE = `test${randomNum}`
+const TEST_USER_EMAIL = `${TEST_USERNANE}@server.com`;
+
+let page: Page;
+test.describe.configure({ mode: 'serial' });
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage();
+});
+
+test.afterAll(async () => {
+  await page.close();
+});
+
+test('test signup', async () => {
+  await page.goto('http://127.0.0.1:3000/');
   await page.getByTestId('header-login-button').click();
   await page.getByTestId('signup').click();
   await expect(page).toHaveURL(/.*\/signup/);
 
   await page.getByTestId('username').click();
-  await page.getByTestId('username').fill('test@server.com');
-  await page.getByTestId('username').click();
-  await page.getByTestId('username').fill('test5');
+  await page.getByTestId('username').fill(TEST_USERNANE);
   await page.getByTestId('email').click();
-  await page.getByTestId('email').fill('test@server.com');
+  await page.getByTestId('email').fill(TEST_USER_EMAIL);
   await page.getByTestId('password').click();
   await page.getByTestId('password').fill('testtest');
   await page.getByTestId('passwordConfirmation').click();
@@ -25,7 +39,34 @@ test('test signup', async ({ page }) => {
   await page.getByTestId('code').fill('0000');
   await page.getByTestId('submit').click();
 
-  // await page.getByTestId('header-profile-button').click();
-  // await page.getByRole('heading', { name: 'test5' }).click();
-  // await page.getByText('test@server.com - Teacher').click();
+  await page.goto('http://127.0.0.1:3000/');
+
+  await page.getByTestId('header-account-menu').click();
+  await page.getByTestId('header-logout-button').click();
+
+  await expect(page.getByTestId('profile-header-title')).toHaveText(TEST_USERNANE)
+
+});
+
+
+test('test reconnect with existing account without confirmation', async () => {
+
+
+  await page.goto('http://127.0.0.1:3000/');
+  await page.getByTestId('header-login-button').click();
+  await expect(page).toHaveURL(/.*\/login/);
+
+  await page.getByTestId('username').click();
+  await page.getByTestId('username').fill(TEST_USER_EMAIL);
+  await page.getByTestId('username').press('Tab');
+  await page.getByTestId('password').fill('testtest');
+  await page.getByTestId('submit').click();
+
+  await expect(page).toHaveURL('http://127.0.0.1:3000/');
+
+  await page.getByTestId('header-account-menu').click();
+  await page.getByTestId('header-logout-button').click();
+
+  await expect(page).toHaveURL('http://127.0.0.1:3000/');
+
 });

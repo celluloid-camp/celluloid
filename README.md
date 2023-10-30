@@ -5,7 +5,7 @@ educational purposes." src="./apps/frontend/src/images/logo-sign.svg">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker Build](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml)
-[![Tests](https://github.com/celluloid-camp/celluloid/actions/workflows/test-ci.yml/badge.svg)](https://celluloid-camp.github.io/celluloid/playwright-report)
+[![Tests](https://github.com/celluloid-camp/celluloid/actions/workflows/test-ci.yml/badge.svg)](https://celluloid-camp.github.io/celluloid)
 
 ## Overview
 
@@ -35,21 +35,40 @@ Celluloid is designed to run on a Linux server. Proficiency with the command-lin
 
 - Install the latest version of [Git](https://git-scm.com/).
 - Install the latest version of [Node.js](https://nodejs.org/en/).
-- Install the latest version of [Yarn](https://yarnpkg.com/en/) and use it instead of NPM. The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html), so Yarn is required to leverage [Yarn workspace](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/).
+- Install the latest version of [Yarn](https://yarnpkg.com/en/) and use it instead of NPM. 
+
+The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html), so Yarn is required to leverage [Yarn workspace](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/).
+
+```
+.
+├── apps/                # Main application containers
+│   ├── frontend/        # Frontend application code
+│   ├── backend/         # Backend application code
+│   └── admin/           # Admin panel code
+├── packages/            # Shared packages
+│   ├── config/          # Configuration settings and files
+│   ├── i18n/            # Internationalization settings and translations
+│   ├── passport/        # Passport authentication settings
+│   ├── prisma/          # Prisma ORM configurations and schema
+│   ├── trpc/            # tRPC settings and utilities
+│   ├── types/           # Shared TypeScript types
+│   └── utils/           # Shared utilities
+├── tests/               # Test scripts and test-related utilities
+├── scripts/             # Miscellaneous scripts for automation
+├── packages.json        # Package manifest
+└── .env                 # Environment variables
+```
+
 
 ### 📦 Database
 
 You will need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 13 or later.
 
-For development purposes, you can use the provided Docker Compose [docker-compose.yml](docker-compose.yml) and run the command:
+We provide a complete docker compose [stack.yml](stack.yml) ready to run :
 
 ```bash
-docker-compose up -d
+docker compose -f stack.yml up
 ```
-
-Afterward:
-
-Run the command `yarn dev`
 
 ### Emails
 
@@ -58,12 +77,12 @@ we've configured Nodemailer to use [ethereal.email](https://ethereal.email) to c
 
 ## Installation from Source
 
-### Initial Steps
+### Initial steps
 
 Open your terminal and execute the following commands:
 
 ```bash
-git clone https://github.com/celluloid-edu/celluloid
+git clone https://github.com/celluloid-camp/celluloid.git
 cd celluloid/
 yarn
 ```
@@ -78,15 +97,11 @@ cp sample.env .env
 
 Open the newly created .env file with your preferred text editor and configure the values according to your requirements.
 
-### Running the Application in Development Mode
+### Running the application in development mode
 
-First, ensure that the database is up and running. Then:
+For development purposes, you can use the provided Docker Compose [docker-compose.yml](docker-compose.yml) and run the command:
 
-```bash
-yarn database setup
-```
-
-At the root of your repository, run:
+At the root of your repository, run the projet in development mode:
 
 ```bash
 yarn dev
@@ -95,23 +110,38 @@ yarn dev
 This will initiate an interactive build and open the app in a browser window while continuously monitoring source files for modifications.
 If everything worked without errors, you should be all set. Otherwise, please review the instructions above carefully.
 
-### Building and Starting the Application in Production Mode
+### Building and starting the application in production Mode
 
 At the repository's root, execute:
 
 ```bash
 yarn build
-yarn start
 ```
 
-You can access your app at http://localhost:3001.
+To run the backend
 
-### Building and Starting the Application as a Docker Container
+```bash
+yarn backend start
+```
+
+To run the frontend
+
+```bash
+yarn frontend start
+```
+
+You can access your app at http://localhost:3000.
+
+### Building and starting the application as a docker Container
 
 Open a terminal at the repository's root and run:
 
 ```bash
-docker-compose up
+docker build --build-arg APP=backend -t  celluloid-backend:latest  .
+```
+
+```bash
+docker build --build-arg APP=frontend -t  celluloid-frontend:latest  .
 ```
 
 (Ensure that [Docker](https://www.docker.com/get-started) is correctly installed.)
