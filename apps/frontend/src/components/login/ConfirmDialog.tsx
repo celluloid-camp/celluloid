@@ -93,7 +93,6 @@ export const ConfirmDialog: React.FC = () => {
         <TextField
           id="code"
           name="code"
-          data-testid="code"
           margin="dense"
           fullWidth={true}
           label={t("confirm.code.label", "Code de confirmation")}
