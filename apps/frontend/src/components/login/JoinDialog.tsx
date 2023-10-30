@@ -92,6 +92,9 @@ export const JoinDialog: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.shareCode && Boolean(formik.errors.shareCode)}
             helperText={formik.touched.shareCode && formik.errors.shareCode}
+            inputProps={{
+              "data-testid": "shareCode",
+            }}
           />
         </DialogContent>
         <DialogActions>
@@ -99,6 +102,7 @@ export const JoinDialog: React.FC = () => {
             variant="contained"
             color="primary"
             type="submit"
+            data-testid="submit"
             loading={mutation.isLoading}
             disabled={mutation.isLoading}
           >

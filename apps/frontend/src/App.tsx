@@ -52,6 +52,10 @@ import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
 import { createTheme } from "./theme";
 
+const API_URL = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL
+  : "/trpc";
+
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear); // use plugin
 dayjs.extend(duration);
@@ -159,7 +163,7 @@ const App = () => {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "/trpc",
+          url: API_URL,
           fetch(url, options) {
             return fetch(url, {
               ...options,

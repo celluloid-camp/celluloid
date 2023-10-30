@@ -112,6 +112,9 @@ export const StudentSignupDialog: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.shareCode && Boolean(formik.errors.shareCode)}
             helperText={formik.touched.shareCode && formik.errors.shareCode}
+            inputProps={{
+              "data-testid": "shareCode",
+            }}
           />
 
           <TextField
@@ -136,6 +139,9 @@ export const StudentSignupDialog: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.username && Boolean(formik.errors.username)}
             helperText={formik.touched.username && formik.errors.username}
+            inputProps={{
+              "data-testid": "username",
+            }}
           />
 
           <TextField
@@ -156,6 +162,9 @@ export const StudentSignupDialog: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
+            inputProps={{
+              "data-testid": "password",
+            }}
           />
         </DialogContent>
         <DialogActions sx={{ mx: 2, mt: 2 }}>
@@ -164,6 +173,7 @@ export const StudentSignupDialog: React.FC = () => {
               <Button
                 color="primary"
                 onClick={handleSignin}
+                data-testid="login-button"
                 size="small"
                 variant="outlined"
                 sx={{ textTransform: "uppercase", color: "text.secondary" }}
@@ -178,6 +188,7 @@ export const StudentSignupDialog: React.FC = () => {
               variant="contained"
               color="primary"
               type="submit"
+              data-testid="submit-button"
               loading={mutation.isLoading}
               disabled={mutation.isLoading}
             >

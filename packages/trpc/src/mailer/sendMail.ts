@@ -7,15 +7,22 @@ const EMAIL_FROM = process.env.EMAIL_FROM || "no-reply@celluloid.huma-num.fr";
 
 const isDev = process.env.NODE_ENV !== "production";
 
+const isCI_TEST = process.env.CI_TEST;
 
 export async function sendMail(
   to: string, subject: string, html: string) {
+
+  if (isCI_TEST) {
+    return console.log(`email send to ${to}`)
+  }
+
   const transport = await getTransport();
   const mailOptions = {
     from: `Celluloid <${EMAIL_FROM}>`, to, subject, html
   };
 
   const info = await transport.sendMail(mailOptions);
+
 
   if (isDev) {
     const url = nodemailer.getTestMessageUrl(info);

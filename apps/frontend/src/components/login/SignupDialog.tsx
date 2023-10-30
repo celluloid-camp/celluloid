@@ -108,6 +108,9 @@ export const SignupDialog: React.FC = () => {
             placeholder={
               t("signup.username.paceholder", "Nom d'utilisateur") || ""
             }
+            inputProps={{
+              "data-testid": "username",
+            }}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             onBlur={formik.handleBlur}
@@ -117,6 +120,9 @@ export const SignupDialog: React.FC = () => {
           <TextField
             id="email"
             name="email"
+            inputProps={{
+              "data-testid": "email",
+            }}
             margin="dense"
             fullWidth={true}
             type="email"
@@ -145,6 +151,9 @@ export const SignupDialog: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
+            inputProps={{
+              "data-testid": "password",
+            }}
           />
 
           <TextField
@@ -174,6 +183,9 @@ export const SignupDialog: React.FC = () => {
               formik.touched.passwordConfirmation &&
               formik.errors.passwordConfirmation
             }
+            inputProps={{
+              "data-testid": "passwordConfirmation",
+            }}
           />
         </DialogContent>
         <DialogActions sx={{ mx: 2 }}>

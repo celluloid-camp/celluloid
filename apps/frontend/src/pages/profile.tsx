@@ -40,7 +40,12 @@ const UserProfile: React.FC = () => {
           <>
             <Stack alignItems={"center"}>
               <UserAvatar username={data.username} userId={data.id} />
-              <Typography variant="h4" color="textPrimary" sx={{ mt: 1 }}>
+              <Typography
+                variant="h4"
+                color="textPrimary"
+                sx={{ mt: 1 }}
+                data-testid="profile-header-title"
+              >
                 {data.username}
               </Typography>
               <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>

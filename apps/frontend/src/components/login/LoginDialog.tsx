@@ -97,7 +97,6 @@ export const LoginDialog: React.FC = () => {
         <DialogContent>
           <TextField
             id="username"
-            data-testid="username"
             name="username"
             margin="dense"
             fullWidth={true}
@@ -107,13 +106,18 @@ export const LoginDialog: React.FC = () => {
             placeholder={t("signin.username") || ""}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
+            inputProps={{
+              "data-testid": "username",
+            }}
             onBlur={formik.handleBlur}
             error={formik.touched.username && Boolean(formik.errors.username)}
             helperText={formik.touched.username && formik.errors.username}
           />
           <TextField
             id="password"
-            data-testid="password"
+            inputProps={{
+              "data-testid": "password",
+            }}
             name="password"
             margin="dense"
             fullWidth={true}
@@ -131,6 +135,7 @@ export const LoginDialog: React.FC = () => {
           <Box display={"flex"} flex={1} justifyContent={"flex-end"}>
             <Button
               onClick={handlePasswordReset}
+              data-testid="forgot-button"
               size="small"
               sx={{ textTransform: "uppercase", color: "text.secondary" }}
             >
