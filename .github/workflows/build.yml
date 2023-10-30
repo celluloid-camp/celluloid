@@ -67,3 +67,4 @@ jobs:
             COMMIT=${{ steps.vars.outputs.sha_short }}
             APP=frontend
             START_COMMAND=start
+            API_URL=/trpc
