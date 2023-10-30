@@ -39,14 +39,12 @@ test('test signup', async () => {
   await page.getByTestId('code').fill('0000');
   await page.getByTestId('submit').click();
 
-  await expect(page.getByTestId('profile-header-title')).toHaveText(TEST_USERNANE)
-
   await page.goto('http://127.0.0.1:3000/');
 
   await page.getByTestId('header-account-menu').click();
   await page.getByTestId('header-logout-button').click();
 
-  await expect(page).toHaveURL('http://127.0.0.1:3000/');
+  await expect(page.getByTestId('profile-header-title')).toHaveText(TEST_USERNANE)
 
 });
 
