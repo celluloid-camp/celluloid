@@ -54,15 +54,15 @@ export const userRouter = router({
       }).catch(err => {
         console.log(err.name);
 
-        if (err?.name === 'AuthenticationError') {
+        if (err?.name === 'InvalidUserError') {
           throw new TRPCError({
             code: 'UNAUTHORIZED',
-            message: 'Incorrect username or password.'
+            message: 'USER_NOT_FOUND'
           })
         } else if (err?.name === "UserNotConfirmed") {
           throw new TRPCError({
             code: 'UNAUTHORIZED',
-            message: 'UserNotConfirmed'
+            message: 'USER_NOT_CONFIRMED'
           })
         }
 

@@ -74,10 +74,11 @@ export const LoginDialog: React.FC = () => {
         formik.setStatus("submited");
       } catch (e) {
         if (isTRPCClientError(e)) {
+          console.log(e.message);
           // `cause` is now typed as your router's `TRPCClientError`
-          if (e.message === "UserNotConfirmed") {
+          if (e.message === "USER_NOT_CONFIRMED") {
             handleConfirm();
-          } else if (e.code === "UNAUTHORIZED") {
+          } else if (e.message === "USER_NOT_FOUND") {
             formik.setFieldError(
               "error",
               t(

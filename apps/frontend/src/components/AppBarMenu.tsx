@@ -16,7 +16,10 @@ const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data } = trpc.user.me.useQuery({}, { retry: false });
+  const { data, isError } = trpc.user.me.useQuery(
+    {},
+    { retry: false, keepPreviousData: false, cacheTime: 0 }
+  );
 
   const location = useLocation();
 
@@ -96,7 +99,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
             {t("menu.about")}
           </Button>
 
-          <SigninMenu user={data} />
+          <SigninMenu user={!isError ? data : null} />
           <LanguageMenu />
         </Toolbar>
       </AppBar>
