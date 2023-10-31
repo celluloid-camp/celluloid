@@ -23,7 +23,7 @@ async function main() {
 
   // Setup CORS
   app.use(cors({
-    origin: process.env.NODE_ENV != "production" ? ['http://localhost:3000', 'http://localhost:4000', 'http://127.0.0.1:3000', "http://127.0.0.1:4000"] : undefined,
+    origin: process.env.NODE_ENV != "production" ? ['http://localhost:3000', 'http://localhost:4000'] : undefined,
     credentials: true,
   }));
 
@@ -55,11 +55,11 @@ async function main() {
   app.get('/', swaggerUi.setup(openApiDocument));
 
   const server = app.listen(process.env.PORT || 2021, () => {
-    console.log('listening on port 2021');
+    console.log(`listening on port 2021 -  NODE_ENV:${process.env.NODE_ENV}`);
   });
 
   async function onSignal() {
-    console.log('server is starting cleanup')
+    console.log(`server is starting cleanup`)
     await prisma.$disconnect()
     return;
   }
