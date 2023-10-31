@@ -9,7 +9,10 @@ import {
   useState,
 } from "react";
 
-import { useVideoPlayerEvent } from "~hooks/use-video-player";
+import {
+  useVideoPlayerEvent,
+  useVideoPlayerSeekEvent,
+} from "~hooks/use-video-player";
 
 import { useSetVideoPlayerProgress } from "./useVideoPlayer";
 
@@ -20,40 +23,20 @@ interface VideoPlayerProps {
 export const VideoPlayer = forwardRef(({ url }: VideoPlayerProps, ref) => {
   const playerRef = useRef<ReactPlayer>(null);
   const [isReady, setIsReady] = useState(false);
-  const skipFirstCleanup = useRef(true);
 
   const setVideoPlayerProgress = useSetVideoPlayerProgress();
 
   useImperativeHandle(ref, () => playerRef.current);
 
-  // useEffect(() => {
-  //   return () => {
-  //     if (skipFirstCleanup.current) {
-  //       skipFirstCleanup.current = false;
-  //       return;
-  //     }
-
-  //     const scriptToRemove = Array.from(
-  //       document.querySelectorAll("script")
-  //     ).find((s) => s.src && s.src.includes("peertube"));
-
-  //     scriptToRemove?.remove();
-  //     window["PeerTubePlayer"] = null;
-  //     const peerTubeContainer = document.getElementById("peerTubeContainer");
-  //     peerTubeContainer?.remove();
-  //     console.log("unload peertube");
-  //   };
-  // }, []);
-
   const dispatcher = useVideoPlayerEvent();
 
-  const handleReady = (player: ReactPlayer) => {
-    console.log("ready");
-    // player.forceUpdate()
-    // console.log("getCurrentTime", player.getCurrentTime());
-    // console.log("getSecondsLoaded", player.getSecondsLoaded());
-    // console.log("getDuration", player.getDuration());
-    // setIsReady(true);
+  useVideoPlayerSeekEvent((event) => {
+    if (playerRef.current && event.time && isReady) {
+      playerRef.current?.seekTo(event.time);
+    }
+  });
+
+  const handleReady = () => {
     // dispatcher({
     //   state: "READY",
     //   progress: 0,
