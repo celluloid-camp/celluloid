@@ -1947,7 +1947,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@celluloid/types@^0.1.0, @celluloid/types@workspace:packages/types":
+"@celluloid/types@*, @celluloid/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@celluloid/types@workspace:packages/types"
   dependencies:
@@ -11755,7 +11755,7 @@ __metadata:
     "@celluloid/prisma": "*"
     "@celluloid/react-player": 2.14.0
     "@celluloid/trpc": "*"
-    "@celluloid/types": ^0.1.0
+    "@celluloid/types": "*"
     "@cutting/use-get-parent-size": ^2.1.4
     "@emotion/react": ^11.11.1
     "@emotion/styled": ^11.11.0

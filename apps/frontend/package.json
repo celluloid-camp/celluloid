@@ -24,7 +24,7 @@
     "@celluloid/prisma": "*",
     "@celluloid/react-player": "2.14.0",
     "@celluloid/trpc": "*",
-    "@celluloid/types": "^0.1.0",
+    "@celluloid/types": "*",
     "@cutting/use-get-parent-size": "^2.1.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
