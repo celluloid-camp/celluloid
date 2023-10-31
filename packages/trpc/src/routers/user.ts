@@ -289,6 +289,14 @@ export const userRouter = router({
       });
     }
 
+    if (project.userId == ctx.user?.id) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: `PROJECT_OWNER_CANNOT_JOIN`,
+      });
+    }
+
+
     await prisma.project.update({
       where: { id: project.id },
       data: {

@@ -1,16 +1,9 @@
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-import { ProjectById, trpc } from "~utils/trpc";
+import { Avatar } from "~components/Avatar";
+import { ProjectById } from "~utils/trpc";
 
 interface Props {
   project: ProjectById;

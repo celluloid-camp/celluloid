@@ -64,14 +64,14 @@ export const SignupDialog: React.FC = () => {
           // `cause` is now typed as your router's `TRPCClientError`
           if (e.message === "ACCOUNT_EXISTS") {
             formik.setFieldError(
-              "error",
+              "email",
               t("signup.error.account_exists", "Email exists dejà")
             );
           }
+        } else {
+          formik.setFieldError("error", e.message);
+          console.log(e);
         }
-
-        formik.setFieldError("error", e.message);
-        console.log(e);
       }
     },
   });

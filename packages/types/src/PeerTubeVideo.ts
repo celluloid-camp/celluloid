@@ -41,7 +41,7 @@ export interface PeerTubeVideo {
   trackerUrls: string[];
 }
 
-export interface Account {
+interface Account {
   url: string;
   name: string;
   host: string;
@@ -60,19 +60,19 @@ export interface Account {
   ownerAccount?: Account;
 }
 
-export interface Avatar {
+interface Avatar {
   width: number;
   path: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface Category {
+interface Category {
   id: number;
   label: string;
 }
 
-export interface File {
+interface File {
   id: number;
   resolution: Category;
   magnetUri: string;
@@ -85,12 +85,12 @@ export interface File {
   metadataUrl: string;
 }
 
-export interface Language {
+interface Language {
   id: string;
   label: string;
 }
 
-export interface StreamingPlaylist {
+interface StreamingPlaylist {
   id: number;
   type: number;
   playlistUrl: string;

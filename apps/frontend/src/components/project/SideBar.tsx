@@ -1,7 +1,6 @@
 import GroupsIcon from "@mui/icons-material/Groups";
 import PublicIcon from "@mui/icons-material/Public";
 import {
-  Avatar,
   Box,
   Button,
   Chip,
@@ -16,6 +15,8 @@ import {
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { Avatar } from "~components/Avatar";
+import { TransUserRole } from "~components/TransUserRole";
 import { ProjectById, ProjectMembers, UserMe } from "~utils/trpc";
 
 import { ExportPanel } from "./ExportPanel";
@@ -97,13 +98,18 @@ export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
           >
             <ListItem>
               <ListItemAvatar>
-                <Avatar sx={{ background: project.user.color }}>
+                <Avatar
+                  sx={{
+                    background: project.user.color,
+                  }}
+                >
                   {project.user.initial}
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
                 primary={project.user.username}
-                secondary={project.user.role}
+                secondaryTypographyProps={{ variant: "caption" }}
+                secondary={<TransUserRole role={project.user.role} />}
               />
             </ListItem>
 
@@ -115,8 +121,9 @@ export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
+                  secondaryTypographyProps={{ variant: "caption" }}
                   primary={member.user?.username}
-                  secondary={member.user?.role}
+                  secondary={<TransUserRole role={member.user.role} />}
                 />
               </ListItem>
             ))}

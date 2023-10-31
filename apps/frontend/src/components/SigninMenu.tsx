@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from "react-router";
 import { UserAvatar } from "~components/UserAvatar";
 import { trpc, UserMe } from "~utils/trpc";
 
+import { Avatar } from "./Avatar";
+
 export const SigninMenu = ({ user }: { user: UserMe }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,7 +56,13 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
     <div>
       {user ? (
         <IconButton onClick={handleClick} data-testid="header-account-menu">
-          <UserAvatar username={user.username} userId={user.id} />
+          <Avatar
+            sx={{
+              background: user.color,
+            }}
+          >
+            {user.initial}
+          </Avatar>
         </IconButton>
       ) : (
         <div>

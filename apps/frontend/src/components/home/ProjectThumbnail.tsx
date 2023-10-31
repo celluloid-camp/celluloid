@@ -1,9 +1,6 @@
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
-import GroupsIcon from "@mui/icons-material/Groups";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
-import PublicIcon from "@mui/icons-material/Public";
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -20,6 +17,7 @@ import Image from "mui-image";
 import * as React from "react";
 import { useNavigate } from "react-router";
 
+import { Avatar } from "~components/Avatar";
 import { ProjectListItem } from "~utils/trpc";
 
 const StyledBox = styled(Box)(() => ({

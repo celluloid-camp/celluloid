@@ -16,8 +16,8 @@ test.afterAll(async () => {
   await page.close();
 });
 
-test('test signup', async () => {
-  await page.goto('http://127.0.0.1:3000/');
+test('test user signup', async () => {
+  await page.goto('http://localhost:3000/');
   await page.getByTestId('header-login-button').click();
   await page.getByTestId('signup').click();
   await expect(page).toHaveURL(/.*\/signup/);
@@ -33,13 +33,13 @@ test('test signup', async () => {
 
   await page.getByTestId('submit').click();
 
-  await expect(page).toHaveURL(/.*\/confirm/, { timeout: 5000 });
+  await expect(page).toHaveURL(/.*\/confirm/, { timeout: 15000 });
 
   await page.getByTestId('code').click();
   await page.getByTestId('code').fill('0000');
   await page.getByTestId('submit').click();
 
-  await page.goto('http://127.0.0.1:3000/');
+  await expect(page).toHaveURL('http://localhost:3000/', { timeout: 15000 });
 
   await page.getByTestId('header-account-menu').click();
   await page.getByTestId('header-profile-button').click();
@@ -49,12 +49,11 @@ test('test signup', async () => {
 });
 
 
-test.fixme('test reconnect with existing account without confirmation', async () => {
+test('test reconnect with existing account without confirmation', async () => {
 
 
-  await page.goto('http://127.0.0.1:3000/');
-  await page.getByTestId('header-login-button').click();
-  await expect(page).toHaveURL(/.*\/login/);
+  await page.reload();
+  await page.goto('http://localhost:3000/login');
 
   await page.getByTestId('username').click();
   await page.getByTestId('username').fill(TEST_USER_EMAIL);
@@ -62,11 +61,11 @@ test.fixme('test reconnect with existing account without confirmation', async ()
   await page.getByTestId('password').fill('testtest');
   await page.getByTestId('submit').click();
 
-  await expect(page).toHaveURL('http://127.0.0.1:3000/');
+  await expect(page).toHaveURL('http://localhost:3000/profile');
 
   await page.getByTestId('header-account-menu').click();
   await page.getByTestId('header-logout-button').click();
 
-  await expect(page).toHaveURL('http://127.0.0.1:3000/');
+  await expect(page).toHaveURL('http://localhost:3000/');
 
 });

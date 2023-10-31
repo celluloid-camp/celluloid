@@ -75,12 +75,20 @@ export const LoginDialog: React.FC = () => {
       } catch (e) {
         if (isTRPCClientError(e)) {
           // `cause` is now typed as your router's `TRPCClientError`
-          console.log("e.message", e.message);
           if (e.message === "UserNotConfirmed") {
             handleConfirm();
+          } else if (e.code === "UNAUTHORIZED") {
+            formik.setFieldError(
+              "error",
+              t(
+                "signin.error.user-not-found",
+                "Nom d'utilisateur ou mot de passe incorrect"
+              )
+            );
           }
+        } else {
+          formik.setFieldError("error", e.message);
         }
-        formik.setFieldError("error", e.message);
       }
     },
   });
