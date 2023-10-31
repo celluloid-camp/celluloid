@@ -28,14 +28,14 @@ import { RecoilRoot } from "recoil";
 import { setLocale } from "yup";
 import { fr } from "yup-locales";
 
+import { ConfirmDialog } from "~components/auth/ConfirmDialog";
+import { ForgotDialog } from "~components/auth/ForgotDialog";
+import { JoinDialog } from "~components/auth/JoinDialog";
+import { LoginDialog } from "~components/auth/LoginDialog";
+import { RecoverDialog } from "~components/auth/RecoverDialog";
+import { SignupDialog } from "~components/auth/SignupDialog";
+import { StudentSignupDialog } from "~components/auth/StudentSignupDialog";
 import { BootstrapDialog } from "~components/Dialog";
-import { ConfirmDialog } from "~components/login/ConfirmDialog";
-import { ForgotDialog } from "~components/login/ForgotDialog";
-import { JoinDialog } from "~components/login/JoinDialog";
-import { LoginDialog } from "~components/login/LoginDialog";
-import { RecoverDialog } from "~components/login/RecoverDialog";
-import { SignupDialog } from "~components/login/SignupDialog";
-import { StudentSignupDialog } from "~components/login/StudentSignupDialog";
 import { SharedLayout } from "~components/SharedLayout";
 import { trpc } from "~utils/trpc";
 
@@ -189,7 +189,7 @@ const App = () => {
                     <AppRouters />
                   </BrowserRouter>
                 </ConfirmProvider>
-                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+                <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>
             </trpc.Provider>
           </SnackbarProvider>

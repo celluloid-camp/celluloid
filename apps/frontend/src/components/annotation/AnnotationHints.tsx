@@ -1,30 +1,14 @@
-import {
-  type UseParentSizeOptions,
-  useParentSize,
-} from "@cutting/use-get-parent-size";
 import CancelIcon from "@mui/icons-material/Clear";
-import {
-  alpha,
-  Avatar,
-  Box,
-  Chip,
-  Divider,
-  Fade,
-  IconButton,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Fade, IconButton, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
-import dayjs from "dayjs";
-import React, { useRef } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { Avatar } from "~components/Avatar";
 import { MultiLineTypography } from "~components/MultiLineTypography";
-import { formatDuration } from "~utils/DurationUtils";
-import { AnnotationByProjectId, ProjectById, trpc } from "~utils/trpc";
+import { AnnotationByProjectId, ProjectById } from "~utils/trpc";
 import { getUserColor } from "~utils/UserUtils";
 
 import { useAnnotationHintsVisible } from "./useAnnotationEditor";

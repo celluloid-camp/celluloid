@@ -53,15 +53,18 @@ export const JoinDialog: React.FC = () => {
         }
       } catch (e) {
         if (isTRPCClientError(e)) {
-          // `cause` is now typed as your router's `TRPCClientError`
+          if (e.message == "PROJECT_OWNER_CANNOT_JOIN")
+            // `cause` is now typed as your router's `TRPCClientError`
+            formik.setFieldError(
+              "error",
+              t("join.error.project-owner-cannot-join")
+            );
+        } else {
           formik.setFieldError(
             "error",
-            t("join.error.project-not-found", "Code invalide")
+            t("join.error.project-not-found", "Code de partage est invalide")
           );
         }
-
-        formik.setFieldError("error", e.message);
-        console.log(e);
       }
     },
   });

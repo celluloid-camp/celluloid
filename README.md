@@ -24,7 +24,7 @@ We value your feedback on the application's user experience and design. If you e
 ## Development Team
 
 Celluloid originated from a research project led by **Michaël Bourgatte** and **Laurent Tessier**, two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/). Their work focuses on educational science and digital humanities.
-Celluloid is currently maintained by [Younes Benaomar](https://github.com/younes200), and we actively encourage contributions and involvement from the community. Feel free to reach out to us on [Gitter](https://gitter.im/celluloid-camp).
+Celluloid is currently maintained by [Younes Benaomar](https://github.com/younes200), and we actively encourage contributions and involvement from the community. Feel free to reach out to us on [Discussions](https://github.com/celluloid-camp/celluloid/discussions).
 
 # Setup
 
@@ -92,7 +92,7 @@ yarn
 
 ### Configuration
 
-In the terminal, at the repository's root, run:
+Copy the sample environment file:
 
 ```bash
 cp sample.env .env
@@ -100,7 +100,7 @@ cp sample.env .env
 
 Open the newly created .env file with your preferred text editor and configure the values according to your requirements.
 
-### Running the application in development mode
+### Development Mode
 
 For development purposes, you can use the provided Docker Compose [docker-compose.yml](docker-compose.yml) and run the command:
 
@@ -113,23 +113,13 @@ yarn dev
 This will initiate an interactive build and open the app in a browser window while continuously monitoring source files for modifications.
 If everything worked without errors, you should be all set. Otherwise, please review the instructions above carefully.
 
-### Building and starting the application in production Mode
+### Production Mode
 
-At the repository's root, execute:
+Build and start the application:
 
 ```bash
 yarn build
-```
-
-To run the backend
-
-```bash
 yarn backend start
-```
-
-To run the frontend
-
-```bash
 yarn frontend start
 ```
 
@@ -141,9 +131,6 @@ Open a terminal at the repository's root and run:
 
 ```bash
 docker build --build-arg APP=backend -t  celluloid-backend:latest  .
-```
-
-```bash
 docker build --build-arg APP=frontend -t  celluloid-frontend:latest  .
 ```
 
@@ -153,7 +140,7 @@ docker build --build-arg APP=frontend -t  celluloid-frontend:latest  .
 
 **\*We actively welcome motivated contributors!**
 
-Feel free to open a pull request, [contact us on Gitter](https://gitter.im), or [report a bug](https://github.com/celluloid-camp/celluloid/issues).
+Feel free to open a pull request, [contact us](https://github.com/celluloid-camp/celluloid/discussions), or [report a bug](https://github.com/celluloid-camp/celluloid/issues).
 
 ## Technical Stack
 

@@ -1,14 +1,10 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import SendIcon from "@mui/icons-material/Send";
 import {
-  Avatar,
   Box,
   Button,
-  ClickAwayListener,
   Divider,
   IconButton,
-  InputAdornment,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -24,6 +20,7 @@ import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
+import { Avatar } from "~components/Avatar";
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { TransparentInput } from "~components/TransparentInput";
 import {
