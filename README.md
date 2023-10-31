@@ -1,5 +1,6 @@
+
 <img width="200" alt="Celluloid is a collaborative video annotation application designed for
-educational purposes." src="./apps/frontend/src/images/logo-sign.svg">
+educational purposes." src="./docs/assets/logo.svg">
 
 # Celluloid
 

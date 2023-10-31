@@ -27,6 +27,11 @@ RUN \
 FROM custom-node as builder
 WORKDIR /app
 ARG APP
+ARG API_URL
+ARG COMMIT
+
+ENV COMMIT=${COMMIT}
+ENV API_URL=${API_URL}
 
 COPY --from=installer --link /app .
 
@@ -45,12 +50,10 @@ FROM node:20-alpine  AS runner
 WORKDIR /app
 ARG APP=admin
 ARG START_COMMAND=dev
-ARG COMMIT
+
 
 ENV APP=${APP}
 ENV START_COMMAND=${START_COMMAND}
-ENV COMMIT=${COMMIT}
-ENV VITE_COMMIT=${COMMIT}
 ENV PORT=3000
 
 COPY --from=builder /app .
