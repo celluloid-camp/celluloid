@@ -181,6 +181,7 @@ export const AnnotationHints: React.FC<AnnotationHintsProps> = ({
             height: "100%",
             width: "100%",
             overflowY: "auto",
+            overflowX: "hidden",
           }}
         >
           {annotations.map((annotation, index) => {
