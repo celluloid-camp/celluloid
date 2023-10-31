@@ -7,7 +7,6 @@ import FilterTiltShiftIcon from "@mui/icons-material/FilterTiltShift";
 import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
 import ReplyIcon from "@mui/icons-material/Reply";
 import {
-  Avatar,
   Box,
   Button,
   Chip,
@@ -34,6 +33,7 @@ import * as React from "react";
 import { useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
+import { Avatar } from "~components/Avatar";
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { formatDuration } from "~utils/DurationUtils";
 import {

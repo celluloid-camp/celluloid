@@ -34,6 +34,9 @@
             ],
             "~recoil/*": [
                 "src/state/recoil/*"
+            ],
+            "~auth/*": [
+                "src/components/auth/*"
             ]
         }
     }

@@ -1,6 +1,4 @@
-import SendIcon from "@mui/icons-material/Send";
 import {
-  Avatar,
   Box,
   Button,
   ClickAwayListener,
@@ -14,12 +12,11 @@ import {
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
 import * as React from "react";
-import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
+import { Avatar } from "~components/Avatar";
 import { TransparentInput } from "~components/TransparentInput";
-import { UserAvatar } from "~components/UserAvatar";
 import { AnnotationByProjectId, ProjectById, trpc, UserMe } from "~utils/trpc";
 
 interface CommentFormProps {
