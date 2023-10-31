@@ -66,19 +66,29 @@ export const StudentSignupDialog: React.FC = () => {
       } catch (e) {
         if (isTRPCClientError(e)) {
           // `cause` is now typed as your router's `TRPCClientError`
-          if (e.message === "ACCOUNT_EXISTS") {
+          if (e.message == "PROJECT_OWNER_CANNOT_JOIN") {
+            // `cause` is now typed as your router's `TRPCClientError`
             formik.setFieldError(
               "error",
-              t(
-                "student-student-signup.error.username-exists",
-                "Email exists dejà"
-              )
+              t("join.error.project-owner-cannot-join")
+            );
+          } else if (e.message == "ACCOUNT_EXISTS") {
+            formik.setFieldError(
+              "username",
+              t("join.error.account", "Nom d'utilisateur existe déjà")
+            );
+          } else if (e.message == "CODE_NOT_FOUND") {
+            formik.setFieldError(
+              "shareCode",
+              t("join.error.project-not-found", "Code de partage est invalide")
             );
           }
+        } else {
+          formik.setFieldError(
+            "error",
+            t("join.error.project-not-found", "Code de partage est invalide")
+          );
         }
-
-        formik.setFieldError("error", e.message);
-        console.log(e);
       }
     },
   });

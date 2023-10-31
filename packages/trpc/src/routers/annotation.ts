@@ -79,7 +79,7 @@ export const annotationRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+      if (ctx.user && ctx.user.id) {
         const annotation = await prisma.annotation.create({
           data: {
             userId: ctx.user?.id,
@@ -123,7 +123,7 @@ export const annotationRouter = router({
         );
       }
 
-      if (existingAnnotation.userId == ctx.user?.id) {
+      if (existingAnnotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin) {
         // Perform the update
         const updatedAnnotation = await prisma.annotation.update({
           where: { id: input.annotationId },
@@ -170,7 +170,7 @@ export const annotationRouter = router({
         );
       }
 
-      if (existingAnnotation.userId == ctx.user?.id) {
+      if (existingAnnotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin) {
         const annotation = await prisma.annotation.delete({
           where: { id: input.annotationId },
         });

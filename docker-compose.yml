@@ -18,6 +18,7 @@ services:
     volumes:
       - ./.data:/var/lib/postgresql/data
       - ./scripts/pg-init-scripts.sh:/docker-entrypoint-initdb.d/init.sh
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "5432:5432"
     restart: unless-stopped

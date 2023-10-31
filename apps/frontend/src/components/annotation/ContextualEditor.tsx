@@ -1,12 +1,8 @@
 import { useParentSize } from "@cutting/use-get-parent-size";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { alpha } from "@mui/system";
-import React, { useMemo, useRef } from "react";
-import Draggable, {
-  DraggableData,
-  DraggableEvent,
-  DraggableEventHandler,
-} from "react-draggable";
+import React, { useEffect, useMemo, useRef } from "react";
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -43,7 +39,6 @@ export const ContextualEditor: React.FC<ContextualEditorProps> = () => {
   const handleDrag = (_: DraggableEvent, data: DraggableData) => {
     if (width && height) {
       const position = toRelativePosition(data.x, data.y, width, height);
-
       setContextualEditorState(position);
     }
   };
@@ -58,6 +53,13 @@ export const ContextualEditor: React.FC<ContextualEditorProps> = () => {
       return { x: 0, y: 0 };
     }
   }, [editedAnnotation, width, height]);
+
+  useEffect(() => {
+    if (!contextualEditorState && width && height) {
+      const position = toRelativePosition(0, 0, width, height);
+      setContextualEditorState(position);
+    }
+  }, [contextualEditorState, width, height]);
 
   return (
     <Box

@@ -62,7 +62,7 @@ const contextualEditorVisible = selector({
     return state.contextualEditorVisible;
   },
   set: ({ set }, newValue) => set(annotationEditorState, (previousState) => {
-    return { ...previousState, showHints: false, contextualEditorVisible: newValue as boolean }
+    return { ...previousState, showHints: false, contextualEditorVisible: newValue as boolean, contextualPosition: null }
   })
 });
 
