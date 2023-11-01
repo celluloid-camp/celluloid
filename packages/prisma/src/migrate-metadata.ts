@@ -38,21 +38,32 @@ async function main() {
     // Print the current project ID and update progress
     console.log(`Updating project ID: ${project.id} (${currentProject}/${totalProjects})`);
 
-    const content = await getProjectMetadata(project);
+    try {
+      const content = await getProjectMetadata(project);
 
-    await prisma.project.update({
-      where: {
-        id: project.id,
-      },
-      data: {
-        duration: content.duration,
-        thumbnailURL: content.thumbnailURL,
-        metadata: content.metadata,
-      },
-    });
+      await prisma.project.update({
+        where: {
+          id: project.id,
+        },
+        data: {
+          duration: content.duration,
+          thumbnailURL: content.thumbnailURL,
+          metadata: content.metadata,
+        },
+      });
 
-    // Optional: Print a message to confirm that the project was updated
-    console.log(`Successfully updated project ID: ${project.id}`);
+      // Optional: Print a message to confirm that the project was updated
+      console.log(`Successfully updated project ID: ${project.id}`);
+    } catch (e) {
+      console.error(`Failed to update project ID: ${project.id}, removing from database. Error: ${e.message}`);
+
+      await prisma.project.delete({
+        where: {
+          id: project.id,
+        },
+      });
+    }
+
   }
 
   console.log('All updates completed.');
