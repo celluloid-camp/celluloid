@@ -59,7 +59,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
   const WS_URL = import.meta.env.VITE_WS_URL
   ? import.meta.env.VITE_WS_URL
-  : "/trpc";
+  : `ws://${location.host}/trpc` ;
 
 
 dayjs.extend(relativeTime);
