@@ -11,6 +11,8 @@ jobs:
   tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.39.0-jammy
 
     services:
       redis:
@@ -45,25 +47,10 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
 
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}
-            
-      - name: Copy .env
-        run:  cp .env.ci .env
-
-      - name: build
-        run: yarn build --filter=frontend --filter=backend
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Build apps
+        run: |
+          cp .env.ci .env
+          yarn build --filter=frontend --filter=backend
 
       - name: Run Playwright tests
         run: npx playwright test
