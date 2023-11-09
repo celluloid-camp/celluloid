@@ -54,7 +54,9 @@ jobs:
 
       - name: Run Playwright tests
         # with workground https://github.com/microsoft/playwright/issues/6500
-        run: HOME=/root npx playwright test
+        run: npx playwright test
+        env:
+          HOME: /root
 
       - uses: actions/upload-artifact@v3
         if: always()
