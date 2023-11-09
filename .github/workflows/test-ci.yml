@@ -76,13 +76,13 @@ jobs:
           retention-days: 30
 
       - name: Publish HTML report to gh-pages
-        if: always()
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3.9.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: playwright-report/
-          # destination_dir: playwright-report/
-          keep_files: true
+          destination_dir: playwright-report/
+          keep_files: false
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
           commit_message: ${{ github.event.head_commit.message }}
