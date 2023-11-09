@@ -41,6 +41,7 @@
     "papaparse": "^5.4.1",
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.1",
+    "ws": "^8.14.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {

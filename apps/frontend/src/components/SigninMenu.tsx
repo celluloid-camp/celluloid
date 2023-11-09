@@ -39,6 +39,12 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
     navigate("/profile");
   };
 
+  const handleSettingsClick = () => {
+    handleClose();
+    navigate("/settings");
+  };
+
+
   const handleOpenAdmin = () => {
     window.open("/admin", "_blank");
     handleClose();
@@ -133,6 +139,9 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
         ) : null}
         <MenuItem onClick={handleProfile} data-testid="header-profile-button">
           <Trans i18nKey={"menu.profile"} />
+        </MenuItem>
+        <MenuItem onClick={handleSettingsClick} data-testid="header-settings-button">
+          <Trans i18nKey={"menu.settings"} />
         </MenuItem>
         <MenuItem onClick={handleLogout} data-testid="header-logout-button">
           <Trans i18nKey={"menu.logout"} />

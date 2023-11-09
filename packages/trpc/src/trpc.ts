@@ -1,29 +1,38 @@
 import "express-session"
 
 import { User, UserRole } from '@celluloid/prisma';
-import { initTRPC, TRPCError } from '@trpc/server';
-import * as trpcExpress from '@trpc/server/adapters/express';
+import { inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
+import { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import {
+  CreateWSSContextFnOptions,
+} from '@trpc/server/adapters/ws';
 import { type Request, type Response } from 'express';
 import { Session } from "express-session";
 import { OpenApiMeta } from 'trpc-openapi';
-import { v4 as uuid } from 'uuid';
 
-export type Context = {
-  user: User | null;
-  requestId: string;
-  requirePermissions: (roles: UserRole[]) => boolean;
-  logout: () => Promise<boolean>;
-  req: Request;
-  res: Response;
-};
+// export type Context = {
+//   user: User | null;
 
-export const createRPCContext = async ({
-  req,
-  res,
-}: trpcExpress.CreateExpressContextOptions): Promise<Context> => {
-  const requestId = uuid();
-  res.setHeader('x-request-id', requestId);
-  const user: User | null = req.user as User;
+//   requirePermissions: (roles: UserRole[]) => boolean;
+//   logout: () => Promise<boolean>;
+//   req: Request;
+//   res: Response;
+// };
+
+declare module 'http' {
+  interface IncomingMessage {
+    session: Session & {
+      userId?: string
+    }
+  }
+}
+
+
+export async function createContext(opts: CreateExpressContextOptions | CreateWSSContextFnOptions) {
+
+  const { req, res } = opts;
+
+  const user: User | null = (req as Request).user as User;
   const requirePermissions = (roles: UserRole[]) => {
     if (!user?.role || !roles.includes(user?.role)) {
       throw new TRPCError({
@@ -50,10 +59,13 @@ export const createRPCContext = async ({
     })
   }
   return {
-    user, requirePermissions, logout, requestId, req,
+    user, requirePermissions, logout, req,
     res,
   };
 };
+
+
+export type Context = inferAsyncReturnType<typeof createContext>;
 
 
 const t = initTRPC.context<Context>().meta<OpenApiMeta>().create({

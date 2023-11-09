@@ -3,7 +3,7 @@ import "dayjs/locale/fr"; // import locale
 import { CssBaseline, Dialog, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { httpBatchLink } from "@trpc/client";
+import { createWSClient, httpBatchLink, splitLink, wsLink } from "@trpc/client";
 import * as dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import isLeapYear from "dayjs/plugin/isLeapYear"; // import plugin
@@ -48,6 +48,7 @@ import { HomePage } from "./pages/home";
 import LegalNotice from "./pages/legal";
 import UserProfile from "./pages/profile";
 import ProjectPage from "./pages/project";
+import SettingsPage from "./pages/settings";
 import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
 import { createTheme } from "./theme";
@@ -55,6 +56,11 @@ import { createTheme } from "./theme";
 const API_URL = import.meta.env.VITE_API_URL
   ? import.meta.env.VITE_API_URL
   : "/trpc";
+
+  const WS_URL = import.meta.env.VITE_WS_URL
+  ? import.meta.env.VITE_WS_URL
+  : "/trpc";
+
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear); // use plugin
@@ -136,6 +142,7 @@ const AppRouters = () => {
           <Route path="create" element={<CreateProjectPage />} />
           <Route path="about" element={<About />} />
           <Route path="profile" element={<UserProfile />} />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="legal-notice" element={<LegalNotice />} />
           <Route path="terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="project/:projectId" element={<ProjectPage />} />
@@ -162,15 +169,30 @@ const App = () => {
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
-        httpBatchLink({
-          url: API_URL,
-          fetch(url, options) {
-            return fetch(url, {
-              ...options,
-              credentials: "include",
-            });
+
+        splitLink({
+          condition(op) {
+            // check for context property `skipBatch`
+            return op.type == "subscription";
           },
+          // when condition is true, use normal request
+          true: wsLink({client: createWSClient({
+            url: WS_URL,
+          })}),
+          // when condition is false, use batching
+          false:  httpBatchLink({
+            url: API_URL,
+            fetch(url, options) {
+              return fetch(url, {
+                ...options,
+                credentials: "include",
+              });
+            },
+          }),
         }),
+
+
+
       ],
     })
   );

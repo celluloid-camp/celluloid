@@ -7,6 +7,7 @@ networks:
 volumes:
   postgres:
   redis:
+  minio_data:
 
 services:
   postgres:
@@ -24,6 +25,29 @@ services:
     restart: unless-stopped
     healthcheck:
       test: "PGPASSWORD=${POSTGRES_PASSWORD} pg_isready -h 127.0.0.1 -U postgres -d celluloid"
+    networks:
+      - local
+
+  minio:
+    restart: unless-stopped
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ACCESS_KEY: XXXX
+      MINIO_SECRET_KEY: XXXXXXXX
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: Strong#Pass#2022
+      MINIO_DEFAULT_BUCKETS: celluloid
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - local
 

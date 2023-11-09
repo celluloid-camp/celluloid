@@ -1,13 +1,17 @@
 import { prisma, UserRole } from '@celluloid/prisma';
+import { Annotation } from '@celluloid/prisma';
 import { toSrt } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
+import { observable } from '@trpc/server/observable';
+import { EventEmitter } from 'events';
 import { parse as toXML } from 'js2xmlparser';
 import * as Papa from 'papaparse';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 
-
+// create a global event emitter (could be replaced by redis, etc)
+const ee = new EventEmitter();
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
 //   id: true,
 //   title: true,
@@ -67,6 +71,21 @@ export const annotationRouter = router({
       // }
       return annotations;
     }),
+  onAdd: publicProcedure.subscription(() => {
+    // return an `observable` with a callback which is triggered immediately
+    return observable<Annotation>((emit) => {
+      const onAdd = (data: Annotation) => {
+        // emit data to client
+        emit.next(data);
+      };
+      // trigger `onAdd()` when `add` is triggered in our event emitter
+      ee.on('add', onAdd);
+      // unsubscribe function when client disconnects or stops subscribing
+      return () => {
+        ee.off('add', onAdd);
+      };
+    });
+  }),
   add: protectedProcedure
     .input(
       z.object({
@@ -92,6 +111,8 @@ export const annotationRouter = router({
           }
           // select: defaultPostSelect,
         });
+
+        ee.emit('add', annotation);
         return annotation;
       }
     }),

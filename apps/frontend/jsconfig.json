@@ -37,6 +37,9 @@
             ],
             "~auth/*": [
                 "src/components/auth/*"
+            ],
+            "~settings/*": [
+                "src/components/settings/*"
             ]
         }
     }
