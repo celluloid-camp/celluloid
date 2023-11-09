@@ -23,7 +23,7 @@ jobs:
           --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5          
+          --health-retries 5
       postgres:
         image: postgres:14
         env:
@@ -53,7 +53,8 @@ jobs:
           yarn build --filter=frontend --filter=backend
 
       - name: Run Playwright tests
-        run: npx playwright test
+        # with workground https://github.com/microsoft/playwright/issues/6500
+        run: HOME=/root npx playwright test
 
       - uses: actions/upload-artifact@v3
         if: always()
