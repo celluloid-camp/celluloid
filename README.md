@@ -57,7 +57,6 @@ The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/
 │   ├── types/           # Shared TypeScript types
 │   └── utils/           # Shared utilities
 ├── tests/               # Test scripts and test-related utilities
-├── scripts/             # Miscellaneous scripts for automation
 ├── packages.json        # Package manifest
 └── .env                 # Environment variables
 ```
