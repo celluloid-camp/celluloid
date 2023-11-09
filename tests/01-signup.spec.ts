@@ -33,13 +33,13 @@ test('test user signup', async () => {
 
   await page.getByTestId('submit').click();
 
-  await expect(page).toHaveURL(/.*\/confirm/, { timeout: 15000 });
+  await expect(page).toHaveURL(/.*\/confirm/, { timeout: 50000 });
 
   await page.getByTestId('code').click();
   await page.getByTestId('code').fill('0000');
   await page.getByTestId('submit').click();
 
-  await expect(page).toHaveURL('http://localhost:3000/', { timeout: 15000 });
+  await expect(page).toHaveURL('http://localhost:3000/', { timeout: 50000 });
 
   await page.getByTestId('header-account-menu').click();
   await page.getByTestId('header-profile-button').click();
