@@ -1,4 +1,4 @@
-name: CI Testing
+name: E2E Tests
 
 on:
   push:
@@ -16,7 +16,12 @@ jobs:
       redis:
         image: redis
         ports:
-          - "0.0.0.0:6379:6379"
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5          
       postgres:
         image: postgres:14
         env:
@@ -24,7 +29,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: celluloid
         ports:
-          - "0.0.0.0:5432:5432"
+          - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -32,12 +37,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: yarn
 
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+            
       - name: install package
         run: |
           cp .env.ci .env
