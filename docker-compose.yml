@@ -14,10 +14,9 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      POSTGRES_MULTIPLE_DATABASES: celluloid, keycloak
+      POSTGRES_DB: celluloid
     volumes:
       - ./.data:/var/lib/postgresql/data
-      - ./scripts/pg-init-scripts.sh:/docker-entrypoint-initdb.d/init.sh
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "5432:5432"
@@ -50,36 +49,39 @@ services:
     networks:
       - local
 
+
   # keycloak:
-  #   image: quay.io/phasetwo/phasetwo-keycloak:20.0.1-alpha
-  #   ports:
-  #     - 8080:8080
+  #   image: quay.io/phasetwo/phasetwo-keycloak:22
+  #   # volumes:
+  #   #   - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+  #   command:
+  #     - "start-dev --spi-email-template-provider=freemarker-plus-mustache --spi-email-template-freemarker-plus-mustache-enabled=true"
+  #     # - "start-dev --import-realm"
+  #     # - "start-dev --import-realm -Dkeycloak.profile.feature.upload_scripts=enabled"
   #   environment:
   #     KC_DB: postgres
   #     KC_DB_URL_HOST: postgres
-  #     KC_DB_USERNAME: ${POSTGRES_USER}
-  #     KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-  #     KC_DB_URL_DATABASE: keycloak
-  #     KEYCLOAK_ADMIN: admin
-  #     KEYCLOAK_ADMIN_PASSWORD: admin
+  #     KC_DB_URL_PORT: 5432
+  #     KC_DB_URL_DATABASE: celluloid
+  #     KC_DB_SCHEMA: keycloak
+  #     KC_HTTP_ENABLED: true
   #     KC_HOSTNAME_STRICT: false
+  #     KC_HOSTNAME_STRICT_HTTPS: false
+  #     KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+  #     KC_DB_USERNAME: ${POSTGRES_USER}
+  #     KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+  #     KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
+  #     KEYCLOAK_LOGLEVEL: DEBUG
+  #     KC_FEATURES: account3
   #     KC_HEALTH_ENABLED: true
-  #     KC_PROXY: edge
-  #     KC_FEATURES:
-  #       authorization
-  #       token-exchange
-  #       docker
-  #       impersonation
-  #       scripts
-  #       upload-scripts
-  #       web-authn
-  #       client-policies
-  #       dynamic-scopes
-  #   depends_on:
-  #     - postgres
-  #   command: start
+  #     KC_METRICS_ENABLED: true
+  #     WILDFLY_LOGLEVEL: DEBUG
   #   networks:
   #     - local
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - postgres
 
   redis:
     image: redis:6-alpine
