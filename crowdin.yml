@@ -1,0 +1,3 @@
+files:
+  - source: /apps/frontend/src/locales/fr/common.json
+    translation: apps/frontend/src/locales/%locale%/common.json
