@@ -9,13 +9,13 @@ import cors from 'cors';
 import express from 'express';
 import { Session } from 'express-session';
 import http from 'http'
+import { resolve } from 'path';
 import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 import { WebSocketServer } from 'ws'
 
 import { openApiDocument } from './openapi';
 const trpcApiEndpoint = '/trpc'
-
 
 declare module 'http' {
   interface IncomingMessage {
@@ -24,7 +24,6 @@ declare module 'http' {
     }
   }
 }
-
 
 async function main() {
   // express implementation
@@ -47,15 +46,23 @@ async function main() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(sessionParser);
-  app.use(passport.authenticate("session"));
+
+  app.use((req, res, next) => {
+    passport.authenticate('session', (err) => {
+      if (err && err.name == "DeserializeUserError") {
+        req.session.destroy(() =>
+          next())
+      }
+    })(req, res, next);
+  });
+
+  // app.use(passport.authenticate("session"));
 
   app.use((req, _res, next) => {
     // request logger
     console.log('⬅️ ', req.method, req.path, req.body ?? req.query);
     next();
   });
-
-
   app.use(
     trpcApiEndpoint,
     trpcExpress.createExpressMiddleware({
@@ -63,6 +70,7 @@ async function main() {
       createContext,
     }),
   );
+
   // Handle incoming OpenAPI requests
   app.use('/api', createOpenApiExpressMiddleware({ router: appRouter, createContext }));
 
@@ -105,7 +113,6 @@ async function main() {
     createContext,
   })
 
-
   server.listen(process.env.PORT || 2021, () => {
     console.log(`listening on port 2021 -  NODE_ENV:${process.env.NODE_ENV}`);
   });
@@ -113,14 +120,13 @@ async function main() {
   async function onSignal() {
     console.log(`server is starting cleanup`)
     wsHandler.broadcastReconnectNotification()
-    wss.close();
-    server.close();
+    await new Promise((resolve) => wss.close(resolve));
+    await new Promise((resolve) => server.close(resolve));
     await prisma.$disconnect()
     return;
   }
 
   createTerminus(server, {
-    // signal: 'SIGINT',
     // healthChecks: { '/healthcheck': onHealthCheck },
     signals: ['SIGTERM', 'SIGINT'],
     onSignal

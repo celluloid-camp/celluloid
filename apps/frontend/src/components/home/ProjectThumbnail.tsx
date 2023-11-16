@@ -111,6 +111,7 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
                   sx={{
                     backgroundColor: project.user.color,
                   }}
+                  src={project.user.avatar?.publicUrl}
                 >
                   {project.user.initial}
                 </Avatar>

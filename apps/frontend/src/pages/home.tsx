@@ -12,7 +12,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import * as React from "react";
-import { Suspense } from "react";
+import { Suspense, useCallback } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -24,19 +24,22 @@ import { TeacherIcon } from "~components/TeacherIcon";
 import { trpc } from "~utils/trpc";
 
 export const HomePage: React.FC = () => {
-  const { data } = trpc.user.me.useQuery();
+
+  const { isError } = trpc.user.me.useQuery( {},
+    { retry: false, keepPreviousData: false, cacheTime: 0 });
+
   const location = useLocation();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleJoin = () => {
-    if (!data) {
+  const handleJoin = useCallback(() => {
+    if (isError) {
       navigate("/signup-student", { state: { backgroundLocation: "/" } });
     } else {
       navigate("/join", { state: { backgroundLocation: "/" } });
     }
-  };
+  }, [isError, navigate]);
 
   const handleCreate = () => {
     navigate(`/create`);

@@ -48,7 +48,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   const [hovering, setHovering] = useState(false);
   const [edition, setEdition] = useState(false);
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const editMutation = trpc.comment.edit.useMutation({
     onSuccess: () => {
@@ -109,7 +109,10 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       onMouseLeave={() => setHovering(false)}
     >
       <ListItemAvatar sx={{ minWidth: 35, marginTop: 2 }}>
-        <Avatar sx={{ background: comment.user.color, width: 24, height: 24 }}>
+        <Avatar
+          sx={{ background: comment.user.color, width: 24, height: 24 }}
+          src={comment.user.avatar?.publicUrl}
+        >
           {comment.user.initial}
         </Avatar>
       </ListItemAvatar>
@@ -148,6 +151,12 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                   onBlur={formik.handleBlur}
                   error={formik.errors.comment}
                   unpadded={true}
+                  inputProps={{
+                    "aria-label": "Saissez votre annotation",
+                    maxLength: 250,
+                  }}
+                  maxRows={5}
+                  minRows={2}
                   placeholder={t("annotation.commentPlaceholder") || ""}
                 />
                 <Box

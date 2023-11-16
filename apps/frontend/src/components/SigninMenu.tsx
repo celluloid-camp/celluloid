@@ -4,7 +4,6 @@ import * as React from "react";
 import { Trans } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 
-import { UserAvatar } from "~components/UserAvatar";
 import { trpc, UserMe } from "~utils/trpc";
 
 import { Avatar } from "./Avatar";
@@ -44,7 +43,6 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
     navigate("/settings");
   };
 
-
   const handleOpenAdmin = () => {
     window.open("/admin", "_blank");
     handleClose();
@@ -66,6 +64,7 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
             sx={{
               background: user.color,
             }}
+            src={user.avatar?.publicUrl}
           >
             {user.initial}
           </Avatar>
@@ -140,7 +139,10 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
         <MenuItem onClick={handleProfile} data-testid="header-profile-button">
           <Trans i18nKey={"menu.profile"} />
         </MenuItem>
-        <MenuItem onClick={handleSettingsClick} data-testid="header-settings-button">
+        <MenuItem
+          onClick={handleSettingsClick}
+          data-testid="header-settings-button"
+        >
           <Trans i18nKey={"menu.settings"} />
         </MenuItem>
         <MenuItem onClick={handleLogout} data-testid="header-logout-button">

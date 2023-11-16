@@ -24,7 +24,23 @@ export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   playlistId: true,
   duration: true,
   thumbnailURL: true,
-  metadata: false
+  metadata: false,
+  keywords: true
+});
+
+export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
+  id: true,
+  username: true,
+  role: true,
+  initial: true,
+  color: true,
+  avatar: {
+    select: {
+      id: true,
+      publicUrl: true,
+      path: true
+    }
+  }
 });
 
 const MemberSchema = z.object({
@@ -105,13 +121,7 @@ export const projectRouter = router({
         select: {
           ...defaultProjectSelect,
           user: {
-            select: {
-              id: true,
-              username: true,
-              role: true,
-              initial: true,
-              color: true
-            }
+            select: defaultUserSelect
           },
           members: true,
           playlist: {
@@ -157,13 +167,7 @@ export const projectRouter = router({
         select: {
           ...defaultProjectSelect,
           user: {
-            select: {
-              id: true,
-              username: true,
-              role: true,
-              initial: true,
-              color: true
-            }
+            select: defaultUserSelect
           },
           playlist: {
             include: {
@@ -181,13 +185,7 @@ export const projectRouter = router({
           members: {
             include: {
               user: {
-                select: {
-                  id: true,
-                  username: true,
-                  role: true,
-                  initial: true,
-                  color: true
-                }
+                select: defaultUserSelect
               },
             }
           }
@@ -225,6 +223,7 @@ export const projectRouter = router({
         thumbnailURL: z.string().url(),
         metadata: z.any(),
         host: z.string(),
+        keywords: z.array(z.string())
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -246,7 +245,8 @@ export const projectRouter = router({
             duration: input.duration,
             thumbnailURL: input.thumbnailURL,
             metadata: input.metadata,
-            shareCode: input.shared ? generateUniqueShareName(input.title) : null
+            shareCode: input.shared ? generateUniqueShareName(input.title) : null,
+            keywords: input.keywords
           }
           // select: defaultPostSelect,
         });
@@ -262,6 +262,7 @@ export const projectRouter = router({
         public: z.boolean().nullish(),
         collaborative: z.boolean().nullish(),
         shared: z.boolean().nullish(),
+        keywords: z.array(z.string())
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -299,6 +300,7 @@ export const projectRouter = router({
             public: input.public !== null ? input.public : false,
             collaborative: input.collaborative !== null ? input.collaborative : false,
             shared: input.shared !== null ? input.shared : false,
+            keywords: input.keywords || project.keywords,
             shareCode
           }
         });

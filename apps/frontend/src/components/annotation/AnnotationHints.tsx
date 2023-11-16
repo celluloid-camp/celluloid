@@ -61,6 +61,7 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
                   width: 24,
                   height: 24,
                 }}
+                src={annotation.user.avatar?.publicUrl}
               >
                 {annotation.user.initial}
               </Avatar>

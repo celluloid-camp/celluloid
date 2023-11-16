@@ -88,6 +88,7 @@ i18next
     interpolation: {
       escapeValue: false,
     },
+
   } as i18next.InitOptions);
 
 const AppRouters = () => {
@@ -172,11 +173,12 @@ const App = () => {
 
         splitLink({
           condition(op) {
-            // check for context property `skipBatch`
+            // check for operation type
             return op.type == "subscription";
           },
           // when condition is true, use normal request
-          true: wsLink({client: createWSClient({
+          true: wsLink({
+            client: createWSClient({
             url: WS_URL,
           })}),
           // when condition is false, use batching

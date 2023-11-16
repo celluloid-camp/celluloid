@@ -26,18 +26,18 @@ export const Footer: React.FC<FooterProps> = (props) => (
     component={"footer"}
     {...props}
   >
-    <Container sx={{ padding: { xs: 5, lg: 10 } }} maxWidth="lg">
+    <Container sx={{ padding: { xs: 5, lg: 5 } }} maxWidth="lg">
       <Grid container spacing={4}>
         <Grid item xs={12} sm={6}>
           <Stack>
-            <Link href="/terms-and-conditions" color="white">
+            <Link href="/terms-and-conditions" color="white" variant="body2">
               <Trans i18nKey={"footer.termsAndConditions"} />
             </Link>
-            <Link href="/legal-notice" color="white">
+            <Link href="/legal-notice" color="white" variant="body2">
               <Trans i18nKey={"footer.legalNotice"} />
             </Link>
             <Stack direction={"row"} marginTop={2} spacing={1}>
-              <Box width={34}>
+              <Box width={24}>
                 <a
                   href="https://github.com/celluloid-camp"
                   target="_blank"
@@ -46,7 +46,7 @@ export const Footer: React.FC<FooterProps> = (props) => (
                   <GithubLogo />
                 </a>
               </Box>
-              <Box width={29}>
+              <Box width={20}>
                 <a
                   href="https://canevas.hypotheses.org/"
                   target="_blank"
@@ -55,7 +55,7 @@ export const Footer: React.FC<FooterProps> = (props) => (
                   <OpenEditionLogo />
                 </a>
               </Box>
-              <Box width={34}>
+              <Box width={24}>
                 <a href="https://huma-num.fr/" target="_blank" rel="noreferrer">
                   <HumaNumLogo />
                 </a>
@@ -75,7 +75,7 @@ export const Footer: React.FC<FooterProps> = (props) => (
               <LogoSign />
             </Box>
             <Typography
-              variant="subtitle1"
+              variant="body2"
               gutterBottom={true}
               color="white"
               textAlign={{ lg: "left", sm: "center" }}

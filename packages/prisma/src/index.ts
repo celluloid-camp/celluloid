@@ -1,10 +1,11 @@
-import PrismaModule, { PrismaClient } from "@prisma/client";
+import PrismaModule, { Prisma, PrismaClient } from "@prisma/client";
 import randomColor from "randomcolor";
+import { env } from '@celluloid/utils';
 
 const prismaClient = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL,
+      url: env.DATABASE_URL,
     },
   },
 }).$extends({
@@ -27,9 +28,37 @@ const prismaClient = new PrismaClient({
         },
       },
     },
+    storage: {
+      publicUrl: {
+        needs: { path: true, bucket: true },
+        compute(storage) {
+          return `${env.STORAGE_URL}/${storage.bucket}/${storage.path}`
+        },
+      }
+    },
+    annotation: {
+      extra: {
+        needs: { extra: true },
+        compute(a) {
+          if (a.extra && typeof a.extra === 'object' &&
+            !Array.isArray(a.extra)) {
+
+            const extraObject = a.extra as Prisma.JsonObject
+            return {
+              x: extraObject.x,
+              y: extraObject.y,
+              relativeX: extraObject.relativeX,
+              relativeY: extraObject.relativeY,
+              parentWidth: extraObject.parentWidth,
+              parentHeight: extraObject.parentHeight
+            }
+          }
+          return null
+        },
+      }
+    }
   },
 })
-
 
 export const prisma = prismaClient;
 

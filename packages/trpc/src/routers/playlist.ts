@@ -131,6 +131,7 @@ export const playlistRouter = router({
           duration: z.number(),
           thumbnailURL: z.string().url(),
           metadata: z.any(),
+          keywords: z.array(z.string())
         })),
         objective: z.string(),
         levelStart: z.number(),
@@ -170,7 +171,8 @@ export const playlistRouter = router({
                   thumbnailURL: p.thumbnailURL,
                   metadata: p.metadata,
                   userId: userId,
-                  shareCode: generateUniqueShareName(p.title)
+                  shareCode: generateUniqueShareName(p.title),
+                  keywords: p.keywords
                 }))
               }
             }

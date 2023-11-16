@@ -35,6 +35,7 @@ import {
   userResetProjectInputIntialState,
 } from "~/state";
 import { AddVideoToPlaylistDialog } from "~components/AddVideoToPlaylistDialog";
+import { AutoCompleteTags } from "~components/AutoComleteTags";
 import { StyledTitle } from "~components/typography";
 import {
   getPeerTubeVideoData,
@@ -215,6 +216,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
     initialValues: {
       ...initialValue,
       videoInfo: initialValue.videoInfo || data,
+      keywords: [],
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -244,6 +246,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
               duration: video.duration,
               thumbnailURL: video.thumbnailURL,
               metadata: video.metadata,
+              keywords: values.keywords,
               objective: "",
               levelStart: 0,
               levelEnd: 5,
@@ -264,6 +267,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
                 duration: video.duration,
                 thumbnailURL: video.thumbnailURL,
                 metadata: video.metadata,
+                keywords: values.keywords,
               })),
               description: values.description,
               public: values.public,
@@ -275,7 +279,6 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
               userId: "",
             });
             if (playlist) {
-              console.log("here ", playlist);
               formik.resetForm();
               navigate(`/project/${playlist.projects[0].id}`, {
                 replace: true,
@@ -299,168 +302,160 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <TextField
-        id="title"
-        name="title"
-        label={t("project.title")}
-        fullWidth
-        autoFocus
-        autoComplete="none"
-        spellCheck={false}
-        margin="normal"
-        inputProps={{
-          "data-testid": "title",
-        }}
-        value={formik.values.title}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.title && Boolean(formik.errors.title)}
-        helperText={formik.touched.title && formik.errors.title}
-        disabled={isSubmitting}
-      />
-      <TextField
-        id="description"
-        name="description"
-        label={t("project.description")}
-        multiline
-        rows={3}
-        fullWidth
-        autoComplete="none"
-        inputProps={{
-          "data-testid": "description",
-        }}
-        spellCheck={false}
-        margin="normal"
-        value={formik.values.description}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.description && Boolean(formik.errors.description)}
-        helperText={formik.touched.description && formik.errors.description}
-        disabled={isSubmitting}
-      />
-      <Autocomplete
-        multiple
-        id="keywords"
-        options={[""]}
-        freeSolo
-        onChange={(_event, newValue) => {
-          formik.setFieldValue("keywords", newValue);
-        }}
-        disabled={isSubmitting}
-        value={formik.values.keywords}
-        renderTags={(value: readonly string[], getTagProps) =>
-          value.map((option: string, index: number) => (
-            <Chip
-              variant="outlined"
-              label={option}
-              {...getTagProps({ index })}
-            />
-          ))
-        }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            margin="normal"
-            inputProps={{
+    <>
+      <form onSubmit={formik.handleSubmit}>
+        <TextField
+          id="title"
+          name="title"
+          label={t("project.title")}
+          fullWidth
+          autoFocus
+          autoComplete="none"
+          spellCheck={false}
+          margin="normal"
+          inputProps={{
+            "data-testid": "title",
+          }}
+          value={formik.values.title}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.title && Boolean(formik.errors.title)}
+          helperText={formik.touched.title && formik.errors.title}
+          disabled={isSubmitting}
+        />
+        <TextField
+          id="description"
+          name="description"
+          label={t("project.description")}
+          multiline
+          rows={3}
+          fullWidth
+          autoComplete="none"
+          inputProps={{
+            "data-testid": "description",
+          }}
+          spellCheck={false}
+          margin="normal"
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.description && Boolean(formik.errors.description)
+          }
+          helperText={formik.touched.description && formik.errors.description}
+          disabled={isSubmitting}
+        />
+
+        <AutoCompleteTags
+          id="keywords"
+          options={[""]}
+          onChange={(_event, newValue) => {
+            formik.setFieldValue("keywords", newValue);
+          }}
+          disabled={isSubmitting}
+          value={formik.values.keywords}
+          textFieldProps={{
+            margin: "normal",
+            inputProps: {
               "data-testid": "keywords",
-            }}
-            label={t("project.keywords")}
-          />
-        )}
-      />
+            },
+            label: t("project.keywords"),
+          }}
+          limitTags={10}
+        />
 
-      <Typography
-        variant="h6"
-        sx={{
-          paddingTop: 4,
-        }}
-        gutterBottom={true}
-      >
-        <Trans i18nKey="project.visibilitySection" />
-      </Typography>
-      <Grid container={true} direction="row" alignItems="flex-start">
-        <Grid item={true} xs={2}>
-          <Typography
-            variant="subtitle1"
-            align="right"
-            sx={{
-              paddingTop: 1,
-            }}
-          >
-            <Trans i18nKey="project.public" />
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <Switch
-            data-testid="public-switch"
-            checked={formik.values.public}
-            onChange={(_, value) => {
-              formik.setFieldValue("public", value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={8}>
-          <Typography
-            gutterBottom
-            variant="body2"
-            sx={{
-              paddingTop: 1,
-            }}
-          >
-            <Trans i18nKey="project.publicHelper" />
-          </Typography>
-        </Grid>
-      </Grid>
-
-      <Grid container direction="row">
-        <Grid item xs={2}>
-          <Typography
-            variant="subtitle1"
-            align="right"
-            sx={{
-              paddingTop: 1,
-            }}
-          >
-            <Trans i18nKey="project.collaborative" />
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <Switch
-            checked={formik.values.collaborative}
-            data-testid="collaborative-switch"
-            onChange={(_, value) => {
-              formik.setFieldValue("collaborative", value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={8}>
-          <Typography
-            variant="body2"
-            gutterBottom
-            sx={{
-              paddingTop: 1,
-            }}
-          >
-            <Trans i18nKey="project.collaborativeHelper" />
-          </Typography>
-        </Grid>
-      </Grid>
-
-      <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
-        <LoadingButton
-          variant="contained"
-          data-testid="submit"
-          size="large"
-          color="primary"
-          type="submit"
-          loading={playlistMutation.isLoading || projectMutation.isLoading}
-          disabled={playlistMutation.isLoading || projectMutation.isLoading}
+        <Typography
+          variant="h6"
+          sx={{
+            paddingTop: 4,
+          }}
+          gutterBottom={true}
         >
-          <Trans i18nKey="project.createAction" />
-        </LoadingButton>
-      </Box>
-    </form>
+          <Trans i18nKey="project.visibilitySection" />
+        </Typography>
+        <Grid container={true} direction="row" alignItems="flex-start">
+          <Grid item={true} xs={2}>
+            <Typography
+              variant="subtitle1"
+              align="right"
+              sx={{
+                paddingTop: 1,
+              }}
+            >
+              <Trans i18nKey="project.public" />
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Switch
+              data-testid="public-switch"
+              checked={formik.values.public}
+              onChange={(_, value) => {
+                formik.setFieldValue("public", value);
+              }}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <Typography
+              gutterBottom
+              variant="body2"
+              sx={{
+                paddingTop: 1,
+              }}
+            >
+              <Trans i18nKey="project.publicHelper" />
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <Grid container direction="row">
+          <Grid item xs={2}>
+            <Typography
+              variant="subtitle1"
+              align="right"
+              sx={{
+                paddingTop: 1,
+              }}
+            >
+              <Trans i18nKey="project.collaborative" />
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Switch
+              checked={formik.values.collaborative}
+              data-testid="collaborative-switch"
+              onChange={(_, value) => {
+                formik.setFieldValue("collaborative", value);
+              }}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{
+                paddingTop: 1,
+              }}
+            >
+              <Trans i18nKey="project.collaborativeHelper" />
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
+          <LoadingButton
+            variant="contained"
+            data-testid="submit"
+            size="large"
+            color="primary"
+            type="submit"
+            loading={playlistMutation.isLoading || projectMutation.isLoading}
+            disabled={playlistMutation.isLoading || projectMutation.isLoading}
+          >
+            <Trans i18nKey="project.createAction" />
+          </LoadingButton>
+        </Box>
+      </form>
+    </>
   );
 };
 

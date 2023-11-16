@@ -12,6 +12,7 @@ import {
   Chip,
   Collapse,
   Divider,
+  Fade,
   Grow,
   IconButton,
   List,
@@ -67,7 +68,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
   const [editedAnnotation, setEditedAnnotation] = useEditAnnotation();
 
   const confirm = useConfirm();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const handleEdit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -141,13 +142,16 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           sx={{
             paddingX: 2,
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "center",
             alignContent: "center",
           }}
         >
           <ListItemAvatar>
-            <Avatar sx={{ background: annotation.user.color, marginTop: 1 }}>
+            <Avatar
+              sx={{ background: annotation.user.color, marginTop: 1 }}
+              src={annotation.user.avatar?.publicUrl}
+            >
               {annotation.user.initial}
             </Avatar>
           </ListItemAvatar>
@@ -288,14 +292,15 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                       <Trans i18nKey="annotation.comment.reply">Répondre</Trans>
                     </Button>
                   </ListItem>
-                ) : (
+                ) : null}
+                <Collapse in={showReplyForm} unmountOnExit>
                   <CommentForm
                     user={user}
                     annotation={annotation}
                     project={project}
                     onClose={() => setShowReplyForm(false)}
                   />
-                )}
+                </Collapse>
               </React.Fragment>
             ) : null}
           </Collapse>

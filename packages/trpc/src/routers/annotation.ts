@@ -1,24 +1,33 @@
 import { prisma, UserRole } from '@celluloid/prisma';
 import { Annotation } from '@celluloid/prisma';
+import { Prisma } from '@celluloid/prisma';
 import { toSrt } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
 import { observable } from '@trpc/server/observable';
 import { EventEmitter } from 'events';
 import { parse as toXML } from 'js2xmlparser';
-import * as Papa from 'papaparse';
+import Papa from 'papaparse';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 // create a global event emitter (could be replaced by redis, etc)
 const ee = new EventEmitter();
-// const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
-//   id: true,
-//   title: true,
-//   text: true,
-//   createdAt: true,
-//   updatedAt: true,
-// });
+
+export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
+  id: true,
+  username: true,
+  role: true,
+  initial: true,
+  color: true,
+  avatar: {
+    select: {
+      id: true,
+      publicUrl: true,
+      path: true
+    }
+  }
+});
 
 
 export const annotationRouter = router({
@@ -36,13 +45,7 @@ export const annotationRouter = router({
           comments: {
             include: {
               user: {
-                select: {
-                  id: true,
-                  username: true,
-                  role: true,
-                  initial: true,
-                  color: true
-                }
+                select: defaultUserSelect
               },
             },
             orderBy: {
@@ -50,13 +53,7 @@ export const annotationRouter = router({
             },
           },
           user: {
-            select: {
-              id: true,
-              username: true,
-              role: true,
-              initial: true,
-              color: true
-            }
+            select: defaultUserSelect
           },
         },
         orderBy: {
@@ -211,30 +208,31 @@ export const annotationRouter = router({
         projectId: z.string(),
         format: z.enum(["csv", "xml", "srt"])
       })
-    ).query(async ({ input }) => {
+    ).mutation(async ({ input }) => {
       const { format, projectId } = input;
 
       const annotations = await prisma.annotation.findMany({
         where: { projectId: projectId },
         include: {
-          comments: true
+          comments: true,
         },
         orderBy: {
           createdAt: 'desc',
         },
       });
 
-
       const formated = annotations.map((a) => ({
         startTime: a.startTime,
         endTime: a.stopTime,
         text: a.text,
-        comments: a.comments.map((c) => c.text)
+        comments: a.comments.map((c) => c.text),
+        contextX: a.extra ? a.extra.relativeX : null,
+        contextY: a.extra ? a.extra.relativeY : null,
       }))
 
       let content = "";
       if (format === 'xml') {
-        content = toXML("annotations", formated);
+        content = toXML("annotations", formated, { cdataKeys: ['comments', 'text'] });
       } else if (format == "csv") {
         content = Papa.unparse(formated);
       } else if (format == "srt") {

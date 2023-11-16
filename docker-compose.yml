@@ -37,11 +37,8 @@ services:
     volumes:
       - minio_data:/data
     environment:
-      MINIO_ACCESS_KEY: XXXX
-      MINIO_SECRET_KEY: XXXXXXXX
-      MINIO_ROOT_USER: root
-      MINIO_ROOT_PASSWORD: Strong#Pass#2022
-      MINIO_DEFAULT_BUCKETS: celluloid
+      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY}
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
