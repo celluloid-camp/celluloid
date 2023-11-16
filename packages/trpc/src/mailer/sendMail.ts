@@ -66,7 +66,7 @@ export async function sendPasswordReset({ username, email, code }: { username: s
 
 
 export async function sendConfirmationCode({ username, email, code }: { username: string, email: string, code: string }) {
-  const subject = `${username} : Code de confirmation Celluloid`;
+  const subject = `Bienvenue sur Celluloid, ${username} !`;
 
   const mjmlTemplate = `
   <mjml>
