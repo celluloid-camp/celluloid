@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
 import { saveAs } from "file-saver";
+import { useSnackbar } from "notistack";
 import * as React from "react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ProjectById, trpc, UserMe } from "~utils/trpc";
@@ -14,26 +14,24 @@ interface Props {
 export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
   const { t } = useTranslation();
 
-  const [exportFormat, setExportFormat] = useState<
-    "csv" | "xml" | "srt" | undefined
-  >(undefined);
+  const utils = trpc.useUtils();
+  const { enqueueSnackbar } = useSnackbar();
 
-  trpc.annotation.export.useQuery(
-    { projectId: project.id, format: exportFormat || "csv" },
-    {
-      enabled: !!exportFormat,
-      onSuccess: (data) => {
-        const blob = new Blob([data], {
-          type: `text/${exportFormat};charset=utf-8`,
-        });
-        saveAs(blob, `export.${exportFormat}`);
-        setExportFormat(undefined);
-      },
-    }
-  );
+  const handleExport = async (format: "csv" | "xml" | "srt") => {
+    const data = await utils.client.annotation.export.mutate({
+      projectId: project.id,
+      format,
+    });
 
-  const handleExport = (format: "csv" | "xml" | "srt") => {
-    setExportFormat(format);
+    const blob = new Blob([data], {
+      type: `text/${format};charset=utf-8`,
+    });
+    saveAs(blob, `export.${format}`);
+
+    enqueueSnackbar(t("project.export.success", "Votre export est prêt"), {
+      variant: "success",
+      key: "project.export.success",
+    });
   };
 
   if (project._count.annotations == 0) {

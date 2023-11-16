@@ -28,9 +28,11 @@ export const ConfirmDialog: React.FC = () => {
       .required(t("confirm.code.required")),
   });
 
+  const queryEmail = query.get("email") || undefined;
+
   const formik = useFormik({
     initialValues: {
-      username: query.get("email") || "",
+      username: queryEmail,
       code: "",
       error: null,
     },
@@ -85,7 +87,7 @@ export const ConfirmDialog: React.FC = () => {
             t("confirm.username.paceholder", "Email ou nom d'utilisateur") || ""
           }
           onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
+          disabled={formik.isSubmitting || queryEmail != undefined}
           onBlur={formik.handleBlur}
           error={formik.touched.username && Boolean(formik.errors.username)}
           helperText={formik.touched.username && formik.errors.username}

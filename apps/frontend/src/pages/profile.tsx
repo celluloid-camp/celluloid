@@ -6,12 +6,10 @@ import {
   Typography,
 } from "@mui/material";
 import * as React from "react";
-import { Trans } from "react-i18next";
 
 import { Avatar } from "~components/Avatar";
 import { MyProjectGrid } from "~components/profile/MyProjectGrid";
 import { TransUserRole } from "~components/TransUserRole";
-import { UserAvatar } from "~components/UserAvatar";
 import { trpc } from "~utils/trpc";
 
 const UserProfile: React.FC = () => {
@@ -45,7 +43,10 @@ const UserProfile: React.FC = () => {
               <Avatar
                 sx={{
                   background: data.color,
+                  width: 100,
+                  height: 100,
                 }}
+                src={data.avatar?.publicUrl}
               >
                 {data.initial}
               </Avatar>
@@ -60,6 +61,11 @@ const UserProfile: React.FC = () => {
               </Typography>
               <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>
                 {data.email} - <TransUserRole role={data.role} />
+              </Typography>
+            </Stack>
+            <Stack alignItems={"center"}>
+              <Typography variant="body2" color="textPrimary">
+                {data.bio}
               </Typography>
             </Stack>
 

@@ -37,6 +37,7 @@ interface Props {
 const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
   const videoPlayerRef = React.useRef<ReactPlayer>(null);
 
+  const utils = trpc.useUtils();
   const videoProgress = useVideoPlayerProgressValue();
   const [playerIsReady, setPlayerIsReady] = React.useState(false);
 
@@ -53,6 +54,19 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
       setPlayerIsReady(true);
     }
   });
+
+  trpc.annotation.onAdd.useSubscription(undefined, {
+    onData() {
+      // addMessages([post]);
+      utils.annotation.byProjectId.invalidate();
+    },
+    onError(err) {
+      console.error('Subscription error:', err);
+      // we might have missed a message - invalidate cache
+      utils.annotation.byProjectId.invalidate();
+    },
+  });
+
 
   const visibleAnnotations = useMemo(
     () =>

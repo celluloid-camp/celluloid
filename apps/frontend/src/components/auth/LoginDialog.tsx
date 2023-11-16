@@ -36,11 +36,17 @@ export const LoginDialog: React.FC = () => {
     });
   };
 
-  const handleConfirm = () => {
-    navigate("/confirm", {
-      state: { backgroundPath: "/" },
-      replace: true,
-    });
+  const handleConfirm = (email?: string) => {
+    navigate(
+      {
+        pathname: "/confirm",
+        search: email ? "?email=" + email : undefined,
+      },
+      {
+        state: { backgroundPath: "/" },
+        replace: true,
+      }
+    );
   };
 
   const handleSignup = () => {
@@ -77,7 +83,7 @@ export const LoginDialog: React.FC = () => {
           console.log(e.message);
           // `cause` is now typed as your router's `TRPCClientError`
           if (e.message === "USER_NOT_CONFIRMED") {
-            handleConfirm();
+            handleConfirm(values.username);
           } else if (e.message === "USER_NOT_FOUND") {
             formik.setFieldError(
               "error",
