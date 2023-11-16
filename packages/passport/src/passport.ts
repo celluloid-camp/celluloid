@@ -6,7 +6,7 @@ import {
   Strategy as LocalStrategy,
 } from "passport-local";
 
-import { InvalidUserError, UserNotConfirmed } from "./errors";
+import { DeserializeUserError, InvalidUserError, UserNotConfirmed } from "./errors";
 
 export enum SigninStrategy {
   LOGIN = "login",
@@ -24,7 +24,7 @@ passport.deserializeUser(async (id: string, done) => {
   if (user) {
     return done(null, user);
   } else {
-    return done(new InvalidUserError(`Deserialize user failed: user does not exist`));
+    return done(new DeserializeUserError(`Deserialize user failed: user does not exist`));
   }
 });
 

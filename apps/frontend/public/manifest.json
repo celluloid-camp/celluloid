@@ -1,6 +1,6 @@
 {
-  "short_name": "Scratch",
-  "name": "Scratch Note Taking App",
+  "short_name": "Celluloid",
+  "name": "Celluloid",
   "icons": [
     {
       "src": "android-chrome-192x192.png",
@@ -18,4 +18,3 @@
   "theme_color": "#ffffff",
   "background_color": "#ffffff"
 }
-

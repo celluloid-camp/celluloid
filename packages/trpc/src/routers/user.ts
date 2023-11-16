@@ -2,6 +2,7 @@ import { passport, SigninStrategy } from "@celluloid/passport";
 import { Prisma, prisma, UserRole } from "@celluloid/prisma"
 import { compareCodes, generateOtp, hashPassword } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
+import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 
 import { sendConfirmationCode, sendPasswordReset } from "../mailer/sendMail";
@@ -11,8 +12,18 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
   username: true,
   role: true,
+  firstname: true,
+  lastname: true,
+  bio: true,
   initial: true,
   color: true,
+  avatar: {
+    select: {
+      id: true,
+      publicUrl: true,
+      path: true
+    }
+  }
 });
 
 
@@ -271,6 +282,48 @@ export const userRouter = router({
     return { projectId: project.id }
 
   }),
+
+  changePassword: protectedProcedure.input(
+    z.object({
+      oldPassword: z.string(),
+      newPassword: z.string().min(8)
+    }),
+  ).mutation(async ({ ctx, input }) => {
+
+    if (ctx.user) {
+      const user = await prisma.user.findUnique({
+        where: { id: ctx.user.id },
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+        });
+      }
+
+      if (!bcrypt.compareSync(input.oldPassword, user.password)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'WRONG_PASSWORD'
+        });
+      }
+
+      const newUser = await prisma.user.update({
+        where: { id: ctx.user.id },
+        select: defaultUserSelect,
+        data: {
+          password: hashPassword(input.newPassword),
+        }
+      })
+
+      return newUser
+    } else {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+      });
+    }
+
+  }),
   join: protectedProcedure.input(
     z.object({
       shareCode: z.string(),
@@ -407,6 +460,59 @@ export const userRouter = router({
     }
     return null;
   }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        firstname: z.string().nullish(),
+        lastname: z.string().nullish(),
+        bio: z.string().nullish(),
+        avatarStorageId: z.string().nullish(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user && ctx.user.id) {
+
+        // Find the project by its ID (you need to replace 'projectId' with the actual ID)
+        const user = await prisma.user.findUnique({
+          where: {
+            id: ctx.user.id
+          }
+        });
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        const avatarStorageId = input.avatarStorageId;
+
+
+        if (user.avatarStorageId != null && avatarStorageId == null) {
+          console.log("file remove")
+          await prisma.storage.delete({
+            where: {
+              id: user.avatarStorageId
+            }
+          })
+          // remove file
+        }
+
+        const updatedUser = await prisma.user.update({
+          where: {
+            id: ctx.user.id
+          },
+          data: {
+            username: input.username || user.username,
+            firstname: input.firstname || user.firstname,
+            lastname: input.lastname || user.lastname,
+            bio: input.bio || user.bio,
+            avatarStorageId: avatarStorageId,
+          }
+        });
+
+        return updatedUser;
+      }
+    }),
   byId: protectedProcedure.input(
     z.object({
       id: z.string().uuid(),

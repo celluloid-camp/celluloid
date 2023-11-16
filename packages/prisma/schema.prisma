@@ -70,9 +70,10 @@ model Project {
   playlist   Playlist? @relation(fields: [playlistId], references: [id])
   playlistId String?   @db.Uuid
 
-  duration     Float  @default(0)
-  thumbnailURL String @default("")
-  metadata     Json?  @default("{}") @db.Json
+  duration     Float    @default(0)
+  thumbnailURL String   @default("")
+  metadata     Json?    @default("{}") @db.Json
+  keywords     String[]
 }
 
 model Playlist {
@@ -105,6 +106,13 @@ model User {
   UserToProject   UserToProject[]
 
   playlist Playlist[]
+
+  firstname String? @db.VarChar(255)
+  lastname  String? @db.VarChar(255)
+  bio       String? @db.Text()
+
+  avatar          Storage? @relation(fields: [avatarStorageId], references: [id])
+  avatarStorageId String?  @unique @db.Uuid
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -120,4 +128,12 @@ enum UserRole {
   Admin
   Teacher
   Student
+}
+
+model Storage {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  path      String
+  bucket    String
+  user      User?
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
 }

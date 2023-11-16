@@ -6,6 +6,7 @@ import { annotationRouter } from "./annotation"
 import { commentRouter } from "./comment"
 import { playlistRouter } from './playlist'
 import { projectRouter } from './project'
+import { storageRouter } from './storage';
 import { userRouter } from './user';
 
 
@@ -15,7 +16,8 @@ export const appRouter = router({
   user: userRouter,
   playlist: playlistRouter,
   annotation: annotationRouter,
-  comment: commentRouter
+  comment: commentRouter,
+  storage: storageRouter
 });
 
 export type AppRouter = typeof appRouter;

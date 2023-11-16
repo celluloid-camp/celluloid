@@ -1,4 +1,6 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import GroupsIcon from "@mui/icons-material/Groups";
+import PublicIcon from "@mui/icons-material/Public";
+import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -28,7 +30,10 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
       </Typography>
 
       <Box display="flex" alignItems={"center"}>
-        <Avatar sx={{ background: project.user.color }}>
+        <Avatar
+          sx={{ background: project.user.color }}
+          src={project.user.avatar?.publicUrl}
+        >
           {project.user.initial}
         </Avatar>
         <Box display="flex" flexDirection={"column"} sx={{ marginLeft: 1 }}>
@@ -38,6 +43,27 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
           </Typography>
         </Box>
       </Box>
+
+      <Stack direction={"row"} spacing={1} sx={{ my: 2, minHeight: 25 }}>
+        {project.public && (
+          <Chip
+            label={t("project.public")}
+            size="small"
+            icon={<PublicIcon />}
+          />
+        )}
+
+        {project.collaborative && (
+          <Chip
+            label={t("project.collaborative")}
+            size="small"
+            icon={<GroupsIcon />}
+          />
+        )}
+        {project.keywords.map((k) => (
+          <Chip label={k} size="small" />
+        ))}
+      </Stack>
 
       <Card sx={{ my: 2 }}>
         <CardContent>

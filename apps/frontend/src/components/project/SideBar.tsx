@@ -1,5 +1,3 @@
-import GroupsIcon from "@mui/icons-material/Groups";
-import PublicIcon from "@mui/icons-material/Public";
 import {
   Box,
   Button,
@@ -33,24 +31,6 @@ export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
 
   return (
     <Box>
-      <Stack direction={"row"} spacing={1} sx={{ mb: 2, minHeight: 25 }}>
-        {project.public && (
-          <Chip
-            label={t("project.public")}
-            size="small"
-            icon={<PublicIcon />}
-          />
-        )}
-
-        {project.collaborative && (
-          <Chip
-            label={t("project.collaborative")}
-            size="small"
-            icon={<GroupsIcon />}
-          />
-        )}
-      </Stack>
-
       <PlaylistSideBar project={project} />
 
       {user && <ProjectEditPanel project={project} user={user} />}
@@ -99,6 +79,7 @@ export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
             <ListItem>
               <ListItemAvatar>
                 <Avatar
+                  src={project.user.avatar?.publicUrl}
                   sx={{
                     background: project.user.color,
                   }}
@@ -116,7 +97,10 @@ export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
             {project.members.map((member: ProjectMembers) => (
               <ListItem key={member.id}>
                 <ListItemAvatar>
-                  <Avatar sx={{ background: member.user?.color }}>
+                  <Avatar
+                    sx={{ background: member.user?.color }}
+                    src={member.user.avatar?.publicUrl}
+                  >
                     {member.user?.initial}
                   </Avatar>
                 </ListItemAvatar>

@@ -12,6 +12,7 @@ import { useNavigate } from "react-router";
 import LabeledProgressSwitch from "~components/LabeledProgressSwitch";
 import { ProjectById, trpc, UserMe } from "~utils/trpc";
 
+import { EditProjectDialog } from "./EditProjectDialog";
 import { ShareDialog } from "./ShareDialog";
 interface ProjectEditPanelProps {
   project: ProjectById;
@@ -27,7 +28,7 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const updateMutation = trpc.project.update.useMutation({
     onSuccess: () => {
@@ -104,6 +105,7 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
           <Typography gutterBottom variant="h6">
             {t("project.edit", "Modification")}
           </Typography>
+          {/* <EditProjectDialog open={true} project={project}/> */}
           <LabeledProgressSwitch
             label={t("project.public")}
             checked={project.public}
@@ -177,31 +179,6 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
           )}
         </>
       ) : null}
-
-      {project.deletable && (
-        <Box
-          sx={{
-            width: "100%",
-            mt: 2,
-          }}
-        >
-          <Divider variant="middle" />
-          <Box sx={{ m: 2 }}>
-            <LoadingButton
-              variant="contained"
-              color="error"
-              size="small"
-              fullWidth={true}
-              // loading={deleteLoading}
-              onClick={confirmDelete}
-            >
-              <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
-              {t("deleteAction")}
-            </LoadingButton>
-          </Box>
-          {/* {deleteError && <DialogError error={deleteError} />} */}
-        </Box>
-      )}
 
       {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
       && (user && !isAdmin(user)) && project.shared) &&

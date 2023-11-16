@@ -68,7 +68,7 @@ export const AnnotationForm: React.FC<AnnotationFormProps> = (props) => {
 export const AnnotationFormContent: React.FC<
   AnnotationFormProps & { onClose: () => void }
 > = ({ duration, project, onClose }) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const addMutation = trpc.annotation.add.useMutation();
   const editMutation = trpc.annotation.edit.useMutation();
 
@@ -177,7 +177,7 @@ export const AnnotationFormContent: React.FC<
             display: "flex",
             alignItems: "center",
             backgroundColor: grey[800],
-            borderRadius: 3,
+            borderRadius: 1,
           }}
         >
           <InputBase
@@ -186,12 +186,17 @@ export const AnnotationFormContent: React.FC<
             sx={{ ml: 1, flex: 1, color: "white" }}
             placeholder="Saissez votre annotation"
             multiline
+            maxRows={5}
+            minRows={2}
             value={formik.values.text}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.text}
             disabled={formik.isSubmitting}
-            inputProps={{ "aria-label": "Saissez votre annotation" }}
+            inputProps={{
+              "aria-label": "Saissez votre annotation",
+              maxLength: 250,
+            }}
           />
         </Box>
 

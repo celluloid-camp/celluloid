@@ -49,7 +49,6 @@ export const getPeerTubeVideoData = async (
   if (response.status === 200) {
     const data = await response.json();
 
-    console.log(data);
     return {
       isPlaylist,
       orignalURL: url,

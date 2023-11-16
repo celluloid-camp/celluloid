@@ -40,7 +40,6 @@ dist/
 # turbo
 .turbo
 
-.vscode
 .backups
 .ethereal
 

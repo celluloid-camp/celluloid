@@ -2,12 +2,9 @@ import {
   Box,
   Button,
   ClickAwayListener,
-  IconButton,
-  InputAdornment,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
@@ -34,7 +31,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const mutation = trpc.comment.add.useMutation();
 
   const validationSchema = Yup.object().shape({
@@ -75,7 +72,10 @@ export const CommentForm: React.FC<CommentFormProps> = ({
         <React.Fragment>
           <ListItem sx={{ pl: 4, py: 0 }}>
             <ListItemAvatar sx={{ minWidth: 35 }}>
-              <Avatar sx={{ background: user?.color, width: 24, height: 24 }}>
+              <Avatar
+                sx={{ background: user?.color, width: 24, height: 24 }}
+                src={user?.avatar?.publicUrl}
+              >
                 {user?.initial}
               </Avatar>
             </ListItemAvatar>
@@ -92,6 +92,12 @@ export const CommentForm: React.FC<CommentFormProps> = ({
                     onBlur={formik.handleBlur}
                     error={formik.errors.comment}
                     sx={{ fontSize: 13 }}
+                    inputProps={{
+                      "aria-label": "Saissez votre annotation",
+                      maxLength: 250,
+                    }}
+                    maxRows={3}
+                    minRows={1}
                     disabled={formik.isSubmitting}
                     // endAdornment={
                     //   <InputAdornment position="end">
