@@ -1,3 +1,0 @@
-files:
-  - source: /apps/frontend/src/locales/fr/common.json
-    translation: apps/frontend/src/locales/%two_letters_code%/common.json

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://inlang.com/schema/project-settings",
+  "sourceLanguageTag": "en",
+  "languageTags": ["en", "fr"],
+  "modules": [
+    "https://cdn.jsdelivr.net/npm/@inlang/plugin-i18next@latest/dist/index.js"
+  ],
+  "plugin.inlang.i18next": {
+    "pathPattern": "./apps/frontend/src/locales/{languageTag}/common.json"
+  }
+}
