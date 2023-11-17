@@ -1,14 +1,12 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { LoadingButton } from "@mui/lab";
 import {
-  Alert,
-  Autocomplete,
   Box,
-  Button,
-  Chip,
-  DialogActions,
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
   Grid,
-  Stack,
   Switch,
   Typography,
 } from "@mui/material";
@@ -17,12 +15,11 @@ import { useFormik } from "formik";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import { AutoCompleteTags } from "~components/AutoComleteTags";
 import { StyledDialog } from "~components/Dialog";
-import { ERR_ALREADY_EXISTING_PROJECT } from "~utils/Constants";
 import { humanizeError } from "~utils/errors";
 import { ProjectById, trpc } from "~utils/trpc";
 
@@ -40,13 +37,30 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
   const { t } = useTranslation();
   const confirm = useConfirm();
   const utils = trpc.useUtils();
+  const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const deleteMutation = trpc.project.delete.useMutation({
+    onSuccess: () => {
+      utils.project.list.invalidate();
+      navigate("/");
+    },
+    onError: (e) => {
+      console.log(e);
+      enqueueSnackbar(
+        t("project.delete.error", "Project n'a pas pu être supprimé", {
+          variant: "error",
+          key: "project.delete.error",
+        })
+      );
+    },
+  });
+
   const handleDelete = () => {
-    // deleteMutation.mutate({
-    //   projectId: project.id,
-    // });
+    deleteMutation.mutate({
+      projectId: project.id,
+    });
   };
 
   const confirmDelete = () => {
@@ -60,24 +74,24 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
         color: "error",
       },
     }).then(() => {
-      // handleDelete();
+      handleDelete();
     });
   };
 
   const mutation = trpc.project.update.useMutation({
     onSuccess: () => {
       utils.project.byId.invalidate({ id: project.id });
-      enqueueSnackbar(t("project.edit.success", "Project a été mise à jour"), {
+      enqueueSnackbar(t("project.edit.success"), {
         variant: "success",
         key: "project.edit.success",
       });
     },
     onError: (e) => {
       console.log(e);
-      enqueueSnackbar(
-        t("project.edit.error", "Project n'a pas été mise à jour"),
-        { variant: "error", key: "project.edit.error" }
-      );
+      enqueueSnackbar(t("project.edit.error"), {
+        variant: "error",
+        key: "project.edit.error",
+      });
     },
   });
 
@@ -98,39 +112,32 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
       public: project.public,
       collaborative: project.collaborative,
       shared: project.shared,
-      keywords: [],
+      keywords: project.keywords,
       error: null,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const project = await mutation.mutateAsync({
+        await mutation.mutateAsync({
+          projectId: project.id,
           title: values.title,
           description: values.description,
           public: values.public,
           collaborative: values.collaborative,
           shared: values.shared,
+          keywords: values.keywords,
         });
-        if (project) {
-          formik.resetForm();
-          onClose();
-        }
+        formik.resetForm();
+        onClose();
       } catch (e) {
-        if (e.message == ERR_ALREADY_EXISTING_PROJECT) {
-          formik.setFieldError(
-            "title",
-            humanizeError("ERR_ALREADY_EXISTING_PROJECT")
-          );
-        } else {
-          formik.setFieldError("title", humanizeError("ERR_UNKOWN"));
-        }
+        formik.setFieldError("title", humanizeError("ERR_UNKOWN"));
       }
     },
   });
 
   return (
     <StyledDialog
-      title={t("edit-project-dialog.title", "Modifer le projet")}
+      title={t("project.edit.dialog.title")}
       onClose={onClose}
       error={formik.errors.error}
       maxWidth="md"
@@ -138,203 +145,166 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
       loading={formik.isSubmitting}
     >
       <form onSubmit={formik.handleSubmit}>
-        <TextField
-          id="title"
-          name="title"
-          label={t("project.title")}
-          fullWidth
-          autoFocus
-          autoComplete="none"
-          spellCheck={false}
-          margin="normal"
-          inputProps={{
-            "data-testid": "title",
-          }}
-          value={formik.values.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.title && Boolean(formik.errors.title)}
-          helperText={formik.touched.title && formik.errors.title}
-          disabled={formik.isSubmitting}
-        />
-        <TextField
-          id="description"
-          name="description"
-          label={t("project.description")}
-          multiline
-          rows={3}
-          fullWidth
-          autoComplete="none"
-          inputProps={{
-            "data-testid": "description",
-          }}
-          spellCheck={false}
-          margin="normal"
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={
-            formik.touched.description && Boolean(formik.errors.description)
-          }
-          helperText={formik.touched.description && formik.errors.description}
-          disabled={formik.isSubmitting}
-        />
-        <AutoCompleteTags
-          id="keywords"
-          options={[""]}
-          onChange={(_event, newValue) => {
-            formik.setFieldValue("keywords", newValue);
-          }}
-          disabled={formik.isSubmitting}
-          value={formik.values.keywords}
-          textFieldProps={{
-            margin: "normal",
-            inputProps: {
-              "data-testid": "keywords",
-            },
-            label: t("project.keywords"),
-          }}
-          limitTags={10}
-        />
+        <Box sx={{ flexGrow: 1 }}>
+          <TextField
+            id="title"
+            name="title"
+            label={t("project.title")}
+            fullWidth
+            autoFocus
+            autoComplete="none"
+            spellCheck={false}
+            margin="normal"
+            inputProps={{
+              "data-testid": "title",
+            }}
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.title && Boolean(formik.errors.title)}
+            helperText={formik.touched.title && formik.errors.title}
+            disabled={formik.isSubmitting}
+          />
+          <TextField
+            id="description"
+            name="description"
+            label={t("project.description")}
+            multiline
+            rows={3}
+            fullWidth
+            autoComplete="none"
+            inputProps={{
+              "data-testid": "description",
+            }}
+            spellCheck={false}
+            margin="normal"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            helperText={formik.touched.description && formik.errors.description}
+            disabled={formik.isSubmitting}
+          />
+          <AutoCompleteTags
+            id="keywords"
+            options={[""]}
+            onChange={(_event, newValue) => {
+              formik.setFieldValue("keywords", newValue);
+            }}
+            disabled={formik.isSubmitting}
+            value={formik.values.keywords}
+            textFieldProps={{
+              margin: "normal",
+              inputProps: {
+                "data-testid": "keywords",
+              },
+              label: t("project.keywords"),
+            }}
+            limitTags={10}
+          />
 
-        <Typography
-          variant="h6"
-          sx={{
-            paddingTop: 4,
-          }}
-          gutterBottom={true}
-        >
-          <Trans i18nKey="project.visibilitySection" />
-        </Typography>
-        <Grid container={true} direction="row" alignItems="flex-start">
-          <Grid item={true} xs={2}>
-            <Typography
-              variant="subtitle1"
-              align="right"
-              sx={{
-                paddingTop: 1,
-              }}
-            >
-              <Trans i18nKey="project.public" />
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Switch
-              data-testid="public-switch"
-              checked={formik.values.public}
-              onChange={(_, value) => {
-                formik.setFieldValue("public", value);
-              }}
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <Typography
-              gutterBottom
-              variant="body2"
-              sx={{
-                paddingTop: 1,
-              }}
-            >
-              <Trans i18nKey="project.publicHelper" />
-            </Typography>
-          </Grid>
-        </Grid>
-
-        <Grid container direction="row">
-          <Grid item xs={2}>
-            <Typography
-              variant="subtitle1"
-              align="right"
-              sx={{
-                paddingTop: 1,
-              }}
-            >
-              <Trans i18nKey="project.collaborative" />
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Switch
-              checked={formik.values.collaborative}
-              data-testid="collaborative-switch"
-              onChange={(_, value) => {
-                formik.setFieldValue("collaborative", value);
-              }}
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <Typography
-              variant="body2"
-              gutterBottom
-              sx={{
-                paddingTop: 1,
-              }}
-            >
-              <Trans i18nKey="project.collaborativeHelper" />
-            </Typography>
-          </Grid>
-        </Grid>
-
-        <Grid container direction="row">
-          <Grid item xs={2}>
-            <Typography
-              variant="subtitle1"
-              align="right"
-              sx={{
-                paddingTop: 1,
-              }}
-            >
-              <Trans i18nKey="project.share" />
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Switch
-              checked={formik.values.shared}
-              data-testid="shared-switch"
-              onChange={(_, value) => {
-                formik.setFieldValue("shared", value);
-              }}
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <Typography
-              variant="body2"
-              gutterBottom
-              sx={{
-                paddingTop: 1,
-              }}
-            >
-              <Trans i18nKey="project.collaborativeHelper" />
-            </Typography>
-          </Grid>
-        </Grid>
-
-        <DialogActions>
-          <LoadingButton
-            variant="contained"
-            data-testid="submit"
-            size="large"
-            color="primary"
-            type="submit"
-            loading={mutation.isLoading}
-            disabled={mutation.isLoading}
+          <Typography
+            variant="h6"
+            sx={{
+              pt: 1,
+            }}
+            gutterBottom={true}
           >
-            <Trans i18nKey="project.editAction">Modifier le projet</Trans>
-          </LoadingButton>
+            {t("project.visibilitySection")}
+          </Typography>
 
-          {project.deletable && (
-            <LoadingButton
-              variant="contained"
-              color="error"
-              size="small"
-              fullWidth={true}
-              // loading={deleteLoading}
-              onClick={confirmDelete}
-            >
-              <DeleteIcon fontSize="inherit" sx={{ marginRight: 2 }} />
-              {t("deleteAction")}
-            </LoadingButton>
-          )}
-        </DialogActions>
+          <Box sx={{ maxWidth: "50%", ml: 2, pt: 2 }}>
+            <FormGroup sx={{ mb: 1 }}>
+              <FormControlLabel
+                sx={{ fontSize: 10 }}
+                control={
+                  <Switch
+                    checked={formik.values.public}
+                    size="small"
+                    data-testid="collaborative-switch"
+                    onChange={(_, value) => {
+                      formik.setFieldValue("public", value);
+                    }}
+                  />
+                }
+                label={t("project.public")}
+              />
+              <FormHelperText>{t("project.publicHelper")}</FormHelperText>
+            </FormGroup>
+
+            <FormGroup sx={{ mb: 1 }}>
+              <FormControlLabel
+                sx={{ fontSize: 10 }}
+                control={
+                  <Switch
+                    checked={formik.values.collaborative}
+                    size="small"
+                    data-testid="collaborative-switch"
+                    onChange={(_, value) => {
+                      formik.setFieldValue("collaborative", value);
+                    }}
+                  />
+                }
+                label={t("project.collaborative")}
+              />
+              <FormHelperText>
+                {t("project.collaborativeHelper")}
+              </FormHelperText>
+            </FormGroup>
+
+            <FormGroup sx={{ mb: 1 }}>
+              <FormControlLabel
+                sx={{ fontSize: 10 }}
+                control={
+                  <Switch
+                    checked={formik.values.shared}
+                    size="small"
+                    data-testid="shared-switch"
+                    onChange={(_, value) => {
+                      formik.setFieldValue("shared", value);
+                    }}
+                  />
+                }
+                label={t("project.shared")}
+              />
+              <FormHelperText>{t("project.shareHelper")}</FormHelperText>
+            </FormGroup>
+          </Box>
+
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid item xs={4}>
+              {project.deletable && (
+                <LoadingButton
+                  variant="outlined"
+                  color="error"
+                  size="medium"
+                  disabled={mutation.isLoading}
+                  onClick={confirmDelete}
+                  startIcon={<DeleteIcon />}
+                >
+                  {t("project.edit.delete.button")}
+                </LoadingButton>
+              )}
+            </Grid>
+
+            <Grid item xs={8} display={"flex"} justifyContent={"flex-end"}>
+              <LoadingButton
+                variant="contained"
+                size="medium"
+                data-testid="submit"
+                color="primary"
+                type="submit"
+                loading={mutation.isLoading}
+                startIcon={<EditIcon />}
+                disabled={mutation.isLoading}
+              >
+                {t("project.edit.submit.button")}
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        </Box>
       </form>
     </StyledDialog>
   );
