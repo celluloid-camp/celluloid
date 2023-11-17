@@ -7,7 +7,6 @@ educational purposes." src="./docs/assets/logo.svg">
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker Build](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml)
 [![Tests](https://github.com/celluloid-camp/celluloid/actions/workflows/test-ci.yml/badge.svg)](https://celluloid-camp.github.io/celluloid)
-[![Crowdin](https://badges.crowdin.net/celluloid/localized.svg)](https://crowdin.com/project/celluloid)
 
 ## Overview
 
@@ -150,6 +149,11 @@ Before contributing to Celluloid's development, it's essential to familiarize yo
 - Frontend: React, TRPC, and Material UI.
 - Backend: Node.js, Express, and Prisma.
 - Database: PostgreSQL.
+
+
+## Translation
+
+[![inlang status badge](https://inlang.com/badge?url=github.com/celluloid-camp/celluloid)](https://inlang.com/editor/github.com/celluloid-camp/celluloid?ref=badge)
 
 ## V1 Legacy
 

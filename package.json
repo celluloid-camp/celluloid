@@ -14,7 +14,6 @@
     "dev": "dotenv -- turbo run dev --parallel",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "dotenv -- turbo run build --no-cache",
-    "i18n:extract": "npx i18next-parser 'apps/frontend/src/**/*.{ts,tsx}' -o 'packages/i18n/locales/base.json' -c i18next-parser.config.js",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
