@@ -42,7 +42,6 @@ async function main() {
   }));
 
   app.disable('x-powered-by');
-
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(sessionParser);

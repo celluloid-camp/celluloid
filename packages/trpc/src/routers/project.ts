@@ -261,8 +261,8 @@ export const projectRouter = router({
         description: z.string().nullish(),
         public: z.boolean().nullish(),
         collaborative: z.boolean().nullish(),
-        shared: z.boolean().nullish(),
-        keywords: z.array(z.string())
+        shared: z.boolean().default(false),
+        keywords: z.array(z.string()).default([])
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -282,9 +282,12 @@ export const projectRouter = router({
 
         let shareCode = project.shareCode;
 
-        if (project.shared != input.shared && input.shared != null) {
+        const newTitle = input.title != project.title ? input.title : project.title
+
+        if (project.shared != input.shared) {
           if (input.shared) {
-            shareCode = generateUniqueShareName(project.title);
+            console.log("generate new share code with:", newTitle)
+            shareCode = generateUniqueShareName(newTitle);
 
           } else {
             shareCode = null;
@@ -302,7 +305,8 @@ export const projectRouter = router({
             shared: input.shared !== null ? input.shared : false,
             keywords: input.keywords || project.keywords,
             shareCode
-          }
+          },
+          select: defaultProjectSelect
         });
 
         return updatedProject;

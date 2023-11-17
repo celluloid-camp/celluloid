@@ -1,26 +1,17 @@
 import { paramCase } from "change-case";
 
-
 export function generateUniqueShareName(title: string) {
-  const compare = (a: string, b: string) => b.length - a.length;
-
-  const result: string[] = [];
-
-  const construct = (str: string) => {
-    if (str && result.join('-').length + str.length + 1 <= 6) {
-      result.push(str);
-    }
-  };
-
-  paramCase(title)
+  const result = paramCase(title)
     .split(/-/)
-    .sort(compare)
-    .forEach(construct);
-
+    .sort((a: string, b: string) => b.length - a.length)
+    .reduce((acc: string[], str: string) => {
+      if (acc.join('-').length < 6) {
+        acc.push(str);
+      }
+      return acc;
+    }, []);
   const prefix = result.join('-');
-
   // Generate a 4-digit random number
   const randomNumber = Math.floor(1000 + Math.random() * 9000);
-
   return `${prefix ? prefix + '-' : ''}${randomNumber}`;
 }

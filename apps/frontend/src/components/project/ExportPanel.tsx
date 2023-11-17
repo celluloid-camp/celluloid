@@ -28,7 +28,7 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
     });
     saveAs(blob, `export.${format}`);
 
-    enqueueSnackbar(t("project.export.success", "Votre export est prêt"), {
+    enqueueSnackbar(t("project.export.success"), {
       variant: "success",
       key: "project.export.success",
     });

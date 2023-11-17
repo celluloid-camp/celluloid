@@ -18,9 +18,7 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
     <Box sx={{ padding: 0 }}>
       {project && project.playlist ? (
         <Typography align="justify" variant="body1">
-          <Trans i18nKey="project.summary.playlist.title">
-            Liste de lecture :{" "}
-          </Trans>
+          {t("project.summary.playlist.title")}
           {project.playlist.title}
         </Typography>
       ) : null}
