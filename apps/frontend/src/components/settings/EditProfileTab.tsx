@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Button, TextField, Typography } from "@mui/material";
+import { Alert, Box, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { Trans, useTranslation } from "react-i18next";
@@ -57,13 +57,10 @@ export default function EditProfileTabForm({
         });
 
         utils.user.me.invalidate();
-        enqueueSnackbar(
-          t("user.update.success", "Votre profil a été mise à jour"),
-          {
-            variant: "success",
-            key: "user.update.success",
-          }
-        );
+        enqueueSnackbar(t("user.update.success"), {
+          variant: "success",
+          key: "user.update.success",
+        });
       } catch (e) {
         if (isTRPCClientError(e)) {
           console.log(e.message);
