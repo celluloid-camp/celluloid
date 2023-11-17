@@ -1,7 +1,7 @@
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import * as React from "react";
-import { Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 
 import { trpc, UserMe } from "~utils/trpc";
@@ -11,6 +11,8 @@ import { Avatar } from "./Avatar";
 export const SigninMenu = ({ user }: { user: UserMe }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -80,7 +82,7 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
               fontSize: 13,
             }}
           >
-            <Trans i18nKey={"menu.signup"} />
+            {t("menu.signup")}
           </Button>
           <Button
             data-testid="header-login-button"
@@ -91,7 +93,7 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
               fontSize: 13,
             }}
           >
-            <Trans i18nKey={"menu.login"} />
+            {t("menu.login")}
           </Button>
         </div>
       )}
@@ -133,20 +135,20 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
       >
         {user && user.role == "Admin" ? (
           <MenuItem onClick={handleOpenAdmin} data-testid="header-admin-button">
-            <Trans i18nKey={"menu.admin"} />
+            {t("menu.admin")}
           </MenuItem>
         ) : null}
         <MenuItem onClick={handleProfile} data-testid="header-profile-button">
-          <Trans i18nKey={"menu.profile"} />
+          {t("menu.profile")}
         </MenuItem>
         <MenuItem
           onClick={handleSettingsClick}
           data-testid="header-settings-button"
         >
-          <Trans i18nKey={"menu.settings"} />
+          {t("menu.settings")}
         </MenuItem>
         <MenuItem onClick={handleLogout} data-testid="header-logout-button">
-          <Trans i18nKey={"menu.logout"} />
+          {t("menu.logout")}
         </MenuItem>
       </Menu>
     </div>

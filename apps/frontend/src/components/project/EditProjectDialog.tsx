@@ -137,7 +137,7 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
 
   return (
     <StyledDialog
-      title={t("edit-project-dialog.title")}
+      title={t("project.edit.dialog.title")}
       onClose={onClose}
       error={formik.errors.error}
       maxWidth="md"
@@ -274,12 +274,12 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
           </Box>
 
           <Grid container spacing={2} sx={{ mt: 2 }}>
-            <Grid item xs={2}>
+            <Grid item xs={4}>
               {project.deletable && (
                 <LoadingButton
                   variant="outlined"
                   color="error"
-                  fullWidth={true}
+                  size="medium"
                   disabled={mutation.isLoading}
                   onClick={confirmDelete}
                   startIcon={<DeleteIcon />}
@@ -289,9 +289,10 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
               )}
             </Grid>
 
-            <Grid item xs={10} display={"flex"} justifyContent={"flex-end"}>
+            <Grid item xs={8} display={"flex"} justifyContent={"flex-end"}>
               <LoadingButton
                 variant="contained"
+                size="medium"
                 data-testid="submit"
                 color="primary"
                 type="submit"

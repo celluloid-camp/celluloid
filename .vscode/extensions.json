@@ -5,6 +5,7 @@
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
+    "Prisma.prisma",
     "inlang.vs-code-extension"
   ]
 }
