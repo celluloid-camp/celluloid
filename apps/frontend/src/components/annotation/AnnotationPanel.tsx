@@ -53,10 +53,7 @@ const EmptyAnnotation = () => (
     >
       <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
       <Typography variant="body2" color="gray" textAlign={"center"}>
-        <Trans i18next="project.annotaions.empty">
-          Les annotations correspondant aux différents temps de la vidéo seront
-          affichées ici.
-        </Trans>
+        <Trans i18nKey="project.annotaions.empty" />
       </Typography>
     </Stack>
   </Grow>

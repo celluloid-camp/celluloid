@@ -1,29 +1,23 @@
 import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import FilterTiltShiftIcon from "@mui/icons-material/FilterTiltShift";
 import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
 import ReplyIcon from "@mui/icons-material/Reply";
 import {
   Box,
   Button,
-  Chip,
   Collapse,
   Divider,
-  Fade,
   Grow,
   IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
   Paper,
   Stack,
-  styled,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -31,7 +25,7 @@ import { grey } from "@mui/material/colors";
 import dayjs from "dayjs";
 import { useConfirm } from "material-ui-confirm";
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { Avatar } from "~components/Avatar";
