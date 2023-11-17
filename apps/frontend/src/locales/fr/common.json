@@ -219,5 +219,6 @@
   "password.unmatch": "Le mot de passe ne correspond pas.",
   "profile.role.student": "Etudiant",
   "profile.role.teacher": "Enseignant",
-  "join.error.project-owner-cannot-join": "Le propriétaire du projet ne peut pas rejoindre le projet en tant que membre."
+  "join.error.project-owner-cannot-join": "Le propriétaire du projet ne peut pas rejoindre le projet en tant que membre.",
+  "project.annotaions.empty": "Les annotations correspondant aux différents temps de la vidéo seront affichées ici."
 }

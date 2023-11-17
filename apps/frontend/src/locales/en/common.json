@@ -220,5 +220,5 @@
   "profile.role.student": "Student",
   "profile.role.teacher": "Teacher",
   "join.error.project-owner-cannot-join": "The project owner cannot join the project as a member.",
-  "project.annotaions.empty": "Les annotations correspondant aux différents temps de la vidéo seront\n          affichées ici."
+  "project.annotaions.empty": "The annotations corresponding to the different times of the video will be displayed here."
 }
