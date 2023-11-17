@@ -11,5 +11,8 @@
   ],
   "plugin.inlang.i18next": {
     "pathPattern": "./apps/frontend/src/locales/{languageTag}/common.json"
+  },
+  "plugin.inlang.standardLintRules": {
+    "identicalPattern": "off"
   }
 }
