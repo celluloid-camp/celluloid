@@ -18,8 +18,10 @@ import { TransUserRole } from "~components/TransUserRole";
 import { ProjectById, ProjectMembers, UserMe } from "~utils/trpc";
 
 import { ExportPanel } from "./ExportPanel";
+import { MemberListPanel } from "./MemberListPanel";
 import { PlaylistSideBar } from "./PlaylistSideBar";
 import { ProjectEditPanel } from "./ProjectEditPanel";
+import { SharePanel } from "./SharePanel";
 
 interface SideBarProps {
   project: ProjectById;
@@ -27,95 +29,17 @@ interface SideBarProps {
 }
 
 export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
-  const { t } = useTranslation();
-
   return (
     <Box>
+      {user ? <ProjectEditPanel project={project} user={user} /> : null}
       <PlaylistSideBar project={project} />
-
-      {user && <ProjectEditPanel project={project} user={user} />}
-
-      {user && project.userId == user.id ? (
-        <Paper
-          sx={{
-            paddingX: 3,
-            marginY: 2,
-            paddingY: 3,
-          }}
-        >
-          {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
-      && (user && !isAdmin(user)) && project.shared) &&
-        <div className={classes.button}>
-          <ButtonProgress
-            variant="contained"
-            color="primary"
-            size="small"
-            fullWidth={true}
-            loading={unshareLoading}
-            onClick={onClickShare}
-          >
-            {`rejoindre`}
-          </ButtonProgress>
-        </div>
-      } */}
-
-          <Typography variant="h6" mb={2}>
-            {t("project.members", { count: project._count.members })}
-          </Typography>
-          <List
-            dense={true}
-            sx={{
-              width: "100%",
-              maxWidth: 360,
-              bgcolor: "neutral.100",
-              position: "relative",
-              overflow: "auto",
-              borderRadius: 2,
-              minHeight: 300,
-              maxHeight: 300,
-              "& ul": { padding: 0 },
-            }}
-          >
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar
-                  src={project.user.avatar?.publicUrl}
-                  sx={{
-                    background: project.user.color,
-                  }}
-                >
-                  {project.user.initial}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={project.user.username}
-                secondaryTypographyProps={{ variant: "caption" }}
-                secondary={<TransUserRole role={project.user.role} />}
-              />
-            </ListItem>
-
-            {project.members.map((member: ProjectMembers) => (
-              <ListItem key={member.id}>
-                <ListItemAvatar>
-                  <Avatar
-                    sx={{ background: member.user?.color }}
-                    src={member.user.avatar?.publicUrl}
-                  >
-                    {member.user?.initial}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  secondaryTypographyProps={{ variant: "caption" }}
-                  primary={member.user?.username}
-                  secondary={<TransUserRole role={member.user.role} />}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
+      {user ? (
+        <Box>
+          <SharePanel project={project} user={user} />
+          <MemberListPanel project={project} user={user} />
+          <ExportPanel project={project} user={user} />
+        </Box>
       ) : null}
-
-      {user && <ExportPanel project={project} user={user} />}
     </Box>
   );
 };

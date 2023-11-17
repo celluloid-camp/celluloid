@@ -1,0 +1,38 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "eslint.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.lintTask.options": "--ext .js,.jsx,.ts,.tsx,.graphql .",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false,
+    "editor.wordWrap": "off",
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "json.schemas": [
+    {
+      "url": "https://cdn.jsdelivr.net/npm/tsup/schema.json",
+      "fileMatch": [
+        "package.json",
+        "tsup.config.json"
+      ]
+    }
+  ]
+}
