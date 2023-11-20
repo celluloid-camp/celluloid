@@ -32,6 +32,12 @@ export const env = createEnv({
     STORAGE_SECRET_KEY: z.string(),
     STORAGE_BUCKET: z.string().default('celluloid'),
 
+    COOKIE_NAME: z.string().optional(),
+    COOKIE_DOMAIN: z.string().optional(),
+    COOKIE_SECURE: envBoolean({ optional: true, defaultValue: false }),
+    COOKIE_SECRET: z.string(),
+
+
   },
 
   clientPrefix: 'VITE',
