@@ -68,18 +68,18 @@ export const annotationRouter = router({
       // }
       return annotations;
     }),
-  onAdd: publicProcedure.subscription(() => {
+  onChange: publicProcedure.subscription(() => {
     // return an `observable` with a callback which is triggered immediately
     return observable<Annotation>((emit) => {
-      const onAdd = (data: Annotation) => {
+      const onChange = (data: Annotation) => {
         // emit data to client
         emit.next(data);
       };
       // trigger `onAdd()` when `add` is triggered in our event emitter
-      ee.on('add', onAdd);
+      ee.on('change', onChange);
       // unsubscribe function when client disconnects or stops subscribing
       return () => {
-        ee.off('add', onAdd);
+        ee.off('change', onChange);
       };
     });
   }),
@@ -109,7 +109,7 @@ export const annotationRouter = router({
           // select: defaultPostSelect,
         });
 
-        ee.emit('add', annotation);
+        ee.emit('change', annotation);
         return annotation;
       }
     }),
@@ -156,6 +156,7 @@ export const annotationRouter = router({
           },
         });
 
+        ee.emit('change', updatedAnnotation);
         return updatedAnnotation;
       } else {
         throw new TRPCError({
@@ -192,6 +193,9 @@ export const annotationRouter = router({
         const annotation = await prisma.annotation.delete({
           where: { id: input.annotationId },
         });
+
+        ee.emit('change', annotation);
+
         return annotation;
       } else {
         throw new TRPCError({

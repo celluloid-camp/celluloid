@@ -9,7 +9,6 @@ import cors from 'cors';
 import express from 'express';
 import { Session } from 'express-session';
 import http from 'http'
-import { resolve } from 'path';
 import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 import { WebSocketServer } from 'ws'
@@ -89,15 +88,13 @@ async function main() {
 
   server.on('upgrade', (request, socket, head) => {
     socket.on('error', onSocketError);
-    console.log('Parsing session from request...');
     sessionParser(request, {}, () => {
-
+      // only allow ws connection with authenticated session
       if (!request.session) {
         socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
         socket.destroy();
         return;
       }
-      console.log('Session is parsed!');
       socket.removeListener('error', onSocketError);
       wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);
