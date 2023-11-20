@@ -1,13 +1,13 @@
+import { env } from "@celluloid/utils"
 import RedisStore from "connect-redis"
 import session from "express-session"
 import { createClient } from "redis"
-
 
 export function createSession() {
 
   // Initialize client.
   const redisClient = createClient({
-    url: process.env.REDIS_URL || "redis://localhost"
+    url: env.REDIS_URL
   })
   redisClient.connect().catch(console.error)
 

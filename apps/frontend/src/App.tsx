@@ -57,10 +57,9 @@ const API_URL = import.meta.env.VITE_API_URL
   ? import.meta.env.VITE_API_URL
   : "/trpc";
 
-  const WS_URL = import.meta.env.VITE_WS_URL
+const WS_URL = import.meta.env.VITE_WS_URL
   ? import.meta.env.VITE_WS_URL
-  : `ws://${location.host}/trpc` ;
-
+  : `ws://${location.host}/trpc`;
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear); // use plugin
@@ -88,7 +87,6 @@ i18next
     interpolation: {
       escapeValue: false,
     },
-
   } as i18next.InitOptions);
 
 const AppRouters = () => {
@@ -170,7 +168,6 @@ const App = () => {
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
-
         splitLink({
           condition(op) {
             // check for operation type
@@ -179,10 +176,11 @@ const App = () => {
           // when condition is true, use normal request
           true: wsLink({
             client: createWSClient({
-            url: WS_URL,
-          })}),
+              url: WS_URL,
+            }),
+          }),
           // when condition is false, use batching
-          false:  httpBatchLink({
+          false: httpBatchLink({
             url: API_URL,
             fetch(url, options) {
               return fetch(url, {
@@ -192,9 +190,6 @@ const App = () => {
             },
           }),
         }),
-
-
-
       ],
     })
   );

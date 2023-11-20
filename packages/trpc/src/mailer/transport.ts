@@ -1,6 +1,6 @@
+import { env } from '@celluloid/utils';
 import { promises as fsp } from "fs";
 import * as nodemailer from "nodemailer";
-
 const { readFile, writeFile } = fsp;
 
 const isTest = process.env.NODE_ENV === "test";
@@ -53,16 +53,16 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
           },
         });
       } else {
-        if (!process.env.SMTP_HOST) {
+        if (!env.SMTP_HOST) {
           throw new Error("Misconfiguration: no SMTP_HOST");
         }
-        if (!process.env.SMTP_PORT) {
+        if (!env.SMTP_PORT) {
           throw new Error("Misconfiguration: no SMTP_PORT");
         }
         return nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: parseInt(process.env.SMTP_PORT || "465", 10),
-          secure: process.env.SMTP_SECURE === 'true',
+          host: env.SMTP_HOST,
+          port: env.SMTP_PORT,
+          secure: env.SMTP_SECURE,
         });
       }
     })();

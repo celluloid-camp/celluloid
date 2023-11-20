@@ -55,18 +55,17 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     }
   });
 
-  trpc.annotation.onAdd.useSubscription(undefined, {
+  trpc.annotation.onChange.useSubscription(undefined, {
     onData() {
       // addMessages([post]);
       utils.annotation.byProjectId.invalidate();
     },
     onError(err) {
-      console.error('Subscription error:', err);
+      console.error("Subscription error:", err);
       // we might have missed a message - invalidate cache
       utils.annotation.byProjectId.invalidate();
     },
   });
-
 
   const visibleAnnotations = useMemo(
     () =>

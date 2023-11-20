@@ -1,9 +1,8 @@
+import { env } from '@celluloid/utils';
 import mjml2html from 'mjml';
 import * as nodemailer from "nodemailer";
 
 import getTransport from "./transport";
-
-const EMAIL_FROM = process.env.EMAIL_FROM || "no-reply@celluloid.huma-num.fr";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -18,12 +17,10 @@ export async function sendMail(
 
   const transport = await getTransport();
   const mailOptions = {
-    from: `Celluloid <${EMAIL_FROM}>`, to, subject, html
+    from: `Celluloid <${env.SMTP_EMAIL_FROM}>`, to, subject, html
   };
 
   const info = await transport.sendMail(mailOptions);
-
-
   if (isDev) {
     const url = nodemailer.getTestMessageUrl(info);
     if (url) {
@@ -39,7 +36,6 @@ export async function sendMail(
 
 export async function sendPasswordReset({ username, email, code }: { username: string, email: string, code: string }) {
   const subject = `${username} : réinitialisation de votre mot de passe Celluloid`;
-
   const mjmlTemplate = `
     <mjml>
       <mj-body>
@@ -67,7 +63,6 @@ export async function sendPasswordReset({ username, email, code }: { username: s
 
 export async function sendConfirmationCode({ username, email, code }: { username: string, email: string, code: string }) {
   const subject = `Bienvenue sur Celluloid, ${username} !`;
-
   const mjmlTemplate = `
   <mjml>
   <mj-body>
