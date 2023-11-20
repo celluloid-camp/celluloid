@@ -81,9 +81,7 @@ export default function EditProfileTabForm({
   return (
     <SettingsTabPanel value={value} index={index}>
       <form onSubmit={formik.handleSubmit}>
-        <Typography variant="h5">
-          <Trans i18nKey="profile.update.title">Modifier le profil</Trans>
-        </Typography>
+        <Typography variant="h5">{t("profile.update.title")}</Typography>
 
         {formik.errors.error ? (
           <Alert severity="error" sx={{ borderRadius: 0, mt: 0 }}>
@@ -121,7 +119,7 @@ export default function EditProfileTabForm({
             id="username"
             name="username"
             value={formik.values.username}
-            placeholder={t("profile.update.username") || ""}
+            placeholder={t("profile.update.username")}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             inputProps={{
@@ -139,7 +137,7 @@ export default function EditProfileTabForm({
             id="firstname"
             name="firstname"
             value={formik.values.firstname}
-            placeholder={t("profile.update.firstname") || ""}
+            placeholder={t("profile.update.firstname")}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             inputProps={{
@@ -157,7 +155,7 @@ export default function EditProfileTabForm({
             id="lastname"
             name="lastname"
             value={formik.values.lastname}
-            placeholder={t("profile.update.lastname") || ""}
+            placeholder={t("profile.update.lastname")}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             inputProps={{
@@ -175,7 +173,7 @@ export default function EditProfileTabForm({
             id="bio"
             name="bio"
             value={formik.values.bio}
-            placeholder={t("profile.update.bio") || ""}
+            placeholder={t("profile.update.bio")}
             onChange={formik.handleChange}
             disabled={formik.isSubmitting}
             inputProps={{
@@ -202,7 +200,7 @@ export default function EditProfileTabForm({
           disabled={mutation.isLoading}
           sx={{ textTransform: "uppercase" }}
         >
-          <Trans i18nKey={"profile.update.submit"}>Enregistrer</Trans>
+          {t("profile.update.submit")}
         </LoadingButton>
       </form>
     </SettingsTabPanel>

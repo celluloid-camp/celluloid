@@ -74,7 +74,7 @@ export default function SecurityTabForm({
           console.log(e.message);
           formik.setFieldError(
             "error",
-            t("profile.security.password-incorrect", "Mot de passe incorrect")
+            t("profile.security.password-incorrect")
           );
         } else {
           formik.setFieldError("error", e.message);
@@ -87,9 +87,7 @@ export default function SecurityTabForm({
     <SettingsTabPanel value={value} index={index}>
       <form onSubmit={formik.handleSubmit}>
         <Typography variant="h5">
-          <Trans i18nKey="profile.security.change-password.title">
-            Changement de mot de passe
-          </Trans>
+          {t("profile.security.change-password.title")}
         </Typography>
 
         {formik.errors.error ? (
@@ -186,9 +184,7 @@ export default function SecurityTabForm({
           loading={mutation.isLoading}
           disabled={mutation.isLoading}
         >
-          <Trans i18nKey="profile.security.change-password.button">
-            Changer le mot de passe
-          </Trans>
+          {t("profile.security.change-password.button")}
         </LoadingButton>
       </form>
     </SettingsTabPanel>
