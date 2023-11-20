@@ -14,8 +14,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "VITE_API_URL=$API_URL VITE_WS_URL=$WS_URL vite --open ",
-    "build": "VITE_API_URL=$API_URL VITE_WS_URL=$WS_URL vite build",
+    "dev": "VITE_API_URL=$API_URL vite --open ",
+    "build": "VITE_API_URL=$API_URL vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "serve"
