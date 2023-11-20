@@ -19,7 +19,7 @@
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "test": "npx playwright test",
     "--shortcuts to run commands in workspaces--": "",
-    "frontend": "yarn workspace frontend",
+    "frontend": "dotenv --  yarn workspace frontend",
     "admin": "dotenv -- yarn workspace admin",
     "backend": "dotenv -- yarn workspace backend",
     "prisma": "dotenv -- yarn workspace @celluloid/prisma",

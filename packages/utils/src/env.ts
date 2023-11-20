@@ -19,13 +19,25 @@ export function envBoolean(params: { optional: boolean; defaultValue: boolean })
 
 export const env = createEnv({
   server: {
+    DATABASE_URL: z.string(),
+    REDIS_URL: z.string().default("redis://localhost"),
+
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.coerce.number().optional(),
+    SMTP_SECURE: envBoolean({ optional: true, defaultValue: false }),
+    SMTP_EMAIL_FROM: z.string().default("no-reply@celluloid.huma-num.fr"),
+
     STORAGE_URL: z.string(),
-    // MINIO_PORT: z.coerce.number(),
-    // MINIO_USE_SSL: envBoolean({ optional: true, defaultValue: false }),
     STORAGE_ACCESS_KEY: z.string(),
     STORAGE_SECRET_KEY: z.string(),
     STORAGE_BUCKET: z.string().default('celluloid'),
-    DATABASE_URL: z.string()
+
+    COOKIE_NAME: z.string().optional(),
+    COOKIE_DOMAIN: z.string().optional(),
+    COOKIE_SECURE: envBoolean({ optional: true, defaultValue: false }),
+    COOKIE_SECRET: z.string(),
+
+
   },
 
   clientPrefix: 'VITE',
