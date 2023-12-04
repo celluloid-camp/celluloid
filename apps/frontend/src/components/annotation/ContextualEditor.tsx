@@ -94,11 +94,11 @@ export const ContextualEditor: React.FC<ContextualEditorProps> = () => {
             ref={nodeRef}
             sx={{
               cursor: "move",
-              height: 40,
-              width: 40,
-              maxHeight: 40,
-              maxWidth: 40,
-              borderRadius: 40,
+              height: 25,
+              width: 25,
+              maxHeight: 25,
+              maxWidth: 25,
+              borderRadius: 25,
               borderColor: "secondary.main",
               borderWidth: 2,
               borderStyle: "dashed",
