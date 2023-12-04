@@ -1,5 +1,5 @@
 :80 {
     reverse_proxy /trpc/* http://localhost:2021
-    reverse_proxy /admin/* http://localhost:9000
+    reverse_proxy /admin/* http://localhost:4000
     reverse_proxy /* http://localhost:3000
 }
