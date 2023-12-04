@@ -49,7 +49,7 @@ FROM node:20-alpine  AS runner
 WORKDIR /app
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-RUN apk add -f --update caddy bash && yarn global add turbo pm2
+RUN apk add -f --update caddy bash
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY ecosystem.config.js /app/ecosystem.config.js
