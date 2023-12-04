@@ -56,4 +56,4 @@ COPY ecosystem.config.js /app/ecosystem.config.js
 
 COPY --from=builder /app .
 
-CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & pm2-runtime start ecosystem.config.js"]
+CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & yarn pm2"]
