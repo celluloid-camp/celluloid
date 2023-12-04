@@ -65,6 +65,9 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
           <Avatar
             sx={{
               background: user.color,
+              borderWidth: 2,
+              borderColor: user.color,
+              borderStyle: "solid",
             }}
             src={user.avatar?.publicUrl}
           >

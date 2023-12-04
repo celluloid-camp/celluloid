@@ -45,6 +45,9 @@ const UserProfile: React.FC = () => {
                   background: data.color,
                   width: 100,
                   height: 100,
+                  borderWidth: 2,
+                  borderColor: data.color,
+                  borderStyle: "solid",
                 }}
                 src={data.avatar?.publicUrl}
               >

@@ -40,7 +40,7 @@
     "predev": "yarn run generate",
     "studio": "yarn prisma studio",
     "prisma": "npx prisma",
-    "migrate-metadata": "tsx ./src/migrate-metadata.ts",
+    "update-metadata": "tsx ./src/update-metadata.ts",
     "migrate-sharecode": "tsx ./src/migrate-sharecode.ts",
     "tsx": "tsx"
   },

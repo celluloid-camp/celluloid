@@ -29,7 +29,12 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
 
       <Box display="flex" alignItems={"center"}>
         <Avatar
-          sx={{ background: project.user.color }}
+          sx={{
+            background: project.user.color,
+            borderWidth: 2,
+            borderColor: project.user.color,
+            borderStyle: "solid",
+          }}
           src={project.user.avatar?.publicUrl}
         >
           {project.user.initial}

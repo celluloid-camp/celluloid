@@ -25,9 +25,7 @@ const getProjectMetadata = async (project: Project) => {
 
 async function main() {
   // Retrieve all published posts
-  const allProjects = await prisma.project.findMany({
-    where: { duration: undefined },
-  });
+  const allProjects = await prisma.project.findMany();
 
   const totalProjects = allProjects.length;
   let currentProject = 0;

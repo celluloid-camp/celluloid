@@ -73,7 +73,14 @@ export const CommentForm: React.FC<CommentFormProps> = ({
           <ListItem sx={{ pl: 4, py: 0 }}>
             <ListItemAvatar sx={{ minWidth: 35 }}>
               <Avatar
-                sx={{ background: user?.color, width: 24, height: 24 }}
+                sx={{
+                  background: user?.color,
+                  width: 24,
+                  height: 24,
+                  borderWidth: 2,
+                  borderColor: user?.color,
+                  borderStyle: "solid",
+                }}
                 src={user?.avatar?.publicUrl}
               >
                 {user?.initial}

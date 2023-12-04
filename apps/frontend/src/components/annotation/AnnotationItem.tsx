@@ -143,7 +143,13 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
         >
           <ListItemAvatar>
             <Avatar
-              sx={{ background: annotation.user.color, marginTop: 1 }}
+              sx={{
+                background: annotation.user.color,
+                marginTop: 1,
+                borderWidth: 2,
+                borderColor: annotation.user.color,
+                borderStyle: "solid",
+              }}
               src={annotation.user.avatar?.publicUrl}
             >
               {annotation.user.initial}

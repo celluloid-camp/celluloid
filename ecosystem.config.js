@@ -1,6 +1,13 @@
 module.exports = {
   apps: [
     {
+      name: "PrismaMigrate",
+      script: "yarn",
+      args: "prisma migrate:deploy",
+      autorestart: false,
+      watch: false,
+    },
+    {
       name: "frontend",
       script: "yarn",
       args: "frontend start",
