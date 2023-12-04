@@ -110,6 +110,9 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
                 <Avatar
                   sx={{
                     backgroundColor: project.user.color,
+                    borderWidth: 2,
+                    borderColor: project.user.color,
+                    borderStyle: "solid",
                   }}
                   src={project.user.avatar?.publicUrl}
                 >

@@ -60,6 +60,9 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
                   background: annotation.user.color,
                   width: 24,
                   height: 24,
+                  borderWidth: 2,
+                  borderColor: annotation.user.color,
+                  borderStyle: "solid",
                 }}
                 src={annotation.user.avatar?.publicUrl}
               >

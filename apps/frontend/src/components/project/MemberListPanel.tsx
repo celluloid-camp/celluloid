@@ -56,6 +56,9 @@ export const MemberListPanel: React.FC<SideBarProps> = ({ project, user }) => {
               src={project.user.avatar?.publicUrl}
               sx={{
                 background: project.user.color,
+                borderWidth: 2,
+                borderColor: project.user.color,
+                borderStyle: "solid",
               }}
             >
               {project.user.initial}
@@ -72,8 +75,13 @@ export const MemberListPanel: React.FC<SideBarProps> = ({ project, user }) => {
           <ListItem key={member.id}>
             <ListItemAvatar>
               <Avatar
-                sx={{ background: member.user?.color }}
-                src={member.user.avatar?.publicUrl}
+                sx={{
+                  background: member.user?.color,
+                  borderWidth: 2,
+                  borderColor: member.user?.color,
+                  borderStyle: "solid",
+                }}
+                src={member.user?.avatar?.publicUrl}
               >
                 {member.user?.initial}
               </Avatar>
