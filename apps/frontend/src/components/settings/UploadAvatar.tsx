@@ -69,7 +69,14 @@ export default function UploadAvatar({
     <Stack direction="row" alignItems="center" spacing={2}>
       <Avatar
         alt="User Avatar"
-        sx={{ background: color, width: 100, height: 100 }}
+        sx={{
+          background: color,
+          width: 100,
+          height: 100,
+          borderWidth: 2,
+          borderColor: color,
+          borderStyle: "solid",
+        }}
         src={avatar}
       >
         {initial}

@@ -110,7 +110,14 @@ export const CommentItem: React.FC<CommentItemProps> = ({
     >
       <ListItemAvatar sx={{ minWidth: 35, marginTop: 2 }}>
         <Avatar
-          sx={{ background: comment.user.color, width: 24, height: 24 }}
+          sx={{
+            background: comment.user.color,
+            width: 24,
+            height: 24,
+            borderWidth: 2,
+            borderColor: comment.user.color,
+            borderStyle: "solid",
+          }}
           src={comment.user.avatar?.publicUrl}
         >
           {comment.user.initial}
