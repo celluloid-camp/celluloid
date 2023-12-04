@@ -45,12 +45,15 @@ RUN \
   yarn --frozen-lockfile
 
 #############################################
-FROM custom-node  AS runner
+FROM node:20-alpine  AS runner
 WORKDIR /app
 
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN apk add -f --update caddy bash
+
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY pm2.js /app/pm2.js
+COPY ecosystem.config.js /app/ecosystem.config.js
 
 COPY --from=builder /app .
 
-CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & pm2-runtime start pm2.js"]
+CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & yarn pm2"]
