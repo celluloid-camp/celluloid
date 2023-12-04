@@ -8,7 +8,7 @@ module.exports = {
     {
       name: "admin",
       script: "yarn workspace admin start",
-      watch: true,
+      watch: false,
     },
     {
       name: "backend",
