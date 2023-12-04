@@ -1,60 +1,36 @@
 version: "3.8"
 name: celluloid-test-stack
 
-x-defaults: &defaults
-  init: true
-  tty: true
-
 volumes:
   app_db_data:
 
 services:
   postgres:
-    <<: *defaults
     image: postgres:13
     ports:
       - "5432:5432"
     volumes:
       - app_db_data:/var/lib/postgresql/data
-      - ./scripts/pg-init-scripts.sh:/docker-entrypoint-initdb.d/init.sh
     environment:
-      POSTGRES_PASSWORD: postgres_password
-      POSTGRES_MULTIPLE_DATABASES: celluloid, keycloak
-    healthcheck:
-      test: "PGPASSWORD=${POSTGRES_PASSWORD} pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d celluloid"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: celluloid
 
-  frontend:
-    <<: *defaults
-    depends_on:
-      - backend
-    ports:
-      - "3000:3000"
-    command: yarn workspace frontend start
-    environment:
-      PORT: 3000
-    build:
-      args:
-        NODE_ENV: production
-        APP: frontend
-        START_COMMAND: start
-        API_URL: http://127.0.0.1:2021
-      context: .
-
-  backend:
-    <<: *defaults
+  celluloid:
     depends_on:
       - postgres
     ports:
-      - "2021:2021"
-    command: ["sh", "-c", "yarn prisma migrate deploy  yarn backend start"]
+      - "8080:80"
     environment:
-      PORT: 2021
       DATABASE_URL: postgres://postgres:root@localhost:5432/celluloid
       COOKIE_SECRET: changethistosecretcookie
       COOKIE_DOMAIN: 127.0.0.1
       COOKIE_SECURE: false
+      STORAGE_URL: http://localhost:9000
+      STORAGE_BUCKET: celluloid
+      STORAGE_ACCESS_KEY: root
+      STORAGE_SECRET_KEY: StrongPass2022
+    # image: celluloid-full:latest
     build:
-      args:
-        APP: backend
-        START_COMMAND: start
       context: .
+      dockerfile: ./Dockerfile.full
