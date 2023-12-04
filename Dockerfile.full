@@ -1,21 +1,21 @@
 FROM  node:20-alpine  AS custom-node
 
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+
 RUN apk add -f --update --no-cache --virtual .gyp nano bash libc6-compat python3 make g++ caddy \
-  && yarn global add turbo pm2 \
+  && yarn global add turbo \
   && apk del .gyp
 
 
 FROM custom-node AS pruned
 WORKDIR /app
-ARG APP
 
 COPY . .
 
-RUN turbo prune --scope=$APP --docker
+RUN turbo prune --scope=admin --scope=frontend --scope=backend --docker
 
 FROM custom-node AS installer
 WORKDIR /app
-ARG APP
 
 COPY --from=pruned /app/out/json/ .
 COPY --from=pruned /app/out/yarn.lock /app/yarn.lock
@@ -26,7 +26,6 @@ RUN \
 
 FROM custom-node as builder
 WORKDIR /app
-ARG APP
 ARG API_URL
 ARG COMMIT
 
@@ -39,23 +38,19 @@ COPY --from=pruned /app/out/full/ .
 COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 
-RUN turbo run build --no-cache --filter=${APP}
+RUN turbo run build --no-cache
 
 RUN \
   --mount=type=cache,target=/usr/local/share/.cache/yarn/v6,sharing=private \
   yarn --frozen-lockfile
 
 #############################################
-FROM node:20-alpine  AS runner
+FROM custom-node  AS runner
 WORKDIR /app
-ARG APP=admin
-ARG START_COMMAND=dev
 
-
-ENV APP=${APP}
-ENV START_COMMAND=${START_COMMAND}
-ENV PORT=3000
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY pm2.js /app/pm2.js
 
 COPY --from=builder /app .
 
-CMD yarn workspace ${APP} ${START_COMMAND}
+CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & pm2-runtime start pm2.js"]
