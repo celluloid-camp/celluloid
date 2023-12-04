@@ -75,7 +75,7 @@ jobs:
           file: Dockerfile.full
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/full:${{ github.event.inputs.tag }}
+          tags: ghcr.io/${{ github.repository }}/compact:${{ github.event.inputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |

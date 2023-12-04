@@ -45,8 +45,11 @@ RUN \
   yarn --frozen-lockfile
 
 #############################################
-FROM custom-node  AS runner
+FROM node:20-alpine  AS runner
 WORKDIR /app
+
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN apk add -f --update caddy && yarn global add turbo pm2
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY pm2.js /app/pm2.js
