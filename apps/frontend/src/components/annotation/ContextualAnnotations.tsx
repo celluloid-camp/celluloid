@@ -1,8 +1,11 @@
 import { useParentSize } from "@cutting/use-get-parent-size";
-import { Box, Paper } from "@mui/material";
+import { Avatar, Box, hexToRgb, Paper, Stack, Typography } from "@mui/material";
 import React, { memo, useMemo, useRef } from "react";
 
+import { MultiLineTypography } from "~components/MultiLineTypography";
 import { AnnotationByProjectId } from "~utils/trpc";
+
+import { HtmlTooltip } from "./AnnotationHints";
 
 interface ContextualAnnotationsProps {
   annotations: AnnotationByProjectId[];
@@ -23,35 +26,70 @@ const ContextualItem: React.FC<ContextualItemProps> = ({
   x,
   y,
 }) => (
-  <Paper
-    sx={{
-      cursor: "pointer",
-      pointerEvents: "auto",
-      position: "absolute",
-      zIndex: 6 + index,
-      height: 25,
-      width: 25,
-      maxHeight: 25,
-      maxWidth: 25,
-      borderRadius: 25,
-      margin: 0,
-      padding: 0,
-      backgroundColor: "white",
-      transition: "all 0.2s ease",
-      "&:hover": {
-        filter: "brightness(85%)",
-      },
-      color: "white",
-      top: y,
-      left: x,
+  <HtmlTooltip
+    arrow
+    title={
+      <React.Fragment>
+        <Stack sx={{ py: 1 }} spacing={1}>
+          <Box>
+            <Stack direction={"row"} spacing={1} alignItems={"center"}>
+              <Avatar
+                sx={{
+                  background: annotation.user.color,
+                  width: 24,
+                  height: 24,
+                  borderWidth: 2,
+                  borderColor: annotation.user.color,
+                  borderStyle: "solid",
+                }}
+                src={annotation.user.avatar?.publicUrl}
+              >
+                {annotation.user.initial}
+              </Avatar>
+              <Stack>
+                <Typography component="span" color="white" variant="body2">
+                  {annotation.user.username}
+                </Typography>
+              </Stack>
+            </Stack>
+          </Box>
 
-      border: `2px solid ${annotation.user.color}`,
-    }}
-    style={{
-      backgroundColor: annotation.user.color,
-    }}
-    onClick={onClick}
-  />
+          <MultiLineTypography
+            variant="caption"
+            color="gray"
+            lineLimit={1}
+            text={annotation.text}
+          />
+        </Stack>
+      </React.Fragment>
+    }
+  >
+    <Paper
+      elevation={2}
+      sx={{
+        cursor: "pointer",
+        pointerEvents: "auto",
+        position: "absolute",
+        zIndex: 6 + index,
+        height: 25,
+        width: 25,
+        maxHeight: 25,
+        maxWidth: 25,
+        borderRadius: 25,
+        margin: 0,
+        padding: 0,
+        "&:hover": {
+          filter: "brightness(85%)",
+        },
+        color: "white",
+        top: y,
+        left: x,
+        border: `2px solid ${annotation.user.color}`,
+        backgroundColor: `${annotation.user.color}`,
+      }}
+      onClick={onClick}
+    />
+  </HtmlTooltip>
 );
 
 const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(

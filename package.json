@@ -25,7 +25,7 @@
     "backend": "dotenv -- yarn workspace backend",
     "prisma": "dotenv -- yarn workspace @celluloid/prisma",
     "docker-build": "DOCKER_BUILDKIT=1 docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest --cache-from=celluloid-backend:latest  . ",
-    "docker-build-full": "DOCKER_BUILDKIT=1 docker build -t celluloid-full:latest -f Dockerfile.full ."
+    "docker-build-compact": "DOCKER_BUILDKIT=1 docker build -t celluloid-compact:latest -f Dockerfile.full ."
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",

@@ -94,7 +94,7 @@ yarn
 Copy the sample environment file:
 
 ```bash
-cp sample.env .env
+cp env.sample .env
 ```
 
 Open the newly created .env file with your preferred text editor and configure the values according to your requirements.
@@ -129,11 +129,10 @@ You can access your app at http://localhost:3000.
 Open a terminal at the repository's root and run:
 
 ```bash
-docker build --build-arg APP=backend -t  celluloid-backend:latest  .
-docker build --build-arg APP=frontend -t  celluloid-frontend:latest  .
+docker build -t  celluloid:latest -f Dockerfile.compact .
 ```
 
-(Ensure that [Docker](https://www.docker.com/get-started) is correctly installed.)
+[Minio](https://min.io/docs/minio/container/index.html) is used for storage, make sure to run local instance or use external service and don't forget to update your [.env](.env.sample) file 
 
 ### Contributing
 
@@ -148,6 +147,7 @@ Before contributing to Celluloid's development, it's essential to familiarize yo
 - TypeScript (used throughout the project).
 - Frontend: React, TRPC, and Material UI.
 - Backend: Node.js, Express, and Prisma.
+- File Storage : Minio
 - Database: PostgreSQL.
 
 
