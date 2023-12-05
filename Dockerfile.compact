@@ -1,8 +1,6 @@
 FROM  node:20-alpine  AS custom-node
 
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-
-RUN apk add -f --update --no-cache --virtual .gyp nano bash libc6-compat python3 make g++ caddy \
+RUN apk add -f --update --no-cache --virtual .gyp nano bash libc6-compat python3 make g++ \
   && yarn global add turbo \
   && apk del .gyp
 
@@ -38,6 +36,7 @@ COPY --from=pruned /app/out/full/ .
 COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 COPY ecosystem.config.js ecosystem.config.js
+
 RUN turbo run build --no-cache
 
 RUN \

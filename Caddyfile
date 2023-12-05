@@ -1,14 +1,7 @@
 :80 {
-    encode gzip
 
     # Reverse proxy directives
     reverse_proxy /trpc/* localhost:2021
     reverse_proxy /admin/* localhost:9000
-
-    # Serve static files
-    root * /app/apps/frontend/dist
-    file_server
-
-    # Fallback for SPA routing
-    try_files {path} /index.html
+    reverse_proxy /* localhost:3000
 }
