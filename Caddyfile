@@ -1,10 +1,10 @@
 :80 {
-    reverse_proxy /trpc/* :2021  {
+    reverse_proxy /trpc/* localhost:2021  {
         transport http {
             websocket
         }
     }
-    reverse_proxy /admin/* :9000
+    reverse_proxy /admin/* localhost:9000
 
     root * /app/apps/frontends/dist
     file_server

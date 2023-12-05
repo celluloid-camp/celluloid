@@ -37,7 +37,7 @@ COPY --from=installer --link /app .
 COPY --from=pruned /app/out/full/ .
 COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
-
+COPY ecosystem.config.js ecosystem.config.js
 RUN turbo run build --no-cache
 
 RUN \
@@ -48,12 +48,10 @@ RUN \
 FROM node:20-alpine  AS runner
 WORKDIR /app
 
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-RUN apk add -f --update caddy bash
-
-COPY Caddyfile /etc/caddy/Caddyfile
-COPY ecosystem.config.js /app/ecosystem.config.js
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+  && apk add -f --update caddy
 
 COPY --from=builder /app .
+COPY Caddyfile /etc/caddy/Caddyfile
 
 CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & yarn pm2"]
