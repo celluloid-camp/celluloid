@@ -1,12 +1,17 @@
 :80 {
 
-    reverse_proxy /trpc/* localhost:2021
-
-    @websockets {
-        header Connection *Upgrade*
-        header Upgrade websocket
+    reverse_proxy /trpc/* localhost:2021  {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
     }
-    reverse_proxy @websockets localhost:2021
+
+    # @websockets {
+    #     header Connection *Upgrade*
+    #     header Upgrade websocket
+    # }
+    # reverse_proxy @websockets localhost:2021
 
     reverse_proxy /admin/* localhost:9000
 
