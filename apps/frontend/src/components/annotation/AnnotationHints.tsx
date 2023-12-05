@@ -19,7 +19,7 @@ interface AnnotationHintsProps {
   onClick: (annotation: AnnotationByProjectId) => void;
 }
 
-const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
+export const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {

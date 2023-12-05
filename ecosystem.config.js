@@ -8,13 +8,6 @@ module.exports = {
       watch: false,
     },
     {
-      name: "frontend",
-      script: "yarn",
-      args: "frontend start",
-      interpreter: "bash",
-      watch: false,
-    },
-    {
       name: "admin",
       script: "yarn",
       args: "admin start",

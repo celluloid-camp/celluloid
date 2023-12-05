@@ -5,5 +5,8 @@
         }
     }
     reverse_proxy /admin/* :9000
-    reverse_proxy /* :3000
+
+    root * /app/apps/frontends/dist
+    file_server
+    try_files {path} /index.html
 }

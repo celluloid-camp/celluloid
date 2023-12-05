@@ -32,7 +32,7 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          file: Dockerfile.full
+          file: Dockerfile.compact
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}/compact:${{ github.event.inputs.tag }}
