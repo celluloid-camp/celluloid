@@ -10,7 +10,7 @@
 
     reverse_proxy /admin/* localhost:9000
 
-    root * /app/apps/frontends/dist
+    root * /app/apps/frontend/dist
     file_server
     try_files {path} /index.html
 }
