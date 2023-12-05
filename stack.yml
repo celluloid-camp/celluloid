@@ -30,7 +30,23 @@ services:
       STORAGE_BUCKET: celluloid
       STORAGE_ACCESS_KEY: root
       STORAGE_SECRET_KEY: StrongPass2022
-    # image: celluloid-full:latest
+    # image: celluloid-compact:latest
     build:
       context: .
-      dockerfile: ./Dockerfile.full
+      dockerfile: ./Dockerfile.compact
+
+  minio:
+    restart: unless-stopped
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: StrongPass2022
+    command: server /data
+
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
