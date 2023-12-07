@@ -72,10 +72,15 @@ We provide a complete docker compose [stack.yml](stack.yml) ready to run :
 docker compose -f stack.yml up
 ```
 
-### Emails
+### 📬 Emails
 
 A functioning SMTP server is necessary for sending account confirmation emails.
 we've configured Nodemailer to use [ethereal.email](https://ethereal.email) to catch all development emails, and regular SMTP in production (easy to replace with a different provider thanks to Nodemailer)
+
+### 🗂️ Storage
+
+You are required to supply an S3-compatible storage service. For this purpose, we have set up the project to utilize [Minio](https://min.io/).
+
 
 ## Installation from Source
 
@@ -118,8 +123,7 @@ Build and start the application:
 
 ```bash
 yarn build
-yarn backend start
-yarn frontend start
+yarn start
 ```
 
 You can access your app at http://localhost:3000.
@@ -149,7 +153,7 @@ Before contributing to Celluloid's development, it's essential to familiarize yo
 - Backend: Node.js, Express, and Prisma.
 - File Storage : Minio
 - Database: PostgreSQL.
-
+- Cache / Session : Redis.
 
 ## Translation
 
