@@ -111,6 +111,10 @@ const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(
           width: "100%",
           pointerEvents: "none",
           overflow: "hidden",
+          WebkitUserSelect: "none",
+          MozUserSelect: "none",
+          msUserSelect: "none",
+          userSelect: "none",
         }}
       >
         <Box

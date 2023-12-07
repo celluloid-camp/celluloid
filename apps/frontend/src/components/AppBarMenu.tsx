@@ -40,11 +40,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
   };
 
   return (
-    <Box
-      display={"flex"}
-      flexDirection={"column"}
-      sx={{ height: "100vh", minHeight: "100vh" }}
-    >
+    <Box display={"flex"} flexDirection={"column"}>
       <AppBar color="default" position="fixed">
         <Toolbar disableGutters>
           <Box flexGrow={1}>

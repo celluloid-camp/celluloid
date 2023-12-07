@@ -175,8 +175,8 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
         backgroundColor: "background.dark",
         paddingY: 3,
         marginX: 2,
-        height: "100%",
-        maxHeight: "100%",
+        marginTop: 2,
+        height: "95%",
       }}
     >
       <Box display="flex" flexDirection={"column"} height={height}>

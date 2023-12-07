@@ -12,6 +12,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useParams } from "react-router-dom";
@@ -40,6 +41,9 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
   const utils = trpc.useUtils();
   const videoProgress = useVideoPlayerProgressValue();
   const [playerIsReady, setPlayerIsReady] = React.useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState<number>();
 
   const [annotations] = trpc.annotation.byProjectId.useSuspenseQuery({
     id: project.id,
@@ -92,6 +96,34 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
     }
   }, [visibleAnnotations, videoPlayerRef, videoProgress]);
 
+  const updateContainerHeight = () => {
+    if (containerRef.current) {
+      const containerHeight = containerRef.current.offsetHeight;
+      setContainerHeight(containerHeight);
+    }
+  };
+
+  useEffect(() => {
+    // Initial calculation
+    updateContainerHeight();
+
+    // Listen to resize events
+    const resizeObserver = new ResizeObserver(() => {
+      updateContainerHeight();
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (formVisible && videoPlayerRef) {
       videoPlayerRef.current?.getInternalPlayer().pause();
@@ -104,11 +136,13 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
 
   return (
     <Grid
+      ref={containerRef}
       container
       sx={{
         backgroundColor: "black",
         height: "60vh",
         minHeight: "60vh",
+        maxHeight: "60vh",
         paddingX: 2,
       }}
     >
@@ -126,10 +160,17 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
         ) : null}
         <VideoPlayer
           ref={videoPlayerRef}
+          height={containerHeight}
           url={`https://${project.host}/w/${project.videoId}`}
         />
       </Grid>
-      <Grid item xs={4} sx={{ marginY: 2 }}>
+      <Grid
+        item
+        xs={4}
+        sx={{
+          height: containerHeight,
+        }}
+      >
         <AnnotationPanel
           project={project}
           annotations={visibleAnnotations}

@@ -129,11 +129,14 @@ export const annotationRouter = router({
 
 
       // Check if the annotation with the given ID exists
-      const existingAnnotation = await prisma.annotation.findUnique({
+      const annotation = await prisma.annotation.findUnique({
         where: { id: input.annotationId },
+        include: {
+          project: true
+        }
       });
 
-      if (!existingAnnotation) {
+      if (!annotation) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Annotation not found"
@@ -141,18 +144,17 @@ export const annotationRouter = router({
         );
       }
 
-      if (existingAnnotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin) {
+      if (annotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin || annotation.project.userId == ctx.user?.id) {
         // Perform the update
         const updatedAnnotation = await prisma.annotation.update({
           where: { id: input.annotationId },
           data: {
-            userId: ctx.user?.id,
-            text: input.text ?? existingAnnotation.text,
-            startTime: input.startTime ?? existingAnnotation.startTime,
-            stopTime: input.stopTime ?? existingAnnotation.stopTime,
-            pause: input.pause ?? existingAnnotation.pause,
-            projectId: input.projectId ?? existingAnnotation.projectId,
-            extra: input.extra ?? existingAnnotation.extra
+            text: input.text ?? annotation.text,
+            startTime: input.startTime ?? annotation.startTime,
+            stopTime: input.stopTime ?? annotation.stopTime,
+            pause: input.pause ?? annotation.pause,
+            projectId: input.projectId ?? annotation.projectId,
+            extra: input.extra ?? annotation.extra
           },
         });
 
@@ -177,11 +179,14 @@ export const annotationRouter = router({
     .mutation(async ({ input, ctx }) => {
 
       // Check if the annotation with the given ID exists
-      const existingAnnotation = await prisma.annotation.findUnique({
+      const annotation = await prisma.annotation.findUnique({
         where: { id: input.annotationId },
+        include: {
+          project: true
+        }
       });
 
-      if (!existingAnnotation) {
+      if (!annotation) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Annotation not found"
@@ -189,13 +194,11 @@ export const annotationRouter = router({
         );
       }
 
-      if (existingAnnotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin) {
+      if (annotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin || annotation.project.userId == ctx.user?.id) {
         const annotation = await prisma.annotation.delete({
           where: { id: input.annotationId },
         });
-
         ee.emit('change', annotation);
-
         return annotation;
       } else {
         throw new TRPCError({
@@ -238,7 +241,8 @@ export const annotationRouter = router({
       if (format === 'xml') {
         content = toXML("annotations", formated, { cdataKeys: ['comments', 'text'] });
       } else if (format == "csv") {
-        content = Papa.unparse(formated);
+        const sorted = formated.sort((a, b) => a.startTime - b.startTime)
+        content = Papa.unparse(sorted);
       } else if (format == "srt") {
         content = toSrt(formated);
       }

@@ -15,7 +15,7 @@ import {
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
 import { useEffect } from "react";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 import { useVideoPlayerProgressValue } from "~components/project/useVideoPlayer";
@@ -38,6 +38,8 @@ type AnnotationFormProps = {
 export const AnnotationForm: React.FC<AnnotationFormProps> = (props) => {
   const [showForm, setShowForm] = useAnnotationFormVisible();
 
+  const { t } = useTranslation();
+
   const handleOpen = () => {
     setShowForm(true);
   };
@@ -55,9 +57,7 @@ export const AnnotationForm: React.FC<AnnotationFormProps> = (props) => {
         sx={{ mx: 5 }}
         startIcon={<RateReviewIcon />}
       >
-        <Trans i18nKey={"annotation.form.add-annotation"}>
-          Ajouter une annotation
-        </Trans>
+        {t("annotation.form.add-annotation")}
       </Button>
     );
   } else {

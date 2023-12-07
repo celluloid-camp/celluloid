@@ -16,6 +16,7 @@ import { WebSocketServer } from 'ws'
 import { openApiDocument } from './openapi';
 const trpcApiEndpoint = '/trpc'
 
+
 declare module 'http' {
   interface IncomingMessage {
     session: Session & {
