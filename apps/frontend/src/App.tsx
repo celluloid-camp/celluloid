@@ -57,9 +57,9 @@ const API_URL = import.meta.env.VITE_API_URL
   ? import.meta.env.VITE_API_URL
   : "/trpc";
 
-const WS_URL = import.meta.env.VITE_WS_URL
-  ? import.meta.env.VITE_WS_URL
-  : `wss://${location.host}/trpc`;
+const WS_URL = `${location.protocol === "https:" ? "wss" : "ws"}://${
+  location.host
+}/trpc`;
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear); // use plugin

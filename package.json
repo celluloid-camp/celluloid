@@ -1,6 +1,6 @@
 {
   "name": "celluloid",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
@@ -18,7 +18,7 @@
     "prepare": "husky install",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "test": "npx playwright test",
-    "pm2": "pm2-runtime start ecosystem.config.js",
+    "start": "pm2-runtime start ecosystem.config.js",
     "--shortcuts to run commands in workspaces--": "",
     "frontend": "dotenv --  yarn workspace frontend",
     "admin": "dotenv -- yarn workspace admin",

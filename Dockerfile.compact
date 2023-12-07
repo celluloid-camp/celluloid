@@ -53,4 +53,4 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
 COPY --from=builder /app .
 COPY Caddyfile /etc/caddy/Caddyfile
 
-CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & yarn pm2"]
+CMD ["sh", "-c", "caddy run --config /etc/caddy/Caddyfile & yarn start"]
