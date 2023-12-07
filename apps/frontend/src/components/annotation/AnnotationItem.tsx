@@ -77,6 +77,8 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
 
   const isContextual = Object.keys(annotation.extra || {}).length;
 
+  const canEdit = annotation.user.id == user?.id || project.user.id == user?.id;
+
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
     confirm({
@@ -190,7 +192,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             justifyContent={"center"}
             sx={{ minWidth: 100 }}
           >
-            {hovering && annotation.user.id == user?.id ? (
+            {hovering && canEdit ? (
               <Stack direction={"row"}>
                 <Tooltip title="Modifier" arrow>
                   <IconButton onClick={handleEdit}>

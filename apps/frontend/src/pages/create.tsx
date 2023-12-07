@@ -1,5 +1,6 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import LinkIcon from "@mui/icons-material/Link";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
@@ -501,7 +502,7 @@ const VideoSnap: React.FC<{
   onDelete: () => void;
 }> = ({ video, onDelete }) => {
   return (
-    <Grid item>
+    <Grid item sx={{ borderRadius: 1, overflow: "hidden", m: 0, p: 0 }}>
       <Box sx={{ position: "absolute", zIndex: 1 }} width={THUMBNAIL_WIDTH}>
         <Box display={"flex"} justifyContent="flex-end">
           <IconButton
@@ -509,7 +510,7 @@ const VideoSnap: React.FC<{
             onClick={onDelete}
             data-testid="delete-video"
           >
-            <CloseIcon sx={{ color: "white" }} />
+            <DeleteIcon sx={{ color: "white" }} fontSize="small" />
           </IconButton>
         </Box>
       </Box>
@@ -517,6 +518,7 @@ const VideoSnap: React.FC<{
         <Image
           src={video.thumbnailURL}
           showLoading={<CircularProgress />}
+          style={{ opacity: 0.5 }}
           bgColor="#000000"
         />
         <Stack flex={1} marginX={1} marginBottom={1}>
@@ -629,42 +631,40 @@ export const CreateProjectPage: React.FC = () => {
   return (
     <Box
       sx={{
-        paddingX: 5,
+        paddingX: { md: 10, lg: 20 },
         paddingTop: 1,
-        paddingBottom: "70%",
+        paddingBottom: 5,
         backgroundColor: "brand.orange",
-        height: "100%",
+        minHeight: "100vh",
       }}
     >
-      <Container maxWidth="md">
-        <Paper sx={{ padding: 5 }}>
-          <StyledTitle gutterBottom={true} variant="h4" sx={{ marginTop: 1 }}>
-            <Trans i18nKey="project.createTitle" />
-          </StyledTitle>
+      <Paper sx={{ padding: 5 }}>
+        <StyledTitle gutterBottom={true} variant="h4" sx={{ marginTop: 1 }}>
+          <Trans i18nKey="project.createTitle" />
+        </StyledTitle>
 
-          <PeerTubeVideoUrlForm
-            onLoaded={handleVideoInfoLoaded}
-            data={videoInfo}
-            onReset={handleReset}
-          />
-
-          {videoInfo ? (
-            <PeerTubeVideoSnapshots
-              videos={videoInfo.videos}
-              onDelete={handleDelete}
-              onAddMore={handleClickOpen}
-              isPlaylist={videoInfo.isPlaylist}
-            />
-          ) : null}
-
-          {videoInfo ? <CreateProjectForm data={videoInfo} /> : null}
-        </Paper>
-        <AddVideoToPlaylistDialog
-          open={openDialog}
-          onClose={handleClose}
-          onAddVideo={handleAddVideo}
+        <PeerTubeVideoUrlForm
+          onLoaded={handleVideoInfoLoaded}
+          data={videoInfo}
+          onReset={handleReset}
         />
-      </Container>
+
+        {videoInfo ? (
+          <PeerTubeVideoSnapshots
+            videos={videoInfo.videos}
+            onDelete={handleDelete}
+            onAddMore={handleClickOpen}
+            isPlaylist={videoInfo.isPlaylist}
+          />
+        ) : null}
+
+        {videoInfo ? <CreateProjectForm data={videoInfo} /> : null}
+      </Paper>
+      <AddVideoToPlaylistDialog
+        open={openDialog}
+        onClose={handleClose}
+        onAddVideo={handleAddVideo}
+      />
     </Box>
   );
 };
