@@ -1,9 +1,7 @@
-{
-    debug
-    trusted_proxies static 172.25.0.0/16
-}
-
 :80 {
+
+    trusted_proxies static 172.25.0.0/16
+
     # Reverse proxy directives
     reverse_proxy /trpc/* localhost:2021
     reverse_proxy /admin/* localhost:9000
