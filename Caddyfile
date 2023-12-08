@@ -1,13 +1,15 @@
-:80 {
+{
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
 
-    # Reverse proxy directives
-    reverse_proxy /trpc/* localhost:2021 {
-        trusted_proxies 172.25.0.0/16
-    }
-    reverse_proxy /admin/* localhost:9000 {
-        trusted_proxies 172.25.0.0/16
-    }
-    reverse_proxy /* localhost:3000 {
-        trusted_proxies 172.25.0.0/16
-    }
+:80 {
+	@trpc path_regexp ^/trpc(/|$)
+	reverse_proxy @trpc localhost:2021
+
+	@admin path_regexp ^/admin(/|$)
+	reverse_proxy @admin localhost:4000
+
+	reverse_proxy localhost:3000
 }
