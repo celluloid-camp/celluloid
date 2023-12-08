@@ -2,12 +2,12 @@
 
     # Reverse proxy directives
     reverse_proxy /trpc/* localhost:2021 {
-        trusted_proxies 172.17.0.0/16
+        trusted_proxies 172.25.0.0/16
     }
     reverse_proxy /admin/* localhost:9000 {
-        trusted_proxies 172.17.0.0/16
+        trusted_proxies 172.25.0.0/16
     }
     reverse_proxy /* localhost:3000 {
-        trusted_proxies 172.17.0.0/16
+        trusted_proxies 172.25.0.0/16
     }
 }
