@@ -1,19 +1,11 @@
-:80 {
+{
+    debug
+    trusted_proxies static 172.25.0.0/16
+}
 
+:80 {
     # Reverse proxy directives
-    reverse_proxy /trpc/* localhost:2021 {
-        trusted_proxies 172.25.0.0/16
-        header_up X-Forwarded-Proto {scheme}
-        header_up X-Real-IP {remote}
-    }
-    reverse_proxy /admin/* localhost:9000 {
-        trusted_proxies 172.25.0.0/16
-        header_up X-Forwarded-Proto {scheme}
-        header_up X-Real-IP {remote}
-    }
-    reverse_proxy /* localhost:3000 {
-        trusted_proxies 172.25.0.0/16
-        header_up X-Forwarded-Proto {scheme}
-        header_up X-Real-IP {remote}
-    }
+    reverse_proxy /trpc/* localhost:2021
+    reverse_proxy /admin/* localhost:9000
+    reverse_proxy /* localhost:3000
 }
