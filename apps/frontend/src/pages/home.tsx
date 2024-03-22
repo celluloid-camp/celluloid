@@ -126,9 +126,9 @@ export const HomePage: React.FC = () => {
                     padding: 5,
                   }}
                 >
-                  <Typography variant="h5" fontFamily={"abril_fatfaceregular"}>
+                  {/*<Typography variant="h5" fontFamily={"abril_fatfaceregular"}>
                     {t("home.teachers")}
-                  </Typography>
+                  </Typography>*/}
                   <Box
                     sx={{
                       justifyContent: "center",
@@ -169,9 +169,9 @@ export const HomePage: React.FC = () => {
                     padding: 5,
                   }}
                 >
-                  <Typography variant="h5" fontFamily={"abril_fatfaceregular"}>
+                  {/*<Typography variant="h5" fontFamily={"abril_fatfaceregular"}>
                     {t("home.students")}
-                  </Typography>
+                  </Typography>*/}
                   <Box
                     sx={{
                       justifyContent: "center",
