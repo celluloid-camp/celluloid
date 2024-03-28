@@ -28,7 +28,7 @@
     "change-case": "^5.0.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "express-session": "^1.17.3",
     "lodash": "^4.17.21",
     "swagger-ui-express": "^5.0.0",
