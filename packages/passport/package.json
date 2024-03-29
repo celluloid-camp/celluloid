@@ -27,7 +27,7 @@
     "@celluloid/utils": "*",
     "bcryptjs": "^2.4.3",
     "connect-redis": "^7.1.0",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "express-session": "^1.17.3",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",

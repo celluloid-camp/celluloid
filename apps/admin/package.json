@@ -23,7 +23,7 @@
     "@celluloid/utils": "*",
     "adminjs": "^7.2.2",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.3"
   },
