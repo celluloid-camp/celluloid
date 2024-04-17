@@ -44,7 +44,6 @@ export const AddVideoToPlaylistDialog: React.FC<
     validateOnBlur: true,
     validateOnMount: false,
     onSubmit: (values) => {
-      console.log("here");
       if (values.data) {
         onAddVideo(values.data as PeerTubeVideoWithThumbnail);
         onClose();
@@ -62,7 +61,7 @@ export const AddVideoToPlaylistDialog: React.FC<
     queryFn: () => getPeerTubeVideoData(formik.values.url),
     enabled: formik.errors.url == null,
     onSuccess: (data) => {
-      if (data.videos) {
+      if (data?.videos) {
         formik.setFieldValue("data", data.videos[0]);
         formik.setFieldTouched("data");
       }
