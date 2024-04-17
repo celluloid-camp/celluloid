@@ -10,7 +10,7 @@ educational purposes." src="./docs/assets/logo.svg">
 
 ## Overview
 
-<img width="80%" alt="" src="./docs/assets/screencapture_1.png">
+<iframe title="Tutoriel de l'application Celluloid" width="560" height="315" src="https://video.mshparisnord.fr/videos/embed/3415766e-71bd-43e8-a2ec-150a871db589" frameborder="0" allowfullscreen="" sandbox="allow-same-origin allow-scripts allow-popups"></iframe>
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
