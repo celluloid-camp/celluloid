@@ -92,7 +92,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
   });
 
   useEffect(() => {
-    if (data == null && formik.status == "submited") {
+    if (data == null && formik.status === "submited") {
       formik.resetForm();
     }
   }, [data, formik]);
@@ -100,7 +100,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
   const query = useQuery({
     queryKey: ["getPeerTubeVideoData", formik.values.url],
     queryFn: () => getPeerTubeVideoData(formik.values.url),
-    enabled: !formik.errors.url && formik.status != "submited",
+    enabled: !formik.errors.url && formik.status !== "submited",
     onSuccess: (data) => {
       if (data) {
         formik.setFieldValue("data", data);
@@ -262,7 +262,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
               title: values.title,
               projects: values.videoInfo?.videos.map((video) => ({
                 title: video.name,
-                description: video.description,
+                description: video.description || video.name,
                 videoId: video.shortUUID,
                 host: video.account.host,
                 duration: video.duration,
