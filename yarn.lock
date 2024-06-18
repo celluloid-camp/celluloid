@@ -1987,7 +1987,7 @@ __metadata:
     trpc-openapi: ^1.2.0
     tsup: ^7.2.0
     uuid: ^9.0.1
-    ws: ^8.14.2
+    ws: ^8.17.1
     zod: ^3.22.4
   languageName: unknown
   linkType: soft
@@ -7511,7 +7511,7 @@ __metadata:
     typescript: ^5.2.2
     uuid: ^9.0.1
     wait-port: ^1.1.0
-    ws: ^8.14.2
+    ws: ^8.17.1
     zod: ^3.22.4
   languageName: unknown
   linkType: soft
@@ -25036,7 +25036,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.13.0, ws@npm:^8.14.2":
+"ws@npm:^8.13.0":
   version: 8.14.2
   resolution: "ws@npm:8.14.2"
   peerDependencies:
@@ -25048,6 +25048,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 3ca0dad26e8cc6515ff392b622a1467430814c463b3368b0258e33696b1d4bed7510bc7030f7b72838b9fdeb8dbd8839cbf808367d6aae2e1d668ce741d4308b
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.17.1":
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 442badcce1f1178ec87a0b5372ae2e9771e07c4929a3180321901f226127f252441e8689d765aa5cfba5f50ac60dd830954afc5aeae81609aefa11d3ddf5cecf
   languageName: node
   linkType: hard
 
