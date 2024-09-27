@@ -163,5 +163,6 @@ Before contributing to Celluloid's development, it's essential to familiarize yo
 
 You can still find the old Celluloid version 1 that supports YouTube videos [here](https://github.com/celluloid-camp/celluloid/releases/tag/v1).
 
+[uptime status](https://stats.uptimerobot.com/yNVrfoWzKN)
 <img width="200" alt="Celluloid is a collaborative video annotation application designed for
 educational purposes." src="./apps/frontend/src/images/about/logo-icp.jpg">
