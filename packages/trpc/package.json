@@ -24,11 +24,13 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
-    "@celluloid/passport": "*",
-    "@celluloid/prisma": "*",
-    "@celluloid/utils": "*",
+    "@celluloid/passport": "workspace:*",
+    "@celluloid/prisma": "workspace:*",
+    "@celluloid/queue": "workspace:*",
+    "@celluloid/utils": "workspace:*",
     "@t3-oss/env-core": "^0.7.1",
     "@trpc/server": "^10.41.0",
+    "@types/express-serve-static-core": "^5.0.0",
     "bcryptjs": "^2.4.3",
     "change-case": "^4.1.2",
     "dotenv": "^16.3.1",
@@ -47,7 +49,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@celluloid/config": "*",
+    "@celluloid/config": "workspace:*",
     "@types/express-session": "^1.17.8",
     "@types/mjml": "^4.7.3",
     "@types/nodemailer": "^6.4.13",

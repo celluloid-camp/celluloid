@@ -1,10 +1,10 @@
 import { prisma, UserRole } from '@celluloid/prisma';
-import { Annotation } from '@celluloid/prisma';
+import type { Annotation } from '@celluloid/prisma';
 import { Prisma } from '@celluloid/prisma';
 import { toSrt } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
 import { observable } from '@trpc/server/observable';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { parse as toXML } from 'js2xmlparser';
 import Papa from 'papaparse';
 import { z } from 'zod';

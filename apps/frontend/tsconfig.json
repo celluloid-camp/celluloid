@@ -71,6 +71,12 @@
       ],
       "~/*": [
         "src/*"
+      ],
+      "~pages/*": [
+        "src/pages/*"
+      ],
+      "~state/*": [
+        "src/state/*"
       ]
     }
   },

@@ -1,11 +1,7 @@
 name: Docker Build
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "Docker tag"
-        required: true
-        default: "latest"
+  push:
+    branches: [staging]
 
 jobs:
   build-containers:
@@ -35,7 +31,7 @@ jobs:
           file: Dockerfile.compact
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/compact:${{ github.event.inputs.tag }}
+          tags: ghcr.io/${{ github.repository }}/compact:staging
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |

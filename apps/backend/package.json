@@ -20,9 +20,10 @@
     "test-start": "start-server-and-test 'node dist/index' 2021"
   },
   "dependencies": {
-    "@celluloid/passport": "*",
-    "@celluloid/prisma": "*",
-    "@celluloid/trpc": "*",
+    "@celluloid/passport": "workspace:*",
+    "@celluloid/prisma": "workspace:*",
+    "@celluloid/queue": "workspace:*",
+    "@celluloid/trpc": "workspace:*",
     "@godaddy/terminus": "^4.12.1",
     "@trpc/server": "^10.41.0",
     "change-case": "^5.0.2",

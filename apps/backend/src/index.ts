@@ -1,17 +1,19 @@
 import { createSession, passport } from '@celluloid/passport';
 import { prisma } from '@celluloid/prisma';
-import { AppRouter, appRouter, createContext } from '@celluloid/trpc';
+import { appRouter, createContext } from '@celluloid/trpc';
+import type { AppRouter } from '@celluloid/trpc'
 import { createTerminus } from '@godaddy/terminus';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { applyWSSHandler } from '@trpc/server/adapters/ws'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import { Session } from 'express-session';
-import http from 'http'
+import type { Session } from 'express-session';
+import http from 'node:http'
 import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 import { WebSocketServer } from 'ws'
+import { emailQueue } from "@celluloid/queue";
 
 import { openApiDocument } from './openapi';
 const trpcApiEndpoint = '/trpc'
@@ -37,7 +39,7 @@ async function main() {
 
   // Setup CORS
   app.use(cors({
-    origin: process.env.NODE_ENV != "production" ? ['http://localhost:3000', 'http://localhost:4000'] : undefined,
+    origin: process.env.NODE_ENV !== "production" ? ['http://localhost:3000', 'http://localhost:4000'] : undefined,
     credentials: true,
   }));
 
@@ -48,7 +50,7 @@ async function main() {
 
   app.use((req, res, next) => {
     passport.authenticate('session', (err) => {
-      if (err && err.name == "DeserializeUserError") {
+      if (err && err.name === "DeserializeUserError") {
         req.session.destroy(() =>
           next())
       }
@@ -114,6 +116,10 @@ async function main() {
     console.log(`listening on port 2021 -  NODE_ENV:${process.env.NODE_ENV}`);
   });
 
+
+
+  await emailQueue.start();
+
   async function onSignal() {
     console.log(`server is starting cleanup`)
     wsHandler.broadcastReconnectNotification()
@@ -128,6 +134,7 @@ async function main() {
     signals: ['SIGTERM', 'SIGINT'],
     onSignal
   })
+
 }
 
 void main();

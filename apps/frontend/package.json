@@ -14,18 +14,18 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "VITE_API_URL=$API_URL vite --open ",
+    "dev": "VITE_API_URL=$API_URL vite",
     "build": "VITE_API_URL=$API_URL vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "serve"
   },
   "dependencies": {
-    "@celluloid/prisma": "*",
+    "@celluloid/prisma": "workspace:*",
     "@celluloid/react-player": "2.14.0",
-    "@celluloid/trpc": "*",
-    "@celluloid/types": "*",
-    "@celluloid/utils": "*",
+    "@celluloid/trpc": "workspace:*",
+    "@celluloid/types": "workspace:*",
+    "@celluloid/utils": "workspace:*",
     "@cutting/use-get-parent-size": "^2.1.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",

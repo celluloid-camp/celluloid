@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch --silent"
+    "dev": "tsup --watch"
   },
   "devDependencies": {
     "@types/redis": "^4.0.11",

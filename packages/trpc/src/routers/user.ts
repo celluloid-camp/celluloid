@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { sendConfirmationCode, sendPasswordReset } from "../mailer/sendMail";
 import { protectedProcedure, publicProcedure, router } from '../trpc';
+import { emailQueue } from "@celluloid/queue";
 
 export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
@@ -55,6 +56,7 @@ export const userRouter = router({
 
       ctx.req.body = input;
 
+      emailQueue.add({ email: input.username });
       await new Promise<Express.User | void>((resolve, reject) => {
         passport.authenticate(SigninStrategy.LOGIN, {
           failWithError: true

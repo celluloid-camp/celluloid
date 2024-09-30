@@ -25,7 +25,7 @@
   "scripts": {
     "build": "yarn run generate && tsup",
     "clean": "rimraf .turbo node_modules dist",
-    "dev": "tsup --watch --silent",
+    "dev": "tsup --watch",
     "setup": "yarn db:push && yarn migrate:init && migrate:deploy && yarn generate",
     "migrate": "yarn prisma migrate",
     "db": "yarn prisma db",
@@ -45,8 +45,8 @@
     "tsx": "tsx"
   },
   "devDependencies": {
-    "@celluloid/config": "*",
-    "@celluloid/utils": "*",
+    "@celluloid/config": "workspace:*",
+    "@celluloid/utils": "workspace:*",
     "@types/dotenv": "^6.0.0",
     "@types/node-fetch": "^2.6.7",
     "@types/randomcolor": "^0.5.7",
