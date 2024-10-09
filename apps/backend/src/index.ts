@@ -13,11 +13,11 @@ import http from 'node:http'
 import swaggerUi from 'swagger-ui-express';
 import { createOpenApiExpressMiddleware } from 'trpc-openapi';
 import { WebSocketServer } from 'ws'
-import { emailQueue } from "@celluloid/queue";
-
+import { emailQueue, chaptersQueue } from "@celluloid/queue";
 import { openApiDocument } from './openapi';
-const trpcApiEndpoint = '/trpc'
 
+
+const trpcApiEndpoint = '/trpc'
 
 declare module 'http' {
   interface IncomingMessage {
@@ -49,6 +49,7 @@ async function main() {
   app.use(sessionParser);
 
   app.use((req, res, next) => {
+    //@ts-expect-error dynamic
     passport.authenticate('session', (err) => {
       if (err && err.name === "DeserializeUserError") {
         req.session.destroy(() =>
@@ -72,7 +73,9 @@ async function main() {
     }),
   );
 
+
   // Handle incoming OpenAPI requests
+  // @ts-expect-error dynamic
   app.use('/api', createOpenApiExpressMiddleware({ router: appRouter, createContext }));
 
   // Serve Swagger UI with our OpenAPI schema
@@ -91,6 +94,7 @@ async function main() {
 
   server.on('upgrade', (request, socket, head) => {
     socket.on('error', onSocketError);
+    //@ts-expect-error dynamic
     sessionParser(request, {}, () => {
       // only allow ws connection with authenticated session
       if (!request.session) {
@@ -116,12 +120,11 @@ async function main() {
     console.log(`listening on port 2021 -  NODE_ENV:${process.env.NODE_ENV}`);
   });
 
-
-
-  await emailQueue.start();
+  emailQueue.start();
+  chaptersQueue.start();
 
   async function onSignal() {
-    console.log(`server is starting cleanup`)
+    console.log("server is starting cleanup")
     wsHandler.broadcastReconnectNotification()
     await new Promise((resolve) => wss.close(resolve));
     await new Promise((resolve) => server.close(resolve));

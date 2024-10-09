@@ -9,7 +9,7 @@
     "node": ">=16"
   },
   "scripts": {
-    "dev": "dotenv -e ../../.env -- tsup --watch --silent --onSuccess 'node dist/index.js'",
+    "dev-admin": "dotenv -e ../../.env -- tsup --watch --silent --onSuccess 'node dist/index.js'",
     "build": "tsup",
     "start": "node dist"
   },
@@ -37,7 +37,7 @@
     "del-cli": "^5.0.0",
     "dotenv-cli": "^7.3.0",
     "np": "^7.7.0",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2"
   }
 }

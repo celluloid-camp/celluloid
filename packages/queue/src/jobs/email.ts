@@ -8,6 +8,8 @@ export const emailQueue = createQueue<JobPayload, JobResult>({ name: "email" }, 
   console.log(`Processing job#${id} with payload=${JSON.stringify(payload)})`);
   // await someAsyncMethod();
   await job.progress(50);
+
+
   const status = 200;
   if (Math.random() > 0.5) {
     throw new Error(`Failed for some unknown reason`);
@@ -15,3 +17,4 @@ export const emailQueue = createQueue<JobPayload, JobResult>({ name: "email" }, 
   console.log(`Finished job#${id} with status=${status}`);
   return { status };
 });
+

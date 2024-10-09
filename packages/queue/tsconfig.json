@@ -1,10 +1,13 @@
 {
-  "extends": "@celluloid/config/tsconfig/node16.json",
+  "extends": "@celluloid/config/tsconfig/internal-package.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+  },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "tsup.config.ts",
-    "src/global.d.ts"
+    "src"
   ],
   "exclude": [
     "node_modules"

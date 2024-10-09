@@ -1,4 +1,4 @@
-import { passport, SigninStrategy } from "@celluloid/passport";
+import { passport } from "@celluloid/passport";
 import { Prisma, prisma, UserRole } from "@celluloid/prisma"
 import { compareCodes, generateOtp, hashPassword } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
@@ -21,6 +21,7 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   avatar: {
     select: {
       id: true,
+      //@ts-expect-error dynamic
       publicUrl: true,
       path: true
     }
@@ -54,11 +55,12 @@ export const userRouter = router({
     ).output(UserSchema.nullable())
     .mutation(async ({ ctx, input }) => {
 
+      //@ts-expect-error dynamic
       ctx.req.body = input;
 
       emailQueue.add({ email: input.username });
       await new Promise<Express.User | void>((resolve, reject) => {
-        passport.authenticate(SigninStrategy.LOGIN, {
+        passport.authenticate("login", {
           failWithError: true
         })(ctx.req, ctx.res, (err: Error, user: Express.User) => {
           if (err) return reject(err);
@@ -72,7 +74,8 @@ export const userRouter = router({
             code: 'UNAUTHORIZED',
             message: 'USER_NOT_FOUND'
           })
-        } else if (err?.name === "UserNotConfirmed") {
+        }
+        if (err?.name === "UserNotConfirmed") {
           throw new TRPCError({
             code: 'UNAUTHORIZED',
             message: 'USER_NOT_CONFIRMED'
@@ -169,6 +172,7 @@ export const userRouter = router({
       }
     })
 
+    //@ts-expect-error dynamic
     await new Promise((resolve) => ctx.req.login(newUser, () => resolve(null)));
 
     return { status: true }
@@ -279,6 +283,7 @@ export const userRouter = router({
       }
     })
 
+    //@ts-expect-error dynamic
     await new Promise((resolve) => ctx.req.login(newUser, () => resolve(null)));
 
     return { projectId: project.id }
@@ -437,6 +442,7 @@ export const userRouter = router({
         confirmed: true
       }
     })
+    //@ts-expect-error dynamic
     await new Promise((resolve) => ctx.req.login(newUser, () => resolve(null)));
     return { status: true }
   }),

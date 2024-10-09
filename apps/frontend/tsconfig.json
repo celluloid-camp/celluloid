@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "composite": false,
-    "rootDir": "src",
     "baseUrl": ".",
     "target": "ESNext",
     "lib": [
@@ -10,10 +9,10 @@
       "DOM.Iterable",
       "ESNext"
     ],
-    "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -77,6 +76,9 @@
       ],
       "~state/*": [
         "src/state/*"
+      ],
+      "~server/*": [
+        "src/server/*"
       ]
     }
   },

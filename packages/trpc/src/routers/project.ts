@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 import { PlaylistSchema } from './playlist';
 import { UserSchema } from './user';
+import { chaptersQueue } from '@celluloid/queue';
 
 export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   id: true,
@@ -37,6 +38,7 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   avatar: {
     select: {
       id: true,
+      //@ts-expect-error dynamic
       publicUrl: true,
       path: true
     }
@@ -250,6 +252,8 @@ export const projectRouter = router({
           }
           // select: defaultPostSelect,
         });
+        const jobId = await chaptersQueue.add({ host: input.host, videoId: input.videoId })
+        console.log("job enqueued", jobId)
         return project;
       }
     }),
@@ -282,10 +286,10 @@ export const projectRouter = router({
 
         let shareCode = project.shareCode;
 
-        const newTitle = input.title != project.title ? input.title : project.title
+        const newTitle = input.title !== project.title ? input.title : project.title
 
-        if (project.shared != input.shared) {
-          if (input.shared) {
+        if (project.shared !== input.shared) {
+          if (input.shared && newTitle) {
             console.log("generate new share code with:", newTitle)
             shareCode = generateUniqueShareName(newTitle);
 

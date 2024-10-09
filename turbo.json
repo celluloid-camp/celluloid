@@ -1,23 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalDependencies": [
-    ".env"
-  ],
-  "globalEnv": [
-    "NODE_ENV",
-    "DATABASE_URL",
-    "REDIS_URL",
-    "API_URL",
-    "COOKIE_SECRET",
-    "COOKIE_DOMAIN",
-    "COOKIE_NAME",
-    "COOKIE_SECURE",
-    "STORAGE_URL",
-    "STORAGE_BUCKET",
-    "STORAGE_ACCESS_KEY",
-    "STORAGE_SECRET_KEY"
-  ],
   "tasks": {
     "build": {
       "dependsOn": [
@@ -34,5 +17,24 @@
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "globalEnv": [
+    "NODE_ENV",
+    "DATABASE_URL",
+    "REDIS_URL",
+    "API_URL",
+    "COOKIE_SECRET",
+    "COOKIE_DOMAIN",
+    "COOKIE_NAME",
+    "COOKIE_SECURE",
+    "STORAGE_URL",
+    "STORAGE_BUCKET",
+    "STORAGE_ACCESS_KEY",
+    "STORAGE_SECRET_KEY"
+  ],
+  "globalPassThroughEnv": [
+    "NODE_ENV",
+    "CI",
+    "npm_lifecycle_event"
+  ]
 }
