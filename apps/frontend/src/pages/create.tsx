@@ -40,8 +40,8 @@ import { AutoCompleteTags } from "~components/AutoComleteTags";
 import { StyledTitle } from "~components/typography";
 import {
   getPeerTubeVideoData,
-  PeerTubeVideoDataResult,
-  PeerTubeVideoWithThumbnail,
+  type PeerTubeVideoDataResult,
+  type PeerTubeVideoWithThumbnail,
 } from "~services/peertube";
 import { ERR_ALREADY_EXISTING_PROJECT } from "~utils/Constants";
 // import { formatDuration } from "~utils/DurationUtils";
@@ -131,7 +131,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
         value={formik.values.url}
         placeholder={t("home.addVideo") || ""}
         onChange={formik.handleChange}
-        disabled={formik.status == "submited"}
+        disabled={formik.status === "submited"}
         onBlur={formik.handleBlur}
         error={formik.touched.url && Boolean(formik.errors.url)}
         helperText={formik.touched.url && formik.errors.url}
@@ -143,7 +143,7 @@ const PeerTubeVideoUrlForm: React.FC<PeerTubeVideoUrlFormProps> = ({
             </InputAdornment>
           ),
           endAdornment:
-            formik.status == "submited" ? (
+            formik.status === "submited" ? (
               <InputAdornment position="end">
                 {query.isFetched && query.data && query.data.isPlaylist ? (
                   <Chip label={"Playlist"} size="small" variant="outlined" />

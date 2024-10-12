@@ -12,19 +12,19 @@
   "bugs": {
     "url": "https://github.com/udecode/plate/celluloid/issues"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "files": [
-    "dist/**/*"
-  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+    "build": "tsc",
+    "dev": "tsc"
   },
   "dependencies": {
-    "@celluloid/prisma": "*",
-    "@celluloid/utils": "*",
+    "@celluloid/prisma": "workspace:*",
+    "@celluloid/utils": "workspace:*",
     "bcryptjs": "^2.4.3",
     "connect-redis": "^7.1.0",
     "express": "^4.19.2",
@@ -34,13 +34,14 @@
     "redis": "^4.6.10"
   },
   "devDependencies": {
-    "@celluloid/config": "*",
+    "@celluloid/config": "workspace:*",
     "@types/bcryptjs": "^2.4.5",
-    "@types/express": "^4.17.17",
+    "@types/express": "^5.0.0",
     "@types/express-session": "^1.17.8",
     "@types/node": "^18.14.2",
     "@types/passport": "^1.0.14",
     "@types/passport-local": "^1.0.37",
-    "tsup": "^7.2.0"
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2"
   }
 }

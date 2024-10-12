@@ -1,0 +1,40 @@
+{
+  "name": "@celluloid/queue",
+  "version": "3.0.0",
+  "private": true,
+  "license": "MIT",
+  "homepage": "https://celluloid.huma-num.fr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celluloid-camp/celluloid.git",
+    "directory": "packages/queue"
+  },
+  "bugs": {
+    "url": "https://github.com/udecode/plate/celluloid/issues"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc"
+  },
+  "dependencies": {
+    "@celluloid/prisma": "workspace:*",
+    "@celluloid/utils": "workspace:*",
+    "@mgcrea/prisma-queue": "^1.11.1",
+    "@t3-oss/env-core": "^0.11.1",
+    "fluent-ffmpeg": "^2.1.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@celluloid/config": "workspace:*",
+    "@types/fluent-ffmpeg": "^2",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2"
+  }
+}

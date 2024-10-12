@@ -1,20 +1,13 @@
-import ReactPlayer from "@celluloid/react-player";
+import type ReactPlayer from "@celluloid/react-player";
 import {
   Box,
   CircularProgress,
   Container,
   Grid,
+  Grid2,
   Paper,
-  Typography,
 } from "@mui/material";
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { AnnotationHints } from "~components/annotation/AnnotationHints";
@@ -27,8 +20,8 @@ import { SideBar } from "~components/project/SideBar";
 import { useVideoPlayerProgressValue } from "~components/project/useVideoPlayer";
 import { VideoPlayer } from "~components/project/VideoPlayer";
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
-import { AnnotationByProjectId, trpc } from "~utils/trpc";
-import { ProjectById, UserMe } from "~utils/trpc";
+import { type AnnotationByProjectId, trpc } from "~utils/trpc";
+import type { ProjectById, UserMe } from "~utils/trpc";
 
 interface Props {
   project: ProjectById;
@@ -54,7 +47,7 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
 
   useVideoPlayerEvent((event) => {
     // console.log("useVideoPlayerEvent", event);
-    if (event.state == "READY") {
+    if (event.state === "READY") {
       setPlayerIsReady(true);
     }
   });
@@ -168,7 +161,9 @@ const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
         item
         xs={4}
         sx={{
-          height: containerHeight,
+          height: "100%",
+          position: "relative",
+          paddingY: 2,
         }}
       >
         <AnnotationPanel
@@ -237,7 +232,12 @@ const ProjectContent = ({ project, user }: Props) => (
 const ProjectPage: React.FC = () => {
   const { projectId } = useParams();
   const { data: user } = trpc.user.me.useQuery();
-  const { data: project } = trpc.project.byId.useQuery({ id: projectId });
+  const { data: project } = trpc.project.byId.useQuery(
+    { id: projectId },
+    {
+      enabled: !!projectId,
+    }
+  );
 
   if (!project) return null;
 

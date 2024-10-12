@@ -1,4 +1,4 @@
-import { passport, SigninStrategy } from "@celluloid/passport";
+import { passport } from "@celluloid/passport";
 import { Prisma, prisma, UserRole } from "@celluloid/prisma"
 import { compareCodes, generateOtp, hashPassword } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { sendConfirmationCode, sendPasswordReset } from "../mailer/sendMail";
 import { protectedProcedure, publicProcedure, router } from '../trpc';
+import { emailQueue } from "@celluloid/queue";
 
 export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
@@ -20,6 +21,7 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   avatar: {
     select: {
       id: true,
+      //@ts-expect-error dynamic
       publicUrl: true,
       path: true
     }
@@ -53,10 +55,12 @@ export const userRouter = router({
     ).output(UserSchema.nullable())
     .mutation(async ({ ctx, input }) => {
 
+      //@ts-expect-error dynamic
       ctx.req.body = input;
 
+      emailQueue.add({ email: input.username });
       await new Promise<Express.User | void>((resolve, reject) => {
-        passport.authenticate(SigninStrategy.LOGIN, {
+        passport.authenticate("login", {
           failWithError: true
         })(ctx.req, ctx.res, (err: Error, user: Express.User) => {
           if (err) return reject(err);
@@ -70,7 +74,8 @@ export const userRouter = router({
             code: 'UNAUTHORIZED',
             message: 'USER_NOT_FOUND'
           })
-        } else if (err?.name === "UserNotConfirmed") {
+        }
+        if (err?.name === "UserNotConfirmed") {
           throw new TRPCError({
             code: 'UNAUTHORIZED',
             message: 'USER_NOT_CONFIRMED'
@@ -167,6 +172,7 @@ export const userRouter = router({
       }
     })
 
+    //@ts-expect-error dynamic
     await new Promise((resolve) => ctx.req.login(newUser, () => resolve(null)));
 
     return { status: true }
@@ -192,7 +198,7 @@ export const userRouter = router({
     if (user) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: `ACCOUNT_EXISTS`,
+        message: "ACCOUNT_EXISTS",
       });
     }
 
@@ -211,6 +217,8 @@ export const userRouter = router({
         role: "Teacher"
       }
     })
+
+    console.log(" Confirmation code", code)
 
     await sendConfirmationCode({ username: newUser.username, email: input.email, code: code });
 
@@ -234,7 +242,7 @@ export const userRouter = router({
     if (!project) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `CODE_NOT_FOUND`,
+        message: "CODE_NOT_FOUND",
       });
     }
 
@@ -249,7 +257,7 @@ export const userRouter = router({
     if (user) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: `ACCOUNT_EXISTS`,
+        message: "ACCOUNT_EXISTS",
       });
     }
 
@@ -277,6 +285,7 @@ export const userRouter = router({
       }
     })
 
+    //@ts-expect-error dynamic
     await new Promise((resolve) => ctx.req.login(newUser, () => resolve(null)));
 
     return { projectId: project.id }
@@ -317,11 +326,12 @@ export const userRouter = router({
       })
 
       return newUser
-    } else {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-      });
     }
+
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+    });
+
 
   }),
   join: protectedProcedure.input(
@@ -338,14 +348,14 @@ export const userRouter = router({
     if (!project) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `CODE_NOT_FOUND`,
+        message: "CODE_NOT_FOUND",
       });
     }
 
-    if (project.userId == ctx.user?.id) {
+    if (project.userId === ctx.user?.id) {
       throw new TRPCError({
         code: 'FORBIDDEN',
-        message: `PROJECT_OWNER_CANNOT_JOIN`,
+        message: "PROJECT_OWNER_CANNOT_JOIN",
       });
     }
 
@@ -378,7 +388,7 @@ export const userRouter = router({
     if (!user) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Email or username not found`,
+        message: "Email or username not found",
       });
     }
     if (!user.email) {
@@ -396,6 +406,8 @@ export const userRouter = router({
         codeGeneratedAt: new Date()
       }
     })
+    console.log(" Confirmation code", otp)
+
     await sendConfirmationCode({ email: user.email, username: user.username, code: otp })
     return { status: true }
   }),
@@ -416,14 +428,14 @@ export const userRouter = router({
     if (!user) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Email or username not found`,
+        message: "Email or username not found",
       });
     }
 
     if (!compareCodes(input.code, user.code || "")) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Failed to confirm account, code invalid`
+        message: "Failed to confirm account, code invalid"
       });
     }
 
@@ -435,6 +447,7 @@ export const userRouter = router({
         confirmed: true
       }
     })
+    //@ts-expect-error dynamic
     await new Promise((resolve) => ctx.req.login(newUser, () => resolve(null)));
     return { status: true }
   }),
@@ -471,7 +484,7 @@ export const userRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id) {
+      if (ctx.user?.id) {
 
         // Find the project by its ID (you need to replace 'projectId' with the actual ID)
         const user = await prisma.user.findUnique({

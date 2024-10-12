@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "composite": false,
-    "rootDir": "src",
     "baseUrl": ".",
     "target": "ESNext",
     "lib": [
@@ -10,15 +9,15 @@
       "DOM.Iterable",
       "ESNext"
     ],
-    "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -30,12 +29,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "~actions/*": [
-        "src/actions/*"
-      ],
-      "~api/*": [
-        "src/api/*"
-      ],
       "~components/*": [
         "src/components/*"
       ],
@@ -48,29 +41,29 @@
       "~locales/*": [
         "src/locales/*"
       ],
-      "~reducers/*": [
-        "src/reducers/*"
-      ],
-      "~scenes/*": [
-        "src/scenes/*"
-      ],
       "~services/*": [
         "src/services/*"
       ],
-      "~store/*": [
-        "src/store/*"
-      ],
       "~theme/*": [
         "src/theme/*"
-      ],
-      "~types/*": [
-        "src/types/*"
       ],
       "~utils/*": [
         "src/utils/*"
       ],
       "~/*": [
         "src/*"
+      ],
+      "~pages/*": [
+        "src/pages/*"
+      ],
+      "~state/*": [
+        "src/state/*"
+      ],
+      "~server/*": [
+        "src/server/*"
+      ],
+      "~chapters/*": [
+        "src/components/chapters/*"
       ]
     }
   },

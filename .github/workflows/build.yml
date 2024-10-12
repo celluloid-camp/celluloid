@@ -1,11 +1,7 @@
 name: Docker Build
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "Docker tag"
-        required: true
-        default: "latest"
+  push:
+    branches: [staging]
 
 jobs:
   build-containers:
@@ -32,12 +28,11 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          file: Dockerfile.compact
+          file: ./apps/frontend/Dockerfile
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/compact:${{ github.event.inputs.tag }}
+          tags: ghcr.io/${{ github.repository }}/celluloid:staging
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
-            API_URL=/trpc

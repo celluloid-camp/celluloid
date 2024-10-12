@@ -1,21 +1,7 @@
-import {
-  Box,
-  Button,
-  Chip,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
-import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { Box } from "@mui/material";
+import type * as React from "react";
 
-import { Avatar } from "~components/Avatar";
-import { TransUserRole } from "~components/TransUserRole";
-import { ProjectById, ProjectMembers, UserMe } from "~utils/trpc";
+import type { ProjectById, UserMe } from "~utils/trpc";
 
 import { ExportPanel } from "./ExportPanel";
 import { MemberListPanel } from "./MemberListPanel";
