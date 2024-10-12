@@ -2,9 +2,7 @@ name: E2E Tests
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches: [staging]
   workflow_dispatch:
 
 jobs:
@@ -20,10 +18,7 @@ jobs:
         ports:
           - 6379:6379
         options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
       postgres:
         image: postgres:14
         env:
@@ -39,12 +34,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-          cache: 'yarn'
+          node-version: 20
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
 
       - name: Build apps

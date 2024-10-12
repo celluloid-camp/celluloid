@@ -1,14 +1,14 @@
 import "express-session"
 
-import { User, UserRole } from '@celluloid/prisma';
-import { inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
-import { CreateExpressContextOptions } from "@trpc/server/adapters/express";
-import {
+import type { User, UserRole } from '@celluloid/prisma';
+import { type inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
+import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import type {
   CreateWSSContextFnOptions,
 } from '@trpc/server/adapters/ws';
-import { type Request, type Response } from 'express';
-import { Session } from "express-session";
-import { OpenApiMeta } from 'trpc-openapi';
+import type { Request, Response } from 'express';
+import type { Session } from "express-session";
+import type { OpenApiMeta } from 'trpc-openapi';
 
 // export type Context = {
 //   user: User | null;
@@ -50,11 +50,11 @@ export async function createContext(opts: CreateExpressContextOptions | CreateWS
         if (err) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
-            message: `Enable to log out`
+            message: "Enable to log out"
           })
-        } else {
-          resolve(true)
         }
+
+        resolve(true)
       });
     })
   }

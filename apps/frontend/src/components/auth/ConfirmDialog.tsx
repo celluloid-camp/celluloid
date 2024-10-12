@@ -1,9 +1,10 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Button, DialogActions, Stack } from "@mui/material";
+import { DialogActions, Link } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
+import { useSnackbar } from "notistack";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import { useProjectInputIntialValue } from "~/state";
@@ -14,10 +15,10 @@ import { trpc } from "~utils/trpc";
 export const ConfirmDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const query = useRouteQuery();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const mutation = trpc.user.confirm.useMutation();
   const savedProjectValue = useProjectInputIntialValue();
 
@@ -29,6 +30,15 @@ export const ConfirmDialog: React.FC = () => {
   });
 
   const queryEmail = query.get("email") || undefined;
+
+  const handleResendCode = async () => {
+    if (queryEmail) {
+      await utils.client.user.askEmailConfirm.mutate({ email: queryEmail });
+      enqueueSnackbar(t("confirm.resend.success", "Code envoyé"), {
+        variant: "success",
+      });
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -87,7 +97,7 @@ export const ConfirmDialog: React.FC = () => {
             t("confirm.username.paceholder", "Email ou nom d'utilisateur") || ""
           }
           onChange={formik.handleChange}
-          disabled={formik.isSubmitting || queryEmail != undefined}
+          disabled={queryEmail !== undefined}
           onBlur={formik.handleBlur}
           error={formik.touched.username && Boolean(formik.errors.username)}
           helperText={formik.touched.username && formik.errors.username}
@@ -114,6 +124,9 @@ export const ConfirmDialog: React.FC = () => {
         />
 
         <DialogActions sx={{ marginTop: 4 }}>
+          <Link variant="body2" onClick={handleResendCode}>
+            <Trans i18nKey="confirm.button.send">Renvoyer le code ?</Trans>
+          </Link>
           <LoadingButton
             variant="contained"
             size="large"

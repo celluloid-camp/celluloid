@@ -1,9 +1,27 @@
 {
-  "extends": "@celluloid/config/tsconfig/node16.json",
+  "extends": "@celluloid/config/tsconfig/base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "module": "esnext"
+  },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "tsup.config.ts"
+    "src"
   ],
   "exclude": [
     "node_modules"

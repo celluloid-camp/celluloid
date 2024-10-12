@@ -1,11 +1,11 @@
-import PrismaModule, { Prisma, PrismaClient } from "@prisma/client";
+import PrismaModule, { type Prisma, PrismaClient } from "@prisma/client";
 import randomColor from "randomcolor";
-import { env } from '@celluloid/utils';
+// import { env } from '@celluloid/utils';
 
 const prismaClient = new PrismaClient({
   datasources: {
     db: {
-      url: env.DATABASE_URL,
+      url: process.env.DATABASE_URL,
     },
   },
 }).$extends({
@@ -32,7 +32,7 @@ const prismaClient = new PrismaClient({
       publicUrl: {
         needs: { path: true, bucket: true },
         compute(storage) {
-          return `${env.STORAGE_URL}/${storage.bucket}/${storage.path}`
+          return `${process.env.STORAGE_URL}/${storage.bucket}/${storage.path}`
         },
       }
     },

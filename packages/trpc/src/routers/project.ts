@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 import { PlaylistSchema } from './playlist';
 import { UserSchema } from './user';
+import { chaptersQueue } from '@celluloid/queue';
 
 export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   id: true,
@@ -37,6 +38,7 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   avatar: {
     select: {
       id: true,
+      //@ts-expect-error dynamic
       publicUrl: true,
       path: true
     }
@@ -227,7 +229,7 @@ export const projectRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+      if (ctx.user?.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
 
         const project = await prisma.project.create({
           data: {
@@ -250,6 +252,12 @@ export const projectRouter = router({
           }
           // select: defaultPostSelect,
         });
+        const jobId = await chaptersQueue.add({ projectId: project.id });
+        prisma.project.update({
+          where: { id: project.id },
+          data: { chapterJobId: jobId.id }
+        })
+        console.log("job enqueued", jobId)
         return project;
       }
     }),
@@ -282,10 +290,10 @@ export const projectRouter = router({
 
         let shareCode = project.shareCode;
 
-        const newTitle = input.title != project.title ? input.title : project.title
+        const newTitle = input.title !== project.title ? input.title : project.title
 
-        if (project.shared != input.shared) {
-          if (input.shared) {
+        if (project.shared !== input.shared) {
+          if (input.shared && newTitle) {
             console.log("generate new share code with:", newTitle)
             shareCode = generateUniqueShareName(newTitle);
 

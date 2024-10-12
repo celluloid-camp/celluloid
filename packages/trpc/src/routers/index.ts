@@ -3,6 +3,7 @@
  */
 import { publicProcedure, router } from '../trpc';
 import { annotationRouter } from "./annotation"
+import { chapterRouter } from './chapter';
 import { commentRouter } from "./comment"
 import { playlistRouter } from './playlist'
 import { projectRouter } from './project'
@@ -16,6 +17,7 @@ export const appRouter = router({
   user: userRouter,
   playlist: playlistRouter,
   annotation: annotationRouter,
+  chapter: chapterRouter,
   comment: commentRouter,
   storage: storageRouter
 });

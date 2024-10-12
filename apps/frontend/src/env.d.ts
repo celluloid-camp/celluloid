@@ -2,7 +2,6 @@
 
 interface ImportMetaEnv {
   readonly VITE_COMMIT: string
-  readonly API_URL: string
   readonly WS_URL: string
 }
 

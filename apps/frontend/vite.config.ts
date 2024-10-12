@@ -2,7 +2,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { ViteAliases } from "vite-aliases";
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(async () => {
   return {
     plugins: [
       react(),
@@ -11,11 +11,5 @@ export default defineConfig(async ({ mode }) => {
         adjustDuplicates: true,
       }),
     ],
-
-    server: {
-      port: 3000,
-      host: "localhost"
-    },
-    logLevel: "error"
   }
 });

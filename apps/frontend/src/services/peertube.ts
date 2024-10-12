@@ -1,4 +1,4 @@
-import { PeerTubeVideo, Playlist } from "@celluloid/types";
+import type { PeerTubeVideo, Playlist } from "@celluloid/types";
 // import * as queryString from "query-string";
 import { last } from "ramda";
 
@@ -56,11 +56,10 @@ export const getPeerTubeVideoData = async (
       videos: isPlaylist ? data.data.map((d: Playlist) => ({ ...d.video, duration: d.video.duration, thumbnailURL: `https://${host}${d.video.thumbnailPath}`, metadata: d.video })) : [{ ...data, duration: data.duration, thumbnailURL: `https://${host}${data.thumbnailPath}`, metadata: data }],
       _raw: data
     }
-  } else {
-    throw new Error(
-      `Could not perform PeerTube API request (error ${response.status})`
-    );
   }
+  throw new Error(
+    `Could not perform PeerTube API request (error ${response.status})`
+  );
 
 }
 

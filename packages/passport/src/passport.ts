@@ -1,5 +1,5 @@
 
-import { prisma, User, UserRole } from "@celluloid/prisma"
+import { prisma, type User, UserRole } from "@celluloid/prisma"
 import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import {
@@ -8,11 +8,11 @@ import {
 
 import { DeserializeUserError, InvalidUserError, UserNotConfirmed } from "./errors";
 
-export enum SigninStrategy {
-  LOGIN = "login",
-  TEACHER_SIGNUP = "teacher-signup",
-  STUDENT_SIGNUP = "student-signup",
-}
+// export enum SigninStrategy {
+//   LOGIN = "login",
+//   TEACHER_SIGNUP = "teacher-signup",
+//   STUDENT_SIGNUP = "student-signup",
+// }
 
 
 passport.serializeUser((user, done) => {
@@ -23,9 +23,9 @@ passport.deserializeUser(async (id: string, done) => {
   const user = await prisma.user.findUnique({ where: { id } })
   if (user) {
     return done(null, user);
-  } else {
-    return done(new DeserializeUserError(`Deserialize user failed: user does not exist`));
   }
+  return done(new DeserializeUserError("Deserialize user failed: user does not exist"));
+
 });
 
 passport.use(
@@ -67,6 +67,6 @@ const loginStrategy = new LocalStrategy(async (login, password, done) => {
 }
 );
 
-passport.use(SigninStrategy.LOGIN, loginStrategy);
+passport.use("login", loginStrategy);
 
 export default passport;

@@ -1,12 +1,9 @@
 {
-  "extends": "@celluloid/config/tsconfig/node16.json",
-    "include": [
-      "**/*.ts",
-      "**/*.tsx",
-      "tsup.config.ts",
-      "src/global.d.ts"
-    ],
-      "exclude": [
-        "node_modules"
-      ]
+  "extends": "@celluloid/config/tsconfig/internal-package.json",
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

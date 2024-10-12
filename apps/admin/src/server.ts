@@ -1,11 +1,9 @@
 import AdminJSExpress from "@adminjs/express";
-import importExportFeature from "@adminjs/import-export";
 import { Database, getModelByName, Resource } from '@adminjs/prisma';
 import { dark, light, noSidebar } from '@adminjs/themes'
 import PrismaModule, { prisma } from '@celluloid/prisma';
-import AdminJS, { AdminJSOptions, DEFAULT_PATHS, ThemeConfig } from "adminjs";
+import AdminJS, { type AdminJSOptions, type ThemeConfig } from "adminjs";
 
-import { componentLoader, Components } from './components.js'
 
 export const overrides: ThemeConfig['overrides'] = {
   colors: {
@@ -60,12 +58,8 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
     assets: {
       styles: ['/admin/assets/styles/override.css'],
     },
-    dashboard: {
-      component: Components.MyInput,
-    },
     defaultTheme: noSidebar.id,
     availableThemes: [dark, light, noSidebar],
-    componentLoader,
     resources: [
       {
         resource: { model: getModelByName('User', PrismaModule), client: prisma },
@@ -158,12 +152,7 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
               },
             },
           },
-        },
-        features: [
-          importExportFeature({
-            componentLoader,
-          }),
-        ],
+        }
       },
       {
         resource: { model: getModelByName('Comment', PrismaModule), client: prisma },
@@ -194,7 +183,7 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
 
 
   const admin = new AdminJS(adminOptions);
-  if (process.env.NODE_ENV == "developement")
+  if (process.env.NODE_ENV === "developement")
     admin.watch()
   return AdminJSExpress.buildRouter(admin);
 };

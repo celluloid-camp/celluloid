@@ -53,9 +53,7 @@ import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
 import { createTheme } from "./theme";
 
-const API_URL = import.meta.env.VITE_API_URL
-  ? import.meta.env.VITE_API_URL
-  : "/trpc";
+const API_URL = "/api/trpc";
 
 const WS_URL = `${location.protocol === "https:" ? "wss" : "ws"}://${
   location.host
@@ -171,7 +169,7 @@ const App = () => {
         splitLink({
           condition(op) {
             // check for operation type
-            return op.type == "subscription";
+            return op.type === "subscription";
           },
           // when condition is true, use normal request
           true: wsLink({

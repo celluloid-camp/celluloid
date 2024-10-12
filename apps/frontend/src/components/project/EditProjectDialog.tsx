@@ -21,7 +21,7 @@ import * as Yup from "yup";
 import { AutoCompleteTags } from "~components/AutoComleteTags";
 import { StyledDialog } from "~components/Dialog";
 import { humanizeError } from "~utils/errors";
-import { ProjectById, trpc } from "~utils/trpc";
+import { type ProjectById, trpc } from "~utils/trpc";
 
 type EditProjectDialogProps = {
   open: boolean;
