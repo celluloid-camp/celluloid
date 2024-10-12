@@ -11,13 +11,13 @@
     ],
     "skipLibCheck": true,
     /* Bundler mode */
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -29,12 +29,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "~actions/*": [
-        "src/actions/*"
-      ],
-      "~api/*": [
-        "src/api/*"
-      ],
       "~components/*": [
         "src/components/*"
       ],
@@ -47,23 +41,11 @@
       "~locales/*": [
         "src/locales/*"
       ],
-      "~reducers/*": [
-        "src/reducers/*"
-      ],
-      "~scenes/*": [
-        "src/scenes/*"
-      ],
       "~services/*": [
         "src/services/*"
       ],
-      "~store/*": [
-        "src/store/*"
-      ],
       "~theme/*": [
         "src/theme/*"
-      ],
-      "~types/*": [
-        "src/types/*"
       ],
       "~utils/*": [
         "src/utils/*"
@@ -79,6 +61,9 @@
       ],
       "~server/*": [
         "src/server/*"
+      ],
+      "~chapters/*": [
+        "src/components/chapters/*"
       ]
     }
   },

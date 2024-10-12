@@ -12,7 +12,7 @@ export const emailQueue = createQueue<JobPayload, JobResult>({ name: "email" }, 
 
   const status = 200;
   if (Math.random() > 0.5) {
-    throw new Error(`Failed for some unknown reason`);
+    throw new Error("Failed for some unknown reason");
   }
   console.log(`Finished job#${id} with status=${status}`);
   return { status };

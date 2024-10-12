@@ -198,7 +198,7 @@ export const userRouter = router({
     if (user) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: `ACCOUNT_EXISTS`,
+        message: "ACCOUNT_EXISTS",
       });
     }
 
@@ -217,6 +217,8 @@ export const userRouter = router({
         role: "Teacher"
       }
     })
+
+    console.log(" Confirmation code", code)
 
     await sendConfirmationCode({ username: newUser.username, email: input.email, code: code });
 
@@ -240,7 +242,7 @@ export const userRouter = router({
     if (!project) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `CODE_NOT_FOUND`,
+        message: "CODE_NOT_FOUND",
       });
     }
 
@@ -255,7 +257,7 @@ export const userRouter = router({
     if (user) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: `ACCOUNT_EXISTS`,
+        message: "ACCOUNT_EXISTS",
       });
     }
 
@@ -324,11 +326,12 @@ export const userRouter = router({
       })
 
       return newUser
-    } else {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-      });
     }
+
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+    });
+
 
   }),
   join: protectedProcedure.input(
@@ -345,14 +348,14 @@ export const userRouter = router({
     if (!project) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `CODE_NOT_FOUND`,
+        message: "CODE_NOT_FOUND",
       });
     }
 
-    if (project.userId == ctx.user?.id) {
+    if (project.userId === ctx.user?.id) {
       throw new TRPCError({
         code: 'FORBIDDEN',
-        message: `PROJECT_OWNER_CANNOT_JOIN`,
+        message: "PROJECT_OWNER_CANNOT_JOIN",
       });
     }
 
@@ -385,7 +388,7 @@ export const userRouter = router({
     if (!user) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Email or username not found`,
+        message: "Email or username not found",
       });
     }
     if (!user.email) {
@@ -403,6 +406,8 @@ export const userRouter = router({
         codeGeneratedAt: new Date()
       }
     })
+    console.log(" Confirmation code", otp)
+
     await sendConfirmationCode({ email: user.email, username: user.username, code: otp })
     return { status: true }
   }),
@@ -423,14 +428,14 @@ export const userRouter = router({
     if (!user) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Email or username not found`,
+        message: "Email or username not found",
       });
     }
 
     if (!compareCodes(input.code, user.code || "")) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Failed to confirm account, code invalid`
+        message: "Failed to confirm account, code invalid"
       });
     }
 
@@ -479,7 +484,7 @@ export const userRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id) {
+      if (ctx.user?.id) {
 
         // Find the project by its ID (you need to replace 'projectId' with the actual ID)
         const user = await prisma.user.findUnique({

@@ -229,7 +229,7 @@ export const projectRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+      if (ctx.user?.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
 
         const project = await prisma.project.create({
           data: {
@@ -252,7 +252,11 @@ export const projectRouter = router({
           }
           // select: defaultPostSelect,
         });
-        const jobId = await chaptersQueue.add({ host: input.host, videoId: input.videoId })
+        const jobId = await chaptersQueue.add({ projectId: project.id });
+        prisma.project.update({
+          where: { id: project.id },
+          data: { chapterJobId: jobId.id }
+        })
         console.log("job enqueued", jobId)
         return project;
       }

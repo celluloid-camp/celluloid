@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "dotenv -- turbo watch dev --continue",
+    "dev": "dotenv -- turbo dev",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "dotenv -- turbo run build --no-cache",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
@@ -24,8 +24,7 @@
     "admin": "dotenv -- yarn workspace admin",
     "backend": "dotenv -- yarn workspace backend",
     "prisma": "dotenv -- yarn workspace @celluloid/prisma",
-    "docker-build": "DOCKER_BUILDKIT=1 docker build --build-arg APP=backend --build-arg START_COMMAND=start -t  celluloid-backend:latest --cache-from=celluloid-backend:latest  . ",
-    "docker-build-compact": "DOCKER_BUILDKIT=1 docker build -t celluloid-compact:latest -f Dockerfile.full ."
+    "docker:build": "docker build -t celluloid:latest -f ./apps/frontend/Dockerfile ."
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",

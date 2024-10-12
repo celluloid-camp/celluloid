@@ -1,5 +1,5 @@
 import { env } from '@celluloid/utils';
-import { promises as fsp } from "fs";
+import { promises as fsp } from "node:fs";
 import * as nodemailer from "nodemailer";
 const { readFile, writeFile } = fsp;
 
@@ -18,7 +18,8 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
         return nodemailer.createTransport({
           jsonTransport: true,
         });
-      } else if (isDev) {
+      }
+      if (isDev) {
         let account;
         try {
           const testAccountJson = await readFile(etherealFilename, "utf8");
@@ -52,21 +53,22 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
             pass: account.pass,
           },
         });
-      } else {
-        if (!env.SMTP_HOST) {
-          throw new Error("Misconfiguration: no SMTP_HOST");
-        }
-        if (!env.SMTP_PORT) {
-          throw new Error("Misconfiguration: no SMTP_PORT");
-        }
-        return nodemailer.createTransport({
-          host: env.SMTP_HOST,
-          port: env.SMTP_PORT,
-          secure: env.SMTP_SECURE,
-        });
       }
+
+      if (!env.SMTP_HOST) {
+        throw new Error("Misconfiguration: no SMTP_HOST");
+      }
+      if (!env.SMTP_PORT) {
+        throw new Error("Misconfiguration: no SMTP_PORT");
+      }
+      return nodemailer.createTransport({
+        host: env.SMTP_HOST,
+        port: env.SMTP_PORT,
+        secure: env.SMTP_SECURE,
+      });
+
     })();
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
   return transporterPromise!;
 }

@@ -22,7 +22,6 @@
     "NODE_ENV",
     "DATABASE_URL",
     "REDIS_URL",
-    "API_URL",
     "COOKIE_SECRET",
     "COOKIE_DOMAIN",
     "COOKIE_NAME",

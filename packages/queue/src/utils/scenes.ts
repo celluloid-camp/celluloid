@@ -25,10 +25,15 @@ type ScenesResult = {
  * @param outputDir - Directory to save the thumbnails.
  * @returns A promise that resolves with an array of detected scenes and their thumbnail paths.
  */
-export async function detectScenes(
-  videoPath: string,
+export async function detectScenes({
+  videoPath,
   threshold = 0.4,
-): Promise<ScenesResult> {
+  duration,
+}: {
+  videoPath: string;
+  threshold?: number;
+  duration: number;
+}): Promise<ScenesResult> {
   return new Promise((resolve, reject) => {
     const scenes: Scene[] = [];
     let output = "";
@@ -75,7 +80,7 @@ export async function detectScenes(
 
           const thumbnailPath = path.join(
             outputDir,
-            `thumbnail_${String(id).padStart(4, "0")}.jpg`,
+            `thumbnail_${String(id)}.jpg`,
           );
 
           scenes.push({
@@ -91,22 +96,16 @@ export async function detectScenes(
 
         // Set the endTime of the last scene to the video duration
         if (scenes.length > 0) {
-          ffmpeg.ffprobe(videoPath, (err, metadata) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-            const duration = metadata.format.duration || 0;
-            const lastScene = scenes[scenes.length - 1];
-            if (lastScene) {
-              lastScene.endTime = duration;
-            }
 
-            console.log("scenes", scenes);
-            generateThumbnails(videoPath, scenes, outputDir)
-              .then(() => resolve({ outputDir, scenes }))
-              .catch(reject);
-          });
+          const lastScene = scenes[scenes.length - 1];
+          if (lastScene) {
+            lastScene.endTime = duration;
+          }
+
+          generateThumbnails(videoPath, scenes, outputDir)
+            .then(() => resolve({ outputDir, scenes }))
+            .catch(reject);
+
         } else {
           resolve({ outputDir, scenes });
         }
@@ -130,7 +129,7 @@ async function generateThumbnails(
     ffmpeg(videoPath)
       .screenshots({
         timestamps: timestamps,
-        filename: "thumbnail_%04d.jpg",
+        filename: "thumbnail_%i.jpg",
         folder: outputDir,
         size: "320x?",
       })
@@ -184,7 +183,7 @@ async function uploadThumbnailsToS3(
 
     console.log(`Uploaded ${s3ObjectName} to ${env.STORAGE_BUCKET}`);
     // Update the thumbnailPath with the S3 URL
-    scene.thumbnailPath = `/${env.STORAGE_BUCKET}/${s3ObjectName}`;
+    scene.thumbnailPath = s3ObjectName;
 
     // Remove the local file after upload
     fs.unlinkSync(localFilePath);

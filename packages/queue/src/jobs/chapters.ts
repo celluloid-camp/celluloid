@@ -5,58 +5,79 @@ import path from "node:path";
 import { pipeline } from "node:stream";
 import { promisify } from "node:util";
 import os from "node:os";
-import { exec } from 'node:child_process';
+import { exec } from "node:child_process";
 import { detectScenes } from "../utils/scenes";
+import { env } from "../env";
+import type { PeerTubeVideo } from "@celluloid/types";
 
 const execPromise = promisify(exec);
 const streamPipeline = promisify(pipeline);
 
-type JobPayload = { host: string; videoId: string };
+type ChapterJobPayload = { projectId: string };
 type JobResult = { status: number };
 
-interface Chapter {
-  id: number;
-  start_time: number;
-  end_time: number;
-  title?: string;
-}
-
 // https://github.com/marcofaggian/lyricarr/blob/master/services/backend/src/util/queueWrapper.ts
-export const chaptersQueue = createQueue<JobPayload, JobResult>(
+export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
   { name: "chapters" },
-  async (job, client) => {
+  async (job, prisma) => {
     const { id, payload } = job;
     console.log(
       `Chapter queue processing job#${id} with payload=${JSON.stringify(payload)})`,
     );
 
-    const video = await getPeerTubeVideoData({
-      videoId: payload.videoId,
-      host: payload.host,
+    const project = await prisma.project.findUnique({
+      where: { id: payload.projectId },
+      select: {
+        metadata: true,
+      },
     });
 
-    const videoFile = video?.streamingPlaylists[0]?.files[0]?.fileDownloadUrl;
+    const metadata = project?.metadata as unknown as PeerTubeVideo;
+
+    if (!metadata) {
+      throw new Error("No video data found");
+    }
+
+    const videoFile = metadata.streamingPlaylists[0]?.files
+      .sort((a, b) => a.size - b.size) // Sort files by size in ascending order
+      .find(file => file.fileDownloadUrl)?.fileDownloadUrl; // Find the first file with a download URL
+    const duration = metadata.duration || 0;
 
     if (!videoFile) {
       throw new Error("No video file found");
     }
-
+    await job.progress(10);
     const videoPath = await downloadVideoFile(videoFile);
     await job.progress(50);
 
     try {
-      const chapters = await detectScenes(videoPath);
-      console.log("chapters", chapters.scenes);
+      const chapters = await detectScenes({ videoPath, duration });
+
+      await job.progress(70);
+      const thumbnailStorages = await prisma.storage.createManyAndReturn({
+        data: chapters.scenes.map((scene) => ({
+          bucket: env.STORAGE_BUCKET,
+          path: scene.thumbnailPath,
+        })),
+        skipDuplicates: true,
+      });
+
+      await prisma.chapter.createMany({
+        data: chapters.scenes.map((scene, index) => ({
+          projectId: payload.projectId,
+          thumbnailStorageId: thumbnailStorages[index]?.id,
+          startTime: scene.startTime,
+          endTime: scene.endTime,
+        })),
+      });
     } catch (error) {
       console.error("Error detecting scenes", error);
     }
 
-
-
     const status = 200;
 
     console.log(`Finished job#${id} with status=${status}`);
-    return { status, };
+    return { status };
   },
 );
 

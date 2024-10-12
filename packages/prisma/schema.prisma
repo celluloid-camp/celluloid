@@ -74,6 +74,34 @@ model Project {
   thumbnailURL String   @default("")
   metadata     Json?    @default("{}") @db.Json
   keywords     String[]
+
+  chapterJob   QueueJob? @relation(fields: [chapterJobId], references: [id])
+  chapterJobId BigInt?   @db.BigInt
+
+  chapters Chapter[]
+}
+
+model Chapter {
+  id        String @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String @db.Uuid
+  startTime Float
+  endTime   Float
+
+  title       String?
+  description String?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  thumbnail          Storage? @relation(fields: [thumbnailStorageId], references: [id])
+  thumbnailStorageId String?  @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lastEditedBy   User?   @relation(fields: [lastEditedById], references: [id])
+  lastEditedById String? @db.Uuid
+
+  @@index([projectId])
 }
 
 model Playlist {
@@ -113,6 +141,8 @@ model User {
 
   avatar          Storage? @relation(fields: [avatarStorageId], references: [id])
   avatarStorageId String?  @unique @db.Uuid
+
+  chapters Chapter[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -135,6 +165,7 @@ model Storage {
   path      String
   bucket    String
   user      User?
+  chapter   Chapter?
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
 }
 
@@ -157,6 +188,7 @@ model QueueJob {
   failedAt    DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  projects    Project[]
 
   @@unique([key, runAt])
   @@index([queue, priority, runAt, finishedAt])
