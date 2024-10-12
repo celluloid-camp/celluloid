@@ -18,10 +18,10 @@ services:
       POSTGRES_DB: celluloid
 
   celluloid:
-    image: celluloid-compact:latest
+    image: celluloid:latest
     # build:
     #   context: .
-    #   dockerfile: ./Dockerfile.compact
+    #   dockerfile: ./apps/frontend/Dockerfile
     depends_on:
       - postgres
     ports:
