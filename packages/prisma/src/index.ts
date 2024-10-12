@@ -65,3 +65,4 @@ export const prisma = prismaClient;
 export * from "@prisma/client";
 
 export default PrismaModule;
+

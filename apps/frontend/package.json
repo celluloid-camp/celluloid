@@ -21,6 +21,9 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
+    "@adminjs/express": "^6.1.0",
+    "@adminjs/prisma": "^5.0.3",
+    "@adminjs/themes": "^1.0.1",
     "@celluloid/prisma": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/react-player": "2.14.0",
@@ -40,6 +43,7 @@
     "@trpc/react-query": "^10.45.2",
     "@trpc/server": "^10.45.2",
     "@types/linkify-urls": "^3.1.1",
+    "adminjs": "^7.8.13",
     "change-case": "^4.1.2",
     "cookie-parser": "^1.4.7",
     "copy-to-clipboard": "^3.3.3",

@@ -2,8 +2,19 @@ import AdminJSExpress from "@adminjs/express";
 import { Database, getModelByName, Resource } from '@adminjs/prisma';
 import { dark, light, noSidebar } from '@adminjs/themes'
 import PrismaModule, { prisma } from '@celluloid/prisma';
-import AdminJS, { type AdminJSOptions, type ThemeConfig } from "adminjs";
+import AdminJS, { type ThemeConfig } from "adminjs";
 
+// @ts-expect-error
+BigInt.prototype.toJSON = function () { const int = Number.parseInt(this.toString()); return int ?? this.toString() };
+
+import { ComponentLoader } from 'adminjs'
+
+const componentLoader = new ComponentLoader()
+
+const Components = {
+  Dashboard: componentLoader.add('Dashboard', './dashboard'),
+  // other custom components
+}
 
 export const overrides: ThemeConfig['overrides'] = {
   colors: {
@@ -39,7 +50,7 @@ export const overrides: ThemeConfig['overrides'] = {
 
 
 
-const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
+const getAdminRouter = () => {
 
 
   AdminJS.registerAdapter({
@@ -47,16 +58,16 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
     Database: Database,
   });
 
-
-  const adminOptions = {
+  const admin = new AdminJS({
+    rootPath: "/admin",
     branding: {
       companyName: 'Celluloid',
       withMadeWithLove: false,
-      logo: '/admin/assets/images/logo.svg',
+      logo: '/images/logo-admin.svg',
       theme: overrides
     },
     assets: {
-      styles: ['/admin/assets/styles/override.css'],
+      styles: ['/styles/override.css'],
     },
     defaultTheme: noSidebar.id,
     availableThemes: [dark, light, noSidebar],
@@ -108,12 +119,32 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
       {
         resource: { model: getModelByName('Playlist', PrismaModule), client: prisma },
         options: {
-          navigation: {
-            name: 'Playlists',
-            icon: 'Play',
-          },
+          navigation: "Projects",
           listProperties: ['title', 'description', 'user'],
           filterProperties: ['title', 'description', 'user'],
+          editProperties: ['title', 'description'],
+          actions: {
+            new: {
+              isAccessible: false,
+              isVisible: false,
+            },
+          },
+          properties: {
+            description: {
+              type: 'textarea',
+              props: {
+                rows: 10,
+              },
+            },
+          },
+        },
+      },
+      {
+        resource: { model: getModelByName('Chapter', PrismaModule), client: prisma },
+        options: {
+          navigation: "Projects",
+          listProperties: ['title', 'description', 'project', 'thumbnail', 'startTime', 'endTime'],
+          filterProperties: ['title', 'description', 'project'],
           editProperties: ['title', 'description'],
           actions: {
             new: {
@@ -177,12 +208,45 @@ const getAdminRouter = (options: Partial<AdminJSOptions> = {}) => {
           },
         }
       },
+      {
+        resource: { model: getModelByName('Storage', PrismaModule), client: prisma },
+        options: {
+          navigation: "Storage",
+          actions: {
+            new: {
+              isAccessible: false,
+              isVisible: false,
+            },
+            edit: {
+              isAccessible: false,
+              isVisible: false,
+            }
+          },
+        }
+      },
+      {
+        resource: { model: getModelByName('QueueJob', PrismaModule), client: prisma },
+        options: {
+          navigation: "Job",
+          actions: {
+            new: {
+              isAccessible: false,
+              isVisible: false,
+            },
+            edit: {
+              isAccessible: false,
+              isVisible: false,
+            }
+          },
+        },
+
+      }
     ],
-    ...options
-  };
-
-
-  const admin = new AdminJS(adminOptions);
+    dashboard: {
+      component: Components.Dashboard,
+    },
+    componentLoader,
+  });
   if (process.env.NODE_ENV === "developement")
     admin.watch()
   return AdminJSExpress.buildRouter(admin);
