@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "dotenv -- turbo dev",
+    "dev": "dotenv -- turbo watch dev",
     "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
     "build": "dotenv -- turbo run build --no-cache",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",

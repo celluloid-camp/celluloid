@@ -9,6 +9,9 @@ import cors from 'cors';
 const app = express();
 import { emailQueue, chaptersQueue } from "@celluloid/queue";
 
+import getAdminRouter from "./admin";
+import { UserRole } from "@celluloid/prisma";
+
 const trpcApiEndpoint = '/api/trpc'
 
 declare module 'http' {
@@ -54,9 +57,16 @@ app.use((req, res, next) => {
 // });
 
 
-app.get("/hello", (_, res) => {
-  res.send("Hello Vite + React + TypeScript!");
-});
+const adminRouter = await getAdminRouter();
+
+const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
+  // biome-ignore lint/correctness/noVoidTypeReturn: <explanation>
+  if (req.user && (req.user as { role?: UserRole }).role === UserRole.Admin) return next();
+  res.redirect("/");
+};
+
+app.use("/admin", isAuthenticated, adminRouter);
+
 
 app.use(
   trpcApiEndpoint,
