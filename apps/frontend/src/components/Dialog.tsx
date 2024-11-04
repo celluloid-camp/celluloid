@@ -1,15 +1,13 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Alert,
-  Box,
   DialogTitle,
-  DialogTitleProps,
+  type DialogTitleProps,
   IconButton,
   LinearProgress,
   styled,
-  Typography,
 } from "@mui/material";
-import Dialog, { DialogProps } from "@mui/material/Dialog";
+import Dialog, { type DialogProps } from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 
 export const BootstrapDialog = styled(Dialog)(({ theme }) => ({

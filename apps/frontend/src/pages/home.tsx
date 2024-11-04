@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import * as React from "react";
+import type * as React from "react";
 import { Suspense, useCallback } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Trans, useTranslation } from "react-i18next";
@@ -227,7 +227,7 @@ export const HomePage: React.FC = () => {
           {({ reset }) => (
             <ErrorBoundary
               onReset={reset}
-              fallbackRender={({ resetErrorBoundary, error }) => (
+              fallbackRender={({ resetErrorBoundary }) => (
                 <Fade in={true} appear={true}>
                   <Typography
                     variant="h6"

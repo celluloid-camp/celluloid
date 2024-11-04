@@ -1,8 +1,8 @@
 import InfoIcon from "@mui/icons-material/Info";
-import { Grow, List, Stack, Typography } from "@mui/material";
+import { Button, Grow, List, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import type * as React from "react";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import Image from "mui-image";
 import {
   trpc,
@@ -26,30 +26,9 @@ import {
   TimelineSeparator,
 } from "@mui/lab";
 import { formatDuration } from "~utils/DurationUtils";
-
-const EmptyChapters = () => (
-  <Grow in={true}>
-    <Stack
-      spacing={1}
-      alignContent={"center"}
-      alignItems={"center"}
-      sx={{
-        paddingY: 5,
-        paddingX: 5,
-        borderRadius: 1,
-        borderStyle: "dashed",
-        borderWidth: 1,
-        borderColor: grey[800],
-        marginBottom: 1,
-      }}
-    >
-      <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-      <Typography variant="body2" color="gray" textAlign={"center"}>
-        <Trans i18nKey="project.annotaions.empty" />
-      </Typography>
-    </Stack>
-  </Grow>
-);
+import { useSnackbar } from "notistack";
+import type ReactPlayer from "@celluloid/react-player";
+import { useVideoPlayerSeekEvent } from "~hooks/use-video-player";
 
 function ChapterList({
   chapters,
@@ -60,26 +39,19 @@ function ChapterList({
   user?: UserMe;
   project: ProjectById;
 }) {
-  //   <List
-  //   dense={true}
-  //   sx={{
-  //     position: "relative",
-  //     overflow: "auto",
-  //     height: "100%",
-  //     paddingRight: 2,
-  //   }}
-  // >
-  //   {chapters.map((chapter: ChapterByProjectId) => (
-  //     <ChapterItem
-  //       chapter={chapter}
-  //       key={chapter.id}
-  //       user={user}
-  //       project={project}
-  //     />
-  //   ))}
+  const dispatcher = useVideoPlayerSeekEvent();
 
-  //   {chapters.length === 0 && <EmptyChapters />}
-  // </List>
+  if (chapters.length === 0) {
+    return <EmptyChapter />;
+  }
+
+  const handleClick = (chapter: ChapterByProjectId) => {
+    console.log(chapter);
+    dispatcher({
+      time: chapter.startTime,
+    });
+  };
+
   return (
     <Timeline
       sx={{
@@ -91,9 +63,9 @@ function ChapterList({
         },
       }}
     >
-      {chapters.map((chapter: ChapterByProjectId) => (
+      {chapters.map((chapter: ChapterByProjectId, index: number) => (
         <TimelineItem key={chapter.id} sx={{ minHeight: 120 }}>
-          <TimelineOppositeContent>
+          <TimelineOppositeContent onClick={() => handleClick(chapter)}>
             <Image
               fit="contain"
               width={120}
@@ -101,19 +73,30 @@ function ChapterList({
               style={{
                 borderRadius: 10,
                 overflow: "hidden",
+                cursor: "pointer",
               }}
               src={chapter.thumbnail?.publicUrl ?? ""}
             />
-            <Typography
-              sx={{ display: "inline" }}
-              component="span"
-              variant="caption"
-              color="gray"
-            >
-              {formatDuration(chapter.startTime)}
-              {" → "}
-              {formatDuration(chapter.endTime)}
-            </Typography>
+            <Stack direction="row" spacing={1}>
+              <Typography
+                sx={{ display: "inline" }}
+                component="span"
+                variant="caption"
+                color="gray"
+              >
+                #{index + 1}
+              </Typography>
+              <Typography
+                sx={{ display: "inline", flex: 1 }}
+                component="span"
+                variant="caption"
+                color="gray"
+              >
+                {formatDuration(chapter.startTime)}
+                {" → "}
+                {formatDuration(chapter.endTime)}
+              </Typography>
+            </Stack>
           </TimelineOppositeContent>
           <TimelineSeparator sx={{ borderWidth: 1, borderColor: "gray" }}>
             <TimelineDot
@@ -128,6 +111,7 @@ function ChapterList({
               key={chapter.id}
               user={user}
               project={project}
+              index={index}
             />
           </TimelineContent>
         </TimelineItem>
@@ -142,6 +126,15 @@ interface ChaptersPanelProps {
 }
 
 export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
+  // return <div>{JSON.stringify(project)}</div>;
+
+  if (!project.chapterJob) {
+    return <NoChaptersJob projectId={project.id} />;
+  }
+
+  if (!project.chapterJob?.finishedAt) {
+    return <ChaptersInProgress project={project} />;
+  }
   return (
     <ErrorBoundary
       fallbackRender={({ error, resetErrorBoundary }) => (
@@ -161,4 +154,104 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
   });
 
   return <ChapterList project={project} user={user} chapters={chapters} />;
+}
+
+function EmptyChapter() {
+  return (
+    <Grow in={true}>
+      <Stack
+        spacing={1}
+        alignContent={"center"}
+        alignItems={"center"}
+        sx={{
+          paddingY: 5,
+          paddingX: 5,
+          borderRadius: 1,
+          borderStyle: "dashed",
+          borderWidth: 1,
+          borderColor: grey[800],
+          marginBottom: 1,
+        }}
+      >
+        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
+        <Typography variant="body2" color="gray" textAlign={"center"}>
+          <Trans i18nKey="project.chapters.empty" />
+        </Typography>
+      </Stack>
+    </Grow>
+  );
+}
+
+function NoChaptersJob({ projectId }: { projectId: string }) {
+  const mutation = trpc.chapter.generateChapters.useMutation();
+  const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
+  const utils = trpc.useUtils();
+
+  const handleGenerate = async () => {
+    await mutation.mutateAsync({ projectId: projectId });
+
+    enqueueSnackbar(t("confirm.generation.sent", "Génération envoyée"), {
+      variant: "success",
+    });
+
+    utils.project.byId.invalidate({ id: projectId });
+  };
+  return (
+    <Grow in={true}>
+      <Stack
+        spacing={1}
+        alignContent={"center"}
+        alignItems={"center"}
+        sx={{
+          paddingY: 5,
+          paddingX: 5,
+          borderRadius: 1,
+          borderStyle: "dashed",
+          borderWidth: 1,
+          borderColor: grey[800],
+          marginBottom: 1,
+          margin: 2,
+        }}
+      >
+        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
+        <Typography variant="body2" color="gray" textAlign={"center"}>
+          Generate chapters
+        </Typography>
+        <Button variant="contained" color="primary" onClick={handleGenerate}>
+          Generate
+        </Button>
+      </Stack>
+    </Grow>
+  );
+}
+
+function ChaptersInProgress({ project }: { project: ProjectById }) {
+  const { t } = useTranslation();
+  return (
+    <Grow in={true}>
+      <Stack
+        spacing={1}
+        alignContent={"center"}
+        alignItems={"center"}
+        sx={{
+          paddingY: 5,
+          paddingX: 5,
+          borderRadius: 1,
+          borderStyle: "dashed",
+          borderWidth: 1,
+          borderColor: grey[800],
+          margin: 2,
+        }}
+      >
+        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
+        <Typography variant="body2" color="gray" textAlign={"center"}>
+          {t(
+            "project.chapters.inProgress.description",
+            "La génération est en cours"
+          )}
+        </Typography>
+      </Stack>
+    </Grow>
+  );
 }

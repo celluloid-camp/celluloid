@@ -145,7 +145,6 @@ export const projectRouter = router({
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         // Remove the last item and use it as next cursor
-
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const nextItem = items.pop()!;
         nextCursor = nextItem.id;
@@ -170,6 +169,14 @@ export const projectRouter = router({
           ...defaultProjectSelect,
           user: {
             select: defaultUserSelect
+          },
+          chapterJob: {
+            select: {
+              id: true,
+              error: true,
+              finishedAt: true,
+              progress: true,
+            }
           },
           playlist: {
             include: {
@@ -203,10 +210,10 @@ export const projectRouter = router({
 
       return {
         ...project,
-        editable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
-        deletable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin),
-        annotable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin || (project.members.some(m => ctx.user && m.userId == ctx.user.id) && project.collaborative)),
-        commentable: ctx.user && (ctx.user.id == project.userId || ctx.user.role == UserRole.Admin || (project.members.some(m => ctx.user && m.userId == ctx.user.id) && project.collaborative)),
+        editable: ctx.user && (ctx.user.id === project.userId || ctx.user.role === UserRole.Admin),
+        deletable: ctx.user && (ctx.user.id === project.userId || ctx.user.role === UserRole.Admin),
+        annotable: ctx.user && (ctx.user.id === project.userId || ctx.user.role === UserRole.Admin || (project.members.some(m => ctx.user && m.userId === ctx.user.id) && project.collaborative)),
+        commentable: ctx.user && (ctx.user.id === project.userId || ctx.user.role === UserRole.Admin || (project.members.some(m => ctx.user && m.userId === ctx.user.id) && project.collaborative)),
       };
     }),
   add: protectedProcedure
@@ -253,9 +260,15 @@ export const projectRouter = router({
           // select: defaultPostSelect,
         });
         const jobId = await chaptersQueue.add({ projectId: project.id });
-        prisma.project.update({
+        await prisma.project.update({
           where: { id: project.id },
-          data: { chapterJobId: jobId.id }
+          data: {
+            chapterJob: {
+              connect: {
+                id: jobId.id
+              }
+            }
+          }
         })
         console.log("job enqueued", jobId)
         return project;
