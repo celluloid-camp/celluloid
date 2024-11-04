@@ -69,18 +69,10 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'yarn prisma migrate deploy && CI_TEST=true yarn backend start',
-      url: 'http://localhost:2021',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-      stdout: 'ignore',
-      stderr: 'pipe'
-    },
-    {
-      command: 'yarn frontend start',
+      command: 'yarn prisma migrate deploy && yarn frontend start',
       url: 'http://localhost:3000',
       reuseExistingServer: !process.env.CI,
       stdout: 'ignore',
-      stderr: 'pipe'      
+      stderr: 'pipe'
     }]
 });
