@@ -38,8 +38,9 @@ RUN \
   yarn --frozen-lockfile
 
 #############################################
-FROM base  AS runner
+FROM base AS runner
 WORKDIR /app
+RUN apk add --no-cache ffmpeg
 
 COPY --from=builder /app .
 
