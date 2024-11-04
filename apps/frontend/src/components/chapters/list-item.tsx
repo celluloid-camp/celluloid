@@ -5,6 +5,7 @@ import {
   Divider,
   Grow,
   IconButton,
+  ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
@@ -20,6 +21,7 @@ import Image from "mui-image";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { EditableText } from "~components/editable-text";
 
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { formatDuration } from "~utils/DurationUtils";
@@ -34,42 +36,55 @@ interface ChapterItemProps {
   project: ProjectById;
   chapter: ChapterByProjectId;
   user?: UserMe;
+  index: number;
 }
 
 export const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
   project,
   user,
+  index,
 }) => {
   const { t } = useTranslation();
-  const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
-
-  // const [editedAnnotation, setEditedAnnotation] = useEditAnnotation();
 
   const confirm = useConfirm();
   const utils = trpc.useUtils();
 
-  const handleEdit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.stopPropagation();
-    // setEditedAnnotation(annotation);
-  };
-
-  const mutation = trpc.annotation.delete.useMutation({
+  const editMutation = trpc.chapter.edit.useMutation({
     onSuccess: () => {
-      utils.annotation.byProjectId.invalidate({ id: project.id });
+      utils.chapter.byProjectId.invalidate({ projectId: project.id });
     },
   });
+
+  const deleteMutation = trpc.chapter.delete.useMutation({
+    onSuccess: () => {
+      utils.chapter.byProjectId.invalidate({ projectId: project.id });
+    },
+  });
+
+  const handleEdit = async (field: "title" | "description", value: string) => {
+    try {
+      await editMutation.mutateAsync({
+        chapterId: chapter.id,
+        [field]: value,
+        projectId: project.id,
+      });
+    } catch (error) {
+      // Revert optimistic update on error
+      utils.chapter.byProjectId.invalidate({ projectId: project.id });
+    }
+  };
 
   const canEdit = project.user.id === user?.id;
 
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
     confirm({
-      title: t("annotation.confirm-delete.title", "Supprimer l'annotation"),
+      title: t("chapter.confirm-delete.title", "Supprimer le chapitre"),
       description: t(
-        "annotation.confirm-delete.description",
-        "Êtes-vous sûr(e) de vouloir supprimer l'annotation ?"
+        "chapter.confirm-delete.description",
+        "Êtes-vous sûr(e) de vouloir supprimer le chapitre ?"
       ),
       confirmationText: t("deleteAction"),
       cancellationText: t("cancelAction"),
@@ -95,8 +110,8 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
         },
       },
     }).then(() => {
-      mutation.mutateAsync({
-        annotationId: chapter.id,
+      deleteMutation.mutateAsync({
+        chapterId: chapter.id,
       });
     });
   };
@@ -112,9 +127,8 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
           backgroundColor: grey[900],
         })}
       >
-        <ListItemButton
+        <ListItem
           disableGutters
-          onClick={() => setCollapsed(!collapsed)}
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
           sx={{
@@ -126,25 +140,28 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
           }}
         >
           <ListItemText
-            primaryTypographyProps={{
-              color: "white",
-              fontWeight: "medium",
-              variant: "body1",
-            }}
             primary={
               <React.Fragment>
-                <Typography component="span" color="white" variant="body2">
-                  {chapter.title}
-                </Typography>{" "}
+                <EditableText
+                  textProps={{
+                    color: "white",
+                    variant: "body2",
+                  }}
+                  disabled={!canEdit}
+                  value={chapter.title || `chapter`}
+                  onSave={(e) => handleEdit("title", e)}
+                  textFieldProps={{ sx: { color: "white" } }}
+                />
               </React.Fragment>
             }
-            secondaryTypographyProps={{ paddingRight: 1 }}
             secondary={
               <React.Fragment>
-                <MultiLineTypography
-                  variant="body2"
-                  color="gray"
-                  text={chapter.title || "chapter 1"}
+                <EditableText
+                  textProps={{ color: "gray", variant: "body2" }}
+                  disabled={!canEdit}
+                  value={chapter.description || "description"}
+                  onSave={(e) => handleEdit("description", e)}
+                  textFieldProps={{ multiline: true }}
                 />
               </React.Fragment>
             }
@@ -155,16 +172,10 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
             alignItems="flex-end"
             alignContent={"center"}
             justifyContent={"center"}
-            sx={{ minWidth: 100 }}
+            sx={{ minWidth: 40 }}
           >
             {hovering && canEdit ? (
               <Stack direction={"row"}>
-                <Tooltip title="Modifier" arrow>
-                  <IconButton onClick={handleEdit}>
-                    <EditIcon sx={{ fontSize: 18 }} />
-                  </IconButton>
-                </Tooltip>
-                <Divider orientation="vertical" flexItem light />
                 <Tooltip title="Supprimer" arrow>
                   <IconButton onClick={handleDelete}>
                     <DeleteIcon sx={{ fontSize: 18 }} />
@@ -172,15 +183,8 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
                 </Tooltip>
               </Stack>
             ) : null}
-            {/* {annotation.comments.length > 0 ? (
-              collapsed ? (
-                <ExpandLess sx={{ color: "gray" }} />
-              ) : (
-                <ExpandMore sx={{ color: "gray" }} />
-              )
-            ) : null} */}
           </Box>
-        </ListItemButton>
+        </ListItem>
       </Paper>
     </Grow>
   );

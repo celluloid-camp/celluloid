@@ -19,7 +19,7 @@ import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 import { useVideoPlayerProgressValue } from "~components/project/useVideoPlayer";
-import { ProjectById, trpc, UserMe } from "~utils/trpc";
+import { type ProjectById, trpc, type UserMe } from "~utils/trpc";
 
 import { DurationSlider } from "./DurationSlider";
 import {
@@ -60,9 +60,8 @@ export const AnnotationForm: React.FC<AnnotationFormProps> = (props) => {
         {t("annotation.form.add-annotation")}
       </Button>
     );
-  } else {
-    return <AnnotationFormContent onClose={handleClose} {...props} />;
   }
+  return <AnnotationFormContent onClose={handleClose} {...props} />;
 };
 
 export const AnnotationFormContent: React.FC<

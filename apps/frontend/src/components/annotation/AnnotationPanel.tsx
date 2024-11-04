@@ -165,6 +165,7 @@ const AnnotationList: React.FC<
 export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   annotationCount,
   playerIsReady,
+  videoPlayerRef,
   ...props
 }) => {
   const [value, setValue] = useState("1");
@@ -269,9 +270,18 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
         </TabPanel>
         <TabPanel
           value="2"
-          sx={{ height: "90%", padding: 0, position: "relative" }}
+          sx={{
+            height: "100%",
+            padding: 0,
+            paddingBottom: "100px",
+            position: "relative",
+          }}
         >
-          <ChaptersPanel project={props.project} user={props.user} />
+          <ChaptersPanel
+            project={props.project}
+            user={props.user}
+            videoPlayerRef={videoPlayerRef}
+          />
         </TabPanel>
       </TabContext>
     </Paper>

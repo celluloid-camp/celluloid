@@ -16,7 +16,7 @@ import {
 import Grid from "@mui/material/Grid";
 import { debounce } from "lodash";
 import * as R from "ramda";
-import * as React from "react";
+import type * as React from "react";
 import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TransitionGroup } from "react-transition-group";
@@ -47,7 +47,14 @@ export const ProjectGrid: React.FC = () => {
   const { t } = useTranslation();
 
   const userProjects = useMemo(
-    () => data.items.filter((project) => user && project.userId == user.id),
+    () =>
+      data.items
+        .filter((project) => user && project.userId === user.id)
+        .sort(
+          (a, b) =>
+            new Date(b.publishedAt).getTime() -
+            new Date(a.publishedAt).getTime()
+        ),
     [user, data]
   );
 
@@ -113,13 +120,13 @@ export const ProjectGrid: React.FC = () => {
         >
           {userProjects.length > 0 && (
             <>
-              <Fade in={userProjects.length > 0} appear={true}>
+              <Fade in={true} appear={true}>
                 <StyledTitle gutterBottom={true} variant="h4">
                   {t("home.myProjects")}
                 </StyledTitle>
               </Fade>
               <Grid container={true} spacing={5} direction="row">
-                <TransitionGroup component={null} appear={true}>
+                <TransitionGroup component={null} appear={true} delay={1000}>
                   {userProjects.map((project) => (
                     <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
                       <ProjectThumbnail showPublic={true} project={project} />

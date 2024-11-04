@@ -24,7 +24,7 @@
     "admin": "dotenv -- yarn workspace admin",
     "backend": "dotenv -- yarn workspace backend",
     "prisma": "dotenv -- yarn workspace @celluloid/prisma",
-    "docker:build": "docker build -t celluloid:latest -f ./apps/frontend/Dockerfile ."
+    "docker:build": "docker build -t celluloid:latest ."
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",

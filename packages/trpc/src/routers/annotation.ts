@@ -162,13 +162,12 @@ export const annotationRouter = router({
 
         ee.emit('change', updatedAnnotation);
         return updatedAnnotation;
-      } else {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Can't edit this annotation"
-        }
-        );
       }
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Can't edit this annotation"
+      }
+      );
 
     }),
 
