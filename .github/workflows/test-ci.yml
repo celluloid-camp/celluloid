@@ -39,12 +39,12 @@ jobs:
         with:
           node-version: 20
           cache: "yarn"
-      - run: yarn install --frozen-lockfile
+      - run: yarn install
 
       - name: Build apps
         run: |
           cp .env.ci .env
-          yarn build --filter=frontend --filter=backend
+          yarn build
 
       - name: Run Playwright tests
         # with workground https://github.com/microsoft/playwright/issues/6500
