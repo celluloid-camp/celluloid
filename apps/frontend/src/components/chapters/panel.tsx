@@ -1,8 +1,8 @@
 import InfoIcon from "@mui/icons-material/Info";
-import { Button, Grow, List, Stack, Typography } from "@mui/material";
+import { Button, Grow, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import type * as React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import Image from "mui-image";
 import {
   trpc,
@@ -20,15 +20,14 @@ import {
   TimelineContent,
   TimelineDot,
   TimelineItem,
-  timelineItemClasses,
   TimelineOppositeContent,
   timelineOppositeContentClasses,
   TimelineSeparator,
 } from "@mui/lab";
 import { formatDuration } from "~utils/DurationUtils";
 import { useSnackbar } from "notistack";
-import type ReactPlayer from "@celluloid/react-player";
 import { useVideoPlayerSeekEvent } from "~hooks/use-video-player";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function ChapterList({
   chapters,
@@ -98,11 +97,8 @@ function ChapterList({
               </Typography>
             </Stack>
           </TimelineOppositeContent>
-          <TimelineSeparator sx={{ borderWidth: 1, borderColor: "gray" }}>
-            <TimelineDot
-              variant="outlined"
-              sx={{ borderWidth: 1, borderColor: "gray" }}
-            />
+          <TimelineSeparator color="primary">
+            <TimelineDot variant="outlined" sx={{ borderWidth: 1 }} />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>
@@ -129,17 +125,20 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
   // return <div>{JSON.stringify(project)}</div>;
 
   if (!project.chapterJob) {
-    return <NoChaptersJob projectId={project.id} />;
+    return (
+      <NoChaptersJob
+        projectId={project.id}
+        canGenerate={project.userId === user?.id || user?.role === "ADMIN"}
+      />
+    );
   }
 
   if (!project.chapterJob?.finishedAt) {
-    return <ChaptersInProgress project={project} />;
+    return <ChaptersInProgress />;
   }
   return (
     <ErrorBoundary
-      fallbackRender={({ error, resetErrorBoundary }) => (
-        <div>Error: {error.message}</div>
-      )}
+      fallbackRender={({ error }) => <div>Error: {error.message}</div>}
     >
       <Suspense fallback={<div>Loading...</div>}>
         <ChaptersPanelContent project={project} user={user} />
@@ -157,6 +156,7 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
 }
 
 function EmptyChapter() {
+  const { t } = useTranslation();
   return (
     <Grow in={true}>
       <Stack
@@ -175,14 +175,20 @@ function EmptyChapter() {
       >
         <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
         <Typography variant="body2" color="gray" textAlign={"center"}>
-          <Trans i18nKey="project.chapters.empty" />
+          {t("project.chapters.empty")}
         </Typography>
       </Stack>
     </Grow>
   );
 }
 
-function NoChaptersJob({ projectId }: { projectId: string }) {
+function NoChaptersJob({
+  projectId,
+  canGenerate,
+}: {
+  projectId: string;
+  canGenerate: boolean;
+}) {
   const mutation = trpc.chapter.generateChapters.useMutation();
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
@@ -191,7 +197,7 @@ function NoChaptersJob({ projectId }: { projectId: string }) {
   const handleGenerate = async () => {
     await mutation.mutateAsync({ projectId: projectId });
 
-    enqueueSnackbar(t("confirm.generation.sent", "Génération envoyée"), {
+    enqueueSnackbar(t("confirm.generation.sent"), {
       variant: "success",
     });
 
@@ -216,17 +222,19 @@ function NoChaptersJob({ projectId }: { projectId: string }) {
       >
         <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
         <Typography variant="body2" color="gray" textAlign={"center"}>
-          Generate chapters
+          {t("project.chapters.not-found")}
         </Typography>
-        <Button variant="contained" color="primary" onClick={handleGenerate}>
-          Generate
-        </Button>
+        {canGenerate && (
+          <Button variant="contained" color="primary" onClick={handleGenerate}>
+            {t("project.chapters.button.generate")}
+          </Button>
+        )}
       </Stack>
     </Grow>
   );
 }
 
-function ChaptersInProgress({ project }: { project: ProjectById }) {
+function ChaptersInProgress() {
   const { t } = useTranslation();
   return (
     <Grow in={true}>
@@ -244,12 +252,9 @@ function ChaptersInProgress({ project }: { project: ProjectById }) {
           margin: 2,
         }}
       >
-        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
+        <CircularProgress size={20} color="secondary" />
         <Typography variant="body2" color="gray" textAlign={"center"}>
-          {t(
-            "project.chapters.inProgress.description",
-            "La génération est en cours"
-          )}
+          {t("project.chapters.inProgress.description")}
         </Typography>
       </Stack>
     </Grow>

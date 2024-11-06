@@ -5,5 +5,14 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "compilerOptions": {
+    "noEmitOnError": false,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noImplicitAny": false,
+    "strict": false,
+    "checkJs": false,
+    "allowJs": true
+  }
 }

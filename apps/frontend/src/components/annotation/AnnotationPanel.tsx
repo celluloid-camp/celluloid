@@ -150,7 +150,7 @@ const AnnotationList: React.FC<
       </List>
 
       <Box display={"flex"} flexDirection={"column"}>
-        {project.annotable && playerIsReady && user ? (
+        {project.annotable && user ? (
           <AnnotationForm
             duration={project.duration}
             project={project}
@@ -165,7 +165,6 @@ const AnnotationList: React.FC<
 export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   annotationCount,
   playerIsReady,
-  videoPlayerRef,
   ...props
 }) => {
   const [value, setValue] = useState("1");
@@ -199,6 +198,24 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
             position: "relative",
           }}
         >
+          <Box position={"absolute"} right={0} top={20}>
+            <Tooltip
+              title={t(
+                "project.annotation.hints.label",
+                "Afficher la chronologie des annotations."
+              )}
+            >
+              <Fab
+                color="secondary"
+                size="small"
+                onClick={() => setHintsVisible(!hintsVisible)}
+                disabled={!playerIsReady}
+              >
+                <ViewTimelineIcon />
+              </Fab>
+            </Tooltip>
+          </Box>
+
           <TabList
             onChange={handleChange}
             aria-label="lab API tabs example"
@@ -218,7 +235,7 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
             <Tab
               icon={<BookmarksIcon />}
               iconPosition="start"
-              label={"Chapters"}
+              label={t("project.chapters.title")}
               value="2"
             />
           </TabList>
@@ -226,9 +243,10 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
         <TabPanel
           value="1"
           sx={{
-            height: "92%",
+            height: "100%",
             padding: 0,
             position: "relative",
+            paddingBottom: "100px",
           }}
         >
           <Box
@@ -240,31 +258,6 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
               height: "100%",
             }}
           >
-            {/* <Box
-              display="flex"
-              flexDirection={"row"}
-              justifyContent="space-between"
-              paddingX={3}
-              alignContent={"center"}
-              alignItems={"center"}
-            >
-              <Tooltip
-                title={t(
-                  "project.annotation.hints.label",
-                  "Afficher la chronologie des annotations."
-                )}
-              >
-                <Fab
-                  color="secondary"
-                  size="small"
-                  onClick={() => setHintsVisible(!hintsVisible)}
-                  disabled={!playerIsReady}
-                >
-                  <ViewTimelineIcon />
-                </Fab>
-              </Tooltip>
-            </Box> */}
-
             <AnnotationList playerIsReady={playerIsReady} {...props} />
           </Box>
         </TabPanel>
@@ -277,11 +270,7 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
             position: "relative",
           }}
         >
-          <ChaptersPanel
-            project={props.project}
-            user={props.user}
-            videoPlayerRef={videoPlayerRef}
-          />
+          <ChaptersPanel project={props.project} user={props.user} />
         </TabPanel>
       </TabContext>
     </Paper>

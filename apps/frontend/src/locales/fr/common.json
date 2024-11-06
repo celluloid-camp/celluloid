@@ -246,5 +246,14 @@
   "profile.security.password-incorrect": "Mot de passe incorrect",
   "profile.security.change-password.title": "Changer le mot de passe",
   "profile.security.change-password.button": "Changer le mot de passe",
-  "project.chapters.empty": "Cette vidéo n'a pas de chapitres"
+  "project.chapters.empty": "Cette vidéo n'a pas de chapitres",
+  "chapter.confirm-delete.title": "Supprimer le chapitre",
+  "project.chapters.inProgress.description": "La génération des chapitres est en cours...",
+  "project.chapters.title": "Chapitres",
+  "confirm.generation.sent": "La génération des chapitres a commencé",
+  "project.chapters.not-found": "Aucun chapitre trouvé pour cette vidéo.",
+  "project.chapters.button.generate": "Générer des chapitres",
+  "chapter.confirm-delete.description": "Etes-vous sûr de vouloir supprimer le chapitre ?",
+  "project.chapters.item.placeholder.title": "Titre du chapitre",
+  "project.chapters.item.placeholder.description": "Description du chapitre"
 }

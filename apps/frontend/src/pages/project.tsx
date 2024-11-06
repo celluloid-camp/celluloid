@@ -3,18 +3,24 @@ import {
   Box,
   CircularProgress,
   Container,
+  Fab,
   Grid,
   Grid2,
   Paper,
+  Tooltip,
 } from "@mui/material";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
 import { AnnotationHints } from "~components/annotation/AnnotationHints";
 import { AnnotationPanel } from "~components/annotation/AnnotationPanel";
 import { ContextualAnnotations } from "~components/annotation/ContextualAnnotations";
 import { ContextualEditor } from "~components/annotation/ContextualEditor";
-import { useAnnotationEditorState } from "~components/annotation/useAnnotationEditor";
+import {
+  useAnnotationEditorState,
+  useAnnotationHintsVisible,
+} from "~components/annotation/useAnnotationEditor";
 import ProjectSummary from "~components/project/ProjectSummary";
 import { SideBar } from "~components/project/SideBar";
 import { useVideoPlayerProgressValue } from "~components/project/useVideoPlayer";
@@ -22,6 +28,7 @@ import { VideoPlayer } from "~components/project/VideoPlayer";
 import { useVideoPlayerEvent } from "~hooks/use-video-player";
 import { type AnnotationByProjectId, trpc } from "~utils/trpc";
 import type { ProjectById, UserMe } from "~utils/trpc";
+import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
 
 interface Props {
   project: ProjectById;
@@ -31,6 +38,7 @@ interface Props {
 const ProjectMainGrid: React.FC<Props> = ({ project, user }) => {
   const videoPlayerRef = React.useRef<ReactPlayer>(null);
 
+  const { t } = useTranslation();
   const utils = trpc.useUtils();
   const videoProgress = useVideoPlayerProgressValue();
   const [playerIsReady, setPlayerIsReady] = React.useState(false);

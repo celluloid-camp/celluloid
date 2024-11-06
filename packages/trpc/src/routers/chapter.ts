@@ -100,7 +100,6 @@ export const chapterRouter = router({
             }
           }
         })
-        console.log("updated project", updatedProject)
         console.log("job enqueued", jobId)
         return updatedProject;
 

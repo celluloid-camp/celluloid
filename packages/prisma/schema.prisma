@@ -75,6 +75,8 @@ model Project {
   metadata     Json?    @default("{}") @db.Json
   keywords     String[]
 
+  fileDownloadUrl String?
+
   chapterJob   QueueJob? @relation(fields: [chapterJobId], references: [id])
   chapterJobId BigInt?   @db.BigInt
 

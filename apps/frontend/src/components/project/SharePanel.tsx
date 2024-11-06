@@ -2,10 +2,9 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import copy from "copy-to-clipboard";
 import { useSnackbar } from "notistack";
-import * as React from "react";
+import type * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
-
-import { ProjectById, UserMe } from "~utils/trpc";
+import type { ProjectById, UserMe } from "~utils/trpc";
 
 import { ShareDialog } from "./ShareDialog";
 interface ProjectEditPanelProps {
@@ -28,7 +27,7 @@ export const SharePanel: React.FC<ProjectEditPanelProps> = ({
     });
   };
 
-  if (!project.shared || (user && project.userId != user.id)) {
+  if (!project.shared || (user && project.userId !== user.id)) {
     return null;
   }
 
@@ -79,7 +78,6 @@ export const SharePanel: React.FC<ProjectEditPanelProps> = ({
           </a>
         </Typography>
       </Box>
-      )
       {/*{((user && !isOwner(project, user)) && (user && !isMember(project, user))
       && (user && !isAdmin(user)) && project.shared) &&
         <div className={classes.button}>

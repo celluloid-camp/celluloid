@@ -26,10 +26,12 @@ type ScenesResult = {
  * @returns A promise that resolves with an array of detected scenes and their thumbnail paths.
  */
 export async function detectScenes({
+  projectId,
   videoPath,
   threshold = 0.4,
   duration,
 }: {
+  projectId: string;
   videoPath: string;
   threshold?: number;
   duration: number;
@@ -40,7 +42,7 @@ export async function detectScenes({
 
     // Create a folder in the OS temp directory with the current date
     const currentDate = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-    const outputDir = path.join(os.tmpdir(), `scene_detection_${currentDate}`);
+    const outputDir = path.join(os.tmpdir(), `${projectId}/scene_detection_${currentDate}`);
     fs.mkdirSync(outputDir, { recursive: true });
 
     console.log(`Output directory: ${outputDir}`);
@@ -102,7 +104,7 @@ export async function detectScenes({
             lastScene.endTime = duration;
           }
 
-          generateThumbnails(videoPath, scenes, outputDir)
+          generateThumbnails(projectId, videoPath, scenes, outputDir)
             .then(() => resolve({ outputDir, scenes }))
             .catch(reject);
 
@@ -119,6 +121,7 @@ export async function detectScenes({
 }
 
 async function generateThumbnails(
+  projectId: string,
   videoPath: string,
   scenes: Scene[],
   outputDir: string,
@@ -136,9 +139,9 @@ async function generateThumbnails(
       .on("end", async () => {
         try {
           // Upload thumbnails to S3 and update scene paths
-          await uploadThumbnailsToS3(scenes);
+          await uploadThumbnailsToS3(projectId, scenes);
           // Remove the temporary directory
-          fs.rmdirSync(outputDir, { recursive: true });
+          fs.rmSync(outputDir, { recursive: true });
           resolve();
         } catch (error) {
           reject(error);
@@ -152,6 +155,7 @@ async function generateThumbnails(
 }
 
 async function uploadThumbnailsToS3(
+  projectId: string,
   scenes: Scene[],
 ): Promise<void> {
   const storageUrlInfo = parseUrl(env.STORAGE_URL)
@@ -175,7 +179,7 @@ async function uploadThumbnailsToS3(
   for (const scene of scenes) {
     const localFilePath = scene.thumbnailPath;
     const fileName = path.basename(localFilePath);
-    const s3ObjectName = `scenes/${fileName}`;
+    const s3ObjectName = `${projectId}/chapters/${fileName}`;
 
     await minioClient.fPutObject(env.STORAGE_BUCKET, s3ObjectName, localFilePath, {
       "Content-Type": "image/jpeg",

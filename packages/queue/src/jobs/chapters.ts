@@ -41,11 +41,12 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
 
     const videoFile = metadata.streamingPlaylists[0]?.files
       .sort((a, b) => a.size - b.size) // Sort files by size in ascending order
-      .find(file => file.fileDownloadUrl)?.fileDownloadUrl; // Find the first file with a download URL
+      .find((file) => file.fileDownloadUrl)?.fileDownloadUrl; // Find the first file with a download URL
     const duration = metadata.duration || 0;
 
     if (!videoFile) {
-      throw new Error("No video file found");
+      console.error("No video file found");
+      return { status: 404 };
     }
 
 
@@ -61,7 +62,7 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
     });
 
     try {
-      const chapters = await detectScenes({ videoPath, duration });
+      const chapters = await detectScenes({ projectId: payload.projectId, videoPath, duration });
 
       await job.progress(70);
       const thumbnailStorages = await prisma.storage.createManyAndReturn({
