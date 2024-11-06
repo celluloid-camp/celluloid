@@ -1,30 +1,21 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
-  Divider,
   Grow,
   IconButton,
   ListItem,
-  ListItemAvatar,
-  ListItemButton,
   ListItemText,
   Paper,
   Stack,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import dayjs from "dayjs";
 import { useConfirm } from "material-ui-confirm";
-import Image from "mui-image";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EditableText } from "~components/editable-text";
 
-import { MultiLineTypography } from "~components/MultiLineTypography";
-import { formatDuration } from "~utils/DurationUtils";
 import {
   type ChapterByProjectId,
   type ProjectById,
@@ -76,16 +67,13 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
     }
   };
 
-  const canEdit = project.user.id === user?.id;
+  const canEdit = project.user.id === user?.id || user?.role === "ADMIN";
 
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
     confirm({
-      title: t("chapter.confirm-delete.title", "Supprimer le chapitre"),
-      description: t(
-        "chapter.confirm-delete.description",
-        "Êtes-vous sûr(e) de vouloir supprimer le chapitre ?"
-      ),
+      title: t("chapter.confirm-delete.title"),
+      description: t("chapter.confirm-delete.description"),
       confirmationText: t("deleteAction"),
       cancellationText: t("cancelAction"),
       confirmationButtonProps: {
@@ -144,24 +132,36 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
               <React.Fragment>
                 <EditableText
                   textProps={{
-                    color: "white",
+                    color: chapter.title ? "white" : "gray",
                     variant: "body2",
                   }}
                   disabled={!canEdit}
-                  value={chapter.title || `chapter`}
+                  value={chapter.title}
+                  placeholder={t("project.chapters.item.placeholder.title")}
                   onSave={(e) => handleEdit("title", e)}
-                  textFieldProps={{ sx: { color: "white" } }}
+                  textFieldProps={{
+                    sx: { color: "white" },
+                  }}
                 />
               </React.Fragment>
             }
             secondary={
               <React.Fragment>
                 <EditableText
-                  textProps={{ color: "gray", variant: "body2" }}
+                  textProps={{
+                    color: chapter.title ? "white" : "gray",
+                    variant: "body2",
+                  }}
                   disabled={!canEdit}
-                  value={chapter.description || "description"}
+                  value={chapter.description}
                   onSave={(e) => handleEdit("description", e)}
-                  textFieldProps={{ multiline: true }}
+                  textFieldProps={{
+                    multiline: true,
+                    sx: { color: "white" },
+                  }}
+                  placeholder={t(
+                    "project.chapters.item.placeholder.description"
+                  )}
                 />
               </React.Fragment>
             }

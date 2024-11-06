@@ -17,12 +17,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useClickAway } from "@uidotdev/usehooks";
 
 interface EditableTextProps {
-  value: string;
+  value?: string | null;
   onSave: (e: string) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   textProps?: TypographyProps;
   textFieldProps?: TextFieldProps;
+  placeholder?: string;
 }
 
 const StyledTextField = styled(TextField)({
@@ -44,6 +45,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
   onSave,
   onBlur,
   textProps,
+  placeholder,
   textFieldProps,
   disabled = false,
 }) => {
@@ -61,8 +63,10 @@ export const EditableText: React.FC<EditableTextProps> = ({
     setIsEditing(false);
   };
   const handleSave = () => {
-    onSave(tempValue);
-    setIsEditing(false);
+    if (tempValue) {
+      onSave(tempValue);
+      setIsEditing(false);
+    }
   };
 
   return (
@@ -70,8 +74,8 @@ export const EditableText: React.FC<EditableTextProps> = ({
       display="flex"
       alignItems="center"
       ref={ref}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
+      onMouseEnter={() => !disabled && setHovering(true)}
+      onMouseLeave={() => !disabled && setHovering(false)}
     >
       {isEditing ? (
         <>
@@ -82,6 +86,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
             variant="standard"
             autoFocus
             disabled={disabled}
+            placeholder={placeholder}
             {...textFieldProps}
           />
           <IconButton onClick={handleSave} color="success">
@@ -95,16 +100,16 @@ export const EditableText: React.FC<EditableTextProps> = ({
         <>
           <Typography
             onClick={handleEdit}
-            style={{ cursor: disabled ? "default" : "pointer", minHeight: 35 }}
+            style={{ cursor: disabled ? "default" : "pointer" }}
             {...textProps}
           >
-            {value}
+            {value || placeholder}
           </Typography>
           {!disabled && hovering && (
             <IconButton
               onClick={handleEdit}
               color="default"
-              sx={{ height: 35 }}
+              sx={{ height: 20, width: 20, marginLeft: 1 }}
             >
               <EditIcon sx={{ fontSize: 16 }} />
             </IconButton>

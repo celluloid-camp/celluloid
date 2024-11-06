@@ -38,13 +38,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: "yarn"
-      - run: yarn install
+          cache: "pnpm"
+      - run: pnpm install
 
       - name: Build apps
         run: |
           cp .env.ci .env
-          yarn build
+          pnpm build
 
       - name: Run Playwright tests
         # with workground https://github.com/microsoft/playwright/issues/6500

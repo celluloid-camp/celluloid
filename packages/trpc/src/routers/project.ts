@@ -145,7 +145,7 @@ export const projectRouter = router({
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         // Remove the last item and use it as next cursor
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
         const nextItem = items.pop()!;
         nextCursor = nextItem.id;
       }
@@ -287,7 +287,7 @@ export const projectRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+      if (ctx.user?.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
 
         // Find the project by its ID (you need to replace 'projectId' with the actual ID)
         const project = await prisma.project.findUnique({
@@ -340,7 +340,7 @@ export const projectRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+      if (ctx.user?.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
 
         // Find the project by its ID (you need to replace 'projectId' with the actual ID)
         const project = await prisma.project.findUnique({

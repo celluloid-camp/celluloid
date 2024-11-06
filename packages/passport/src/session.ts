@@ -3,7 +3,8 @@ import RedisStore from "connect-redis"
 import session from "express-session"
 import { createClient } from "redis"
 
-export function createSession() {
+
+export function createSession(): ReturnType<typeof session> {
 
   // Initialize client.
   const redisClient = createClient({

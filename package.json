@@ -11,8 +11,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "dotenv -- turbo watch dev",
-    "clean": "for package in $(ls packages); do (cd packages/${package} && yarn clean); done",
+    "dev": "dotenv -- turbo run dev",
+    "clean": "turbo clean",
     "build": "dotenv -- turbo run build --no-cache",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install",
@@ -20,10 +20,10 @@
     "test": "npx playwright test",
     "start": "pm2-runtime start ecosystem.config.js",
     "--shortcuts to run commands in workspaces--": "",
-    "frontend": "dotenv --  yarn workspace frontend",
-    "admin": "dotenv -- yarn workspace admin",
-    "backend": "dotenv -- yarn workspace backend",
-    "prisma": "dotenv -- yarn workspace @celluloid/prisma",
+    "frontend": "dotenv -- pnpm --filter frontend",
+    "admin": "dotenv -- pnpm --filter admin",
+    "backend": "dotenv -- pnpm --filter backend",
+    "prisma": "dotenv -- pnpm --filter @celluloid/prisma",
     "docker:build": "docker build -t celluloid:latest ."
   },
   "devDependencies": {
@@ -77,7 +77,6 @@
       "react-app/jest"
     ]
   },
-  "packageManager": "yarn@4.0.0",
   "engines": {
     "node": ">=20"
   },
@@ -91,5 +90,6 @@
     "dotenv-cli": "^7.3.0",
     "node-fetch": "2",
     "pm2": "^5.3.0"
-  }
+  },
+  "packageManager": "pnpm@9.7.1+sha512.faf344af2d6ca65c4c5c8c2224ea77a81a5e8859cbc4e06b1511ddce2f0151512431dd19e6aff31f2c6a8f5f2aced9bd2273e1fed7dd4de1868984059d2c4247"
 }

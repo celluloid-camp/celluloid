@@ -501,6 +501,7 @@ const VideoSnap: React.FC<{
   video: PeerTubeVideoWithThumbnail;
   onDelete: () => void;
 }> = ({ video, onDelete }) => {
+  console.log(video);
   return (
     <Grid item sx={{ borderRadius: 1, overflow: "hidden", m: 0, p: 0 }}>
       <Box sx={{ position: "absolute", zIndex: 1 }} width={THUMBNAIL_WIDTH}>
@@ -583,7 +584,7 @@ export const CreateProjectPage: React.FC = () => {
   const resetSavedValue = userResetProjectInputIntialState();
 
   useEffect(() => {
-    if (savedValue && savedValue.videoInfo && !videoInfo) {
+    if (savedValue?.videoInfo && !videoInfo) {
       setVideoInfo(savedValue.videoInfo);
     }
   }, [savedValue, videoInfo]);
@@ -594,8 +595,8 @@ export const CreateProjectPage: React.FC = () => {
 
   const handleDelete = (index: number) => {
     if (videoInfo) {
-      const newVideos = videoInfo.videos.filter((_, i) => i != index);
-      if (newVideos.length == 0) {
+      const newVideos = videoInfo.videos.filter((_, i) => i !== index);
+      if (newVideos.length === 0) {
         setVideoInfo(null);
       } else {
         setVideoInfo({
@@ -631,7 +632,7 @@ export const CreateProjectPage: React.FC = () => {
   return (
     <Box
       sx={{
-        paddingX: { md: 10, lg: 20 },
+        paddingX: { md: 20, lg: 40 },
         paddingTop: 1,
         paddingBottom: 5,
         backgroundColor: "brand.orange",

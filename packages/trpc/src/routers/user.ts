@@ -112,7 +112,7 @@ export const userRouter = router({
     if (!user) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Email or username not found`,
+        message: "Email or username not found",
       });
     }
     if (!user.email) {
@@ -151,14 +151,14 @@ export const userRouter = router({
     if (!user) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Email or username not found`,
+        message: "Email or username not found",
       });
     }
 
     if (!compareCodes(input.code, user.code || "")) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Failed to recover account, code invalid`
+        message: "Failed to recover account, code invalid"
       });
     }
 
