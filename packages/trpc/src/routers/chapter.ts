@@ -105,7 +105,64 @@ export const chapterRouter = router({
 
       }
     }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        startTime: z.number(),
+        endTime: z.number(),
+        title: z.string().optional(),
+        description: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
 
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+        select: {
+          userId: true
+        }
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found"
+        }
+        );
+      }
+
+      if (ctx.user.role === UserRole.Admin || project.userId === ctx.user?.id) {
+        const chapter = await prisma.chapter.create({
+          data: {
+            projectId: input.projectId,
+            startTime: input.startTime,
+            endTime: input.endTime,
+            title: input.title,
+            description: input.description,
+          },
+          select: {
+            id: true
+          }
+        });
+
+        if (!chapter) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Failed to create chapter"
+          }
+          );
+        }
+        return chapter;
+      }
+
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Can't edit this annotation"
+      }
+      );
+
+    }),
   edit: protectedProcedure
     .input(
       z.object({

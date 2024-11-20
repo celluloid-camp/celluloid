@@ -28,6 +28,7 @@ import { formatDuration } from "~utils/DurationUtils";
 import { useSnackbar } from "notistack";
 import { useVideoPlayerSeekEvent } from "~hooks/use-video-player";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ChapterForm } from "./form";
 
 function ChapterList({
   chapters,
@@ -66,7 +67,7 @@ function ChapterList({
         <TimelineItem key={chapter.id} sx={{ minHeight: 120 }}>
           <TimelineOppositeContent onClick={() => handleClick(chapter)}>
             <Image
-              fit="contain"
+              fit="cover"
               width={120}
               height={80}
               style={{
@@ -74,7 +75,7 @@ function ChapterList({
                 overflow: "hidden",
                 cursor: "pointer",
               }}
-              src={chapter.thumbnail?.publicUrl ?? ""}
+              src={chapter.thumbnail?.publicUrl ?? "/placeholder.svg"}
             />
             <Stack direction="row" spacing={1}>
               <Typography
@@ -116,11 +117,6 @@ function ChapterList({
   );
 }
 
-interface ChaptersPanelProps {
-  project: ProjectById;
-  user?: UserMe;
-}
-
 export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
   // return <div>{JSON.stringify(project)}</div>;
 
@@ -152,7 +148,12 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
     projectId: project.id,
   });
 
-  return <ChapterList project={project} user={user} chapters={chapters} />;
+  return (
+    <Stack height="100%">
+      <ChapterList project={project} user={user} chapters={chapters} />
+      <ChapterForm project={project} user={user} />
+    </Stack>
+  );
 }
 
 function EmptyChapter() {

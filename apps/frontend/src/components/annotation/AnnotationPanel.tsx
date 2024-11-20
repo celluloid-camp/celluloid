@@ -169,7 +169,7 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
 }) => {
   const [value, setValue] = useState("1");
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
@@ -209,7 +209,6 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
                 color="secondary"
                 size="small"
                 onClick={() => setHintsVisible(!hintsVisible)}
-                disabled={!playerIsReady}
               >
                 <ViewTimelineIcon />
               </Fab>
