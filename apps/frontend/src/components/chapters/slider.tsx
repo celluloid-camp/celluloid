@@ -3,7 +3,10 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { Grid, IconButton, Stack, styled } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import Slider, { type SliderValueLabelProps } from "@mui/material/Slider";
-import Tooltip, { tooltipClasses, type TooltipProps } from "@mui/material/Tooltip";
+import Tooltip, {
+  tooltipClasses,
+  type TooltipProps,
+} from "@mui/material/Tooltip";
 import * as React from "react";
 
 import { useVideoPlayerSeekEvent } from "~hooks/use-video-player";
@@ -42,19 +45,13 @@ function ValueLabelComponent(props: SliderValueLabelProps) {
   );
 }
 
-export const DurationSlider: React.FC<DurationSliderProps> = ({
+export const ChapterTimestampSlider: React.FC<DurationSliderProps> = ({
   duration,
   startTime = 60,
   stopTime = 1000,
   onChange,
 }) => {
   const [value, setValue] = React.useState<number[]>([startTime, stopTime]);
-
-  const [lastActiveThumb, setLastActiveThumb] = React.useState<
-    number | undefined
-  >();
-
-  const dispatcher = useVideoPlayerSeekEvent();
 
   const handleChange = (
     _event: React.SyntheticEvent | Event,
@@ -76,20 +73,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = ({
     } else {
       setValue(newValue as number[]);
     }
-    setLastActiveThumb(activeThumb);
     onChange(newValue[0], newValue[1]);
-  };
-
-  const handleChangeCommitted = (
-    _event: React.SyntheticEvent | Event,
-    newValue: number | number[]
-  ) => {
-    if (lastActiveThumb != undefined && Array.isArray(newValue)) {
-      const value = newValue[lastActiveThumb];
-      dispatcher({
-        time: value,
-      });
-    }
   };
 
   return (
@@ -119,7 +103,6 @@ export const DurationSlider: React.FC<DurationSliderProps> = ({
           value={value}
           onChange={handleChange}
           valueLabelFormat={formatDuration}
-          onChangeCommitted={handleChangeCommitted}
           step={1}
           size="small"
           valueLabelDisplay="on"

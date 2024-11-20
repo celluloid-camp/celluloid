@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
-import { useEffect } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
