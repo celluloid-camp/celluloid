@@ -46,8 +46,6 @@ The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/
 .
 ├── apps/                # Main application containers
 │   ├── frontend/        # Frontend application code
-│   ├── backend/         # Backend application code
-│   └── admin/           # Admin panel code
 ├── packages/            # Shared packages
 │   ├── config/          # Configuration settings and files
 │   ├── i18n/            # Internationalization settings and translations
