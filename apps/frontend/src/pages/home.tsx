@@ -29,8 +29,6 @@ export const HomePage: React.FC = () => {
     { retry: false, keepPreviousData: false, cacheTime: 0 }
   );
 
-  const location = useLocation();
-
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -43,7 +41,7 @@ export const HomePage: React.FC = () => {
   }, [isError, navigate]);
 
   const handleCreate = () => {
-    navigate(`/create`);
+    navigate("/create");
   };
 
   return (
@@ -94,7 +92,7 @@ export const HomePage: React.FC = () => {
                     gutterBottom={true}
                     fontFamily={"abril_fatfaceregular"}
                   >
-                    <Trans i18nKey={"home.tutoriel.subtitle"}></Trans>
+                    <Trans i18nKey={"home.tutoriel.subtitle"} />
                   </Typography>
 
                   <Typography variant="subtitle1" gutterBottom={true}>

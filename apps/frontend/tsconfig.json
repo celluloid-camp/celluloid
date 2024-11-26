@@ -64,6 +64,9 @@
       ],
       "~chapters/*": [
         "src/components/chapters/*"
+      ],
+      "~lib/*": [
+        "src/lib/*"
       ]
     }
   },

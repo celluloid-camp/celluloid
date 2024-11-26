@@ -1,17 +1,11 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  Stack,
-} from "@mui/material";
+import { DialogActions, DialogContent } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { signUp } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
 import { isTRPCClientError, trpc } from "~utils/trpc";
@@ -19,7 +13,6 @@ import { isTRPCClientError, trpc } from "~utils/trpc";
 export const SignupDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const utils = trpc.useContext();
   const mutation = trpc.user.register.useMutation();
@@ -48,16 +41,23 @@ export const SignupDialog: React.FC = () => {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        await mutation.mutateAsync({
-          username: values.username,
+        // await mutation.mutateAsync({
+        //   username: values.username,
+        //   email: values.email,
+        //   password: values.password,
+        // });
+
+        const res = await signUp.email({
+          name: values.username,
           email: values.email,
           password: values.password,
         });
+        console.log(res);
 
-        utils.user.me.invalidate();
-        navigate(`/confirm?email=${values.email}`, {
-          state: { backgroundLocation: "/" },
-        });
+        // utils.user.me.invalidate();
+        // navigate(`/confirm?email=${values.email}`, {
+        //   state: { backgroundLocation: "/" },
+        // });
         formik.setStatus("submited");
       } catch (e) {
         if (isTRPCClientError(e)) {

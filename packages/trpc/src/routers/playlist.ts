@@ -1,4 +1,3 @@
-import { UserRole } from '@celluloid/prisma';
 import { prisma } from "@celluloid/prisma"
 import { generateUniqueShareName } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
@@ -143,7 +142,7 @@ export const playlistRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+      if (ctx.user && ctx.requireRoles(['teacher', 'admin'])) {
         const userId = ctx.user.id;
 
         const project = await prisma.playlist.create({

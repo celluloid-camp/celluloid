@@ -1,5 +1,4 @@
-import { passport } from "@celluloid/passport";
-import { Prisma, prisma, UserRole } from "@celluloid/prisma"
+import { Prisma, prisma } from "@celluloid/prisma"
 import { compareCodes, generateOtp, hashPassword } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import bcrypt from 'bcryptjs';
@@ -32,71 +31,71 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
 export const UserSchema = z.object({
   id: z.string({ description: 'The unique identifier for the user' }),
   username: z.string({ description: 'The username for the user' }),
-  role: z.nativeEnum(UserRole, { description: 'The role assigned to the user, either Admin or User' }).nullable(),
+  role: z.string({ description: 'The role assigned to the user, either Admin or User' }).nullable(),
   initial: z.string({ description: 'The initial letter or string for user representation' }),
   color: z.string({ description: 'The color code associated with the user' })
 });
 
 
 export const userRouter = router({
-  login: publicProcedure
-    .meta({
-      openapi: {
-        method: 'POST',
-        path: '/login',
-        description: 'This endpoint allows a user to login.'
-      }
-    })
-    .input(
-      z.object({
-        username: z.string({ description: 'The username of the user' }),
-        password: z.string({ description: 'The password for the user' })
-      }),
-    ).output(UserSchema.nullable())
-    .mutation(async ({ ctx, input }) => {
+  // login: publicProcedure
+  //   .meta({
+  //     openapi: {
+  //       method: 'POST',
+  //       path: '/login',
+  //       description: 'This endpoint allows a user to login.'
+  //     }
+  //   })
+  //   .input(
+  //     z.object({
+  //       username: z.string({ description: 'The username of the user' }),
+  //       password: z.string({ description: 'The password for the user' })
+  //     }),
+  //   ).output(UserSchema.nullable())
+  //   .mutation(async ({ ctx, input }) => {
 
-      //@ts-expect-error dynamic
-      ctx.req.body = input;
+  //     //@ts-expect-error dynamic
+  //     ctx.req.body = input;
 
-      emailQueue.add({ email: input.username });
-      await new Promise<Express.User | void>((resolve, reject) => {
-        passport.authenticate("login", {
-          failWithError: true
-        })(ctx.req, ctx.res, (err: Error, user: Express.User) => {
-          if (err) return reject(err);
-          resolve(user);
-        })
-      }).catch(err => {
-        console.log(err.name);
+  //     emailQueue.add({ email: input.username });
+  //     await new Promise<Express.User | void>((resolve, reject) => {
+  //       passport.authenticate("login", {
+  //         failWithError: true
+  //       })(ctx.req, ctx.res, (err: Error, user: Express.User) => {
+  //         if (err) return reject(err);
+  //         resolve(user);
+  //       })
+  //     }).catch(err => {
+  //       console.log(err.name);
 
-        if (err?.name === 'InvalidUserError') {
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'USER_NOT_FOUND'
-          })
-        }
-        if (err?.name === "UserNotConfirmed") {
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'USER_NOT_CONFIRMED'
-          })
-        }
+  //       if (err?.name === 'InvalidUserError') {
+  //         throw new TRPCError({
+  //           code: 'UNAUTHORIZED',
+  //           message: 'USER_NOT_FOUND'
+  //         })
+  //       }
+  //       if (err?.name === "UserNotConfirmed") {
+  //         throw new TRPCError({
+  //           code: 'UNAUTHORIZED',
+  //           message: 'USER_NOT_CONFIRMED'
+  //         })
+  //       }
 
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: err
-        })
-      })
+  //       throw new TRPCError({
+  //         code: 'INTERNAL_SERVER_ERROR',
+  //         message: err
+  //       })
+  //     })
 
-      const user = await prisma.user.findFirst({
-        select: defaultUserSelect,
-        where: {
-          OR: [{ email: input.username }, { username: input.username, }]
-        }
-      });
+  //     const user = await prisma.user.findFirst({
+  //       select: defaultUserSelect,
+  //       where: {
+  //         OR: [{ email: input.username }, { username: input.username, }]
+  //       }
+  //     });
 
-      return user;
-    }),
+  //     return user;
+  //   }),
   forgot: publicProcedure.input(
     z.object({
       email: z.string()
@@ -597,11 +596,6 @@ export const userRouter = router({
         items: items.reverse(),
         nextCursor,
       };
-    }),
-  logout: protectedProcedure
-    .mutation(async (opts) => {
-      const { ctx } = opts;
-      return ctx.logout();
-    }),
+    })
 });
 

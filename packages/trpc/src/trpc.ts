@@ -1,40 +1,25 @@
-import "express-session"
 
-import type { User, UserRole } from '@celluloid/prisma';
 import { type inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type {
   CreateWSSContextFnOptions,
 } from '@trpc/server/adapters/ws';
-import type { Request, Response } from 'express';
-import type { Session } from "express-session";
 import type { OpenApiMeta } from 'trpc-openapi';
-
-// export type Context = {
-//   user: User | null;
-
-//   requirePermissions: (roles: UserRole[]) => boolean;
-//   logout: () => Promise<boolean>;
-//   req: Request;
-//   res: Response;
-// };
-
-declare module 'http' {
-  interface IncomingMessage {
-    session: Session & {
-      userId?: string
-    }
-  }
-}
+import { auth } from "@celluloid/auth";
+import { fromNodeHeaders } from "better-auth/node";
 
 
 export async function createContext(opts: CreateExpressContextOptions | CreateWSSContextFnOptions) {
 
   const { req, res } = opts;
 
-  const user: User | null = (req as Request).user as User;
-  const requirePermissions = (roles: UserRole[]) => {
-    if (!user?.role || !roles.includes(user?.role)) {
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(req.headers),
+  });
+
+
+  const requireRoles = (roles: string[]) => {
+    if (!session?.user?.role || !roles.includes(session?.user?.role)) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: `Missing permission: '${roles.join(",")}'.`
@@ -44,22 +29,10 @@ export async function createContext(opts: CreateExpressContextOptions | CreateWS
     return true;
   }
 
-  const logout = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      req.session?.destroy((err: Error | null) => {
-        if (err) {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: "Enable to log out"
-          })
-        }
-
-        resolve(true)
-      });
-    })
-  }
+  const user = session?.user;
   return {
-    user, requirePermissions, logout, req,
+    user, requireRoles,
+    req,
     res,
   };
 };

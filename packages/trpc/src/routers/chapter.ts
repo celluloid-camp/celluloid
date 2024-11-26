@@ -1,12 +1,7 @@
-import { prisma, UserRole } from '@celluloid/prisma';
-import type { Annotation } from '@celluloid/prisma';
+import { prisma } from '@celluloid/prisma';
 import { Prisma } from '@celluloid/prisma';
-import { toSrt } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
-import { observable } from '@trpc/server/observable';
 import { EventEmitter } from 'node:events';
-import { parse as toXML } from 'js2xmlparser';
-import Papa from 'papaparse';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
@@ -75,7 +70,7 @@ export const chapterRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user?.id && ctx.requirePermissions([UserRole.Teacher, UserRole.Admin])) {
+      if (ctx.user?.id && ctx.requireRoles(['teacher', 'admin'])) {
 
         // Find the project by its ID (you need to replace 'projectId' with the actual ID)
         const project = await prisma.project.findUnique({
@@ -132,7 +127,7 @@ export const chapterRouter = router({
         );
       }
 
-      if (ctx.user.role === UserRole.Admin || project.userId === ctx.user?.id) {
+      if (ctx.user?.role === "admin" || project.userId === ctx.user?.id) {
         const chapter = await prisma.chapter.create({
           data: {
             projectId: input.projectId,
@@ -190,7 +185,7 @@ export const chapterRouter = router({
         );
       }
 
-      if (ctx.user.role === UserRole.Admin || chapter.project.userId === ctx.user?.id) {
+      if (ctx.user?.role === "admin" || chapter.project.userId === ctx.user?.id) {
         // Perform the update
         const updatedChapter = await prisma.chapter.update({
           where: { id: input.chapterId },
@@ -236,7 +231,7 @@ export const chapterRouter = router({
         );
       }
 
-      if (ctx.user.role === UserRole.Admin || chapter.project.userId === ctx.user?.id) {
+      if (ctx.user?.role === "admin" || chapter.project.userId === ctx.user?.id) {
         const chapter = await prisma.chapter.delete({
           where: { id: input.chapterId },
         });

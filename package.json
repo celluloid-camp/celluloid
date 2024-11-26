@@ -22,6 +22,7 @@
     "--shortcuts to run commands in workspaces--": "",
     "frontend": "dotenv -- pnpm --filter frontend",
     "admin": "dotenv -- pnpm --filter admin",
+    "auth": "dotenv -- pnpm --filter auth",
     "backend": "dotenv -- pnpm --filter backend",
     "prisma": "dotenv -- pnpm --filter @celluloid/prisma",
     "docker:build": "docker build -t celluloid:latest ."
