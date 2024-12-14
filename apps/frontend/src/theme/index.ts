@@ -5,7 +5,8 @@ import {
 } from "@mui/material/styles";
 
 import { baseThemeOptions } from "./base-theme-options";
-import { celluloidThemeOptions } from "./celluloid-theme-options";
+// import { celluloidThemeOptions } from "./celluloid-theme-options";
+import { especateurThemeOptions } from "./especateur-theme-options";
 import { reactRouterThemeOptions } from "./react-router-link";
 
 interface Neutral {
@@ -34,7 +35,7 @@ declare module "@mui/material/styles" {
 
 
 export const createTheme = (): Theme => {
-  let theme = createMuiTheme(baseThemeOptions, celluloidThemeOptions, reactRouterThemeOptions);
+  let theme = createMuiTheme(baseThemeOptions, especateurThemeOptions, reactRouterThemeOptions);
 
   theme = responsiveFontSizes(theme);
 

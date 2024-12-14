@@ -8,7 +8,7 @@ import { MemberListPanel } from "./MemberListPanel";
 import { PlaylistSideBar } from "./PlaylistSideBar";
 import { ProjectEditPanel } from "./ProjectEditPanel";
 import { SharePanel } from "./SharePanel";
-
+import { AdvancedOptions } from "./advanced-options";
 interface SideBarProps {
   project: ProjectById;
   user?: UserMe;
@@ -17,7 +17,12 @@ interface SideBarProps {
 export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
   return (
     <Box>
-      {user ? <ProjectEditPanel project={project} user={user} /> : null}
+      {user?.id === project.userId ? (
+        <>
+          <ProjectEditPanel project={project} />
+          <AdvancedOptions />
+        </>
+      ) : null}
       <PlaylistSideBar project={project} />
       {user ? (
         <Box>

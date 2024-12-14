@@ -6,7 +6,7 @@ type LogoWithLabelWithProps = {
 export const LogoWithLabel: React.FC<LogoWithLabelWithProps> = ({
   variants = "black",
 }) => {
-  const color = variants == "black" ? "#000000" : "#ffff";
+  const color = variants === "black" ? "#000000" : "#ffff";
 
   return (
     <svg width="180" height="40">

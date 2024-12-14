@@ -1,5 +1,13 @@
-import { AppBar, Box, BoxProps, Button, styled, Toolbar } from "@mui/material";
-import * as React from "react";
+import {
+  AppBar,
+  Box,
+  type BoxProps,
+  Button,
+  styled,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import type * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 
@@ -45,7 +53,14 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
         <Toolbar disableGutters>
           <Box flexGrow={1}>
             <Button component={getButtonLink("/")}>
-              <LogoWithLabel />
+              {/* <LogoWithLabel /> */}
+              <Typography
+                variant="h5"
+                fontFamily={"abril_fatfaceregular"}
+                color="black"
+              >
+                Espact@teur
+              </Typography>
             </Button>
           </Box>
 

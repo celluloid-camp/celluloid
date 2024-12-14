@@ -50,7 +50,8 @@ const prismaClient = new PrismaClient({
               relativeX: extraObject.relativeX,
               relativeY: extraObject.relativeY,
               parentWidth: extraObject.parentWidth,
-              parentHeight: extraObject.parentHeight
+              parentHeight: extraObject.parentHeight,
+              emotion: extraObject.emotion,
             }
           }
           return null

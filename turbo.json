@@ -12,11 +12,18 @@
     },
     "lint": {},
     "dev": {
+      "dependsOn": [
+        "prisma:generate"
+      ],
       "cache": false,
       "persistent": true
     },
     "clean": {
       "cache": false
+    },
+    "prisma:generate": {
+      "cache": false,
+      "outputs": []
     }
   },
   "globalEnv": [

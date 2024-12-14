@@ -3,24 +3,18 @@ import { Button, Paper } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { ProjectById, UserMe } from "~utils/trpc";
+import type { ProjectById, UserMe } from "~utils/trpc";
 
 import { EditProjectDialog } from "./EditProjectDialog";
 interface ProjectEditPanelProps {
   project: ProjectById;
-  user: UserMe;
 }
 
 export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = ({
   project,
-  user,
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
-
-  if (project.userId != user.id) {
-    return null;
-  }
 
   return (
     <Paper
