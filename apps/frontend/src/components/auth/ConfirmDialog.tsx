@@ -4,13 +4,13 @@ import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { authClient } from "~/lib/auth-client";
 
 import { useProjectInputIntialValue } from "~/state";
 import { StyledDialog } from "~components/Dialog";
 import { useRouteQuery } from "~hooks/useRouteQuery";
-import { trpc } from "~utils/trpc";
 
 export const ConfirmDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -18,8 +18,6 @@ export const ConfirmDialog: React.FC = () => {
   const query = useRouteQuery();
   const { enqueueSnackbar } = useSnackbar();
 
-  const utils = trpc.useUtils();
-  const mutation = trpc.user.confirm.useMutation();
   const savedProjectValue = useProjectInputIntialValue();
 
   const validationSchema = Yup.object().shape({
@@ -33,7 +31,11 @@ export const ConfirmDialog: React.FC = () => {
 
   const handleResendCode = async () => {
     if (queryEmail) {
-      await utils.client.user.askEmailConfirm.mutate({ email: queryEmail });
+      await authClient.sendVerificationEmail({
+        email: queryEmail,
+        // callbackURL: "/" // The redirect URL after verification
+      });
+
       enqueueSnackbar(t("confirm.resend.success", "Code envoyé"), {
         variant: "success",
       });
@@ -52,12 +54,11 @@ export const ConfirmDialog: React.FC = () => {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        await mutation.mutateAsync({
-          username: values.username,
-          code: values.code,
+        authClient.verifyEmail({
+          query: {
+            token: values.code,
+          },
         });
-
-        utils.user.me.invalidate();
 
         if (savedProjectValue.videoInfo) {
           navigate("/create", { replace: true });
@@ -133,8 +134,8 @@ export const ConfirmDialog: React.FC = () => {
             color="primary"
             type="submit"
             data-testid="submit"
-            loading={mutation.isLoading}
-            disabled={mutation.isLoading}
+            loading={formik.isSubmitting}
+            disabled={formik.isSubmitting}
           >
             <Trans i18nKey="confirm.button.submit">Envoyer</Trans>
           </LoadingButton>

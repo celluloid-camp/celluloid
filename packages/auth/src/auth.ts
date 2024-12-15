@@ -11,13 +11,18 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   emailVerification: {
+    enabled: true,
     sendOnSignUp: true,
     autoSignInAfterVerification: true
   },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    sendResetPassword: async ({ user, url, token }, request) => {
+    sendVerificationOTP: async ({ user, url, token }: { user: any, url: any, token: any }) => {
+      console.log("sendVerificationOTP", user, url, token);
+      return
+    },
+    sendResetPassword: async ({ user, url, token }: { user: any, url: any, token: any }) => {
       // await sendEmail({
       //     to: user.email,
       //     subject: 'Reset your password',
@@ -28,25 +33,17 @@ export const auth = betterAuth({
     }
   },
   user: {
+    modelName: "User",
+    fields: {
+      name: "username"
+    },
     additionalFields: {
       role: {
         type: "string",
         required: false,
         defaultValue: "user",
         input: false // don't allow user to set role
-      },
-      initial: {
-        type: "string",
-        required: false,
-        defaultValue: "CC",
-        input: false
-      },
-      color: {
-        type: "string",
-        required: false,
-        defaultValue: "#000000",
-        input: false
-      },
+      }
     }
   },
   plugins: [

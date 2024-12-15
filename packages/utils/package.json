@@ -2,13 +2,21 @@
   "name": "@celluloid/utils",
   "main": "dist/index.js",
   "version": "3.0.0",
+  "type": "module",
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+    "build": "tsc",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsc"
   },
   "devDependencies": {
     "@celluloid/config": "workspace:*",
@@ -16,7 +24,7 @@
     "@types/bcryptjs": "^2.4.5",
     "@types/redis": "^4.0.11",
     "tsup": "^8.3.0",
-    "typescript": "^5.6.2"
+    "typescript": "catalog:"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.7.1",
@@ -25,6 +33,6 @@
     "pino": "^9.4.0",
     "redis": "^4.6.10",
     "unique-slug": "^4.0.0",
-    "zod": "^3.23.8"
+    "zod": "catalog:"
   }
 }

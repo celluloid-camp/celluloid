@@ -12,8 +12,11 @@
     },
     "lint": {},
     "dev": {
+      "dependsOn": [
+        "^dev"
+      ],
       "cache": false,
-      "persistent": true
+      "persistent": false
     },
     "clean": {
       "cache": false
@@ -30,7 +33,9 @@
     "STORAGE_URL",
     "STORAGE_BUCKET",
     "STORAGE_ACCESS_KEY",
-    "STORAGE_SECRET_KEY"
+    "STORAGE_SECRET_KEY",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL"
   ],
   "globalPassThroughEnv": [
     "NODE_ENV",

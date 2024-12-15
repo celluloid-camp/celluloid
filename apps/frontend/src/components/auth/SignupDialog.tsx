@@ -14,7 +14,6 @@ export const SignupDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const utils = trpc.useContext();
   const mutation = trpc.user.register.useMutation();
 
   const validationSchema = Yup.object().shape({
@@ -40,39 +39,37 @@ export const SignupDialog: React.FC = () => {
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
-      try {
-        // await mutation.mutateAsync({
-        //   username: values.username,
-        //   email: values.email,
-        //   password: values.password,
-        // });
+      formik.setSubmitting(true);
+      // await mutation.mutateAsync({
+      //   username: values.username,
+      //   email: values.email,
+      //   password: values.password,
+      // });
 
-        const res = await signUp.email({
-          name: values.username,
-          email: values.email,
-          password: values.password,
-        });
-        console.log(res);
+      const { data, error } = await signUp.email({
+        email: values.email,
+        password: values.password,
+        name: values.username,
+      });
 
-        // utils.user.me.invalidate();
-        // navigate(`/confirm?email=${values.email}`, {
-        //   state: { backgroundLocation: "/" },
-        // });
-        formik.setStatus("submited");
-      } catch (e) {
-        if (isTRPCClientError(e)) {
-          // `cause` is now typed as your router's `TRPCClientError`
-          if (e.message === "ACCOUNT_EXISTS") {
-            formik.setFieldError(
-              "email",
-              t("signup.error.account_exists", "Email exists dejà")
-            );
-          }
+      if (error) {
+        if (error.code === "ACCOUNT_EXISTS") {
+          formik.setFieldError("email", error.message);
         } else {
-          formik.setFieldError("error", e.message);
-          console.log(e);
+          formik.setFieldError("error", error.message);
         }
+        formik.setSubmitting(false);
+        return;
       }
+      console.log(data);
+      if (data.emailVerified === false) {
+        return navigate(`/confirm?email=${values.email}`, {
+          state: { backgroundLocation: "/" },
+        });
+      }
+      navigate(-1);
+
+      // utils.user.me.invalidate();
     },
   });
 

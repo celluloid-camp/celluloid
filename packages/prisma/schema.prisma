@@ -16,7 +16,7 @@ model Annotation {
   startTime Float     @db.Real
   stopTime  Float     @db.Real
   pause     Boolean
-  userId    String    @db.Uuid
+  userId    String
   projectId String    @db.Uuid
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
   extra     Json?     @default("{}")
@@ -31,7 +31,7 @@ model Comment {
   id           String     @id @unique(map: "comment_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   text         String
   annotationId String     @db.Uuid
-  userId       String     @db.Uuid
+  userId       String
   createdAt    DateTime?  @default(now()) @db.Timestamptz(6)
   extra        Json?      @default("{}")
   annotation   Annotation @relation(fields: [annotationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_annotationid_foreign")
@@ -46,7 +46,7 @@ model Language {
 model Project {
   id            String   @id @unique(map: "project_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   videoId       String
-  userId        String   @db.Uuid
+  userId        String
   title         String
   description   String
   host          String?
@@ -101,7 +101,7 @@ model Chapter {
   updatedAt DateTime @updatedAt
 
   lastEditedBy   User?   @relation(fields: [lastEditedById], references: [id])
-  lastEditedById String? @db.Uuid
+  lastEditedById String?
 
   @@index([projectId])
 }
@@ -113,7 +113,7 @@ model Playlist {
   description String
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @db.Uuid
+  userId String
 
   projects Project[]
 
@@ -121,20 +121,16 @@ model Playlist {
 }
 
 model User {
-  id              String          @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email           String?         @unique(map: "user_email_unique") @db.VarChar(255)
-  username        String          @unique(map: "user_username_unique") @db.VarChar(255)
-  password        String          @db.VarChar(255)
-  confirmed       Boolean         @default(false)
-  code            String?
-  codeGeneratedAt DateTime?       @db.Timestamptz(6)
-  extra           Json?           @default("{}")
-  annotation      Annotation[]
-  comment         Comment[]
-  project         Project[]
-  UserToProject   UserToProject[]
+  id       String  @id @unique(map: "user_id_unique")
+  email    String? @unique(map: "user_email_unique") @db.VarChar(255)
+  username String
 
-  playlist Playlist[]
+  annotation    Annotation[]
+  comment       Comment[]
+  project       Project[]
+  UserToProject UserToProject[]
+  role          String?
+  playlist      Playlist[]
 
   firstname String? @db.VarChar(255)
   lastname  String? @db.VarChar(255)
@@ -145,22 +141,21 @@ model User {
 
   chapters Chapter[]
 
-  name          String
   // email         String
-  emailVerified Boolean
+  emailVerified Boolean @default(false)
   image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
 
   sessions Session[]
   accounts Account[]
 
-  role       String?
   banned     Boolean?
   banReason  String?
   banExpires DateTime?
 
-  @@map("user")
+  extra Json? @default("{}")
 }
 
 model Session {
@@ -171,7 +166,7 @@ model Session {
   updatedAt DateTime
   ipAddress String?
   userAgent String?
-  userId    String   @db.Uuid
+  userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
@@ -182,7 +177,7 @@ model Account {
   id                    String    @id
   accountId             String
   providerId            String
-  userId                String    @db.Uuid
+  userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
@@ -211,7 +206,7 @@ model Verification {
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model UserToProject {
   id        Int      @id @default(autoincrement())
-  userId    String?  @db.Uuid
+  userId    String?
   projectId String?  @db.Uuid
   project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_projectid_foreign")
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_userid_foreign")

@@ -15,13 +15,14 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
+      "types": "./dist/index.d.ts",
       "default": "./src/index.ts"
     }
   },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+    "build": "tsc",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsc"
   },
   "dependencies": {
     "@celluloid/prisma": "workspace:*",
@@ -45,7 +46,7 @@
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.1",
     "ws": "^8.18.0",
-    "zod": "^3.23.8"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@celluloid/config": "workspace:*",
@@ -55,6 +56,6 @@
     "@types/papaparse": "^5.3.10",
     "@types/uuid": "^9.0.4",
     "tsup": "^8.3.0",
-    "typescript": "^5.6.2"
+    "typescript": "catalog:"
   }
 }

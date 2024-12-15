@@ -1,12 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  Stack,
-} from "@mui/material";
+import { Box, Button, DialogActions, DialogContent } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
@@ -15,6 +8,7 @@ import * as Yup from "yup";
 
 import { StyledDialog } from "~components/Dialog";
 import { isTRPCClientError, trpc } from "~utils/trpc";
+import { signIn } from "~/lib/auth-client";
 
 export const LoginDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -22,7 +16,6 @@ export const LoginDialog: React.FC = () => {
   const location = useLocation();
 
   const utils = trpc.useContext();
-  const mutation = trpc.user.login.useMutation();
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required().label(t("signin.username")),
@@ -40,7 +33,7 @@ export const LoginDialog: React.FC = () => {
     navigate(
       {
         pathname: "/confirm",
-        search: email ? "?email=" + email : undefined,
+        search: email ? `?email=${email}` : undefined,
       },
       {
         state: { backgroundPath: "/" },
@@ -67,36 +60,33 @@ export const LoginDialog: React.FC = () => {
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
-      try {
-        await mutation.mutateAsync({
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        });
+      formik.setSubmitting(true);
 
-        utils.user.me.invalidate();
-        utils.project.list.invalidate();
-        navigate(-1);
-        formik.setStatus("submited");
-      } catch (e) {
-        if (isTRPCClientError(e)) {
-          console.log(e.message);
-          // `cause` is now typed as your router's `TRPCClientError`
-          if (e.message === "USER_NOT_CONFIRMED") {
-            handleConfirm(values.username);
-          } else if (e.message === "USER_NOT_FOUND") {
-            formik.setFieldError(
-              "error",
-              t(
-                "signin.error.user-not-found",
-                "Nom d'utilisateur ou mot de passe incorrect"
-              )
-            );
-          }
+      const { data, error } = await signIn.email({
+        email: values.username,
+        password: values.password,
+      });
+
+      if (error) {
+        if (error.code === "EMAIL_NOT_VERIFIED") {
+          handleConfirm(values.username);
         } else {
-          formik.setFieldError("error", e.message);
+          formik.setFieldError(
+            "error",
+            t(
+              "signin.error.user-not-found",
+              "Nom d'utilisateur ou mot de passe incorrect"
+            )
+          );
         }
+        formik.setSubmitting(false);
+        return;
       }
+
+      utils.project.list.invalidate();
+      navigate(-1);
+      formik.setStatus("submited");
+      formik.setSubmitting(false);
     },
   });
 
@@ -187,8 +177,8 @@ export const LoginDialog: React.FC = () => {
               color="primary"
               type="submit"
               data-testid="submit"
-              loading={mutation.isLoading}
-              disabled={mutation.isLoading}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
               sx={{ textTransform: "uppercase" }}
             >
               <Trans i18nKey="signin.loginAction" />

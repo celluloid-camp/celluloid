@@ -15,19 +15,17 @@ import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 
 const app = express();
 app.disable('x-powered-by');
-app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
+app.use(express.urlencoded({ extended: true }));
 app.enable('trust proxy');
 
 // parse cookies
 app.use(cookies());
 
 // Setup CORS
-// app.use(cors({
-//   origin: process.env.NODE_ENV !== "production" ? ['http://localhost:3000', 'http://localhost:4000'] : undefined,
-//   credentials: true,
-// }));
+app.use(cors({
+  origin: process.env.NODE_ENV !== "production" ? ['http://localhost:3000', 'http://localhost:4000'] : undefined,
+  credentials: true,
+}));
 
 app.all("/api/auth/*", toNodeHandler(auth));
 
@@ -69,6 +67,12 @@ app.use(
 );
 emailQueue.start();
 chaptersQueue.start();
+
+ViteExpress.config({
+  ignorePaths: /^\/api\/.*/,
+});
+
+app.use(express.json());
 
 ViteExpress.listen(app, 3000, () =>
   console.log("Server is listening on port 3000..."),
