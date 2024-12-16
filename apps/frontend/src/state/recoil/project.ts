@@ -1,6 +1,6 @@
 import { atom, useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 
-import { PeerTubeVideoDataResult } from "~services/peertube";
+import type { PeerTubeVideoDataResult } from "~services/peertube";
 
 export type ProjectFormInput = {
   title: string;
@@ -9,16 +9,18 @@ export type ProjectFormInput = {
   public: boolean;
   collaborative: boolean;
   videoInfo: PeerTubeVideoDataResult | undefined;
+  shared: boolean;
 };
 
 export const projectInputInitialValueAtom = atom<ProjectFormInput>({
-  key: `ProjectFormInput`,
+  key: "ProjectFormInput",
   default: {
     title: "",
     description: "",
     keywords: [],
     public: false,
     collaborative: false,
+    shared: false,
     videoInfo: undefined,
   },
 });

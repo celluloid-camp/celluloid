@@ -40,7 +40,7 @@
   "home.newProject": "Créer un projet",
   "home.publicProjects": "Explorer",
   "home.searchProject": "Rechercher un projet…",
-  "home.title": "Qu’est-ce que Celluloid ?",
+  "home.title": "Qu’est-ce que Espectateur ?",
   "home.tutoriel.description": "Rendez-vous sur une instance <0>Peertube</0>. \nChoisissez une vidéo ou déposez-en une nouvelle dans l’instance.\nCopiez le lien de partage de la vidéo.\nCréez votre projet dans Celluloid en collant le lien de la vidéo et lancez-vous !\nVous voulez travailler à plusieurs ? Partagez le code du projet avec vos partenaires...",
   "home.tutoriel.link": "Le tutoriel est ici : <0>https://celluloid-media.huma-num.fr/w/7r2FxoQdYjun6tYWJfHUCa</0>",
   "home.tutoriel.prefix": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
@@ -184,8 +184,8 @@
   "recover.code.required": "Code est obligatoire",
   "recover.password.required": "Mot de passe est requis",
   "recover.title": "Récupérer le compte",
-  "recover.username.label": "Email ou nom d'utilisateur",
-  "recover.username.paceholder": "Email ou nom d'utilisateur",
+  "recover.username.label": "Adresse mail",
+  "recover.username.paceholder": "Adresse mail",
   "recover.code.label": "Code de confirmation",
   "recover.code.placeholder": "Code de confirmation",
   "recover.password.label": "Mot de passe",
@@ -255,5 +255,12 @@
   "project.chapters.button.generate": "Générer des chapitres",
   "chapter.confirm-delete.description": "Etes-vous sûr de vouloir supprimer le chapitre ?",
   "project.chapters.item.placeholder.title": "Titre du chapitre",
-  "project.chapters.item.placeholder.description": "Description du chapitre"
+  "project.chapters.item.placeholder.description": "Description du chapitre",
+  "recorver.email.required": "L'email est obligatoire",
+  "join.error.username-taken": "Le nom d'utilisateur existe déjà",
+  "chapters.form.reset.confirm.title": "Réinitialiser tous les chapitres",
+  "chapters.form.reset.confirm.description": "Etes-vous sûr de vouloir réinitialiser tous les chapitres ?",
+  "chapters.form.button.add": " Ajouter un chapitre",
+  "chapters.form.button.reset": "Réinitialiser les chapitres",
+  "chapters.form.title.placeholder": "Titre du chapitre"
 }

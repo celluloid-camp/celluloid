@@ -1,0 +1,26 @@
+{
+  "name": "@celluloid/emails",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./emails/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc",
+    "email-dev": "email dev -p 3001",
+    "export": "email export"
+  },
+  "dependencies": {
+    "@react-email/components": "0.0.31",
+    "react-email": "3.0.4"
+  },
+  "devDependencies": {
+    "@celluloid/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

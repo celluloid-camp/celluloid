@@ -117,6 +117,11 @@ function ChapterList({
   );
 }
 
+type ChaptersPanelProps = {
+  project: ProjectById;
+  user?: UserMe;
+};
+
 export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
   // return <div>{JSON.stringify(project)}</div>;
 
@@ -151,7 +156,7 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
   return (
     <Stack height="100%">
       <ChapterList project={project} user={user} chapters={chapters} />
-      <ChapterForm project={project} user={user} />
+      <ChapterForm project={project} user={user} chapters={chapters} />
     </Stack>
   );
 }

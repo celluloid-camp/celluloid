@@ -1,9 +1,9 @@
 import { Prisma, prisma } from "@celluloid/prisma";
-import { env } from "@celluloid/utils";
 import * as Minio from "minio";
 import { z } from "zod";
 
 import { protectedProcedure, router } from "../trpc";
+import { env } from "../env";
 
 const defaultStorageSelect = Prisma.validator<Prisma.StorageSelect>()({
   id: true,
@@ -75,7 +75,7 @@ export const storageRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id) {
+      if (ctx.user?.id) {
         const file = await prisma.storage.create({
           data: {
             user: {
@@ -99,7 +99,7 @@ export const storageRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       //TODO : check if project owner or collaborator
-      if (ctx.user && ctx.user.id) {
+      if (ctx.user?.id) {
         const comment = await prisma.comment.delete({
           where: { id: input.commentId },
         });

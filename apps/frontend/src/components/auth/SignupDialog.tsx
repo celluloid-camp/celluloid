@@ -1,28 +1,17 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  Stack,
-} from "@mui/material";
+import { DialogActions, DialogContent } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { authClient, signUp } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
-import { isTRPCClientError, trpc } from "~utils/trpc";
 
 export const SignupDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const utils = trpc.useContext();
-  const mutation = trpc.user.register.useMutation();
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required().label(t("signup.username.label")),
@@ -47,32 +36,35 @@ export const SignupDialog: React.FC = () => {
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
-      try {
-        await mutation.mutateAsync({
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        });
+      formik.setSubmitting(true);
 
-        utils.user.me.invalidate();
-        navigate(`/confirm?email=${values.email}`, {
+      const { data, error } = await signUp.email({
+        email: values.email,
+        password: values.password,
+        username: values.username,
+      });
+
+      if (error) {
+        if (error.code === "ACCOUNT_EXISTS") {
+          formik.setFieldError("email", error.message);
+        } else {
+          formik.setFieldError("error", error.message);
+        }
+        formik.setSubmitting(false);
+        return;
+      }
+      if (data.emailVerified === false) {
+        await authClient.emailOtp.sendVerificationOtp({
+          email: values.email,
+          type: "sign-in", // or "email-verification", "forget-password"
+        });
+        return navigate(`/confirm?email=${values.email}`, {
           state: { backgroundLocation: "/" },
         });
-        formik.setStatus("submited");
-      } catch (e) {
-        if (isTRPCClientError(e)) {
-          // `cause` is now typed as your router's `TRPCClientError`
-          if (e.message === "ACCOUNT_EXISTS") {
-            formik.setFieldError(
-              "email",
-              t("signup.error.account_exists", "Email exists dejà")
-            );
-          }
-        } else {
-          formik.setFieldError("error", e.message);
-          console.log(e);
-        }
       }
+      navigate(-1);
+
+      // utils.user.me.invalidate();
     },
   });
 
@@ -195,8 +187,8 @@ export const SignupDialog: React.FC = () => {
             size="large"
             type="submit"
             data-testid="submit"
-            loading={mutation.isLoading}
-            disabled={mutation.isLoading}
+            loading={formik.isSubmitting}
+            disabled={formik.isSubmitting}
           >
             <Trans i18nKey="signup.button.submit">S'inscrire</Trans>
           </LoadingButton>
