@@ -134,7 +134,21 @@ BEGIN
         ON DELETE CASCADE
         ON UPDATE CASCADE;
     END IF;
+
+   -- First, check if we need to change the column type
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'User'
+        AND column_name = 'role'
+        AND data_type != 'text'
+    ) THEN
+        -- Alter the column type to TEXT
+        ALTER TABLE "User" ALTER COLUMN "role" TYPE TEXT;
+    END IF;
+
 END $$;
+
 
 -- Safe role updates
 UPDATE "User"
