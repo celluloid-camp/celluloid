@@ -1,12 +1,7 @@
 import { Prisma, prisma } from "@celluloid/prisma"
-import { compareCodes, generateOtp, hashPassword } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
-import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-
-import { sendConfirmationCode, sendPasswordReset } from "../mailer/sendMail";
 import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { emailQueue } from "@celluloid/queue";
 
 export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
@@ -333,7 +328,7 @@ export const userRouter = router({
 
 
   // }),
-  join: protectedProcedure.input(
+  joinProject: protectedProcedure.input(
     z.object({
       shareCode: z.string(),
     }),

@@ -29,6 +29,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
+      "~/*": [
+        "src/*"
+      ],
       "~components/*": [
         "src/components/*"
       ],
@@ -49,9 +52,6 @@
       ],
       "~utils/*": [
         "src/utils/*"
-      ],
-      "~/*": [
-        "src/*"
       ],
       "~pages/*": [
         "src/pages/*"

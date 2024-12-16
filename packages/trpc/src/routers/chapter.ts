@@ -245,4 +245,53 @@ export const chapterRouter = router({
       );
 
     }),
+  reset: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+        select: {
+          userId: true
+        }
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found"
+        }
+        );
+      }
+
+      if (ctx.user?.role === "admin" || project.userId === ctx.user?.id) {
+
+        // Check if the annotation with the given ID exists
+        await prisma.chapter.deleteMany({
+          where: { projectId: input.projectId }
+        });
+
+        await prisma.project.update({
+          where: { id: input.projectId },
+          data: {
+            chapterJob: {
+              disconnect: true
+            }
+          }
+        });
+
+        // ee.emit('change', chapter);
+        return;
+      }
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Can't edit this chapter"
+      }
+      );
+
+    }),
 });

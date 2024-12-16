@@ -23,7 +23,6 @@
     "@celluloid/types": "workspace:*",
     "@types/bcryptjs": "^2.4.5",
     "@types/redis": "^4.0.11",
-    "tsup": "^8.3.0",
     "typescript": "catalog:"
   },
   "dependencies": {

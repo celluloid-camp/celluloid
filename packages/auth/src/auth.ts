@@ -1,58 +1,64 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@celluloid/prisma";
-import { admin, emailOTP } from "better-auth/plugins";
+import { admin, emailOTP, username } from "better-auth/plugins";
+import { emailQueue } from "@celluloid/queue";
+import { env } from "./env";
+import { signupAsStudent } from "./plugins/signup-as-student";
 
 export const auth = betterAuth({
+  baseURL: env.BASE_URL,
   logger: {
     level: "debug"
   },
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  emailVerification: {
-    enabled: true,
-    sendOnSignUp: true,
-    autoSignInAfterVerification: true
-  },
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
-    sendVerificationOTP: async ({ user, url, token }: { user: any, url: any, token: any }) => {
-      console.log("sendVerificationOTP", user, url, token);
-      return
-    },
-    sendResetPassword: async ({ user, url, token }: { user: any, url: any, token: any }) => {
-      // await sendEmail({
-      //     to: user.email,
-      //     subject: 'Reset your password',
-      //     text: `Click the link to reset your password: ${url}`
-      // })
-      console.log("sendResetPassword", user, url, token);
-      return
-    }
+    requireEmailVerification: true
   },
   user: {
     modelName: "User",
-    fields: {
-      name: "username"
-    },
     additionalFields: {
       role: {
         type: "string",
-        required: false,
-        defaultValue: "user",
+        required: true,
+        defaultValue: "teacher",
         input: false // don't allow user to set role
-      }
+      },
+      color: {
+        type: "string",
+        required: false,
+        input: false // don't allow user to set role
+      },
+      initial: {
+        type: "string",
+        required: false,
+        input: false // don't allow user to set role
+      },
     }
   },
   plugins: [
-    admin(),
+    username(),
+    signupAsStudent(),
+    admin({
+      defaultRole: "teacher"
+    }),
     emailOTP({
-      async sendVerificationOTP({ email, otp, type }) {
-        // Implement the sendVerificationOTP method to send the OTP to the user's email address
+      sendVerificationOnSignUp: true,
+
+      async sendVerificationOTP({
+        email,
+        otp,
+        type
+      }) {
         console.log("sendVerificationOTP", email, otp, type);
+        emailQueue.add({ email, type, otp });
       },
     })
-  ]
+  ],
+  advanced: {
+    generateId: false
+  }
 });

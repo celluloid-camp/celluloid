@@ -22,13 +22,14 @@ ADD COLUMN     "banned" BOOLEAN,
 ADD COLUMN     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN     "image" TEXT,
+ADD COLUMN     "name" TEXT,
 ADD COLUMN     "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ALTER COLUMN "username" SET DATA TYPE TEXT,
 ALTER COLUMN "role" SET DATA TYPE TEXT;
 
 -- CreateTable
 CREATE TABLE "session" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "token" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE "session" (
 
 -- CreateTable
 CREATE TABLE "account" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "accountId" TEXT NOT NULL,
     "providerId" TEXT NOT NULL,
     "userId" UUID NOT NULL,
@@ -61,7 +62,7 @@ CREATE TABLE "account" (
 
 -- CreateTable
 CREATE TABLE "verification" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "identifier" TEXT NOT NULL,
     "value" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
@@ -92,3 +93,7 @@ WHERE "role" = 'Student';
 UPDATE "User"
 SET "role" = 'admin'
 WHERE "role" = 'Admin';
+
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_username_unique" ON "User"("username");

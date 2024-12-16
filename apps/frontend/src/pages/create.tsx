@@ -1,5 +1,4 @@
 import ClearIcon from "@mui/icons-material/Clear";
-import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import LinkIcon from "@mui/icons-material/Link";
@@ -7,12 +6,10 @@ import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,
-  Autocomplete,
   Box,
   ButtonBase,
   Chip,
   CircularProgress,
-  Container,
   Grid,
   IconButton,
   InputAdornment,
@@ -29,6 +26,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 import * as Yup from "yup";
+import { useSession } from "~/lib/auth-client";
 
 import {
   useProjectInputIntialState,
@@ -186,7 +184,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data: user } = trpc.user.me.useQuery();
+  const { data: session } = useSession();
 
   const playlistMutation = trpc.playlist.add.useMutation();
   const projectMutation = trpc.project.add.useMutation();
@@ -211,6 +209,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
     public: Yup.bool(),
     collaborative: Yup.bool(),
     videoInfo: Yup.object().required(),
+    shared: Yup.bool(),
   });
 
   const formik = useFormik({
@@ -222,7 +221,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setIsSubmitting(true);
-      if (!user) {
+      if (!session) {
         setInitialValue({
           title: values.title,
           description: values.description,
@@ -230,6 +229,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
           collaborative: values.collaborative,
           keywords: values.keywords,
           videoInfo: data,
+          shared: values.shared,
         });
         navigate("/login", { state: { backgroundPath: location.pathname } });
       } else {
@@ -251,7 +251,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
               objective: "",
               levelStart: 0,
               levelEnd: 5,
-              shared: false,
+              shared: values.shared,
             });
             if (project) {
               formik.resetForm();
@@ -269,6 +269,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
                 thumbnailURL: video.thumbnailURL,
                 metadata: video.metadata,
                 keywords: values.keywords,
+                shared: values.shared,
               })),
               description: values.description,
               public: values.public,
@@ -276,7 +277,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
               objective: "",
               levelStart: 0,
               levelEnd: 5,
-              shared: false,
+              shared: values.shared,
               userId: "",
             });
             if (playlist) {
@@ -287,7 +288,7 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
             }
           }
         } catch (e) {
-          if (e.message == ERR_ALREADY_EXISTING_PROJECT) {
+          if (e.message === ERR_ALREADY_EXISTING_PROJECT) {
             formik.setFieldError(
               "title",
               humanizeError("ERR_ALREADY_EXISTING_PROJECT")
@@ -441,6 +442,43 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
             </Typography>
           </Grid>
         </Grid>
+
+
+
+        <Grid container direction="row">
+          <Grid item xs={2}>
+            <Typography
+              variant="subtitle1"
+              align="right"
+              sx={{
+                paddingTop: 1,
+              }}
+            >
+              <Trans i18nKey="project.shared" />
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Switch
+              checked={formik.values.shared}
+              data-testid="shared-switch"
+              onChange={(_, value) => {
+                formik.setFieldValue("shared", value);
+              }}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{
+                paddingTop: 1,
+              }}
+            >
+              <Trans i18nKey="project.sharedHelper" />
+            </Typography>
+          </Grid>
+        </Grid>
+
 
         <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
           <LoadingButton

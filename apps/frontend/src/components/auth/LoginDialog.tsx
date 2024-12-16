@@ -7,8 +7,9 @@ import { useLocation, useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import { StyledDialog } from "~components/Dialog";
-import { isTRPCClientError, trpc } from "~utils/trpc";
+import { trpc } from "~utils/trpc";
 import { signIn } from "~/lib/auth-client";
+import { authClient } from "../../lib/auth-client";
 
 export const LoginDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -62,15 +63,25 @@ export const LoginDialog: React.FC = () => {
     onSubmit: async (values) => {
       formik.setSubmitting(true);
 
-      const { data, error } = await signIn.email({
+      const { error } = await signIn.email({
         email: values.username,
         password: values.password,
       });
 
+      if (error?.code === "EMAIL_NOT_VERIFIED") {
+        await authClient.emailOtp.sendVerificationOtp({
+          email: values.username,
+          type: "sign-in",
+        });
+        return handleConfirm(values.username);
+      }
+
       if (error) {
-        if (error.code === "EMAIL_NOT_VERIFIED") {
-          handleConfirm(values.username);
-        } else {
+        const { error } = await signIn.username({
+          username: values.username,
+          password: values.password,
+        });
+        if (error) {
           formik.setFieldError(
             "error",
             t(
@@ -78,9 +89,9 @@ export const LoginDialog: React.FC = () => {
               "Nom d'utilisateur ou mot de passe incorrect"
             )
           );
+          formik.setSubmitting(false);
+          return;
         }
-        formik.setSubmitting(false);
-        return;
       }
 
       utils.project.list.invalidate();

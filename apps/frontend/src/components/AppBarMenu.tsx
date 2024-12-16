@@ -98,7 +98,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
             {t("menu.about")}
           </Button>
 
-          <SigninMenu user={session ? session.user : null} />
+          <SigninMenu user={session?.user} />
           <LanguageMenu />
         </Toolbar>
       </AppBar>

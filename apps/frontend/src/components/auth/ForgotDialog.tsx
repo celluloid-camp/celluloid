@@ -3,26 +3,22 @@ import { Box, Button, DialogActions } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { authClient } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
-import { trpc } from "~utils/trpc";
 
 export const ForgotDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const utils = trpc.useContext();
-  const mutation = trpc.user.forgot.useMutation();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required(t("forgot.email.required")),
   });
 
-  const handleRecover = () => {
-    navigate("/recover", {
+  const handleRecover = (email?: string) => {
+    navigate(`/recover?email=${email}`, {
       state: { backgroundLocation: "/" },
       replace: true,
     });
@@ -38,18 +34,18 @@ export const ForgotDialog: React.FC = () => {
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
-      try {
-        await mutation.mutateAsync({
-          email: values.email,
-        });
+      const { error } = await authClient.emailOtp.sendVerificationOtp({
+        email: values.email,
+        type: "forget-password", // or "email-verification", "forget-password"
+      });
 
-        utils.user.me.invalidate();
-        handleRecover();
-        formik.setStatus("submited");
-      } catch (e) {
-        formik.setFieldError("error", e.message);
-        console.log(e);
+      if (error) {
+        formik.setFieldError("error", error.message);
+        formik.setSubmitting(false);
+        return;
       }
+
+      handleRecover(values.email);
     },
   });
 
@@ -60,6 +56,7 @@ export const ForgotDialog: React.FC = () => {
       error={formik.errors.error}
       open={true}
       loading={formik.isSubmitting}
+      maxWidth="sm"
     >
       <form onSubmit={formik.handleSubmit}>
         <TextField
@@ -89,8 +86,8 @@ export const ForgotDialog: React.FC = () => {
               size="large"
               color="primary"
               type="submit"
-              loading={mutation.isLoading}
-              disabled={mutation.isLoading}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             >
               <Trans i18nKey="forgot.button.submit">
                 Changer le mot de passe

@@ -23,19 +23,22 @@
     }
   },
   "globalEnv": [
+    "BASE_URL",
     "NODE_ENV",
     "DATABASE_URL",
     "REDIS_URL",
-    "COOKIE_SECRET",
-    "COOKIE_DOMAIN",
-    "COOKIE_NAME",
-    "COOKIE_SECURE",
     "STORAGE_URL",
     "STORAGE_BUCKET",
     "STORAGE_ACCESS_KEY",
     "STORAGE_SECRET_KEY",
     "BETTER_AUTH_SECRET",
-    "BETTER_AUTH_URL"
+    "BETTER_AUTH_URL",
+    "SMTP_HOST",
+    "SMTP_PORT",
+    "SMTP_SECURE",
+    "SMTP_USER",
+    "SMTP_PASSWORD",
+    "SMTP_EMAIL_FROM"
   ],
   "globalPassThroughEnv": [
     "NODE_ENV",

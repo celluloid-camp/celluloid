@@ -1,5 +1,5 @@
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat ffmpeg
+RUN apk add --no-cache libc6-compat ffmpeg bash
 RUN npm install -g turbo pnpm
 
 FROM base AS pruned

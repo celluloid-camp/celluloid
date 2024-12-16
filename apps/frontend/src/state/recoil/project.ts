@@ -9,6 +9,7 @@ export type ProjectFormInput = {
   public: boolean;
   collaborative: boolean;
   videoInfo: PeerTubeVideoDataResult | undefined;
+  shared: boolean;
 };
 
 export const projectInputInitialValueAtom = atom<ProjectFormInput>({
@@ -19,6 +20,7 @@ export const projectInputInitialValueAtom = atom<ProjectFormInput>({
     keywords: [],
     public: false,
     collaborative: false,
+    shared: false,
     videoInfo: undefined,
   },
 });

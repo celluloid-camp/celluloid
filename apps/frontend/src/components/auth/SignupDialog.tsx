@@ -5,16 +5,13 @@ import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
-import { signUp } from "~/lib/auth-client";
+import { authClient, signUp } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
-import { isTRPCClientError, trpc } from "~utils/trpc";
 
 export const SignupDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const mutation = trpc.user.register.useMutation();
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required().label(t("signup.username.label")),
@@ -40,16 +37,11 @@ export const SignupDialog: React.FC = () => {
     validateOnChange: true,
     onSubmit: async (values) => {
       formik.setSubmitting(true);
-      // await mutation.mutateAsync({
-      //   username: values.username,
-      //   email: values.email,
-      //   password: values.password,
-      // });
 
       const { data, error } = await signUp.email({
         email: values.email,
         password: values.password,
-        name: values.username,
+        username: values.username,
       });
 
       if (error) {
@@ -61,8 +53,11 @@ export const SignupDialog: React.FC = () => {
         formik.setSubmitting(false);
         return;
       }
-      console.log(data);
       if (data.emailVerified === false) {
+        await authClient.emailOtp.sendVerificationOtp({
+          email: values.email,
+          type: "sign-in", // or "email-verification", "forget-password"
+        });
         return navigate(`/confirm?email=${values.email}`, {
           state: { backgroundLocation: "/" },
         });
@@ -192,8 +187,8 @@ export const SignupDialog: React.FC = () => {
             size="large"
             type="submit"
             data-testid="submit"
-            loading={mutation.isLoading}
-            disabled={mutation.isLoading}
+            loading={formik.isSubmitting}
+            disabled={formik.isSubmitting}
           >
             <Trans i18nKey="signup.button.submit">S'inscrire</Trans>
           </LoadingButton>

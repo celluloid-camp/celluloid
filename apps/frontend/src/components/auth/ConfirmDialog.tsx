@@ -31,9 +31,9 @@ export const ConfirmDialog: React.FC = () => {
 
   const handleResendCode = async () => {
     if (queryEmail) {
-      await authClient.sendVerificationEmail({
+      await authClient.emailOtp.sendVerificationOtp({
         email: queryEmail,
-        // callbackURL: "/" // The redirect URL after verification
+        type: "sign-in", // or "email-verification", "forget-password"
       });
 
       enqueueSnackbar(t("confirm.resend.success", "Code envoyé"), {
@@ -53,12 +53,24 @@ export const ConfirmDialog: React.FC = () => {
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
+      if (!values.username) {
+        formik.setFieldError("username", t("confirm.username.required"));
+        return;
+      }
+
+      formik.setSubmitting(true);
+
       try {
-        authClient.verifyEmail({
-          query: {
-            token: values.code,
-          },
+        const { data, error } = await authClient.signIn.emailOtp({
+          email: values.username,
+          otp: values.code,
         });
+
+        if (error) {
+          formik.setFieldError("error", error.message);
+          formik.setSubmitting(false);
+          return;
+        }
 
         if (savedProjectValue.videoInfo) {
           navigate("/create", { replace: true });
@@ -70,6 +82,8 @@ export const ConfirmDialog: React.FC = () => {
       } catch (e) {
         formik.setFieldError("error", e.message);
         console.log(e);
+      } finally {
+        formik.setSubmitting(false);
       }
     },
   });

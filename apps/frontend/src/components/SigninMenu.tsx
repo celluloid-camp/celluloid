@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router";
 import { Avatar } from "./Avatar";
 import { signOut, type User } from "~/lib/auth-client";
 
-export const SigninMenu = ({ user }: { user: User }) => {
+export const SigninMenu = ({ user }: { user: User | null }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -24,9 +24,14 @@ export const SigninMenu = ({ user }: { user: User }) => {
   };
 
   const handleLogout = async () => {
-    await signOut();
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          navigate("/", { replace: true });
+        },
+      },
+    });
     handleClose();
-    navigate("/", { replace: true });
   };
 
   const handleProfile = () => {

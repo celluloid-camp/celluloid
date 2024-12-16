@@ -5,7 +5,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearchPostgres"]
   // binaryTargets = ["native", "linux-musl"]
   // output          = "./client"
 }
@@ -16,7 +16,7 @@ model Annotation {
   startTime Float     @db.Real
   stopTime  Float     @db.Real
   pause     Boolean
-  userId    String
+  userId    String    @db.Uuid
   projectId String    @db.Uuid
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
   extra     Json?     @default("{}")
@@ -31,7 +31,7 @@ model Comment {
   id           String     @id @unique(map: "comment_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   text         String
   annotationId String     @db.Uuid
-  userId       String
+  userId       String     @db.Uuid
   createdAt    DateTime?  @default(now()) @db.Timestamptz(6)
   extra        Json?      @default("{}")
   annotation   Annotation @relation(fields: [annotationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_annotationid_foreign")
@@ -46,7 +46,7 @@ model Language {
 model Project {
   id            String   @id @unique(map: "project_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   videoId       String
-  userId        String
+  userId        String   @db.Uuid
   title         String
   description   String
   host          String?
@@ -101,7 +101,7 @@ model Chapter {
   updatedAt DateTime @updatedAt
 
   lastEditedBy   User?   @relation(fields: [lastEditedById], references: [id])
-  lastEditedById String?
+  lastEditedById String? @db.Uuid
 
   @@index([projectId])
 }
@@ -113,7 +113,7 @@ model Playlist {
   description String
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String
+  userId String @db.Uuid
 
   projects Project[]
 
@@ -121,9 +121,9 @@ model Playlist {
 }
 
 model User {
-  id       String  @id @unique(map: "user_id_unique")
+  id       String  @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email    String? @unique(map: "user_email_unique") @db.VarChar(255)
-  username String
+  username String  @unique(map: "user_username_unique")
 
   annotation    Annotation[]
   comment       Comment[]
@@ -141,7 +141,7 @@ model User {
 
   chapters Chapter[]
 
-  // email         String
+  name          String?
   emailVerified Boolean @default(false)
   image         String?
 
@@ -159,14 +159,14 @@ model User {
 }
 
 model Session {
-  id        String   @id
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   expiresAt DateTime
   token     String
   createdAt DateTime
   updatedAt DateTime
   ipAddress String?
   userAgent String?
-  userId    String
+  userId    String   @db.Uuid
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
@@ -174,10 +174,10 @@ model Session {
 }
 
 model Account {
-  id                    String    @id
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   accountId             String
   providerId            String
-  userId                String
+  userId                String    @db.Uuid
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
@@ -193,7 +193,7 @@ model Account {
 }
 
 model Verification {
-  id         String    @id
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   identifier String
   value      String
   expiresAt  DateTime
@@ -206,7 +206,7 @@ model Verification {
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model UserToProject {
   id        Int      @id @default(autoincrement())
-  userId    String?
+  userId    String?  @db.Uuid
   projectId String?  @db.Uuid
   project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_projectid_foreign")
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_userid_foreign")

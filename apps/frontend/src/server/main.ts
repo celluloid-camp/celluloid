@@ -4,13 +4,13 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import { appRouter, createContext } from '@celluloid/trpc';
 import cookies from 'cookie-parser';
 import cors from 'cors';
+import "./env";
 
 import { emailQueue, chaptersQueue } from "@celluloid/queue";
 
-import { auth } from "@celluloid/auth";
+import { expressAuthHandler, expressAuthSession } from "@celluloid/auth";
 import getAdminRouter from "./admin";
-
-import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
+import { debug } from "node:util";
 
 
 const app = express();
@@ -27,7 +27,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.all("/api/auth/*", toNodeHandler(auth));
+app.all("/api/auth/*", expressAuthHandler);
 
 // app.use((req, _res, next) => {
 //   // request logger
@@ -36,19 +36,16 @@ app.all("/api/auth/*", toNodeHandler(auth));
 // });
 
 app.get("/api/me", async (req, res) => {
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
-  });
+  const session = await expressAuthSession(req)
   return res.json(session);
 });
 
+app.use(express.json());
 
 const adminRouter = await getAdminRouter();
 
 app.use("/admin", async (req, res, next) => {
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
-  });
+  const session = await expressAuthSession(req)
   if (!session || session.user.role !== "admin") {
     res.redirect("/");
     return;
@@ -72,8 +69,17 @@ ViteExpress.config({
   ignorePaths: /^\/api\/.*/,
 });
 
-app.use(express.json());
 
-ViteExpress.listen(app, 3000, () =>
+
+const server = ViteExpress.listen(app, 3000, () =>
   console.log("Server is listening on port 3000..."),
 );
+
+process.on('SIGTERM', async () => {
+  debug('SIGTERM signal received: closing HTTP server')
+  server.close(async () => {
+    await emailQueue.stop();
+    await chaptersQueue.stop();
+    debug('HTTP server closed')
+  })
+})
