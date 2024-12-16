@@ -55,12 +55,6 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
         });
       }
 
-      if (!env.SMTP_HOST) {
-        throw new Error("Misconfiguration: no SMTP_HOST");
-      }
-      if (!env.SMTP_PORT) {
-        throw new Error("Misconfiguration: no SMTP_PORT");
-      }
       console.log(env.SMTP_HOST, env.SMTP_PORT, env.SMTP_SECURE);
       return nodemailer.createTransport({
         host: env.SMTP_HOST,

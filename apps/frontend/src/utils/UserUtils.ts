@@ -1,4 +1,4 @@
-import { UserRecord } from "@celluloid/types";
+import type { UserRecord } from "@celluloid/types";
 import randomColor from "randomcolor";
 
 export function getUserInitials(username: string): string {
@@ -14,9 +14,9 @@ export function getUserColor(id: string): string {
 }
 
 export function isTeacher(user?: UserRecord) {
-  return user && user.role === "Teacher";
+  return user && user.role === "teacher";
 }
 
 export function isAdmin(user?: UserRecord) {
-  return user && user.role === "Admin";
+  return user && user.role === "admin";
 }

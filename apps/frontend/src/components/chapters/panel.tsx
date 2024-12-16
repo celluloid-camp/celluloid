@@ -129,7 +129,7 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
     return (
       <NoChaptersJob
         projectId={project.id}
-        canGenerate={project.userId === user?.id || user?.role === "ADMIN"}
+        canGenerate={project.userId === user?.id || user?.role === "admin"}
       />
     );
   }
