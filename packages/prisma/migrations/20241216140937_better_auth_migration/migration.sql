@@ -8,24 +8,8 @@
   - The `role` column on the `User` table would be dropped and recreated. This will lead to data loss if there is data in the column.
 
 */
--- AlterTable
-ALTER TABLE "User" DROP COLUMN "code",
-DROP COLUMN "codeGeneratedAt",
-DROP COLUMN "confirmed",
-DROP COLUMN "password",
-ADD COLUMN     "banExpires" TIMESTAMP(3),
-ADD COLUMN     "banReason" TEXT,
-ADD COLUMN     "banned" BOOLEAN,
-ADD COLUMN     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "image" TEXT,
-ADD COLUMN     "name" TEXT,
-ADD COLUMN     "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-DROP COLUMN "role",
-ADD COLUMN     "role" TEXT;
-
--- CreateTable
-CREATE TABLE "session" (
+-- First check and create new tables with IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS "session" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "token" TEXT NOT NULL,
@@ -38,8 +22,7 @@ CREATE TABLE "session" (
     CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "account" (
+CREATE TABLE IF NOT EXISTS "account" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "accountId" TEXT NOT NULL,
     "providerId" TEXT NOT NULL,
@@ -57,8 +40,7 @@ CREATE TABLE "account" (
     CONSTRAINT "account_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "verification" (
+CREATE TABLE IF NOT EXISTS "verification" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "identifier" TEXT NOT NULL,
     "value" TEXT NOT NULL,
@@ -69,25 +51,103 @@ CREATE TABLE "verification" (
     CONSTRAINT "verification_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
+-- Safe column modifications with existence checks
+DO $$
+BEGIN
+    -- Drop columns if they exist
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'code') THEN
+        ALTER TABLE "User" DROP COLUMN "code";
+    END IF;
 
--- AddForeignKey
-ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'codeGeneratedAt') THEN
+        ALTER TABLE "User" DROP COLUMN "codeGeneratedAt";
+    END IF;
 
--- AddForeignKey
-ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'confirmed') THEN
+        ALTER TABLE "User" DROP COLUMN "confirmed";
+    END IF;
 
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'password') THEN
+        ALTER TABLE "User" DROP COLUMN "password";
+    END IF;
 
+    -- Add new columns if they don't exist
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'banExpires') THEN
+        ALTER TABLE "User" ADD COLUMN "banExpires" TIMESTAMP(3);
+    END IF;
 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'banReason') THEN
+        ALTER TABLE "User" ADD COLUMN "banReason" TEXT;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'banned') THEN
+        ALTER TABLE "User" ADD COLUMN "banned" BOOLEAN;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'createdAt') THEN
+        ALTER TABLE "User" ADD COLUMN "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'emailVerified') THEN
+        ALTER TABLE "User" ADD COLUMN "emailVerified" BOOLEAN NOT NULL DEFAULT false;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'image') THEN
+        ALTER TABLE "User" ADD COLUMN "image" TEXT;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'name') THEN
+        ALTER TABLE "User" ADD COLUMN "name" TEXT;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'User' AND column_name = 'updatedAt') THEN
+        ALTER TABLE "User" ADD COLUMN "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    END IF;
+END $$;
+
+-- Safe index creation
+CREATE INDEX IF NOT EXISTS "session_token_key" ON "session"("token");
+
+-- Safe foreign key creation
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE constraint_name = 'session_userId_fkey'
+    ) THEN
+        ALTER TABLE "session"
+        ADD CONSTRAINT "session_userId_fkey"
+        FOREIGN KEY ("userId")
+        REFERENCES "User"("id")
+        ON DELETE CASCADE
+        ON UPDATE CASCADE;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE constraint_name = 'account_userId_fkey'
+    ) THEN
+        ALTER TABLE "account"
+        ADD CONSTRAINT "account_userId_fkey"
+        FOREIGN KEY ("userId")
+        REFERENCES "User"("id")
+        ON DELETE CASCADE
+        ON UPDATE CASCADE;
+    END IF;
+END $$;
+
+-- Safe role updates
 UPDATE "User"
 SET "role" = 'teacher'
-WHERE "role" = 'Teacher';
+WHERE "role" = 'Teacher'
+AND EXISTS (SELECT 1 FROM "User" WHERE "role" = 'Teacher');
 
 UPDATE "User"
 SET "role" = 'student'
-WHERE "role" = 'Student';
+WHERE "role" = 'Student'
+AND EXISTS (SELECT 1 FROM "User" WHERE "role" = 'Student');
 
 UPDATE "User"
 SET "role" = 'admin'
-WHERE "role" = 'Admin';
+WHERE "role" = 'Admin'
+AND EXISTS (SELECT 1 FROM "User" WHERE "role" = 'Admin');
