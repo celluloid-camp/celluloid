@@ -122,6 +122,8 @@ export const ChapterFormContent: React.FC<
   const utils = trpc.useUtils();
   const createMutation = trpc.chapter.create.useMutation();
 
+  const { t } = useTranslation();
+
   const validationSchema = Yup.object().shape({
     startTime: Yup.number(),
     stopTime: Yup.number(),

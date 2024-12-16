@@ -262,5 +262,6 @@
   "chapters.form.reset.confirm.description": "Etes-vous sûr de vouloir réinitialiser tous les chapitres ?",
   "chapters.form.button.add": " Ajouter un chapitre",
   "chapters.form.button.reset": "Réinitialiser les chapitres",
-  "chapters.form.title.placeholder": "Titre du chapitre"
+  "chapters.form.title.placeholder": "Titre du chapitre",
+  "chapters.form.description.placeholder": "Description du chapitre"
 }
