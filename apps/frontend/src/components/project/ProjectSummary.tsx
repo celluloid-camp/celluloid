@@ -1,11 +1,12 @@
 import GroupsIcon from "@mui/icons-material/Groups";
 import PublicIcon from "@mui/icons-material/Public";
 import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
-import * as React from "react";
+import type * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { Avatar } from "~components/Avatar";
-import { ProjectById } from "~utils/trpc";
+import type { ProjectById } from "~utils/trpc";
+import { RDFDocumentEditor } from "./rfd-document";
 
 interface Props {
   project: ProjectById;
@@ -106,6 +107,11 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
               <Trans i18nKey={"project.videoUrlHelper"} />
             </a>
           </Typography>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <RDFDocumentEditor />
         </CardContent>
       </Card>
     </Box>

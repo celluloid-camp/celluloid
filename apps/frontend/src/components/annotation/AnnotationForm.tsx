@@ -20,6 +20,7 @@ import * as Yup from "yup";
 import { useVideoPlayerProgressValue } from "~components/project/useVideoPlayer";
 import { type ProjectById, trpc, type UserMe } from "~utils/trpc";
 
+import { ConceptSelector } from "./concept-selector";
 import { DurationSlider } from "./DurationSlider";
 import {
   useAnnotationFormVisible,
@@ -27,6 +28,7 @@ import {
   useContextualEditorVisibleState,
   useEditAnnotation,
 } from "./useAnnotationEditor";
+import { EmotionsPalette } from "./emotion-palette";
 
 type AnnotationFormProps = {
   duration: number;
@@ -87,6 +89,7 @@ export const AnnotationFormContent: React.FC<
     text: Yup.string()
       .min(2, "Comment doit comporter minimum 5 character")
       .required("Commentaire est obligatoire"),
+    emotion: Yup.string(),
   });
 
   const formik = useFormik({
@@ -96,12 +99,14 @@ export const AnnotationFormContent: React.FC<
           stopTime: editedAnnotation.stopTime,
           pause: editedAnnotation.pause,
           text: editedAnnotation.text,
+          emotion: editedAnnotation.extra?.emotion,
         }
       : {
           startTime: videoProgress,
           stopTime: videoProgress + 600, // 10 minutes
           pause: true,
           text: "",
+          emotion: "",
         },
     validateOnMount: false,
     validationSchema: validationSchema,
@@ -198,6 +203,16 @@ export const AnnotationFormContent: React.FC<
           />
         </Box>
 
+        <EmotionsPalette
+          emotion={formik.values.emotion}
+          projectId={project.id}
+          semiAutoAnnotation={false}
+          semiAutoAnnotationMe={false}
+          onEmotionChange={(emotion) => {
+            formik.setFieldValue("emotion", emotion);
+          }}
+        />
+
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -241,6 +256,7 @@ export const AnnotationFormContent: React.FC<
               />
             </Tooltip>
           </Box>
+          <ConceptSelector />
           <Box sx={{ marginY: 1 }}>
             <Button
               size="small"

@@ -20,6 +20,10 @@
     },
     "clean": {
       "cache": false
+    },
+    "prisma:generate": {
+      "cache": false,
+      "outputs": []
     }
   },
   "globalEnv": [

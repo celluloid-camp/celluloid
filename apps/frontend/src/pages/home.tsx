@@ -54,9 +54,9 @@ export const HomePage: React.FC = () => {
                 sx={{ height: "100%" }}
               >
                 <Box display={"flex"} flexDirection={"column"}>
-                  <Box sx={{ width: "40%" }}>
+                  {/* <Box sx={{ width: "40%" }}>
                     <LogoSign />
-                  </Box>
+                  </Box> */}
                   <Typography
                     variant="h4"
                     gutterBottom={true}

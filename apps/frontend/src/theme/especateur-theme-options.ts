@@ -23,16 +23,16 @@ const background = {
 const divider = "#E6E8F0";
 
 const primary = {
-  main: "#557CFF",
-  light: "#828DF8",
-  dark: "#3832A0",
+  main: "#7C7DB8",
+  light: "#9899CC",
+  dark: "#5F608F",
   contrastText: "#FFFFFF",
 };
 
 const secondary = {
-  main: "#FF6B68",
-  light: "#3FC79A",
-  dark: "#0B815A",
+  main: "#B89B8C",
+  light: "#CCAFA3",
+  dark: "#8F7468",
   contrastText: "#FFFFFF",
 };
 
@@ -70,7 +70,7 @@ const text = {
   disabled: "rgba(55, 65, 81, 0.48)",
 };
 
-export const celluloidThemeOptions: ThemeOptions = {
+export const especateurThemeOptions: ThemeOptions = {
   components: {
     MuiAppBar: {
       styleOverrides: {
@@ -189,8 +189,8 @@ export const celluloidThemeOptions: ThemeOptions = {
     text,
     warning,
     brand: {
-      green: "#C2CCAB",
-      orange: "#FFE7DB",
+      green: "#E6F0F3",
+      orange: "#EDE8E4",
     },
   },
   shadows: [
