@@ -37,7 +37,7 @@ jobs:
           file: ./Dockerfile
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/espectateur:${{github.ref_name}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
