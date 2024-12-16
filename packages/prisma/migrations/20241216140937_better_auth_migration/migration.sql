@@ -8,9 +8,6 @@
   - The `role` column on the `User` table would be dropped and recreated. This will lead to data loss if there is data in the column.
 
 */
--- DropIndex
-DROP INDEX "user_username_unique";
-
 -- AlterTable
 ALTER TABLE "User" DROP COLUMN "code",
 DROP COLUMN "codeGeneratedAt",
@@ -24,8 +21,8 @@ ADD COLUMN     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN     "image" TEXT,
 ADD COLUMN     "name" TEXT,
 ADD COLUMN     "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ALTER COLUMN "username" SET DATA TYPE TEXT,
-ALTER COLUMN "role" SET DATA TYPE TEXT;
+DROP COLUMN "role",
+ADD COLUMN     "role" TEXT;
 
 -- CreateTable
 CREATE TABLE "session" (
@@ -82,6 +79,7 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 
+
 UPDATE "User"
 SET "role" = 'teacher'
 WHERE "role" = 'Teacher';
@@ -93,7 +91,3 @@ WHERE "role" = 'Student';
 UPDATE "User"
 SET "role" = 'admin'
 WHERE "role" = 'Admin';
-
-
--- CreateIndex
-CREATE UNIQUE INDEX "user_username_unique" ON "User"("username");

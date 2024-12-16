@@ -123,7 +123,7 @@ model Playlist {
 model User {
   id       String  @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email    String? @unique(map: "user_email_unique") @db.VarChar(255)
-  username String  @unique(map: "user_username_unique")
+  username String  @unique(map: "user_username_unique") @db.VarChar(255)
 
   annotation    Annotation[]
   comment       Comment[]
