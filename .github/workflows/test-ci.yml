@@ -1,5 +1,10 @@
 name: E2E Tests
 
+# Add concurrency group to cancel previous runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [staging]
