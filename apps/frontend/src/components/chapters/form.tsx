@@ -4,21 +4,31 @@ import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
-import { useVideoPlayerProgressValue } from "~components/project/useVideoPlayer";
-import { type ProjectById, trpc, type UserMe } from "~utils/trpc";
+import {
+  type ChapterByProjectId,
+  type ProjectById,
+  trpc,
+  type UserMe,
+} from "~utils/trpc";
 
 import { ChapterTimestampSlider } from "./slider";
 import { useState } from "react";
+import { useConfirm } from "material-ui-confirm";
 
 type ChapterFormProps = {
   project: ProjectById;
-  user: UserMe;
+  user?: UserMe;
+  chapters: ChapterByProjectId[];
 };
 
 export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
+  const [showForm, setShowForm] = useState(false);
+
+  const confirm = useConfirm();
   const { t } = useTranslation();
 
-  const [showForm, setShowForm] = useState(false);
+  const utils = trpc.useUtils();
+  const resetMutation = trpc.chapter.reset.useMutation();
 
   const handleOpen = () => {
     setShowForm(true);
@@ -26,6 +36,47 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
 
   const handleClose = () => {
     setShowForm(false);
+  };
+
+  const handleReset = () => {
+    confirm({
+      title: t("chapters.form.reset.confirm.title"),
+      description: t("chapters.form.reset.confirm.description"),
+      confirmationText: t("deleteAction"),
+      cancellationText: t("cancelAction"),
+      confirmationButtonProps: {
+        variant: "contained",
+        color: "error",
+      },
+      contentProps: {
+        sx: {
+          color: "white",
+          backgroundColor: "background.dark",
+        },
+      },
+      titleProps: {
+        sx: {
+          color: "white",
+          backgroundColor: "background.dark",
+        },
+      },
+      dialogActionsProps: {
+        sx: {
+          backgroundColor: "background.dark",
+        },
+      },
+    }).then(async () => {
+      await resetMutation.mutateAsync(
+        { projectId: props.project.id },
+        {
+          onSuccess: () => {
+            utils.chapter.byProjectId.invalidate({
+              projectId: props.project.id,
+            });
+          },
+        }
+      );
+    });
   };
 
   return (
@@ -41,8 +92,19 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
             sx={{ width: "100%" }}
             startIcon={<BookmarksIcon />}
           >
-            Add Chapter
+            {t("chapters.form.button.add")}
           </Button>
+          {props.chapters.length > 0 && (
+            <Button
+              size="small"
+              variant="text"
+              color="warning"
+              onClick={handleReset}
+              disabled={resetMutation.isLoading}
+            >
+              {t("chapters.form.button.reset")}
+            </Button>
+          )}
         </Box>
       </Fade>
       <Fade in={showForm} timeout={300}>
@@ -59,6 +121,8 @@ export const ChapterFormContent: React.FC<
 > = ({ project, onClose }) => {
   const utils = trpc.useUtils();
   const createMutation = trpc.chapter.create.useMutation();
+
+  const { t } = useTranslation();
 
   const validationSchema = Yup.object().shape({
     startTime: Yup.number(),
@@ -133,7 +197,7 @@ export const ChapterFormContent: React.FC<
             id="title"
             name="title"
             sx={{ ml: 1, flex: 1, color: "white" }}
-            placeholder="Chapter title"
+            placeholder={t("chapters.form.title.placeholder")}
             value={formik.values.title}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -159,7 +223,7 @@ export const ChapterFormContent: React.FC<
             id="description"
             name="description"
             sx={{ ml: 1, flex: 1, color: "white" }}
-            placeholder="Chapter description"
+            placeholder={t("chapters.form.description.placeholder")}
             multiline
             maxRows={5}
             minRows={2}

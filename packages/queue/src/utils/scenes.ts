@@ -3,8 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import { Client } from "minio";
-import { env } from "@celluloid/utils";
+import { $ } from "zx";
+
 import { parseUrl } from "./s3";
+import { env } from "../env";
 
 interface Scene {
   id: number;
@@ -20,116 +22,94 @@ type ScenesResult = {
 
 /**
  * Detects scenes in a video based on a specified threshold and generates thumbnails for each scene.
- * @param videoPath - Path to the video file.
+ * @param videoUrl - Path to the video file.
  * @param threshold - Scene change threshold (default is 0.4).
  * @param outputDir - Directory to save the thumbnails.
  * @returns A promise that resolves with an array of detected scenes and their thumbnail paths.
  */
 export async function detectScenes({
   projectId,
-  videoPath,
+  videoUrl,
   threshold = 0.4,
   duration,
 }: {
   projectId: string;
-  videoPath: string;
+  videoUrl: string;
   threshold?: number;
   duration: number;
 }): Promise<ScenesResult> {
-  return new Promise((resolve, reject) => {
+  // Create output directory
+  const currentDate = new Date().toISOString().split("T")[0];
+  const outputDir = path.join(os.tmpdir(), `${projectId}/scene_detection_${currentDate}`);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  try {
+    // Run single FFmpeg command to detect scenes and save thumbnails
+    const { stdout } = await $`ffmpeg -i ${videoUrl} \
+      -vf "select='gt(scene,${threshold})',scale=320:-1,showinfo" \
+      -vsync vfr \
+      -start_number 1 \
+      -frame_pts 0 \
+      ${path.join(outputDir, 'thumbnail_%d.jpg')} \
+      2>&1 | grep -oE 'pts_time:[0-9.]+' | awk -F: '{print $2}'`;
+
+    const timestamps = stdout.trim().split('\n').map(Number);
     const scenes: Scene[] = [];
-    let output = "";
 
-    // Create a folder in the OS temp directory with the current date
-    const currentDate = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-    const outputDir = path.join(os.tmpdir(), `${projectId}/scene_detection_${currentDate}`);
-    fs.mkdirSync(outputDir, { recursive: true });
+    // Process the timestamps
+    timestamps.forEach((currentTimestamp: number, index: number) => {
+      const id = index + 1;
+      const startTime = index === 0 ? 0 : timestamps[index - 1] ?? 0;
+      const endTime = currentTimestamp;
 
-    console.log(`Output directory: ${outputDir}`);
+      const thumbnailPath = path.join(
+        outputDir,
+        `thumbnail_${id}.jpg`,
+      );
 
-    ffmpeg(videoPath)
-      .videoFilters([
-        `select='gt(scene,${threshold})'`,
-        "scale=320:-1",
-        "showinfo",
-      ])
-      .outputOptions(["-vsync", "0", "-f", "null"])
-      .output("-")
-      .on("start", (command) => {
-        console.log("FFmpeg command:", command);
-      })
-      .on("stderr", (stderrLine) => {
-        output += stderrLine;
-      })
-      .on("end", () => {
-        // Parse the output to extract scene timestamps
-        const sceneRegex = /pts_time:(\d+\.\d+)/g;
-        let match: RegExpExecArray | null;
-        let id = 1;
-        let lastTimestamp = 0;
+      scenes.push({
+        id,
+        startTime,
+        endTime,
+        thumbnailPath,
+      });
+    });
 
-        // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-        while ((match = sceneRegex.exec(output)) !== null) {
-          const currentTimestamp = match[1] ? Number.parseFloat(match[1]) : 0;
+    // Update the last scene's end time to video duration
+    if (scenes.length > 0) {
+      const lastScene = scenes[scenes.length - 1];
+      if (lastScene) {
+        lastScene.endTime = duration;
+      }
 
-          if (id > 1) {
-            // Update the endTime of the previous scene
-            const currentScene = scenes[scenes.length - 1];
-            if (currentScene) {
-              currentScene.endTime = currentTimestamp;
-            }
-          }
+      // Generate thumbnails and upload to S3
+      // await generateThumbnails(projectId, videoUrl, scenes, outputDir);
 
-          const thumbnailPath = path.join(
-            outputDir,
-            `thumbnail_${String(id)}.jpg`,
-          );
+      const updatedScenes = await uploadThumbnailsToS3(projectId, scenes);
+      // Remove the temporary directory
+      fs.rmSync(outputDir, { recursive: true });
 
-          scenes.push({
-            id,
-            startTime: lastTimestamp,
-            endTime: currentTimestamp, // This will be updated in the next iteration
-            thumbnailPath,
-          });
+      return { outputDir, scenes: updatedScenes };
+    }
 
-          lastTimestamp = currentTimestamp;
-          id++;
-        }
+    return { outputDir, scenes };
 
-        // Set the endTime of the last scene to the video duration
-        if (scenes.length > 0) {
-
-          const lastScene = scenes[scenes.length - 1];
-          if (lastScene) {
-            lastScene.endTime = duration;
-          }
-
-          generateThumbnails(projectId, videoPath, scenes, outputDir)
-            .then(() => resolve({ outputDir, scenes }))
-            .catch(reject);
-
-        } else {
-          resolve({ outputDir, scenes });
-        }
-      })
-      .on("error", (err) => {
-        console.error("Error processing video:", err);
-        reject(err);
-      })
-      .run();
-  });
+  } catch (error) {
+    console.error("Error processing video:", error);
+    throw error;
+  }
 }
 
 async function generateThumbnails(
   projectId: string,
-  videoPath: string,
+  videoUrl: string,
   scenes: Scene[],
   outputDir: string,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const timestamps = scenes.map((scene) => scene.startTime);
 
-    ffmpeg(videoPath)
+    ffmpeg(videoUrl)
       .screenshots({
         timestamps: timestamps,
         filename: "thumbnail_%i.jpg",
@@ -157,7 +137,7 @@ async function generateThumbnails(
 async function uploadThumbnailsToS3(
   projectId: string,
   scenes: Scene[],
-): Promise<void> {
+): Promise<Scene[]> {
   const storageUrlInfo = parseUrl(env.STORAGE_URL)
 
   // Initialize MinIO client
@@ -192,4 +172,6 @@ async function uploadThumbnailsToS3(
     // Remove the local file after upload
     fs.unlinkSync(localFilePath);
   }
+
+  return scenes;
 }

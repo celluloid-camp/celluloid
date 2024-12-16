@@ -184,8 +184,8 @@
   "recover.code.required": "Code is required",
   "recover.password.required": "Password is required",
   "recover.title": "Recover account",
-  "recover.username.label": "Email or username",
-  "recover.username.paceholder": "Email or username",
+  "recover.username.label": "Email",
+  "recover.username.paceholder": "Email",
   "recover.code.label": "Confirmation code",
   "recover.code.placeholder": "Confirmation code",
   "recover.password.label": "Password",
@@ -255,5 +255,13 @@
   "project.chapters.button.generate": "Generate Chapters",
   "chapter.confirm-delete.description": "Are you sure you want to delete the chapter?",
   "project.chapters.item.placeholder.title": "Chapter title",
-  "project.chapters.item.placeholder.description": "Chapter description"
+  "project.chapters.item.placeholder.description": "Chapter description",
+  "recorver.email.required": "Email is required",
+  "join.error.username-taken": "Username is already taken",
+  "chapters.form.reset.confirm.title": "Reset all chapters",
+  "chapters.form.reset.confirm.description": "Are you sure you want to reset all chapters ?",
+  "chapters.form.button.add": " Add Chapter",
+  "chapters.form.button.reset": "Reset Chapters",
+  "chapters.form.title.placeholder": "Chapter title",
+  "chapters.form.description.placeholder": "Chapter description"
 }

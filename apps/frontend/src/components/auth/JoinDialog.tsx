@@ -1,16 +1,9 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  Stack,
-} from "@mui/material";
+import { DialogActions, DialogContent } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import { StyledDialog } from "~components/Dialog";
@@ -19,10 +12,9 @@ import { isTRPCClientError, trpc } from "~utils/trpc";
 export const JoinDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const utils = trpc.useContext();
-  const mutation = trpc.user.join.useMutation();
+  const mutation = trpc.user.joinProject.useMutation();
 
   const validationSchema = Yup.object().shape({
     shareCode: Yup.string().required(),
@@ -53,13 +45,13 @@ export const JoinDialog: React.FC = () => {
         }
       } catch (e) {
         if (isTRPCClientError(e)) {
-          if (e.message == "PROJECT_OWNER_CANNOT_JOIN") {
+          if (e.message === "PROJECT_OWNER_CANNOT_JOIN") {
             // `cause` is now typed as your router's `TRPCClientError`
             formik.setFieldError(
               "error",
               t("join.error.project-owner-cannot-join")
             );
-          } else if (e.message == "CODE_NOT_FOUND") {
+          } else if (e.message === "CODE_NOT_FOUND") {
             formik.setFieldError(
               "shareCode",
               t("join.error.project-not-found", "Code de partage est invalide")

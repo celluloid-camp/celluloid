@@ -184,8 +184,8 @@
   "recover.code.required": "Code est obligatoire",
   "recover.password.required": "Mot de passe est requis",
   "recover.title": "Récupérer le compte",
-  "recover.username.label": "Email ou nom d'utilisateur",
-  "recover.username.paceholder": "Email ou nom d'utilisateur",
+  "recover.username.label": "Adresse mail",
+  "recover.username.paceholder": "Adresse mail",
   "recover.code.label": "Code de confirmation",
   "recover.code.placeholder": "Code de confirmation",
   "recover.password.label": "Mot de passe",
@@ -255,5 +255,13 @@
   "project.chapters.button.generate": "Générer des chapitres",
   "chapter.confirm-delete.description": "Etes-vous sûr de vouloir supprimer le chapitre ?",
   "project.chapters.item.placeholder.title": "Titre du chapitre",
-  "project.chapters.item.placeholder.description": "Description du chapitre"
+  "project.chapters.item.placeholder.description": "Description du chapitre",
+  "recorver.email.required": "L'email est obligatoire",
+  "join.error.username-taken": "Le nom d'utilisateur existe déjà",
+  "chapters.form.reset.confirm.title": "Réinitialiser tous les chapitres",
+  "chapters.form.reset.confirm.description": "Etes-vous sûr de vouloir réinitialiser tous les chapitres ?",
+  "chapters.form.button.add": " Ajouter un chapitre",
+  "chapters.form.button.reset": "Réinitialiser les chapitres",
+  "chapters.form.title.placeholder": "Titre du chapitre",
+  "chapters.form.description.placeholder": "Description du chapitre"
 }

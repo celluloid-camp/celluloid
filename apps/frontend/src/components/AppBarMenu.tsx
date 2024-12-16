@@ -9,38 +9,34 @@ import {
 } from "@mui/material";
 import type * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 import { getButtonLink } from "~components/ButtonLink";
 import { Footer } from "~components/Footer";
 import { LogoWithLabel } from "~components/LogoWithLabel";
 import { SigninMenu } from "~components/SigninMenu";
-import { trpc } from "~utils/trpc";
 
 import { LanguageMenu } from "./LanguageMenu";
+import { useSession } from "~/lib/auth-client";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data, isError } = trpc.user.me.useQuery(
-    {},
-    { retry: false, keepPreviousData: false, cacheTime: 0 }
-  );
 
-  const location = useLocation();
+  const { data: session } = useSession();
 
   const handleCreate = () => {
-    if (data) {
-      navigate(`/create`);
+    if (session) {
+      navigate("/create");
     } else {
       navigate("/signup", { state: { backgroundLocation: "/" } });
     }
   };
 
   const handleJoin = () => {
-    if (!data) {
+    if (!session) {
       navigate("/signup-student", { state: { backgroundLocation: "/" } });
     } else {
       navigate("/join", { state: { backgroundLocation: "/" } });
@@ -110,7 +106,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
             {t("menu.about")}
           </Button>
 
-          <SigninMenu user={!isError ? data : null} />
+          <SigninMenu user={session?.user} />
           <LanguageMenu />
         </Toolbar>
       </AppBar>

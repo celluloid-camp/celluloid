@@ -1,5 +1,5 @@
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat ffmpeg
+RUN apk add --no-cache libc6-compat ffmpeg bash openssl openssl-dev
 RUN npm install -g turbo pnpm
 
 FROM base AS pruned
@@ -35,7 +35,7 @@ RUN \
 
 FROM base AS runner
 WORKDIR /app
-RUN apk add --no-cache ffmpeg curl
+RUN apk add --no-cache ffmpeg curl bash openssl openssl-dev
 
 COPY --from=builder /app .
 

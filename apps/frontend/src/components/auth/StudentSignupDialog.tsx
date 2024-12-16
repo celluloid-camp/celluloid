@@ -1,17 +1,11 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  Stack,
-} from "@mui/material";
+import { Box, Button, DialogActions, DialogContent } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { authClient } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
 import { isTRPCClientError, trpc } from "~utils/trpc";
@@ -19,10 +13,9 @@ import { isTRPCClientError, trpc } from "~utils/trpc";
 export const StudentSignupDialog: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const utils = trpc.useContext();
-  const mutation = trpc.user.registerAsStudent.useMutation();
+  // const utils = trpc.useContext();
+  const mutation = trpc.user.joinProject.useMutation();
 
   const validationSchema = Yup.object().shape({
     shareCode: Yup.string().required(),
@@ -31,7 +24,7 @@ export const StudentSignupDialog: React.FC = () => {
   });
 
   const handleSignin = () => {
-    navigate(`/login`, {
+    navigate("/login", {
       state: { backgroundLocation: "/" },
     });
   };
@@ -49,39 +42,44 @@ export const StudentSignupDialog: React.FC = () => {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        const data = await mutation.mutateAsync({
+        formik.setSubmitting(true);
+        const { error } = await authClient.signUpAsStudent({
           username: values.username,
           password: values.password,
+        });
+
+        if (error) {
+          if (error.code === "USERNAME_IS_ALREADY_TAKEN_PLEASE_TRY_ANOTHER") {
+            formik.setFieldError("username", t("join.error.username-taken"));
+          }
+          return;
+        }
+        const { projectId } = await mutation.mutateAsync({
           shareCode: values.shareCode,
         });
 
-        formik.setStatus("submited");
-        utils.user.me.invalidate();
-
-        if (data.projectId) {
-          navigate(`/project/${data.projectId}`);
+        if (projectId) {
+          navigate(`/project/${projectId}`);
         } else {
           navigate("/");
         }
+        formik.setStatus("submited");
+        // utils.user.me.invalidate();
       } catch (e) {
         if (isTRPCClientError(e)) {
           // `cause` is now typed as your router's `TRPCClientError`
-          if (e.message == "PROJECT_OWNER_CANNOT_JOIN") {
+          if (e.message === "PROJECT_OWNER_CANNOT_JOIN") {
             // `cause` is now typed as your router's `TRPCClientError`
             formik.setFieldError(
-              "error",
+              "shareCode",
               t("join.error.project-owner-cannot-join")
             );
-          } else if (e.message == "ACCOUNT_EXISTS") {
-            formik.setFieldError(
-              "username",
-              t("join.error.account", "Nom d'utilisateur existe déjà")
-            );
-          } else if (e.message == "CODE_NOT_FOUND") {
+          } else if (e.message === "CODE_NOT_FOUND") {
             formik.setFieldError(
               "shareCode",
               t("join.error.project-not-found", "Code de partage est invalide")
             );
+            navigate("/join", { replace: true });
           }
         } else {
           formik.setFieldError(
@@ -199,8 +197,8 @@ export const StudentSignupDialog: React.FC = () => {
               color="primary"
               type="submit"
               data-testid="submit-button"
-              loading={mutation.isLoading}
-              disabled={mutation.isLoading}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             >
               <Trans i18nKey="student-signup.button.submit">Rejoindre</Trans>
             </LoadingButton>
