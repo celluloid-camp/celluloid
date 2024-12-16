@@ -34,7 +34,7 @@ export const EmailVerification = ({
           <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
             <Section className="mt-[32px]">
               <Img
-                src={`${baseUrl}/static/celluloid-logo.png`}
+                src={`${baseUrl}/celluloid-email-logo.png`}
                 width="188"
                 alt="Celluloid"
                 className="my-0 mx-auto"
