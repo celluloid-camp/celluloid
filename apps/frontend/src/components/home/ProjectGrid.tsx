@@ -25,6 +25,7 @@ import { StyledTitle } from "~components/typography";
 import { trpc } from "~utils/trpc";
 
 import ProjectThumbnail from "./ProjectThumbnail";
+import { useSession } from "~/lib/auth-client";
 
 export const ProjectGrid: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -39,7 +40,8 @@ export const ProjectGrid: React.FC = () => {
     }
   }, 1000);
 
-  const { data: user } = trpc.user.me.useQuery();
+  const { data: session } = useSession();
+
   const [data, mutation] = trpc.project.list.useSuspenseQuery({
     term: searchTerm,
   });
@@ -49,13 +51,15 @@ export const ProjectGrid: React.FC = () => {
   const userProjects = useMemo(
     () =>
       data.items
-        .filter((project) => user && project.userId === user.id)
+        .filter(
+          (project) => session?.user && project.userId === session?.user?.id
+        )
         .sort(
           (a, b) =>
             new Date(b.publishedAt).getTime() -
             new Date(a.publishedAt).getTime()
         ),
-    [user, data]
+    [session?.user, data]
   );
 
   const publicProjects = R.difference(data.items, userProjects);

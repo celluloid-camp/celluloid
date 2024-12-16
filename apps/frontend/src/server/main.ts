@@ -2,37 +2,24 @@ import express from "express";
 import ViteExpress from "vite-express";
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { appRouter, createContext } from '@celluloid/trpc';
-import type { Session } from 'express-session';
-import { createSession, passport } from '@celluloid/passport';
-import cookieParser from 'cookie-parser';
+import cookies from 'cookie-parser';
 import cors from 'cors';
-const app = express();
+import "./env";
+
 import { emailQueue, chaptersQueue } from "@celluloid/queue";
 
+import { expressAuthHandler, expressAuthSession } from "@celluloid/auth";
 import getAdminRouter from "./admin";
-import { UserRole } from "@celluloid/prisma";
+import { debug } from "node:util";
 
-const trpcApiEndpoint = '/api/trpc'
 
-declare module 'http' {
-  interface IncomingMessage {
-    session: Session & {
-      userId?: string
-    }
-  }
-}
-
-const sessionParser = createSession();
-
+const app = express();
 app.disable('x-powered-by');
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(sessionParser);
-
 app.enable('trust proxy');
 
 // parse cookies
-app.use(cookieParser());
+app.use(cookies());
 
 // Setup CORS
 app.use(cors({
@@ -40,15 +27,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use((req, res, next) => {
-  //@ts-expect-error dynamic
-  passport.authenticate('session', (err) => {
-    if (err && err.name === "DeserializeUserError") {
-      req.session.destroy(() =>
-        next())
-    }
-  })(req, res, next);
-});
+app.all("/api/auth/*", expressAuthHandler);
 
 // app.use((req, _res, next) => {
 //   // request logger
@@ -56,20 +35,28 @@ app.use((req, res, next) => {
 //   next();
 // });
 
+app.get("/api/me", async (req, res) => {
+  const session = await expressAuthSession(req)
+  return res.json(session);
+});
+
+app.use(express.json());
 
 const adminRouter = await getAdminRouter();
 
-const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
-  // biome-ignore lint/correctness/noVoidTypeReturn: <explanation>
-  if (req.user && (req.user as { role?: UserRole }).role === UserRole.Admin) return next();
-  res.redirect("/");
-};
+app.use("/admin", async (req, res, next) => {
+  const session = await expressAuthSession(req)
+  if (!session || session.user.role !== "admin") {
+    res.redirect("/");
+    return;
+  }
 
-app.use("/admin", isAuthenticated, adminRouter);
+  next();
+}, adminRouter);
 
 
 app.use(
-  trpcApiEndpoint,
+  "/api/trpc",
   trpcExpress.createExpressMiddleware({
     router: appRouter,
     createContext,
@@ -78,6 +65,21 @@ app.use(
 emailQueue.start();
 chaptersQueue.start();
 
-ViteExpress.listen(app, 3000, () =>
+ViteExpress.config({
+  ignorePaths: /^\/api\/.*/,
+});
+
+
+
+const server = ViteExpress.listen(app, 3000, () =>
   console.log("Server is listening on port 3000..."),
 );
+
+process.on('SIGTERM', async () => {
+  debug('SIGTERM signal received: closing HTTP server')
+  server.close(async () => {
+    await emailQueue.stop();
+    await chaptersQueue.stop();
+    debug('HTTP server closed')
+  })
+})

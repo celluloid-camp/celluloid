@@ -1,0 +1,15 @@
+{
+  "extends": "@celluloid/config/tsconfig/internal-package.json",
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react-jsx"
+  }
+}

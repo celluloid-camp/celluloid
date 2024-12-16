@@ -5,7 +5,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import * as React from "react";
+import type * as React from "react";
 
 import { Avatar } from "~components/Avatar";
 import { MyProjectGrid } from "~components/profile/MyProjectGrid";
@@ -48,6 +48,7 @@ const UserProfile: React.FC = () => {
                   borderWidth: 2,
                   borderColor: data.color,
                   borderStyle: "solid",
+                  fontSize: 30,
                 }}
                 src={data.avatar?.publicUrl}
               >
@@ -63,7 +64,10 @@ const UserProfile: React.FC = () => {
                 {data.username}
               </Typography>
               <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>
-                {data.email} - <TransUserRole role={data.role} />
+                {data.email}
+              </Typography>
+              <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>
+                <TransUserRole role={data.role} />
               </Typography>
             </Stack>
             <Stack alignItems={"center"}>

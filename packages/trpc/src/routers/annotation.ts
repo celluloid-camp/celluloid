@@ -1,4 +1,4 @@
-import { prisma, UserRole } from '@celluloid/prisma';
+import { prisma } from '@celluloid/prisma';
 import type { Annotation } from '@celluloid/prisma';
 import { Prisma } from '@celluloid/prisma';
 import { toSrt } from '@celluloid/utils';
@@ -97,7 +97,7 @@ export const annotationRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.user.id) {
+      if (ctx.user?.id) {
         const annotation = await prisma.annotation.create({
           data: {
             userId: ctx.user?.id,
@@ -146,7 +146,7 @@ export const annotationRouter = router({
         );
       }
 
-      if (annotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin || annotation.project.userId == ctx.user?.id) {
+      if (annotation.userId === ctx.user?.id || ctx.user?.role === "admin" || annotation.project.userId === ctx.user?.id) {
         // Perform the update
         const updatedAnnotation = await prisma.annotation.update({
           where: { id: input.annotationId },
@@ -195,20 +195,18 @@ export const annotationRouter = router({
         );
       }
 
-      if (annotation.userId == ctx.user?.id || ctx.user.role == UserRole.Admin || annotation.project.userId == ctx.user?.id) {
+      if (annotation.userId === ctx.user?.id || ctx.user?.role === "admin" || annotation.project.userId === ctx.user?.id) {
         const annotation = await prisma.annotation.delete({
           where: { id: input.annotationId },
         });
         ee.emit('change', annotation);
         return annotation;
-      } else {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Can't edit this annotation"
-        }
-        );
-
       }
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Can't edit this annotation"
+      }
+      );
     }),
   export: protectedProcedure
     .input(
@@ -241,10 +239,10 @@ export const annotationRouter = router({
       let content = "";
       if (format === 'xml') {
         content = toXML("annotations", formated, { cdataKeys: ['comments', 'text'] });
-      } else if (format == "csv") {
+      } else if (format === "csv") {
         const sorted = formated.sort((a, b) => a.startTime - b.startTime)
         content = Papa.unparse(sorted);
-      } else if (format == "srt") {
+      } else if (format === "srt") {
         content = toSrt(formated);
       }
       return content

@@ -4,11 +4,10 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 
-import { trpc, UserMe } from "~utils/trpc";
-
 import { Avatar } from "./Avatar";
+import { signOut, type User } from "~/lib/auth-client";
 
-export const SigninMenu = ({ user }: { user: UserMe }) => {
+export const SigninMenu = ({ user }: { user: User | null }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,9 +15,6 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
-  const utils = trpc.useContext();
-  const mutation = trpc.user.logout.useMutation();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -28,11 +24,14 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
   };
 
   const handleLogout = async () => {
-    await mutation.mutateAsync();
-    utils.user.me.invalidate();
-    utils.project.list.invalidate();
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          navigate("/", { replace: true });
+        },
+      },
+    });
     handleClose();
-    navigate("/", { replace: true });
   };
 
   const handleProfile = () => {
@@ -69,7 +68,7 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
               borderColor: user.color,
               borderStyle: "solid",
             }}
-            src={user.avatar?.publicUrl}
+            src={user.image ?? undefined}
           >
             {user.initial}
           </Avatar>
@@ -136,7 +135,7 @@ export const SigninMenu = ({ user }: { user: UserMe }) => {
           },
         }}
       >
-        {user && user.role == "Admin" ? (
+        {user && user.role === "admin" ? (
           <MenuItem onClick={handleOpenAdmin} data-testid="header-admin-button">
             {t("menu.admin")}
           </MenuItem>

@@ -5,6 +5,7 @@
       "ES2020",
       "DOM"
     ],
+    "jsx": "react-jsx"
   },
   "include": [
     "src"

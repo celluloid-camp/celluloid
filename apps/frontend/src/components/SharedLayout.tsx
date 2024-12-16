@@ -1,4 +1,4 @@
-import * as React from "react";
+import type * as React from "react";
 import { Outlet } from "react-router-dom";
 
 import { AppBarMenu } from "./AppBarMenu";
