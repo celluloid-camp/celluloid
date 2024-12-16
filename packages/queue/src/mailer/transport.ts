@@ -61,10 +61,11 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
       if (!env.SMTP_PORT) {
         throw new Error("Misconfiguration: no SMTP_PORT");
       }
+      console.log(env.SMTP_HOST, env.SMTP_PORT, env.SMTP_SECURE);
       return nodemailer.createTransport({
         host: env.SMTP_HOST,
-        port: env.SMTP_PORT,
-        secure: env.SMTP_SECURE,
+        port: Number.parseInt(env.SMTP_PORT),
+        secure: env.SMTP_SECURE === "true",
         auth: {
           user: env.SMTP_USER,
           pass: env.SMTP_PASSWORD,
