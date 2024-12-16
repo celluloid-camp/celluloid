@@ -63,11 +63,11 @@ const getAdminRouter = () => {
     branding: {
       companyName: 'Celluloid',
       withMadeWithLove: false,
-      logo: '/images/logo-admin.svg',
+      logo: '/logo-admin.svg',
       theme: overrides
     },
     assets: {
-      styles: ['/styles/override.css'],
+      styles: ['/override.css'],
     },
     defaultTheme: noSidebar.id,
     availableThemes: [dark, light, noSidebar],
@@ -247,7 +247,7 @@ const getAdminRouter = () => {
     },
     componentLoader,
   });
-  if (process.env.NODE_ENV === "developement")
+  if (process.env.NODE_ENV === "development")
     admin.watch()
   return AdminJSExpress.buildRouter(admin);
 };

@@ -10,7 +10,8 @@ import { emailQueue, chaptersQueue } from "@celluloid/queue";
 
 import { expressAuthHandler, expressAuthSession } from "@celluloid/auth";
 import getAdminRouter from "./admin";
-import { debug } from "node:util";
+import { createTerminus } from '@godaddy/terminus';
+import { prisma } from "@celluloid/prisma";
 
 
 const app = express();
@@ -75,11 +76,19 @@ const server = ViteExpress.listen(app, 3000, () =>
   console.log("Server is listening on port 3000..."),
 );
 
-process.on('SIGTERM', async () => {
-  debug('SIGTERM signal received: closing HTTP server')
-  server.close(async () => {
-    await emailQueue.stop();
-    await chaptersQueue.stop();
-    debug('HTTP server closed')
-  })
+
+async function onSignal() {
+  console.log("server is starting cleanup")
+  // wsHandler.broadcastReconnectNotification()
+  await emailQueue.stop();
+  await chaptersQueue.stop();
+  await new Promise((resolve) => server.close(resolve));
+  await prisma.$disconnect()
+  return;
+}
+
+createTerminus(server, {
+  // healthChecks: { '/healthcheck': onHealthCheck },
+  signals: ['SIGTERM', 'SIGINT'],
+  onSignal
 })

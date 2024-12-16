@@ -47,11 +47,10 @@ The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/
 ├── apps/                # Main application containers
 │   ├── frontend/        # Frontend application code
 ├── packages/            # Shared packages
-│   ├── config/          # Configuration settings and files
 │   ├── i18n/            # Internationalization settings and translations
-│   ├── passport/        # Passport authentication settings
-│   ├── prisma/          # Prisma ORM configurations and schema
-│   ├── trpc/            # tRPC settings and utilities
+│   ├── auth/            # Authentication settings
+│   ├── db/              # Prisma ORM configurations and schema
+│   ├── api/             # tRPC settings and utilities
 │   ├── types/           # Shared TypeScript types
 │   └── utils/           # Shared utilities
 ├── tests/               # Test scripts and test-related utilities

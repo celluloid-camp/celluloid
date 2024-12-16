@@ -34,6 +34,7 @@
     "@cutting/use-get-parent-size": "^2.1.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@godaddy/terminus": "^4.12.1",
     "@mui": "link:@mui",
     "@mui/icons-material": "^6.1.2",
     "@mui/lab": "^5.0.0-alpha.153",

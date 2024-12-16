@@ -67,7 +67,7 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
     }
   };
 
-  const canEdit = project.user.id === user?.id || user?.role === "ADMIN";
+  const canEdit = project.user.id === user?.id || user?.role === "admin";
 
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
