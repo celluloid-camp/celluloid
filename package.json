@@ -25,7 +25,8 @@
     "auth": "dotenv -- pnpm --filter auth",
     "backend": "dotenv -- pnpm --filter backend",
     "prisma": "dotenv -- pnpm --filter @celluloid/prisma",
-    "docker:build": "docker build -t celluloid:latest ."
+    "docker:build": "docker build -t celluloid:latest .",
+    "docker:run": "docker run -it --rm --env-file .env -p 3000:3000  celluloid:latest"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
