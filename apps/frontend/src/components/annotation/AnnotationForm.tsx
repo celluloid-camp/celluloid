@@ -27,8 +27,9 @@ import {
   useContextualEditorPosition,
   useContextualEditorVisibleState,
   useEditAnnotation,
+  useEmotionEditor,
 } from "./useAnnotationEditor";
-import { EmotionsPalette } from "./emotion-palette";
+import { EmotionsPalette } from "../emotion-detection/emotion-palette";
 
 type AnnotationFormProps = {
   duration: number;
@@ -99,7 +100,7 @@ export const AnnotationFormContent: React.FC<
           stopTime: editedAnnotation.stopTime,
           pause: editedAnnotation.pause,
           text: editedAnnotation.text,
-          emotion: editedAnnotation.extra?.emotion,
+          emotion: editedAnnotation.emotion,
         }
       : {
           startTime: videoProgress,
@@ -136,6 +137,9 @@ export const AnnotationFormContent: React.FC<
           startTime: values.startTime,
           stopTime: values.stopTime,
           pause: values.pause,
+          emotion: values.emotion,
+          // mode: values.mode,
+          // detection: values.detection,
           extra: contextualEditorPosition ? contextualEditorPosition : {},
         });
         if (newAnnotation) {
@@ -194,7 +198,7 @@ export const AnnotationFormContent: React.FC<
             value={formik.values.text}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.errors.text}
+            error={!!formik.errors.text}
             disabled={formik.isSubmitting}
             inputProps={{
               "aria-label": "Saissez votre annotation",
@@ -208,6 +212,7 @@ export const AnnotationFormContent: React.FC<
           projectId={project.id}
           semiAutoAnnotation={false}
           semiAutoAnnotationMe={false}
+          position={videoProgress}
           onEmotionChange={(emotion) => {
             formik.setFieldValue("emotion", emotion);
           }}

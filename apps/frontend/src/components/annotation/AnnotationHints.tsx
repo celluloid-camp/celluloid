@@ -2,16 +2,20 @@ import CancelIcon from "@mui/icons-material/Clear";
 import { Box, Fade, IconButton, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
-import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
+import Tooltip, {
+  tooltipClasses,
+  type TooltipProps,
+} from "@mui/material/Tooltip";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { Avatar } from "~components/Avatar";
 import { MultiLineTypography } from "~components/MultiLineTypography";
-import { AnnotationByProjectId, ProjectById } from "~utils/trpc";
+import type { AnnotationByProjectId, ProjectById } from "~utils/trpc";
 import { getUserColor } from "~utils/UserUtils";
 
 import { useAnnotationHintsVisible } from "./useAnnotationEditor";
+import { getEmojiFromName } from "../emotion-detection/emoji";
 
 interface AnnotationHintsProps {
   project: ProjectById;
@@ -55,21 +59,48 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
         <Stack sx={{ py: 1 }} spacing={1}>
           <Box>
             <Stack direction={"row"} spacing={1} alignItems={"center"}>
-              <Avatar
-                sx={{
-                  background: annotation.user.color,
-                  width: 24,
-                  height: 24,
-                  borderWidth: 2,
-                  borderColor: annotation.user.color,
-                  borderStyle: "solid",
-                }}
-                src={annotation.user.avatar?.publicUrl}
-              >
-                {annotation.user.initial}
-              </Avatar>
-              <Stack>
-                <Typography component="span" color="white" variant="body2">
+              <Box position={"relative"}>
+                <Avatar
+                  sx={{
+                    background: annotation.user.color,
+                    width: 30,
+                    height: 30,
+                    borderWidth: 2,
+                    borderColor: annotation.user.color,
+                    borderStyle: "solid",
+                  }}
+                  src={annotation.user.avatar?.publicUrl}
+                >
+                  {annotation.user.initial}
+                </Avatar>
+                {annotation.emotion && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 18,
+                      left: 18,
+                      color: "white",
+                      backgroundColor: "#000000",
+                      borderRadius: "100%",
+                      width: 20,
+                      height: 20,
+                      fontSize: 12,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {getEmojiFromName(annotation.emotion)}
+                  </Box>
+                )}
+              </Box>
+              <Stack direction={"row"} justifyItems={"space-between"}>
+                <Typography
+                  component="span"
+                  color="white"
+                  variant="body2"
+                  flex={1}
+                >
                   {annotation.user.username}
                 </Typography>
               </Stack>

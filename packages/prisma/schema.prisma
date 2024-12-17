@@ -25,6 +25,9 @@ model Annotation {
   comments  Comment[]
 
   orignalURL String?
+  emotion    String?
+  detection  String? // "auto" | "semi-auto" | "semi-auto-mine"
+  mode       String? // "performance" | "analysis"
 }
 
 model Comment {

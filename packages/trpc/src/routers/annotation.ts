@@ -93,7 +93,10 @@ export const annotationRouter = router({
         stopTime: z.number(),
         pause: z.boolean(),
         projectId: z.string(),
-        extra: z.any()
+        extra: z.any(),
+        emotion: z.string().optional(),
+        mode: z.enum(["performance", "analysis"]).optional(),
+        detection: z.enum(["auto", "semi-auto", "semi-auto-mine"]).optional()
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -106,7 +109,10 @@ export const annotationRouter = router({
             stopTime: input.stopTime,
             pause: input.pause,
             projectId: input.projectId,
-            extra: input.extra
+            extra: input.extra,
+            emotion: input.emotion,
+            mode: input.mode,
+            detection: input.detection
           }
           // select: defaultPostSelect,
         });
@@ -124,7 +130,8 @@ export const annotationRouter = router({
         stopTime: z.number().optional(),
         pause: z.boolean().optional(),
         projectId: z.string().optional(),
-        extra: z.any().optional()
+        extra: z.any().optional(),
+        emotion: z.string().optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -156,7 +163,8 @@ export const annotationRouter = router({
             stopTime: input.stopTime ?? annotation.stopTime,
             pause: input.pause ?? annotation.pause,
             projectId: input.projectId ?? annotation.projectId,
-            extra: input.extra ?? annotation.extra
+            extra: input.extra ?? annotation.extra,
+            emotion: input.emotion ?? annotation.emotion,
           },
         });
 
@@ -234,6 +242,8 @@ export const annotationRouter = router({
         comments: a.comments.map((c) => c.text),
         contextX: a.extra ? a.extra.relativeX : null,
         contextY: a.extra ? a.extra.relativeY : null,
+        emotion: a.emotion,
+        mode: a.mode,
       }))
 
       let content = "";

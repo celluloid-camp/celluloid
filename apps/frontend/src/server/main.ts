@@ -12,6 +12,7 @@ import { expressAuthHandler, expressAuthSession } from "@celluloid/auth";
 import getAdminRouter from "./admin";
 import { createTerminus } from '@godaddy/terminus';
 import { prisma } from "@celluloid/prisma";
+import { env } from "./env";
 
 
 const app = express();
@@ -72,8 +73,8 @@ ViteExpress.config({
 
 
 
-const server = ViteExpress.listen(app, 3000, () =>
-  console.log("Server is listening on port 3000..."),
+const server = ViteExpress.listen(app, env.PORT, () =>
+  console.log(`Server is listening on port ${env.PORT}...`),
 );
 
 

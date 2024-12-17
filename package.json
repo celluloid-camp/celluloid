@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "dotenv -- turbo watch dev --continue",
+    "dev": "dotenv -- turbo dev --continue",
     "clean": "turbo clean",
     "build": "dotenv -- turbo run build --no-cache",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",

@@ -1,5 +1,5 @@
 import { Box, Grid, Link, Typography } from "@mui/material";
-import * as React from "react";
+import type * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { OpenEditionLogo } from "~images/OpenEdition";
@@ -53,7 +53,7 @@ export const About: React.FC = () => {
       </Typography>
 
       <Trans i18nKey="about.opensource.github" pt={2}>
-        <a href="https://github.com/celluloid-camp/"></a>
+        <a href="https://github.com/celluloid-camp/" />
       </Trans>
 
       <div

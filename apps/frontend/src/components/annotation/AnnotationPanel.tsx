@@ -7,6 +7,7 @@ import {
   Badge,
   type BadgeProps,
   Box,
+  Button,
   Fab,
   Grow,
   List,
@@ -14,6 +15,7 @@ import {
   Stack,
   styled,
   Tab,
+  ToggleButton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -27,8 +29,12 @@ import type { AnnotationByProjectId, ProjectById, UserMe } from "~utils/trpc";
 import { AnnotationForm } from "./AnnotationForm";
 import { AnnotationItem } from "./AnnotationItem";
 import { useAnnotationHintsVisible } from "./useAnnotationEditor";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { ChaptersPanel } from "~components/chapters/panel";
+import { SmallSwitch } from "../small-switch";
+
+import { usePlayerModeStore } from "../emotion-detection/store";
+import AutoDetectionMenu from "../emotion-detection/menu";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -165,6 +171,7 @@ const AnnotationList: React.FC<
 export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   annotationCount,
   playerIsReady,
+  annotations,
   ...props
 }) => {
   const [value, setValue] = useState("1");
@@ -179,6 +186,12 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   const { height } = useParentSize(ref);
 
   const [hintsVisible, setHintsVisible] = useAnnotationHintsVisible();
+
+  const [onlyMine, setOnlyMine] = useState(false);
+
+  const onlyMyAnnotations = onlyMine
+    ? annotations.filter((annotation) => annotation.user.id === props.user?.id)
+    : annotations;
 
   return (
     <Paper
@@ -257,7 +270,15 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
               height: "100%",
             }}
           >
-            <AnnotationList playerIsReady={playerIsReady} {...props} />
+            <AdvancedControls
+              onlyMine={onlyMine}
+              onOnlyMineChange={setOnlyMine}
+            />
+            <AnnotationList
+              playerIsReady={playerIsReady}
+              annotations={onlyMyAnnotations}
+              {...props}
+            />
           </Box>
         </TabPanel>
         <TabPanel
@@ -275,3 +296,47 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
     </Paper>
   );
 };
+
+function AdvancedControls({
+  onlyMine,
+  onOnlyMineChange,
+}: {
+  onlyMine: boolean;
+  onOnlyMineChange: (onlyMine: boolean) => void;
+}) {
+  const { mode, setMode } = usePlayerModeStore();
+
+  return (
+    <Stack
+      direction="row"
+      spacing={1}
+      paddingX={2}
+      paddingY={1}
+      justifyContent={"flex-end"}
+    >
+      <AutoDetectionMenu />
+      <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+        <SmallSwitch
+          checked={onlyMine}
+          onChange={() => onOnlyMineChange(!onlyMine)}
+          inputProps={{ "aria-label": "ant design" }}
+        />
+        <Typography sx={{ color: "text.secondary", fontSize: "12px" }}>
+          Show Only Mine
+        </Typography>
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+        <SmallSwitch
+          checked={mode === "performance"}
+          onChange={() =>
+            setMode(mode === "performance" ? "analysis" : "performance")
+          }
+          inputProps={{ "aria-label": "ant design" }}
+        />
+        <Typography sx={{ color: "text.secondary", fontSize: "12px" }}>
+          Performance Mode
+        </Typography>
+      </Stack>
+    </Stack>
+  );
+}

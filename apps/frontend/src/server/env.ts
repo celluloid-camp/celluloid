@@ -8,6 +8,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     BASE_URL: z.string(),
+    PORT: z.coerce.number().default(3000),
   },
   clientPrefix: 'VITE',
   client: {

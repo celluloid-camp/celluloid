@@ -32,16 +32,17 @@ import { Avatar } from "~components/Avatar";
 import { MultiLineTypography } from "~components/MultiLineTypography";
 import { formatDuration } from "~utils/DurationUtils";
 import {
-  AnnotationByProjectId,
-  AnnotationCommentByProjectId,
-  ProjectById,
+  type AnnotationByProjectId,
+  type AnnotationCommentByProjectId,
+  type ProjectById,
   trpc,
-  UserMe,
+  type UserMe,
 } from "~utils/trpc";
 
 import { CommentForm } from "./CommentForm";
 import { CommentItem } from "./CommentItem";
 import { useEditAnnotation } from "./useAnnotationEditor";
+import { getEmojiFromName } from "../emotion-detection/emoji";
 
 interface AnnotationItemProps {
   project: ProjectById;
@@ -75,9 +76,10 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
     },
   });
 
-  const isContextual = Object.keys(annotation.extra || {}).length;
+  const isContextual = Object.keys(annotation.extra?.x || {}).length;
 
-  const canEdit = annotation.user.id == user?.id || project.user.id == user?.id;
+  const canEdit =
+    annotation.user.id === user?.id || project.user.id === user?.id;
 
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -143,7 +145,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             alignContent: "center",
           }}
         >
-          <ListItemAvatar>
+          <ListItemAvatar sx={{ position: "relative" }}>
             <Avatar
               sx={{
                 background: annotation.user.color,
@@ -156,6 +158,27 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             >
               {annotation.user.initial}
             </Avatar>
+            {annotation.emotion && (
+              <Tooltip title={annotation.emotion} placement="top" arrow>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: -10,
+                    right: 10,
+                    color: "white",
+                    backgroundColor: "#000000",
+                    borderRadius: "100%",
+                    width: 25,
+                    height: 25,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {getEmojiFromName(annotation.emotion)}
+                </Box>
+              </Tooltip>
+            )}
           </ListItemAvatar>
           <ListItemText
             primaryTypographyProps={{

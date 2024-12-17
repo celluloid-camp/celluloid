@@ -1,15 +1,28 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
-  Container,
   Typography,
   Box,
   TextField,
   Button,
-  Paper,
   Grid,
   Snackbar,
   Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { parseString, Builder } from "xml2js";
 
@@ -56,30 +69,42 @@ export const RDFDocumentEditor: React.FC = () => {
   const [xmlContent, setXmlContent] = useState<string>("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newMetadata, setNewMetadata] = useState<{
+    field: string;
+    value: string;
+  }>({
+    field: "",
+    value: "",
+  });
+
+  // Add this constant for available metadata fields
+  const availableMetadataFields = [
+    "title",
+    "creator",
+    "subject",
+    "description",
+    "publisher",
+    "contributor",
+    "date",
+    "type",
+    "format",
+    "identifier",
+    "source",
+    "language",
+    "relation",
+    "coverage",
+    "rights",
+  ];
 
   // Load XML file on component mount
   useEffect(() => {
-    // Using the provided XML content
     const xmlDoc = `<?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:dcterms="http://purl.org/dc/terms/"
 >
-<dcterms:title></dcterms:title>
-<dcterms:creator></dcterms:creator>
-<dcterms:subject></dcterms:subject>
-<dcterms:description></dcterms:description>
-<dcterms:publisher></dcterms:publisher>
-<dcterms:contributor></dcterms:contributor>
-<dcterms:date></dcterms:date>
-<dcterms:type></dcterms:type>
-<dcterms:format></dcterms:format>
-<dcterms:identifier></dcterms:identifier>
-<dcterms:source></dcterms:source>
-<dcterms:language></dcterms:language>
-<dcterms:relation></dcterms:relation>
-<dcterms:coverage></dcterms:coverage>
-<dcterms:rights></dcterms:rights>
+<dcterms:title>test</dcterms:title>
 </rdf:RDF>`;
 
     setXmlContent(xmlDoc);
@@ -91,23 +116,23 @@ export const RDFDocumentEditor: React.FC = () => {
         return;
       }
 
-      const rdfData = result["rdf:RDF"];
+      const rdfData = result?.["rdf:RDF"] || {};
       const newMetadata: RDFMetadata = {
-        title: rdfData["dcterms:title"][0] || "",
-        creator: rdfData["dcterms:creator"][0] || "",
-        subject: rdfData["dcterms:subject"][0] || "",
-        description: rdfData["dcterms:description"][0] || "",
-        publisher: rdfData["dcterms:publisher"][0] || "",
-        contributor: rdfData["dcterms:contributor"][0] || "",
-        date: rdfData["dcterms:date"][0] || "",
-        type: rdfData["dcterms:type"][0] || "",
-        format: rdfData["dcterms:format"][0] || "",
-        identifier: rdfData["dcterms:identifier"][0] || "",
-        source: rdfData["dcterms:source"][0] || "",
-        language: rdfData["dcterms:language"][0] || "",
-        relation: rdfData["dcterms:relation"][0] || "",
-        coverage: rdfData["dcterms:coverage"][0] || "",
-        rights: rdfData["dcterms:rights"][0] || "",
+        title: rdfData["dcterms:title"]?.[0] ?? "",
+        creator: rdfData["dcterms:creator"]?.[0] ?? "",
+        subject: rdfData["dcterms:subject"]?.[0] ?? "",
+        description: rdfData["dcterms:description"]?.[0] ?? "",
+        publisher: rdfData["dcterms:publisher"]?.[0] ?? "",
+        contributor: rdfData["dcterms:contributor"]?.[0] ?? "",
+        date: rdfData["dcterms:date"]?.[0] ?? "",
+        type: rdfData["dcterms:type"]?.[0] ?? "",
+        format: rdfData["dcterms:format"]?.[0] ?? "",
+        identifier: rdfData["dcterms:identifier"]?.[0] ?? "",
+        source: rdfData["dcterms:source"]?.[0] ?? "",
+        language: rdfData["dcterms:language"]?.[0] ?? "",
+        relation: rdfData["dcterms:relation"]?.[0] ?? "",
+        coverage: rdfData["dcterms:coverage"]?.[0] ?? "",
+        rights: rdfData["dcterms:rights"]?.[0] ?? "",
       };
 
       setMetadata(newMetadata);
@@ -160,57 +185,122 @@ export const RDFDocumentEditor: React.FC = () => {
     setOpenSnackbar(true);
   };
 
-  // Render metadata fields in a grid
-  const renderMetadataFields = () => {
-    const fields: (keyof RDFMetadata)[] = [
-      "title",
-      "creator",
-      "subject",
-      "description",
-      "publisher",
-      "contributor",
-      "date",
-      "type",
-      "format",
-      "identifier",
-      "source",
-      "language",
-      "relation",
-      "coverage",
-      "rights",
-    ];
-
-    return fields.map((field) => (
-      <Grid item xs={12} sm={6} key={field}>
-        <TextField
-          fullWidth
-          label={field.charAt(0).toUpperCase() + field.slice(1)}
-          variant="outlined"
-          value={metadata[field]}
-          onChange={(e) => handleMetadataChange(field, e.target.value)}
-          margin="normal"
-        />
-      </Grid>
-    ));
+  const handleAddMetadata = () => {
+    if (newMetadata.field && newMetadata.value) {
+      setMetadata((prev) => ({
+        ...prev,
+        [newMetadata.field.toLowerCase()]: newMetadata.value,
+      }));
+      setNewMetadata({ field: "", value: "" });
+      setOpenDialog(false);
+    }
   };
 
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
-        Metadata
+        Metadata Dublin
       </Typography>
 
-      <Grid container spacing={2}>
-        {renderMetadataFields()}
-      </Grid>
+      <TableContainer component={Paper} sx={{ mb: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <strong>Term</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Value</strong>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.entries(metadata)
+              .filter(([_, value]) => value !== "") // Only show non-empty fields
+              .map(([field, value]) => (
+                <TableRow key={field}>
+                  <TableCell>
+                    {field.charAt(0).toUpperCase() + field.slice(1)}
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      value={value}
+                      onChange={(e) =>
+                        handleMetadataChange(
+                          field as keyof RDFMetadata,
+                          e.target.value
+                        )
+                      }
+                      size="small"
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
         <Button variant="contained" color="primary" onClick={saveMetadata}>
           Save Metadata
         </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setOpenDialog(true)}
+        >
+          Add New Metadata
+        </Button>
       </Box>
 
-      {/* Snackbar for save confirmation */}
+      {/* Modified Dialog */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Add New Metadata Field</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Term</InputLabel>
+            <Select
+              value={newMetadata.field}
+              label="Term"
+              onChange={(e) =>
+                setNewMetadata((prev) => ({ ...prev, field: e.target.value }))
+              }
+            >
+              {availableMetadataFields
+                .filter((field) => !metadata[field as keyof RDFMetadata]) // Only show unused fields
+                .map((field) => (
+                  <MenuItem key={field} value={field}>
+                    {field.charAt(0).toUpperCase() + field.slice(1)}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            label="Value"
+            value={newMetadata.value}
+            onChange={(e) =>
+              setNewMetadata((prev) => ({ ...prev, value: e.target.value }))
+            }
+            margin="normal"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button
+            onClick={handleAddMetadata}
+            variant="contained"
+            color="primary"
+            disabled={!newMetadata.field || !newMetadata.value}
+          >
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Existing Snackbar */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}

@@ -1,68 +1,10 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState, useRef, type CSSProperties } from "react";
+import { emojisArray, type EmotionRecommended, type Emoji } from "./emoji";
+import { mapEmotionToEmojis } from "./emoji";
+import { useAutoDetectionStore } from "./store";
 
 // import AnnotationService from 'services/AnnotationService';
-
-interface Emoji {
-  label: string;
-  value: string;
-}
-
-interface EmotionRecommended {
-  emotion: string;
-  score: number;
-}
-
-const emojisArray: Emoji[] = [
-  {
-    label: "👍",
-    value: "iLike",
-  },
-  {
-    label: "👎",
-    value: "iDontLike",
-  },
-  {
-    label: "😐",
-    value: "neutral",
-  },
-  {
-    label: "😮",
-    value: "surprised",
-  },
-  {
-    label: "😄",
-    value: "smile",
-  },
-  {
-    label: "😂",
-    value: "laugh",
-  },
-  {
-    label: "😠",
-    value: "angry",
-  },
-  {
-    label: "☹️",
-    value: "sad",
-  },
-  {
-    label: "🥹",
-    value: "empathy",
-  },
-  {
-    label: "😨",
-    value: "fearful",
-  },
-  {
-    label: "🤮",
-    value: "disgusted",
-  },
-  {
-    label: "🤔",
-    value: "itsStrange",
-  },
-];
 
 const OFFSET = 10;
 
@@ -91,6 +33,10 @@ export function EmotionsPalette({
   const captureIntervalRef = useRef<number | null>(null);
   const startPositionRef = useRef<number>(0);
 
+  const detectedEmotion = useAutoDetectionStore(
+    (state) => state.detectedEmotion
+  );
+
   // Update position ref
   useEffect(() => {
     startPositionRef.current = position;
@@ -98,64 +44,6 @@ export function EmotionsPalette({
 
   // Others Detection/No Detection
   useEffect(() => {
-    const mapEmotionToEmojis = (emotionDetected: string): Emoji[] => {
-      const emojis = (() => {
-        switch (emotionDetected) {
-          case "neutral":
-            return [emojisArray.find((emoji) => emoji.value === "neutral")];
-          case "happy":
-            return [
-              emojisArray.find((emoji) => emoji.value === "laugh"),
-              emojisArray.find((emoji) => emoji.value === "smile"),
-            ];
-          case "surprised":
-            return [
-              emojisArray.find((emoji) => emoji.value === "surprised"),
-              emojisArray.find((emoji) => emoji.value === "fearful"),
-            ];
-          case "fearful":
-            return [
-              emojisArray.find((emoji) => emoji.value === "surprised"),
-              emojisArray.find((emoji) => emoji.value === "fearful"),
-            ];
-          case "angry":
-            return [
-              emojisArray.find((emoji) => emoji.value === "angry"),
-              emojisArray.find((emoji) => emoji.value === "sad"),
-              emojisArray.find((emoji) => emoji.value === "disgusted"),
-            ];
-          case "disgusted":
-            return [
-              emojisArray.find((emoji) => emoji.value === "angry"),
-              emojisArray.find((emoji) => emoji.value === "sad"),
-              emojisArray.find((emoji) => emoji.value === "disgusted"),
-            ];
-          case "sad":
-            return [
-              emojisArray.find((emoji) => emoji.value === "angry"),
-              emojisArray.find((emoji) => emoji.value === "sad"),
-              emojisArray.find((emoji) => emoji.value === "disgusted"),
-            ];
-          case "iLike":
-            return [emojisArray.find((emoji) => emoji.value === "neutral")];
-          case "iDontLike":
-            return [emojisArray.find((emoji) => emoji.value === "iDontLike")];
-          case "laugh":
-            return [emojisArray.find((emoji) => emoji.value === "laugh")];
-          case "smile":
-            return [emojisArray.find((emoji) => emoji.value === "smile")];
-          case "empathy":
-            return [emojisArray.find((emoji) => emoji.value === "empathy")];
-          case "itsStrange":
-            return [emojisArray.find((emoji) => emoji.value === "itsStrange")];
-          default:
-            return [emojisArray.find((emoji) => emoji.value === "neutral")];
-        }
-      })().filter((item): item is Emoji => item !== undefined);
-
-      return emojis;
-    };
-
     const generatePalette = (suggestions: EmotionRecommended[]): Emoji[] => {
       const emojisFlattened: Emoji[] = suggestions.flatMap(
         (emotionRecommended) => mapEmotionToEmojis(emotionRecommended.emotion)
@@ -182,7 +70,14 @@ export function EmotionsPalette({
           else startTimeParam = 0;
         }
 
-        const suggestions: EmotionRecommended[] = [];
+        const suggestions: EmotionRecommended[] = detectedEmotion
+          ? [
+              {
+                emotion: detectedEmotion,
+                score: 1,
+              },
+            ]
+          : [];
         // await AnnotationService.getRecommendedEmotions(projectId, {
         //   onlyMe: semiAutoAnnotationMe,
         //   startTime: startTimeParam,
@@ -191,6 +86,8 @@ export function EmotionsPalette({
         // });
 
         const palette: Emoji[] = generatePalette(suggestions);
+
+        console.log(palette);
 
         if (!palette.length) {
           const neutralEmoji = emojisArray.find(
@@ -224,7 +121,7 @@ export function EmotionsPalette({
     return () => {
       clearInterval(captureIntervalRef.current as number);
     };
-  }, [semiAutoAnnotation, semiAutoAnnotationMe, projectId]);
+  }, [semiAutoAnnotation, semiAutoAnnotationMe, projectId, detectedEmotion]);
 
   // UI Code
   const handleHover = (index: number) => {
@@ -258,25 +155,37 @@ export function EmotionsPalette({
       height="2.5rem"
     >
       {emojis.map((emoji, index) => (
-        // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-        <div
+        <Box
           key={emoji.value}
           onMouseEnter={() => handleHover(index)}
           onMouseLeave={handleHoverLeave}
           title={emoji.value}
           style={{
             ...elementStyle,
-            transform:
-              hoveredComponent === index ? "translateY(-20%) scale(2)" : "",
-            backgroundColor: emotion === emoji.value ? "black" : "transparent",
           }}
+          sx={[
+            {
+              transform:
+                hoveredComponent === index ? "translateY(-20%) scale(2)" : "",
+            },
+            emotion === emoji.value
+              ? {
+                  backgroundColor: "black",
+                  borderColor: "primary.main",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                }
+              : {
+                  backgroundColor: "transparent",
+                },
+          ]}
           onClick={(_e) => {
             if (emoji.value !== emotion) onEmotionChange(emoji.value);
             else onEmotionChange(undefined);
           }}
         >
           {emoji.label}
-        </div>
+        </Box>
       ))}
     </Box>
   );

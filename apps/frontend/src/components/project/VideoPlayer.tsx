@@ -1,5 +1,5 @@
 import ReactPlayer from "@celluloid/react-player";
-import { OnProgressProps } from "@celluloid/react-player/base";
+import type { OnProgressProps } from "@celluloid/react-player/base";
 import * as React from "react";
 import {
   forwardRef,
@@ -15,6 +15,7 @@ import {
 } from "~hooks/use-video-player";
 
 import { useSetVideoPlayerProgress } from "./useVideoPlayer";
+import { usePlayerModeStore } from "../emotion-detection/store";
 
 interface VideoPlayerProps {
   url: string;
@@ -28,6 +29,8 @@ export const VideoPlayer = forwardRef(
 
     const setVideoPlayerProgress = useSetVideoPlayerProgress();
 
+    const playerMode = usePlayerModeStore((state) => state.mode);
+
     useImperativeHandle(ref, () => playerRef.current);
 
     const dispatcher = useVideoPlayerEvent();
@@ -39,10 +42,10 @@ export const VideoPlayer = forwardRef(
     });
 
     const handleReady = () => {
-      // dispatcher({
-      //   state: "READY",
-      //   progress: 0,
-      // });
+      dispatcher({
+        state: "READY",
+        progress: 0,
+      });
     };
 
     const handlePlay = () => {
@@ -99,6 +102,9 @@ export const VideoPlayer = forwardRef(
         url={url}
         height={height}
         width={"100%"}
+        style={{
+          pointerEvents: playerMode === "performance" ? "none" : "auto",
+        }}
         config={{
           peertube: {
             controls: 1,
@@ -106,7 +112,7 @@ export const VideoPlayer = forwardRef(
             peertubeLink: 0,
             title: 0,
             warningTitle: 0,
-            p2p: 0,
+            p2p: 1,
             autoplay: 0,
           },
         }}

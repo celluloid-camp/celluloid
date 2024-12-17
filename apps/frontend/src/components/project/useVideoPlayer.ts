@@ -14,6 +14,7 @@ type VideoPlayerSate = {
   progress: number;
   error?: Error;
 
+
 }
 const videoPlayerState = atom<VideoPlayerSate>({
   key: 'videoPlayerState', // unique ID (with respect to other atoms/selectors)

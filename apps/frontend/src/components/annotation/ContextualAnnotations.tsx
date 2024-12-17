@@ -3,7 +3,7 @@ import { Avatar, Box, hexToRgb, Paper, Stack, Typography } from "@mui/material";
 import React, { memo, useMemo, useRef } from "react";
 
 import { MultiLineTypography } from "~components/MultiLineTypography";
-import { AnnotationByProjectId } from "~utils/trpc";
+import type { AnnotationByProjectId } from "~utils/trpc";
 
 import { HtmlTooltip } from "./AnnotationHints";
 
@@ -152,7 +152,7 @@ export const ContextualAnnotations: React.FC<ContextualAnnotationsProps> = memo(
       () =>
         annotations.filter((item) => {
           return (
-            typeof item === "object" && Object.keys(item.extra || {}).length
+            typeof item === "object" && Object.keys(item.extra?.x || {}).length
           );
         }),
       [annotations]
