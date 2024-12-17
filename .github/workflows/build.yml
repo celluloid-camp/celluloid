@@ -42,3 +42,4 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
+
