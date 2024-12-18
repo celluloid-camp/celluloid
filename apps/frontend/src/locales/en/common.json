@@ -40,7 +40,7 @@
   "home.newProject": "Create project",
   "home.publicProjects": "Explore",
   "home.searchProject": "Type anything…",
-  "home.title": "What is Especateur ?",
+  "home.title": "What is Celluloid ?",
   "home.tutoriel.description": "Go to <0>Peertube</0>\nChoose a video or upload a new one\nCopy the link to share the video\nCreate your project in Celluloid, copy the video link and go!\nWant to work with others? Share the project code with your partners",
   "home.tutoriel.link": "The tutorial is here: <0>https://celluloid-media.huma-num.fr/w/7r2FxoQdYjun6tYWJfHUCa</0>",
   "home.tutoriel.prefix": "To discover the application, you can consult the ",
@@ -263,5 +263,6 @@
   "chapters.form.button.add": " Add Chapter",
   "chapters.form.button.reset": "Reset Chapters",
   "chapters.form.title.placeholder": "Chapter title",
-  "chapters.form.description.placeholder": "Chapter description"
+  "chapters.form.description.placeholder": "Chapter description",
+  "project.sharedHelper": "A project code will be generated to allow collaborators to annotate your project."
 }

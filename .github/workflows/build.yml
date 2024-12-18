@@ -36,7 +36,7 @@ jobs:
           file: ./Dockerfile
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/celluloid:staging
+          tags: ghcr.io/${{ github.repository }}/celluloid:${{github.ref_name}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |

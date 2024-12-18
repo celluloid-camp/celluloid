@@ -443,8 +443,6 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
           </Grid>
         </Grid>
 
-
-
         <Grid container direction="row">
           <Grid item xs={2}>
             <Typography
@@ -474,11 +472,10 @@ const CreateProjectForm: React.FC<{ data: PeerTubeVideoDataResult }> = ({
                 paddingTop: 1,
               }}
             >
-              <Trans i18nKey="project.sharedHelper" />
+              {t("project.sharedHelper")}
             </Typography>
           </Grid>
         </Grid>
-
 
         <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
           <LoadingButton
