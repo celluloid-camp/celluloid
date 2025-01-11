@@ -5,8 +5,12 @@ educational purposes." src="./docs/assets/logo.svg">
 # Celluloid
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 [![Docker Build](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml)
+
 [![Tests](https://github.com/celluloid-camp/celluloid/actions/workflows/test-ci.yml/badge.svg)](https://celluloid-camp.github.io/celluloid)
+
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m797111948-48bf307d8bef7e04a34fe6f1?label=Uptime)
 
 ## Overview
 
@@ -160,6 +164,5 @@ Before contributing to Celluloid's development, it's essential to familiarize yo
 
 You can still find the old Celluloid version 1 that supports YouTube videos [here](https://github.com/celluloid-camp/celluloid/releases/tag/v1).
 
-[uptime status](https://stats.uptimerobot.com/yNVrfoWzKN)
 <img width="200" alt="Celluloid is a collaborative video annotation application designed for
 educational purposes." src="./apps/frontend/src/images/about/logo-icp.jpg">
