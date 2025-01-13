@@ -9,6 +9,7 @@ import { authClient } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
 import { isTRPCClientError, trpc } from "~utils/trpc";
+import { PasswordTextField } from "../commun/password-textfield";
 
 export const StudentSignupDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -152,11 +153,10 @@ export const StudentSignupDialog: React.FC = () => {
             }}
           />
 
-          <TextField
+          <PasswordTextField
             id="password"
             name="password"
             margin="dense"
-            type="password"
             fullWidth={true}
             label={t("student-signup.password.label", "Mot de passe")}
             required={true}

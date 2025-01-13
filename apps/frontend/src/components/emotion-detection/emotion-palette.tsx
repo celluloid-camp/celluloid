@@ -13,8 +13,7 @@ interface EmotionsPaletteProps {
   position: number;
   semiAutoAnnotation: boolean;
   semiAutoAnnotationMe: boolean;
-  emotion?: string;
-  emotionDetected: string;
+  emotion: string | null;
   onEmotionChange(emotion: string | undefined): void;
   sx?: CSSProperties;
 }
@@ -25,13 +24,14 @@ export function EmotionsPalette({
   semiAutoAnnotation = true,
   semiAutoAnnotationMe = false,
   emotion,
-  sx,
   onEmotionChange,
 }: EmotionsPaletteProps) {
   const [hoveredComponent, setHoveredComponent] = useState<number | null>(null);
   const [emojis, setEmojis] = useState<Emoji[]>([]);
   const captureIntervalRef = useRef<number | null>(null);
   const startPositionRef = useRef<number>(0);
+
+  const autoDetection = useAutoDetectionStore((state) => state.autoDetection);
 
   const detectedEmotion = useAutoDetectionStore(
     (state) => state.detectedEmotion
@@ -86,9 +86,6 @@ export function EmotionsPalette({
         // });
 
         const palette: Emoji[] = generatePalette(suggestions);
-
-        console.log(palette);
-
         if (!palette.length) {
           const neutralEmoji = emojisArray.find(
             (emoji) => emoji.value === "neutral"
@@ -110,7 +107,7 @@ export function EmotionsPalette({
       }
     };
 
-    if (semiAutoAnnotation || semiAutoAnnotationMe) {
+    if (autoDetection) {
       updateEmojis();
       captureIntervalRef.current = window.setInterval(
         updateEmojis,

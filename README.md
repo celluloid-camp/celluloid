@@ -2,11 +2,11 @@
 <img width="200" alt="Celluloid is a collaborative video annotation application designed for
 educational purposes." src="./docs/assets/logo.svg">
 
-# Celluloid
+# e-spect@teur
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker Build](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml)
-[![Tests](https://github.com/celluloid-camp/celluloid/actions/workflows/test-ci.yml/badge.svg)](https://celluloid-camp.github.io/celluloid)
+[![Docker Build](https://github.com/celluloid-camp/espectateur/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/espectateur/actions/workflows/build.yml)
+[![Tests](https://github.com/celluloid-camp/espectateur/actions/workflows/test-ci.yml/badge.svg)](https://celluloid-camp.github.io/celluloid)
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m797111948-48bf307d8bef7e04a34fe6f1?label=Uptime)
 
 ## Overview
 
@@ -19,12 +19,12 @@ With Celluloid, you can find a [PeerTube](https://joinpeertube.org/) video, sele
 ## ✨ Demo
 
 Visit https://celluloid.huma-num.fr/, create an account, and start using Celluloid.
-We value your feedback on the application's user experience and design. If you encounter any bugs or issues, please don't hesitate to [report them](https://github.com/celluloid-camp/celluloid/issues).
+We value your feedback on the application's user experience and design. If you encounter any bugs or issues, please don't hesitate to [report them](https://github.com/celluloid-camp/espectateur/issues).
 
 ## Development Team
 
 Celluloid originated from a research project led by **Michaël Bourgatte** and **Laurent Tessier**, two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/). Their work focuses on educational science and digital humanities.
-Celluloid is currently maintained by [Younes Benaomar](https://github.com/younes200), and we actively encourage contributions and involvement from the community. Feel free to reach out to us on [Discussions](https://github.com/celluloid-camp/celluloid/discussions).
+Celluloid is currently maintained by [Younes Benaomar](https://github.com/younes200), and we actively encourage contributions and involvement from the community. Feel free to reach out to us on [Discussions](https://github.com/celluloid-camp/espectateur/discussions).
 
 # Setup
 
@@ -86,7 +86,7 @@ You are required to supply an S3-compatible storage service. For this purpose, w
 Open your terminal and execute the following commands:
 
 ```bash
-git clone https://github.com/celluloid-camp/celluloid.git
+git clone https://github.com/celluloid-camp/espectateur.git
 cd celluloid/
 pnpm
 ```
@@ -139,7 +139,7 @@ docker build -t  celluloid:latest -f Dockerfile.compact .
 
 **\*We actively welcome motivated contributors!**
 
-Feel free to open a pull request, [contact us](https://github.com/celluloid-camp/celluloid/discussions), or [report a bug](https://github.com/celluloid-camp/celluloid/issues).
+Feel free to open a pull request, [contact us](https://github.com/celluloid-camp/espectateur/discussions), or [report a bug](https://github.com/celluloid-camp/espectateur/issues).
 
 ## Technical Stack
 
@@ -154,12 +154,12 @@ Before contributing to Celluloid's development, it's essential to familiarize yo
 
 ## Translation
 
-[![inlang status badge](https://inlang.com/badge?url=github.com/celluloid-camp/celluloid)](https://inlang.com/editor/github.com/celluloid-camp/celluloid?ref=badge)
+[![inlang status badge](https://inlang.com/badge?url=github.com/celluloid-camp/espectateur)](https://inlang.com/editor/github.com/celluloid-camp/espectateur?ref=badge)
 
 ## V1 Legacy
 
-You can still find the old Celluloid version 1 that supports YouTube videos [here](https://github.com/celluloid-camp/celluloid/releases/tag/v1).
+You can still find the old Celluloid version 1 that supports YouTube videos [here](https://github.com/celluloid-camp/espectateur/releases/tag/v1).
 
-[uptime status](https://stats.uptimerobot.com/yNVrfoWzKN)
+
 <img width="200" alt="Celluloid is a collaborative video annotation application designed for
 educational purposes." src="./apps/frontend/src/images/about/logo-icp.jpg">

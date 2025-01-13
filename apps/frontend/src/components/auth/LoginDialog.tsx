@@ -10,6 +10,7 @@ import { StyledDialog } from "~components/Dialog";
 import { trpc } from "~utils/trpc";
 import { signIn } from "~/lib/auth-client";
 import { authClient } from "../../lib/auth-client";
+import { PasswordTextField } from "../commun/password-textfield";
 
 export const LoginDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -129,7 +130,7 @@ export const LoginDialog: React.FC = () => {
             error={formik.touched.username && Boolean(formik.errors.username)}
             helperText={formik.touched.username && formik.errors.username}
           />
-          <TextField
+          <PasswordTextField
             id="password"
             inputProps={{
               "data-testid": "password",
@@ -139,7 +140,6 @@ export const LoginDialog: React.FC = () => {
             fullWidth={true}
             label={t("signin.password")}
             required={true}
-            type="password"
             value={formik.values.password}
             placeholder={t("signin.password") || ""}
             onChange={formik.handleChange}

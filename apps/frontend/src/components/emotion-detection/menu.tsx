@@ -18,6 +18,7 @@ import Check from "@mui/icons-material/Check";
 import { useAutoDetectionStore } from "../emotion-detection/store";
 import { AutoDetectionDialog } from "./dialog";
 import { grey } from "@mui/material/colors";
+import type { ProjectById, UserMe } from "~/utils/trpc";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -59,7 +60,13 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
-export default function AutoDetectionMenu() {
+export default function AutoDetectionMenu({
+  project,
+  user,
+}: {
+  project: ProjectById;
+  user?: UserMe;
+}) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -78,7 +85,12 @@ export default function AutoDetectionMenu() {
 
   return (
     <div>
-      {autoDetection ? <AutoDetectionDialog /> : null}
+      {autoDetection ? (
+        <AutoDetectionDialog
+          project={project}
+          user={user}
+        />
+      ) : null}
       <Button
         id="demo-customized-button"
         aria-controls={open ? "demo-customized-menu" : undefined}

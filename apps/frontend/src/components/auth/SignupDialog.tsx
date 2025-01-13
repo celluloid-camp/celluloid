@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { authClient, signUp } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
+import { PasswordTextField } from "../commun/password-textfield";
 
 export const SignupDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -128,11 +129,10 @@ export const SignupDialog: React.FC = () => {
             error={formik.touched.email && Boolean(formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
           />
-          <TextField
+          <PasswordTextField
             id="password"
             name="password"
             margin="dense"
-            type="password"
             fullWidth={true}
             label={t("signup.password.label", "Mot de passe")}
             required={true}
@@ -148,7 +148,7 @@ export const SignupDialog: React.FC = () => {
             }}
           />
 
-          <TextField
+          <PasswordTextField
             id="passwordConfirmation"
             name="passwordConfirmation"
             margin="dense"
@@ -158,7 +158,6 @@ export const SignupDialog: React.FC = () => {
               "Confirmer le mot de passe"
             )}
             required={true}
-            type="password"
             value={formik.values.passwordConfirmation}
             placeholder={t(
               "signup.passwordConfirmation.placeholder",

@@ -42,7 +42,7 @@ export const annotationRouter = router({
     .query(async ({ input }) => {
       const { id } = input;
       const annotations = await prisma.annotation.findMany({
-        where: { projectId: id },
+        where: { projectId: id, detection: null },
         include: {
           comments: {
             include: {
@@ -88,7 +88,7 @@ export const annotationRouter = router({
   add: protectedProcedure
     .input(
       z.object({
-        text: z.string().min(1),
+        text: z.string(),
         startTime: z.number(),
         stopTime: z.number(),
         pause: z.boolean(),
@@ -117,7 +117,10 @@ export const annotationRouter = router({
           // select: defaultPostSelect,
         });
 
-        ee.emit('change', annotation);
+        // skip if detection is auto
+        if (input.detection === undefined) {
+          ee.emit('change', annotation);
+        }
         return annotation;
       }
     }),
@@ -256,6 +259,30 @@ export const annotationRouter = router({
         content = toSrt(formated);
       }
       return content
-    })
+    }),
+  stats: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { id } = input;
+      const annotations = await prisma.annotation.findMany({
+        where: { projectId: id, emotion: { not: null } },
+        select: {
+          id: true,
+          text: true,
+          emotion: true,
+          mode: true,
+          detection: true,
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+      return annotations;
+    }),
 
 });

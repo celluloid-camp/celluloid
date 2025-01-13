@@ -55,7 +55,7 @@ export const AppBarMenu: React.FC<BoxProps> = ({ children }) => {
                 fontFamily={"abril_fatfaceregular"}
                 color="black"
               >
-                Espact@teur
+                e-spect@teur
               </Typography>
             </Button>
           </Box>

@@ -51,6 +51,7 @@ import SettingsPage from "./pages/settings";
 import { SharePage } from "./pages/share";
 import { TermsAndConditions } from "./pages/terms";
 import { createTheme } from "./theme";
+import ProjectStatsPage from "./pages/project-stats";
 
 const API_URL = "/api/trpc";
 
@@ -138,6 +139,10 @@ const AppRouters = () => {
           <Route path="legal-notice" element={<LegalNotice />} />
           <Route path="terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="project/:projectId" element={<ProjectPage />} />
+          <Route
+            path="project/:projectId/stats"
+            element={<ProjectStatsPage />}
+          />
           <Route path="shares/:projectId" element={<SharePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
           {/* <Route path="*" element={<NotFound />} /> */}

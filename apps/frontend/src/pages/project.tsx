@@ -4,11 +4,9 @@ import {
   CircularProgress,
   Container,
   Grid,
-  Grid2,
   Paper,
 } from "@mui/material";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
 import { AnnotationHints } from "~components/annotation/AnnotationHints";

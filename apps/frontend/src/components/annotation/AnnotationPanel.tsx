@@ -273,6 +273,8 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
             <AdvancedControls
               onlyMine={onlyMine}
               onOnlyMineChange={setOnlyMine}
+              project={props.project}
+              user={props.user}
             />
             <AnnotationList
               playerIsReady={playerIsReady}
@@ -300,9 +302,13 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
 function AdvancedControls({
   onlyMine,
   onOnlyMineChange,
+  project,
+  user,
 }: {
   onlyMine: boolean;
   onOnlyMineChange: (onlyMine: boolean) => void;
+  project: ProjectById;
+  user?: UserMe;
 }) {
   const { mode, setMode } = usePlayerModeStore();
 
@@ -314,7 +320,7 @@ function AdvancedControls({
       paddingY={1}
       justifyContent={"flex-end"}
     >
-      <AutoDetectionMenu />
+      <AutoDetectionMenu project={project} user={user} />
       <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
         <SmallSwitch
           checked={onlyMine}

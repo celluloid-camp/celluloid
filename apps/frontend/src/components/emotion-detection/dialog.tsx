@@ -8,330 +8,293 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
-  Grid,
   IconButton,
-  Link,
-  Stack,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAutoDetectionStore } from "./store";
+import { useAutoDetectionStore, usePlayerModeStore } from "./store";
 import * as faceapi from "@vladmandic/face-api";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import {
+  type ProjectById,
+  trpc,
+  type UserMe,
+  type AnnotationAddInput,
+} from "~/utils/trpc";
+import { useVideoPlayerProgressValue } from "../project/useVideoPlayer";
 
-const modelPath = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/";
+const MODEL_URI = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/";
 
 interface Props {
-  positionFloored: number;
-  // position: number;
-  playing: boolean;
-  projectId: string;
-  onEmotionDetectedChange(emotion: string): void;
+  project: ProjectById;
+  user?: UserMe;
 }
 
-export const AutoDetectionDialog = React.memo(
-  ({ positionFloored, playing, projectId, onEmotionDetectedChange }: Props) => {
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const captureIntervalRef = useRef<number | null>(null);
-    const startPositionRef = useRef<number>(0);
-    // const annotations = useRef<AnnotationData[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const videoRefTmp = useRef<HTMLVideoElement>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isDetection, setIsDetection] = useState(false);
-    const [isOpen, setIsOpen] = useState(true);
+export const AutoDetectionDialog = React.memo(({ project, user }: Props) => {
+  const { t } = useTranslation();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const captureIntervalRef = useRef<number | null>(null);
+  const startPositionRef = useRef<number>(0);
+  const annotations = useRef<AnnotationAddInput[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const videoRefTmp = useRef<HTMLVideoElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDetection, setIsDetection] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
-    const setDetectedEmotion = useAutoDetectionStore(
-      (state) => state.setDetectedEmotion
-    );
+  const videoProgress = useVideoPlayerProgressValue();
+  const playerMode = usePlayerModeStore((state) => state.mode);
 
-    const handleClose = () => setIsOpen(false);
+  const addMutation = trpc.annotation.add.useMutation();
 
-    useEffect(() => {
-      startPositionRef.current = positionFloored;
-    }, [positionFloored]);
+  const setDetectedEmotion = useAutoDetectionStore(
+    (state) => state.setDetectedEmotion
+  );
 
-    function delay(milliseconds: number) {
-      return new Promise((resolve) => setTimeout(resolve, milliseconds));
-    }
+  const handleClose = () => setIsOpen(false);
 
-    const captureFrame = async () => {
-      if (videoRef.current) {
-        const video = videoRef.current;
+  function delay(milliseconds: number) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  }
 
-        // Detect faces in the captured frame
-        const detections = await faceapi
-          .detectAllFaces(
-            video as faceapi.TNetInput,
-            new faceapi.TinyFaceDetectorOptions()
-          )
-          // .detectAllFaces(video as faceapi.TNetInput, new faceapi.SsdMobilenetv1Options())
-          .withFaceLandmarks()
-          .withFaceExpressions();
+  const captureFrame = async () => {
+    if (videoRef.current) {
+      const video = videoRef.current;
 
-        if (detections.length) {
+      // Detect faces in the captured frame
+      const detections = await faceapi
+        .detectAllFaces(
+          video as faceapi.TNetInput,
+          new faceapi.TinyFaceDetectorOptions()
+        )
+        // .detectAllFaces(video as faceapi.TNetInput, new faceapi.SsdMobilenetv1Options())
+        .withFaceLandmarks()
+        .withFaceExpressions();
+
+      if (detections.length) {
+        if (isDetection === false) {
           setIsDetection(true);
-
-          const emotion = Object.entries(detections[0]?.expressions).sort(
-            (a, b) => b[1] - a[1]
-          )[0][0];
-
-          setDetectedEmotion(emotion);
-
-          // if (
-          //   annotations.current.length !== 0 &&
-          //   annotations.current[annotations.current.length - 1].emotion ===
-          //     emotion
-          // )
-          //   annotations.current[annotations.current.length - 1].stopTime =
-          //     startPositionRef.current;
-          // else {
-          //   if (annotations.current.length !== 0) {
-          //     try {
-          //       await AnnotationService.create(
-          //         projectId,
-          //         annotations.current[annotations.current.length - 1]
-          //       );
-          //     } catch (e) {
-          //       setError(e);
-          //     }
-
-          //     annotations.current.pop();
-          //   }
-
-          //   const annotation: AnnotationData = {
-          //     text: "",
-          //     startTime: startPositionRef.current,
-          //     stopTime: startPositionRef.current,
-          //     pause: !playing,
-          //     autoDetect: true,
-          //     semiAutoAnnotation: false,
-          //     semiAutoAnnotationMe: false,
-          //     emotion,
-          //     ontology: [],
-          //   };
-
-          //   annotations.current.push(annotation);
-          // }
-        } else {
-          setIsDetection(false);
-          onEmotionDetectedChange?.("");
         }
 
-        await delay(100);
+        const emotion = Object.entries(detections[0]?.expressions).sort(
+          (a, b) => b[1] - a[1]
+        )[0][0];
 
-        requestAnimationFrame(() => captureFrame());
+        setDetectedEmotion(emotion);
+
+        if (
+          annotations.current.length !== 0 &&
+          annotations.current[annotations.current.length - 1].emotion ===
+            emotion
+        )
+          annotations.current[annotations.current.length - 1].stopTime =
+            startPositionRef.current;
+        else {
+          if (annotations.current.length !== 0) {
+            try {
+              await addMutation.mutateAsync({
+                ...annotations.current[annotations.current.length - 1],
+                projectId: project.id,
+              });
+            } catch (e) {
+              console.error(e);
+            }
+
+            annotations.current.pop();
+          }
+
+          const annotation: AnnotationAddInput = {
+            text: "",
+            startTime: videoProgress,
+            stopTime: videoProgress,
+            pause: false,
+            projectId: project.id,
+            // autoDetect: true,
+            // semiAutoAnnotation: false,
+            // semiAutoAnnotationMe: false,
+            emotion,
+            detection: "auto",
+            mode: playerMode,
+            // ontology: [],
+          };
+
+          annotations.current.push(annotation);
+        }
+      } else {
+        setIsDetection(false);
+      }
+
+      await delay(100);
+      requestAnimationFrame(() => captureFrame());
+    }
+  };
+
+  const pushLastAnnotation = async () => {
+    if (annotations.current.length !== 0) {
+      try {
+        await addMutation.mutateAsync({
+          ...annotations.current[annotations.current.length - 1],
+          projectId: project.id,
+        });
+      } catch (e) {
+        console.error(e);
+      }
+      annotations.current.pop();
+    }
+  };
+
+  useEffect(() => {
+    const loadModels = async () => {
+      setIsLoading(true);
+
+      try {
+        await Promise.all([
+          await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI),
+          // await faceapi.nets.tinyYolov2.loadFromUri(modelPath),
+          // await faceapi.nets.ssdMobilenetv1.loadFromUri(modelPath),
+          await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI),
+          await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URI),
+        ]);
+      } catch (e) {
+        setError("Failed to load the models ...");
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    useEffect(() => {
-      const loadModels = async () => {
-        setIsLoading(true);
+    let stream: MediaStream | null = null;
 
-        try {
-          await Promise.all([
-            await faceapi.nets.tinyFaceDetector.loadFromUri(modelPath),
-            // await faceapi.nets.tinyYolov2.loadFromUri(modelPath),
-            // await faceapi.nets.ssdMobilenetv1.loadFromUri(modelPath),
-            await faceapi.nets.faceLandmark68Net.loadFromUri(modelPath),
-            await faceapi.nets.faceExpressionNet.loadFromUri(modelPath),
-          ]);
-        } catch (e) {
-          setError("Failed to load the models ...");
-        } finally {
-          setIsLoading(false);
+    const startStream = async () => {
+      await loadModels();
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+        if (stream && videoRef.current && videoRefTmp.current) {
+          videoRef.current.srcObject = stream;
+          videoRefTmp.current.srcObject = stream;
+          await videoRefTmp.current.play();
+          videoRef.current.play().then(() => {
+            // if (videoRef.current)
+            //   videoRef.current.currentTime = startPositionRef.current;
+            // captureIntervalRef.current = window.setInterval(captureFrame, 500);
+            captureFrame();
+          });
         }
-      };
+      } catch (err) {
+        if (
+          err.name === "PermissionDeniedError" ||
+          err.name === "NotAllowedError"
+        )
+          setError(
+            `Camera Error: camera permission denied: ${err.message || err}`
+          );
+        if (err.name === "SourceUnavailableError")
+          setError(`Camera Error: camera not available: ${err.message || err}`);
+        return null;
+      }
+    };
 
-      let stream: MediaStream | null = null;
+    startStream();
 
-      const startStream = async () => {
-        await loadModels();
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-          if (stream && videoRef.current && videoRefTmp.current) {
-            videoRef.current.srcObject = stream;
-            videoRefTmp.current.srcObject = stream;
-            await videoRefTmp.current.play();
-            videoRef.current.play().then(() => {
-              // if (videoRef.current)
-              //   videoRef.current.currentTime = startPositionRef.current;
-              // captureIntervalRef.current = window.setInterval(captureFrame, 500);
-              captureFrame();
-            });
-          }
-        } catch (err) {
-          if (
-            err.name === "PermissionDeniedError" ||
-            err.name === "NotAllowedError"
-          )
-            setError(
-              `Camera Error: camera permission denied: ${err.message || err}`
-            );
-          if (err.name === "SourceUnavailableError")
-            setError(
-              `Camera Error: camera not available: ${err.message || err}`
-            );
-          return null;
+    return () => {
+      clearInterval(captureIntervalRef.current as number);
+      pushLastAnnotation();
+      if (stream) {
+        const tracks = stream.getTracks();
+        for (const track of tracks) {
+          track.stop();
         }
-      };
+      }
+    };
+  }, []);
 
-      startStream();
+  return (
+    <>
+      <video ref={videoRef} style={{ display: "none" }}>
+        <track kind="captions" />
+      </video>
+      <Dialog open={isOpen} onClose={handleClose}>
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Auto Detection Mode
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={(theme) => ({
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <CloseIcon />
+        </IconButton>
 
-      return () => {
-        // console.log(annotations.current);
-        clearInterval(captureIntervalRef.current as number);
-
-        // const pushLastAnnotation = async () => {
-        //   if (annotations.current.length !== 0) {
-        //     try {
-        //       await AnnotationService.create(
-        //         projectId,
-        //         annotations.current[annotations.current.length - 1]
-        //       );
-        //     } catch (e) {
-        //       setError(e);
-        //     }
-
-        //     annotations.current.pop();
-        //   }
-        // };
-
-        // pushLastAnnotation();
-
-        if (stream) {
-          const tracks = stream.getTracks();
-          for (const track of tracks) {
-            track.stop();
-          }
-        }
-      };
-    }, []);
-
-    return (
-      <>
-        <video ref={videoRef} style={{ display: "none" }}>
-          <track kind="captions" />
-        </video>
-        {/* <canvas ref={canvasRef} style={{ display: 'none' }} /> */}
-        {/* <canvas ref={canvasRef} style={{ height: '700px', width: '1000px' }} /> */}
-        {/* <div
-        style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', background: 'black', padding: '5px' }}>{positionFloored} -- {position}
-        </div> */}
-
-        <Dialog open={isOpen} onClose={handleClose}>
-          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-            Auto Detection Mode
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={(theme) => ({
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: theme.palette.grey[500],
-            })}
+        <DialogContent dividers>
+          <video
+            ref={videoRefTmp}
+            autoPlay
+            style={{
+              display: "block",
+              width: "100%",
+              height: "400px",
+              backgroundColor: "black",
+            }}
+            id="video"
+            playsInline
+            className="video"
           >
-            <CloseIcon />
-          </IconButton>
+            <track kind="captions" />
+          </video>
 
-          <DialogContent dividers>
-            <video
-              ref={videoRefTmp}
-              autoPlay
-              style={{
-                display: "block",
+          {isLoading && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
                 width: "100%",
-                height: "400px",
-                backgroundColor: "black",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              id="video"
-              playsInline
-              className="video"
             >
-              <track kind="captions" />
-            </video>
-
-            {isLoading && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Box>
-                  <CircularProgress />
-                </Box>
-              </Box>
-            )}
-
-            {/* <Grid container>
-              <Grid item>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-
-                </div>
-              </Grid>
-
-              <Grid item>
-                {isLoading && <Typography>Loading ...</Typography>}
-
-                {!isLoading && isDetection && (
-                  <Typography color="primary" paragraph>
-                    Detection OK
-                  </Typography>
-                )}
-
-
-
-
-                <Divider variant="middle" />
-
-                <Link>Click here</Link>
-
-                <Divider variant="middle" />
-              </Grid>
-            </Grid> */}
-            {!isLoading && !isDetection && (
               <Box>
-                <Typography color="error" paragraph>
-                  Detection failed, please follow the recommendations
-                </Typography>
-                <Button>More Info</Button>
+                <CircularProgress />
               </Box>
-            )}
-
-            {error && (
+            </Box>
+          )}
+          {!isLoading && error ? (
+            <Box>
               <Typography color="error" paragraph>
-                {error}
+                Detection failed, please follow the recommendations
               </Typography>
-            )}
-          </DialogContent>
+              <Button>More Info</Button>
+            </Box>
+          ) : null}
 
-          <DialogActions>
-            <Button autoFocus onClick={handleClose} variant="contained">
-              Enable & Start
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  }
-);
+          {error && (
+            <Typography color="error" paragraph>
+              {error}
+            </Typography>
+          )}
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={handleClose}
+            variant="contained"
+            disabled={isLoading || !isDetection}
+          >
+            {t("emotion-detection.button.start")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+});

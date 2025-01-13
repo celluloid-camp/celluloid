@@ -1,6 +1,6 @@
 import type { AppRouter } from "@celluloid/trpc";
 import { createTRPCReact, TRPCClientError } from '@trpc/react-query';
-import type { inferRouterOutputs } from "@trpc/server";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export const trpc = createTRPCReact<AppRouter>();
 
@@ -30,6 +30,7 @@ type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
 
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
+type RouterInput = inferRouterInputs<AppRouter>;
 
 export type UserMe = RouterOutput['user']['me'];
 
@@ -46,3 +47,10 @@ export type AnnotationCommentByProjectId = ArrElement<AnnotationByProjectId["com
 
 export type ChaptersByProjectId = RouterOutput["chapter"]["byProjectId"]
 export type ChapterByProjectId = ArrElement<ChaptersByProjectId>;
+
+
+export type AnnotationAddInput = RouterInput["annotation"]["add"]
+
+
+export type AnnotationStats = RouterOutput["annotation"]["stats"]
+export type AnnotationStatsItem = ArrElement<AnnotationStats>

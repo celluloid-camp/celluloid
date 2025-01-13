@@ -30,6 +30,10 @@ import {
   useEmotionEditor,
 } from "./useAnnotationEditor";
 import { EmotionsPalette } from "../emotion-detection/emotion-palette";
+import {
+  useAutoDetectionStore,
+  usePlayerModeStore,
+} from "../emotion-detection/store";
 
 type AnnotationFormProps = {
   duration: number;
@@ -82,6 +86,9 @@ export const AnnotationFormContent: React.FC<
   const [editedAnnotation, setEditedAnnotation] = useEditAnnotation();
 
   const videoProgress = useVideoPlayerProgressValue();
+
+  const playerMode = usePlayerModeStore((state) => state.mode);
+  const autoDetection = useAutoDetectionStore((state) => state.autoDetection);
 
   const validationSchema = Yup.object().shape({
     startTime: Yup.number(),
@@ -137,8 +144,9 @@ export const AnnotationFormContent: React.FC<
           startTime: values.startTime,
           stopTime: values.stopTime,
           pause: values.pause,
-          emotion: values.emotion,
-          // mode: values.mode,
+          emotion: values.emotion ?? undefined,
+          mode: playerMode,
+          detection: autoDetection ? "auto" : undefined,
           // detection: values.detection,
           extra: contextualEditorPosition ? contextualEditorPosition : {},
         });
@@ -229,7 +237,7 @@ export const AnnotationFormContent: React.FC<
                 label="Contexte"
                 sx={{ color: "white" }}
                 checked={contextEditorVisible}
-                onChange={(_, v) =>
+                onChange={() =>
                   setContextualEditorVisible(!contextEditorVisible)
                 }
                 control={

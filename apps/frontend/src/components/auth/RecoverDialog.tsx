@@ -9,6 +9,7 @@ import { authClient } from "~/lib/auth-client";
 
 import { StyledDialog } from "~components/Dialog";
 import { useRouteQuery } from "~hooks/useRouteQuery";
+import { PasswordTextField } from "../commun/password-textfield";
 
 export const RecoverDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -107,11 +108,10 @@ export const RecoverDialog: React.FC = () => {
           error={formik.touched.code && Boolean(formik.errors.code)}
           helperText={formik.touched.code && formik.errors.code}
         />
-        <TextField
+        <PasswordTextField
           id="password"
           name="password"
           margin="dense"
-          type="password"
           fullWidth={true}
           label={t("recover.password.label", " Mot de passe")}
           required={true}
@@ -124,7 +124,7 @@ export const RecoverDialog: React.FC = () => {
           helperText={formik.touched.password && formik.errors.password}
         />
 
-        <TextField
+        <PasswordTextField
           id="passwordConfirmation"
           name="passwordConfirmation"
           margin="dense"
@@ -134,7 +134,6 @@ export const RecoverDialog: React.FC = () => {
             "Confirmer le mot de passe"
           )}
           required={true}
-          type="password"
           value={formik.values.passwordConfirmation}
           placeholder={t(
             "recover.passwordConfirmation.placeholder",
