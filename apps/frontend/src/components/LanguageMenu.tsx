@@ -4,7 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 export const LanguageMenu = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -39,10 +39,13 @@ export const LanguageMenu = () => {
         }}
       >
         <MenuItem onClick={() => handleLangChange("en_US")}>
-          {`English`}
+          {t("language-menu.english")}
         </MenuItem>
         <MenuItem onClick={() => handleLangChange("fr_FR")}>
-          {`Français`}
+          {t("language-menu.french")}
+        </MenuItem>
+        <MenuItem onClick={() => handleLangChange("es_ES")}>
+          {t("language-menu.spanish")}
         </MenuItem>
       </Menu>
     </React.Fragment>

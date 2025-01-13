@@ -265,5 +265,8 @@
 	"chapters.form.title.placeholder": "Titre du chapitre",
 	"chapters.form.description.placeholder": "Description du chapitre",
 	"home.tutoriel.link_url": "https://celluloid-media.huma-num.fr/w/7r2FxoQdYjun6tYWJfHUCa",
-	"emotion-detection.button.start": "Activer et démarrer"
+	"emotion-detection.button.start": "Activer et démarrer",
+	"language-menu.english": "Anglais",
+	"language-menu.french": "Français",
+	"language-menu.spanish": "Espagnol"
 }
