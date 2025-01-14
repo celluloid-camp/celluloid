@@ -12,7 +12,7 @@ educational purposes." src="./docs/assets/logo.svg">
 
 ## Overview
 
-<img width="80%" alt="" src="./docs/assets/screencapture_1.png">
+<video src="./docs/demo.mp4" muted controls></video>
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
