@@ -12,6 +12,7 @@ export function calcEmotion(annotations?: AnnotationStatsItem[]) {
     "Fear",
     "Empathy",
     "ItsStrange",
+    "Neutral",
   ];
   let happy = 0;
   let laugh = 0;
@@ -23,6 +24,7 @@ export function calcEmotion(annotations?: AnnotationStatsItem[]) {
   let fearful = 0;
   let empathy = 0;
   let itsStrange = 0;
+  let neutral = 0;
   annotations?.map((annotation: AnnotationStatsItem) => {
     if (annotation.emotion) {
       if (annotation.emotion === "happy") {
@@ -45,6 +47,8 @@ export function calcEmotion(annotations?: AnnotationStatsItem[]) {
         empathy++;
       } else if (annotation.emotion === "itsStrange") {
         itsStrange++;
+      } else if (annotation.emotion === "neutral") {
+        neutral++;
       }
     }
   });
@@ -65,6 +69,7 @@ export function calcEmotion(annotations?: AnnotationStatsItem[]) {
           fearful,
           empathy,
           itsStrange,
+          neutral
         ],
         maxBarThickness: 30,
         backgroundColor: ["#0B9A8D"],
@@ -87,7 +92,8 @@ export function calcEmotionByMode(annotations?: AnnotationStatsItem[]) {
     'Disgusted',
     'Fear',
     'Empathy',
-    'ItsStrange',
+    "ItsStrange",
+    "Neutral",
   ];
   let happy = 0;
   let laugh = 0;
@@ -99,6 +105,7 @@ export function calcEmotionByMode(annotations?: AnnotationStatsItem[]) {
   let fearful = 0;
   let empathy = 0;
   let itsStrange = 0;
+  let neutral = 0;
   let happyAut = 0;
   let laughAut = 0;
   let smileAut = 0;
@@ -109,6 +116,7 @@ export function calcEmotionByMode(annotations?: AnnotationStatsItem[]) {
   let fearfulAut = 0;
   let empathyAut = 0;
   let itsStrangeAut = 0;
+  let neutralAut = 0;
   annotations?.map((annotation: AnnotationStatsItem) => {
     if (annotation.emotion) {
       if (annotation.emotion === 'happy') {
@@ -171,6 +179,12 @@ export function calcEmotionByMode(annotations?: AnnotationStatsItem[]) {
         } else {
           itsStrange++;
         }
+      } else if (annotation.emotion === 'neutral') {
+        if (annotation.detection === 'auto' || annotation.mode === "semi-auto") {
+          neutralAut++;
+        } else {
+          neutral++;
+        }
       }
     }
   });
@@ -191,6 +205,7 @@ export function calcEmotionByMode(annotations?: AnnotationStatsItem[]) {
           fearfulAut,
           empathyAut,
           itsStrangeAut,
+          neutralAut,
         ],
         maxBarThickness: 30,
         barPercentage: 0.5,
@@ -209,10 +224,11 @@ export function calcEmotionByMode(annotations?: AnnotationStatsItem[]) {
           fearful,
           empathy,
           itsStrange,
+          neutral,
         ],
         maxBarThickness: 30,
         barPercentage: 0.5,
-        backgroundColor: ['#0B9A8D'],
+        backgroundColor: ["#0B9A8D"],
       },
     ],
   };

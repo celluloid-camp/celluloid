@@ -6,7 +6,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 import { Avatar } from "~components/Avatar";
 import type { ProjectById } from "~utils/trpc";
-import { RDFDocumentEditor } from "./rfd-document";
+import { DubinPanel } from "./dubin-panel";
 
 interface Props {
   project: ProjectById;
@@ -17,7 +17,7 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
 
   return (
     <Box sx={{ padding: 0 }}>
-      {project && project.playlist ? (
+      {project?.playlist ? (
         <Typography align="justify" variant="body1">
           {t("project.summary.playlist.title")}
           {project.playlist.title}
@@ -107,11 +107,6 @@ const ProjectSummary: React.FC<Props> = ({ project }: Props) => {
               <Trans i18nKey={"project.videoUrlHelper"} />
             </a>
           </Typography>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <RDFDocumentEditor />
         </CardContent>
       </Card>
     </Box>

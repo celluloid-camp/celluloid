@@ -1,4 +1,4 @@
-import { Box, Link } from "@mui/material";
+import { Box, Button, Link, Paper } from "@mui/material";
 import type * as React from "react";
 
 import type { ProjectById, UserMe } from "~utils/trpc";
@@ -28,9 +28,19 @@ export const SideBar: React.FC<SideBarProps> = ({ project, user }) => {
           <SharePanel project={project} user={user} />
           <MemberListPanel project={project} user={user} />
           <ExportPanel project={project} user={user} />
-          <Link to={`/project/${project.id}/stats`}>Stats</Link>
         </Box>
       ) : null}
+      <Paper
+        sx={{
+          paddingX: 3,
+          marginY: 2,
+          paddingY: 3,
+        }}
+      >
+        <Button variant="outlined" sx={{ mt: 2 }}>
+          <Link to={`/project/${project.id}/stats`}>Statistiques</Link>
+        </Button>
+      </Paper>
     </Box>
   );
 };

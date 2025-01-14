@@ -152,7 +152,10 @@ const ProjectStatsContent = ({ project, annotations }: Props) => (
                     >
                       Résultats des annotations sémantiques
                     </Typography>
-                    <Doughnut options={options} data={data} />
+                    <Doughnut
+                      options={options}
+                      data={calcAnnotationType(annotations)}
+                    />
                   </Paper>
                 </Grid>
 
@@ -165,7 +168,10 @@ const ProjectStatsContent = ({ project, annotations }: Props) => (
                     >
                       Les types des annotations
                     </Typography>
-                    <Pie options={options} data={calcAnnotationType(annotations)} />
+                    <Pie
+                      options={options}
+                      data={calcAnnotationType(annotations)}
+                    />
                   </Paper>
                 </Grid>
               </Grid>

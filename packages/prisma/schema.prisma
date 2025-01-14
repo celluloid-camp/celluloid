@@ -84,6 +84,8 @@ model Project {
   chapterJobId BigInt?   @db.BigInt
 
   chapters Chapter[]
+
+  dublin Json? @default("{}") @db.Json
 }
 
 model Chapter {

@@ -4,41 +4,55 @@ import FormControl from "@mui/material/FormControl";
 import Select, { type SelectChangeEvent } from "@mui/material/Select";
 import { useConceptsQuery } from "~utils/concepts";
 import { grey } from "@mui/material/colors";
+import { InputLabel, OutlinedInput } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 export function ConceptSelector() {
   const { data } = useConceptsQuery();
   const [concept, setConcept] = React.useState("");
 
+  const { t } = useTranslation();
   const handleChange = (event: SelectChangeEvent) => {
     setConcept(event.target.value);
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+    <FormControl sx={{ m: 1, maxWidth: 150 }} size="small">
       <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
+        labelId="concept-select-label"
+        id="concept-select"
         value={concept}
+        label={t("annotation.concept.label")}
         hiddenLabel
         onChange={handleChange}
-        sx={{
-          color: "white",
-          ".MuiOutlinedInput-notchedOutline": {
-            borderColor: grey[800],
-          },
-          "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "white",
-          },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "white",
-          },
-          ".MuiSvgIcon-root": {
-            color: "white",
-          },
+        displayEmpty
+        input={<OutlinedInput />}
+        renderValue={(selected) => {
+          if (selected === "") {
+            return (
+              <span style={{ color: "white" }}>
+                {t("annotation.concept.label")}
+              </span>
+            );
+          }
+          return <span style={{ color: "white" }}>{selected}</span>;
         }}
+        MenuProps={MenuProps}
+        inputProps={{ "aria-label": "Without label" }}
       >
-        <MenuItem value="">
-          <em>Sélectionner un concept</em>
+        <MenuItem disabled value="">
+          <em>{t("annotation.select-concept")}</em>
         </MenuItem>
         {data?.map((concept) => (
           <MenuItem key={concept.concept} value={concept.concept}>

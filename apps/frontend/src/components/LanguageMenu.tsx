@@ -47,6 +47,15 @@ export const LanguageMenu = () => {
         <MenuItem onClick={() => handleLangChange("es_ES")}>
           {t("language-menu.spanish")}
         </MenuItem>
+        <MenuItem onClick={() => handleLangChange("hr_HR")}>
+          {t("language.croatian")}
+        </MenuItem>
+        <MenuItem onClick={() => handleLangChange("ro_RO")}>
+          {t("language.romanian")}
+        </MenuItem>
+        <MenuItem onClick={() => handleLangChange("id_ID")}>
+          {t("language.indonesian")}
+        </MenuItem>
       </Menu>
     </React.Fragment>
   );

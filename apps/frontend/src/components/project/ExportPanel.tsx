@@ -1,10 +1,20 @@
-import { Button, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
+import {
+  Button,
+  ButtonGroup,
+  IconButton,
+  Link,
+  Paper,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { saveAs } from "file-saver";
 import { useSnackbar } from "notistack";
-import * as React from "react";
+import type * as React from "react";
 import { useTranslation } from "react-i18next";
 
-import { ProjectById, trpc, UserMe } from "~utils/trpc";
+import { type ProjectById, trpc, type UserMe } from "~utils/trpc";
 
 interface Props {
   project: ProjectById;
@@ -17,15 +27,30 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
   const utils = trpc.useUtils();
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleExport = async (format: "csv" | "xml" | "srt") => {
+  const handleExport = async (format: "csv" | "xml" | "srt" | "xlsx") => {
     const data = await utils.client.annotation.export.mutate({
       projectId: project.id,
       format,
     });
 
-    const blob = new Blob([data], {
-      type: `text/${format};charset=utf-8`,
-    });
+    let blob: Blob;
+    if (format === "xlsx") {
+      // Convert base64 to blob for xlsx
+      const binaryString = window.atob(data);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      blob = new Blob([bytes], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+    } else {
+      // Handle other formats as before
+      blob = new Blob([data], {
+        type: `text/${format};charset=utf-8`,
+      });
+    }
+
     saveAs(blob, `export.${format}`);
 
     enqueueSnackbar(t("project.export.success"), {
@@ -34,7 +59,7 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
     });
   };
 
-  if (project._count.annotations == 0) {
+  if (project._count.annotations === 0) {
     return null;
   }
 
@@ -59,6 +84,18 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
           </Button>
           <Button onClick={() => handleExport("xml")}>XML</Button>
           <Button onClick={() => handleExport("srt")}>SRT</Button>
+          <Button
+            onClick={() => handleExport("xlsx")}
+            endIcon={
+              <Tooltip title={"XLSX with Dublin metadata"}>
+                <IconButton size="small" sx={{ ml: -1 }}>
+                  <InfoOutlined fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            }
+          >
+            XLSX
+          </Button>
         </ButtonGroup>
       </Stack>
     </Paper>

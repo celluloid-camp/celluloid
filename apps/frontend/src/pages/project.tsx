@@ -1,13 +1,8 @@
 import type ReactPlayer from "@celluloid/react-player";
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Grid,
-  Paper,
-} from "@mui/material";
+import { Box, CircularProgress, Container, Grid, Paper } from "@mui/material";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { DubinPanel } from "~/components/project/dubin-panel";
 
 import { AnnotationHints } from "~components/annotation/AnnotationHints";
 import { AnnotationPanel } from "~components/annotation/AnnotationPanel";
@@ -217,6 +212,7 @@ const ProjectContent = ({ project, user }: Props) => (
           <Grid container direction="row" alignItems="flex-start" spacing={4}>
             <Grid item xs={12} md={8} lg={8}>
               <ProjectSummary project={project} />
+              <DubinPanel project={project} user={user} />
             </Grid>
             <Grid item xs={12} md={4} lg={4}>
               <SideBar project={project} user={user} />

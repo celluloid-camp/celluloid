@@ -19,6 +19,7 @@ import { useAutoDetectionStore } from "../emotion-detection/store";
 import { AutoDetectionDialog } from "./dialog";
 import { grey } from "@mui/material/colors";
 import type { ProjectById, UserMe } from "~/utils/trpc";
+import { useTranslation } from "react-i18next";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -67,6 +68,7 @@ export default function AutoDetectionMenu({
   project: ProjectById;
   user?: UserMe;
 }) {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -86,10 +88,7 @@ export default function AutoDetectionMenu({
   return (
     <div>
       {autoDetection ? (
-        <AutoDetectionDialog
-          project={project}
-          user={user}
-        />
+        <AutoDetectionDialog project={project} user={user} />
       ) : null}
       <Button
         id="demo-customized-button"
@@ -109,7 +108,7 @@ export default function AutoDetectionMenu({
         }
         endIcon={<KeyboardArrowDownIcon />}
       >
-        Auto Detection
+        {t("auto-detection.button.title")}
       </Button>
       <StyledMenu
         id="demo-customized-menu"
@@ -124,18 +123,20 @@ export default function AutoDetectionMenu({
           <MenuItem onClick={handleToggleAutoDetection}>
             {autoDetection ? <StopCircleIcon /> : <PlayCircleFilledWhiteIcon />}
             <Typography sx={{ fontSize: 14 }}>
-              {autoDetection ? "Stop" : "Start"}
+              {autoDetection
+                ? t("auto-detection.button.stop")
+                : t("auto-detection.button.start")}
             </Typography>
           </MenuItem>
           <Divider sx={{ fontSize: 12, color: grey[500], borderColor: "red" }}>
-            Emoji Recommendation
+            {t("auto-detection.hint")}
           </Divider>
           <MenuItem>
-            <ListItemText>From All</ListItemText>
+            <ListItemText>{t("auto-detection.button.from-all")}</ListItemText>
             <Check />
           </MenuItem>
           <MenuItem>
-            <ListItemText>Only Me</ListItemText>
+            <ListItemText>{t("auto-detection.button.only-me")}</ListItemText>
           </MenuItem>
         </MenuList>
       </StyledMenu>

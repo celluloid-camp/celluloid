@@ -311,7 +311,7 @@ function AdvancedControls({
   user?: UserMe;
 }) {
   const { mode, setMode } = usePlayerModeStore();
-
+  const { t } = useTranslation();
   return (
     <Stack
       direction="row"
@@ -328,7 +328,7 @@ function AdvancedControls({
           inputProps={{ "aria-label": "ant design" }}
         />
         <Typography sx={{ color: "text.secondary", fontSize: "12px" }}>
-          Show Only Mine
+          {t("annotation.show-only-mine")}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
@@ -340,7 +340,7 @@ function AdvancedControls({
           inputProps={{ "aria-label": "ant design" }}
         />
         <Typography sx={{ color: "text.secondary", fontSize: "12px" }}>
-          Performance Mode
+          {t("annotation.performance-mode")}
         </Typography>
       </Stack>
     </Stack>

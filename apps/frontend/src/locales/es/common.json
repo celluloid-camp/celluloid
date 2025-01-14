@@ -1,5 +1,14 @@
 {
+	"project.export": "Exportar anotaciones",
+	"project.export.success": "Anotación exportada exitosamente.",
 	"language-menu.english": "Inglés",
 	"language-menu.french": "Francés",
-	"language-menu.spanish": "Español"
+	"language-menu.spanish": "Español",
+	"metadata.dublin.term": "Término",
+	"metadata.dublin.value": "Valor",
+	"commun.button.save": "Ahorrar",
+	"metadata.dublin.option": "Opciones",
+	"metadata.dublin.menu.add-term": "Agregar término",
+	"metadata.dublin.menu.export": "Exportar",
+	"metadata.dublin.menu.import": "Importar"
 }

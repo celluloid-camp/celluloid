@@ -8,7 +8,7 @@ import { EventEmitter } from 'node:events';
 import { parse as toXML } from 'js2xmlparser';
 import Papa from 'papaparse';
 import { z } from 'zod';
-
+import * as XLSX from 'xlsx';
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 
@@ -223,15 +223,33 @@ export const annotationRouter = router({
     .input(
       z.object({
         projectId: z.string(),
-        format: z.enum(["csv", "xml", "srt"])
+        format: z.enum(["csv", "xml", "srt", "xlsx"])
       })
     ).mutation(async ({ input }) => {
       const { format, projectId } = input;
+
+
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        select: {
+          dublin: true,
+          title: true,
+        },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found"
+        });
+      }
+
 
       const annotations = await prisma.annotation.findMany({
         where: { projectId: projectId },
         include: {
           comments: true,
+          user: true,
         },
         orderBy: {
           createdAt: 'desc',
@@ -243,10 +261,13 @@ export const annotationRouter = router({
         endTime: a.stopTime,
         text: a.text,
         comments: a.comments.map((c) => c.text),
+        user: a.user.username,
+        project: project.title,
         contextX: a.extra ? a.extra.relativeX : null,
         contextY: a.extra ? a.extra.relativeY : null,
         emotion: a.emotion,
         mode: a.mode,
+        detection: a.detection,
       }))
 
       let content = "";
@@ -257,6 +278,19 @@ export const annotationRouter = router({
         content = Papa.unparse(sorted);
       } else if (format === "srt") {
         content = toSrt(formated);
+      } else if (format === "xlsx") {
+        const sorted = formated.sort((a, b) => a.startTime - b.startTime);
+        const worksheet = XLSX.utils.json_to_sheet(sorted);
+        const dublinData = Object.entries(project.dublin as Record<string, string>).reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {} as Record<string, string>);
+
+        const dublinMetadata = XLSX.utils.json_to_sheet([dublinData]); // Wrap in array for single row
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Annotations");
+        XLSX.utils.book_append_sheet(workbook, dublinMetadata, "Metadata Dublin");
+        content = XLSX.write(workbook, { type: 'base64', bookType: 'xlsx' });
       }
       return content
     }),

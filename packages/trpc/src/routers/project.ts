@@ -26,7 +26,8 @@ export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   duration: true,
   thumbnailURL: true,
   metadata: false,
-  keywords: true
+  keywords: true,
+  dublin: true
 });
 
 export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
@@ -361,6 +362,41 @@ export const projectRouter = router({
         });
 
         return deletedProject;
+      }
+    }),
+  updateDublin: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        dublin: z.any()
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user?.id && ctx.requireRoles(['teacher', 'admin'])) {
+
+        // Find the project by its ID (you need to replace 'projectId' with the actual ID)
+        const project = await prisma.project.findUnique({
+          where: {
+            id: input.projectId,
+            userId: ctx.user.id
+          }
+        });
+
+        if (!project) {
+          throw new Error('Project not found');
+        }
+
+        const updatedProject = await prisma.project.update({
+          where: {
+            id: project.id
+          },
+          data: {
+            dublin: { ...project.dublin, ...input.dublin },
+          },
+          select: defaultProjectSelect
+        });
+
+        return updatedProject;
       }
     }),
 });
