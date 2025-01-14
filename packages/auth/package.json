@@ -39,7 +39,7 @@
     "@prisma/client": "^5.22.0",
     "@t3-oss/env-core": "^0.11.1",
     "bcryptjs": "^2.4.3",
-    "better-auth": "^1.0.21",
+    "better-auth": "^1.1.6",
     "express": "^4.21.2",
     "zod": "catalog:"
   },
