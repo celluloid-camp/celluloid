@@ -3,16 +3,16 @@
 educational purposes." src="./docs/assets/logo.svg">
 
 # Celluloid
-
+<div>
+  
 [![Docker Build](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/celluloid-camp/celluloid/actions/workflows/build.yml)
-
 [![Tests](https://github.com/celluloid-camp/celluloid/actions/workflows/test-ci.yml/badge.svg)](https://celluloid-camp.github.io/celluloid)
-
 ![Uptime Robot status](https://img.shields.io/uptimerobot/status/m797111948-48bf307d8bef7e04a34fe6f1?label=Uptime)
+</div>
 
 ## Overview
 
-<video src="./docs/demo.mp4" muted controls></video>
+<div><video controls src="https://github.com/user-attachments/assets/62ac9b69-c702-4abf-be49-ae045581cbc2" muted="true" controls="false"></video></div>
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
