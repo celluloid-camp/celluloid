@@ -95,7 +95,7 @@ export const HomePage: React.FC = () => {
                   <Typography variant="subtitle1" gutterBottom={true}>
                     <Trans i18nKey={"home.tutoriel.link"}>
                       <Link
-                        href="https://celluloid-media.huma-num.fr/w/7r2FxoQdYjun6tYWJfHUCa"
+                        href="https://video.mshparisnord.fr/w/7r2FxoQdYjun6tYWJfHUCa"
                         target="_blank"
                         rel="noreferrer"
                       />
