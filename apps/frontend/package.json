@@ -50,7 +50,7 @@
     "@types/linkify-urls": "^3.1.1",
     "@uidotdev/usehooks": "^2.4.1",
     "adminjs": "^7.8.13",
-    "better-auth": "^1.0.21",
+    "better-auth": "^1.1.16",
     "change-case": "^4.1.2",
     "cookie-parser": "^1.4.7",
     "copy-to-clipboard": "^3.3.3",
