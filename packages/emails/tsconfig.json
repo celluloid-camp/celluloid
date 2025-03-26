@@ -1,7 +1,7 @@
 {
   "extends": "@celluloid/config/tsconfig/internal-package.json",
   "include": [
-    "."
+    "src"
   ],
   "exclude": [
     "dist",

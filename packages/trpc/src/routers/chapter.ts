@@ -5,7 +5,7 @@ import { EventEmitter } from 'node:events';
 import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { chaptersQueue } from '@celluloid/queue';
+// import { chaptersQueue } from '@celluloid/queue';
 
 
 // create a global event emitter (could be replaced by redis, etc)
@@ -84,18 +84,18 @@ export const chapterRouter = router({
           throw new Error('Project not found');
         }
 
-        const jobId = await chaptersQueue.add({ projectId: project.id });
+        // const jobId = await chaptersQueue.add({ projectId: project.id });
         const updatedProject = await prisma.project.update({
           where: { id: project.id },
           data: {
             chapterJob: {
               connect: {
-                id: jobId.id
+                id: 1
               }
             }
           }
         })
-        console.log("job enqueued", jobId)
+        // console.log("job enqueued", jobId)
         return updatedProject;
 
       }

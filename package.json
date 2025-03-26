@@ -18,15 +18,14 @@
     "prepare": "husky install",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "test": "npx playwright test",
-    "start": "pm2-runtime start ecosystem.config.js",
     "--shortcuts to run commands in workspaces--": "",
-    "frontend": "dotenv -- pnpm --filter frontend",
-    "admin": "dotenv -- pnpm --filter admin",
+    "web": "dotenv -- pnpm --filter web",
     "auth": "dotenv -- pnpm --filter auth",
-    "backend": "dotenv -- pnpm --filter backend",
     "prisma": "dotenv -- pnpm --filter @celluloid/prisma",
-    "docker:build": "docker build -t celluloid:latest .",
-    "docker:run": "docker run -it --rm --env-file .env -p 3000:3000  celluloid:latest"
+    "docker:web:build": "docker buildx build --build-arg NEXT_PUBLIC_APP_URL=http://localhost:3000  --build-arg NODE_ENV=production --build-arg DATABASE_URL=postgres://postgres:root@localhost:5432/celluloid -t celluloid -f apps/web/Dockerfile .",
+    "docker:web:run": "docker run -it --rm --env-file .env -p 3000:3000  celluloid",
+    "docker:worker:build": "docker buildx build --build-arg  --build-arg NODE_ENV=production --build-arg DATABASE_URL=postgres://postgres:root@localhost:5432/celluloid -t celluloid -f apps/worker/Dockerfile .",
+    "docker:worker:run": "docker run -it --rm --env-file .env celluloid"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
@@ -90,8 +89,7 @@
     "abort-controller": "^3.0.0",
     "dotenv": "^16.3.1",
     "dotenv-cli": "^7.3.0",
-    "node-fetch": "2",
-    "pm2": "^5.3.0"
+    "node-fetch": "2"
   },
   "packageManager": "pnpm@9.15.0"
 }

@@ -1,6 +1,5 @@
 {
   "name": "@celluloid/types",
-  "main": "dist/index.js",
   "version": "3.0.0",
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
@@ -8,18 +7,12 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
-    }
+    ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc"
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {
-    "tsup": "^8.3.0",
     "typescript": "catalog:",
     "@celluloid/config": "workspace:*"
   }

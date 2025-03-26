@@ -6,12 +6,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./emails/index.ts"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc",
+    "build": "pkgroll build",
+    "dev": "pkgroll dev",
     "email-dev": "email dev -p 3001",
     "export": "email export"
   },
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@celluloid/config": "workspace:*",
+    "pkgroll": "^2.11.2",
     "typescript": "catalog:"
   }
 }

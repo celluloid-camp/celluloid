@@ -1,14 +1,11 @@
-import { getPeerTubeVideoData } from "@celluloid/utils";
 import { createQueue } from "@mgcrea/prisma-queue";
-import fs from "node:fs";
-import path from "node:path";
 import { pipeline } from "node:stream";
 import { promisify } from "node:util";
-import os from "node:os";
 import { exec } from "node:child_process";
 import { detectScenes } from "../utils/scenes";
 import { env } from "../env";
 import type { PeerTubeVideo } from "@celluloid/types";
+import { prisma, type PrismaClient } from "@celluloid/prisma";
 
 const execPromise = promisify(exec);
 const streamPipeline = promisify(pipeline);
@@ -18,7 +15,7 @@ type JobResult = { status: number };
 
 // https://github.com/marcofaggian/lyricarr/blob/master/services/backend/src/util/queueWrapper.ts
 export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
-  { name: "chapters" },
+  { name: "chapters", prisma: prisma as unknown as PrismaClient },
   async (job, prisma) => {
     const { id, payload } = job;
     console.log(
@@ -91,25 +88,3 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
     return { status };
   },
 );
-
-/**
- * Downloads a video file from a PeerTube video URL.
- * @param videoUrl - The direct URL of the video file.
- * @param outputPath - The path to save the downloaded video.
- */
-async function downloadVideoFile(videoUrl: string): Promise<string> {
-  const response = await fetch(videoUrl);
-  if (!response.ok) {
-    throw new Error(
-      `Failed to download video, status code: ${response.status}`,
-    );
-  }
-  const outputPath = path.join(os.tmpdir(), `video_${Date.now()}.mp4`);
-  const fileStream = fs.createWriteStream(outputPath);
-  await streamPipeline(
-    response.body as unknown as NodeJS.ReadableStream,
-    fileStream,
-  );
-  console.log("Video downloaded successfully.");
-  return outputPath;
-}

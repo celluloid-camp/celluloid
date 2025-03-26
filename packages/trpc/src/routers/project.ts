@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 import { PlaylistSchema } from './playlist';
 import { UserSchema } from './user';
-import { chaptersQueue } from '@celluloid/queue';
+// import { chaptersQueue } from '@celluloid/queue';
 
 export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   id: true,
@@ -259,18 +259,18 @@ export const projectRouter = router({
           }
           // select: defaultPostSelect,
         });
-        const jobId = await chaptersQueue.add({ projectId: project.id });
-        await prisma.project.update({
-          where: { id: project.id },
-          data: {
-            chapterJob: {
-              connect: {
-                id: jobId.id
-              }
-            }
-          }
-        })
-        console.log("job enqueued", jobId)
+        // const jobId = await chaptersQueue.add({ projectId: project.id });
+        // await prisma.project.update({
+        //   where: { id: project.id },
+        //   data: {
+        //     chapterJob: {
+        //       connect: {
+        //         id: jobId.id
+        //       }
+        //     }
+        //   }
+        // })
+        // console.log("job enqueued", jobId)
         return project;
       }
     }),

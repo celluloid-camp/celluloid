@@ -53,19 +53,12 @@ export const storageRouter = router({
         });
 
         const path = `${ctx.user.id}/${input.name}`;
-        return new Promise((resolve, reject) =>
-          minioClient.presignedPutObject(
-            env.STORAGE_BUCKET,
-            path,
-            (err, url) => {
-              if (err) {
-                console.log(err);
-                reject(err.message);
-              }
-              resolve({ uploadUrl: url, path });
-            },
-          ),
+        const url = await minioClient.presignedPutObject(
+          env.STORAGE_BUCKET,
+          path,
+          24 * 60 * 60 // 24 hours expiry
         );
+        return { uploadUrl: url, path };
       }
     }),
   add: protectedProcedure

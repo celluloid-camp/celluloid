@@ -7,5 +7,6 @@ export const env = createEnv({
     BASE_URL: z.string(),
   },
   runtimeEnv: process.env,
+  skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
   emptyStringAsUndefined: true,
 });

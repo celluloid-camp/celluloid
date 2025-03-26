@@ -1,6 +1,7 @@
 /**
  * This file contains the root router of your tRPC-backend
  */
+import { z } from 'zod';
 import { publicProcedure, router } from '../trpc';
 import { annotationRouter } from "./annotation"
 import { chapterRouter } from './chapter';
@@ -12,7 +13,7 @@ import { userRouter } from './user';
 
 
 export const appRouter = router({
-  healthcheck: publicProcedure.query(() => 'yay!'),
+  healthcheck: publicProcedure.meta({ openapi: { method: 'GET', path: '/healthcheck' } }).input(z.object({})).output(z.string()).query(() => 'yay!'),
   project: projectRouter,
   user: userRouter,
   playlist: playlistRouter,
