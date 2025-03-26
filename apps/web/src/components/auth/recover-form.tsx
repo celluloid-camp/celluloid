@@ -1,3 +1,5 @@
+"use client";
+
 import { LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
 import TextField from "@mui/material/TextField";
@@ -12,7 +14,7 @@ export function RecoverForm({ email }: { email?: string }) {
   const router = useRouter();
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required(t("recorver.email.required")),
+    email: Yup.string().required(t("recover.email.required")),
     code: Yup.string()
       .min(4, "Code is too short - should be 4 chars minimum.")
       .required(t("recover.code.required")),

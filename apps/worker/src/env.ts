@@ -1,5 +1,6 @@
 import { createEnv } from "@t3-oss/env-core";
 import { env as prismaEnv } from "@celluloid/prisma/env";
+import { env as queueEnv } from "@celluloid/queue/env";
 import { z } from "zod";
 
 export const env = createEnv({
@@ -9,5 +10,5 @@ export const env = createEnv({
   },
   runtimeEnv: process.env,
   skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
-  extends: [prismaEnv]
-},);
+  extends: [prismaEnv, queueEnv],
+});

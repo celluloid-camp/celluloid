@@ -169,8 +169,8 @@ export default function SecurityTabForm({
           size="large"
           type="submit"
           data-testid="submit"
-          loading={mutation.isLoading}
-          disabled={mutation.isLoading}
+          loading={mutation.isPending}
+          disabled={mutation.isPending}
         >
           {t("profile.security.change-password.button")}
         </LoadingButton>

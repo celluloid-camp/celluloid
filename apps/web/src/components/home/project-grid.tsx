@@ -26,6 +26,7 @@ import { trpc } from "@/lib/trpc/client";
 
 import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
+import type { ProjectListItem } from "@/lib/trpc/types";
 
 const ProjectGridSkeleton: React.FC = () => {
   return (
@@ -114,10 +115,11 @@ export const ProjectGrid: React.FC = () => {
     () =>
       data.items
         .filter(
-          (project) => session?.user && project.userId === session?.user?.id
+          (project: ProjectListItem) =>
+            session?.user && project.userId === session?.user?.id
         )
         .sort(
-          (a, b) =>
+          (a: ProjectListItem, b: ProjectListItem) =>
             new Date(b.publishedAt).getTime() -
             new Date(a.publishedAt).getTime()
         ),
@@ -143,7 +145,7 @@ export const ProjectGrid: React.FC = () => {
   if (mutation.error) {
     return (
       <Box sx={{ p: 5 }}>
-        <Typography color="error">{t("errors.loadingProjects")}</Typography>
+        <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
       </Box>
     );
   }
@@ -200,7 +202,7 @@ export const ProjectGrid: React.FC = () => {
                 </StyledTitle>
               </Fade>
               <Grid container={true} spacing={5} direction="row">
-                {userProjects.map((project) => (
+                {userProjects.map((project: ProjectListItem) => (
                   <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
                     <ProjectThumbnail showPublic={true} project={project} />
                   </Grid>
@@ -220,7 +222,7 @@ export const ProjectGrid: React.FC = () => {
                 </StyledTitle>
               </Fade>
               <Grid container={true} spacing={5} direction="row">
-                {publicProjects.map((project) => (
+                {publicProjects.map((project: ProjectListItem) => (
                   <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
                     <ProjectThumbnail showPublic={false} project={project} />
                   </Grid>

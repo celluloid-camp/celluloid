@@ -13,7 +13,7 @@ import { userRouter } from './user';
 
 
 export const appRouter = router({
-  healthcheck: publicProcedure.meta({ openapi: { method: 'GET', path: '/healthcheck' } }).input(z.object({})).output(z.string()).query(() => 'yay!'),
+  healthcheck: publicProcedure.meta({ openapi: { method: 'GET', path: '/health' } }).input(z.object({})).output(z.string()).query(() => 'yay!'),
   project: projectRouter,
   user: userRouter,
   playlist: playlistRouter,

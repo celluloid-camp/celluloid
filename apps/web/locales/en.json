@@ -51,7 +51,8 @@
   },
   "errors": {
     "ALREADY_EXISTING_PROJECT": "A project with the same title already exists, please rename the project",
-    "UNKNOWN": "An unknown error has occurred. Please try again later or contact support for assistance."
+    "UNKNOWN": "An unknown error has occurred. Please try again later or contact support for assistance.",
+    "LOADING_PROJECTS": "Failed to load projects. Please try again later or contact support for assistance."
   },
   "footer": {
     "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
@@ -115,7 +116,8 @@
       "firstname": "firstname",
       "lastname": "lastname",
       "bio": "Bio",
-      "submit": "Save"
+      "submit": "Save",
+      "username-already-used": "Username already used"
     },
     "security": {
       "old-password": {
@@ -374,6 +376,11 @@
   "recover": {
     "username": {
       "required": "Username is required",
+      "label": "Email",
+      "paceholder": "Email"
+    },
+    "email": {
+      "required": "Email is required",
       "label": "Email",
       "paceholder": "Email"
     },

@@ -11,7 +11,7 @@ FROM base AS builder
 WORKDIR /workspace
 RUN pnpm install -g turbo
 COPY . .
-RUN turbo prune --scope=web --docker
+RUN turbo prune --scope=web --scope=worker --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
@@ -24,25 +24,32 @@ ENV DATABASE_URL=${DATABASE_URL}
 
 ENV SKIP_ENV_VALIDATIONS="true"
 
-ARG NEXT_PUBLIC_APP_URL
-ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
-
-
 # COPY .gitignore .gitignore
 COPY --from=builder /workspace/out/json/ .
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
 # ↑ By caching the content-addressable store we stop downloading the same packages again and again
+
+
+FROM installer AS web-builder
 # Build the project
 COPY --from=builder /workspace/out/full/ .
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
-  pnpm install --filter=web... -r --workspace-root --frozen-lockfile --unsafe-perm
+  pnpm install --filter=web... --filter=worker... -r --workspace-root --frozen-lockfile --unsafe-perm
 
 # copy local cache
 # COPY apps/web/.next ./apps/web/.next
 COPY --from=builder /workspace/out/full/ ./
-RUN pnpm prisma generate && pnpm run build --filter=web...
+RUN pnpm prisma generate
+RUN pnpm run build --filter=web...
 
-FROM base
+FROM installer AS worker-builder
+COPY --from=builder /workspace/out/full/ .
+RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
+  pnpm install --filter=worker... -r --workspace-root --frozen-lockfile --unsafe-perm
+RUN pnpm run build --filter=worker...
+
+
+FROM base AS web
 WORKDIR /workspace
 
 # Install openssl in the runner stage
@@ -55,9 +62,9 @@ ENV NODE_ENV=${NODE_ENV}
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-COPY --from=installer /workspace/apps/web/.next/standalone .
-COPY --from=installer /workspace/apps/web/public apps/web/public
-COPY --from=installer /workspace/apps/web/.next/static apps/web/.next/static
+COPY --from=web-builder /workspace/apps/web/.next/standalone .
+COPY --from=web-builder /workspace/apps/web/public apps/web/public
+COPY --from=web-builder /workspace/apps/web/.next/static apps/web/.next/static
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
@@ -72,4 +79,21 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wg
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 CMD ["node", "apps/web/server.js"]
+
+FROM base AS worker
+
+RUN apk add --no-cache curl bash openssl openssl-dev ffmpeg
+
+WORKDIR /workspace
+
+ARG NODE_ENV
+ENV NODE_ENV=${NODE_ENV}
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+USER nodejs
+
+COPY --from=worker-builder --chown=nodejs:nodejs /workspace .
+
+CMD ["node", "apps/worker/dist/index.js"]
 

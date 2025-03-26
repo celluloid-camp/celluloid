@@ -1,14 +1,7 @@
 import PrismaModule, { type Prisma, PrismaClient } from "@prisma/client";
 import randomColor from "randomcolor";
-import { env } from "./env";
 
-const prismaClient = new PrismaClient({
-  datasources: {
-    db: {
-      url: env.DATABASE_URL,
-    },
-  },
-}).$extends({
+const prismaClient = new PrismaClient().$extends({
   result: {
     user: {
       initial: {

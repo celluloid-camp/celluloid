@@ -12,6 +12,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useEffect } from "react";
 
 import {
   getPeerTubeVideoData,
@@ -60,19 +61,23 @@ export const AddVideoToPlaylistDialog: React.FC<
     queryKey: ["getAddPeerTubeVideo", formik.values.url],
     queryFn: () => getPeerTubeVideoData(formik.values.url),
     enabled: formik.errors.url == null,
-    onSuccess: (data) => {
+    select: (data) => {
       if (data?.videos) {
         formik.setFieldValue("data", data.videos[0]);
         formik.setFieldTouched("data");
       }
+      return data;
     },
-    onError: () => {
+  });
+
+  useEffect(() => {
+    if (query.error) {
       formik.setFieldError(
         "url",
         t("project.create.error.video-info-failed") || ""
       );
-    },
-  });
+    }
+  }, [query.error, formik, t]);
 
   const handleReset = () => {
     formik.resetForm();

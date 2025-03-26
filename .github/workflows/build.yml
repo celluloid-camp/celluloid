@@ -31,14 +31,28 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build Web Container
         uses: docker/build-push-action@v3
         with:
           file: ./Dockerfile
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/celluloid:${{github.ref_name}}
+          tags: ghcr.io/${{ github.repository }}/celluloid-web:${{github.ref_name}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          target: "web"
+          build-args: |
+            COMMIT=${{ steps.vars.outputs.sha_short }}
+
+      - name: Build Worker Container
+        uses: docker/build-push-action@v3
+        with:
+          file: ./Dockerfile
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/celluloid-worker:${{github.ref_name}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          target: "worker"
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}

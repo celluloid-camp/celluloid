@@ -1,3 +1,5 @@
+"use client";
+
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, DialogActions } from "@mui/material";
 import TextField from "@mui/material/TextField";

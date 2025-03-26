@@ -69,7 +69,7 @@ export default function EditProfileTabForm({
             t("profile.update.username-already-used")
           );
         } else {
-          formik.setFieldError("error", e.message);
+          formik.setFieldError("error", (e as Error).message);
         }
       }
     },
@@ -193,8 +193,8 @@ export default function EditProfileTabForm({
           color="primary"
           type="submit"
           data-testid="submit"
-          loading={mutation.isLoading}
-          disabled={mutation.isLoading}
+          loading={mutation.isPending}
+          disabled={mutation.isPending}
           sx={{ textTransform: "uppercase" }}
         >
           {t("profile.update.submit")}
