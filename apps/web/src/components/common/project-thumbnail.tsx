@@ -14,6 +14,7 @@ import {
 import Image from "mui-image";
 import type * as React from "react";
 import dayjs from "@/utils/dayjs";
+import PeopleIcon from "@mui/icons-material/People";
 
 import { Avatar } from "@/components/common/avatar";
 import { useRouter } from "next/navigation";
@@ -60,33 +61,35 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
           borderRadius: 2,
           border: "1px solid #000000",
           overflow: "hidden",
+          position: "relative",
         }}
       >
-        {project.playlist && (
-          <Box
-            sx={{
-              position: "absolute",
-              right: 10,
-              bottom: 10,
-              zIndex: 1,
-            }}
-          >
-            <Stack direction={"row"} spacing={1}>
-              {project._count.annotations > 0 ? (
-                <Chip
-                  size="small"
-                  label={project._count.annotations}
-                  icon={<CommentOutlinedIcon />}
-                />
-              ) : null}
+        <Box
+          sx={{
+            position: "absolute",
+            right: 10,
+            bottom: 10,
+            zIndex: 10,
+          }}
+        >
+          <Stack direction={"row"} spacing={1}>
+            {project._count.annotations > 0 ? (
               <Chip
                 size="small"
-                label={project.playlist?._count.projects}
-                icon={<PlaylistPlayIcon />}
+                label={project._count.annotations}
+                icon={<CommentOutlinedIcon />}
+                sx={{ px: 0.5 }}
               />
-            </Stack>
-          </Box>
-        )}
+            ) : null}
+            <Chip
+              size="small"
+              label={project.members.length}
+              icon={<PeopleIcon />}
+              sx={{ px: 0.5 }}
+            />
+          </Stack>
+        </Box>
+
         <Image
           src={project.thumbnailURL}
           duration={500}
@@ -111,6 +114,7 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
                   borderColor: project.user.color,
                   borderStyle: "solid",
                 }}
+                sizes="20px"
                 src={project.user.avatar?.publicUrl}
               >
                 {project.user.initial}

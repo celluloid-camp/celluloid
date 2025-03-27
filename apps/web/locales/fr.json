@@ -79,7 +79,8 @@
       "prefix": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
       "subtitle": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
       "title": "Comment utiliser Celluloid ?"
-    }
+    },
+    "member": "Projets rejoints"
   },
   "menu": {
     "about": "à propos",
@@ -242,9 +243,6 @@
     "chapters": {
       "title": "Chapitres",
       "empty": "Cette vidéo n'a pas de chapitres",
-      "inProgress": {
-        "description": "La génération des chapitres est en cours..."
-      },
       "not-found": "Aucun chapitre trouvé pour cette vidéo.",
       "button": {
         "generate": "Générer des chapitres"
@@ -254,6 +252,9 @@
           "title": "Titre du chapitre",
           "description": "Description du chapitre"
         }
+      },
+      "inProgress": {
+        "description": "La génération des chapitres est en cours..."
       }
     }
   },

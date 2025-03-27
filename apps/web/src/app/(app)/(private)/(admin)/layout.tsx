@@ -15,7 +15,7 @@ export default async function PrivateLayout({
     redirect("/login");
   }
 
-  if (session.user?.role !== "ADMIN") {
+  if (session.user?.role !== "admin") {
     redirect("/");
   }
 

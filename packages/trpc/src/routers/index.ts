@@ -10,7 +10,7 @@ import { playlistRouter } from './playlist'
 import { projectRouter } from './project'
 import { storageRouter } from './storage';
 import { userRouter } from './user';
-
+import { adminRouter } from './admin';
 
 export const appRouter = router({
   healthcheck: publicProcedure.meta({ openapi: { method: 'GET', path: '/health' } }).input(z.object({})).output(z.string()).query(() => 'yay!'),
@@ -20,7 +20,8 @@ export const appRouter = router({
   annotation: annotationRouter,
   chapter: chapterRouter,
   comment: commentRouter,
-  storage: storageRouter
+  storage: storageRouter,
+  admin: adminRouter,
 });
 
 export type AppRouter = typeof appRouter;

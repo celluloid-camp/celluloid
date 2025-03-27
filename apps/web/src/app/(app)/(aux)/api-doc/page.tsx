@@ -4,7 +4,7 @@ import "@scalar/api-reference-react/style.css";
 
 export default function LegalNoticePage() {
   return (
-    <Box sx={{ backgroundColor: "brand.orange" }}>
+    <Box>
       <Box
         sx={{
           paddingTop: 10,

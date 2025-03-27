@@ -78,7 +78,7 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
 
   return (
     <>
-      <Fade in={!showForm} timeout={300}>
+      <Fade in={!showForm} timeout={300} mountOnEnter unmountOnExit>
         <Box
           sx={{ display: showForm ? "none" : "block", flex: 1, paddingX: 2 }}
         >
@@ -104,7 +104,7 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           )}
         </Box>
       </Fade>
-      <Fade in={showForm} timeout={300}>
+      <Fade in={showForm} timeout={300} mountOnEnter unmountOnExit>
         <Box sx={{ display: !showForm ? "none" : "block" }}>
           <ChapterFormContent onClose={handleClose} {...props} />
         </Box>

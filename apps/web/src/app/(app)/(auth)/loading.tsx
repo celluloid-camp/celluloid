@@ -8,7 +8,7 @@ export default function SignupLoading() {
         <Skeleton variant="rectangular" height={56} />
         <Skeleton variant="rectangular" height={56} />
         <Skeleton variant="rectangular" height={56} />
-        <Skeleton variant="rectangular" height={56} />
+        <Skeleton variant="rectangular" height={56} width="50%" />
       </Box>
     </Paper>
   );

@@ -26,6 +26,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { ChapterForm } from "./form";
 import type { User } from "@/lib/auth-client";
 import { useTranslations } from "next-intl";
+import { ChaptersJobInProgress } from "./in-progress";
+import { ChapterListSkeleton } from "./skeleton";
+
 function ChapterList({
   chapters,
   user,
@@ -42,7 +45,6 @@ function ChapterList({
   }
 
   const handleClick = (chapter: ChapterByProjectId) => {
-    console.log(chapter);
     dispatcher({
       time: chapter.startTime,
     });
@@ -94,9 +96,12 @@ function ChapterList({
               </Typography>
             </Stack>
           </TimelineOppositeContent>
-          <TimelineSeparator color="primary">
-            <TimelineDot variant="outlined" sx={{ borderWidth: 1 }} />
-            <TimelineConnector />
+          <TimelineSeparator>
+            <TimelineDot
+              variant="outlined"
+              sx={{ borderWidth: 2, borderColor: "grey.800" }}
+            />
+            <TimelineConnector sx={{ backgroundColor: "grey.800" }} />
           </TimelineSeparator>
           <TimelineContent>
             <ChapterItem
@@ -131,13 +136,13 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
   }
 
   if (!project.chapterJob?.finishedAt) {
-    return <ChaptersInProgress />;
+    return <ChaptersJobInProgress />;
   }
   return (
     <ErrorBoundary
       fallbackRender={({ error }) => <div>Error: {error.message}</div>}
     >
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ChapterListSkeleton />}>
         <ChaptersPanelContent project={project} user={user} />
       </Suspense>
     </ErrorBoundary>
@@ -231,33 +236,6 @@ function NoChaptersJob({
             {t("project.chapters.button.generate")}
           </Button>
         )}
-      </Stack>
-    </Grow>
-  );
-}
-
-function ChaptersInProgress() {
-  const t = useTranslations();
-  return (
-    <Grow in={true}>
-      <Stack
-        spacing={1}
-        alignContent={"center"}
-        alignItems={"center"}
-        sx={{
-          paddingY: 5,
-          paddingX: 5,
-          borderRadius: 1,
-          borderStyle: "dashed",
-          borderWidth: 1,
-          borderColor: grey[800],
-          margin: 2,
-        }}
-      >
-        <CircularProgress size={20} color="secondary" />
-        <Typography variant="body2" color="gray" textAlign={"center"}>
-          {t("project.chapters.inProgress.description")}
-        </Typography>
       </Stack>
     </Grow>
   );

@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 import {
+  adminClient,
   emailOTPClient,
   inferAdditionalFields,
   usernameClient,
@@ -8,7 +9,7 @@ import type { auth } from "@celluloid/auth";
 import { signupAsStudentClient } from "@celluloid/auth/client/plugins";
 
 export const authClient = createAuthClient({
-  plugins: [signupAsStudentClient(), usernameClient(), emailOTPClient(), inferAdditionalFields<typeof auth>()],
+  plugins: [adminClient(), signupAsStudentClient(), usernameClient(), emailOTPClient(), inferAdditionalFields<typeof auth>()],
 });
 
 export type Session = typeof authClient.$Infer.Session;

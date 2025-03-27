@@ -43,6 +43,16 @@ export async function detectScenes({
   fs.mkdirSync(outputDir, { recursive: true });
 
   try {
+
+    // const { stdout } = await $`ffmpeg -i ${videoUrl} \
+    // -vf "select='gt(scene,${threshold})',scale=320:-1,showinfo" \
+    // -vsync vfr \
+    // -start_number 1 \
+    // -frame_pts 0 \
+    // ${path.join(outputDir, 'thumbnail_%d.jpg')} \
+    // 2>&1 | grep -oE 'pts_time:[0-9.]+' | awk -F: '{print $2}'`;
+    // const timestamps = stdout.trim().split('\n').map(Number);
+
     // Replace zx command with native Node.js spawn
     const stdout = await new Promise<string>((resolve, reject) => {
       const ffmpegProcess = spawn('ffmpeg', [
@@ -59,16 +69,26 @@ export async function detectScenes({
 
       ffmpegProcess.stderr.on('data', (data) => {
         errorOutput += data.toString();
-        // FFmpeg outputs progress to stderr, we need to parse it
+        // Extract timestamps using regex similar to grep
         const matches = data.toString().match(/pts_time:([0-9.]+)/g);
         if (matches) {
-          output += matches.map((m: string) => m.split(':')[1]).join('\n');
+          // Extract just the numbers (similar to awk '{print $2}')
+          const timestamps = matches
+            .map((m: string) => m.split(':')[1])
+            .filter(Boolean);
+          // Add newline if output is not empty
+          output += (output ? '\n' : '') + timestamps.join('\n');
         }
       });
 
       ffmpegProcess.on('close', (code) => {
         if (code === 0) {
-          resolve(output);
+          // Ensure we have clean output with unique timestamps
+          const uniqueTimestamps = [...new Set(output.trim().split('\n'))]
+            .filter(Boolean)
+            .map(Number)
+            .sort((a, b) => a - b); // Sort timestamps in ascending order
+          resolve(uniqueTimestamps.join('\n'));
         } else {
           reject(new Error(`FFmpeg process exited with code ${code}\n${errorOutput}`));
         }
@@ -99,6 +119,10 @@ export async function detectScenes({
       });
     });
 
+    console.log("Chapter queue processing -- scenes detected", {
+      scenesLength: scenes.length,
+    });
+
     // Update the last scene's end time to video duration
     if (scenes.length > 0) {
       const lastScene = scenes[scenes.length - 1];
@@ -108,7 +132,7 @@ export async function detectScenes({
 
       // Generate thumbnails and upload to S3
       // await generateThumbnails(projectId, videoUrl, scenes, outputDir);
-
+      console.log("Chapter queue processing -- uploading thumbnails to S3");
       const updatedScenes = await uploadThumbnailsToS3(projectId, scenes);
       // Remove the temporary directory
       fs.rmSync(outputDir, { recursive: true });

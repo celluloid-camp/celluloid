@@ -1,173 +1,159 @@
 "use client";
 import { LoadingButton } from "@mui/lab";
-import { Alert, DialogActions, DialogContent } from "@mui/material";
+import { Alert, DialogActions, DialogContent, Divider } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import * as Yup from "yup";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient, signUp } from "@/lib/auth-client";
 import { useTranslations } from "next-intl";
+import { PasswordTextField } from "../common/password-textfield";
+import { StyledDialogTitle } from "../common/styled-dialog";
 
-export default function SignupForm() {
+export function SignupForm({ onClose }: { onClose?: () => void }) {
   const t = useTranslations();
   const router = useRouter();
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required().label(t("signup.username.label")),
-    email: Yup.string().email().required().label(t("signup.email.label")),
-    password: Yup.string().min(8).required().label(t("signup.password.label")),
-    passwordConfirmation: Yup.string()
-      .oneOf([Yup.ref("password")], t("password.unmatch"))
-      .required()
-      .label(t("signup.password.label")),
+  const signupSchema = z
+    .object({
+      username: z.string().min(1, t("signup.username.label")),
+      email: z.string().email().min(1, t("signup.email.label")),
+      password: z.string().min(8, t("signup.password.label")),
+      passwordConfirmation: z.string().min(1, t("signup.password.label")),
+    })
+    .refine((data) => data.password === data.passwordConfirmation, {
+      message: t("password.unmatch"),
+      path: ["passwordConfirmation"],
+    });
+
+  type SignupFormData = z.infer<typeof signupSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
   });
 
-  const formik = useFormik({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-      passwordConfirmation: "",
-      error: null,
-    },
-    validateOnMount: false,
-    validationSchema: validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      formik.setSubmitting(true);
+  const onSubmit = async (values: SignupFormData) => {
+    const { data, error } = await signUp.email({
+      email: values.email,
+      password: values.password,
+      username: values.username,
+      name: values.username,
+    });
 
-      const { data, error } = await signUp.email({
+    if (error) {
+      if (error.code === "USERNAME_IS_ALREADY_TAKEN_PLEASE_TRY_ANOTHER") {
+        setError("username", { message: error.message });
+      } else if (error.code === "USER_ALREADY_EXISTS") {
+        setError("email", { message: error.message });
+      } else {
+        setError("root", { message: error.message });
+      }
+      return;
+    }
+
+    if (data.user.emailVerified === false) {
+      await authClient.emailOtp.sendVerificationOtp({
         email: values.email,
-        password: values.password,
-        username: values.username,
-        name: values.username,
+        type: "sign-in",
       });
-
-      if (error) {
-        if (error.code === "ACCOUNT_EXISTS") {
-          formik.setFieldError("email", error.message);
-        } else {
-          formik.setFieldError("error", error.message);
-        }
-        formik.setSubmitting(false);
-        return;
-      }
-      if (data.user.emailVerified === false) {
-        await authClient.emailOtp.sendVerificationOtp({
-          email: values.email,
-          type: "sign-in", // or "email-verification", "forget-password"
-        });
-        return router.replace(`/otp?email=${values.email}`);
-      }
+      router.replace(`/otp?email=${values.email}`);
+      onClose?.();
+    } else {
       router.back();
-
-      // utils.user.me.invalidate();
-    },
-  });
+      onClose?.();
+    }
+  };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <DialogContent>
-        <TextField
-          id="username"
-          name="username"
-          margin="dense"
-          fullWidth={true}
-          label={t("signup.username.label")}
-          required={true}
-          value={formik.values.username}
-          placeholder={t("signup.username.paceholder")}
-          inputProps={{
-            "data-testid": "username",
-          }}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-          onBlur={formik.handleBlur}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
-        />
-        <TextField
-          id="email"
-          name="email"
-          inputProps={{
-            "data-testid": "email",
-          }}
-          margin="dense"
-          fullWidth={true}
-          type="email"
-          label={t("signup.email.label")}
-          required={true}
-          value={formik.values.email}
-          placeholder={t("signup.email.placeholder")}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-          onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
-        <TextField
-          id="password"
-          name="password"
-          margin="dense"
-          type="password"
-          fullWidth={true}
-          label={t("signup.password.label")}
-          required={true}
-          value={formik.values.password}
-          placeholder={t("signup.password.placeholder")}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          inputProps={{
-            "data-testid": "password",
-          }}
-        />
-
-        <TextField
-          id="passwordConfirmation"
-          name="passwordConfirmation"
-          margin="dense"
-          fullWidth={true}
-          label={t("signup.passwordConfirmation.label")}
-          required={true}
-          type="password"
-          value={formik.values.passwordConfirmation}
-          placeholder={t("signup.passwordConfirmation.placeholder")}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-          onBlur={formik.handleBlur}
-          error={
-            formik.touched.passwordConfirmation &&
-            Boolean(formik.errors.passwordConfirmation)
-          }
-          helperText={
-            formik.touched.passwordConfirmation &&
-            formik.errors.passwordConfirmation
-          }
-          inputProps={{
-            "data-testid": "passwordConfirmation",
-          }}
-        />
-        {formik.errors.error && (
-          <Alert severity="error">{formik.errors.error}</Alert>
-        )}
-      </DialogContent>
-      <DialogActions sx={{ mx: 2 }}>
-        <LoadingButton
-          variant="contained"
-          color="primary"
-          size="large"
-          type="submit"
-          data-testid="submit"
-          loading={formik.isSubmitting}
-          disabled={formik.isSubmitting}
-        >
-          {t("signup.button.submit")}
-        </LoadingButton>
-      </DialogActions>
-    </form>
+    <>
+      <StyledDialogTitle
+        loading={isSubmitting}
+        error={errors.root?.message}
+        onClose={onClose}
+      >
+        {t("signup.title")}
+      </StyledDialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent sx={{ margin: 1, padding: 2, width: 400 }}>
+          <TextField
+            {...register("username")}
+            margin="dense"
+            fullWidth={true}
+            label={t("signup.username.label")}
+            required={true}
+            placeholder={t("signup.username.paceholder")}
+            disabled={isSubmitting}
+            error={!!errors.username}
+            helperText={errors.username?.message}
+            inputProps={{
+              "data-testid": "username",
+            }}
+          />
+          <TextField
+            {...register("email")}
+            margin="dense"
+            fullWidth={true}
+            type="email"
+            label={t("signup.email.label")}
+            required={true}
+            placeholder={t("signup.email.placeholder")}
+            disabled={isSubmitting}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            inputProps={{
+              "data-testid": "email",
+            }}
+          />
+          <PasswordTextField
+            {...register("password")}
+            margin="dense"
+            fullWidth={true}
+            label={t("signup.password.label")}
+            required={true}
+            placeholder={t("signup.password.placeholder")}
+            disabled={isSubmitting}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            inputProps={{
+              "data-testid": "password",
+            }}
+          />
+          <PasswordTextField
+            {...register("passwordConfirmation")}
+            margin="dense"
+            fullWidth={true}
+            label={t("signup.passwordConfirmation.label")}
+            required={true}
+            placeholder={t("signup.passwordConfirmation.placeholder")}
+            disabled={isSubmitting}
+            error={!!errors.passwordConfirmation}
+            helperText={errors.passwordConfirmation?.message}
+            inputProps={{
+              "data-testid": "passwordConfirmation",
+            }}
+          />
+        </DialogContent>
+        <Divider />
+        <DialogActions sx={{ marginY: 1, marginX: 2 }}>
+          <LoadingButton
+            variant="contained"
+            color="primary"
+            size="large"
+            type="submit"
+            data-testid="submit"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          >
+            {t("signup.button.submit")}
+          </LoadingButton>
+        </DialogActions>
+      </form>
+    </>
   );
 }

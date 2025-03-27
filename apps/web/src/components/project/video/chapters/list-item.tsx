@@ -19,10 +19,11 @@ import { EditableText } from "@/components/common/editable-text";
 import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 import { trpc } from "@/lib/trpc/client";
 import { useTranslations } from "next-intl";
+import type { User } from "@/lib/auth-client";
 interface ChapterItemProps {
   project: ProjectById;
   chapter: ChapterByProjectId;
-  user?: UserMe;
+  user?: User;
   index: number;
 }
 

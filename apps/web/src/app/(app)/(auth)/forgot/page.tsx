@@ -6,7 +6,6 @@ export default function ForgotPage() {
   const t = useTranslations();
   return (
     <Paper>
-      <DialogTitle>{t("forgot.title")}</DialogTitle>
       <ForgotForm />
     </Paper>
   );

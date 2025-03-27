@@ -46,6 +46,11 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
       return { status: 404 };
     }
 
+    console.log("Chapter queue processing -- metadata loaded", {
+      videoUrl,
+      duration,
+      jobId: job.id,
+    });
 
     await job.progress(10);
     // const videoPath = await downloadVideoFile(videoUrl);

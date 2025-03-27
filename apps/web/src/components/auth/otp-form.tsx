@@ -5,6 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
@@ -13,15 +14,18 @@ import * as Yup from "yup";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { StyledDialogTitle } from "../common/styled-dialog";
 
-export const OtpForm: React.FC<{
+export function OtpForm({
+  email,
+  onClose,
+}: {
   email?: string;
-}> = ({ email }) => {
+  onClose?: () => void;
+}) {
   const t = useTranslations();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-
-  // const savedProjectValue = useProjectInputIntialValue();
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required(t("confirm.username.required")),
@@ -34,7 +38,7 @@ export const OtpForm: React.FC<{
     if (email) {
       await authClient.emailOtp.sendVerificationOtp({
         email: email,
-        type: "sign-in", // or "email-verification", "forget-password"
+        type: "sign-in",
       });
 
       enqueueSnackbar(t("confirm.resend.success"), {
@@ -73,13 +77,9 @@ export const OtpForm: React.FC<{
           return;
         }
 
-        // if (savedProjectValue.videoInfo) {
-        //   navigate("/create", { replace: true });
-        // } else {
-        //   navigate("/", { replace: true });
-        // }
         formik.setStatus("submited");
-        router.push("/");
+        router.back();
+        onClose?.();
       } catch (e) {
         formik.setFieldError(
           "error",
@@ -93,63 +93,75 @@ export const OtpForm: React.FC<{
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <DialogTitle>{t("signin.loginTitle")}</DialogTitle>
-      <DialogContent>
-        <TextField
-          id="username"
-          name="username"
-          margin="dense"
-          fullWidth={true}
-          label={t("confirm.username.label")}
-          required={true}
-          value={formik.values.username}
-          inputProps={{
-            "data-testid": "username",
-          }}
-          placeholder={t("confirm.username.paceholder") || ""}
-          onChange={formik.handleChange}
-          disabled={email !== undefined}
-          onBlur={formik.handleBlur}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
-        />
-        <TextField
-          id="code"
-          name="code"
-          margin="dense"
-          fullWidth={true}
-          label={t("confirm.code.label")}
-          required={true}
-          value={formik.values.code}
-          inputProps={{
-            "data-testid": "code",
-          }}
-          placeholder={t("confirm.code.placeholder") || ""}
-          onChange={formik.handleChange}
-          disabled={formik.isSubmitting}
-          onBlur={formik.handleBlur}
-          error={formik.touched.code && Boolean(formik.errors.code)}
-          helperText={formik.touched.code && formik.errors.code}
-        />
-      </DialogContent>
-
-      <DialogActions sx={{ marginTop: 4 }}>
-        <Button variant="text" onClick={handleResendCode}>
-          {t("confirm.button.resend")}
-        </Button>
-        <LoadingButton
-          variant="contained"
-          size="large"
-          color="primary"
-          type="submit"
-          data-testid="submit"
-          loading={formik.isSubmitting}
-          disabled={formik.isSubmitting}
-        >
-          {t("confirm.button.submit")}
-        </LoadingButton>
-      </DialogActions>
-    </form>
+    <>
+      <StyledDialogTitle
+        loading={formik.isSubmitting}
+        error={formik.errors.error}
+        onClose={onClose}
+      >
+        {t("signin.loginTitle")}
+      </StyledDialogTitle>
+      <form onSubmit={formik.handleSubmit}>
+        <DialogContent sx={{ margin: 1, padding: 2, width: 400 }}>
+          <TextField
+            id="username"
+            name="username"
+            margin="dense"
+            fullWidth={true}
+            label={t("confirm.username.label")}
+            required={true}
+            value={formik.values.username}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "username",
+              },
+            }}
+            placeholder={t("confirm.username.paceholder") || ""}
+            onChange={formik.handleChange}
+            disabled={email !== undefined}
+            onBlur={formik.handleBlur}
+            error={formik.touched.username && Boolean(formik.errors.username)}
+            helperText={formik.touched.username && formik.errors.username}
+          />
+          <TextField
+            id="code"
+            name="code"
+            margin="dense"
+            fullWidth={true}
+            label={t("confirm.code.label")}
+            required={true}
+            value={formik.values.code}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "code",
+              },
+            }}
+            placeholder={t("confirm.code.placeholder") || ""}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
+            onBlur={formik.handleBlur}
+            error={formik.touched.code && Boolean(formik.errors.code)}
+            helperText={formik.touched.code && formik.errors.code}
+          />
+        </DialogContent>
+        <Divider />
+        <DialogActions sx={{ marginY: 1, marginX: 2 }}>
+          <Button variant="text" onClick={handleResendCode}>
+            {t("confirm.button.resend")}
+          </Button>
+          <LoadingButton
+            variant="contained"
+            size="large"
+            color="primary"
+            type="submit"
+            data-testid="submit"
+            loading={formik.isSubmitting}
+            disabled={formik.isSubmitting}
+          >
+            {t("confirm.button.submit")}
+          </LoadingButton>
+        </DialogActions>
+      </form>
+    </>
   );
-};
+}

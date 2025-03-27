@@ -28,69 +28,7 @@ import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
 import type { ProjectListItem } from "@/lib/trpc/types";
 
-const ProjectGridSkeleton: React.FC = () => {
-  return (
-    <Box
-      sx={{
-        padding: 5,
-        backgroundColor: "brand.orange",
-      }}
-    >
-      <Container maxWidth="lg">
-        <Skeleton
-          variant="rectangular"
-          sx={{
-            borderRadius: 5,
-            width: "100%",
-            height: 50,
-            mb: 4,
-          }}
-        />
-
-        <Skeleton
-          variant="text"
-          sx={{
-            width: 200,
-            height: 40,
-            mb: 3,
-          }}
-        />
-
-        <Grid container={true} spacing={5} direction="row">
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <Grid xs={12} sm={6} lg={4} xl={3} item key={item}>
-              <Skeleton
-                variant="rectangular"
-                sx={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 2,
-                }}
-              />
-              <Skeleton
-                variant="text"
-                sx={{
-                  width: "80%",
-                  height: 24,
-                  mt: 1,
-                }}
-              />
-              <Skeleton
-                variant="text"
-                sx={{
-                  width: "60%",
-                  height: 20,
-                }}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    </Box>
-  );
-};
-
-export const ProjectGrid: React.FC = () => {
+export function ProjectGrid() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
 
@@ -111,7 +49,7 @@ export const ProjectGrid: React.FC = () => {
 
   const t = useTranslations();
 
-  const userProjects = useMemo(
+  const ownProjects = useMemo(
     () =>
       data.items
         .filter(
@@ -126,9 +64,26 @@ export const ProjectGrid: React.FC = () => {
     [session?.user, data]
   );
 
-  const publicProjects = R.difference(data.items, userProjects);
+  const joinedProjects = useMemo(
+    () =>
+      data.items
+        .filter((project: ProjectListItem) =>
+          project.members.some((member) => member.userId === session?.user?.id)
+        )
+        .sort(
+          (a: ProjectListItem, b: ProjectListItem) =>
+            new Date(b.publishedAt).getTime() -
+            new Date(a.publishedAt).getTime()
+        ),
+    [session?.user, data]
+  );
 
-  const noProjects = publicProjects.length === 0 && userProjects.length === 0;
+  const publicProjects = R.difference(data.items, [
+    ...ownProjects,
+    ...joinedProjects,
+  ]);
+
+  const noProjects = data.items.length === 0;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -144,7 +99,7 @@ export const ProjectGrid: React.FC = () => {
 
   if (mutation.error) {
     return (
-      <Box sx={{ p: 5 }}>
+      <Box sx={{ p: 5, minHeight: "100vh" }}>
         <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
       </Box>
     );
@@ -155,6 +110,7 @@ export const ProjectGrid: React.FC = () => {
       sx={{
         padding: 5,
         backgroundColor: "brand.orange",
+        minHeight: "100vh",
       }}
     >
       <Container maxWidth="lg">
@@ -194,7 +150,7 @@ export const ProjectGrid: React.FC = () => {
             ph: 2,
           }}
         >
-          {userProjects.length > 0 && (
+          {ownProjects.length > 0 && (
             <>
               <Fade in={true} appear={true}>
                 <StyledTitle gutterBottom={true} variant="h4">
@@ -202,7 +158,7 @@ export const ProjectGrid: React.FC = () => {
                 </StyledTitle>
               </Fade>
               <Grid container={true} spacing={5} direction="row">
-                {userProjects.map((project: ProjectListItem) => (
+                {ownProjects.map((project: ProjectListItem) => (
                   <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
                     <ProjectThumbnail showPublic={true} project={project} />
                   </Grid>
@@ -210,6 +166,24 @@ export const ProjectGrid: React.FC = () => {
               </Grid>
             </>
           )}
+
+          {joinedProjects.length > 0 && (
+            <>
+              <Fade in={true} appear={true}>
+                <StyledTitle gutterBottom={true} variant="h4">
+                  {t("home.member")}
+                </StyledTitle>
+              </Fade>
+              <Grid container={true} spacing={5} direction="row">
+                {joinedProjects.map((project: ProjectListItem) => (
+                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                    <ProjectThumbnail showPublic={true} project={project} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
+
           {publicProjects.length > 0 && (
             <>
               <Fade in={publicProjects.length > 0} appear={true}>
@@ -262,6 +236,4 @@ export const ProjectGrid: React.FC = () => {
       </Container>
     </Box>
   );
-};
-
-export { ProjectGridSkeleton };
+}

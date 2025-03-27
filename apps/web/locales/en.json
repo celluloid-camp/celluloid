@@ -51,8 +51,7 @@
   },
   "errors": {
     "ALREADY_EXISTING_PROJECT": "A project with the same title already exists, please rename the project",
-    "UNKNOWN": "An unknown error has occurred. Please try again later or contact support for assistance.",
-    "LOADING_PROJECTS": "Failed to load projects. Please try again later or contact support for assistance."
+    "UNKNOWN": "An unknown error has occurred. Please try again later or contact support for assistance."
   },
   "footer": {
     "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
@@ -80,7 +79,8 @@
       "prefix": "To discover the application, you can consult the ",
       "subtitle": "You want to know more or you encounter difficulties?",
       "title": "How to use Celluloid ?"
-    }
+    },
+    "member": "Joined"
   },
   "menu": {
     "about": "About",
@@ -116,8 +116,7 @@
       "firstname": "firstname",
       "lastname": "lastname",
       "bio": "Bio",
-      "submit": "Save",
-      "username-already-used": "Username already used"
+      "submit": "Save"
     },
     "security": {
       "old-password": {
@@ -245,7 +244,18 @@
     "videoUrlHelper": "Link to the original video",
     "visibilitySection": "Visibility",
     "chapters": {
-      "title": "Chapiters"
+      "title": "Chapiters",
+      "empty": "No chapter found",
+      "in-progress": "Chapters generation in progress",
+      "not-found": "No chapters found for this video.",
+      "button": {
+        "generate": "Generate chapters"
+      },
+      "item": {
+        "placeholder": {
+          "title": "Title"
+        }
+      }
     }
   },
   "chapter": {
@@ -368,6 +378,9 @@
     },
     "button": {
       "submit": "Join"
+    },
+    "code": {
+      "required": "Share code is required"
     }
   },
   "password": {
@@ -379,20 +392,17 @@
       "label": "Email",
       "paceholder": "Email"
     },
-    "email": {
-      "required": "Email is required",
-      "label": "Email",
-      "paceholder": "Email"
-    },
     "code": {
       "required": "Code is required",
       "label": "Confirmation code",
-      "placeholder": "Confirmation code"
+      "placeholder": "Confirmation code",
+      "short": "Code is too short - should be 4 chars minimum."
     },
     "password": {
       "required": "Password is required",
       "label": "Password",
-      "placeholder": "Password"
+      "placeholder": "Password",
+      "short": "Password is too short - should be 8 chars minimum."
     },
     "passwordConfirmation": {
       "label": "Password confirmation",
@@ -400,14 +410,17 @@
     },
     "title": "Recover account",
     "button": {
-      "submit": "Send"
+      "submit": "Recover"
+    },
+    "email": {
+      "required": "Email is required"
     }
   },
   "signup": {
     "error": {
       "account_exists": "This email address is already registered."
     },
-    "title": "Signin",
+    "title": "Sign up",
     "username": {
       "label": "Username",
       "paceholder": "Username"

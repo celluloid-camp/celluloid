@@ -1,89 +1,87 @@
 "use client";
 
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, DialogActions } from "@mui/material";
+import { Box, DialogActions, DialogContent, Divider } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { StyledDialogTitle } from "../common/styled-dialog";
 
 export function ForgotForm() {
   const t = useTranslations();
   const router = useRouter();
 
-  const validationSchema = Yup.object().shape({
-    email: Yup.string().required(t("forgot.email.required")),
+  const forgotSchema = z.object({
+    email: z.string().min(1, t("forgot.email.required")),
+  });
+
+  type ForgotFormData = z.infer<typeof forgotSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<ForgotFormData>({
+    resolver: zodResolver(forgotSchema),
   });
 
   const handleRecover = (email?: string) => {
     router.replace(`/recover?email=${email}`);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      error: null,
-    },
-    validateOnMount: false,
-    validationSchema: validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      const { error } = await authClient.emailOtp.sendVerificationOtp({
-        email: values.email,
-        type: "forget-password", // or "email-verification", "forget-password"
-      });
+  const onSubmit = async (values: ForgotFormData) => {
+    const { error } = await authClient.emailOtp.sendVerificationOtp({
+      email: values.email,
+      type: "forget-password",
+    });
 
-      if (error) {
-        formik.setFieldError("error", error.message);
-        formik.setSubmitting(false);
-        return;
-      }
+    if (error) {
+      setError("root", { message: error.message });
+      return;
+    }
 
-      handleRecover(values.email);
-    },
-  });
+    handleRecover(values.email);
+  };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <TextField
-        id="email"
-        name="email"
-        margin="dense"
-        fullWidth={true}
-        required={true}
-        value={formik.values.email}
-        placeholder={t("forgot.email.placeholder")}
-        onChange={formik.handleChange}
-        disabled={formik.isSubmitting}
-        onBlur={formik.handleBlur}
-        error={formik.touched.email && Boolean(formik.errors.email)}
-        helperText={formik.touched.email && formik.errors.email}
-      />
-
-      <DialogActions sx={{ marginTop: 4 }}>
-        <Box display="flex" justifyContent={"space-between"} flex={1}>
-          <Button
-            color="primary"
-            onClick={() => handleRecover(formik.values.email)}
-            variant="text"
-          >
-            {t("forgot.button.recover")}
-          </Button>
-          <LoadingButton
-            variant="contained"
-            size="large"
-            color="primary"
-            type="submit"
-            loading={formik.isSubmitting}
-            disabled={formik.isSubmitting}
-          >
-            {t("forgot.button.submit")}
-          </LoadingButton>
-        </Box>
-      </DialogActions>
-    </form>
+    <>
+      <StyledDialogTitle loading={isSubmitting} error={errors.root?.message}>
+        {t("forgot.title")}
+      </StyledDialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent sx={{ margin: 1, padding: 2, width: 400 }}>
+          <TextField
+            {...register("email")}
+            margin="dense"
+            fullWidth={true}
+            required={true}
+            placeholder={t("forgot.email.placeholder")}
+            disabled={isSubmitting}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+          />
+        </DialogContent>
+        <Divider />
+        <DialogActions sx={{ marginY: 1, marginX: 2 }}>
+          <Box display="flex" justifyContent={"flex-end"} flex={1}>
+            <LoadingButton
+              variant="contained"
+              size="small"
+              color="primary"
+              type="submit"
+              loading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              {t("forgot.button.submit")}
+            </LoadingButton>
+          </Box>
+        </DialogActions>
+      </form>
+    </>
   );
 }

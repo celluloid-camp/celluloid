@@ -12,6 +12,7 @@ export default async function ProjectPage({
   const { id } = await params;
 
   void trpc.project.byId.prefetch({ id });
+  void trpc.annotation.byProjectId.prefetch({ id });
   return (
     <HydrateClient>
       <ErrorBoundary fallback={<div>Something went wrong</div>}>
@@ -19,7 +20,6 @@ export default async function ProjectPage({
           <ProjectMainScreen projectId={id} />
         </Suspense>
       </ErrorBoundary>
-      <ProjectSkeleton />
     </HydrateClient>
   );
 }

@@ -19,20 +19,13 @@ export const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-type StyledDialogProps = DialogProps & {
-  loading?: boolean;
-  title: string;
-  error?: string | undefined;
-  onClose: () => void;
-};
-
-type BootstrapDialogTitleProps = DialogTitleProps & {
+type StyledDialogTitleProps = DialogTitleProps & {
   loading?: boolean;
   error?: string | undefined;
-  onClose: () => void;
+  onClose?: () => void;
 };
 
-export const BootstrapDialogTitle: React.FC<BootstrapDialogTitleProps> = ({
+export const StyledDialogTitle: React.FC<StyledDialogTitleProps> = ({
   children,
   onClose,
   loading,
@@ -76,12 +69,9 @@ export const BootstrapDialogTitle: React.FC<BootstrapDialogTitleProps> = ({
   );
 };
 
-export const StyledDialog: React.FC<StyledDialogProps> = ({
-  loading,
-  title,
+export const StyledDialog: React.FC<DialogProps> = ({
   onClose,
   children,
-  error,
   ...props
 }) => {
   return (
@@ -92,11 +82,7 @@ export const StyledDialog: React.FC<StyledDialogProps> = ({
       onClose={onClose}
       {...props}
     >
-      <BootstrapDialogTitle loading={loading} error={error} onClose={onClose}>
-        {title}
-      </BootstrapDialogTitle>
-
-      <DialogContent sx={{ margin: 1, padding: 2 }}>{children}</DialogContent>
+      {children}
     </BootstrapDialog>
   );
 };

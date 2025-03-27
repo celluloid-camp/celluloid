@@ -1,13 +1,15 @@
 "use client";
-import { StyledDialog } from "@/components/common/styled-dialog";
-import { LoginForm } from "@/components/auth/login-form";
-import { useRouter } from "next/navigation";
 
-export default function LoginDialog() {
+import { StyledDialog } from "@/components/common/styled-dialog";
+import { useRouter } from "next/navigation";
+import { StudentSignupForm } from "@/components/auth/student-signup-form";
+
+export default function StudentSignupModal() {
   const router = useRouter();
+
   return (
     <StyledDialog onClose={() => router.back()} open={true}>
-      <LoginForm onClose={() => router.back()} />
+      <StudentSignupForm onClose={() => router.back()} />
     </StyledDialog>
   );
 }

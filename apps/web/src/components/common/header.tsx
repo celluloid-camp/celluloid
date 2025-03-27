@@ -1,12 +1,5 @@
 "use client";
-import {
-  AppBar,
-  Box,
-  type BoxProps,
-  Button,
-  styled,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Box, type BoxProps, Button, Toolbar } from "@mui/material";
 import type * as React from "react";
 import { useTranslations } from "next-intl";
 import { LogoWithLabel } from "./logo-with-label";
@@ -15,31 +8,11 @@ import { LanguageSwitch } from "./language-switch";
 import { useSession } from "@/lib/auth-client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { UserMenu } from "./user-menu";
-const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 export const Header: React.FC<BoxProps> = ({ children }) => {
   const t = useTranslations();
-  const navigate = useRouter();
   const { data: session } = useSession();
-
-  const handleCreate = () => {
-    if (session) {
-      navigate.push("/create");
-    } else {
-      navigate.push("/signup");
-    }
-  };
-
-  const handleJoin = () => {
-    if (!session) {
-      navigate.push("/signup-student");
-    } else {
-      navigate.push("/join");
-    }
-  };
-
   return (
     <AppBar color="default" position="fixed">
       <Toolbar disableGutters>
@@ -53,24 +26,26 @@ export const Header: React.FC<BoxProps> = ({ children }) => {
 
         <Button
           data-testid="header-create-button"
+          component={Link}
+          href="/create"
           sx={{
             textTransform: "uppercase",
             color: "text.primary",
             fontSize: 13,
           }}
-          onClick={() => handleCreate()}
         >
           {t("menu.create")}
         </Button>
 
         <Button
           data-testid="header-join-button"
+          component={Link}
           sx={{
             textTransform: "uppercase",
             color: "text.primary",
             fontSize: 13,
           }}
-          onClick={() => handleJoin()}
+          href={session ? "/join" : "/student-signup"}
         >
           {t("menu.join")}
         </Button>
@@ -81,6 +56,7 @@ export const Header: React.FC<BoxProps> = ({ children }) => {
             color: "text.primary",
             fontSize: 13,
           }}
+          component={Link}
           href="/"
         >
           {t("menu.explore")}
@@ -92,6 +68,7 @@ export const Header: React.FC<BoxProps> = ({ children }) => {
             color: "text.primary",
             fontSize: 13,
           }}
+          component={Link}
           href="/about"
         >
           {t("menu.about")}

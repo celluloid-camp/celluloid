@@ -6,11 +6,10 @@ import { Avatar } from "./avatar";
 import { signOut, useSession, type User } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 export const UserMenu = () => {
   const { data: session, isPending } = useSession();
-
-  const navigate = useRouter();
   const t = useTranslations();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -25,30 +24,6 @@ export const UserMenu = () => {
 
   const handleLogout = async () => {
     await signOut();
-    handleClose();
-  };
-
-  const handleProfile = () => {
-    handleClose();
-    navigate.push("/profile");
-  };
-
-  const handleSettingsClick = () => {
-    handleClose();
-    navigate.push("/settings");
-  };
-
-  const handleOpenAdmin = () => {
-    window.open("/admin", "_blank");
-    handleClose();
-  };
-
-  const handleLogin = () => {
-    navigate.push("/login");
-  };
-
-  const handleSignup = () => {
-    navigate.push("/signup");
   };
 
   if (isPending) {
@@ -65,6 +40,8 @@ export const UserMenu = () => {
               borderWidth: 2,
               borderColor: session.user.color,
               borderStyle: "solid",
+              width: 40,
+              height: 40,
             }}
             src={session.user.image ?? undefined}
           >
@@ -75,7 +52,8 @@ export const UserMenu = () => {
         <div>
           <Button
             data-testid="header-signup-button"
-            onClick={handleSignup}
+            component={Link}
+            href="/signup"
             sx={{
               textTransform: "uppercase",
               color: "text.primary",
@@ -86,7 +64,8 @@ export const UserMenu = () => {
           </Button>
           <Button
             data-testid="header-login-button"
-            onClick={handleLogin}
+            component={Link}
+            href="/login"
             sx={{
               textTransform: "uppercase",
               color: "text.primary",
@@ -100,6 +79,7 @@ export const UserMenu = () => {
       <Menu
         id="account-menu"
         anchorEl={anchorEl}
+        onClick={handleClose}
         open={open}
         onClose={handleClose}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
@@ -134,16 +114,25 @@ export const UserMenu = () => {
         }}
       >
         {session?.user?.role === "admin" ? (
-          <MenuItem onClick={handleOpenAdmin} data-testid="header-admin-button">
+          <MenuItem
+            data-testid="header-admin-button"
+            component={Link}
+            href="/admin"
+          >
             {t("menu.admin")}
           </MenuItem>
         ) : null}
-        <MenuItem onClick={handleProfile} data-testid="header-profile-button">
+        <MenuItem
+          data-testid="header-profile-button"
+          component={Link}
+          href="/profile"
+        >
           {t("menu.profile")}
         </MenuItem>
         <MenuItem
-          onClick={handleSettingsClick}
           data-testid="header-settings-button"
+          component={Link}
+          href="/settings"
         >
           {t("menu.settings")}
         </MenuItem>

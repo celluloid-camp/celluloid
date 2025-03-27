@@ -1,13 +1,13 @@
 "use client";
 import { StyledDialog } from "@/components/common/styled-dialog";
-import { LoginForm } from "@/components/auth/login-form";
 import { useRouter } from "next/navigation";
+import { JoinForm } from "@/components/auth/join-form";
 
-export default function LoginDialog() {
+export default function JoinModal() {
   const router = useRouter();
   return (
     <StyledDialog onClose={() => router.back()} open={true}>
-      <LoginForm onClose={() => router.back()} />
+      <JoinForm onClose={() => router.back()} />
     </StyledDialog>
   );
 }

@@ -20,6 +20,7 @@
     "test": "npx playwright test",
     "--shortcuts to run commands in workspaces--": "",
     "web": "dotenv -- pnpm --filter web",
+    "worker": "dotenv -- pnpm --filter worker",
     "auth": "dotenv -- pnpm --filter auth",
     "prisma": "dotenv -- pnpm --filter @celluloid/prisma",
     "docker:web:build": "docker buildx build --target=web --build-arg NODE_ENV=production --build-arg NEXT_PUBLIC_VERSION_TAG=latest -t celluloid-web .",
