@@ -95,5 +95,8 @@ USER nodejs
 
 COPY --from=worker-builder --chown=nodejs:nodejs /workspace .
 
+ENV PORT 3000
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "-q0", "http://localhost:3000/healthcheck" ]
+
 CMD ["sh", "-c", "pnpm prisma migrate:deploy && node apps/worker/dist/index.js"]
 
