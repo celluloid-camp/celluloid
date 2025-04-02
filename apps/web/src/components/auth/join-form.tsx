@@ -1,0 +1,115 @@
+"use client";
+import { LoadingButton } from "@mui/lab";
+import {
+  DialogActions,
+  DialogContent,
+  Divider,
+  Typography,
+} from "@mui/material";
+import TextField from "@mui/material/TextField";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { isTRPCClientError, trpc } from "@/lib/trpc/client";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { StyledDialogTitle } from "../common/styled-dialog";
+
+export function JoinForm({ onClose }: { onClose?: () => void }) {
+  const t = useTranslations();
+  const router = useRouter();
+
+  const joinFormSchema = z.object({
+    shareCode: z.string().min(4, t("join.code.required")),
+  });
+
+  type JoinFormValues = z.infer<typeof joinFormSchema>;
+
+  const utils = trpc.useUtils();
+  const mutation = trpc.user.joinProject.useMutation();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<JoinFormValues>({
+    resolver: zodResolver(joinFormSchema),
+  });
+
+  const onSubmit = async (values: JoinFormValues) => {
+    try {
+      const data = await mutation.mutateAsync({
+        shareCode: values.shareCode,
+      });
+
+      utils.user.me.invalidate();
+
+      if (data.projectId) {
+        router.push(`/project/${data.projectId}`);
+      } else {
+        router.push("/");
+      }
+    } catch (e) {
+      if (isTRPCClientError(e)) {
+        if (e.message === "PROJECT_OWNER_CANNOT_JOIN") {
+          setError("root", {
+            message: t("join.error.project-owner-cannot-join"),
+          });
+        } else if (e.message === "CODE_NOT_FOUND") {
+          setError("shareCode", {
+            message: t("join.error.project-not-found"),
+          });
+        }
+      } else {
+        setError("root", {
+          message: t("join.error.project-not-found"),
+        });
+      }
+    }
+  };
+
+  return (
+    <>
+      <StyledDialogTitle
+        loading={isSubmitting}
+        error={errors.root?.message}
+        onClose={onClose}
+      >
+        {t("join.title")}
+      </StyledDialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent sx={{ margin: 1, padding: 2, width: 400 }}>
+          <Typography>Enter the share code to join the project</Typography>
+          <TextField
+            id="shareCode"
+            margin="dense"
+            fullWidth
+            variant="outlined"
+            label={t("join.shareCode.label")}
+            required
+            placeholder={t("join.shareCode.placeholder")}
+            disabled={isSubmitting}
+            error={!!errors.shareCode || !!errors.root}
+            helperText={errors.shareCode?.message || errors.root?.message}
+            {...register("shareCode")}
+          />
+        </DialogContent>
+        <Divider />
+        <DialogActions sx={{ marginY: 1, marginX: 2 }}>
+          <LoadingButton
+            variant="contained"
+            color="primary"
+            type="submit"
+            data-testid="submit"
+            loading={mutation.isPending}
+            disabled={mutation.isPending}
+          >
+            {t("join.button.submit")}
+          </LoadingButton>
+        </DialogActions>
+      </form>
+    </>
+  );
+}

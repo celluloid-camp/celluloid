@@ -1,3 +1,4 @@
+
 export function parseUrl(url: string): { host: string; port: number | undefined; isSecure: boolean } {
   const parsedUrl = new URL(url);
 

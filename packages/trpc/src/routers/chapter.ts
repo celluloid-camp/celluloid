@@ -90,7 +90,7 @@ export const chapterRouter = router({
           data: {
             chapterJob: {
               connect: {
-                id: jobId.id
+                id: 1
               }
             }
           }
@@ -206,7 +206,6 @@ export const chapterRouter = router({
       );
 
     }),
-
   delete: protectedProcedure
     .input(
       z.object({

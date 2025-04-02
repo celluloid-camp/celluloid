@@ -1,0 +1,38 @@
+{
+  "name": "worker",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "bin": "./dist/index.js",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@celluloid/emails": "workspace:*",
+    "@celluloid/prisma": "workspace:*",
+    "@celluloid/queue": "workspace:*",
+    "@celluloid/types": "workspace:*",
+    "@celluloid/utils": "workspace:*",
+    "@godaddy/terminus": "^4.12.1",
+    "@t3-oss/env-core": "catalog:",
+    "@types/express": "^4.17.21",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "splitting": false,
+    "sourcemap": false,
+    "clean": true,
+    "platform": "node",
+    "format": "esm"
+  }
+}

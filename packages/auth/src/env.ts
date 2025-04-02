@@ -3,9 +3,10 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    BETTER_AUTH_SECRET: z.string(),
+    AUTH_SECRET: z.string(),
     BASE_URL: z.string(),
   },
   runtimeEnv: process.env,
+  skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
   emptyStringAsUndefined: true,
 });

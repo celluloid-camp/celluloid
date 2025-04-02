@@ -5,11 +5,12 @@ import { admin, emailOTP, username } from "better-auth/plugins";
 import { emailQueue } from "@celluloid/queue";
 import { env } from "./env";
 import { signupAsStudent } from "./plugins/signup-as-student";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   baseURL: env.BASE_URL,
   logger: {
-    level: "debug"
+    level: process.env.NODE_ENV === "development" ? "debug" : "info"
   },
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -56,9 +57,26 @@ export const auth = betterAuth({
         console.log("sendVerificationOTP", email, otp, type);
         emailQueue.add({ email, type, otp });
       },
-    })
+    }),
+    nextCookies()
   ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    },
+  },
   advanced: {
-    generateId: false
+    generateId: false,
+    cookie: {
+      name: "celluloid_session",
+      options: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      }
+    }
   }
 });
+
+
+export type Session = typeof auth.$Infer.Session

@@ -11,5 +11,6 @@ export const env = createEnv({
     STORAGE_BUCKET: z.string().default('celluloid'),
   },
   runtimeEnv: process.env,
+  skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
   emptyStringAsUndefined: true
 });

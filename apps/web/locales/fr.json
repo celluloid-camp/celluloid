@@ -1,0 +1,472 @@
+{
+  "about": {
+    "intro": "Le développement de <celluloid>Celluloid</celluloid> est piloté par Michaël Bourgatte et Laurent Tessier dans le cadre d'un <consortium>Consortium Huma-Num</consortium> pluridisciplinaire réunissant des chercheuses et chercheurs mobilisant des corpus audiovisuels.",
+    "opensource": {
+      "github": "Celluloid est un projet Open Source en Humanités numériques. L'ensemble du code est accessible librement sur <github>GitHub</github>",
+      "prefix": "La version 2.0, dite 'Alphaville', ainsi que ses développements successifs, sont réalisés dans le cadre du consortium Huma-Num <canevas>CANEVAS</canevas> (hébergé par la <mshpn>Maison des Sciences de l'Homme Paris Nord</mshpn>). Cette version est développée par Younès Benomar."
+    },
+    "support": "La version 1.0 de Celluloid dite 'Pierrot', ainsi que ses développements successifs, ont bénéficié du soutien de l'Institut Catholique de Paris, de la Fondation Saint Matthieu et de l'incubateur La Paillasse. Cette version a été développée par Erwan Queffélec avec la participation de Jean-Frédéric Bruzek, Souleymane Thiam et de Guillaume Aichhorn.",
+    "title": "À propos"
+  },
+  "annotation": {
+    "comment": {
+      "cancel": "Annuler",
+      "reply": "Répondre",
+      "send": "Envoyer"
+    },
+    "commentLabel": "{{count}} commentaire",
+    "commentLabel_one": "un commentaire",
+    "commentLabel_other": "{{count}} commentaires",
+    "commentLabel_plural": "{{count}} commentaires",
+    "commentPlaceholder": "Laissez un commentaire…",
+    "confirm-delete": {
+      "description": "Êtes-vous sûr(e) de vouloir supprimer l'annotation ?",
+      "title": "Supprimer l'annotation"
+    },
+    "contentPlaceholder": "Saisissez votre annotation…",
+    "create": {
+      "cancel": "Annuler",
+      "send": "Envoyer"
+    },
+    "edit": {
+      "send": "Modifier"
+    },
+    "form": {
+      "add-annotation": "Ajouter une annotation"
+    },
+    "hintLabel": "{{count}} annotation",
+    "hintLabel_many": "{{count}} annotations",
+    "hintLabel_one": "{{count}} annotation",
+    "hintLabel_other": "{{count}} annotations",
+    "hintLabel_plural": "{{count}} annotations",
+    "hintLabelNone": "Aucune annotation",
+    "pauseLabel": "Mettre en pause ?"
+  },
+  "actions": {
+    "cancel": "Annuler",
+    "create": "Enregistrer",
+    "delete": "Supprimer",
+    "print": "Imprimer",
+    "share": "Partager"
+  },
+  "errors": {
+    "ALREADY_EXISTING_PROJECT": "Un projet avec le même titre existe déjà, veuillez renommer le projet",
+    "UNKNOWN": "Une erreur inconnue s'est produite. Veuillez réessayer ultérieurement ou contacter le support pour obtenir de l'aide."
+  },
+  "footer": {
+    "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
+    "legalNotice": "Mention légales",
+    "termsAndConditions": "Conditions Générales d'Utilisation"
+  },
+  "home": {
+    "addVideo": "Ajoutez un lien vers une vidéo PeerTube...",
+    "description": "Une application pour annoter, commenter et analyser vos documents audiovisuels numériques (films, séries, émissions ou vos propres vidéos), seul.e ou en équipe\n",
+    "emptySearchResult": "Aucun projet ne correspond à votre recherche",
+    "joinProject": "Rejoindre un projet",
+    "myProjects": "Mes projets",
+    "newProject": "Créer un projet",
+    "publicProjects": "Explorer",
+    "searchProject": "Rechercher un projet…",
+    "title": "Qu'est-ce que Celluloid ?",
+    "teachers": "Enseignant",
+    "students": "Etudiant",
+    "projects": {
+      "retry": "Réessayer"
+    },
+    "tutoriel": {
+      "description": "Rendez-vous sur une instance <peertube>Peertube</peertube>. \nChoisissez une vidéo ou déposez-en une nouvelle dans l'instance.\nCopiez le lien de partage de la vidéo.\nCréez votre projet dans Celluloid en collant le lien de la vidéo et lancez-vous !\nVous voulez travailler à plusieurs ? Partagez le code du projet avec vos partenaires...",
+      "link": "Le tutoriel est ici : <tutorial>https://video.mshparisnord.fr/w/7r2FxoQdYjun6tYWJfHUCa</tutorial>",
+      "prefix": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
+      "subtitle": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
+      "title": "Comment utiliser Celluloid ?"
+    },
+    "member": "Projets rejoints"
+  },
+  "menu": {
+    "about": "à propos",
+    "admin": "Admin",
+    "create": "Créer",
+    "explore": "Explorer",
+    "join": "Rejoindre",
+    "login": "connexion",
+    "logout": "Se déconnecter",
+    "profile": "Profil",
+    "signup": "inscription",
+    "settings": "Paramètres"
+  },
+  "notFound": {
+    "action": "retour à l'accueil",
+    "description": "La page que vous cherchez est peut-être privée ou à peut-être été supprimée",
+    "title": "Page introuvable :("
+  },
+  "profile": {
+    "me": {
+      "project": {
+        "empty": "Vous n'avez aucun projet"
+      }
+    },
+    "role": {
+      "student": "Contributeur / Contributrice",
+      "teacher": "Créateur / Créatrice",
+      "admin": "Admin"
+    },
+    "update": {
+      "title": "Editer le profil",
+      "username": "nom d'utilisateur",
+      "firstname": "prénom",
+      "lastname": "nom de famille",
+      "bio": "Biographie",
+      "submit": "Sauvegarder"
+    },
+    "security": {
+      "old-password": {
+        "label": "Mot de passe actuel"
+      },
+      "new-password": {
+        "label": "Nouveau mot de passe"
+      },
+      "confirmation-password": {
+        "label": "Confirmez le mot de passe"
+      },
+      "password-incorrect": "Mot de passe incorrect",
+      "change-password": {
+        "title": "Changer le mot de passe",
+        "button": "Changer le mot de passe"
+      }
+    }
+  },
+  "project": {
+    "add-related-video": "Liste de lecture",
+    "add-video-playlist-description": "Veuillez saisir l'URL de la vidéo que vous souhaitez ajouter à la liste de lecture.",
+    "add-video-to-playlist-button": "Ajouter une vidéo à la liste de lecture",
+    "annotation": {
+      "hints": {
+        "label": "Afficher la chronologie des annotations."
+      },
+      "title": "Annotations"
+    },
+    "annotaions": {
+      "empty": "Les annotations correspondantes aux différents temps de la vidéo serontaffichées ici."
+    },
+    "assignment": "Activité",
+    "assignmentPlaceholder": "Ajoutez une activité",
+    "assignmentsHelper": "Listez les différentes activités que  vous proposez au partcipants",
+    "assignmentsSection": "Activités proposées",
+    "cancel-add-video": "Ajouter",
+    "cancelAction": "Annuler",
+    "codeWarning": {
+      "description": "Ce code sera disponible sur la page de projet Vous pouvez le réinitialiser en partageant à nouveau le projet.",
+      "title": "Partagez ce code avec les participants du projet"
+    },
+    "collaborative": "Collaboratif",
+    "collaborativeHelper": "Rendre un projet collaboratif signifie que les personnes que vous invitez pourront annoter la vidéo. Si le projet n'est pas collaboratif, vous seul.e  pourrez annoter la vidéo.",
+    "confirm-delete": {
+      "description": "Êtes-vous sûr(e) de vouloir supprimer le projet ?",
+      "title": "Supprimer le projet"
+    },
+    "create": {
+      "error": {
+        "video-info-failed": "Impossible de récupérer les informations de la vidéo. Veuillez vérifier l'URL et réessayer"
+      },
+      "url": {
+        "not-valid": "L'URL fournie n'est pas valide. Veuillez vérifier et réessayer.",
+        "required": "L'URL est obligatoire. Veuillez fournir une URL valide."
+      }
+    },
+    "createAction": "Créer le projet",
+    "createTitle": "Nouveau projet",
+    "creatorRole": "Créateur",
+    "description": "Description",
+    "descriptionHelper": "Décrivez brièvement le contenu de la vidéo",
+    "edit": {
+      "button": "Modifier le projet",
+      "error": "Project n'a pas pu être modifié",
+      "success": "Project a été mise à jour",
+      "submit": {
+        "button": "Modifier le projet"
+      },
+      "delete": {
+        "button": "Supprimer le projet"
+      },
+      "dialog": {
+        "title": "Modifier le projet"
+      }
+    },
+    "export": "Export",
+    "keywords": "Mots clés",
+    "members": "{count, plural, =0 {Aucun participant} =1 {un participant} other {# participant}}",
+    "members_many": "{{ count }} participants",
+    "members_one": "un participant",
+    "members_other": "{{ count }} participants",
+    "members_plural": "{{ count }} participants",
+    "objective": "Objectif",
+    "objectiveHelper": "Fixez l'objectif général du projet",
+    "playlist": "Liste de lecture",
+    "public": "Public",
+    "publicHelper": "Rendre un projet public signifie que tous les utilisateurs de la plateforme pourront regarder la vidéo,  mais ils ne pourront  pas y participer, ni voir les annotations.",
+    "share": {
+      "dialog": {
+        "description": "Pour ouvrir une fiche imprimable dans une nouvelle fenêtre, ",
+        "linkText": "cliquez ici"
+      },
+      "guide": {
+        "step1": "Allez sur le site internet",
+        "step2": "Sur la page d'accueil, cliquez sur 'rejoindre un projet'",
+        "step3": "Entrez le code du projet",
+        "step4": "Indiquez votre nom et une réponse secrète",
+        "step5": "Prenez connaissance des objectifs et des tâches à réaliser pour ce projet",
+        "step6": "Réalisez l'exercice et annotez la vidéo au fil de la lecture",
+        "subtitle": "Comment utiliser Celluloid ?",
+        "title": "Instructions"
+      },
+      "section": {
+        "title": "Partager"
+      }
+    },
+    "shared": "Partage",
+    "shareHelper": "Un code projet sera généré pour permettre aux collaborateurs d'annoter votre projet.",
+    "sharedHelper": "Un code projet sera généré pour permettre aux collaborateurs d'annoter votre projet.",
+    "sharecode": {
+      "copied": "Code du projet copié"
+    },
+    "submit-add-video-playlist": "Annuler",
+    "summary": {
+      "playlist": {
+        "title": "Liste de lecture : "
+      }
+    },
+    "title": "Titre",
+    "titleHelper": "Donnez un titre à votre projet",
+    "URL_title": "URL de la vidéo",
+    "videoUrlHelper": "Lien vers la vidéo originale",
+    "visibilitySection": "Partage",
+    "chapters": {
+      "title": "Chapitres",
+      "empty": "Cette vidéo n'a pas de chapitres",
+      "not-found": "Aucun chapitre trouvé pour cette vidéo.",
+      "button": {
+        "generate": "Générer des chapitres"
+      },
+      "item": {
+        "placeholder": {
+          "title": "Titre du chapitre",
+          "description": "Description du chapitre"
+        }
+      },
+      "inProgress": {
+        "description": "La génération des chapitres est en cours..."
+      }
+    }
+  },
+  "chapter": {
+    "confirm-delete": {
+      "title": "Supprimer le chapitre",
+      "description": "Etes-vous sûr de vouloir supprimer le chapitre ?"
+    }
+  },
+  "chapters": {
+    "form": {
+      "reset": {
+        "confirm": {
+          "title": "Réinitialiser tous les chapitres",
+          "description": "Etes-vous sûr de vouloir réinitialiser tous les chapitres ?"
+        }
+      },
+      "button": {
+        "add": " Ajouter un chapitre",
+        "reset": "Réinitialiser les chapitres"
+      },
+      "title": {
+        "placeholder": "Titre du chapitre"
+      },
+      "description": {
+        "placeholder": "Description du chapitre"
+      }
+    }
+  },
+  "search": {
+    "placeholder": "Chercher un projet"
+  },
+  "signin": {
+    "alreadyRegistered": "Déjà un compte ?",
+    "changePasswordAction": "changer le mot de passe",
+    "code": "Code de confirmation",
+    "codeHelper": "Ce code vous a été envoyé par email",
+    "confirm": {
+      "button": "Confirmer"
+    },
+    "confirmPassword": "Confirmer le mot de passe",
+    "confirmSignupAction": "Confirmer l'inscription",
+    "confirmSignupTitle": "Confirmation",
+    "email": "Adresse email",
+    "forgotPasswordAction": "mot de passe oublié",
+    "forgotPasswordTitle": "Mot de passe perdu",
+    "joinAction": "Rejoindre",
+    "joinProjectTitle": "Rejoindre un projet",
+    "lastName": "Nom de famille",
+    "login": "Email ou nom d'utilisateur",
+    "loginAction": "Se connecter",
+    "loginTitle": "Connexion",
+    "notRegistered": "Pas encore de compte ?",
+    "passwordHelper": "8 caractères minimum",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "projectCode": "Code du projet",
+    "rememberlastName": "Votre nom de famille vous servira de mot de passe",
+    "resendCodeAction": "Envoyer un nouveau code",
+    "resetAction": "mettre à jour",
+    "signupAction": "s'inscrire",
+    "signupOrLoginMessage": "Pour continuer, vous devez vous inscrire  ou vous connecter",
+    "signupTitle": "Inscription",
+    "upgradeAccountMessage": "Pour continuer, vous devez renseigner  votre adresse email et un mot de passe",
+    "password": "Mot de passe",
+    "username": "Prenom ou pseudo"
+  },
+  "confirm": {
+    "username": {
+      "required": "Le nom d'utilisateur est requis.",
+      "label": "Email ou nom d'utilisateur",
+      "paceholder": "Email ou nom d'utilisateur"
+    },
+    "code": {
+      "required": "Le mot de passe est requis.",
+      "label": "Code de confirmation",
+      "placeholder": "Code de confirmation"
+    },
+    "title": "Confirmation",
+    "button": {
+      "submit": "Envoyer",
+      "resend": "Renvoyer le code"
+    },
+    "generation": {
+      "sent": "La génération des chapitres a commencé"
+    }
+  },
+  "forgot": {
+    "email": {
+      "required": "Email est requis",
+      "placeholder": "Email ou nom d'utilisateur"
+    },
+    "title": "Mot de passe perdu",
+    "button": {
+      "recover": "Récupérer un compte",
+      "submit": "Changer le mot de passe"
+    }
+  },
+  "join": {
+    "error": {
+      "project-not-found": "Code de partage est invalide",
+      "project-owner-cannot-join": "Le propriétaire du projet ne peut pas rejoindre le projet en tant que membre.",
+      "username-taken": "Le nom d'utilisateur existe déjà"
+    },
+    "title": "Rejoindre un projet",
+    "shareCode": {
+      "label": "Code du projet",
+      "placeholder": "Code du projet"
+    },
+    "button": {
+      "submit": "Rejoindre"
+    }
+  },
+  "password": {
+    "unmatch": "Le mot de passe ne correspond pas."
+  },
+  "recover": {
+    "username": {
+      "required": "Nom d'utilisateur est requis",
+      "label": "Adresse mail",
+      "paceholder": "Adresse mail"
+    },
+    "code": {
+      "required": "Code est obligatoire",
+      "label": "Code de confirmation",
+      "placeholder": "Code de confirmation"
+    },
+    "password": {
+      "required": "Mot de passe est requis",
+      "label": "Mot de passe",
+      "placeholder": "Mot de passe"
+    },
+    "passwordConfirmation": {
+      "label": "Confirmer le mot de passe",
+      "placeholder": "Confirmer le mot de passe"
+    },
+    "title": "Récupérer le compte",
+    "button": {
+      "submit": "Envoyer"
+    }
+  },
+  "signup": {
+    "error": {
+      "account_exists": "Cette adresse e-mail est déjà enregistrée."
+    },
+    "title": "Inscription",
+    "username": {
+      "label": "Nom d'utilisateur",
+      "paceholder": "Nom d'utilisateur"
+    },
+    "email": {
+      "label": "Adresse email",
+      "placeholder": "Adresse email"
+    },
+    "password": {
+      "label": "Mot de passe",
+      "placeholder": "Mot de passe"
+    },
+    "passwordConfirmation": {
+      "label": "Confirmer le mot de passe",
+      "placeholder": "Confirmer le mot de passe"
+    },
+    "button": {
+      "submit": "S'inscrire"
+    }
+  },
+  "student-signup": {
+    "title": "Inscription",
+    "shareCode": {
+      "placeholder": "Code du projet"
+    },
+    "password": {
+      "label": "Mot de passe",
+      "placeholder": "Mot de passe"
+    },
+    "login": {
+      "button": "Se connecter"
+    },
+    "button": {
+      "submit": "Rejoindre"
+    }
+  },
+  "student-student-signup": {
+    "error": {
+      "username-exists": "Email exists dejà"
+    },
+    "shareCode": {
+      "label": "Code du projet"
+    },
+    "username": {
+      "label": "Prenom ou pseudo",
+      "paceholder": "Prenom ou pseudo"
+    }
+  },
+  "tagSearch": {
+    "createLabel": "Créer le domaine",
+    "prefix": "Domaine"
+  },
+  "update": {
+    "action": "Rafraîchir",
+    "message": "L'application a été mise à jour. Veuillez rafraîchir la page."
+  },
+  "user": {
+    "update": {
+      "success": "Profil mis à jour"
+    }
+  },
+  "cancelAction": "Annuler",
+  "createAction": "Enregistrer",
+  "deleteAction": "Supprimer",
+  "admin": {
+    "users": {
+      "title": "Utilisateurs"
+    }
+  }
+}

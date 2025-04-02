@@ -72,55 +72,7 @@ export const userRouter = router({
     return { projectId: project.id }
   }),
 
-  // askEmailConfirm: publicProcedure.input(
-  //   z.object({
-  //     email: z.string()
-  //   }),
-  // ).mutation(async ({ ctx, input }) => {
-  //   const user = await prisma.user.findFirst({
-  //     select: { ...defaultUserSelect, email: true },
-  //     where: {
-  //       OR: [{ email: input.email }, { username: input.email, }]
-  //     }
-  //   });
-
-  //   if (!user) {
-  //     throw new TRPCError({
-  //       code: 'NOT_FOUND',
-  //       message: "Email or username not found",
-  //     });
-  //   }
-  //   if (!user.email) {
-  //     throw new TRPCError({
-  //       code: 'NOT_FOUND',
-  //       message: `User account doesn't have email address`,
-  //     });
-  //   }
-
-  //   const otp = generateOtp();
-  //   await prisma.user.update({
-  //     where: { id: user.id },
-  //     data: {
-  //       code: otp,
-  //       codeGeneratedAt: new Date()
-  //     }
-  //   })
-  //   console.log(" Confirmation code", otp)
-
-  //   await sendConfirmationCode({ email: user.email, username: user.username, code: otp })
-  //   return { status: true }
-  // }),
-
-  list: protectedProcedure.query(async () => {
-    // Retrieve users from a datasource, this is an imaginary database
-    const users = await prisma.user.findMany({
-      where: {
-        role: { in: ['student', 'teacher'] }
-      },
-    });
-    return users;
-  }),
-  me: protectedProcedure.query(async (opts) => {
+  me: publicProcedure.query(async (opts) => {
     const { ctx } = opts;
     if (ctx.user) {
       // Retrieve the user with the given ID
@@ -160,13 +112,12 @@ export const userRouter = router({
 
 
         if (user.avatarStorageId != null && avatarStorageId == null) {
-          console.log("file remove")
           await prisma.storage.delete({
             where: {
               id: user.avatarStorageId
             }
           })
-          // remove file
+          // TODO: remove file with minio
         }
 
         const updatedUser = await prisma.user.update({
