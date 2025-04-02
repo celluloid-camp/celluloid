@@ -72,8 +72,8 @@ RUN adduser --system --uid 1001 nodejs
 USER nodejs
 
 EXPOSE 3000
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "-q0", "http://localhost:3000/api/health" ]
 
 # server.js is created by next build from the standalone output
@@ -95,7 +95,7 @@ USER nodejs
 
 COPY --from=worker-builder --chown=nodejs:nodejs /workspace .
 
-ENV PORT 3000
+ENV WORKER_PORT=3000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "-q0", "http://localhost:3000/healthcheck" ]
 
 CMD ["sh", "-c", "pnpm prisma migrate:deploy && node apps/worker/dist/index.js"]
