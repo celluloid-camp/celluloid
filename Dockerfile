@@ -95,5 +95,5 @@ USER nodejs
 
 COPY --from=worker-builder --chown=nodejs:nodejs /workspace .
 
-CMD ["node", "apps/worker/dist/index.js"]
+CMD ["sh", "-c", "pnpm prisma migrate:deploy && node apps/worker/dist/index.js"]
 
