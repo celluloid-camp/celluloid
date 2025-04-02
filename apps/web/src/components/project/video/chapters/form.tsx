@@ -62,17 +62,15 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           backgroundColor: "background.dark",
         },
       },
-    }).then(async () => {
-      await resetMutation.mutateAsync(
-        { projectId: props.project.id },
-        {
-          onSuccess: () => {
-            utils.chapter.byProjectId.invalidate({
-              projectId: props.project.id,
-            });
-          },
-        }
-      );
+    }).then(async (value) => {
+      if (value.confirmed) {
+        await resetMutation.mutateAsync({
+          projectId: props.project.id,
+        });
+        utils.chapter.byProjectId.invalidate({
+          projectId: props.project.id,
+        });
+      }
     });
   };
 

@@ -2,7 +2,7 @@ import type {
   BetterAuthPlugin,
   User,
 } from "better-auth";
-import { APIError, sessionMiddleware } from "better-auth/api";
+import { APIError } from "better-auth/api";
 import { createAuthEndpoint, createAuthMiddleware } from "better-auth/plugins";
 import { z } from "zod";
 import {
@@ -112,7 +112,6 @@ export const signupAsStudent = () => {
               },
             });
           }
-
           const hash = await ctx.context.password.hash(password);
           await ctx.context.internalAdapter.linkAccount({
             userId: newUser.id,
@@ -120,11 +119,11 @@ export const signupAsStudent = () => {
             accountId: newUser.id,
             password: hash,
           });
-
           const session = await ctx.context.internalAdapter.createSession(
             newUser.id,
             ctx.request,
           );
+
           if (!session) {
             return ctx.json(null, {
               status: 400,
@@ -138,12 +137,15 @@ export const signupAsStudent = () => {
             user: newUser,
           });
           return ctx.json({
-            id: newUser.id,
-            email: newUser.email,
-            emailVerified: newUser.emailVerified,
-            name: newUser.name,
-            createdAt: newUser.createdAt,
-            updatedAt: newUser.updatedAt,
+            user: {
+              id: newUser.id,
+              email: newUser.email,
+              emailVerified: newUser.emailVerified,
+              name: newUser.name,
+              createdAt: newUser.createdAt,
+              updatedAt: newUser.updatedAt,
+            },
+            session,
           });
         },
       ),

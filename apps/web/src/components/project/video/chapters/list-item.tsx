@@ -94,10 +94,18 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
           backgroundColor: "background.dark",
         },
       },
-    }).then(() => {
-      deleteMutation.mutateAsync({
-        chapterId: chapter.id,
-      });
+    }).then(async (value) => {
+      if (value.confirmed) {
+        utils.chapter.byProjectId.setData(
+          { projectId: project.id },
+          (oldData) => oldData?.filter((c) => c.id !== chapter.id)
+        );
+
+        await deleteMutation.mutateAsync({
+          chapterId: chapter.id,
+        });
+        utils.chapter.byProjectId.invalidate({ projectId: project.id });
+      }
     });
   };
 

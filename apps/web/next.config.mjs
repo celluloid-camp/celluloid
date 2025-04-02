@@ -8,7 +8,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   transpilePackages: [
     "@t3-oss/env-nextjs",

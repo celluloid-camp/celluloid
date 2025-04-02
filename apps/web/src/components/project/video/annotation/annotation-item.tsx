@@ -108,10 +108,17 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           backgroundColor: "background.dark",
         },
       },
-    }).then(() => {
-      mutation.mutateAsync({
-        annotationId: annotation.id,
-      });
+    }).then(async (value) => {
+      if (value.confirmed) {
+        utils.annotation.byProjectId.setData({ id: project.id }, (oldData) =>
+          oldData?.filter((c) => c.id !== annotation.id)
+        );
+
+        await mutation.mutateAsync({
+          annotationId: annotation.id,
+        });
+        utils.annotation.byProjectId.invalidate({ id: project.id });
+      }
     });
   };
 

@@ -20,13 +20,14 @@ import { authClient } from "@/lib/auth-client";
 import { adminClient } from "better-auth/client/plugins";
 import type { UserWithRole } from "better-auth/plugins/admin";
 import { useConfirm } from "material-ui-confirm";
-
+import { useTranslations } from "next-intl";
 export default function UsersPanel() {
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const confirm = useConfirm();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
+  const t = useTranslations();
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -61,10 +62,12 @@ export default function UsersPanel() {
     if (!selectedUser) return;
 
     try {
-      await confirm({
+      const value = await confirm({
         title: "Delete User",
         description: "Are you sure you want to delete this user?",
       });
+
+      if (!value.confirmed) return;
 
       await authClient.admin.removeUser({
         userId: selectedUser,
@@ -85,7 +88,7 @@ export default function UsersPanel() {
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Users Management
+        {t("admin.users.title")}
       </Typography>
       <TableContainer component={Paper}>
         <Table>

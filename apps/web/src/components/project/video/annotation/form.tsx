@@ -54,7 +54,7 @@ export const AnnotationForm: React.FC<AnnotationFormProps> = (props) => {
         variant="outlined"
         onClick={handleOpen}
         color="secondary"
-        sx={{ mx: 5 }}
+        sx={{ mx: 2 }}
         startIcon={<RateReviewIcon />}
       >
         {t("annotation.form.add-annotation")}

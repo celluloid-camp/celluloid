@@ -1,9 +1,11 @@
 import {
+  Box,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import type * as React from "react";
@@ -50,7 +52,7 @@ export const Members: React.FC<SideBarProps> = ({ project, user }) => {
         }}
       >
         <ListItem>
-          <ListItemAvatar>
+          <Stack direction="row" spacing={1} alignItems="center">
             <Avatar
               src={project.user.avatar?.publicUrl}
               sx={{
@@ -58,19 +60,19 @@ export const Members: React.FC<SideBarProps> = ({ project, user }) => {
                 borderWidth: 2,
                 borderColor: project.user.color,
                 borderStyle: "solid",
+                width: 30,
+                height: 30,
               }}
             >
               {project.user.initial}
             </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={project.user.username}
-            secondary={
-              <Typography variant="caption">
+            <Stack direction="column" spacing={0}>
+              <Typography variant="body2">{project.user.username}</Typography>
+              <Typography fontSize={10}>
                 {localeRole(project.user.role ?? null)}
               </Typography>
-            }
-          />
+            </Stack>
+          </Stack>
         </ListItem>
 
         {project.members.map((member: ProjectMembers) => (

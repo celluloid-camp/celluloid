@@ -1,122 +1,16 @@
-import InfoIcon from "@mui/icons-material/Info";
-import { Button, Grow, Stack, Typography } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import { Stack } from "@mui/material";
 import type * as React from "react";
-import Image from "mui-image";
-import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
+import type { ProjectById } from "@/lib/trpc/types";
 import { trpc } from "@/lib/trpc/client";
 
-import { ChapterItem } from "./list-item";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import {
-  Timeline,
-  TimelineConnector,
-  TimelineContent,
-  TimelineDot,
-  TimelineItem,
-  TimelineOppositeContent,
-  timelineOppositeContentClasses,
-  TimelineSeparator,
-} from "@mui/lab";
-import { formatDuration } from "@/utils/duration";
-import { useSnackbar } from "notistack";
-import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
-import CircularProgress from "@mui/material/CircularProgress";
 import { ChapterForm } from "./form";
 import type { User } from "@/lib/auth-client";
-import { useTranslations } from "next-intl";
 import { ChaptersJobInProgress } from "./in-progress";
 import { ChapterListSkeleton } from "./skeleton";
-
-function ChapterList({
-  chapters,
-  user,
-  project,
-}: {
-  chapters: ChapterByProjectId[];
-  user?: User;
-  project: ProjectById;
-}) {
-  const dispatcher = useVideoPlayerSeekEvent();
-
-  if (chapters.length === 0) {
-    return <EmptyChapter />;
-  }
-
-  const handleClick = (chapter: ChapterByProjectId) => {
-    dispatcher({
-      time: chapter.startTime,
-    });
-  };
-
-  return (
-    <Timeline
-      sx={{
-        position: "relative",
-        height: "100%",
-        overflow: "auto",
-        [`& .${timelineOppositeContentClasses.root}`]: {
-          flex: 0,
-        },
-      }}
-    >
-      {chapters.map((chapter: ChapterByProjectId, index: number) => (
-        <TimelineItem key={chapter.id} sx={{ minHeight: 120 }}>
-          <TimelineOppositeContent onClick={() => handleClick(chapter)}>
-            <Image
-              fit="cover"
-              width={120}
-              height={80}
-              style={{
-                borderRadius: 10,
-                overflow: "hidden",
-                cursor: "pointer",
-              }}
-              src={chapter.thumbnail?.publicUrl ?? "/placeholder.svg"}
-            />
-            <Stack direction="row" spacing={1}>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="caption"
-                color="gray"
-              >
-                #{index + 1}
-              </Typography>
-              <Typography
-                sx={{ display: "inline", flex: 1 }}
-                component="span"
-                variant="caption"
-                color="gray"
-              >
-                {formatDuration(chapter.startTime)}
-                {" → "}
-                {formatDuration(chapter.endTime)}
-              </Typography>
-            </Stack>
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot
-              variant="outlined"
-              sx={{ borderWidth: 2, borderColor: "grey.800" }}
-            />
-            <TimelineConnector sx={{ backgroundColor: "grey.800" }} />
-          </TimelineSeparator>
-          <TimelineContent>
-            <ChapterItem
-              chapter={chapter}
-              key={chapter.id}
-              user={user}
-              project={project}
-              index={index}
-            />
-          </TimelineContent>
-        </TimelineItem>
-      ))}
-    </Timeline>
-  );
-}
+import { ChapterTimeline } from "./timeline";
+import { CreateChaptersJob } from "./job";
 
 type ChaptersPanelProps = {
   project: ProjectById;
@@ -124,11 +18,9 @@ type ChaptersPanelProps = {
 };
 
 export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
-  // return <div>{JSON.stringify(project)}</div>;
-
   if (!project.chapterJob) {
     return (
-      <NoChaptersJob
+      <CreateChaptersJob
         projectId={project.id}
         canGenerate={project.userId === user?.id || user?.role === "admin"}
       />
@@ -156,87 +48,10 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
 
   return (
     <Stack height="100%">
-      <ChapterList project={project} user={user} chapters={chapters} />
-      <ChapterForm project={project} user={user} chapters={chapters} />
+      <ChapterTimeline project={project} user={user} chapters={chapters} />
+      {user?.id === project.userId || user?.role === "admin" ? (
+        <ChapterForm project={project} user={user} chapters={chapters} />
+      ) : null}
     </Stack>
-  );
-}
-
-function EmptyChapter() {
-  const t = useTranslations();
-  return (
-    <Grow in={true}>
-      <Stack
-        spacing={1}
-        alignContent={"center"}
-        alignItems={"center"}
-        sx={{
-          paddingY: 5,
-          paddingX: 5,
-          borderRadius: 1,
-          borderStyle: "dashed",
-          borderWidth: 1,
-          borderColor: grey[800],
-          marginBottom: 1,
-        }}
-      >
-        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-        <Typography variant="body2" color="gray" textAlign={"center"}>
-          {t("project.chapters.empty")}
-        </Typography>
-      </Stack>
-    </Grow>
-  );
-}
-
-function NoChaptersJob({
-  projectId,
-  canGenerate,
-}: {
-  projectId: string;
-  canGenerate: boolean;
-}) {
-  const mutation = trpc.chapter.generateChapters.useMutation();
-  const { enqueueSnackbar } = useSnackbar();
-  const t = useTranslations();
-  const utils = trpc.useUtils();
-
-  const handleGenerate = async () => {
-    await mutation.mutateAsync({ projectId: projectId });
-
-    enqueueSnackbar(t("confirm.generation.sent"), {
-      variant: "success",
-    });
-
-    utils.project.byId.invalidate({ id: projectId });
-  };
-  return (
-    <Grow in={true}>
-      <Stack
-        spacing={1}
-        alignContent={"center"}
-        alignItems={"center"}
-        sx={{
-          paddingY: 5,
-          paddingX: 5,
-          borderRadius: 1,
-          borderStyle: "dashed",
-          borderWidth: 1,
-          borderColor: grey[800],
-          marginBottom: 1,
-          margin: 2,
-        }}
-      >
-        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-        <Typography variant="body2" color="gray" textAlign={"center"}>
-          {t("project.chapters.not-found")}
-        </Typography>
-        {canGenerate && (
-          <Button variant="contained" color="primary" onClick={handleGenerate}>
-            {t("project.chapters.button.generate")}
-          </Button>
-        )}
-      </Stack>
-    </Grow>
   );
 }

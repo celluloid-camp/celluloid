@@ -62,8 +62,10 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
         variant: "contained",
         color: "error",
       },
-    }).then(() => {
-      handleDelete();
+    }).then((value) => {
+      if (value.confirmed) {
+        handleDelete();
+      }
     });
   };
 

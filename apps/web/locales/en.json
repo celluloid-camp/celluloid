@@ -197,7 +197,7 @@
     },
     "export": "Export",
     "keywords": "keywords",
-    "members": "{{ count }} attendees",
+    "members": "{count, plural, =0 {No member yet} =1 {one member} other {# members}}",
     "members_many": "{{ count }} attendees",
     "members_one": "an attendant",
     "members_other": "{{ count }} attendees",
@@ -484,5 +484,10 @@
   },
   "cancelAction": "Cancel",
   "createAction": "Save",
-  "deleteAction": "Delete"
+  "deleteAction": "Delete",
+  "admin": {
+    "users": {
+      "title": "Users Management"
+    }
+  }
 }

@@ -194,7 +194,7 @@
     },
     "export": "Export",
     "keywords": "Mots clés",
-    "members": "{{ count }} participant",
+    "members": "{count, plural, =0 {Aucun participant} =1 {un participant} other {# participant}}",
     "members_many": "{{ count }} participants",
     "members_one": "un participant",
     "members_other": "{{ count }} participants",
@@ -463,5 +463,10 @@
   },
   "cancelAction": "Annuler",
   "createAction": "Enregistrer",
-  "deleteAction": "Supprimer"
+  "deleteAction": "Supprimer",
+  "admin": {
+    "users": {
+      "title": "Utilisateurs"
+    }
+  }
 }
