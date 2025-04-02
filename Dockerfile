@@ -53,7 +53,7 @@ FROM base AS web
 WORKDIR /workspace
 
 # Install openssl in the runner stage
-RUN apk add --no-cache curl bash openssl openssl-dev
+RUN apk add --no-cache curl bash openssl openssl-dev wget
 
 ARG NEXT_PUBLIC_VERSION_TAG
 ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
@@ -82,7 +82,7 @@ CMD ["node", "apps/web/server.js"]
 
 FROM base AS worker
 
-RUN apk add --no-cache curl bash openssl openssl-dev ffmpeg
+RUN apk add --no-cache curl bash openssl openssl-dev ffmpeg wget
 
 WORKDIR /workspace
 
