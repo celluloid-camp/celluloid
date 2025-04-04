@@ -51,7 +51,8 @@
   },
   "errors": {
     "ALREADY_EXISTING_PROJECT": "A project with the same title already exists, please rename the project",
-    "UNKNOWN": "An unknown error has occurred. Please try again later or contact support for assistance."
+    "UNKNOWN": "An unknown error has occurred. Please try again later or contact support for assistance.",
+    "LOADING_PROJECTS": "Unable to load projects. Please try again later or contact support for assistance."
   },
   "footer": {
     "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
@@ -112,11 +113,15 @@
     },
     "update": {
       "title": "Edit Profile",
-      "username": "username",
-      "firstname": "firstname",
-      "lastname": "lastname",
+      "username": "Username",
+      "firstname": "Firstname",
+      "lastname": "Lastname",
       "bio": "Bio",
-      "submit": "Save"
+      "submit": "Save",
+      "username-already-used": "This username is already used",
+      "success": "The profile has been updated.",
+      "upload-avatar": "Upload",
+      "delete-avatar": "Delete"
     },
     "security": {
       "old-password": {
@@ -131,8 +136,13 @@
       "password-incorrect": "Password incorrect",
       "change-password": {
         "title": "Change password",
-        "button": "Change password"
-      }
+        "button": "Change password",
+        "success": "Password changed successfully\n"
+      },
+      "password-required": "This field is required",
+      "password-min-length": "Password must be at least 8 characters",
+      "show-password": "Show password",
+      "hide-password": "Hide password"
     }
   },
   "project": {
@@ -195,9 +205,12 @@
         "title": "Edit Project"
       }
     },
-    "export": "Export",
+    "export": {
+      "title": "Export",
+      "success": "Project exported successfully"
+    },
     "keywords": "keywords",
-    "members": "{count, plural, =0 {No member yet} =1 {one member} other {# members}}",
+    "members": "{ count } attendees",
     "members_many": "{{ count }} attendees",
     "members_one": "an attendant",
     "members_other": "{{ count }} attendees",
@@ -299,7 +312,7 @@
     "confirmSignupAction": "confirm signup",
     "confirmSignupTitle": "Confirm Signup",
     "email": "Email address",
-    "forgotPasswordAction": "forgot password",
+    "forgotPasswordAction": "Forgot password",
     "forgotPasswordTitle": "Forgot password",
     "joinAction": "join",
     "joinProjectTitle": "Join project",
@@ -308,20 +321,17 @@
     "loginAction": "Login",
     "loginTitle": "Login",
     "notRegistered": "Not registered?",
-    "password": {
-      "required": "Password required",
-      "placeholder": "Password"
-    },
+    "password": "Password",
     "passwordHelper": "Minimum 8 characters",
     "passwordMismatch": "Confirmation doesn't match password",
     "projectCode": "Project code",
     "rememberlastName": "Your last name will serve as your login password",
     "resendCodeAction": "resend code",
     "resetAction": "reset",
-    "signupAction": "signup",
+    "signupAction": "Signup",
     "signupOrLoginMessage": "Please signup or login to continue",
     "signupTitle": "Signup",
-    "title": "Signin",
+    "title": "Sign In",
     "upgradeAccountMessage": "Please enter a valid email and a password to continue",
     "username": {
       "required": "Username required",
@@ -329,13 +339,15 @@
     },
     "error": {
       "user-not-found": "User not found"
-    }
+    },
+    "usernameRequired": "Username required",
+    "passwordRequired": "Password required."
   },
   "confirm": {
     "username": {
       "required": "The username is required.",
       "label": "Email or username",
-      "paceholder": "Email or username"
+      "placeholder": "Email or username"
     },
     "code": {
       "required": "The password is required.",
@@ -396,13 +408,17 @@
       "required": "Code is required",
       "label": "Confirmation code",
       "placeholder": "Confirmation code",
-      "short": "Code is too short - should be 4 chars minimum."
+      "short": "Code is too short - should be 4 chars minimum.",
+      "invalid": "Invalid confirmation code."
     },
     "password": {
       "required": "Password is required",
       "label": "Password",
       "placeholder": "Password",
-      "short": "Password is too short - should be 8 chars minimum."
+      "short": "Password is too short - should be 8 chars minimum.",
+      "confirm": {
+        "required": "Password confirmation is required"
+      }
     },
     "passwordConfirmation": {
       "label": "Password confirmation",
@@ -479,7 +495,10 @@
   },
   "user": {
     "update": {
-      "success": "Profile updated"
+      "success": "Profile updated",
+      "password": {
+        "success": "Password updated"
+      }
     }
   },
   "cancelAction": "Cancel",
@@ -487,7 +506,22 @@
   "deleteAction": "Delete",
   "admin": {
     "users": {
-      "title": "Users Management"
+      "title": "User management"
     }
-  }
+  },
+  "edit-platlist": "Edit playlist",
+  "settings": {
+    "title": "Setting",
+    "profile": {
+      "tab": "Profil"
+    },
+    "profil": {
+      "security": "Security",
+      "tab": "Profil"
+    },
+    "profile-tab": "Profil",
+    "security-tab": "Security"
+  },
+  "printAction": "Print",
+  "userNameRequired": "Username required"
 }
