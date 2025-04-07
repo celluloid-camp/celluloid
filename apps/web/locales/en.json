@@ -223,7 +223,7 @@
     "share": {
       "dialog": {
         "description": "To open printable instructions in a new widow ",
-        "linkText": "click here"
+        "linkText": "Click here"
       },
       "guide": {
         "step1": "Open the web page",
@@ -369,12 +369,12 @@
   "forgot": {
     "email": {
       "required": "The Email is required",
-      "placeholder": "Email or username"
+      "placeholder": "Enter your email"
     },
-    "title": "Lost password",
+    "title": "Forgot your password?",
     "button": {
       "recover": "Recover account",
-      "submit": "Change password"
+      "submit": "Get code"
     }
   },
   "join": {
@@ -523,5 +523,10 @@
     "security-tab": "Security"
   },
   "printAction": "Print",
-  "userNameRequired": "Username required"
+  "userNameRequired": "Username required",
+  "forget": {
+    "email": {
+      "invalid": "Invalid email"
+    }
+  }
 }

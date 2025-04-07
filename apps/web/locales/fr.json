@@ -186,6 +186,9 @@
     "createAction": "Créer le projet",
     "createTitle": "Nouveau projet",
     "creatorRole": "Créateur",
+    "delete": {
+      "error": "Projet supprimé"
+    },
     "description": "Description",
     "descriptionHelper": "Décrivez brièvement le contenu de la vidéo",
     "edit": {
@@ -216,7 +219,7 @@
     "share": {
       "dialog": {
         "description": "Pour ouvrir une fiche imprimable dans une nouvelle fenêtre, ",
-        "linkText": "cliquez ici"
+        "linkText": "Cliquez ici"
       },
       "guide": {
         "step1": "Allez sur le site internet",
@@ -360,12 +363,12 @@
   "forgot": {
     "email": {
       "required": "Email est requis",
-      "placeholder": "Email ou nom d'utilisateur"
+      "placeholder": "Entrez votre email"
     },
-    "title": "Mot de passe perdu",
+    "title": "Mot de passe oublié?",
     "button": {
       "recover": "Récupérer un compte",
-      "submit": "Changer le mot de passe"
+      "submit": "Obtenir le code"
     }
   },
   "join": {
@@ -510,5 +513,10 @@
     "profile-tab": "Profile",
     "security-tab": "Sécurité"
   },
-  "printAction": "Imprimer"
+  "printAction": "Imprimer",
+  "forget": {
+    "email": {
+      "invalid": "Adresse mail invalide"
+    }
+  }
 }
