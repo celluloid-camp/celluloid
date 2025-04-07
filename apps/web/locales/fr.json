@@ -51,7 +51,8 @@
   },
   "errors": {
     "ALREADY_EXISTING_PROJECT": "Un projet avec le même titre existe déjà, veuillez renommer le projet",
-    "UNKNOWN": "Une erreur inconnue s'est produite. Veuillez réessayer ultérieurement ou contacter le support pour obtenir de l'aide."
+    "UNKNOWN": "Une erreur inconnue s'est produite. Veuillez réessayer ultérieurement ou contacter le support pour obtenir de l'aide.",
+    "LOADING_PROJECTS": "Impossible de charger les projets. Veuillez réessayer ultérieurement ou contacter l'assistance pour obtenir de l'aide."
   },
   "footer": {
     "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
@@ -112,11 +113,15 @@
     },
     "update": {
       "title": "Editer le profil",
-      "username": "nom d'utilisateur",
-      "firstname": "prénom",
-      "lastname": "nom de famille",
+      "username": "Nom d'utilisateur",
+      "firstname": "Prénom",
+      "lastname": "Nom",
       "bio": "Biographie",
-      "submit": "Sauvegarder"
+      "submit": "Sauvegarder",
+      "username-already-used": "Ce nom d'utilisateur est déjà utilisé",
+      "success": "Le profil a été mis à jour.",
+      "upload-avatar": "Ajouter",
+      "delete-avatar": "Supprimer"
     },
     "security": {
       "old-password": {
@@ -131,8 +136,13 @@
       "password-incorrect": "Mot de passe incorrect",
       "change-password": {
         "title": "Changer le mot de passe",
-        "button": "Changer le mot de passe"
-      }
+        "button": "Changer le mot de passe",
+        "success": "Mot de passe modifié avec succès"
+      },
+      "password-required": "Ce champ est requis",
+      "password-min-length": "Le mot de passe doit comporter au moins 8 caractères",
+      "show-password": "Afficher le mot de passe",
+      "hide-password": "Masquer le mot de passe"
     }
   },
   "project": {
@@ -192,9 +202,8 @@
         "title": "Modifier le projet"
       }
     },
-    "export": "Export",
     "keywords": "Mots clés",
-    "members": "{count, plural, =0 {Aucun participant} =1 {un participant} other {# participant}}",
+    "members": "{ count } participant",
     "members_many": "{{ count }} participants",
     "members_one": "un participant",
     "members_other": "{{ count }} participants",
@@ -256,7 +265,8 @@
       "inProgress": {
         "description": "La génération des chapitres est en cours..."
       }
-    }
+    },
+    "export": "Export"
   },
   "chapter": {
     "confirm-delete": {
@@ -299,7 +309,7 @@
     "confirmSignupAction": "Confirmer l'inscription",
     "confirmSignupTitle": "Confirmation",
     "email": "Adresse email",
-    "forgotPasswordAction": "mot de passe oublié",
+    "forgotPasswordAction": "Mot de passe oublié",
     "forgotPasswordTitle": "Mot de passe perdu",
     "joinAction": "Rejoindre",
     "joinProjectTitle": "Rejoindre un projet",
@@ -308,24 +318,30 @@
     "loginAction": "Se connecter",
     "loginTitle": "Connexion",
     "notRegistered": "Pas encore de compte ?",
+    "password": "Mot de passe",
     "passwordHelper": "8 caractères minimum",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "projectCode": "Code du projet",
     "rememberlastName": "Votre nom de famille vous servira de mot de passe",
     "resendCodeAction": "Envoyer un nouveau code",
     "resetAction": "mettre à jour",
-    "signupAction": "s'inscrire",
+    "signupAction": "S'inscrire",
     "signupOrLoginMessage": "Pour continuer, vous devez vous inscrire  ou vous connecter",
     "signupTitle": "Inscription",
+    "title": "Se connecter",
     "upgradeAccountMessage": "Pour continuer, vous devez renseigner  votre adresse email et un mot de passe",
-    "password": "Mot de passe",
+    "error": {
+      "user-not-found": "Utilisateur non trouvé"
+    },
+    "usernameRequired": "Le nom d'utilisateur est requis",
+    "passwordRequired": "Le mot de passe est requis.",
     "username": "Prenom ou pseudo"
   },
   "confirm": {
     "username": {
       "required": "Le nom d'utilisateur est requis.",
       "label": "Email ou nom d'utilisateur",
-      "paceholder": "Email ou nom d'utilisateur"
+      "placeholder": "Email ou nom d'utilisateur"
     },
     "code": {
       "required": "Le mot de passe est requis.",
@@ -379,12 +395,18 @@
     "code": {
       "required": "Code est obligatoire",
       "label": "Code de confirmation",
-      "placeholder": "Code de confirmation"
+      "placeholder": "Code de confirmation",
+      "short": "Le code est trop court - il doit comporter au moins 4 caractères.",
+      "invalid": "Code de confirmation invalide."
     },
     "password": {
       "required": "Mot de passe est requis",
       "label": "Mot de passe",
-      "placeholder": "Mot de passe"
+      "placeholder": "Mot de passe",
+      "short": "Le mot de passe est trop court - il doit comporter au moins 8 caractères.",
+      "confirm": {
+        "required": "La confirmation du mot de passe est requise"
+      }
     },
     "passwordConfirmation": {
       "label": "Confirmer le mot de passe",
@@ -393,6 +415,9 @@
     "title": "Récupérer le compte",
     "button": {
       "submit": "Envoyer"
+    },
+    "email": {
+      "required": "Email est requis"
     }
   },
   "signup": {
@@ -458,7 +483,10 @@
   },
   "user": {
     "update": {
-      "success": "Profil mis à jour"
+      "success": "Profil mis à jour",
+      "password": {
+        "success": "Mot de passe mis à jour"
+      }
     }
   },
   "cancelAction": "Annuler",
@@ -466,7 +494,21 @@
   "deleteAction": "Supprimer",
   "admin": {
     "users": {
-      "title": "Utilisateurs"
+      "title": "Gestion des utilisateurs"
     }
-  }
+  },
+  "edit-platlist": "Modifier platlist",
+  "settings": {
+    "title": "Paramètre",
+    "profile": {
+      "tab": "Profile"
+    },
+    "profil": {
+      "security": "Sécurité",
+      "tab": "Profile"
+    },
+    "profile-tab": "Profile",
+    "security-tab": "Sécurité"
+  },
+  "printAction": "Imprimer"
 }
