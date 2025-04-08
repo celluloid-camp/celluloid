@@ -12,7 +12,6 @@ export function EmptyChapters() {
         alignItems={"center"}
         sx={{
           m: 2,
-          p: 5,
         }}
       >
         <InfoIcon sx={{ fontSize: 30, color: "gray" }} />

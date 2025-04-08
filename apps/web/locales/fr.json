@@ -34,7 +34,7 @@
     "form": {
       "add-annotation": "Ajouter une annotation"
     },
-    "hintLabel": "{{count}} annotation",
+    "hintLabel": "{count} annotation",
     "hintLabel_many": "{{count}} annotations",
     "hintLabel_one": "{{count}} annotation",
     "hintLabel_other": "{{count}} annotations",
@@ -153,7 +153,11 @@
       "hints": {
         "label": "Afficher la chronologie des annotations."
       },
-      "title": "Annotations"
+      "title": "Annotations",
+      "singular": "{count} Annotation",
+      "plural": "{count} Annotations",
+      "none": "Aucune annotation",
+      "label": "{count, plural, =0 {Aucune annotation} =1 {1 annotation} other {# annotations}}"
     },
     "annotaions": {
       "empty": "Les annotations correspondantes aux différents temps de la vidéo serontaffichées ici."
@@ -255,6 +259,7 @@
     "chapters": {
       "title": "Chapitres",
       "empty": "Cette vidéo n'a pas de chapitres",
+      "in-progress": "Génération des chapitres en cours",
       "not-found": "Aucun chapitre trouvé pour cette vidéo.",
       "button": {
         "generate": "Générer des chapitres"
@@ -275,6 +280,12 @@
     "confirm-delete": {
       "title": "Supprimer le chapitre",
       "description": "Etes-vous sûr de vouloir supprimer le chapitre ?"
+    },
+    "form": {
+      "button": {
+        "add": "Ajouter",
+        "cancel": "Annuler"
+      }
     }
   },
   "chapters": {
@@ -518,5 +529,9 @@
     "email": {
       "invalid": "Adresse mail invalide"
     }
+  },
+  "common": {
+    "add": "Ajouter",
+    "cancel": "Annuler"
   }
 }

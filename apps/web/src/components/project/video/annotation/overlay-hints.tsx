@@ -104,8 +104,7 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
 }) => {
   const t = useTranslations();
 
-  // const ref = useRef<HTMLDivElement>(null);
-  // const { width, height } = useParentSize(ref);
+
 
   const [_, setHintsVisible] = useAnnotationHintsVisible();
 
@@ -150,10 +149,13 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
           sx={{ backgroundColor: "black" }}
         >
           <Box>
+
             <Typography align="left" variant="h5" color="white">
-              {annotations.length > 0
-                ? t("annotation.hintLabel", { count: annotations.length })
-                : t("annotation.hintLabelNone")}
+            {
+              t("project.annotation.label",{
+                count: annotations.length
+              })
+            }
             </Typography>
           </Box>
 

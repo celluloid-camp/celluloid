@@ -166,7 +166,7 @@ export const ChapterFormContent: React.FC<
       <Box
         component="form"
         onSubmit={formik.handleSubmit}
-        sx={{ flexShrink: 0, pt: 5, paddingX: 2 }}
+        sx={{ flexShrink: 0, paddingX: 2 }}
       >
         <Box sx={{ paddingX: 2 }}>
           <ChapterTimestampSlider
@@ -239,7 +239,7 @@ export const ChapterFormContent: React.FC<
           justifyContent={"space-between"}
           alignItems={"center"}
         >
-          <Box sx={{ marginY: 1 }}>
+          <Box sx={{ marginY: 2 }}>
             <Button
               size="small"
               onClick={handleClose}
@@ -247,7 +247,7 @@ export const ChapterFormContent: React.FC<
                 color: grey[500],
               }}
             >
-              {t("annotation.create.cancel")}
+          {t("common.cancel")}
             </Button>
             <Button
               size="small"
@@ -263,7 +263,7 @@ export const ChapterFormContent: React.FC<
               }}
               onClick={() => formik.handleSubmit()}
             >
-              {t("annotation.create.send")}
+              {t("common.add")}
             </Button>
           </Box>
         </Box>

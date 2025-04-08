@@ -164,9 +164,9 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
                     multiline: true,
                     sx: { color: "white" },
                   }}
-                  placeholder={t(
-                    "project.chapters.item.placeholder.description"
-                  )}
+                  placeholder={
+                  t("project.chapters.item.placeholder.description")
+                }
                 />
               </React.Fragment>
             }
