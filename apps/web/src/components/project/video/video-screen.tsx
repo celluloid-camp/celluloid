@@ -41,7 +41,6 @@ export function ProjectVideoScreen({ project }: Props) {
     useAnnotationEditorState();
 
   useVideoPlayerEvent((event) => {
-    // console.log("useVideoPlayerEvent", event);
     if (event.state === "READY") {
       setPlayerIsReady(true);
     }

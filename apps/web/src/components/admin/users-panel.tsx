@@ -81,7 +81,6 @@ export default function UsersPanel() {
 	};
 
 	const handleModifyUser = () => {
-		console.log("Modify user:", selectedUser);
 		handleMenuClose();
 	};
 

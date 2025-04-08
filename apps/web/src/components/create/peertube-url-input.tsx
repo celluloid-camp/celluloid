@@ -82,7 +82,6 @@ export function PeerTubeUrlInput({
   };
 
   const onSubmit = async (values: FormValues) => {
-    console.log("values", form.formState);
     try {
       const data = await mutation.mutateAsync(values.url);
       onLoaded(data);

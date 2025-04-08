@@ -38,7 +38,7 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
 			router.push("/");
 		},
 		onError: (e) => {
-			console.log(e);
+
 			enqueueSnackbar(t("project.delete.error"), {
 				variant: "error",
 				key: "project.delete.error",
@@ -77,7 +77,7 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
 			});
 		},
 		onError: (e) => {
-			console.log(e);
+
 			enqueueSnackbar(t("project.edit.error"), {
 				variant: "error",
 				key: "project.edit.error",
