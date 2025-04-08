@@ -25,9 +25,9 @@ export function StudentSignupForm({ onClose }: { onClose?: () => void }) {
   const mutation = trpc.user.joinProject.useMutation();
 
   const validationSchema = Yup.object().shape({
-    shareCode: Yup.string().required(),
-    username: Yup.string().min(4).required(),
-    password: Yup.string().min(8).required(),
+    shareCode: Yup.string().required(t("student-signup.sharecode-required")),
+    username: Yup.string().required(t("student-signup.username-required")),
+    password: Yup.string().min(8, t("student-signup.password-length-validation")).required(t("student-signup.password-required")),
   });
 
   const handleSignin = () => {
@@ -53,7 +53,7 @@ export function StudentSignupForm({ onClose }: { onClose?: () => void }) {
           password: values.password,
         });
 
-        console.log("error", error);
+
         if (error) {
           if (error.code === "USERNAME_IS_ALREADY_TAKEN_PLEASE_TRY_ANOTHER") {
             formik.setFieldError("username", t("join.error.username-taken"));

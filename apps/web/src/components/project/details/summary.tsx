@@ -87,7 +87,7 @@ export function ProjectSummary({ project, user }: Props) {
           sx={{ py: 3 }}
           subheader={
             <Typography variant="caption">
-              {t("project.description")}
+              {project.description}
             </Typography>
           }
           action={

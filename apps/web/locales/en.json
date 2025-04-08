@@ -8,6 +8,8 @@
     "support": "Version 1.0 of Celluloid, \"Pierrot\", as well as its successive developments, were supported by the Catholic University of Paris, Saint Matthieu Foundation and La Paillasse projects incubator. This version was developed by Erwan Queffélec with the participation of Jean-Frédéric Bruzek, Souleymane Thiam and Guillaume Aichhorn.",
     "title": "About"
   },
+  "simple": "test",
+  "simple2": "test2",
   "annotation": {
     "comment": {
       "cancel": "Cancel",
@@ -34,7 +36,7 @@
     "form": {
       "add-annotation": "Add annotation"
     },
-    "hintLabel": "{{count}} annotation",
+    "hintLabel": "{ count} annotation",
     "hintLabel_many": "{{count}} annotations",
     "hintLabel_one": "{{count}} annotation",
     "hintLabel_other": "{{count}} annotations",
@@ -153,7 +155,11 @@
       "hints": {
         "label": "Display the timeline of annotations."
       },
-      "title": "Annotations"
+      "title": "Annotations",
+      "singular": "{count} Annotation",
+      "plural": "{count} Annotations",
+      "none": "No annotation at this time",
+      "label": "{count, plural, =0 {No annotation at this time} =1 {1 annotation} other {# annotations}}"
     },
     "annotaions": {
       "empty": "The annotations corresponding to the different times of the video will be displayed here."
@@ -223,11 +229,11 @@
     "share": {
       "dialog": {
         "description": "To open printable instructions in a new widow ",
-        "linkText": "click here"
+        "linkText": "Click here"
       },
       "guide": {
         "step1": "Open the web page",
-        "step2": "On the landing page, click 'JOIN PROJECT'",
+        "step2": "On the landing page, click 'join project'",
         "step3": "Enter the project code",
         "step4": "Enter your username and an answer to a secret question",
         "step5": "Make sure to read carefully the objective and assignments",
@@ -248,7 +254,7 @@
     "submit-add-video-playlist": "Cancel",
     "summary": {
       "playlist": {
-        "title": "Playlist"
+        "title": "Playlist :"
       }
     },
     "title": "Title",
@@ -266,7 +272,8 @@
       },
       "item": {
         "placeholder": {
-          "title": "Title"
+          "title": "Title",
+          "description": "Chapter description"
         }
       }
     }
@@ -275,6 +282,12 @@
     "confirm-delete": {
       "title": "Delete Chapter",
       "description": "Are you sure you want to delete the chapter?"
+    },
+    "form": {
+      "button": {
+        "add": "Add",
+        "cancel": "Cancel"
+      }
     }
   },
   "chapters": {
@@ -369,12 +382,12 @@
   "forgot": {
     "email": {
       "required": "The Email is required",
-      "placeholder": "Email or username"
+      "placeholder": "Enter your email"
     },
-    "title": "Lost password",
+    "title": "Forgot your password?",
     "button": {
       "recover": "Recover account",
-      "submit": "Change password"
+      "submit": "Get code"
     }
   },
   "join": {
@@ -471,7 +484,12 @@
     },
     "button": {
       "submit": "Join"
-    }
+    },
+    "share-code-required": "share code is required",
+    "sharecode-required": "Share code is required",
+    "username-required": "Username is required",
+    "password-required": "Password must be at least 8 characters",
+    "password-length-validation": "Password must be at least 8 characters"
   },
   "student-student-signup": {
     "error": {
@@ -523,5 +541,14 @@
     "security-tab": "Security"
   },
   "printAction": "Print",
-  "userNameRequired": "Username required"
+  "userNameRequired": "Username required",
+  "forget": {
+    "email": {
+      "invalid": "Invalid email"
+    }
+  },
+  "common": {
+    "add": "Add",
+    "cancel": "Cancel"
+  }
 }

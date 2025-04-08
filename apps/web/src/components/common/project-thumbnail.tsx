@@ -46,7 +46,6 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   };
 
   return (
-    // <Fade in={true} appear={true} key={project.id}>
     <Card
       elevation={0}
       sx={{
@@ -95,6 +94,10 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
           duration={500}
           showLoading={<CircularProgress />}
           bgColor="#000000"
+          wrapperStyle={{
+            minHeight: 200,
+          }}
+
         />
       </Box>
 

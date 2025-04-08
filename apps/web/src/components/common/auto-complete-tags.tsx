@@ -73,7 +73,7 @@ export function AutoCompleteTags(props: AutoCompleteTagsProps<string>) {
       freeSolo
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
-          <StyledTag label={option} {...getTagProps({ index })} />
+          <StyledTag  label={option} {...getTagProps({ index })} />
         ))
       }
       renderInput={(params) => (
