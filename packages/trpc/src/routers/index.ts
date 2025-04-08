@@ -11,7 +11,7 @@ import { projectRouter } from './project'
 import { storageRouter } from './storage';
 import { userRouter } from './user';
 import { adminRouter } from './admin';
-
+import { noteRouter } from './note';
 export const appRouter = router({
   healthcheck: publicProcedure.meta({ openapi: { method: 'GET', path: '/health' } }).input(z.object({})).output(z.string()).query(() => 'yay!'),
   project: projectRouter,
@@ -22,6 +22,7 @@ export const appRouter = router({
   comment: commentRouter,
   storage: storageRouter,
   admin: adminRouter,
+  note: noteRouter,
 });
 
 export type AppRouter = typeof appRouter;

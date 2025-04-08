@@ -274,7 +274,12 @@
         "description": "La génération des chapitres est en cours..."
       }
     },
-    "export": "Export"
+    "export": "Export",
+    "note": {
+      "title": "Notes",
+      "update_at": "Derniére modification",
+      "saving": "Sauvegarde..."
+    }
   },
   "chapter": {
     "confirm-delete": {

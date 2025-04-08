@@ -60,8 +60,6 @@ export const Members: React.FC<SideBarProps> = ({ project, user }) => {
 								borderWidth: 2,
 								borderColor: project.user.color,
 								borderStyle: "solid",
-								width: 30,
-								height: 30,
 							}}
 						>
 							{project.user.initial}
@@ -77,7 +75,7 @@ export const Members: React.FC<SideBarProps> = ({ project, user }) => {
 
 				{project.members.map((member: ProjectMembers) => (
 					<ListItem key={member.id}>
-						<ListItemAvatar>
+						<Stack direction="row" spacing={1} alignItems="center">
 							<Avatar
 								sx={{
 									background: member.user?.color,
@@ -89,15 +87,13 @@ export const Members: React.FC<SideBarProps> = ({ project, user }) => {
 							>
 								{member.user?.initial}
 							</Avatar>
-						</ListItemAvatar>
-						<ListItemText
-							primary={member.user?.username}
-							secondary={
-								<Typography variant="caption">
+							<Stack direction="column" spacing={0}>
+								<Typography variant="body2">{member.user?.username}</Typography>
+								<Typography fontSize={10}>
 									{localeRole(member.user?.role ?? null)}
 								</Typography>
-							}
-						/>
+							</Stack>
+						</Stack>
 					</ListItem>
 				))}
 			</List>

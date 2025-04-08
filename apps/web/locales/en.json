@@ -276,6 +276,11 @@
           "description": "Chapter description"
         }
       }
+    },
+    "note": {
+      "title": "Notes",
+      "update_at": "Last changed",
+      "saving": "Saving.."
     }
   },
   "chapter": {

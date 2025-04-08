@@ -80,7 +80,8 @@ model Project {
   chapterJob   QueueJob? @relation(fields: [chapterJobId], references: [id])
   chapterJobId BigInt?   @db.BigInt
 
-  chapters Chapter[]
+  chapters    Chapter[]
+  ProjectNote ProjectNote[]
 }
 
 model Chapter {
@@ -121,16 +122,16 @@ model Playlist {
 }
 
 model User {
-  id       String  @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email    String? @unique(map: "user_email_unique") @db.VarChar(255)
-  username String  @unique(map: "user_username_unique") @db.VarChar(255)
+  id              String          @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String?         @unique(map: "user_email_unique") @db.VarChar(255)
+  username        String          @unique(map: "user_username_unique") @db.VarChar(255)
   displayUsername String?
-  annotation    Annotation[]
-  comment       Comment[]
-  project       Project[]
-  UserToProject UserToProject[]
-  role          String?
-  playlist      Playlist[]
+  annotation      Annotation[]
+  comment         Comment[]
+  project         Project[]
+  UserToProject   UserToProject[]
+  role            String?
+  playlist        Playlist[]
 
   firstname String? @db.VarChar(255)
   lastname  String? @db.VarChar(255)
@@ -155,7 +156,8 @@ model User {
   banReason  String?
   banExpires DateTime?
 
-  extra Json? @default("{}")
+  extra       Json?         @default("{}")
+  ProjectNote ProjectNote[]
 }
 
 model Session {
@@ -251,4 +253,18 @@ model QueueJob {
   @@unique([key, runAt])
   @@index([queue, priority, runAt, finishedAt])
   @@map("queue_jobs")
+}
+
+model ProjectNote {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String   @db.Uuid
+  userId    String   @db.Uuid
+  project   Project  @relation(fields: [projectId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  content   Json?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([projectId, userId])
+  @@index([projectId, userId])
 }
