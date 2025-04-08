@@ -49,7 +49,6 @@ export const storageRouter = router({
 		.mutation(async ({ input, ctx }) => {
 			if (ctx.user?.id) {
 				const storageUrlInfo = parseUrl(env.STORAGE_URL);
-				console.log("storageUrlInfo port", storageUrlInfo.port);
 				const minioClient = new Minio.Client({
 					endPoint: storageUrlInfo.host,
 					port: storageUrlInfo.port,

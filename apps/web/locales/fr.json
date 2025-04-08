@@ -473,7 +473,11 @@
     },
     "button": {
       "submit": "Rejoindre"
-    }
+    },
+    "sharecode-required": "Code du project est requis\n",
+    "username-required": "Le nom d'utilisateur est requis",
+    "password-required": "Le mot de passe doit comporter au moins 8 caractères",
+    "password-length-validation": "Le mot de passe doit comporter au moins 8 caractères"
   },
   "student-student-signup": {
     "error": {

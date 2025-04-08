@@ -125,10 +125,9 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
 			}
 		},
 	});
-console.log("project",project)
 	return (
 		<form onSubmit={formik.handleSubmit}>
-			<Box sx={{ flexGrow: 1 }}>
+			<Box padding={2} sx={{ flexGrow: 1 }}>
 				<TextField
 					id="title"
 					name="title"
