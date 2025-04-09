@@ -274,12 +274,12 @@
         "description": "La génération des chapitres est en cours..."
       }
     },
-    "export": "Export",
     "note": {
       "title": "Notes",
       "update_at": "Derniére modification",
       "saving": "Sauvegarde..."
-    }
+    },
+    "export": "Export"
   },
   "chapter": {
     "confirm-delete": {
@@ -403,7 +403,7 @@
     }
   },
   "password": {
-    "unmatch": "Le mot de passe ne correspond pas."
+    "unmatch": "La confirmation du mot de passe doit être identique à votre mot de passe"
   },
   "recover": {
     "username": {
@@ -446,7 +446,8 @@
     "title": "Inscription",
     "username": {
       "label": "Nom d'utilisateur",
-      "paceholder": "Nom d'utilisateur"
+      "paceholder": "Nom d'utilisateur",
+      "length-min": "Le nom d'utilisateur doit comporter au moins 3 caractères"
     },
     "email": {
       "label": "Adresse email",
@@ -454,7 +455,8 @@
     },
     "password": {
       "label": "Mot de passe",
-      "placeholder": "Mot de passe"
+      "placeholder": "Mot de passe",
+      "length-min": "Le mot de passe doit comporter au moins 8 caractères"
     },
     "passwordConfirmation": {
       "label": "Confirmer le mot de passe",
@@ -509,7 +511,8 @@
       "success": "Profil mis à jour",
       "password": {
         "success": "Mot de passe mis à jour"
-      }
+      },
+      "avatar": "Votre photo a été supprimée"
     }
   },
   "cancelAction": "Annuler",
@@ -542,5 +545,13 @@
   "common": {
     "add": "Ajouter",
     "cancel": "Annuler"
+  },
+  "profil": {
+    "update": {
+      "avatar": {
+        "success": "Votre photo a été supprimée",
+        "error": "Une erreur s'est produite lors de la suppression de votre photo. Veuillez réessayer."
+      }
+    }
   }
 }
