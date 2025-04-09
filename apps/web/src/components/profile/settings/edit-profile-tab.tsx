@@ -47,10 +47,9 @@ export default function EditProfileTabForm({
 		validateOnBlur: true,
 		validateOnChange: true,
 		onSubmit: async (values) => {
-
 			try {
 				await mutation.mutateAsync({
-					username: values.username ?? "",
+					username: values.username,
 					firstname: values.firstname,
 					lastname: values.lastname,
 					bio: values.bio,
@@ -61,11 +60,9 @@ export default function EditProfileTabForm({
 				enqueueSnackbar(t("profile.update.success"), {
 					variant: "success",
 					key: "user.update.success",
-          autoHideDuration: 2000,
 				});
 			} catch (e) {
 				if (isTRPCClientError(e)) {
-					console.log(e.message);
 					formik.setFieldError(
 						"error",
 						t("profile.update.username-already-used"),
