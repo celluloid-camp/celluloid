@@ -17,10 +17,10 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
 
 	const signupSchema = z
 		.object({
-			username: z.string().min(1, t("signup.username.label")),
-			email: z.string().email().min(1, t("signup.email.label")),
-			password: z.string().min(8, t("signup.password.label")),
-			passwordConfirmation: z.string().min(1, t("signup.password.label")),
+			username: z.string().min(3, t("signup.username.length-min")),
+			email: z.string().email(),
+			password: z.string().min(8, t("signup.password.length-min")),
+			passwordConfirmation: z.string()
 		})
 		.refine((data) => data.password === data.passwordConfirmation, {
 			message: t("password.unmatch"),

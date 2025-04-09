@@ -6,27 +6,30 @@ import { useState } from "react";
 import { Avatar } from "@/components/common/avatar";
 import { trpc } from "@/lib/trpc/client";
 import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 
 const Input = styled("input")({
 	display: "none",
 });
 
 type UploadAvatarProps = {
+	storageId: string | null;
 	color: string;
 	initial: string;
 	url?: string;
-	onChance: (fileId: string | null) => void;
+	onChange: (fileId: string | null) => void;
 };
 export default function UploadAvatar({
+	storageId,
 	color,
 	initial,
 	url,
-	onChance,
+	onChange,
 }: UploadAvatarProps) {
-	const [avatar, setAvatar] = useState<string | undefined>(url ?? ""); // Replace with your default avatar
+	const [avatar, setAvatar] = useState<string | undefined>(url ?? "");
 	const utils = trpc.useUtils();
 	const t = useTranslations();
-
+	const { enqueueSnackbar } = useSnackbar();
 	const handleAvatarChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
@@ -54,16 +57,33 @@ export default function UploadAvatar({
 
 				setAvatar(publicUrl);
 
-				onChance(id);
+				onChange(id);
 			} catch (e) {
 				console.error(e);
 			}
 		}
 	};
 
-	const handleDelete = () => {
-		setAvatar(undefined);
-		onChance(null);
+	const handleDelete = async () => {
+		if (storageId) {
+			try {
+				await utils.client.storage.delete.mutate({
+					storageId: storageId,
+				});
+
+				enqueueSnackbar(t("profil.update.avatar.success"), {
+					variant: "success",
+					key: "profil.update.avatar.success",
+				});
+				setAvatar(undefined);
+				onChange(null);
+			} catch (e) {
+				enqueueSnackbar(t("profil.update.avatar.error"), {
+					variant: "error",
+					key: "profil.update.avatar.error",
+				});
+			}
+		}
 	};
 
 	return (

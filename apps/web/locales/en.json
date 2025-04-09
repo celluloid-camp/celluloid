@@ -414,7 +414,7 @@
     }
   },
   "password": {
-    "unmatch": "The password does not match."
+    "unmatch": "Confirmation password must be the same as your password"
   },
   "recover": {
     "username": {
@@ -457,7 +457,8 @@
     "title": "Sign up",
     "username": {
       "label": "Username",
-      "paceholder": "Username"
+      "paceholder": "Username",
+      "length-min": "Username must be at least 3 characters"
     },
     "email": {
       "label": "Email",
@@ -465,7 +466,8 @@
     },
     "password": {
       "label": "Password",
-      "placeholder": "Password"
+      "placeholder": "Password",
+      "length-min": "Password must be at least 8 characters"
     },
     "passwordConfirmation": {
       "label": "Password confirmation",
@@ -521,7 +523,8 @@
       "success": "Profile updated",
       "password": {
         "success": "Password updated"
-      }
+      },
+      "avatar": "Your photo has been deleted"
     }
   },
   "cancelAction": "Cancel",
@@ -554,6 +557,15 @@
   },
   "common": {
     "add": "Add",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "password-min-length": "Password must be at least 8 characters"
+  },
+  "profil": {
+    "update": {
+      "avatar": {
+        "success": "Your photo has been deleted",
+        "error": "Something went wrong while deleting your photo. Please try again."
+      }
+    }
   }
 }

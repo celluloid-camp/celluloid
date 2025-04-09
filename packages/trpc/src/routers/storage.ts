@@ -32,7 +32,14 @@ function parseUrl(url: string): {
 		isSecure: parsedUrl.protocol === "https:",
 	};
 }
-
+const storageUrlInfo = parseUrl(env.STORAGE_URL);
+const minioClient = new Minio.Client({
+	endPoint: storageUrlInfo.host,
+	port: storageUrlInfo.port,
+	useSSL: storageUrlInfo.isSecure,
+	accessKey: env.STORAGE_ACCESS_KEY,
+	secretKey: env.STORAGE_SECRET_KEY,
+});
 export const storageRouter = router({
 	presignedUrl: protectedProcedure
 		.input(
@@ -100,16 +107,30 @@ export const storageRouter = router({
 	delete: protectedProcedure
 		.input(
 			z.object({
-				commentId: z.string(),
+				storageId: z.string(),
 			}),
 		)
+		.output(z.boolean())
 		.mutation(async ({ input, ctx }) => {
-			//TODO : check if project owner or collaborator
-			if (ctx.user?.id) {
-				const comment = await prisma.comment.delete({
-					where: { id: input.commentId },
+			try {
+				const storage = await prisma.storage.findUnique({
+					where: { id: input.storageId },
+					select: { ...defaultStorageSelect, user: { select: { id: true } } },
 				});
-				return comment;
+
+				if (!storage || storage.user?.id !== ctx.user?.id) {
+					throw new Error("Storage not found or access denied");
+				}
+
+				await minioClient.removeObject(storage.bucket, storage.path);
+
+				await prisma.storage.delete({
+					where: { id: input.storageId },
+				});
+
+				return true;
+			} catch (error) {
+				throw new Error("Failed to delete storage");
 			}
 		}),
 });
