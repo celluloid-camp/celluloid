@@ -20,7 +20,7 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
 			username: z.string().min(3, t("signup.username.length-min")),
 			email: z.string().email(),
 			password: z.string().min(8, t("signup.password.length-min")),
-			passwordConfirmation: z.string()
+			passwordConfirmation: z.string(),
 		})
 		.refine((data) => data.password === data.passwordConfirmation, {
 			message: t("password.unmatch"),
@@ -62,8 +62,8 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
 				email: values.email,
 				type: "sign-in",
 			});
-			router.replace(`/otp?email=${values.email}`);
 			onClose?.();
+			router.push(`/otp?email=${values.email}`);
 		} else {
 			router.back();
 			onClose?.();

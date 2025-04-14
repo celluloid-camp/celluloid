@@ -1,23 +1,36 @@
 import { auth } from "@celluloid/auth";
+import { ChildCareTwoTone } from "@mui/icons-material";
+import { Box, Container, IconButton, Typography } from "@mui/material";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import Link from "next/link";
 export default async function PrivateLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
 
-  if (!session) {
-    redirect("/login");
-  }
+	if (!session) {
+		redirect("/login");
+	}
 
-  if (session.user?.role !== "admin") {
-    redirect("/");
-  }
+	if (session.user?.role !== "admin") {
+		redirect("/");
+	}
 
-  return children;
+	return (
+		<Box sx={{ backgroundColor: "brand.orange" }}>
+			<Container maxWidth="lg" sx={{ pt: 4, pb: 4, minHeight: "100vh" }}>
+				<Typography variant="h4" marginBottom={2} component="h1">
+					Admin Dashboard
+				</Typography>
+
+				{children}
+			</Container>
+		</Box>
+	);
 }

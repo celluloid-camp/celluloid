@@ -191,7 +191,8 @@
     "createTitle": "Nouveau projet",
     "creatorRole": "Créateur",
     "delete": {
-      "error": "Projet supprimé"
+      "error": "Projet supprimé",
+      "success": "Le projet a été supprimé avec succès"
     },
     "description": "Description",
     "descriptionHelper": "Décrivez brièvement le contenu de la vidéo",
@@ -520,7 +521,43 @@
   "deleteAction": "Supprimer",
   "admin": {
     "users": {
-      "title": "Gestion des utilisateurs"
+      "title": "Gestion des utilisateurs",
+      "actions": {
+        "edit": {
+          "label": "Modifier"
+        },
+        "delete": {
+          "label": "Supprimer"
+        }
+      },
+      "dialog": {
+        "title": "Supprimer l'utilisateur",
+        "description": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+      },
+      "delete": {
+        "success": "Utilisateur supprimé avec succès",
+        "error": "Échec de la suppression de l'utilisateur. Veuillez réessayer."
+      }
+    },
+    "projects": {
+      "title": "Gestion de projets",
+      "delete": {
+        "success": "Supprimer le projet"
+      },
+      "dialog": {
+        "title": "Supprimer le projet",
+        "description": "Êtes-vous sûr de vouloir supprimer ce projet ?"
+      },
+      "empty": "Aucun projet trouvé",
+      "list": {
+        "empty": "Aucun projet trouvé"
+      }
+    },
+    "project": {
+      "delete": {
+        "error": "Échec de la suppression du projet. Veuillez réessayer.",
+        "success": "Le projet a été supprimé avec succès"
+      }
     }
   },
   "edit-platlist": "Modifier platlist",
@@ -552,6 +589,20 @@
         "success": "Votre photo a été supprimée",
         "error": "Une erreur s'est produite lors de la suppression de votre photo. Veuillez réessayer."
       }
+    }
+  },
+  "users": {
+    "table": {
+      "username": "Nom d'utilisateur",
+      "email": "E-mail",
+      "role": "Rôle",
+      "createAt": "Date de création"
+    }
+  },
+  "projects": {
+    "table": {
+      "title": "Titre",
+      "public": "Public"
     }
   }
 }
