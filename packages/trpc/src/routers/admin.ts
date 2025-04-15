@@ -263,7 +263,6 @@ export const adminRouter = router({
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
-			// Find the project by its ID (you need to replace 'projectId' with the actual ID)
 			const project = await prisma.project.findUnique({
 				where: {
 					id: input.projectId,
@@ -277,7 +276,6 @@ export const adminRouter = router({
 				});
 			}
 
-			// First delete all related project notes
 			await prisma.projectNote.deleteMany({
 				where: {
 					projectId: input.projectId,
@@ -322,6 +320,7 @@ export const adminRouter = router({
 					where: {
 						userId,
 					},
+
 					select: {
 						id: true,
 						title: true,
@@ -334,6 +333,7 @@ export const adminRouter = router({
 						shareExpiresAt: true,
 						duration: true,
 					},
+
 					cursor: cursor
 						? {
 								id: cursor,
@@ -367,7 +367,6 @@ export const adminRouter = router({
 		.input(
 			z.object({
 				projectId: z.string(),
-				userId: z.string().uuid(),
 			}),
 		)
 		.mutation(async ({ input }) => {
@@ -376,7 +375,6 @@ export const adminRouter = router({
 				const project = await prisma.project.findUnique({
 					where: {
 						id: input.projectId,
-						userId: input.userId,
 					},
 				});
 
@@ -406,6 +404,88 @@ export const adminRouter = router({
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
 					message: "Failed to delete user's project",
+				});
+			}
+		}),
+	getProjectById: adminProcedure
+		.input(
+			z.object({
+				id: z.string().uuid(),
+			}),
+		)
+		.query(async ({ input }) => {
+			try {
+				const project = await prisma.project.findUnique({
+					where: { id: input.id },
+					include: {
+						user: {
+							select: {
+								id: true,
+								username: true,
+							},
+						},
+					},
+				});
+
+				if (!project) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: `No project with id '${input.id}'`,
+					});
+				}
+
+				return project;
+			} catch (error) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Failed to retrieve project",
+				});
+			}
+		}),
+	updateProject: adminProcedure
+		.input(
+			z.object({
+				projectId: z.string().uuid(),
+				title: z.string(),
+				description: z.string(),
+				public: z.boolean().optional(),
+				shared: z.boolean().optional(),
+				collaborative: z.boolean().optional(),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			try {
+				const project = await prisma.project.findUnique({
+					where: {
+						id: input.projectId,
+					},
+				});
+
+				if (!project) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "Project not found",
+					});
+				}
+
+				const updatedProject = await prisma.project.update({
+					where: {
+						id: input.projectId,
+					},
+					data: {
+						title: input.title,
+						description: input.description,
+						public: input.public,
+						shared: input.shared,
+						collaborative: input.collaborative,
+					},
+				});
+
+				return updatedProject;
+			} catch (error) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Failed to update project",
 				});
 			}
 		}),

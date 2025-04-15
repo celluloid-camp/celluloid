@@ -121,7 +121,8 @@
       "username-already-used": "Ce nom d'utilisateur est déjà utilisé",
       "success": "Le profil a été mis à jour.",
       "upload-avatar": "Ajouter",
-      "delete-avatar": "Supprimer"
+      "delete-avatar": "Supprimer",
+      "error": "Échec de la mise à jour du profil. Veuillez réessayer."
     },
     "security": {
       "old-password": {
@@ -557,6 +558,55 @@
       "delete": {
         "error": "Échec de la suppression du projet. Veuillez réessayer.",
         "success": "Le projet a été supprimé avec succès"
+      },
+      "setting": {
+        "label": {
+          "yes": "Oui",
+          "no": "Non"
+        }
+      },
+      "update": {
+        "success": "Projet mis à jour avec succès"
+      },
+      "title": "Détails du projet",
+      "label": {
+        "title": "Titre",
+        "description": "Description",
+        "public": "Public",
+        "collab": "Collaborative",
+        "owner": "Propriétaire",
+        "date": "Date de publication",
+        "code": "Code"
+      },
+      "shared": {
+        "label": "Partagé"
+      },
+      "annotations": {
+        "success": "Annotation supprimée avec succès",
+        "error": "Échec de la suppression de l'annotation"
+      },
+      "annotation": {
+        "dialog": {
+          "title": "Supprimer l'annotation",
+          "description": "Êtes-vous sûr de vouloir supprimer cette annotation ?"
+        }
+      }
+    },
+    "table": {
+      "actions": {
+        "modify": "Modifier",
+        "delete": "Supprimer"
+      }
+    },
+    "annotations": {
+      "list": {
+        "empty": "Aucune annotation trouvée"
+      }
+    },
+    "annotation": {
+      "table": {
+        "username": "Nom d'utilisateur",
+        "date": "Date de publication"
       }
     }
   },

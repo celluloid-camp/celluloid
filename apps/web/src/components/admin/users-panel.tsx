@@ -88,17 +88,21 @@ export default function UsersPanel() {
 				description: t("admin.users.dialog.description"),
 			});
 
-			if (!value.confirmed) return;
+			if (!value.confirmed) {
+				handleMenuClose();
+				return;
+			}
 
 			await deleteUserMutation.mutateAsync(selectedUser);
+			handleMenuClose();
 		} catch (error) {
 			console.error("Failed to delete user:", error);
 		}
-		handleMenuClose();
 	};
 
 	const handleModifyUser = () => {
 		router.push(`/admin/user/${selectedUser}`);
+		handleMenuClose();
 	};
 	return (
 		<Box>
@@ -149,11 +153,11 @@ export default function UsersPanel() {
 			>
 				<MenuItem onClick={handleModifyUser}>
 					<EditIcon sx={{ mr: 1 }} />
-					{t("admin.users.actions.edit.label")}
+					{t("admin.table.actions.modify")}
 				</MenuItem>
 				<MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
 					<DeleteIcon sx={{ mr: 1 }} />
-					{t("admin.users.actions.delete.label")}
+					{t("admin.table.actions.delete")}
 				</MenuItem>
 			</Menu>
 		</Box>

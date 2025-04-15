@@ -152,7 +152,7 @@ export function ProjectGrid() {
 					{ownProjects.length > 0 && (
 						<>
 							<Fade in={true} appear={true}>
-								<StyledTitle gutterBottom={true} variant="h4">
+								<StyledTitle marginBlock={3} variant="h4">
 									{t("home.myProjects")}
 								</StyledTitle>
 							</Fade>
@@ -169,7 +169,7 @@ export function ProjectGrid() {
 					{joinedProjects.length > 0 && (
 						<>
 							<Fade in={true} appear={true}>
-								<StyledTitle gutterBottom={true} variant="h4">
+								<StyledTitle marginBlock={3} variant="h4">
 									{t("home.member")}
 								</StyledTitle>
 							</Fade>

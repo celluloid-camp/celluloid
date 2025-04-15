@@ -34,6 +34,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
 import { useConfirm } from "material-ui-confirm";
+import { useRouter } from "next/navigation";
+
 export function UserDetails({ data }: { data: AdminGetUserById }) {
 	const t = useTranslations();
 
@@ -44,7 +46,21 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
 	});
 	const { enqueueSnackbar } = useSnackbar();
 
-	const mutation = trpc.admin.updateUser.useMutation();
+	const mutation = trpc.admin.updateUser.useMutation({
+		onSuccess: () => {
+			enqueueSnackbar(t("profile.update.success"), {
+				variant: "success",
+				key: "profile.update.success",
+			});
+			utils.admin.getUserById.invalidate({ id: data.id });
+		},
+		onError: () => {
+			enqueueSnackbar(t("profile.update.error"), {
+				variant: "error",
+				key: "profile.update.error",
+			});
+		},
+	});
 	const utils = trpc.useUtils();
 
 	const formik = useFormik({
@@ -64,10 +80,6 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
 					firstName: values.firstName,
 					lastName: values.lastName,
 				});
-				enqueueSnackbar(t("profile.update.success"), {
-					variant: "success",
-					key: "user.update.success",
-				});
 
 				utils.admin.getUserById.invalidate({ id: data.id });
 			} catch (error) {
@@ -84,78 +96,91 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
 			</Box>
 
 			<form onSubmit={formik.handleSubmit}>
-				<Box
-					sx={{
-						display: "flex",
-						flexDirection: "column",
-						gap: 2,
-						mt: 2,
-						maxWidth: "500px",
-					}}
-				>
-					<TextField
-						id="username"
-						name="username"
-						label={t("profile.update.username")}
-						fullWidth
-						value={formik.values.username}
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						error={formik.touched.username && Boolean(formik.errors.username)}
-						helperText={formik.touched.username && formik.errors.username}
-						disabled={formik.isSubmitting}
-					/>
+				<Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "column",
+							gap: 2,
+							flexGrow: 1,
+						}}
+					>
+						<TextField
+							id="username"
+							name="username"
+							label={t("profile.update.username")}
+							fullWidth
+							value={formik.values.username}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.username && Boolean(formik.errors.username)}
+							helperText={formik.touched.username && formik.errors.username}
+							disabled={formik.isSubmitting}
+						/>
 
-					<TextField
-						id="firstname"
-						name="firstName"
-						label={t("profile.update.firstname")}
-						fullWidth
-						value={formik.values.firstName}
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-						helperText={formik.touched.firstName && formik.errors.firstName}
-					/>
+						<TextField
+							id="firstname"
+							name="firstName"
+							label={t("profile.update.firstname")}
+							fullWidth
+							value={formik.values.firstName}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={
+								formik.touched.firstName && Boolean(formik.errors.firstName)
+							}
+							helperText={formik.touched.firstName && formik.errors.firstName}
+						/>
 
-					<TextField
-						id="lastname"
-						name="lastName"
-						label={t("profile.update.lastname")}
-						fullWidth
-						value={formik.values.lastName}
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-						helperText={formik.touched.lastName && formik.errors.lastName}
-					/>
-					<TextField
-						id="email"
-						name="email"
-						label="Email"
-						fullWidth
-						value={formik.values?.email}
-						disabled
-					/>
-
-					<TextField
-						id="role"
-						name="role"
-						label="Role"
-						fullWidth
-						value={formik.values.role}
-						disabled
-					/>
-					<Box sx={{ mt: 2 }}>
-						<LoadingButton
-							variant="contained"
-							type="submit"
-							loading={formik.isSubmitting}
-							disabled={formik.isSubmitting || !formik.dirty}
-						>
-							{t("profile.update.submit")}
-						</LoadingButton>
+						<TextField
+							id="lastname"
+							name="lastName"
+							label={t("profile.update.lastname")}
+							fullWidth
+							value={formik.values.lastName}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+							helperText={formik.touched.lastName && formik.errors.lastName}
+						/>
 					</Box>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "column",
+							gap: 2,
+							flexGrow: 1,
+						}}
+					>
+						<TextField
+							id="email"
+							name="email"
+							label="Email"
+							fullWidth
+							value={formik.values?.email}
+							disabled
+						/>
+
+						<TextField
+							id="role"
+							name="role"
+							label="Role"
+							fullWidth
+							value={formik.values.role}
+							disabled
+						/>
+					</Box>
+				</Box>
+
+				<Box sx={{ mt: 2 }}>
+					<LoadingButton
+						variant="contained"
+						type="submit"
+						loading={formik.isSubmitting}
+						disabled={formik.isSubmitting || !formik.dirty}
+					>
+						{t("profile.update.submit")}
+					</LoadingButton>
 				</Box>
 			</form>
 
@@ -173,7 +198,7 @@ function UserProjects({ userId }: UserProjectsProps) {
 	const confirm = useConfirm();
 	const [selectedProject, setSelectedProject] = useState<string>("");
 	const utils = trpc.useUtils();
-
+	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const { data: projects, isLoading } = trpc.admin.projectsByUser.useQuery({
 		userId: userId,
@@ -204,7 +229,9 @@ function UserProjects({ userId }: UserProjectsProps) {
 	const handleMenuClose = () => {
 		setAnchorEl(null);
 	};
-	const handleModifyProject = () => {};
+	const handleModifyProject = () => {
+		router.push(`/admin/project/${selectedProject}`);
+	};
 	const handleDeleteProject = async () => {
 		try {
 			const value = await confirm({
@@ -216,7 +243,6 @@ function UserProjects({ userId }: UserProjectsProps) {
 
 			await deleteProject.mutateAsync({
 				projectId: selectedProject,
-				userId: userId,
 			});
 			utils.admin.projectsByUser.invalidate({ userId: userId });
 		} catch (error) {
@@ -239,12 +265,12 @@ function UserProjects({ userId }: UserProjectsProps) {
 					<Table>
 						<TableHead>
 							<TableRow>
-								<TableCell>Title</TableCell>
-								<TableCell>Public</TableCell>
-								<TableCell>Shared</TableCell>
-								<TableCell>Collaborative</TableCell>
-								<TableCell>Share Code</TableCell>
-								<TableCell>Published At</TableCell>
+								<TableCell>{t("admin.project.label.title")}</TableCell>
+								<TableCell>{t("admin.project.label.public")}</TableCell>
+								<TableCell>{t("admin.project.shared.label")}</TableCell>
+								<TableCell>{t("admin.project.label.collab")}</TableCell>
+								<TableCell>{t("admin.project.label.code")}</TableCell>
+								<TableCell>{t("admin.project.label.date")}</TableCell>
 								<TableCell>Actions</TableCell>
 							</TableRow>
 						</TableHead>
@@ -306,11 +332,11 @@ function UserProjects({ userId }: UserProjectsProps) {
 			>
 				<MenuItem onClick={handleModifyProject}>
 					<EditIcon sx={{ mr: 1 }} />
-					{t("admin.users.actions.edit.label")}
+					{t("admin.table.actions.modify")}
 				</MenuItem>
 				<MenuItem onClick={handleDeleteProject} sx={{ color: "error.main" }}>
 					<DeleteIcon sx={{ mr: 1 }} />
-					{t("admin.users.actions.delete.label")}
+					{t("admin.table.actions.delete")}
 				</MenuItem>
 			</Menu>
 		</Box>
