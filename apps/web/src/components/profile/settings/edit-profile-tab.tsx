@@ -35,11 +35,11 @@ export default function EditProfileTabForm({
 
 	const formik = useFormik({
 		initialValues: {
-			username: user?.username,
-			firstname: user?.firstname,
-			lastname: user?.lastname,
-			bio: user?.bio,
-			avatarStorageId: user?.avatar?.id,
+			username: user?.username ?? "",
+			firstname: user?.firstname ?? "",
+			lastname: user?.lastname ?? "",
+			bio: user?.bio ?? "",
+			avatarStorageId: user?.avatar?.id ?? null,
 			error: null,
 		},
 		validateOnMount: false,
@@ -49,7 +49,7 @@ export default function EditProfileTabForm({
 		onSubmit: async (values) => {
 			try {
 				await mutation.mutateAsync({
-					username: values.username ?? "",
+					username: values.username,
 					firstname: values.firstname,
 					lastname: values.lastname,
 					bio: values.bio,
@@ -63,7 +63,6 @@ export default function EditProfileTabForm({
 				});
 			} catch (e) {
 				if (isTRPCClientError(e)) {
-					console.log(e.message);
 					formik.setFieldError(
 						"error",
 						t("profile.update.username-already-used"),
@@ -74,7 +73,6 @@ export default function EditProfileTabForm({
 			}
 		},
 	});
-
 	return (
 		<SettingsTabPanel value={value} index={index}>
 			<form onSubmit={formik.handleSubmit}>
@@ -96,10 +94,11 @@ export default function EditProfileTabForm({
 					}}
 				>
 					<UploadAvatar
+						storageId={formik.values.avatarStorageId ?? null}
 						color={user?.color ?? ""}
 						initial={user?.initial ?? ""}
 						url={user?.avatar?.publicUrl ?? ""}
-						onChance={(id) => {
+						onChange={(id) => {
 							formik.setFieldValue("avatarStorageId", id);
 						}}
 					/>
@@ -188,7 +187,7 @@ export default function EditProfileTabForm({
 
 				<LoadingButton
 					variant="contained"
-					size="small"
+					size="medium"
 					color="primary"
 					type="submit"
 					data-testid="submit"

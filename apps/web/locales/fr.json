@@ -121,7 +121,8 @@
       "username-already-used": "Ce nom d'utilisateur est déjà utilisé",
       "success": "Le profil a été mis à jour.",
       "upload-avatar": "Ajouter",
-      "delete-avatar": "Supprimer"
+      "delete-avatar": "Supprimer",
+      "error": "Échec de la mise à jour du profil. Veuillez réessayer."
     },
     "security": {
       "old-password": {
@@ -191,7 +192,8 @@
     "createTitle": "Nouveau projet",
     "creatorRole": "Créateur",
     "delete": {
-      "error": "Projet supprimé"
+      "error": "Projet supprimé",
+      "success": "Le projet a été supprimé avec succès"
     },
     "description": "Description",
     "descriptionHelper": "Décrivez brièvement le contenu de la vidéo",
@@ -274,12 +276,12 @@
         "description": "La génération des chapitres est en cours..."
       }
     },
-    "export": "Export",
     "note": {
       "title": "Notes",
       "update_at": "Derniére modification",
       "saving": "Sauvegarde..."
-    }
+    },
+    "export": "Export"
   },
   "chapter": {
     "confirm-delete": {
@@ -403,7 +405,7 @@
     }
   },
   "password": {
-    "unmatch": "Le mot de passe ne correspond pas."
+    "unmatch": "La confirmation du mot de passe doit être identique à votre mot de passe"
   },
   "recover": {
     "username": {
@@ -446,7 +448,8 @@
     "title": "Inscription",
     "username": {
       "label": "Nom d'utilisateur",
-      "paceholder": "Nom d'utilisateur"
+      "paceholder": "Nom d'utilisateur",
+      "length-min": "Le nom d'utilisateur doit comporter au moins 3 caractères"
     },
     "email": {
       "label": "Adresse email",
@@ -454,7 +457,8 @@
     },
     "password": {
       "label": "Mot de passe",
-      "placeholder": "Mot de passe"
+      "placeholder": "Mot de passe",
+      "length-min": "Le mot de passe doit comporter au moins 8 caractères"
     },
     "passwordConfirmation": {
       "label": "Confirmer le mot de passe",
@@ -509,7 +513,8 @@
       "success": "Profil mis à jour",
       "password": {
         "success": "Mot de passe mis à jour"
-      }
+      },
+      "avatar": "Votre photo a été supprimée"
     }
   },
   "cancelAction": "Annuler",
@@ -517,7 +522,92 @@
   "deleteAction": "Supprimer",
   "admin": {
     "users": {
-      "title": "Gestion des utilisateurs"
+      "title": "Gestion des utilisateurs",
+      "actions": {
+        "edit": {
+          "label": "Modifier"
+        },
+        "delete": {
+          "label": "Supprimer"
+        }
+      },
+      "dialog": {
+        "title": "Supprimer l'utilisateur",
+        "description": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+      },
+      "delete": {
+        "success": "Utilisateur supprimé avec succès",
+        "error": "Échec de la suppression de l'utilisateur. Veuillez réessayer."
+      }
+    },
+    "projects": {
+      "title": "Gestion de projets",
+      "delete": {
+        "success": "Supprimer le projet"
+      },
+      "dialog": {
+        "title": "Supprimer le projet",
+        "description": "Êtes-vous sûr de vouloir supprimer ce projet ?"
+      },
+      "empty": "Aucun projet trouvé",
+      "list": {
+        "empty": "Aucun projet trouvé"
+      }
+    },
+    "project": {
+      "delete": {
+        "error": "Échec de la suppression du projet. Veuillez réessayer.",
+        "success": "Le projet a été supprimé avec succès"
+      },
+      "setting": {
+        "label": {
+          "yes": "Oui",
+          "no": "Non"
+        }
+      },
+      "update": {
+        "success": "Projet mis à jour avec succès"
+      },
+      "title": "Détails du projet",
+      "label": {
+        "title": "Titre",
+        "description": "Description",
+        "public": "Public",
+        "collab": "Collaborative",
+        "owner": "Propriétaire",
+        "date": "Date de publication",
+        "code": "Code"
+      },
+      "shared": {
+        "label": "Partagé"
+      },
+      "annotations": {
+        "success": "Annotation supprimée avec succès",
+        "error": "Échec de la suppression de l'annotation"
+      },
+      "annotation": {
+        "dialog": {
+          "title": "Supprimer l'annotation",
+          "description": "Êtes-vous sûr de vouloir supprimer cette annotation ?"
+        }
+      }
+    },
+    "table": {
+      "actions": {
+        "modify": "Modifier",
+        "delete": "Supprimer"
+      }
+    },
+    "annotations": {
+      "list": {
+        "empty": "Aucune annotation trouvée"
+      }
+    },
+    "annotation": {
+      "table": {
+        "username": "Nom d'utilisateur",
+        "date": "Date de publication"
+      }
     }
   },
   "edit-platlist": "Modifier platlist",
@@ -542,5 +632,27 @@
   "common": {
     "add": "Ajouter",
     "cancel": "Annuler"
+  },
+  "profil": {
+    "update": {
+      "avatar": {
+        "success": "Votre photo a été supprimée",
+        "error": "Une erreur s'est produite lors de la suppression de votre photo. Veuillez réessayer."
+      }
+    }
+  },
+  "users": {
+    "table": {
+      "username": "Nom d'utilisateur",
+      "email": "E-mail",
+      "role": "Rôle",
+      "createAt": "Date de création"
+    }
+  },
+  "projects": {
+    "table": {
+      "title": "Titre",
+      "public": "Public"
+    }
   }
 }

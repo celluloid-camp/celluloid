@@ -15,35 +15,56 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { adminClient } from "better-auth/client/plugins";
 import type { UserWithRole } from "better-auth/plugins/admin";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
+import { UserTableSkeleton } from "./skeleton";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+interface UserAdditionalField extends UserWithRole {
+	username: string;
+}
 export default function UsersPanel() {
-	const [users, setUsers] = useState<UserWithRole[]>([]);
+	const queryClient = useQueryClient();
+	const router = useRouter();
 	const confirm = useConfirm();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [selectedUser, setSelectedUser] = useState<string | null>(null);
-
+	const { enqueueSnackbar } = useSnackbar();
 	const t = useTranslations();
-	useEffect(() => {
-		const fetchUsers = async () => {
-			try {
-				const usersList = await authClient.admin.listUsers({
-					query: {
-						limit: 10,
-					},
-				});
-				setUsers(usersList.data?.users ?? []);
-			} catch (error) {
-				console.error("Failed to fetch users:", error);
-			}
-		};
 
-		fetchUsers();
-	}, []);
+	const { data: users, isLoading } = useQuery({
+		queryKey: ["users"],
+		queryFn: async () => {
+			const usersList = await authClient.admin.listUsers({
+				query: {
+					limit: 10,
+				},
+			});
+			return (usersList.data?.users as UserAdditionalField[]) ?? [];
+		},
+	});
+
+	const deleteUserMutation = useMutation({
+		mutationFn: (userId: string) => authClient.admin.removeUser({ userId }),
+		onSuccess: () => {
+			enqueueSnackbar(t("admin.users.delete.success"), {
+				variant: "success",
+				key: "admin.users.delete.success",
+			});
+
+			queryClient.invalidateQueries({ queryKey: ["users"] });
+		},
+		onError: (error) => {
+			enqueueSnackbar(t("admin.users.delete.error"), {
+				variant: "error",
+				key: "admin.users.delete.error",
+			});
+		},
+	});
 
 	const handleMenuOpen = (
 		event: React.MouseEvent<HTMLElement>,
@@ -63,62 +84,67 @@ export default function UsersPanel() {
 
 		try {
 			const value = await confirm({
-				title: "Delete User",
-				description: "Are you sure you want to delete this user?",
+				title: t("admin.users.dialog.title"),
+				description: t("admin.users.dialog.description"),
 			});
 
-			if (!value.confirmed) return;
+			if (!value.confirmed) {
+				handleMenuClose();
+				return;
+			}
 
-			await authClient.admin.removeUser({
-				userId: selectedUser,
-			});
-
-			setUsers(users.filter((user) => user.id !== selectedUser));
+			await deleteUserMutation.mutateAsync(selectedUser);
+			handleMenuClose();
 		} catch (error) {
 			console.error("Failed to delete user:", error);
 		}
-		handleMenuClose();
 	};
 
 	const handleModifyUser = () => {
+		router.push(`/admin/user/${selectedUser}`);
 		handleMenuClose();
 	};
-
 	return (
 		<Box>
-			<Typography variant="h6" gutterBottom>
+			<Typography variant="h6" marginBottom={2}>
 				{t("admin.users.title")}
 			</Typography>
-			<TableContainer component={Paper}>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>ID</TableCell>
-							<TableCell>Email</TableCell>
-							<TableCell>Created At</TableCell>
-							<TableCell>Role</TableCell>
-							<TableCell>Actions</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{users.map((user) => (
-							<TableRow key={user.id}>
-								<TableCell>{user.id}</TableCell>
-								<TableCell>{user.email}</TableCell>
-								<TableCell>
-									{new Date(user.createdAt).toLocaleDateString()}
-								</TableCell>
-								<TableCell>{user.role}</TableCell>
-								<TableCell>
-									<IconButton onClick={(e) => handleMenuOpen(e, user.id)}>
-										<MoreVertIcon />
-									</IconButton>
-								</TableCell>
+
+			{isLoading ? (
+				<UserTableSkeleton />
+			) : (
+				<TableContainer component={Paper}>
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableCell>{t("users.table.username")}</TableCell>
+								<TableCell>{t("users.table.email")}</TableCell>
+								<TableCell>{t("users.table.role")}</TableCell>
+								<TableCell>{t("users.table.createAt")}</TableCell>
+								<TableCell>Actions</TableCell>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
+						</TableHead>
+						<TableBody>
+							{users?.map((user) => (
+								<TableRow key={user.id}>
+									<TableCell>{user.username}</TableCell>
+									<TableCell>{user.email}</TableCell>
+									<TableCell>{user.role}</TableCell>
+									<TableCell>
+										{new Date(user.createdAt).toLocaleDateString()}
+									</TableCell>
+
+									<TableCell>
+										<IconButton onClick={(e) => handleMenuOpen(e, user.id)}>
+											<MoreVertIcon />
+										</IconButton>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TableContainer>
+			)}
 
 			<Menu
 				anchorEl={anchorEl}
@@ -127,11 +153,11 @@ export default function UsersPanel() {
 			>
 				<MenuItem onClick={handleModifyUser}>
 					<EditIcon sx={{ mr: 1 }} />
-					Modify
+					{t("admin.table.actions.modify")}
 				</MenuItem>
 				<MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
 					<DeleteIcon sx={{ mr: 1 }} />
-					Delete
+					{t("admin.table.actions.delete")}
 				</MenuItem>
 			</Menu>
 		</Box>

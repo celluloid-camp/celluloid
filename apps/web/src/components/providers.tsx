@@ -10,7 +10,7 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
     <ThemeProvider theme={theme}>
       <TRPCProvider>
         <ConfirmProvider>
-          <SnackbarProvider maxSnack={3}>{children}</SnackbarProvider>
+          <SnackbarProvider maxSnack={3} autoHideDuration={2000}>{children}</SnackbarProvider>
         </ConfirmProvider>
       </TRPCProvider>
     </ThemeProvider>
