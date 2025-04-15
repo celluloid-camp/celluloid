@@ -20,6 +20,7 @@
     "typescript": "catalog:"
   },
   "dependencies": {
+    "@plussub/srt-vtt-parser": "^2.0.5",
     "bcryptjs": "^2.4.3",
     "pino": "^9.4.0",
     "redis": "^4.6.10",

@@ -24,6 +24,7 @@ body {
   font-size: 1rem;
   line-height: 30px;
   outline: none;
+  min-height: 200px;
 
   :first-child {
     margin: 0;

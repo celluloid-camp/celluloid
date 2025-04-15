@@ -12,7 +12,8 @@ export const env = createEnv({
     SMTP_SECURE: z.string(),
     SMTP_EMAIL_FROM: z.string().default("no-reply@celluloid.me"),
     SMTP_USER: z.string(),
-    SMTP_PASSWORD: z.string()
+    SMTP_PASSWORD: z.string(),
+    MISTRAL_API_KEY: z.string().optional(),
 
   },
   runtimeEnv: process.env,

@@ -59,7 +59,7 @@ export function ProjectNotes({ project, user }: Props) {
 				projectId: project.id,
 				content: content,
 			});
-		}, 5000),
+		}, 2000),
 		[],
 	);
 
@@ -77,7 +77,6 @@ export function ProjectNotes({ project, user }: Props) {
 				my: 2,
 				backgroundColor: colors.yellow[50],
 				borderRadius: 1,
-				boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
 				position: "relative",
 				overflow: "visible",
 				"&:before": {
@@ -109,7 +108,7 @@ export function ProjectNotes({ project, user }: Props) {
 					alignItems="center"
 				>
 					<Typography
-						variant="h5"
+						variant="h6"
 						sx={{
 							color: colors.grey[800],
 							mb: 1,

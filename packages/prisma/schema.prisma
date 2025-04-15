@@ -82,6 +82,7 @@ model Project {
 
   chapters    Chapter[]
   ProjectNote ProjectNote[]
+  transcripts ProjectTranscript?
 }
 
 model Chapter {
@@ -156,8 +157,8 @@ model User {
   banReason  String?
   banExpires DateTime?
 
-  extra       Json?         @default("{}")
-  ProjectNote ProjectNote[]
+  extra Json?         @default("{}")
+  notes ProjectNote[]
 }
 
 model Session {
@@ -267,4 +268,17 @@ model ProjectNote {
 
   @@unique([projectId, userId])
   @@index([projectId, userId])
+}
+
+model ProjectTranscript {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String   @unique @db.Uuid
+  project   Project  @relation(fields: [projectId], references: [id])
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  language  String
+  entries   Json
+
+  @@unique([projectId, language])
 }
