@@ -19,11 +19,13 @@ import Markdown from "react-markdown";
 
 import { trpc } from "@/lib/trpc/client";
 import { LoadingButton } from "@mui/lab";
+import type { User } from "@/lib/auth-client";
 
 interface Props {
 	project: ProjectById;
+	user?: User;
 }
-export function ProjectTranscript({ project }: Props) {
+export function ProjectTranscript({ project, user }: Props) {
 	const t = useTranslations();
 	const [expanded, setExpanded] = useState(false);
 
@@ -36,6 +38,10 @@ export function ProjectTranscript({ project }: Props) {
 	const handleExpandToggle = () => {
 		setExpanded(!expanded);
 	};
+
+	if (!data && !user) {
+		return null;
+	}
 
 	return (
 		<Card

@@ -16,12 +16,12 @@ export const transcriptRouter = router({
     .query(async ({ input, ctx }) => {
       const { projectId } = input;
 
-      if (!ctx.user?.id) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'You must be logged in to view this note',
-        });
-      }
+      // if (!ctx.user?.id) {
+      //   throw new TRPCError({
+      //     code: 'UNAUTHORIZED',
+      //     message: 'You must be logged in to view this note',
+      //   });
+      // }
 
       const transcript = await prisma.projectTranscript.findUnique({
         where: { projectId: projectId },
