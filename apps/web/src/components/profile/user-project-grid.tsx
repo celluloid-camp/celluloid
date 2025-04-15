@@ -35,7 +35,7 @@ export const UserProjectGrid: React.FC = () => {
 				>
 					{data.items?.length > 0 && (
 						<>
-							<StyledTitle gutterBottom={true} variant="h4">
+							<StyledTitle marginBlock={3} variant="h4">
 								{t("home.myProjects")}
 							</StyledTitle>
 							<Grid container={true} spacing={5} direction="row">

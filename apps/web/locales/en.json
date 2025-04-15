@@ -123,7 +123,8 @@
       "username-already-used": "This username is already used",
       "success": "The profile has been updated.",
       "upload-avatar": "Upload",
-      "delete-avatar": "Delete"
+      "delete-avatar": "Delete",
+      "error": "Failed to update profile. Please try again."
     },
     "security": {
       "old-password": {
@@ -193,7 +194,8 @@
     "createTitle": "New project",
     "creatorRole": "Creator",
     "delete": {
-      "error": "Project deleted"
+      "error": "Failed to delete project. Please try again.",
+      "success": "Project has been successfully deleted"
     },
     "description": "Description",
     "descriptionHelper": "Briefly describe your video",
@@ -525,14 +527,101 @@
         "success": "Password updated"
       },
       "avatar": "Your photo has been deleted"
-    }
+    },
+    "role": ""
   },
   "cancelAction": "Cancel",
   "createAction": "Save",
   "deleteAction": "Delete",
   "admin": {
     "users": {
-      "title": "User management"
+      "title": "User management",
+      "actions": {
+        "edit": {
+          "label": "Modify"
+        },
+        "delete": {
+          "label": "Delete"
+        }
+      },
+      "dialog": {
+        "title": "Delete User",
+        "description": "Are you sure you want to delete this user?"
+      },
+      "delete": {
+        "success": "User deleted successfully",
+        "error": "Failed to delete user. Please try again."
+      }
+    },
+    "projects": {
+      "title": "\tProjects Management",
+      "delete": {
+        "success": "Delete project"
+      },
+      "dialog": {
+        "title": "Delete project",
+        "description": "Are you sure you want to delete this project?"
+      },
+      "empty": "No projects found",
+      "list": {
+        "empty": "No projects found"
+      }
+    },
+    "project": {
+      "delete": {
+        "error": "Failed to delete project. Please try again.",
+        "success": "Project has been successfully deleted"
+      },
+      "setting": {
+        "label": {
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
+      "update": {
+        "success": "Project updated successfully",
+        "error": "Error updating project"
+      },
+      "title": "Project Details",
+      "label": {
+        "title": "Title",
+        "description": "Description",
+        "public": "Public",
+        "collab": "Collaborative",
+        "owner": "Owner",
+        "date": "Date published",
+        "code": "Share Code"
+      },
+      "shared": {
+        "label": "Shared"
+      },
+      "annotations": {
+        "success": "Annotation deleted successfully",
+        "error": "Failed to delete annotation"
+      },
+      "annotation": {
+        "dialog": {
+          "title": "Delete annotation",
+          "description": "Are you sure you want to delete this annotation? This action cannot be undone."
+        }
+      }
+    },
+    "table": {
+      "actions": {
+        "modify": "Modify",
+        "delete": "Delete"
+      }
+    },
+    "annotations": {
+      "list": {
+        "empty": "No annotations found"
+      }
+    },
+    "annotation": {
+      "table": {
+        "username": "Username",
+        "date": "Created At"
+      }
     }
   },
   "edit-platlist": "Edit playlist",
@@ -566,6 +655,28 @@
         "success": "Your photo has been deleted",
         "error": "Something went wrong while deleting your photo. Please try again."
       }
+    }
+  },
+  "admin.": {
+    "project": {
+      "delete": {
+        "error": "Failed to delete project. Please try again."
+      }
+    }
+  },
+  "users": {
+    "table": {
+      "userame": "Username",
+      "username": "Username",
+      "email": "Email",
+      "role": "Role",
+      "createAt": "Created At"
+    }
+  },
+  "projects": {
+    "table": {
+      "title": "Title",
+      "public": "Public"
     }
   }
 }

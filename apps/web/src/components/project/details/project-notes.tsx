@@ -3,21 +3,15 @@
 import type { ProjectById } from "@/lib/trpc/types";
 import {
 	Card,
-	CardContent,
-	CardHeader,
 	colors,
 	Typography,
 	Box,
-	Divider,
 	Stack,
-	styled,
-	Button,
 	ToggleButton,
 	CircularProgress,
 } from "@mui/material";
 import type { User } from "@/lib/auth-client";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import {
 	useEditor,
 	EditorContent,
@@ -31,12 +25,9 @@ import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatStrikethroughIcon from "@mui/icons-material/FormatStrikethrough";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Markdown } from "tiptap-markdown";
-import { Mention } from "@/components/titptap/mention";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { debounce } from "lodash";
-import suggestion from "@/components/titptap/suggestion";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc/client";
 import dayjs from "@/utils/dayjs";
 

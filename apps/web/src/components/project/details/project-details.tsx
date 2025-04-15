@@ -30,11 +30,13 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
 					<Grid container direction="row" alignItems="flex-start" spacing={4}>
 						<Grid item xs={12} md={8} lg={8}>
 							<ProjectSummary project={project} user={session?.user} />
-							<Suspense
-								fallback={<Skeleton variant="rectangular" height={100} />}
-							>
-								<ProjectNotes project={project} user={session?.user} />
-							</Suspense>
+							{session && (
+								<Suspense
+									fallback={<Skeleton variant="rectangular" height={100} />}
+								>
+									<ProjectNotes project={project} user={session?.user} />
+								</Suspense>
+							)}
 						</Grid>
 						<Grid item xs={12} md={4} lg={4}>
 							{isPending ? (
