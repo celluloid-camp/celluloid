@@ -7,6 +7,7 @@ import {
 	CardContent,
 	CardHeader,
 	Chip,
+	colors,
 	IconButton,
 	Stack,
 	Typography,
@@ -88,18 +89,11 @@ export function ProjectSummary({ project, user }: Props) {
 			<Card sx={{ my: 2 }}>
 				<CardHeader
 					title={t("project.description")}
-					sx={{ py: 3 }}
-					subheader={
-						<Typography variant="caption">{project.description}</Typography>
-					}
+					sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
 					action={
 						user && user.id === project.user.id ? (
 							<Link href={`/project/${project.id}/edit`}>
-								<Button
-									variant="outlined"
-									size="small"
-									startIcon={<EditIcon />}
-								>
+								<Button variant="text" size="small" startIcon={<EditIcon />}>
 									{t("project.edit.button")}
 								</Button>
 							</Link>
@@ -107,6 +101,7 @@ export function ProjectSummary({ project, user }: Props) {
 					}
 				/>
 				<CardContent>
+					<Typography variant="caption">{project.description}</Typography>
 					<Typography
 						align="left"
 						gutterBottom={true}

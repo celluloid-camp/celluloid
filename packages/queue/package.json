@@ -37,6 +37,7 @@
     "@celluloid/types": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@mgcrea/prisma-queue": "1.12.0",
+    "@mistralai/mistralai": "^1.5.2",
     "@t3-oss/env-core": "catalog:",
     "minio": "^7.1.3",
     "nodemailer": "^6.9.9",

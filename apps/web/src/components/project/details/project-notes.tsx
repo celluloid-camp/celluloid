@@ -3,21 +3,15 @@
 import type { ProjectById } from "@/lib/trpc/types";
 import {
 	Card,
-	CardContent,
-	CardHeader,
 	colors,
 	Typography,
 	Box,
-	Divider,
 	Stack,
-	styled,
-	Button,
 	ToggleButton,
 	CircularProgress,
 } from "@mui/material";
 import type { User } from "@/lib/auth-client";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import {
 	useEditor,
 	EditorContent,
@@ -31,12 +25,9 @@ import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatStrikethroughIcon from "@mui/icons-material/FormatStrikethrough";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Markdown } from "tiptap-markdown";
-import { Mention } from "@/components/titptap/mention";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { debounce } from "lodash";
-import suggestion from "@/components/titptap/suggestion";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc/client";
 import dayjs from "@/utils/dayjs";
 
@@ -68,7 +59,7 @@ export function ProjectNotes({ project, user }: Props) {
 				projectId: project.id,
 				content: content,
 			});
-		}, 5000),
+		}, 2000),
 		[],
 	);
 
@@ -86,7 +77,6 @@ export function ProjectNotes({ project, user }: Props) {
 				my: 2,
 				backgroundColor: colors.yellow[50],
 				borderRadius: 1,
-				boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
 				position: "relative",
 				overflow: "visible",
 				"&:before": {
@@ -118,7 +108,7 @@ export function ProjectNotes({ project, user }: Props) {
 					alignItems="center"
 				>
 					<Typography
-						variant="h5"
+						variant="h6"
 						sx={{
 							color: colors.grey[800],
 							mb: 1,

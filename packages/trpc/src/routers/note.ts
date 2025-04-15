@@ -1,85 +1,8 @@
 import { Prisma, prisma } from '@celluloid/prisma';
-import { generateUniqueShareName } from '@celluloid/utils';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { PlaylistSchema } from './playlist';
-import { UserSchema } from './user';
-import { chaptersQueue } from '@celluloid/queue';
-
-export const defaultProjectSelect = Prisma.validator<Prisma.ProjectSelect>()({
-  id: true,
-  videoId: true,
-  userId: true,
-  title: true,
-  description: true,
-  host: true,
-  publishedAt: true,
-  public: true,
-  collaborative: true,
-  shared: true,
-  shareCode: true,
-  shareExpiresAt: true,
-  extra: true,
-  playlistId: true,
-  duration: true,
-  thumbnailURL: true,
-  metadata: false,
-  keywords: true
-});
-
-export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
-  id: true,
-  username: true,
-  role: true,
-  initial: true,
-  color: true,
-  avatar: {
-    select: {
-      id: true,
-      //@ts-expect-error dynamic
-      publicUrl: true,
-      path: true
-    }
-  }
-});
-
-const MemberSchema = z.object({
-  id: z.number(),
-  userId: z.string(),
-  projectId: z.string(),
-  user: UserSchema,
-});
-
-
-export const ProjectSchema = z.object({
-  id: z.string(),
-  videoId: z.string(),
-  userId: z.string(),
-  title: z.string(),
-  description: z.string(),
-  host: z.string(),
-  publishedAt: z.string(),
-  public: z.boolean(),
-  collaborative: z.boolean(),
-  shared: z.boolean(),
-  shareCode: z.string().nullable(),
-  shareExpiresAt: z.null().nullable(),
-  extra: z.record(z.unknown()),
-  playlistId: z.string(),
-  duration: z.number(),
-  thumbnailURL: z.string(),
-  user: UserSchema,
-  playlist: PlaylistSchema,
-  members: z.array(MemberSchema),
-  _count: z.object({
-    annotations: z.number(),
-    members: z.number(),
-  }),
-});
-
-
+import { protectedProcedure, router } from '../trpc';
 
 export const noteRouter = router({
   list: protectedProcedure

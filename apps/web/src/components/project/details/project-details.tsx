@@ -6,6 +6,7 @@ import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import { ProjectNotes } from "./project-notes";
 import { Suspense } from "react";
+import { ProjectTranscript } from "./project-transcript";
 export function ProjectDetails({ projectId }: { projectId: string }) {
 	const { data: session, isPending } = useSession();
 	const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
@@ -31,9 +32,26 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
 						<Grid item xs={12} md={8} lg={8}>
 							<ProjectSummary project={project} user={session?.user} />
 							<Suspense
-								fallback={<Skeleton variant="rectangular" height={100} />}
+								fallback={
+									<Skeleton
+										variant="rectangular"
+										height={200}
+										sx={{ borderRadius: 2, my: 2 }}
+									/>
+								}
 							>
 								<ProjectNotes project={project} user={session?.user} />
+							</Suspense>
+							<Suspense
+								fallback={
+									<Skeleton
+										variant="rectangular"
+										height={300}
+										sx={{ borderRadius: 2, my: 2 }}
+									/>
+								}
+							>
+								<ProjectTranscript project={project} />
 							</Suspense>
 						</Grid>
 						<Grid item xs={12} md={4} lg={4}>
