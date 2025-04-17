@@ -358,19 +358,19 @@
       "placeholder": "Username"
     },
     "error": {
-      "user-not-found": "User not found"
+      "user-not-found": "The username/email or password you entered is incorrect."
     },
-    "usernameRequired": "Username required",
+    "usernameRequired": "This field is required",
     "passwordRequired": "Password required."
   },
   "confirm": {
     "username": {
       "required": "The username is required.",
-      "label": "Email or username",
-      "placeholder": "Email or username"
+      "label": "Email",
+      "placeholder": "Email"
     },
     "code": {
-      "required": "The password is required.",
+      "required": "The Code is required.",
       "label": "Confirmation code",
       "placeholder": "Confirmation code"
     },
@@ -383,7 +383,7 @@
       "sent": "Chapters generation started"
     },
     "resend": {
-      "success": "Code resent"
+      "success": "Verification code resent."
     }
   },
   "forgot": {
@@ -527,8 +527,7 @@
         "success": "Password updated"
       },
       "avatar": "Your photo has been deleted"
-    },
-    "role": ""
+    }
   },
   "cancelAction": "Cancel",
   "createAction": "Save",
@@ -677,6 +676,15 @@
     "table": {
       "title": "Title",
       "public": "Public"
+    }
+  },
+  "otp": {
+    "form": {
+      "invalide-code": "Invalid code. please try again.",
+      "invalid-code": "Invalid code. Please try again.",
+      "title": "Enter Verification Code",
+      "description": "Enter the verification code sent to your email address.",
+      "success": "You’re signed in successfully"
     }
   }
 }

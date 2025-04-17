@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
 
-export function SignupForm({ onClose }: { onClose?: () => void }) {
+export function SignupForm() {
 	const t = useTranslations();
 	const router = useRouter();
 
@@ -57,16 +57,14 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
 			return;
 		}
 
-		if (data.user.emailVerified === false) {
+		if (!data.user.emailVerified) {
 			await authClient.emailOtp.sendVerificationOtp({
 				email: values.email,
 				type: "sign-in",
 			});
-			onClose?.();
-			router.push(`/otp?email=${values.email}`);
+			router.replace(`/otp?email=${values.email}`);
 		} else {
 			router.back();
-			onClose?.();
 		}
 	};
 
@@ -75,7 +73,7 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
 			<StyledDialogTitle
 				loading={isSubmitting}
 				error={errors.root?.message}
-				onClose={onClose}
+				onClose={() => router.back()}
 			>
 				{t("signup.title")}
 			</StyledDialogTitle>
