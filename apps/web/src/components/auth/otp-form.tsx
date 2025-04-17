@@ -77,7 +77,6 @@ export function OtpForm() {
 					"error",
 					e instanceof Error ? e.message : "An unknown error occurred",
 				);
-				console.log(e);
 			} finally {
 				formik.setSubmitting(false);
 			}

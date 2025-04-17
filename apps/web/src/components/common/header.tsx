@@ -13,7 +13,6 @@ import { UserMenu } from "./user-menu";
 export const Header: React.FC<BoxProps> = ({ children }) => {
 	const t = useTranslations();
 	const { data: session } = useSession();
-	console.log("session", session);
 	return (
 		<AppBar color="default" position="fixed">
 			<Toolbar disableGutters>
