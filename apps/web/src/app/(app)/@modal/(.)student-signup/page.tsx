@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { StudentSignupForm } from "@/components/auth/student-signup-form";
 
 export default function StudentSignupModal() {
-  const router = useRouter();
+	const router = useRouter();
 
-  return (
-    <StyledDialog onClose={() => router.back()} open={true}>
-      <StudentSignupForm onClose={() => router.back()} />
-    </StyledDialog>
-  );
+	return (
+		<StyledDialog onClose={() => router.back()} open={true}>
+			<StudentSignupForm />
+		</StyledDialog>
+	);
 }

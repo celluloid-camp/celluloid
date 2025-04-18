@@ -54,7 +54,6 @@ export function ProjectTranscript({ project, user }: Props) {
 			<CardHeader
 				sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
 				title="Transcript"
-				action={<Box sx={{ display: "flex", alignItems: "center" }}></Box>}
 			/>
 			<CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
 				<Markdown

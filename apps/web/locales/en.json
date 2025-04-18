@@ -214,8 +214,8 @@
       }
     },
     "export": {
-      "title": "Export",
-      "success": "Project exported successfully"
+      "success": "Project exported successfully",
+      "title": "Export"
     },
     "keywords": "keywords",
     "members": "{ count } attendees",
@@ -413,6 +413,10 @@
     },
     "code": {
       "required": "Share code is required"
+    },
+    "description": "Enter the share code to join the project",
+    "message": {
+      "success": "You have joined the project"
     }
   },
   "password": {
@@ -653,13 +657,6 @@
       "avatar": {
         "success": "Your photo has been deleted",
         "error": "Something went wrong while deleting your photo. Please try again."
-      }
-    }
-  },
-  "admin.": {
-    "project": {
-      "delete": {
-        "error": "Failed to delete project. Please try again."
       }
     }
   },
