@@ -1,9 +1,16 @@
 import type { Caption } from "@celluloid/utils";
 import { Mistral } from "@mistralai/mistralai";
+import { env } from "../env";
 
-const apiKey = process.env.MISTRAL_API_KEY;
 
 export const convertCaptionsToTranscript = async (captions: Caption) => {
+
+  const apiKey = env.MISTRAL_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("MISTRAL_API_KEY is not set");
+  }
+
   const client = new Mistral({ apiKey: apiKey });
 
   const prompt = `
@@ -23,12 +30,14 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
 
   let transcript = "";
 
+
   for await (const chunk of chatResponse) {
     const streamText = chunk.data.choices[0]?.delta.content;
     if (streamText) {
       transcript += streamText;
     }
   }
+
 
   return transcript;
 };

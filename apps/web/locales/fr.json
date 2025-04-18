@@ -355,20 +355,20 @@
     "title": "Se connecter",
     "upgradeAccountMessage": "Pour continuer, vous devez renseigner  votre adresse email et un mot de passe",
     "error": {
-      "user-not-found": "Le nom d'utilisateur/email ou le mot de passe que vous avez saisi est incorrect."
+      "user-not-found": "Utilisateur non trouvé"
     },
-    "usernameRequired": "Ce champ est requis",
+    "usernameRequired": "Le nom d'utilisateur est requis",
     "passwordRequired": "Le mot de passe est requis.",
     "username": "Prenom ou pseudo"
   },
   "confirm": {
     "username": {
       "required": "Le nom d'utilisateur est requis.",
-      "label": "Email",
-      "placeholder": "Email"
+      "label": "Email ou nom d'utilisateur",
+      "placeholder": "Email ou nom d'utilisateur"
     },
     "code": {
-      "required": "Le  code de confirmation est requis.",
+      "required": "Le mot de passe est requis.",
       "label": "Code de confirmation",
       "placeholder": "Code de confirmation"
     },
@@ -379,9 +379,6 @@
     },
     "generation": {
       "sent": "La génération des chapitres a commencé"
-    },
-    "resend": {
-      "success": "Code de vérification renvoyé."
     }
   },
   "forgot": {
@@ -666,14 +663,6 @@
     "table": {
       "title": "Titre",
       "public": "Public"
-    }
-  },
-  "otp": {
-    "form": {
-      "invalid-code": "Code invalide. Veuillez réessayer.",
-      "title": "Entrez le code de vérification",
-      "description": "Saisissez le code de vérification envoyé à votre adresse e-mail.",
-      "success": "Vous êtes maintenant connecté"
     }
   }
 }

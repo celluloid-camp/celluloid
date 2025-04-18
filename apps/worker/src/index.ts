@@ -1,6 +1,6 @@
 import express from "express";
 
-import { emailQueue, chaptersQueue } from "@celluloid/queue";
+import { emailQueue, chaptersQueue, transcriptsQueue } from "@celluloid/queue";
 import { createTerminus } from '@godaddy/terminus';
 import { prisma } from "@celluloid/prisma";
 import { env } from "./env";
@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 
 emailQueue.start();
 chaptersQueue.start();
-
+transcriptsQueue.start();
 
 const server = app.listen(env.WORKER_PORT, () =>
   console.log(`Worker is running on port ${env.WORKER_PORT}`),
@@ -24,6 +24,7 @@ async function onSignal() {
   // wsHandler.broadcastReconnectNotification()
   emailQueue.stop();
   chaptersQueue.stop();
+  transcriptsQueue.stop();
   console.log("queues stopped")
   await new Promise((resolve) => server.close(resolve));
   console.log("server closed")

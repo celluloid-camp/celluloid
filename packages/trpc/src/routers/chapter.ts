@@ -85,18 +85,15 @@ export const chapterRouter = router({
         }
 
         const jobId = await chaptersQueue.add({ projectId: project.id });
-        const updatedProject = await prisma.project.update({
-          where: { id: project.id },
+        const projectJob = await prisma.projectQueueJob.create({
           data: {
-            chapterJob: {
-              connect: {
-                id: 1
-              }
-            }
+            projectId: project.id,
+            type: "chapter",
+            queueJobId: jobId.id
           }
         })
         console.log("job enqueued", jobId)
-        return updatedProject;
+        return projectJob;
 
       }
     }),
@@ -274,13 +271,8 @@ export const chapterRouter = router({
           where: { projectId: input.projectId }
         });
 
-        await prisma.project.update({
-          where: { id: input.projectId },
-          data: {
-            chapterJob: {
-              disconnect: true
-            }
-          }
+        await prisma.projectQueueJob.delete({
+          where: { id: input.projectId, type: "chapter" },
         });
 
         // ee.emit('change', chapter);

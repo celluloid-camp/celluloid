@@ -56,12 +56,12 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
     // const videoPath = await downloadVideoFile(videoUrl);
     // await job.progress(50);
 
-    await prisma.project.update({
-      where: { id: payload.projectId },
-      data: {
-        chapterJobId: job.id,
-      },
-    });
+    // await prisma.project.update({
+    //   where: { id: payload.projectId },
+    //   data: {
+    //     chapterJobId: job.id,
+    //   },
+    // });
 
     try {
       const chapters = await detectScenes({ projectId: payload.projectId, videoUrl, duration });

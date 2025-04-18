@@ -42,49 +42,46 @@ export const getPeerTubeCaptions = async ({
 	videoId: string;
 	host: string;
 }): Promise<Array<Caption>> => {
-	const videoData = await getPeerTubeVideoData({ videoId, host });
-	if (!videoData) {
-		return [];
-	}
+  const videoData = await getPeerTubeVideoData({ videoId, host });
+  if (!videoData) {
+    return [];
+  }
 
-	const headers = {
-		Accepts: "application/json",
-	};
+  const headers = {
+    Accepts: "application/json",
+  };
 
-	const apiUrl = `https://${host}/api/v1/videos/${videoId}/captions`;
+  const apiUrl = `https://${host}/api/v1/videos/${videoId}/captions`;
 
-	const response = await fetch(apiUrl, {
-		method: "GET",
-		headers: new Headers(headers),
-	});
+  const response = await fetch(apiUrl, {
+    method: "GET",
+    headers: new Headers(headers),
+  });
 
-	if (response.status === 200) {
-		const captionsResponse = (await response.json()) as PeerTubeCaptionResponse;
+  if (response.status === 200) {
+    const captionsResponse = (await response.json()) as PeerTubeCaptionResponse;
 
-		if (!captionsResponse.data.length) {
-			console.log("No captions found");
-			return [];
-		}
+    if (!captionsResponse.data.length) {
+      console.log("No captions found");
+      return [];
+    }
 
-		console.log("captionsResponse", captionsResponse.total);
-		// Fetch content for each caption
-		const captions = await Promise.all(
-			captionsResponse.data.map(async (caption) => {
-				const captionUrl = `https://${host}${caption.captionPath}`;
+    // Fetch content for each caption
+    const captions = await Promise.all(
+      captionsResponse.data.map(async (caption) => {
+        const captionUrl = `https://${host}${caption.captionPath}`;
+        const captionResponse = await fetch(captionUrl);
+        const content = await captionResponse.text();
+        const parsed = parse(content);
+        return {
+          language: caption.language.id,
+          entries: parsed.entries,
+        };
+      }),
+    );
 
-				const captionResponse = await fetch(captionUrl);
-				const content = await captionResponse.text();
-				const parsed = parse(content);
+    return captions;
+  }
 
-				return {
-					language: caption.language.id,
-					entries: parsed.entries,
-				};
-			}),
-		);
-
-		return captions;
-	}
-
-	return [];
+  return [];
 };
