@@ -1,12 +1,12 @@
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { Grid, IconButton, Stack, styled } from "@mui/material";
-import { grey } from "@mui/material/colors";
 import Slider, { type SliderValueLabelProps } from "@mui/material/Slider";
 import Tooltip, {
   tooltipClasses,
   type TooltipProps,
 } from "@mui/material/Tooltip";
+import { grey } from "@mui/material/colors";
 import * as React from "react";
 
 import { formatDuration } from "@/utils/duration";
@@ -55,7 +55,7 @@ export const ChapterTimestampSlider: React.FC<DurationSliderProps> = ({
   const handleChange = (
     _event: React.SyntheticEvent | Event,
     newValue: number | number[],
-    activeThumb: number
+    activeThumb: number,
   ) => {
     if (!Array.isArray(newValue)) {
       return;

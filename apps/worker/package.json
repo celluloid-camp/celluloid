@@ -27,9 +27,7 @@
     "typescript": "^5.0.0"
   },
   "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
+    "entry": ["src/index.ts"],
     "splitting": false,
     "sourcemap": false,
     "clean": true,

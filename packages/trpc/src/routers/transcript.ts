@@ -1,10 +1,13 @@
-import { Prisma, prisma } from '@celluloid/prisma';
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
-import { convertCaptionsToTranscript, transcriptsQueue } from '@celluloid/queue';
+import { Prisma, prisma } from "@celluloid/prisma";
+import {
+  convertCaptionsToTranscript,
+  transcriptsQueue,
+} from "@celluloid/queue";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-import { publicProcedure, router } from '../trpc';
-import { getPeerTubeCaptions } from '@celluloid/utils';
+import { getPeerTubeCaptions } from "@celluloid/utils";
+import { publicProcedure, router } from "../trpc";
 
 export const transcriptRouter = router({
   byProjectId: publicProcedure
@@ -34,8 +37,6 @@ export const transcriptRouter = router({
       if (!transcript) {
         return null;
       }
-
-
 
       return transcript;
     }),

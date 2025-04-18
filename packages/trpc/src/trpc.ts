@@ -1,31 +1,33 @@
-import { initTRPC, TRPCError } from "@trpc/server";
-import type { OpenApiMeta } from "trpc-to-openapi";
 import type { Session } from "@celluloid/auth";
+import { TRPCError, initTRPC } from "@trpc/server";
+import { cache } from "react";
 import superjson from "superjson";
+import type { OpenApiMeta } from "trpc-to-openapi";
 import { ZodError } from "zod";
-import { cache } from 'react';
 
-export const createTRPCContext = cache((opts?: {
-  session?: Session | null;
-}) => {
-  const session = opts?.session;
+export const createTRPCContext = cache(
+  (opts?: {
+    session?: Session | null;
+  }) => {
+    const session = opts?.session;
 
-  const requireRoles = (roles: string[]) => {
-    if (!session?.user?.role || !roles.includes(session?.user?.role)) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: `Missing permission: '${roles.join(",")}'.`,
-      });
-    }
-    return true;
-  };
+    const requireRoles = (roles: string[]) => {
+      if (!session?.user?.role || !roles.includes(session?.user?.role)) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: `Missing permission: '${roles.join(",")}'.`,
+        });
+      }
+      return true;
+    };
 
-  const user = session?.user;
-  return {
-    user,
-    requireRoles,
-  };
-})
+    const user = session?.user;
+    return {
+      user,
+      requireRoles,
+    };
+  },
+);
 
 export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 
@@ -63,7 +65,6 @@ const isAdmin = t.middleware((opts) => {
   return opts.next({ ctx });
 });
 
-
 /**
  * Export reusable router and procedure helpers
  * that can be used throughout the router
@@ -74,4 +75,3 @@ export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
 export const adminProcedure = t.procedure.use(isAdmin);
 export const createCallerFactory = t.createCallerFactory;
-

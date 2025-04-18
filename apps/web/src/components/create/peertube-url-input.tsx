@@ -1,4 +1,5 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import LinkIcon from "@mui/icons-material/Link";
@@ -10,14 +11,13 @@ import {
   TextField,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import React from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
-  getPeerTubeVideoData,
   type PeerTubeVideoDataResult,
+  getPeerTubeVideoData,
 } from "@/services/peertube";
 import { useTranslations } from "next-intl";
 

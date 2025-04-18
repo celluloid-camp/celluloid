@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { useEffect } from "react";
+import * as Yup from "yup";
 
 import {
-  getPeerTubeVideoData,
   type PeerTubeVideoWithThumbnail,
+  getPeerTubeVideoData,
 } from "@/services/peertube";
 import { useTranslations } from "next-intl";
 
@@ -74,7 +74,7 @@ export const AddVideoToPlaylistDialog: React.FC<
     if (query.error) {
       formik.setFieldError(
         "url",
-        t("project.create.error.video-info-failed") || ""
+        t("project.create.error.video-info-failed") || "",
       );
     }
   }, [query.error, formik, t]);

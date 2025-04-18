@@ -1,3 +1,5 @@
+import type { PeerTubeVideoWithThumbnail } from "@/services/peertube";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   CircularProgress,
   Grid,
@@ -5,12 +7,10 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import type { PeerTubeVideoWithThumbnail } from "@/services/peertube";
 import { Box } from "@mui/material";
-import { THUMBNAIL_WIDTH } from "./constants";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { AddVideoButton } from "./add-video-button";
 import Image from "mui-image";
+import { AddVideoButton } from "./add-video-button";
+import { THUMBNAIL_WIDTH } from "./constants";
 
 export function VideoSnapshots({
   videos,

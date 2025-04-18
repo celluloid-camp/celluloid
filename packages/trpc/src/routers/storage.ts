@@ -2,8 +2,8 @@ import { Prisma, prisma } from "@celluloid/prisma";
 import * as Minio from "minio";
 import { z } from "zod";
 
-import { protectedProcedure, router } from "../trpc";
 import { env } from "../env";
+import { protectedProcedure, router } from "../trpc";
 
 const defaultStorageSelect = Prisma.validator<Prisma.StorageSelect>()({
   id: true,
@@ -33,7 +33,6 @@ function parseUrl(url: string): {
   };
 }
 
-
 function getMinioClient() {
   const storageUrlInfo = parseUrl(env.STORAGE_URL);
   const minioClient = new Minio.Client({
@@ -43,7 +42,7 @@ function getMinioClient() {
     accessKey: env.STORAGE_ACCESS_KEY,
     secretKey: env.STORAGE_SECRET_KEY,
   });
-  return minioClient
+  return minioClient;
 }
 
 export const storageRouter = router({
@@ -61,8 +60,7 @@ export const storageRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       if (ctx.user?.id) {
-
-        const minioClient = getMinioClient()
+        const minioClient = getMinioClient();
         const path = `${ctx.user.id}/${input.name}`;
         const url = await minioClient.presignedPutObject(
           env.STORAGE_BUCKET,
@@ -112,7 +110,7 @@ export const storageRouter = router({
     .output(z.boolean())
     .mutation(async ({ input, ctx }) => {
       try {
-        const minioClient = getMinioClient()
+        const minioClient = getMinioClient();
         const storage = await prisma.storage.findUnique({
           where: { id: input.storageId },
           select: { ...defaultStorageSelect, user: { select: { id: true } } },

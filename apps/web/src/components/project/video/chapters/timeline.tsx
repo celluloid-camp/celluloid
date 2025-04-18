@@ -1,9 +1,11 @@
-import { Box, Stack, Typography } from "@mui/material";
-import type * as React from "react";
-import Image from "mui-image";
 import type { ChapterByProjectId, ProjectById } from "@/lib/trpc/types";
+import { Box, Stack, Typography } from "@mui/material";
+import Image from "mui-image";
+import type * as React from "react";
 
-import { ChapterItem } from "./list-item";
+import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
+import type { User } from "@/lib/auth-client";
+import { formatDuration } from "@/utils/duration";
 import {
   Timeline,
   TimelineConnector,
@@ -11,13 +13,11 @@ import {
   TimelineDot,
   TimelineItem,
   TimelineOppositeContent,
-  timelineOppositeContentClasses,
   TimelineSeparator,
+  timelineOppositeContentClasses,
 } from "@mui/lab";
-import { formatDuration } from "@/utils/duration";
-import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
-import type { User } from "@/lib/auth-client";
 import { EmptyChapters } from "./empty";
+import { ChapterItem } from "./list-item";
 
 export function ChapterTimeline({
   chapters,

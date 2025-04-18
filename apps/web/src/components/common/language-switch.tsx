@@ -2,8 +2,8 @@ import TranslateOutlinedIcon from "@mui/icons-material/TranslateOutlined";
 import { Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { useLocale } from "next-intl";
 import React, { startTransition } from "react";
-import { setUserLocale } from "../../services/locale";
 import type { Locale } from "../../i18n/config";
+import { setUserLocale } from "../../services/locale";
 
 export const LanguageSwitch = () => {
   const locale = useLocale();

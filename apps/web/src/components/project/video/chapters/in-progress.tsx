@@ -1,10 +1,4 @@
-import {
-  Box,
-  CircularProgress,
-  Grow,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Grow, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { ChapterListSkeleton } from "./skeleton";
 

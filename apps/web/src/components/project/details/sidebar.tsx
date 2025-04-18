@@ -3,11 +3,11 @@ import type * as React from "react";
 
 import type { ProjectById } from "@/lib/trpc/types";
 
+import type { User } from "@/lib/auth-client";
 import { ExportPanel } from "./sidebar/export-panel";
 import { Members } from "./sidebar/members";
 import { Playlist } from "./sidebar/playlist";
 import { Share } from "./sidebar/share";
-import type { User } from "@/lib/auth-client";
 
 interface SideBarProps {
   project: ProjectById;

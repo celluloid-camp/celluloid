@@ -1,5 +1,5 @@
 import { useParentSize } from "@cutting/use-get-parent-size";
-import { Avatar, Box, hexToRgb, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Paper, Stack, Typography, hexToRgb } from "@mui/material";
 import React, { memo, useMemo, useRef } from "react";
 
 import { MultiLineTypography } from "@/components/common/multiline-typography";
@@ -96,7 +96,9 @@ const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(
     const ref = useRef<HTMLDivElement>(null);
     const { width, height } = useParentSize(ref);
 
-    const handleFocus = (_: AnnotationByProjectId) => {};
+    const handleFocus = (_: AnnotationByProjectId) => {
+      //TODO: handle focus
+    };
 
     return (
       <Box
@@ -142,7 +144,7 @@ const ContextualAnnotationsContent: React.FC<ContextualAnnotationsProps> = memo(
         </Box>
       </Box>
     );
-  }
+  },
 );
 
 export const ContextualOverlay: React.FC<ContextualAnnotationsProps> = memo(
@@ -154,11 +156,11 @@ export const ContextualOverlay: React.FC<ContextualAnnotationsProps> = memo(
             typeof item === "object" && Object.keys(item.extra || {}).length
           );
         }),
-      [annotations]
+      [annotations],
     );
 
     if (filteredAnnotations.length === 0) return null;
 
     return <ContextualAnnotationsContent annotations={filteredAnnotations} />;
-  }
+  },
 );

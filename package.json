@@ -14,9 +14,8 @@
     "dev": "dotenv -- turbo watch dev --continue",
     "clean": "turbo clean",
     "build": "SKIP_ENV_VALIDATIONS=true turbo run build --no-cache",
-    "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
+    "lint": "biome check --fix",
     "prepare": "husky install",
-    "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
     "test": "npx playwright test",
     "--shortcuts to run commands in workspaces--": "",
     "web": "dotenv -- pnpm --filter web",
@@ -29,21 +28,11 @@
     "docker:worker:run": "docker run -it --rm --env-file .env celluloid-worker"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "@playwright/test": "^1.39.0",
     "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
-    "eslint": "^8.50.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-react": "^1.1.7",
-    "eslint-plugin-import": "^2.23.3",
-    "eslint-plugin-jest": "latest",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-simple-import-sort": "^8.0.0",
     "husky": "^8.0.3",
     "jest": "^27.0.1",
     "lint-staged": "^14.0.1",
@@ -73,18 +62,12 @@
       }
     ]
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "engines": {
     "node": ">=20"
   },
   "lint-staged": {
-    "*.{js,ts,tsx,jsx}": "eslint --cache --fix",
-    "*.{js,css,md,ts,tsx,jsx}": "prettier --write"
+    "*.{js,ts,tsx,jsx}": "biome check --cache --fix",
+    "*.{js,css,md,ts,tsx,jsx}": "biome format --write"
   },
   "dependencies": {
     "abort-controller": "^3.0.0",

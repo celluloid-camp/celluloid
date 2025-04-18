@@ -16,10 +16,10 @@ import { useState } from "react";
 
 import { EditableText } from "@/components/common/editable-text";
 
-import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
-import { trpc } from "@/lib/trpc/client";
-import { useTranslations } from "next-intl";
 import type { User } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
+import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
+import { useTranslations } from "next-intl";
 interface ChapterItemProps {
   project: ProjectById;
   chapter: ChapterByProjectId;
@@ -98,7 +98,7 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
       if (value.confirmed) {
         utils.chapter.byProjectId.setData(
           { projectId: project.id },
-          (oldData) => oldData?.filter((c) => c.id !== chapter.id)
+          (oldData) => oldData?.filter((c) => c.id !== chapter.id),
         );
 
         await deleteMutation.mutateAsync({
@@ -164,9 +164,9 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
                     multiline: true,
                     sx: { color: "white" },
                   }}
-                  placeholder={
-                  t("project.chapters.item.placeholder.description")
-                }
+                  placeholder={t(
+                    "project.chapters.item.placeholder.description",
+                  )}
                 />
               </React.Fragment>
             }

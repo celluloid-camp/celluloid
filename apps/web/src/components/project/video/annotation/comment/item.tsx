@@ -1,16 +1,16 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
-	Box,
-	Button,
-	Divider,
-	IconButton,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-	Stack,
-	Tooltip,
-	Typography,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Stack,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import dayjs from "dayjs";
@@ -22,208 +22,208 @@ import * as Yup from "yup";
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import { TransparentInput } from "@/components/common/transparent-input";
-import type {
-	AnnotationByProjectId,
-	AnnotationCommentByProjectId,
-	ProjectById,
-} from "@/lib/trpc/types";
-import { trpc } from "@/lib/trpc/client";
 import type { User } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
+import type {
+  AnnotationByProjectId,
+  AnnotationCommentByProjectId,
+  ProjectById,
+} from "@/lib/trpc/types";
 import { useTranslations } from "next-intl";
 interface CommentItemProps {
-	user?: Partial<User>;
-	project: ProjectById;
-	comment: AnnotationCommentByProjectId;
-	annotation: AnnotationByProjectId;
+  user?: Partial<User>;
+  project: ProjectById;
+  comment: AnnotationCommentByProjectId;
+  annotation: AnnotationByProjectId;
 }
 
 export const CommentItem: React.FC<CommentItemProps> = ({
-	comment,
-	project,
-	user,
-	annotation,
+  comment,
+  project,
+  user,
+  annotation,
 }) => {
-	const t = useTranslations();
-	const [hovering, setHovering] = useState(false);
-	const [edition, setEdition] = useState(false);
+  const t = useTranslations();
+  const [hovering, setHovering] = useState(false);
+  const [edition, setEdition] = useState(false);
 
-	const utils = trpc.useUtils();
+  const utils = trpc.useUtils();
 
-	const editMutation = trpc.comment.edit.useMutation({
-		onSuccess: () => {
-			utils.annotation.byProjectId.invalidate({ id: project.id });
-		},
-	});
+  const editMutation = trpc.comment.edit.useMutation({
+    onSuccess: () => {
+      utils.annotation.byProjectId.invalidate({ id: project.id });
+    },
+  });
 
-	const deleteMutation = trpc.comment.delete.useMutation({
-		onSuccess: () => {
-			utils.annotation.byProjectId.invalidate({ id: project.id });
-		},
-	});
+  const deleteMutation = trpc.comment.delete.useMutation({
+    onSuccess: () => {
+      utils.annotation.byProjectId.invalidate({ id: project.id });
+    },
+  });
 
-	const validationSchema = Yup.object().shape({
-		comment: Yup.string()
-			.min(5, "Comment doit comporter minimum 5 character")
-			.required("Commentaire est obligatoire"),
-	});
+  const validationSchema = Yup.object().shape({
+    comment: Yup.string()
+      .min(5, "Comment doit comporter minimum 5 character")
+      .required("Commentaire est obligatoire"),
+  });
 
-	const formik = useFormik({
-		initialValues: {
-			comment: comment.text,
-		},
-		validateOnMount: false,
-		validationSchema: validationSchema,
-		validateOnBlur: true,
-		validateOnChange: true,
-		onSubmit: async (values) => {
-			await editMutation.mutateAsync({
-				id: comment.id,
-				annotationId: annotation.id,
-				projectId: project.id,
-				comment: values.comment,
-			});
-			formik.resetForm();
-			setEdition(false);
-		},
-	});
+  const formik = useFormik({
+    initialValues: {
+      comment: comment.text,
+    },
+    validateOnMount: false,
+    validationSchema: validationSchema,
+    validateOnBlur: true,
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      await editMutation.mutateAsync({
+        id: comment.id,
+        annotationId: annotation.id,
+        projectId: project.id,
+        comment: values.comment,
+      });
+      formik.resetForm();
+      setEdition(false);
+    },
+  });
 
-	const handleDelete = () => {
-		deleteMutation.mutate({
-			commentId: comment.id,
-		});
-	};
+  const handleDelete = () => {
+    deleteMutation.mutate({
+      commentId: comment.id,
+    });
+  };
 
-	const handleEdit = () => {
-		setEdition(true);
-	};
+  const handleEdit = () => {
+    setEdition(true);
+  };
 
-	const handleClose = () => {
-		setEdition(false);
-	};
-	return (
-		<ListItem
-			sx={{ pl: 4, py: 0, alignItems: "flex-start" }}
-			onMouseEnter={() => setHovering(true)}
-			onMouseLeave={() => setHovering(false)}
-		>
-			<ListItemAvatar sx={{ minWidth: 35, marginTop: 2 }}>
-				<Avatar
-					sx={{
-						background: comment.user.color,
-						width: 24,
-						height: 24,
-						borderWidth: 2,
-						borderColor: comment.user.color,
-						borderStyle: "solid",
-					}}
-					src={comment.user.avatar?.publicUrl}
-				>
-					{comment.user.initial}
-				</Avatar>
-			</ListItemAvatar>
-			<ListItemText
-				primary={
-					<React.Fragment>
-						<Typography component="span" color="white" variant="body2">
-							{comment.user.username}
-						</Typography>{" "}
-						<Typography
-							sx={{ display: "inline" }}
-							component="span"
-							fontWeight="medium"
-							variant="caption"
-							color="gray"
-						>
-							{"-"} {dayjs(comment.createdAt).fromNow()}
-						</Typography>
-					</React.Fragment>
-				}
-				secondary={
-					<React.Fragment>
-						{!edition ? (
-							<MultiLineTypography
-								variant="body2"
-								color="gray"
-								text={comment.text}
-							/>
-						) : (
-							<React.Fragment>
-								<TransparentInput
-									id="comment"
-									name="comment"
-									value={formik.values.comment}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-									error={undefined}
-									unpadded={true}
-									inputProps={{
-										"aria-label": "Saissez votre annotation",
-										maxLength: 250,
-									}}
-									maxRows={5}
-									minRows={2}
-									placeholder={t("annotation.commentPlaceholder") || ""}
-								/>
-								<Box
-									display={"flex"}
-									justifyContent={"flex-end"}
-									sx={{ pt: 1 }}
-								>
-									<Button
-										size="small"
-										onClick={handleClose}
-										sx={{
-											color: grey[500],
-											borderRadius: 10,
-											fontSize: 12,
-										}}
-									>
-										{t("annotation.comment.cancel")}
-									</Button>
-									<Button
-										size="small"
-										variant="contained"
-										disabled={!formik.isValid || formik.isSubmitting}
-										disableElevation
-										sx={{
-											borderRadius: 10,
-											fontSize: 12,
-											"&:disabled": {
-												color: grey[500],
-												backgroundColor: grey[700],
-											},
-										}}
-										onClick={() => formik.handleSubmit()}
-									>
-										{t("annotation.comment.send")}
-									</Button>
-								</Box>
-							</React.Fragment>
-						)}
-					</React.Fragment>
-				}
-			/>
-			<Box display="flex" flexDirection="column" alignItems="flex-end">
-				{hovering &&
-				!edition &&
-				comment.user.id === user?.id &&
-				!deleteMutation.isPending &&
-				!editMutation.isPending ? (
-					<Stack direction={"row"}>
-						<Tooltip title="Modifier" arrow>
-							<IconButton onClick={handleEdit}>
-								<EditIcon sx={{ fontSize: 18 }} />
-							</IconButton>
-						</Tooltip>
-						<Divider orientation="vertical" flexItem light />
-						<Tooltip title="Supprimer" arrow>
-							<IconButton onClick={handleDelete}>
-								<DeleteIcon sx={{ fontSize: 18 }} />
-							</IconButton>
-						</Tooltip>
-					</Stack>
-				) : null}
-			</Box>
-		</ListItem>
-	);
+  const handleClose = () => {
+    setEdition(false);
+  };
+  return (
+    <ListItem
+      sx={{ pl: 4, py: 0, alignItems: "flex-start" }}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+    >
+      <ListItemAvatar sx={{ minWidth: 35, marginTop: 2 }}>
+        <Avatar
+          sx={{
+            background: comment.user.color,
+            width: 24,
+            height: 24,
+            borderWidth: 2,
+            borderColor: comment.user.color,
+            borderStyle: "solid",
+          }}
+          src={comment.user.avatar?.publicUrl}
+        >
+          {comment.user.initial}
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={
+          <React.Fragment>
+            <Typography component="span" color="white" variant="body2">
+              {comment.user.username}
+            </Typography>{" "}
+            <Typography
+              sx={{ display: "inline" }}
+              component="span"
+              fontWeight="medium"
+              variant="caption"
+              color="gray"
+            >
+              {"-"} {dayjs(comment.createdAt).fromNow()}
+            </Typography>
+          </React.Fragment>
+        }
+        secondary={
+          <React.Fragment>
+            {!edition ? (
+              <MultiLineTypography
+                variant="body2"
+                color="gray"
+                text={comment.text}
+              />
+            ) : (
+              <React.Fragment>
+                <TransparentInput
+                  id="comment"
+                  name="comment"
+                  value={formik.values.comment}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={undefined}
+                  unpadded={true}
+                  inputProps={{
+                    "aria-label": "Saissez votre annotation",
+                    maxLength: 250,
+                  }}
+                  maxRows={5}
+                  minRows={2}
+                  placeholder={t("annotation.commentPlaceholder") || ""}
+                />
+                <Box
+                  display={"flex"}
+                  justifyContent={"flex-end"}
+                  sx={{ pt: 1 }}
+                >
+                  <Button
+                    size="small"
+                    onClick={handleClose}
+                    sx={{
+                      color: grey[500],
+                      borderRadius: 10,
+                      fontSize: 12,
+                    }}
+                  >
+                    {t("annotation.comment.cancel")}
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    disabled={!formik.isValid || formik.isSubmitting}
+                    disableElevation
+                    sx={{
+                      borderRadius: 10,
+                      fontSize: 12,
+                      "&:disabled": {
+                        color: grey[500],
+                        backgroundColor: grey[700],
+                      },
+                    }}
+                    onClick={() => formik.handleSubmit()}
+                  >
+                    {t("annotation.comment.send")}
+                  </Button>
+                </Box>
+              </React.Fragment>
+            )}
+          </React.Fragment>
+        }
+      />
+      <Box display="flex" flexDirection="column" alignItems="flex-end">
+        {hovering &&
+        !edition &&
+        comment.user.id === user?.id &&
+        !deleteMutation.isPending &&
+        !editMutation.isPending ? (
+          <Stack direction={"row"}>
+            <Tooltip title="Modifier" arrow>
+              <IconButton onClick={handleEdit}>
+                <EditIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+            <Divider orientation="vertical" flexItem light />
+            <Tooltip title="Supprimer" arrow>
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ) : null}
+      </Box>
+    </ListItem>
+  );
 };

@@ -6,7 +6,7 @@ export const env = createEnv({
     STORAGE_URL: z.string(),
     STORAGE_ACCESS_KEY: z.string(),
     STORAGE_SECRET_KEY: z.string(),
-    STORAGE_BUCKET: z.string().default('celluloid'),
+    STORAGE_BUCKET: z.string().default("celluloid"),
     SMTP_HOST: z.string(),
     SMTP_PORT: z.string(),
     SMTP_SECURE: z.string(),
@@ -14,7 +14,6 @@ export const env = createEnv({
     SMTP_USER: z.string(),
     SMTP_PASSWORD: z.string(),
     MISTRAL_API_KEY: z.string().optional(),
-
   },
   runtimeEnv: process.env,
   skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",

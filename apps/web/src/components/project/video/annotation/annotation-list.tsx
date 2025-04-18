@@ -3,10 +3,10 @@ import type * as React from "react";
 
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 
-import { AnnotationForm } from "./form";
-import { AnnotationItem } from "./annotation-item";
 import type { User } from "@/lib/auth-client";
+import { AnnotationItem } from "./annotation-item";
 import { EmptyAnnotation } from "./empty";
+import { AnnotationForm } from "./form";
 
 interface AnnotationPanelProps {
   project: ProjectById;

@@ -1,13 +1,8 @@
-import type {
-  BetterAuthPlugin,
-  User,
-} from "better-auth";
+import type { BetterAuthPlugin, User } from "better-auth";
 import { APIError } from "better-auth/api";
+import { setSessionCookie } from "better-auth/cookies";
 import { createAuthEndpoint, createAuthMiddleware } from "better-auth/plugins";
 import { z } from "zod";
-import {
-  setSessionCookie,
-} from "better-auth/cookies";
 
 const ERROR_CODES = {
   INVALID_USERNAME_OR_PASSWORD: "invalid username or password",
@@ -178,4 +173,3 @@ export const signupAsStudent = () => {
     },
   } satisfies BetterAuthPlugin;
 };
-

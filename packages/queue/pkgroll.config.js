@@ -17,7 +17,7 @@ export default {
     "minio",
     "nodemailer",
     "zod",
-    "htmlparser2"
+    "htmlparser2",
   ],
   tsconfig: "./tsconfig.json",
 };

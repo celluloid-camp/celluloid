@@ -1,16 +1,16 @@
-import { Box, Button, ClickAwayListener, InputBase, Fade } from "@mui/material";
+import { trpc } from "@/lib/trpc/client";
+import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
+import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import { Box, Button, ClickAwayListener, Fade, InputBase } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import BookmarksIcon from "@mui/icons-material/Bookmarks";
-import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
-import { trpc } from "@/lib/trpc/client";
 
-import { ChapterTimestampSlider } from "./slider";
-import { useState } from "react";
-import { useConfirm } from "material-ui-confirm";
 import type { User } from "@/lib/auth-client";
+import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { ChapterTimestampSlider } from "./slider";
 
 type ChapterFormProps = {
   project: ProjectById;
@@ -155,7 +155,9 @@ export const ChapterFormContent: React.FC<
     },
   });
 
-  const handleClickAway = () => {};
+  const handleClickAway = () => {
+    //TODO: handle click away
+  };
 
   const handleClose = () => {
     onClose();
@@ -247,7 +249,7 @@ export const ChapterFormContent: React.FC<
                 color: grey[500],
               }}
             >
-          {t("common.cancel")}
+              {t("common.cancel")}
             </Button>
             <Button
               size="small"

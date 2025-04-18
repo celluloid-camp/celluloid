@@ -1,5 +1,5 @@
-import { Grow, Stack, Typography } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
+import { Grow, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 export function EmptyChapters() {

@@ -1,6 +1,6 @@
-import { createQueue } from "@mgcrea/prisma-queue";
-import { prisma, type PrismaClient, } from "@celluloid/prisma";
+import { type PrismaClient, prisma } from "@celluloid/prisma";
 import { getPeerTubeCaptions } from "@celluloid/utils";
+import { createQueue } from "@mgcrea/prisma-queue";
 import { convertCaptionsToTranscript } from "../utils/llm";
 
 type TranscriptJobPayload = { projectId: string };

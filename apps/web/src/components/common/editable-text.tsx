@@ -1,20 +1,19 @@
-// biome-ignore lint/style/useImportType: <explanation>
-import React from "react";
-import { useState } from "react";
-import {
-  TextField,
-  Typography,
-  Box,
-  IconButton,
-  styled,
-  type TypographyProps,
-  type TextFieldProps,
-  Stack,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Box,
+  IconButton,
+  Stack,
+  TextField,
+  type TextFieldProps,
+  Typography,
+  type TypographyProps,
+  styled,
+} from "@mui/material";
 import { useClickAway } from "@uidotdev/usehooks";
+import React from "react";
+import { useState } from "react";
 
 interface EditableTextProps {
   value?: string | null;

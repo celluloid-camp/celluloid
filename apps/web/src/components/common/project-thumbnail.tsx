@@ -1,4 +1,6 @@
+import dayjs from "@/utils/dayjs";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import PeopleIcon from "@mui/icons-material/People";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import {
   Box,
@@ -8,17 +10,15 @@ import {
   CircularProgress,
   Grid,
   Stack,
-  styled,
   Typography,
+  styled,
 } from "@mui/material";
 import Image from "mui-image";
 import type * as React from "react";
-import dayjs from "@/utils/dayjs";
-import PeopleIcon from "@mui/icons-material/People";
 
 import { Avatar } from "@/components/common/avatar";
-import { useRouter } from "next/navigation";
 import type { ProjectListItem } from "@/lib/trpc/types";
+import { useRouter } from "next/navigation";
 
 const StyledImage = styled(Image)(() => ({
   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -97,7 +97,6 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
           wrapperStyle={{
             minHeight: 200,
           }}
-
         />
       </Box>
 

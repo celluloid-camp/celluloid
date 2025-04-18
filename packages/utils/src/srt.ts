@@ -5,7 +5,7 @@ interface Subtitle {
 }
 
 export function toSrt(json: Subtitle[]): string {
-  let srt = '';
+  let srt = "";
 
   json.forEach((subtitle: Subtitle, index: number) => {
     const { startTime, endTime, text } = subtitle;
@@ -31,5 +31,5 @@ function formatTime(time: number): string {
 }
 
 function padNumber(number: number, length = 2): string {
-  return number.toString().padStart(length, '0');
+  return number.toString().padStart(length, "0");
 }

@@ -1,11 +1,11 @@
 "use client";
-import { Suspense } from "react";
-import { ProjectGridSkeleton } from "./skeleton";
-import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { ErrorBoundary } from "react-error-boundary";
 import { Button, Fade, Typography } from "@mui/material";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { ProjectGrid } from "./project-grid";
+import { ProjectGridSkeleton } from "./skeleton";
 
 export function HomePageProjects() {
   const t = useTranslations();

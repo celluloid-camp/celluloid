@@ -4,43 +4,43 @@ import { parse } from "@plussub/srt-vtt-parser";
 import type { Entry } from "@plussub/srt-vtt-parser/dist/types";
 
 export const getPeerTubeVideoData = async ({
-	videoId,
-	host,
+  videoId,
+  host,
 }: {
-	videoId: string;
-	host: string;
+  videoId: string;
+  host: string;
 }): Promise<PeerTubeVideo | null> => {
-	const headers = {
-		Accepts: "application/json",
-	};
+  const headers = {
+    Accepts: "application/json",
+  };
 
-	const apiUrl = `https://${host}/api/v1/videos/${videoId}`;
+  const apiUrl = `https://${host}/api/v1/videos/${videoId}`;
 
-	const response = await fetch(apiUrl, {
-		method: "GET",
-		headers: new Headers(headers),
-	});
+  const response = await fetch(apiUrl, {
+    method: "GET",
+    headers: new Headers(headers),
+  });
 
-	if (response.status === 200) {
-		const data = await response.json();
-		return data as PeerTubeVideo;
-	}
-	throw new Error(
-		`Could not perform PeerTube API request (error ${response.status})`,
-	);
+  if (response.status === 200) {
+    const data = await response.json();
+    return data as PeerTubeVideo;
+  }
+  throw new Error(
+    `Could not perform PeerTube API request (error ${response.status})`,
+  );
 };
 
 export type Caption = {
-	language: string;
-	entries: Entry[];
+  language: string;
+  entries: Entry[];
 };
 
 export const getPeerTubeCaptions = async ({
-	videoId,
-	host,
+  videoId,
+  host,
 }: {
-	videoId: string;
-	host: string;
+  videoId: string;
+  host: string;
 }): Promise<Array<Caption>> => {
   const videoData = await getPeerTubeVideoData({ videoId, host });
   if (!videoData) {

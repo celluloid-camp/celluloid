@@ -3,9 +3,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Autocomplete,
   type AutocompleteProps,
-  styled,
   TextField,
   type TextFieldProps,
+  styled,
 } from "@mui/material";
 
 interface TagProps extends ReturnType<AutocompleteGetTagProps> {
@@ -55,7 +55,7 @@ const StyledTag = styled(Tag)<TagProps>(
     cursor: pointer;
     padding: 4px;
   }
-`
+`,
 );
 
 type AutoCompleteTagsProps<T> = Omit<
@@ -73,7 +73,7 @@ export function AutoCompleteTags(props: AutoCompleteTagsProps<string>) {
       freeSolo
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
-          <StyledTag  label={option} {...getTagProps({ index })} />
+          <StyledTag label={option} {...getTagProps({ index })} />
         ))
       }
       renderInput={(params) => (

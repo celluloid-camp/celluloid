@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import type { Metadata } from "next";
 import "./globals.css";
 import { AppProviders } from "@/components/providers";
 import { NextIntlClientProvider } from "next-intl";
-import localFont from "next/font/local";
 import { getLocale } from "next-intl/server";
+import localFont from "next/font/local";
 
 export const dynamic = "force-dynamic";
 

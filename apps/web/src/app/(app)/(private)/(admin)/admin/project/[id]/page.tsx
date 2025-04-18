@@ -3,15 +3,15 @@ import { Suspense } from "react";
 import ProjectPageLoading from "./loading";
 
 export default async function ProjectPage({
-	params,
+  params,
 }: {
-	params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }) {
-	const { id } = await params;
+  const { id } = await params;
 
-	return (
-		<Suspense fallback={<ProjectPageLoading />}>
-			<ProjectDetails projectId={id} />
-		</Suspense>
-	);
+  return (
+    <Suspense fallback={<ProjectPageLoading />}>
+      <ProjectDetails projectId={id} />
+    </Suspense>
+  );
 }

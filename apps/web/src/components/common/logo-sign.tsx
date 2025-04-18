@@ -1,7 +1,6 @@
 import type * as React from "react";
 
 export const LogoSign: React.FC = () => (
-  // biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
   <svg
     viewBox="0 0 60 28"
     fill="none"

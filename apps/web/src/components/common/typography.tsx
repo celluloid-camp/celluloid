@@ -1,4 +1,4 @@
-import { styled, Typography } from "@mui/material";
+import { Typography, styled } from "@mui/material";
 
 export const StyledTitle = styled(Typography)(({ theme }) => ({
   display: "inline-block",
