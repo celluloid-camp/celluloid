@@ -66,7 +66,6 @@ export const getPeerTubeCaptions = async ({
       return [];
     }
 
-    console.log("captionsResponse", captionsResponse.total);
     // Fetch content for each caption
     const captions = await Promise.all(
       captionsResponse.data.map(async (caption) => {
@@ -74,7 +73,6 @@ export const getPeerTubeCaptions = async ({
         const captionResponse = await fetch(captionUrl);
         const content = await captionResponse.text();
         const parsed = parse(content);
-        console.log("parsed", parsed);
         return {
           language: caption.language.id,
           entries: parsed.entries,

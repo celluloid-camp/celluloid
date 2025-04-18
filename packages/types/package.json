@@ -5,15 +5,28 @@
   "repository": "http://github.com/celluloid-edu/celluloid",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
-  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "scripts": {
+    "build": "pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "@celluloid/config": "workspace:*"
+    "@celluloid/config": "workspace:*",
+    "pkgroll": "^2.11.2",
+    "typescript": "catalog:"
+  },
+  "pkgroll": {
+    "input": "src/index.ts",
+    "output": "dist",
+    "format": "esm",
+    "minify": true,
+    "sourcemap": true
   }
 }

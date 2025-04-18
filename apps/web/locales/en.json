@@ -283,6 +283,16 @@
       "title": "Notes",
       "update_at": "Last changed",
       "saving": "Saving.."
+    },
+    "transcript": {
+      "generating": "Transcript is being generated...",
+      "button": {
+        "generate": "Generate Transcript",
+        "download": "Download Transcript"
+      },
+      "title": "Transcript",
+      "failed": "Failed to load Transcript",
+      "try-again": "Try again"
     }
   },
   "chapter": {
@@ -358,19 +368,19 @@
       "placeholder": "Username"
     },
     "error": {
-      "user-not-found": "The username/email or password you entered is incorrect."
+      "user-not-found": "User not found"
     },
-    "usernameRequired": "This field is required",
+    "usernameRequired": "Username required",
     "passwordRequired": "Password required."
   },
   "confirm": {
     "username": {
       "required": "The username is required.",
-      "label": "Email",
-      "placeholder": "Email"
+      "label": "Email or username",
+      "placeholder": "Email or username"
     },
     "code": {
-      "required": "The Code is required.",
+      "required": "The password is required.",
       "label": "Confirmation code",
       "placeholder": "Confirmation code"
     },
@@ -383,7 +393,7 @@
       "sent": "Chapters generation started"
     },
     "resend": {
-      "success": "Verification code resent."
+      "success": "Code resent"
     }
   },
   "forgot": {
@@ -676,15 +686,6 @@
     "table": {
       "title": "Title",
       "public": "Public"
-    }
-  },
-  "otp": {
-    "form": {
-      "invalide-code": "Invalid code. please try again.",
-      "invalid-code": "Invalid code. Please try again.",
-      "title": "Enter Verification Code",
-      "description": "Enter the verification code sent to your email address.",
-      "success": "You’re signed in successfully"
     }
   }
 }

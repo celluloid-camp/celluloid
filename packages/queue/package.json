@@ -39,6 +39,7 @@
     "@mgcrea/prisma-queue": "1.12.0",
     "@mistralai/mistralai": "^1.5.2",
     "@t3-oss/env-core": "catalog:",
+    "htmlparser2": "^10.0.0",
     "minio": "^7.1.3",
     "nodemailer": "^6.9.9",
     "zod": "catalog:"

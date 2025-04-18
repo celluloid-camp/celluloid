@@ -170,12 +170,16 @@ export const projectRouter = router({
           user: {
             select: defaultUserSelect
           },
-          chapterJob: {
+          jobs: {
             select: {
-              id: true,
-              error: true,
-              finishedAt: true,
-              progress: true,
+              type: true,
+              queueJob: {
+                select: {
+                  id: true,
+                  finishedAt: true,
+                  progress: true,
+                }
+              }
             }
           },
           playlist: {
@@ -263,9 +267,14 @@ export const projectRouter = router({
         await prisma.project.update({
           where: { id: project.id },
           data: {
-            chapterJob: {
-              connect: {
-                id: jobId.id
+            jobs: {
+              create: {
+                type: "chapter",
+                queueJob: {
+                  connect: {
+                    id: jobId.id
+                  }
+                }
               }
             }
           }

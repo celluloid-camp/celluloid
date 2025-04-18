@@ -6,7 +6,12 @@ import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import { ProjectNotes } from "./project-notes";
 import { Suspense } from "react";
-import { ProjectTranscript } from "./project-transcript";
+import {
+	ProjectTranscript,
+	TranscriptErrorFallback,
+} from "./project-transcript";
+import { projectFallbackRender } from "./error-fallback";
+import { ErrorBoundary } from "react-error-boundary";
 export function ProjectDetails({ projectId }: { projectId: string }) {
 	const { data: session, isPending } = useSession();
 	const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
@@ -32,29 +37,33 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
 						<Grid item xs={12} md={8} lg={8}>
 							<ProjectSummary project={project} user={session?.user} />
 							{session ? (
+								<ErrorBoundary FallbackComponent={() => <Box>Failed</Box>}>
+									<Suspense
+										fallback={
+											<Skeleton
+												variant="rectangular"
+												height={200}
+												sx={{ borderRadius: 2, my: 2 }}
+											/>
+										}
+									>
+										<ProjectNotes project={project} user={session?.user} />
+									</Suspense>
+								</ErrorBoundary>
+							) : null}
+							<ErrorBoundary FallbackComponent={TranscriptErrorFallback}>
 								<Suspense
 									fallback={
 										<Skeleton
 											variant="rectangular"
-											height={200}
+											height={300}
 											sx={{ borderRadius: 2, my: 2 }}
 										/>
 									}
 								>
-									<ProjectNotes project={project} user={session?.user} />
+									<ProjectTranscript project={project} user={session?.user} />
 								</Suspense>
-							) : null}
-							<Suspense
-								fallback={
-									<Skeleton
-										variant="rectangular"
-										height={300}
-										sx={{ borderRadius: 2, my: 2 }}
-									/>
-								}
-							>
-								<ProjectTranscript project={project} user={session?.user} />
-							</Suspense>
+							</ErrorBoundary>
 						</Grid>
 						<Grid item xs={12} md={4} lg={4}>
 							{isPending ? (

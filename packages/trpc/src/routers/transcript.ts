@@ -1,7 +1,7 @@
 import { Prisma, prisma } from '@celluloid/prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { convertCaptionsToTranscript } from '@celluloid/queue';
+import { convertCaptionsToTranscript, transcriptsQueue } from '@celluloid/queue';
 
 import { publicProcedure, router } from '../trpc';
 import { getPeerTubeCaptions } from '@celluloid/utils';
@@ -49,34 +49,15 @@ export const transcriptRouter = router({
     .mutation(async ({ input, ctx }) => {
       const { projectId } = input;
 
-      const project = await prisma.project.findUnique({
+      const job = await transcriptsQueue.add({ projectId: projectId });
+
+      await prisma.project.update({
         where: { id: projectId },
+        data: {
+          jobs: { create: { type: "transcript", queueJobId: job.id } },
+        },
       });
 
-      if (!project || !project.videoId || !project.host) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Project not found',
-        });
-      }
-
-      const captions = await getPeerTubeCaptions({
-        videoId: project.videoId,
-        host: project.host,
-      });
-      if (captions.length > 0 && captions[0]) {
-        const transcript = await convertCaptionsToTranscript(captions[0]);
-
-        await prisma.projectTranscript.upsert({
-          where: { projectId: projectId },
-          update: { content: transcript },
-          create: { projectId: projectId, content: transcript, language: captions[0].language, entries: captions[0].entries },
-        });
-
-      }
-
-
-
-      return null;
+      return job.id;
     }),
 });

@@ -77,12 +77,19 @@ model Project {
 
   fileDownloadUrl String?
 
-  chapterJob   QueueJob? @relation(fields: [chapterJobId], references: [id])
-  chapterJobId BigInt?   @db.BigInt
-
+  jobs        ProjectQueueJob[]
   chapters    Chapter[]
-  ProjectNote ProjectNote[]
+  notes       ProjectNote[]
   transcripts ProjectTranscript?
+}
+
+model ProjectQueueJob {
+  id         String    @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project    Project   @relation(fields: [projectId], references: [id])
+  projectId  String    @db.Uuid
+  type       String
+  queueJob   QueueJob? @relation(fields: [queueJobId], references: [id])
+  queueJobId BigInt?   @db.BigInt
 }
 
 model Chapter {
@@ -231,25 +238,25 @@ model Storage {
 }
 
 model QueueJob {
-  id          BigInt    @id @default(autoincrement()) @db.BigInt
+  id          BigInt            @id @default(autoincrement()) @db.BigInt
   queue       String
   key         String?
   cron        String?
   payload     Json?
   result      Json?
   error       Json?
-  progress    Int       @default(0)
-  priority    Int       @default(0)
-  attempts    Int       @default(0)
+  progress    Int               @default(0)
+  priority    Int               @default(0)
+  attempts    Int               @default(0)
   maxAttempts Int?
-  runAt       DateTime  @default(now())
+  runAt       DateTime          @default(now())
   notBefore   DateTime?
   finishedAt  DateTime?
   processedAt DateTime?
   failedAt    DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  projects    Project[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  projects    ProjectQueueJob[]
 
   @@unique([key, runAt])
   @@index([queue, priority, runAt, finishedAt])
@@ -260,8 +267,8 @@ model ProjectNote {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   projectId String   @db.Uuid
   userId    String   @db.Uuid
-  project   Project  @relation(fields: [projectId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "projectnote_projectid_foreign")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "projectnote_userid_foreign")
   content   Json?
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
