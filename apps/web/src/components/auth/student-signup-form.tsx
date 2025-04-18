@@ -17,10 +17,12 @@ import { isTRPCClientError, trpc } from "@/lib/trpc/client";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { StyledDialogTitle } from "../common/styled-dialog";
+import { useSnackbar } from "notistack";
 
-export function StudentSignupForm({ onClose }: { onClose?: () => void }) {
+export function StudentSignupForm() {
 	const t = useTranslations();
 	const router = useRouter();
+	const { enqueueSnackbar } = useSnackbar();
 
 	// const utils = trpc.useContext();
 	const mutation = trpc.user.joinProject.useMutation();
@@ -71,6 +73,9 @@ export function StudentSignupForm({ onClose }: { onClose?: () => void }) {
 
 				if (projectId) {
 					router.push(`/project/${projectId}`);
+					enqueueSnackbar(t("join.message.success"), {
+						variant: "success",
+					});
 				} else {
 					router.push("/");
 				}
@@ -104,7 +109,7 @@ export function StudentSignupForm({ onClose }: { onClose?: () => void }) {
 			<StyledDialogTitle
 				loading={formik.isSubmitting}
 				error={formik.errors.error}
-				onClose={onClose}
+				onClose={() => router.back()}
 			>
 				{t("student-signup.title")}
 			</StyledDialogTitle>
@@ -116,7 +121,6 @@ export function StudentSignupForm({ onClose }: { onClose?: () => void }) {
 						margin="dense"
 						fullWidth={true}
 						label={t("student-student-signup.shareCode.label")}
-						required={true}
 						value={formik.values.shareCode}
 						placeholder={t("student-signup.shareCode.placeholder")}
 						onChange={formik.handleChange}

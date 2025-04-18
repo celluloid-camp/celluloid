@@ -161,7 +161,7 @@
       "label": "{count, plural, =0 {Aucune annotation} =1 {1 annotation} other {# annotations}}"
     },
     "annotaions": {
-      "empty": "Les annotations correspondantes aux différents temps de la vidéo serontaffichées ici."
+      "empty": "Les annotations correspondantes aux différents temps de la vidéo seront affichées ici."
     },
     "assignment": "Activité",
     "assignmentPlaceholder": "Ajoutez une activité",
@@ -210,6 +210,10 @@
       "dialog": {
         "title": "Modifier le projet"
       }
+    },
+    "export": {
+      "success": "Projet exporté avec succès",
+      "title": "Exporter"
     },
     "keywords": "Mots clés",
     "members": "{ count } participant",
@@ -280,8 +284,7 @@
       "title": "Notes",
       "update_at": "Derniére modification",
       "saving": "Sauvegarde..."
-    },
-    "export": "Export"
+    }
   },
   "chapter": {
     "confirm-delete": {
@@ -402,6 +405,13 @@
     },
     "button": {
       "submit": "Rejoindre"
+    },
+    "code": {
+      "required": "Le code de partage est requis"
+    },
+    "description": "Entrez le code de partage pour rejoindre le projet",
+    "message": {
+      "success": "Vous avez rejoint le projet"
     }
   },
   "password": {
