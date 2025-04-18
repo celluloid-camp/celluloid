@@ -1,9 +1,9 @@
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { ButtonBase, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
-import { useTranslations } from "next-intl";
 import { Stack } from "@mui/material";
+import { useTranslations } from "next-intl";
 import { THUMBNAIL_WIDTH } from "./constants";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 
 export function AddVideoButton({ onClick }: { onClick: () => void }) {
   const t = useTranslations();

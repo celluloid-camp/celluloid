@@ -14,13 +14,13 @@ const prismaClientSingleton = () => {
               .split(/\s+/)
               .map((part) => part.substring(0, 1))
               .join("")
-              .substring(0, 2)
+              .substring(0, 2);
           },
         },
         color: {
           needs: { id: true },
           compute(user) {
-            return randomColor({ seed: user.id, luminosity: "bright" })
+            return randomColor({ seed: user.id, luminosity: "bright" });
           },
         },
       },
@@ -28,48 +28,49 @@ const prismaClientSingleton = () => {
         publicUrl: {
           needs: { path: true, bucket: true },
           compute(storage) {
-            return `${env.STORAGE_URL}/${storage.bucket}/${storage.path}`
+            return `${env.STORAGE_URL}/${storage.bucket}/${storage.path}`;
           },
-        }
+        },
       },
       annotation: {
         extra: {
           needs: { extra: true },
           compute(a) {
-            if (a.extra && typeof a.extra === 'object' &&
-              !Array.isArray(a.extra)) {
-
-              const extraObject = a.extra as Prisma.JsonObject
+            if (
+              a.extra &&
+              typeof a.extra === "object" &&
+              !Array.isArray(a.extra)
+            ) {
+              const extraObject = a.extra as Prisma.JsonObject;
               return {
                 x: extraObject.x,
                 y: extraObject.y,
                 relativeX: extraObject.relativeX,
                 relativeY: extraObject.relativeY,
                 parentWidth: extraObject.parentWidth,
-                parentHeight: extraObject.parentHeight
-              }
+                parentHeight: extraObject.parentHeight,
+              };
             }
-            return null
+            return null;
           },
-        }
-      }
+        },
+      },
     },
-  })
-}
+  });
+};
 
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
+type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined
-}
+  prisma: PrismaClientSingleton | undefined;
+};
 
-const prisma = globalForPrisma.prisma ?? prismaClientSingleton()
+const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
-export { prisma }
+export { prisma };
 
 export * from "@prisma/client";
 
 export default PrismaModule;
-

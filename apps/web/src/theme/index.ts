@@ -25,23 +25,24 @@ interface Neutral {
 declare module "@mui/material/styles" {
   interface Palette {
     neutral?: Neutral;
-    brand: { green: string, orange: string };
+    brand: { green: string; orange: string };
   }
 
   interface PaletteOptions {
     neutral?: Neutral;
-    brand: { green: string, orange: string };
+    brand: { green: string; orange: string };
   }
 }
 
-
 export const createTheme = (): Theme => {
-  let theme = createMuiTheme(baseThemeOptions, celluloidThemeOptions, /*reactRouterThemeOptions*/);
+  let theme = createMuiTheme(
+    baseThemeOptions,
+    celluloidThemeOptions /*reactRouterThemeOptions*/,
+  );
 
   theme = responsiveFontSizes(theme);
 
   return theme;
 };
-
 
 export const theme = createTheme();

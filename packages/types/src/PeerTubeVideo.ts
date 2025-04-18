@@ -1,4 +1,3 @@
-
 export interface PeerTubeVideo {
   id: number;
   uuid: string;
@@ -95,17 +94,15 @@ interface StreamingPlaylist {
   type: number;
   playlistUrl: string;
   segmentsSha256Url: string;
-  redundancies: Record<string, unknown>
+  redundancies: Record<string, unknown>;
   files: File[];
 }
 
-
-
 export interface Playlist {
-  id: number
-  position: number
-  startTimestamp: number | null
-  stopTimestamp: number | null
-  type: number
-  video: PeerTubeVideo
+  id: number;
+  position: number;
+  startTimestamp: number | null;
+  stopTimestamp: number | null;
+  type: number;
+  video: PeerTubeVideo;
 }

@@ -9,16 +9,16 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AnnotationOverlayHints } from "./annotation/overlay-hints";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
 
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById, AnnotationByProjectId } from "@/lib/trpc/types";
 import { useVideoPlayerProgress } from "@/components/video-player/store";
-import { VideoPanel } from "./video-panel";
+import { trpc } from "@/lib/trpc/client";
+import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 import { ContextualOverlay } from "./annotation/contextual/overlay";
 import { ContextualOverlayEditor } from "./annotation/contextual/overlay-editor";
+import { VideoPanel } from "./video-panel";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
-  { ssr: false }
+  { ssr: false },
 );
 
 interface Props {
@@ -64,17 +64,17 @@ export function ProjectVideoScreen({ project }: Props) {
         ? annotations.filter(
             (annotation) =>
               videoProgress >= annotation.startTime &&
-              videoProgress <= annotation.stopTime
+              videoProgress <= annotation.stopTime,
           )
         : [],
-    [annotations, videoProgress, playerIsReady]
+    [annotations, videoProgress, playerIsReady],
   );
 
   useEffect(() => {
     const position = videoPlayerRef.current?.getCurrentTime();
     const paused = visibleAnnotations.filter(
       (annotation) =>
-        annotation.pause && annotation.startTime === Math.floor(videoProgress)
+        annotation.pause && annotation.startTime === Math.floor(videoProgress),
     );
 
     if (paused.length > 0 && position) {

@@ -1,6 +1,6 @@
+import { type PrismaClient, prisma } from "@celluloid/prisma";
 import { createQueue } from "@mgcrea/prisma-queue";
 import { sendEmailVerification, sendForgetPassword } from "../mailer/send-mail";
-import { prisma, type PrismaClient } from "@celluloid/prisma";
 
 type EmailJobPayload = {
   email: string;

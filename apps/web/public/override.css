@@ -1,41 +1,41 @@
 :root {
-    --topbar-color: white;
-    --sidebar-bg-color: darkgray;
-    --sidebar-color: white;
-    --sidebar-link-color: orange;
-  }
+  --topbar-color: white;
+  --sidebar-bg-color: darkgray;
+  --sidebar-color: white;
+  --sidebar-link-color: orange;
+}
 
-  section[data-css="sidebar"] {
-    background-color: var(--sidebar-bg-color) !important;
-    color: var(--sidebar-color);
-    border: none;
-  }
+section[data-css="sidebar"] {
+  background-color: var(--sidebar-bg-color) !important;
+  color: var(--sidebar-color);
+  border: none;
+}
 
-  section[data-css="sidebar"] svg {
-    fill: var(--sidebar-color) !important;
-  }
+section[data-css="sidebar"] svg {
+  fill: var(--sidebar-color) !important;
+}
 
-  a[data-css="sidebar-logo"] {
-    background-color: var(--sidebar-bg-color) !important;
-  }
+a[data-css="sidebar-logo"] {
+  background-color: var(--sidebar-bg-color) !important;
+}
 
-  section[data-css="sidebar-resources"] {
-    background: var(--sidebar-bg-color) !important;
-  }
+section[data-css="sidebar-resources"] {
+  background: var(--sidebar-bg-color) !important;
+}
 
-  [data-css="sidebar"] section a {
-    background: var(--sidebar-bg-color) !important;
-    color: var(--sidebar-color);
-  }
+[data-css="sidebar"] section a {
+  background: var(--sidebar-bg-color) !important;
+  color: var(--sidebar-color);
+}
 
-  [data-css="sidebar"] a:hover {
-    color: var(--sidebar-link-color);
-  }
+[data-css="sidebar"] a:hover {
+  color: var(--sidebar-link-color);
+}
 
-  @font-face {
-    font-family: 'lexendregular';
-    src: url('fonts/lexend-variablefont_wght-webfont.woff2') format('woff2'),
-        url('fonts/lexend-variablefont_wght-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-  }
+@font-face {
+  font-family: "lexendregular";
+  src: url("fonts/lexend-variablefont_wght-webfont.woff2") format("woff2"),
+    url("fonts/lexend-variablefont_wght-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}

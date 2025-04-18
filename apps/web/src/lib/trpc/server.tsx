@@ -1,14 +1,14 @@
 import "server-only"; // <-- ensure this file cannot be imported from the client
+import { auth } from "@celluloid/auth";
+import {
+  appRouter,
+  createCallerFactory,
+  createTRPCContext,
+} from "@celluloid/trpc";
 import { createHydrationHelpers } from "@trpc/react-query/rsc";
+import { headers } from "next/headers";
 import { cache } from "react";
 import { makeQueryClient } from "./query-client";
-import {
-  createTRPCContext,
-  createCallerFactory,
-  appRouter,
-} from "@celluloid/trpc";
-import { auth } from "@celluloid/auth";
-import { headers } from "next/headers";
 
 // async function createContext() {
 //   const reqHeaders = (await headers()) as Headers;
@@ -34,5 +34,5 @@ export const getQueryClient = cache(makeQueryClient);
 const caller = createCallerFactory(appRouter)(createContent);
 export const { trpc, HydrateClient } = createHydrationHelpers<typeof appRouter>(
   caller,
-  getQueryClient
+  getQueryClient,
 );

@@ -1,16 +1,16 @@
-import { create } from 'zustand'
 import type { AnnotationByProjectId } from "@/lib/trpc/types";
-import { shallow } from 'zustand/shallow'
-import { useStoreWithEqualityFn } from 'zustand/traditional'
+import { create } from "zustand";
+import { shallow } from "zustand/shallow";
+import { useStoreWithEqualityFn } from "zustand/traditional";
 
 type ContextualPosition = {
-  relativeX: number,
-  relativeY: number,
-  x: number,
-  y: number,
-  parentWidth: number,
-  parentHeight: number
-}
+  relativeX: number;
+  relativeY: number;
+  x: number;
+  y: number;
+  parentWidth: number;
+  parentHeight: number;
+};
 
 type AnnotationEditorState = {
   showHints: boolean;
@@ -25,7 +25,7 @@ type AnnotationEditorState = {
   setContextualEditorVisible: (visible: boolean) => void;
   setFormVisible: (visible: boolean) => void;
   setEditedAnnotation: (annotation: AnnotationByProjectId | undefined) => void;
-}
+};
 const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
   showHints: false,
   playerIsReady: false,
@@ -44,7 +44,7 @@ const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
       editedAnnotation: undefined,
       contextualPosition: undefined,
       contextualEditorVisible: false,
-      formVisible: false
+      formVisible: false,
     })),
 
   setContextualEditorVisible: (visible) =>
@@ -52,7 +52,7 @@ const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
       ...state,
       contextualEditorVisible: visible,
       showHints: false,
-      contextualPosition: visible ? state.contextualPosition : undefined
+      contextualPosition: visible ? state.contextualPosition : undefined,
     })),
 
   setFormVisible: (visible) =>
@@ -62,7 +62,7 @@ const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
       editedAnnotation: undefined,
       contextualPosition: undefined,
       contextualEditorVisible: false,
-      showHints: false
+      showHints: false,
     })),
 
   setEditedAnnotation: (annotation) =>
@@ -71,8 +71,10 @@ const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
       editedAnnotation: annotation,
       contextualPosition: undefined,
       showHints: false,
-      contextualEditorVisible: annotation !== undefined && Object.keys(annotation?.extra || {}).length > 0,
-      formVisible: annotation !== undefined
+      contextualEditorVisible:
+        annotation !== undefined &&
+        Object.keys(annotation?.extra || {}).length > 0,
+      formVisible: annotation !== undefined,
     })),
 }));
 
@@ -81,14 +83,20 @@ export const useContextualEditorVisible = () =>
   annotationEditorStore((state) => state.contextualEditorVisible);
 
 export const useContextualEditorVisibleState = () => {
-  const visible = annotationEditorStore((state) => state.contextualEditorVisible);
-  const setVisible = annotationEditorStore((state) => state.setContextualEditorVisible);
+  const visible = annotationEditorStore(
+    (state) => state.contextualEditorVisible,
+  );
+  const setVisible = annotationEditorStore(
+    (state) => state.setContextualEditorVisible,
+  );
   return [visible, setVisible] as const;
 };
 
 export const useContextualEditorPosition = () => {
   const position = annotationEditorStore((state) => state.contextualPosition);
-  const setPosition = annotationEditorStore((state) => state.setContextualPosition);
+  const setPosition = annotationEditorStore(
+    (state) => state.setContextualPosition,
+  );
   return [position, setPosition] as const;
 };
 
@@ -106,7 +114,9 @@ export const useAnnotationFormVisible = () => {
 
 export const useEditAnnotation = () => {
   const annotation = annotationEditorStore((state) => state.editedAnnotation);
-  const setAnnotation = annotationEditorStore((state) => state.setEditedAnnotation);
+  const setAnnotation = annotationEditorStore(
+    (state) => state.setEditedAnnotation,
+  );
   return [annotation, setAnnotation] as const;
 };
 
@@ -121,7 +131,7 @@ export const useAnnotationEditorState = () =>
       playerIsReady: state.playerIsReady,
       contextualEditorVisible: state.contextualEditorVisible,
       formVisible: state.formVisible,
-      editedAnnotation: state.editedAnnotation
+      editedAnnotation: state.editedAnnotation,
     }),
-    shallow
+    shallow,
   );

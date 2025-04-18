@@ -2,25 +2,23 @@ import type { PeerTubeVideo, Playlist } from "@celluloid/types";
 // import * as queryString from "query-string";
 import { last } from "ramda";
 
-
 export type PeerTubeVideoWithThumbnail = PeerTubeVideo & {
   thumbnailURL: string;
   duration: number;
   metadata: JSON;
-}
+};
 
 export type PeerTubeVideoDataResult = {
   videos: PeerTubeVideoWithThumbnail[];
   orignalURL: string;
   apiURL: string;
   isPlaylist: boolean;
-  _raw: JSON
-}
+  _raw: JSON;
+};
 
 export const getPeerTubeVideoData = async (
-  url: string
+  url: string,
 ): Promise<PeerTubeVideoDataResult | null> => {
-
   let parsed: URL;
   try {
     parsed = new URL(url);
@@ -39,7 +37,9 @@ export const getPeerTubeVideoData = async (
   const isPlaylist = parsed.pathname.includes("/w/p");
 
   // https://p.lu/w/p/9d9CdgkCuFSemYQba1DW2u
-  const apiUrl = isPlaylist ? `https://${host}/api/v1/video-playlists/${videoId}/videos` : `https://${host}/api/v1/videos/${videoId}`;
+  const apiUrl = isPlaylist
+    ? `https://${host}/api/v1/video-playlists/${videoId}/videos`
+    : `https://${host}/api/v1/videos/${videoId}`;
 
   const response = await fetch(apiUrl, {
     method: "GET",
@@ -53,21 +53,30 @@ export const getPeerTubeVideoData = async (
       isPlaylist,
       orignalURL: url,
       apiURL: apiUrl,
-      videos: isPlaylist ? data.data.map((d: Playlist) => ({ ...d.video, duration: d.video.duration, thumbnailURL: `https://${host}${d.video.thumbnailPath}`, metadata: d.video })) : [{ ...data, duration: data.duration, thumbnailURL: `https://${host}${data.thumbnailPath}`, metadata: data }],
-      _raw: data
-    }
+      videos: isPlaylist
+        ? data.data.map((d: Playlist) => ({
+            ...d.video,
+            duration: d.video.duration,
+            thumbnailURL: `https://${host}${d.video.thumbnailPath}`,
+            metadata: d.video,
+          }))
+        : [
+            {
+              ...data,
+              duration: data.duration,
+              thumbnailURL: `https://${host}${data.thumbnailPath}`,
+              metadata: data,
+            },
+          ],
+      _raw: data,
+    };
   }
   throw new Error(
-    `Could not perform PeerTube API request (error ${response.status})`
+    `Could not perform PeerTube API request (error ${response.status})`,
   );
+};
 
-}
-
-
-export const getPeerTubeThumbnail = async (
-  url: string
-): Promise<string> => {
-
+export const getPeerTubeThumbnail = async (url: string): Promise<string> => {
   const parsed = new URL(url);
   const host = parsed.host;
   const videoId = last(parsed.pathname.split("/"));
@@ -89,8 +98,6 @@ export const getPeerTubeThumbnail = async (
     return data.thumbnailPath;
   }
   throw new Error(
-    `Could not perform PeerTube API request (error ${response.status})`
+    `Could not perform PeerTube API request (error ${response.status})`,
   );
-}
-
-
+};

@@ -4,21 +4,21 @@ import { Box, Paper } from "@mui/material";
 
 import React, { useCallback, useState } from "react";
 
-import { AddVideoToPlaylistDialog } from "./add-video-to-playlist-dialog";
 import { StyledTitle } from "@/components/common/typography";
 import type {
   PeerTubeVideoDataResult,
   PeerTubeVideoWithThumbnail,
 } from "@/services/peertube";
 import { useTranslations } from "next-intl";
+import { AddVideoToPlaylistDialog } from "./add-video-to-playlist-dialog";
+import { CreateProjectForm } from "./create-project-form";
 import { PeerTubeUrlInput } from "./peertube-url-input";
 import { VideoSnapshots } from "./video-snapshots";
-import { CreateProjectForm } from "./create-project-form";
 
 export const CreateProjectPage: React.FC = () => {
   const t = useTranslations();
   const [videoInfo, setVideoInfo] = useState<PeerTubeVideoDataResult | null>(
-    null
+    null,
   );
 
   const handleVideoInfoLoaded = (data: PeerTubeVideoDataResult | null) => {

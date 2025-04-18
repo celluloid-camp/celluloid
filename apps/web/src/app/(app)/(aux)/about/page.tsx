@@ -1,8 +1,8 @@
+import { OpenEditionLogo } from "@/images/OpenEdition";
 import { Box, Grid, Link, Typography } from "@mui/material";
-import type * as React from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { OpenEditionLogo } from "@/images/OpenEdition";
+import type * as React from "react";
 
 import mshparisnordLogo from "@/images/about/hsmparisnord_100px.jpg";
 import logoFsm from "@/images/about/logo-fsm.jpg";

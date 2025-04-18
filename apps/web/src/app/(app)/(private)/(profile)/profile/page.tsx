@@ -1,5 +1,5 @@
 import { UserProfile } from "@/components/profile/user-profile";
-import { Container, Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 export default function ProfilePage() {
   return (

@@ -1,26 +1,24 @@
+import { auth } from "@celluloid/auth";
+import { appRouter } from "@celluloid/trpc";
+import { createTRPCContext } from "@celluloid/trpc";
+import { headers } from "next/headers";
+import { createOpenApiFetchHandler } from "trpc-to-openapi";
 
-
-import { createOpenApiFetchHandler } from 'trpc-to-openapi';
-import { appRouter } from '@celluloid/trpc';
-import { createTRPCContext } from '@celluloid/trpc';
-import { auth } from '@celluloid/auth';
-import { headers } from 'next/headers';
-
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const handler = async (req: Request) => {
-
-  const reqHeaders = await headers() as Headers;
+  const reqHeaders = (await headers()) as Headers;
   const session = await auth.api.getSession({
     headers: reqHeaders,
   });
 
   return createOpenApiFetchHandler({
-    endpoint: '/api',
+    endpoint: "/api",
     router: appRouter,
-    createContext: () => createTRPCContext({
-      session,
-    }),
+    createContext: () =>
+      createTRPCContext({
+        session,
+      }),
     req,
   });
 };

@@ -1,5 +1,5 @@
-import { create } from 'zustand';
 import type { PeerTubeVideoDataResult } from "@/services/peertube";
+import { create } from "zustand";
 
 export type ProjectFormInput = {
   title: string;
@@ -35,7 +35,10 @@ const useProjectStore = create<ProjectStore>((set) => ({
 // Hook aliases for backward compatibility
 export const useProjectInputIntialState = () => {
   const store = useProjectStore();
-  return [store, store.setState] as [ProjectFormInput, (state: Partial<ProjectFormInput>) => void];
+  return [store, store.setState] as [
+    ProjectFormInput,
+    (state: Partial<ProjectFormInput>) => void,
+  ];
 };
 
 export const userResetProjectInputIntialState = () => {

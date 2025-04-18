@@ -7,16 +7,16 @@ import { useFormik } from "formik";
 import type React from "react";
 import { useState } from "react";
 
-import * as Yup from "yup";
 import { useSession } from "@/lib/auth-client";
+import * as Yup from "yup";
 
 import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
-import type { PeerTubeVideoDataResult } from "@/services/peertube";
 import { ERR_ALREADY_EXISTING_PROJECT } from "@/i18n/errors";
 import { useHumanizeError } from "@/i18n/errors";
 import { trpc } from "@/lib/trpc/client";
-import { useRouter } from "next/navigation";
+import type { PeerTubeVideoDataResult } from "@/services/peertube";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
   const t = useTranslations();
@@ -125,7 +125,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
           ) {
             formik.setFieldError(
               "title",
-              humanizeError("ERR_ALREADY_EXISTING_PROJECT")
+              humanizeError("ERR_ALREADY_EXISTING_PROJECT"),
             );
           } else {
             formik.setFieldError("title", humanizeError("ERR_UNKOWN"));

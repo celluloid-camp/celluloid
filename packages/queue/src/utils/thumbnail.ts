@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn } from "node:child_process";
 
 /**
  * Generates a thumbnail image from a video at a specific timestamp
@@ -17,34 +17,47 @@ import { spawn } from 'node:child_process';
  * -q:v: Set quality to 2 (high quality, lower number = better quality)
  * -y: Overwrite output file if it exists
  */
-export async function generateThumbnail(videoUrl: string, timestamp: number, outputPath: string): Promise<void> {
+export async function generateThumbnail(
+  videoUrl: string,
+  timestamp: number,
+  outputPath: string,
+): Promise<void> {
   return new Promise((resolve, reject) => {
-    const ffmpegProcess = spawn('ffmpeg', [
-      '-ss', timestamp.toString(),
-      '-i', videoUrl,
-      '-vframes', '1',
-      '-vf', 'scale=320:-1',
-      '-f', 'image2',
-      '-c:v', 'mjpeg',
-      '-q:v', '2',
-      '-y',
-      outputPath
+    const ffmpegProcess = spawn("ffmpeg", [
+      "-ss",
+      timestamp.toString(),
+      "-i",
+      videoUrl,
+      "-vframes",
+      "1",
+      "-vf",
+      "scale=320:-1",
+      "-f",
+      "image2",
+      "-c:v",
+      "mjpeg",
+      "-q:v",
+      "2",
+      "-y",
+      outputPath,
     ]);
 
-    let errorOutput = '';
+    let errorOutput = "";
 
-    ffmpegProcess.stderr.on('data', (data) => {
+    ffmpegProcess.stderr.on("data", (data) => {
       errorOutput += data.toString();
     });
 
-    ffmpegProcess.on('close', (code) => {
+    ffmpegProcess.on("close", (code) => {
       if (code === 0) {
         resolve();
       } else {
-        reject(new Error(`FFmpeg process exited with code ${code}\n${errorOutput}`));
+        reject(
+          new Error(`FFmpeg process exited with code ${code}\n${errorOutput}`),
+        );
       }
     });
 
-    ffmpegProcess.on('error', reject);
+    ffmpegProcess.on("error", reject);
   });
 }

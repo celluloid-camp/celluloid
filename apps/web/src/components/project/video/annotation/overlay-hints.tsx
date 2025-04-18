@@ -1,14 +1,14 @@
 import CancelIcon from "@mui/icons-material/Clear";
 import { Box, Fade, IconButton, Paper, Stack, Typography } from "@mui/material";
-import React from "react";
 import { useTranslations } from "next-intl";
+import React from "react";
 
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 
-import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 import { HtmlTooltip } from "./html-tooltip";
+import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 
 interface AnnotationHintsProps {
   project: ProjectById;
@@ -104,8 +104,6 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
 }) => {
   const t = useTranslations();
 
-
-
   const [_, setHintsVisible] = useAnnotationHintsVisible();
 
   const getHintStartPosition = (annotation: AnnotationByProjectId) =>
@@ -149,13 +147,10 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
           sx={{ backgroundColor: "black" }}
         >
           <Box>
-
             <Typography align="left" variant="h5" color="white">
-            {
-              t("project.annotation.label",{
-                count: annotations.length
-              })
-            }
+              {t("project.annotation.label", {
+                count: annotations.length,
+              })}
             </Typography>
           </Box>
 

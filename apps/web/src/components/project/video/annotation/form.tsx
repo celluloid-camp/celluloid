@@ -16,9 +16,12 @@ import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import type { ProjectById, UserMe } from "@/lib/trpc/types";
 import { trpc } from "@/lib/trpc/client";
+import type { ProjectById, UserMe } from "@/lib/trpc/types";
 
+import { useVideoPlayerProgress } from "@/components/video-player/store";
+import type { User } from "@/lib/auth-client";
+import { useTranslations } from "next-intl";
 import { DurationSlider } from "./duration-slider";
 import {
   useAnnotationFormVisible,
@@ -26,9 +29,6 @@ import {
   useContextualEditorVisibleState,
   useEditAnnotation,
 } from "./useAnnotationEditor";
-import { useVideoPlayerProgress } from "@/components/video-player/store";
-import { useTranslations } from "next-intl";
-import type { User } from "@/lib/auth-client";
 type AnnotationFormProps = {
   duration: number;
   project: ProjectById;
@@ -146,7 +146,9 @@ export const AnnotationFormContent: React.FC<
     },
   });
 
-  const handleClickAway = () => {};
+  const handleClickAway = () => {
+    //TODO: handle click away
+  };
 
   const handleClose = () => {
     setContextualEditorVisible(false);

@@ -9,7 +9,6 @@ export const LogoWithLabel: React.FC<LogoWithLabelWithProps> = ({
   const color = variants === "black" ? "#000000" : "#ffff";
 
   return (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
     <svg width="180" height="40">
       <g id="surface1">
         <path

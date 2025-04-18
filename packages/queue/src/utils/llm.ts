@@ -2,9 +2,7 @@ import type { Caption } from "@celluloid/utils";
 import { Mistral } from "@mistralai/mistralai";
 import { env } from "../env";
 
-
 export const convertCaptionsToTranscript = async (captions: Caption) => {
-
   const apiKey = env.MISTRAL_API_KEY;
 
   if (!apiKey) {
@@ -22,14 +20,13 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
   3 - format the transcript to be more readable.
 
   ${captions.entries.map((entry) => `${entry.text}`).join("\n")}
-  `
+  `;
   const chatResponse = await client.chat.stream({
     model: "mistral-large-latest",
-    messages: [{ role: 'user', content: prompt }]
+    messages: [{ role: "user", content: prompt }],
   });
 
   let transcript = "";
-
 
   for await (const chunk of chatResponse) {
     const streamText = chunk.data.choices[0]?.delta.content;
@@ -37,7 +34,6 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
       transcript += streamText;
     }
   }
-
 
   return transcript;
 };

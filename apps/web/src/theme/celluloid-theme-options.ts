@@ -17,7 +17,7 @@ const neutral = {
 const background = {
   default: "#F9FAFC",
   paper: "#FFFFFF",
-  dark: "#292929"
+  dark: "#292929",
 };
 
 const divider = "#E6E8F0";
@@ -190,9 +190,8 @@ export const celluloidThemeOptions: ThemeOptions = {
     warning,
     brand: {
       green: "#C2CCAB",
-      orange: "#FFE7DB"
+      orange: "#FFE7DB",
     },
-
   },
   shadows: [
     "none",

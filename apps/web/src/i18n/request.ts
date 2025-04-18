@@ -11,7 +11,6 @@ export default getRequestConfig(async () => {
   } catch (error) {
     // Fallback to default locale (assuming 'en' is your default)
     console.warn(`Failed to load locale ${locale}, falling back to en`);
-    // biome-ignore lint/style/noUnusedTemplateLiteral: <explanation>
     const defaultMessages = (await import(`../../locales/en.json`)).default;
     return { locale: "en" as const, messages: defaultMessages };
   }

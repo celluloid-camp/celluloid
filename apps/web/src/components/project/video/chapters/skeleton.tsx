@@ -1,12 +1,12 @@
 import {
+  Skeleton,
   Timeline,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
   TimelineItem,
   TimelineOppositeContent,
   TimelineSeparator,
-  TimelineDot,
-  TimelineConnector,
-  TimelineContent,
-  Skeleton,
 } from "@mui/lab";
 import { timelineOppositeContentClasses } from "@mui/lab";
 import { Stack } from "@mui/material";

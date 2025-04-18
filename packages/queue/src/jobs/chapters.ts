@@ -1,11 +1,11 @@
-import { createQueue } from "@mgcrea/prisma-queue";
+import { exec } from "node:child_process";
 import { pipeline } from "node:stream";
 import { promisify } from "node:util";
-import { exec } from "node:child_process";
-import { detectScenes } from "../utils/scenes";
-import { env } from "../env";
+import { type PrismaClient, prisma } from "@celluloid/prisma";
 import type { PeerTubeVideo } from "@celluloid/types";
-import { prisma, type PrismaClient } from "@celluloid/prisma";
+import { createQueue } from "@mgcrea/prisma-queue";
+import { env } from "../env";
+import { detectScenes } from "../utils/scenes";
 
 const execPromise = promisify(exec);
 const streamPipeline = promisify(pipeline);
@@ -35,7 +35,6 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
       throw new Error("No video data found");
     }
 
-
     const videoUrl = metadata.streamingPlaylists[0]?.files
       .sort((a, b) => a.size - b.size) // Sort files by size in ascending order
       .find((file) => file.fileDownloadUrl)?.fileDownloadUrl; // Find the first file with a download URL
@@ -64,7 +63,11 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
     // });
 
     try {
-      const chapters = await detectScenes({ projectId: payload.projectId, videoUrl, duration });
+      const chapters = await detectScenes({
+        projectId: payload.projectId,
+        videoUrl,
+        duration,
+      });
 
       await job.progress(70);
       const thumbnailStorages = await prisma.storage.createManyAndReturn({
