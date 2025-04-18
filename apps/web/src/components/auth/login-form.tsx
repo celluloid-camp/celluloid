@@ -21,7 +21,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
-
+import Link from "next/link";
 export function LoginForm({ onClose }: { onClose?: () => void }) {
 	const t = useTranslations();
 	const router = useRouter();
@@ -47,41 +47,48 @@ export function LoginForm({ onClose }: { onClose?: () => void }) {
 		router.replace("/forgot");
 	};
 
-	const handleConfirm = (email?: string) => {
-		router.replace(`/otp?email=${email}`);
-	};
-
 	const handleSignup = () => {
 		router.replace("/signup");
 	};
 
 	const onSubmit = async (values: LoginFormData) => {
-		const { error } = await signIn.email({
-			email: values.username,
-			password: values.password,
-		});
+		const isEmail = values.username.includes("@");
+		let loginResult: {
+			data: Record<string, any> | null;
+			error: Record<string, any> | null;
+		} = {
+			data: null,
+			error: null,
+		};
+		if (isEmail) {
+			loginResult = await signIn.email({
+				email: values.username,
+				password: values.password,
+			});
+		} else {
+			loginResult = await signIn.username({
+				username: values.username,
+				password: values.password,
+			});
+		}
+		const { error } = loginResult;
 
 		if (error?.code === "EMAIL_NOT_VERIFIED") {
 			await authClient.emailOtp.sendVerificationOtp({
 				email: values.username,
 				type: "sign-in",
 			});
-			return handleConfirm(values.username);
-		}
 
-		if (error) {
-			const { error: usernameError } = await signIn.username({
-				username: values.username,
-				password: values.password,
-			});
-			if (usernameError) {
-				setError("root", { message: t("signin.error.user-not-found") });
-				return;
-			}
+			router.replace(`/otp?email=${values.username}`);
+			return;
 		}
-
-		utils.project.list.invalidate();
-		router.back();
+		if (
+			error?.code === "INVALID_USERNAME_OR_PASSWORD" ||
+			error?.code === "INVALID_EMAIL_OR_PASSWORD"
+		) {
+			setError("root", { message: t("signin.error.user-not-found") });
+			return;
+		}
 		onClose?.();
 	};
 
@@ -101,7 +108,6 @@ export function LoginForm({ onClose }: { onClose?: () => void }) {
 						margin="dense"
 						fullWidth={true}
 						label={t("signin.login")}
-						required={true}
 						placeholder={t("signin.login")}
 						disabled={isSubmitting}
 						slotProps={{
@@ -117,7 +123,6 @@ export function LoginForm({ onClose }: { onClose?: () => void }) {
 						margin="dense"
 						fullWidth={true}
 						label={t("signin.password")}
-						required={true}
 						placeholder={t("signin.password")}
 						disabled={isSubmitting}
 						slotProps={{

@@ -1,20 +1,14 @@
 "use client";
-
 import { StyledDialog } from "@/components/common/styled-dialog";
+import { LoginForm } from "@/components/auth/login-form";
 import { useRouter } from "next/navigation";
 import { OtpForm } from "@/components/auth/otp-form";
 
-export default async function OTPDialog({
-  searchParams,
-}: {
-  searchParams: Promise<{ email?: string }>;
-}) {
-  const { email } = await searchParams;
-  const router = useRouter();
-
-  return (
-    <StyledDialog onClose={() => router.back()} open={true}>
-      <OtpForm email={email} onClose={() => router.back()} />
-    </StyledDialog>
-  );
+export default function OtpPage() {
+	const router = useRouter();
+	return (
+		<StyledDialog onClose={() => router.back()} open={true}>
+			<OtpForm />
+		</StyledDialog>
+	);
 }
