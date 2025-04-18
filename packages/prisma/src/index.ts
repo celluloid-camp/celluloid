@@ -1,5 +1,6 @@
 import PrismaModule, { type Prisma, PrismaClient } from "@prisma/client";
 import randomColor from "randomcolor";
+import { env } from "./env";
 
 // PrismaClient singleton pattern from Prisma docs
 const prismaClientSingleton = () => {
@@ -27,7 +28,7 @@ const prismaClientSingleton = () => {
         publicUrl: {
           needs: { path: true, bucket: true },
           compute(storage) {
-            return `${process.env.STORAGE_URL}/${storage.bucket}/${storage.path}`
+            return `${env.STORAGE_URL}/${storage.bucket}/${storage.path}`
           },
         }
       },

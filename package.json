@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "dotenv -- turbo watch dev --continue",
     "clean": "turbo clean",
-    "build": "dotenv -- turbo run build --no-cache",
+    "build": "SKIP_ENV_VALIDATIONS=true turbo run build --no-cache",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install",
     "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",

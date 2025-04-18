@@ -2,10 +2,8 @@ import { type Prisma, prisma } from "@celluloid/prisma";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { auth } from "@celluloid/auth";
 
 import { adminProcedure, router } from "../trpc";
-import { defaultUserSelect } from "./user";
 
 export const adminRouter = router({
 	listProjects: adminProcedure

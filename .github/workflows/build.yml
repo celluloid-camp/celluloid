@@ -43,6 +43,7 @@ jobs:
           target: "web"
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
+            DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 
       - name: Build Worker Container
         uses: docker/build-push-action@v3
@@ -56,3 +57,4 @@ jobs:
           target: "worker"
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
+            DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres

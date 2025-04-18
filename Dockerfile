@@ -16,13 +16,6 @@ RUN turbo prune --scope=web --scope=worker --docker
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
 WORKDIR /workspace
-# RUN apk add --update --no-cache libc6-compat && rm -rf /var/cache/apk/*
-ENV NEXT_TELEMETRY_DISABLED=1
-
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
-
-ENV SKIP_ENV_VALIDATIONS="true"
 
 # COPY .gitignore .gitignore
 COPY --from=builder /workspace/out/json/ .
@@ -31,6 +24,7 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
 
 
 FROM installer AS web-builder
+
 # Build the project
 COPY --from=builder /workspace/out/full/ .
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
@@ -43,6 +37,7 @@ RUN pnpm prisma generate
 RUN pnpm run build --filter=web...
 
 FROM installer AS worker-builder
+
 COPY --from=builder /workspace/out/full/ .
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
   pnpm install --filter=worker... -r --workspace-root --frozen-lockfile --unsafe-perm
@@ -88,6 +83,7 @@ WORKDIR /workspace
 
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}
+ENV SKIP_ENV_VALIDATIONS=true
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs

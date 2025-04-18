@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm with-env next dev",
-    "build": "NODE_ENV=production pnpm with-env next build",
+    "build": "NODE_ENV=production SKIP_ENV_VALIDATIONS=true next build",
     "start": "next start",
     "lint": "next lint",
     "with-env": "dotenv -e ../../.env --"
