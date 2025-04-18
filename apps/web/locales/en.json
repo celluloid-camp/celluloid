@@ -277,6 +277,9 @@
           "title": "Title",
           "description": "Chapter description"
         }
+      },
+      "inProgress": {
+        "description": "Chapter generation is in progress…"
       }
     },
     "note": {
@@ -363,10 +366,7 @@
     "signupTitle": "Signup",
     "title": "Sign In",
     "upgradeAccountMessage": "Please enter a valid email and a password to continue",
-    "username": {
-      "required": "Username required",
-      "placeholder": "Username"
-    },
+    "username": "Username",
     "error": {
       "user-not-found": "User not found"
     },

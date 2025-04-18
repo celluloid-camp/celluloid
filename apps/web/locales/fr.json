@@ -284,6 +284,16 @@
       "title": "Notes",
       "update_at": "Derniére modification",
       "saving": "Sauvegarde..."
+    },
+    "transcript": {
+      "generating": "La transcription est en cours de génération...",
+      "button": {
+        "generate": "Générer une transcription",
+        "download": "Télécharger la transcription"
+      },
+      "title": "Transcription",
+      "failed": "Échec du chargement de la transcription",
+      "try-again": "Essayer à nouveau"
     }
   },
   "chapter": {
@@ -354,12 +364,12 @@
     "signupTitle": "Inscription",
     "title": "Se connecter",
     "upgradeAccountMessage": "Pour continuer, vous devez renseigner  votre adresse email et un mot de passe",
+    "username": "Prenom ou pseudo",
     "error": {
       "user-not-found": "Utilisateur non trouvé"
     },
     "usernameRequired": "Le nom d'utilisateur est requis",
-    "passwordRequired": "Le mot de passe est requis.",
-    "username": "Prenom ou pseudo"
+    "passwordRequired": "Le mot de passe est requis."
   },
   "confirm": {
     "username": {
@@ -379,6 +389,9 @@
     },
     "generation": {
       "sent": "La génération des chapitres a commencé"
+    },
+    "resend": {
+      "success": "Code renvoyé"
     }
   },
   "forgot": {
@@ -493,6 +506,7 @@
     "button": {
       "submit": "Rejoindre"
     },
+    "share-code-required": "le code de partage est requis",
     "sharecode-required": "Code du project est requis\n",
     "username-required": "Le nom d'utilisateur est requis",
     "password-required": "Le mot de passe doit comporter au moins 8 caractères",
@@ -576,7 +590,8 @@
         }
       },
       "update": {
-        "success": "Projet mis à jour avec succès"
+        "success": "Projet mis à jour avec succès",
+        "error": "Erreur lors de la mise à jour du projet"
       },
       "title": "Détails du projet",
       "label": {
@@ -634,6 +649,7 @@
     "security-tab": "Sécurité"
   },
   "printAction": "Imprimer",
+  "userNameRequired": "Nom d'utilisateur requis",
   "forget": {
     "email": {
       "invalid": "Adresse mail invalide"
@@ -641,7 +657,8 @@
   },
   "common": {
     "add": "Ajouter",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "password-min-length": "Le mot de passe doit comporter au moins 8 caractères"
   },
   "profil": {
     "update": {
@@ -653,6 +670,7 @@
   },
   "users": {
     "table": {
+      "userame": "Nom d'utilisateur",
       "username": "Nom d'utilisateur",
       "email": "E-mail",
       "role": "Rôle",
