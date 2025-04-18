@@ -32,7 +32,7 @@ export function ProjectGrid() {
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const t = useTranslations();
 
-	const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
+	const [searchTerm, setSearchTerm] = useState<string | undefined>("");
 	// Debounce the search function
 	const debouncedSearch = debounce((value: string) => {
 		if (value.length >= 3) {

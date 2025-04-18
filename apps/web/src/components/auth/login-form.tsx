@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
 import Link from "next/link";
-export function LoginForm({ onClose }: { onClose?: () => void }) {
+export function LoginForm() {
 	const t = useTranslations();
 	const router = useRouter();
 	const utils = trpc.useUtils();
@@ -89,7 +89,7 @@ export function LoginForm({ onClose }: { onClose?: () => void }) {
 			setError("root", { message: t("signin.error.user-not-found") });
 			return;
 		}
-		onClose?.();
+		router.back();
 	};
 
 	return (
@@ -97,7 +97,7 @@ export function LoginForm({ onClose }: { onClose?: () => void }) {
 			<StyledDialogTitle
 				loading={isSubmitting}
 				error={errors.root?.message}
-				onClose={onClose}
+				onClose={() => router.back()}
 			>
 				{t("signin.title")}
 			</StyledDialogTitle>
