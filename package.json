@@ -15,7 +15,7 @@
     "clean": "turbo clean",
     "build": "SKIP_ENV_VALIDATIONS=true turbo run build --no-cache",
     "lint": "biome check --fix",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test": "pnpm exec playwright test",
     "test:codegen": "pnpm exec playwright codegen http://localhost:3000",
     "--shortcuts to run commands in workspaces--": "",
@@ -35,9 +35,9 @@
     "@playwright/test": "^1.52.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.1",
+    "git-format-staged": "^3.1.1",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
-    "lint-staged": "^15.5.1",
     "mock-req": "^0.2.0",
     "mock-res": "^0.5.0",
     "prettier": "^3.0.3",
@@ -51,10 +51,6 @@
   },
   "engines": {
     "node": ">=20"
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx,jsx}": "biome check --cache --fix",
-    "*.{js,css,md,ts,tsx,jsx}": "biome format --write"
   },
   "dependencies": {
     "abort-controller": "^3.0.0",
