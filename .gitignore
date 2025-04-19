@@ -54,3 +54,6 @@ sandbox
 .adminjs
 .eslintcache
 dist
+
+# Playwright
+/blob-report/

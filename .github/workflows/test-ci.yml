@@ -76,7 +76,7 @@ jobs:
 
       - name: Run Playwright tests
         # with workground https://github.com/microsoft/playwright/issues/6500
-        run: npx playwright test
+        run: pnpm exec playwright test
         env:
           HOME: /root
 
