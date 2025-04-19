@@ -183,7 +183,12 @@ export function ProjectNotes({ project, user }: Props) {
               <Typography variant="caption" color="text.secondary">
                 {t("project.note.update_at")} {dayjs(data?.updatedAt).fromNow()}
               </Typography>
-              <Button variant="text" size="small" onClick={handleDownload}>
+              <Button
+                variant="text"
+                size="small"
+                onClick={handleDownload}
+                sx={{ color: colors.grey[800] }}
+              >
                 <DownloadIcon />
                 {t("project.note.button.download")}
               </Button>

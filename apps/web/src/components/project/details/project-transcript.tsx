@@ -9,6 +9,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  CircularProgress,
   Collapse,
   IconButton,
   Typography,
@@ -23,6 +24,7 @@ import { trpc } from "@/lib/trpc/client";
 import { LoadingButton } from "@mui/lab";
 import { useQueryClient } from "@tanstack/react-query";
 import type { FallbackProps } from "react-error-boundary";
+import { StyledMarkdown } from "@/components/common/markdown";
 
 interface Props {
   project: ProjectById;
@@ -55,6 +57,11 @@ export function ProjectTranscript({ project, user }: Props) {
     project.jobs.find((job) => job.type === "transcript")?.queueJob?.progress !=
     100;
 
+  const canGenerateTranscript =
+    (user?.role === "ADMIN" || user?.id === project.userId) &&
+    !data?.content &&
+    !isTranscriptInProgress;
+
   const downloadTranscript = (content: string) => {
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -78,19 +85,18 @@ export function ProjectTranscript({ project, user }: Props) {
       />
       <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
         {isTranscriptInProgress ? (
-          <Typography variant="body2" sx={{ padding: 2 }}>
-            {t("project.transcript.generating")}
-          </Typography>
+          <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
+            <CircularProgress size={12} color="primary" />
+            <Typography variant="body2">
+              {t("project.transcript.generating")}
+            </Typography>
+          </Box>
+        ) : data?.content ? (
+          <StyledMarkdown content={data?.content} />
         ) : (
-          <Markdown
-            components={{
-              p: (props) => {
-                return <Typography variant="body1" sx={{ mb: 1 }} {...props} />;
-              },
-            }}
-          >
-            {data?.content}
-          </Markdown>
+          <Typography variant="body2">
+            Video transcript not available.
+          </Typography>
         )}
       </CardContent>
 
@@ -103,25 +109,26 @@ export function ProjectTranscript({ project, user }: Props) {
       >
         {}
 
-        {(user?.role === "ADMIN" || user?.id === project.userId) &&
-          !data?.content &&
-          !isTranscriptInProgress && (
-            <LoadingButton
-              variant="contained"
-              loading={mutation.isPending}
-              color="primary"
-              disabled={mutation.isPending}
-              onClick={async () => {
-                mutation.mutate({
-                  projectId: project.id,
-                });
-              }}
-            >
-              {t("project.transcript.button.generate")}
-            </LoadingButton>
-          )}
+        {canGenerateTranscript && (
+          <LoadingButton
+            variant="contained"
+            loading={mutation.isPending}
+            color="primary"
+            disabled={mutation.isPending}
+            onClick={async () => {
+              mutation.mutate({
+                projectId: project.id,
+              });
+            }}
+          >
+            {t("project.transcript.button.generate")}
+          </LoadingButton>
+        )}
         {data?.content ? (
-          <Button onClick={() => downloadTranscript(data?.content ?? "")}>
+          <Button
+            onClick={() => downloadTranscript(data?.content ?? "")}
+            sx={{ color: colors.grey[800] }}
+          >
             <DownloadIcon />
             {t("project.transcript.button.download")}
           </Button>
