@@ -53,7 +53,7 @@ export function ProjectTranscript({ project, user }: Props) {
 
   const isTranscriptInProgress =
     project.jobs.find((job) => job.type === "transcript")?.queueJob?.progress !=
-    null;
+    100;
 
   const downloadTranscript = (content: string) => {
     const blob = new Blob([content], { type: "text/plain" });
@@ -93,6 +93,7 @@ export function ProjectTranscript({ project, user }: Props) {
           </Markdown>
         )}
       </CardContent>
+
       <CardActions
         sx={{
           flexDirection: "column",

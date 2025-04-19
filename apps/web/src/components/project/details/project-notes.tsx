@@ -7,6 +7,7 @@ import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatStrikethroughIcon from "@mui/icons-material/FormatStrikethrough";
 import {
   Box,
+  Button,
   Card,
   CircularProgress,
   Stack,
@@ -14,6 +15,7 @@ import {
   Typography,
   colors,
 } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
 import Placeholder from "@tiptap/extension-placeholder";
 import Strike from "@tiptap/extension-strike";
 import {
@@ -29,7 +31,13 @@ import { Markdown } from "tiptap-markdown";
 import { trpc } from "@/lib/trpc/client";
 import dayjs from "@/utils/dayjs";
 import { debounce } from "lodash";
-import { useCallback, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 
 interface Props {
   project: ProjectById;
@@ -38,16 +46,23 @@ interface Props {
 export function ProjectNotes({ project, user }: Props) {
   const t = useTranslations();
   const [isSaving, setIsSaving] = useState(false);
+  const notesRef = useRef<{ getContentAsText: () => string }>(null);
 
   const [data] = trpc.note.byProjectId.useSuspenseQuery({
     projectId: project.id,
   });
 
+  const utils = trpc.useUtils();
   const updateNote = trpc.note.update.useMutation({
     onSuccess: () => {
       setTimeout(() => {
         setIsSaving(false);
       }, 500);
+    },
+    onSettled: () => {
+      utils.note.byProjectId.invalidate({
+        projectId: project.id,
+      });
     },
   });
 
@@ -62,6 +77,21 @@ export function ProjectNotes({ project, user }: Props) {
     }, 2000),
     [],
   );
+
+  const handleDownload = () => {
+    if (notesRef.current) {
+      const textContent = notesRef.current.getContentAsText();
+      const blob = new Blob([textContent], {
+        type: "text/plain",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${project.title}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  };
 
   const handleUpdate = (content: JSON) => {
     debouncedUpdate(content);
@@ -97,6 +127,7 @@ export function ProjectNotes({ project, user }: Props) {
           backgroundImage: `repeating-linear-gradient(${colors.blue[50]} 0px, ${colors.blue[50]} 29px, ${colors.grey[300]} 29px, ${colors.grey[300]} 30px)`,
           p: 3,
           pt: 2,
+          pb: 1,
           position: "relative",
           borderRadius: 1,
           overflow: "hidden",
@@ -139,11 +170,24 @@ export function ProjectNotes({ project, user }: Props) {
           <TiptapNotes
             content={data?.content as unknown as JSON}
             onUpdate={handleUpdate}
+            ref={notesRef}
           />
           {data && (
-            <Typography variant="caption" color="text.secondary">
-              {t("project.note.update_at")} {dayjs(data?.updatedAt).fromNow()}
-            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="caption" color="text.secondary">
+                {t("project.note.update_at")} {dayjs(data?.updatedAt).fromNow()}
+              </Typography>
+              <Button variant="text" size="small" onClick={handleDownload}>
+                <DownloadIcon />
+                {t("project.note.button.download")}
+              </Button>
+            </Box>
           )}
         </Box>
       </Box>
@@ -151,10 +195,10 @@ export function ProjectNotes({ project, user }: Props) {
   );
 }
 
-const TiptapNotes = ({
-  content,
-  onUpdate,
-}: { content: JSON; onUpdate: (content: JSON) => void }) => {
+const TiptapNotes = forwardRef<
+  { getContentAsText: () => string },
+  { content: JSON; onUpdate: (content: JSON) => void }
+>(({ content, onUpdate }, ref) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -175,6 +219,12 @@ const TiptapNotes = ({
       onUpdate(editor.getJSON() as unknown as JSON);
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    getContentAsText: () => {
+      return editor ? editor.getText() : "";
+    },
+  }));
 
   return (
     <>
@@ -251,4 +301,4 @@ const TiptapNotes = ({
       <EditorContent editor={editor} />
     </>
   );
-};
+});

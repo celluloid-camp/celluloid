@@ -285,13 +285,16 @@
     "note": {
       "title": "Notes",
       "update_at": "Last changed",
-      "saving": "Saving.."
+      "saving": "Saving..",
+      "button": {
+        "download": "Download"
+      }
     },
     "transcript": {
       "generating": "Transcript is being generated...",
       "button": {
         "generate": "Generate Transcript",
-        "download": "Download Transcript"
+        "download": "Download "
       },
       "title": "Transcript",
       "failed": "Failed to load Transcript",

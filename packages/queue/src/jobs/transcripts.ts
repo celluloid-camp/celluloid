@@ -51,6 +51,8 @@ export const transcriptsQueue = createQueue<TranscriptJobPayload, JobResult>(
           },
         });
 
+        await job.progress(100);
+
         console.log("transcript saved");
       } catch (error) {
         console.error("error generating transcript", error);

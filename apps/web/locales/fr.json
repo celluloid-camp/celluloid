@@ -283,13 +283,16 @@
     "note": {
       "title": "Notes",
       "update_at": "Derniére modification",
-      "saving": "Sauvegarde..."
+      "saving": "Sauvegarde...",
+      "button": {
+        "download": "Télécharger"
+      }
     },
     "transcript": {
       "generating": "La transcription est en cours de génération...",
       "button": {
         "generate": "Générer une transcription",
-        "download": "Télécharger la transcription"
+        "download": "Télécharger "
       },
       "title": "Transcription",
       "failed": "Échec du chargement de la transcription",
