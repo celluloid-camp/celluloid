@@ -40,7 +40,11 @@
     "hintLabel_other": "{{count}} annotations",
     "hintLabel_plural": "{{count}} annotations",
     "hintLabelNone": "Aucune annotation",
-    "pauseLabel": "Mettre en pause ?"
+    "pauseLabel": "Mettre en pause ?",
+    "delete": {
+      "success": "Annotation supprimée",
+      "error": "Erreur lors de la suppression de l'annotation, veuillez réessayer."
+    }
   },
   "actions": {
     "cancel": "Annuler",
@@ -289,14 +293,30 @@
       }
     },
     "transcript": {
+      "title": "Transcription",
       "generating": "La transcription est en cours de génération...",
+      "empty": "Transcription vidéo non disponible.",
       "button": {
         "generate": "Générer une transcription",
-        "download": "Télécharger "
+        "download": "Télécharger"
       },
-      "title": "Transcription",
       "failed": "Échec du chargement de la transcription",
       "try-again": "Essayer à nouveau"
+    },
+    "error": {
+      "loading": "Erreur lors du chargement du projet",
+      "details": {
+        "title": "Détails du projet non disponibles",
+        "description": "Nous n'avons pas pu charger les détails du projet en raison d'une erreur."
+      }
+    },
+    "video": {
+      "annotation": {
+        "comment": {
+          "minLength": "Comment doit comporter minimum 2 character",
+          "required": "Commentaire est obligatoire"
+        }
+      }
     }
   },
   "chapter": {
@@ -367,21 +387,21 @@
     "signupTitle": "Inscription",
     "title": "Se connecter",
     "upgradeAccountMessage": "Pour continuer, vous devez renseigner  votre adresse email et un mot de passe",
-    "username": "Prenom ou pseudo",
     "error": {
-      "user-not-found": "Utilisateur non trouvé"
+      "user-not-found": "Le nom d'utilisateur/email ou le mot de passe que vous avez saisi est incorrect."
     },
-    "usernameRequired": "Le nom d'utilisateur est requis",
-    "passwordRequired": "Le mot de passe est requis."
+    "usernameRequired": "Ce champ est requis",
+    "passwordRequired": "Le mot de passe est requis.",
+    "username": "Prenom ou pseudo"
   },
   "confirm": {
     "username": {
       "required": "Le nom d'utilisateur est requis.",
-      "label": "Email ou nom d'utilisateur",
-      "placeholder": "Email ou nom d'utilisateur"
+      "label": "Email",
+      "placeholder": "Email"
     },
     "code": {
-      "required": "Le mot de passe est requis.",
+      "required": "Le  code de confirmation est requis.",
       "label": "Code de confirmation",
       "placeholder": "Code de confirmation"
     },
@@ -394,7 +414,7 @@
       "sent": "La génération des chapitres a commencé"
     },
     "resend": {
-      "success": "Code renvoyé"
+      "success": "Code de vérification renvoyé."
     }
   },
   "forgot": {
@@ -509,7 +529,6 @@
     "button": {
       "submit": "Rejoindre"
     },
-    "share-code-required": "le code de partage est requis",
     "sharecode-required": "Code du project est requis\n",
     "username-required": "Le nom d'utilisateur est requis",
     "password-required": "Le mot de passe doit comporter au moins 8 caractères",
@@ -593,8 +612,7 @@
         }
       },
       "update": {
-        "success": "Projet mis à jour avec succès",
-        "error": "Erreur lors de la mise à jour du projet"
+        "success": "Projet mis à jour avec succès"
       },
       "title": "Détails du projet",
       "label": {
@@ -652,7 +670,6 @@
     "security-tab": "Sécurité"
   },
   "printAction": "Imprimer",
-  "userNameRequired": "Nom d'utilisateur requis",
   "forget": {
     "email": {
       "invalid": "Adresse mail invalide"
@@ -660,8 +677,7 @@
   },
   "common": {
     "add": "Ajouter",
-    "cancel": "Annuler",
-    "password-min-length": "Le mot de passe doit comporter au moins 8 caractères"
+    "cancel": "Annuler"
   },
   "profil": {
     "update": {
@@ -673,7 +689,6 @@
   },
   "users": {
     "table": {
-      "userame": "Nom d'utilisateur",
       "username": "Nom d'utilisateur",
       "email": "E-mail",
       "role": "Rôle",
@@ -684,6 +699,30 @@
     "table": {
       "title": "Titre",
       "public": "Public"
+    }
+  },
+  "otp": {
+    "form": {
+      "title": "Entrez le code de vérification",
+      "description": "Saisissez le code de vérification envoyé à votre adresse e-mail.",
+      "success": "Vous êtes maintenant connecté",
+      "invalid-code": "Code invalide. Veuillez réessayer"
+    }
+  },
+  "comment": {
+    "tooltip": {
+      "title": {
+        "delete": "Supprimer",
+        "update": "Modifier"
+      }
+    },
+    "update": {
+      "success": "Commentaire a été mis à jour",
+      "error": "Erreur lors de la mise à jour du commentaire, veuillez réessayer."
+    },
+    "delete": {
+      "success": "Commentaire supprimé",
+      "error": "Erreur lors de la suppression du commentaire, veuillez réessayer."
     }
   }
 }

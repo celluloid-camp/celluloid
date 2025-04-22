@@ -42,7 +42,11 @@
     "hintLabel_other": "{{count}} annotations",
     "hintLabel_plural": "{{count}} annotations",
     "hintLabelNone": "No annotation at this time",
-    "pauseLabel": "Pause video ?"
+    "pauseLabel": "Pause video ?",
+    "delete": {
+      "success": "Annotation deleted",
+      "error": "Error while deleting annotation, please try again."
+    }
   },
   "actions": {
     "cancel": "Cancel",
@@ -277,9 +281,6 @@
           "title": "Title",
           "description": "Chapter description"
         }
-      },
-      "inProgress": {
-        "description": "Chapter generation is in progress…"
       }
     },
     "note": {
@@ -291,14 +292,33 @@
       }
     },
     "transcript": {
-      "generating": "Transcript is being generated...",
-      "button": {
-        "generate": "Generate Transcript",
-        "download": "Download "
-      },
       "title": "Transcript",
-      "failed": "Failed to load Transcript",
+      "generating": " La transcription est en cours de génération...",
+      "empty": "Video transcript not available.",
+      "button": {
+        "generate": " Generate Transcript",
+        "download": "Download"
+      },
+      "failed": " Failed to load Transcript",
       "try-again": "Try again"
+    },
+    "failed": {
+      "load": "Error Loading Project"
+    },
+    "error": {
+      "loading": "Error Loading Project",
+      "details": {
+        "title": "Project Details Unavailable",
+        "description": " We couldn't load the project details due to an error.\n"
+      }
+    },
+    "video": {
+      "annotation": {
+        "comment": {
+          "minLength": "Comment doit comporter minimum 2 character",
+          "required": "Comment is required"
+        }
+      }
     }
   },
   "chapter": {
@@ -369,21 +389,24 @@
     "signupTitle": "Signup",
     "title": "Sign In",
     "upgradeAccountMessage": "Please enter a valid email and a password to continue",
-    "username": "Username",
-    "error": {
-      "user-not-found": "User not found"
+    "username": {
+      "required": "Username required",
+      "placeholder": "Username"
     },
-    "usernameRequired": "Username required",
+    "error": {
+      "user-not-found": "The username/email or password you entered is incorrect."
+    },
+    "usernameRequired": "This field is required",
     "passwordRequired": "Password required."
   },
   "confirm": {
     "username": {
       "required": "The username is required.",
-      "label": "Email or username",
-      "placeholder": "Email or username"
+      "label": "Email",
+      "placeholder": "Email"
     },
     "code": {
-      "required": "The password is required.",
+      "required": "The Code is required.",
       "label": "Confirmation code",
       "placeholder": "Confirmation code"
     },
@@ -396,7 +419,7 @@
       "sent": "Chapters generation started"
     },
     "resend": {
-      "success": "Code resent"
+      "success": "Verification code resent."
     }
   },
   "forgot": {
@@ -686,6 +709,31 @@
     "table": {
       "title": "Title",
       "public": "Public"
+    }
+  },
+  "otp": {
+    "form": {
+      "invalide-code": "Invalid code. please try again.",
+      "title": "Enter Verification Code",
+      "description": "Enter the verification code sent to your email address.",
+      "success": "You’re signed in successfully",
+      "invalid-code": "Invalid code. Please try again."
+    }
+  },
+  "comment": {
+    "tooltip": {
+      "title": {
+        "delete": "Delete",
+        "update": "Update"
+      }
+    },
+    "update": {
+      "success": "Comment updated",
+      "error": "Error updating comment, please try again."
+    },
+    "delete": {
+      "success": "Comment deleted",
+      "error": "Error deleting comment, please try again."
     }
   }
 }

@@ -67,7 +67,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             position: "relative",
           }}
         >
-          <Box position={"absolute"} right={0} top={20}>
+          <Box position={"absolute"} right={0} top={14}>
             <Tooltip title={t("project.annotation.hints.label")}>
               <Fab
                 color="secondary"
@@ -112,11 +112,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
           }}
         >
           <Box display="flex" flexDirection={"column"} height={availableHeight}>
-            <AnnotationList
-              playerIsReady={playerIsReady}
-              user={props.user}
-              {...props}
-            />
+            <AnnotationList user={props.user} {...props} />
           </Box>
         </TabPanel>
         <TabPanel

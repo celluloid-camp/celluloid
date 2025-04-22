@@ -38,8 +38,8 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
   const validationSchema = Yup.object().shape({
     comment: Yup.string()
-      .min(2, "Comment doit comporter minimum 2 character")
-      .required("Commentaire est obligatoire"),
+      .min(2, t("project.video.annotation.comment.minLength"))
+      .required(t("project.video.annotation.comment.required")),
   });
 
   const handleClose = () => {

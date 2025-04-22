@@ -62,7 +62,7 @@ export function OtpForm() {
           email: values.email,
           otp: values.code,
         });
-
+        //otp.form.invalid-code =>  Invalid code. Please try again. Code invalide. Veuillez réessayer.
         if (error?.code === "INVALID_OTP") {
           formik.setFieldError("error", t("otp.form.invalid-code"));
           formik.setSubmitting(false);

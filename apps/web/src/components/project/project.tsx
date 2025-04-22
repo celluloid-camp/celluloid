@@ -15,7 +15,6 @@ import { ProjectVideoScreen } from "./video/video-screen";
 
 export function ProjectMainScreen({ projectId }: { projectId: string }) {
   const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
-
   return (
     <Box display={"flex"} flexDirection={"column"}>
       <Suspense

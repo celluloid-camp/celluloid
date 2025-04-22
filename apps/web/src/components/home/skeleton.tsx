@@ -1,6 +1,7 @@
 import { Box, Container, Skeleton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import type * as React from "react";
+import { StyledTitle } from "@/components/common/typography";
 
 export function ProjectGridSkeleton() {
   return (
@@ -22,44 +23,50 @@ export function ProjectGridSkeleton() {
           }}
         />
 
-        <Skeleton
-          variant="text"
+        <Box
           sx={{
-            width: 200,
-            height: 40,
-            mb: 3,
+            ph: 2,
           }}
-        />
+        >
+          <StyledTitle
+            sx={{
+              marginBottom: 2,
+            }}
+            variant="h4"
+          >
+            <Skeleton sx={{ width: 200 }} />
+          </StyledTitle>
 
-        <Grid container={true} spacing={5} direction="row">
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <Grid xs={12} sm={6} lg={4} xl={3} item key={item}>
-              <Skeleton
-                variant="rectangular"
-                sx={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 2,
-                }}
-              />
-              <Skeleton
-                variant="text"
-                sx={{
-                  width: "80%",
-                  height: 24,
-                  mt: 1,
-                }}
-              />
-              <Skeleton
-                variant="text"
-                sx={{
-                  width: "60%",
-                  height: 20,
-                }}
-              />
-            </Grid>
-          ))}
-        </Grid>
+          <Grid container={true} spacing={5} direction="row">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <Grid xs={12} sm={6} lg={4} xl={3} item key={item}>
+                <Skeleton
+                  variant="rectangular"
+                  sx={{
+                    width: "100%",
+                    height: 200,
+                    borderRadius: 2,
+                  }}
+                />
+                <Skeleton
+                  variant="text"
+                  sx={{
+                    width: "80%",
+                    height: 24,
+                    mt: 1,
+                  }}
+                />
+                <Skeleton
+                  variant="text"
+                  sx={{
+                    width: "60%",
+                    height: 20,
+                  }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Container>
     </Box>
   );

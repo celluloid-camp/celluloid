@@ -40,7 +40,7 @@ export function JoinForm() {
     onError: (error) => {
       if (isTRPCClientError(error)) {
         if (error.message === "PROJECT_OWNER_CANNOT_JOIN") {
-          setError("root", {
+          setError("shareCode", {
             message: t("join.error.project-owner-cannot-join"),
           });
         } else if (error.message === "CODE_NOT_FOUND") {
@@ -49,7 +49,7 @@ export function JoinForm() {
           });
         }
       } else {
-        setError("root", {
+        setError("shareCode", {
           message: t("join.error.project-not-found"),
         });
       }
@@ -77,11 +77,7 @@ export function JoinForm() {
 
   return (
     <>
-      <StyledDialogTitle
-        loading={isSubmitting}
-        error={errors.root?.message}
-        onClose={() => router.back()}
-      >
+      <StyledDialogTitle loading={isSubmitting} onClose={() => router.back()}>
         {t("join.title")}
       </StyledDialogTitle>
       <Typography variant="body1" sx={{ margin: 3, color: "gray" }}>

@@ -7,10 +7,16 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Avatar } from "./avatar";
+import { useState } from "react";
 
 export const UserMenu = () => {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
+  // Prevent hydration mismatch by only rendering on client
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   const { data: session, isPending } = useSession();
   const t = useTranslations();
 
@@ -29,7 +35,7 @@ export const UserMenu = () => {
     router.replace("/");
   };
 
-  if (isPending) {
+  if (!mounted || isPending) {
     return <Skeleton variant="circular" width={40} height={40} />;
   }
 
