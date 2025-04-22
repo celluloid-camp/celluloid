@@ -14,10 +14,6 @@ import {
   useEditAnnotationValue,
 } from "../useAnnotationEditor";
 
-type ContextualEditorProps = {
-  editedAnnotation: AnnotationByProjectId;
-};
-
 function toRelativePosition(
   x: number,
   y: number,
@@ -30,7 +26,7 @@ function toRelativePosition(
   return { relativeX, relativeY, x, y, parentWidth, parentHeight };
 }
 
-export const ContextualOverlayEditor: React.FC<ContextualEditorProps> = () => {
+export const ContextualOverlayEditor = () => {
   const t = useTranslations();
 
   const ref = useRef<HTMLDivElement>(null);

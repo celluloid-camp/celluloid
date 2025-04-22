@@ -10,10 +10,43 @@ import {
   ProjectTranscript,
   TranscriptErrorFallback,
 } from "./project-transcript";
-import { SideBar } from "./sidebar";
+import dynamic from "next/dynamic";
 import { ProjectSummary } from "./summary";
+
+const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
+  ssr: false,
+  loading: () => (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          borderRadius: 2,
+          width: "100%",
+          height: 200,
+          paddingY: 2,
+        }}
+      />
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          borderRadius: 2,
+          width: "100%",
+          height: 100,
+          paddingY: 2,
+        }}
+      />
+    </Box>
+  ),
+});
+
 export function ProjectDetails({ projectId }: { projectId: string }) {
-  const { data: session, isPending } = useSession();
+  const { data: session } = useSession();
   const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
   return (
     <Box
@@ -66,30 +99,7 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
               </ErrorBoundary>
             </Grid>
             <Grid item xs={12} md={4} lg={4}>
-              {isPending ? (
-                <Box gap={4} display={"flex"} flexDirection={"column"}>
-                  <Skeleton
-                    variant="rectangular"
-                    sx={{
-                      borderRadius: 2,
-                      width: "100%",
-                      height: 200,
-                      paddingY: 2,
-                    }}
-                  />
-                  <Skeleton
-                    variant="rectangular"
-                    sx={{
-                      borderRadius: 2,
-                      width: "100%",
-                      height: 100,
-                      paddingY: 2,
-                    }}
-                  />
-                </Box>
-              ) : (
-                <SideBar project={project} user={session?.user} />
-              )}
+              <SideBar project={project} />
             </Grid>
           </Grid>
         </Paper>

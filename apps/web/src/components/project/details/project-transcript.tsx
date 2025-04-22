@@ -32,7 +32,6 @@ interface Props {
 }
 export function ProjectTranscript({ project, user }: Props) {
   const t = useTranslations();
-  const [expanded, setExpanded] = useState(false);
 
   const utils = trpc.useUtils();
   const [data] = trpc.transcript.byProjectId.useSuspenseQuery({
@@ -44,10 +43,6 @@ export function ProjectTranscript({ project, user }: Props) {
       utils.project.byId.invalidate({ id: project.id });
     },
   });
-
-  const handleExpandToggle = () => {
-    setExpanded(!expanded);
-  };
 
   if (!data && !user) {
     return null;
@@ -83,7 +78,7 @@ export function ProjectTranscript({ project, user }: Props) {
         sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
         title={t("project.transcript.title")}
       />
-      <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
+      <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
         {isTranscriptInProgress ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
@@ -95,7 +90,7 @@ export function ProjectTranscript({ project, user }: Props) {
           <StyledMarkdown content={data?.content} />
         ) : (
           <Typography variant="body2">
-            Video transcript not available.
+            {t("project.transcript.empty")}
           </Typography>
         )}
       </CardContent>
@@ -107,8 +102,6 @@ export function ProjectTranscript({ project, user }: Props) {
           justifyContent: "space-between",
         }}
       >
-        {}
-
         {canGenerateTranscript && (
           <LoadingButton
             variant="contained"
@@ -157,6 +150,7 @@ export function TranscriptErrorFallback({
       />
       <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
         {t("project.transcript.failed")}
+
         {process.env.NODE_ENV === "development" && <pre>{error.message}</pre>}
         <Button onClick={resetErrorBoundary}>
           {t("project.transcript.try-again")}

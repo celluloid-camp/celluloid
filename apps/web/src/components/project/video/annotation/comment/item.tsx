@@ -30,6 +30,7 @@ import type {
   ProjectById,
 } from "@/lib/trpc/types";
 import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 interface CommentItemProps {
   user?: Partial<User>;
   project: ProjectById;
@@ -46,30 +47,47 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   const t = useTranslations();
   const [hovering, setHovering] = useState(false);
   const [edition, setEdition] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const utils = trpc.useUtils();
 
   const editMutation = trpc.comment.edit.useMutation({
     onSuccess: () => {
       utils.annotation.byProjectId.invalidate({ id: project.id });
+      enqueueSnackbar(t("comment.update.success"), {
+        variant: "success",
+      });
+    },
+    onError: () => {
+      enqueueSnackbar(t("comment.update.error"), {
+        variant: "error",
+      });
     },
   });
 
   const deleteMutation = trpc.comment.delete.useMutation({
     onSuccess: () => {
       utils.annotation.byProjectId.invalidate({ id: project.id });
+      enqueueSnackbar(t("comment.delete.success"), {
+        variant: "success",
+      });
+    },
+    onError: () => {
+      enqueueSnackbar(t("comment.delete.error"), {
+        variant: "error",
+      });
     },
   });
 
   const validationSchema = Yup.object().shape({
     comment: Yup.string()
-      .min(5, "Comment doit comporter minimum 5 character")
-      .required("Commentaire est obligatoire"),
+      .min(2, t("project.video.annotation.comment.minLength"))
+      .required(t("project.video.annotation.comment.required")),
   });
 
   const formik = useFormik({
     initialValues: {
-      comment: comment.text,
+      comment: comment.text || "",
     },
     validateOnMount: false,
     validationSchema: validationSchema,
@@ -126,7 +144,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
           <React.Fragment>
             <Typography component="span" color="white" variant="body2">
               {comment.user.username}
-            </Typography>{" "}
+            </Typography>
             <Typography
               sx={{ display: "inline" }}
               component="span"
@@ -140,66 +158,68 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         }
         secondary={
           <React.Fragment>
-            {!edition ? (
-              <MultiLineTypography
-                variant="body2"
-                color="gray"
-                text={comment.text}
-              />
-            ) : (
-              <React.Fragment>
-                <TransparentInput
-                  id="comment"
-                  name="comment"
-                  value={formik.values.comment}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={undefined}
-                  unpadded={true}
-                  inputProps={{
-                    "aria-label": "Saissez votre annotation",
-                    maxLength: 250,
-                  }}
-                  maxRows={5}
-                  minRows={2}
-                  placeholder={t("annotation.commentPlaceholder") || ""}
+            <form onSubmit={formik.handleSubmit}>
+              {!edition ? (
+                <MultiLineTypography
+                  variant="body2"
+                  color="gray"
+                  text={comment.text}
                 />
-                <Box
-                  display={"flex"}
-                  justifyContent={"flex-end"}
-                  sx={{ pt: 1 }}
-                >
-                  <Button
-                    size="small"
-                    onClick={handleClose}
-                    sx={{
-                      color: grey[500],
-                      borderRadius: 10,
-                      fontSize: 12,
+              ) : (
+                <React.Fragment>
+                  <TransparentInput
+                    id="comment"
+                    name="comment"
+                    value={formik.values.comment}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={undefined}
+                    unpadded={true}
+                    inputProps={{
+                      "aria-label": "Saissez votre annotation",
+                      maxLength: 250,
                     }}
+                    maxRows={5}
+                    minRows={2}
+                    placeholder={t("annotation.commentPlaceholder") || ""}
+                  />
+                  <Box
+                    display={"flex"}
+                    justifyContent={"flex-end"}
+                    sx={{ pt: 1 }}
                   >
-                    {t("annotation.comment.cancel")}
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    disabled={!formik.isValid || formik.isSubmitting}
-                    disableElevation
-                    sx={{
-                      borderRadius: 10,
-                      fontSize: 12,
-                      "&:disabled": {
+                    <Button
+                      size="small"
+                      onClick={handleClose}
+                      sx={{
                         color: grey[500],
-                        backgroundColor: grey[700],
-                      },
-                    }}
-                    onClick={() => formik.handleSubmit()}
-                  >
-                    {t("annotation.comment.send")}
-                  </Button>
-                </Box>
-              </React.Fragment>
-            )}
+                        borderRadius: 10,
+                        fontSize: 12,
+                      }}
+                    >
+                      {t("annotation.comment.cancel")}
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      type="submit"
+                      disabled={!formik.isValid || formik.isSubmitting}
+                      disableElevation
+                      sx={{
+                        borderRadius: 10,
+                        fontSize: 12,
+                        "&:disabled": {
+                          color: grey[500],
+                          backgroundColor: grey[700],
+                        },
+                      }}
+                    >
+                      {t("annotation.comment.send")}
+                    </Button>
+                  </Box>
+                </React.Fragment>
+              )}
+            </form>
           </React.Fragment>
         }
       />
@@ -210,13 +230,13 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         !deleteMutation.isPending &&
         !editMutation.isPending ? (
           <Stack direction={"row"}>
-            <Tooltip title="Modifier" arrow>
+            <Tooltip title={t("comment.tooltip.title.update")} arrow>
               <IconButton onClick={handleEdit}>
                 <EditIcon sx={{ fontSize: 18 }} />
               </IconButton>
             </Tooltip>
-            <Divider orientation="vertical" flexItem light />
-            <Tooltip title="Supprimer" arrow>
+            <Divider orientation="vertical" flexItem />
+            <Tooltip title={t("comment.tooltip.title.delete")} arrow>
               <IconButton onClick={handleDelete}>
                 <DeleteIcon sx={{ fontSize: 18 }} />
               </IconButton>

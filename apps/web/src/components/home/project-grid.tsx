@@ -19,18 +19,28 @@ import { debounce } from "lodash";
 import { useTranslations } from "next-intl";
 import * as R from "ramda";
 import type * as React from "react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 
-import { StyledTitle } from "@/components/common/typography";
 import { trpc } from "@/lib/trpc/client";
 
 import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
 import type { ProjectListItem } from "@/lib/trpc/types";
 
+const ProjectTitle = dynamic(() => import("./project-title"), {
+  ssr: false,
+  loading: () => <Skeleton variant="text" height={60} width={200} />,
+});
+
 export function ProjectGrid() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState<string | undefined>("");
   // Debounce the search function
@@ -149,87 +159,65 @@ export function ProjectGrid() {
             ph: 2,
           }}
         >
+          <ProjectTitle
+            ownProjectsLength={ownProjects.length}
+            joinedProjectsLength={joinedProjects.length}
+          />
+
           {ownProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle marginBlock={3} variant="h4">
-                  {t("home.myProjects")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {ownProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={true} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
+            <Grid container={true} spacing={5} direction="row">
+              {ownProjects.map((project: ProjectListItem) => (
+                <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                  <ProjectThumbnail showPublic={true} project={project} />
+                </Grid>
+              ))}
+            </Grid>
           )}
 
           {joinedProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle marginBlock={3} variant="h4">
-                  {t("home.member")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {joinedProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={true} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
+            <Grid container={true} spacing={5} direction="row">
+              {joinedProjects.map((project: ProjectListItem) => (
+                <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                  <ProjectThumbnail showPublic={true} project={project} />
+                </Grid>
+              ))}
+            </Grid>
           )}
 
           {publicProjects.length > 0 && (
-            <>
-              <Fade in={publicProjects.length > 0} appear={true}>
-                <StyledTitle
-                  gutterBottom={true}
-                  fontFamily={"abril_fatfaceregular"}
-                  variant="h4"
-                >
-                  {t("home.publicProjects")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {publicProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={false} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
+            <Grid container={true} spacing={5} direction="row">
+              {publicProjects.map((project: ProjectListItem) => (
+                <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                  <ProjectThumbnail showPublic={false} project={project} />
+                </Grid>
+              ))}
+            </Grid>
           )}
 
           {noProjects && (
-            <Fade in={noProjects} appear={true}>
-              <Box
-                display={"flex"}
+            <Box
+              display={"flex"}
+              alignContent={"center"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              sx={{ minHeight: 200 }}
+            >
+              <Stack
                 alignContent={"center"}
                 justifyContent={"center"}
                 alignItems={"center"}
-                sx={{ minHeight: 200 }}
+                sx={{
+                  py: 4,
+                }}
               >
-                <Stack
-                  alignContent={"center"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  sx={{
-                    py: 4,
-                  }}
-                >
-                  <SearchOutlinedIcon
-                    sx={{ width: 100, height: 100, color: "grey.800" }}
-                  />
-                  <Typography variant="h6" align="center">
-                    {t("home.emptySearchResult")}
-                  </Typography>
-                </Stack>
-              </Box>
-            </Fade>
+                <SearchOutlinedIcon
+                  sx={{ width: 100, height: 100, color: "grey.800" }}
+                />
+                <Typography variant="h6" align="center">
+                  {t("home.emptySearchResult")}
+                </Typography>
+              </Stack>
+            </Box>
           )}
         </Box>
       </Container>

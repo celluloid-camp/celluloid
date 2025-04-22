@@ -35,7 +35,7 @@ export const projectFallbackRender = ({
           >
             <ErrorOutlineIcon sx={{ color: "white", fontSize: 60, mb: 2 }} />
             <Typography variant="h6" sx={{ color: "white" }}>
-              Error Loading Project
+              {t("project.error.loading")}
             </Typography>
           </Box>
         </Grid>
@@ -88,10 +88,10 @@ export const projectFallbackRender = ({
                 <Grid item xs={12} md={8} lg={8}>
                   <Box sx={{ p: 2 }}>
                     <Typography variant="h5" color="error" sx={{ mb: 2 }}>
-                      Project Details Unavailable
+                      {t("project.error.details.title")}
                     </Typography>
                     <Typography variant="body1">
-                      We couldn't load the project details due to an error.
+                      {t("project.error.details.description")}
                     </Typography>
                   </Box>
                 </Grid>

@@ -1,11 +1,11 @@
 "use client";
 import { AppBar, Box, type BoxProps, Button, Toolbar } from "@mui/material";
-import { useTranslations } from "next-intl";
 import type * as React from "react";
+import { useTranslations } from "next-intl";
 import { LogoWithLabel } from "./logo-with-label";
 
-import { useSession } from "@/lib/auth-client";
 import { LanguageSwitch } from "./language-switch";
+import { useSession } from "@/lib/auth-client";
 
 import Link from "next/link";
 import { UserMenu } from "./user-menu";

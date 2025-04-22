@@ -42,6 +42,7 @@ import { useTranslations } from "next-intl";
 import { CommentForm } from "./comment/form";
 import { CommentItem } from "./comment/item";
 import { useEditAnnotation } from "./useAnnotationEditor";
+import { useSnackbar } from "notistack";
 
 interface AnnotationItemProps {
   project: ProjectById;
@@ -60,6 +61,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
 
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [editedAnnotation, setEditedAnnotation] = useEditAnnotation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const confirm = useConfirm();
   const utils = trpc.useUtils();
@@ -72,6 +74,14 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
   const mutation = trpc.annotation.delete.useMutation({
     onSuccess: () => {
       utils.annotation.byProjectId.invalidate({ id: project.id });
+      enqueueSnackbar(t("annotation.delete.success"), {
+        variant: "success",
+      });
+    },
+    onError: () => {
+      enqueueSnackbar(t("annotation.delete.error"), {
+        variant: "error",
+      });
     },
   });
 
@@ -93,19 +103,19 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
       },
       contentProps: {
         sx: {
-          color: "white",
-          backgroundColor: "background.dark",
+          color: "black",
+          backgroundColor: "background.white",
         },
       },
       titleProps: {
         sx: {
-          color: "white",
-          backgroundColor: "background.dark",
+          color: "black",
+          backgroundColor: "background.white",
         },
       },
       dialogActionsProps: {
         sx: {
-          backgroundColor: "background.dark",
+          backgroundColor: "background.white",
         },
       },
     }).then(async (value) => {
@@ -199,13 +209,13 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
           >
             {hovering && canEdit ? (
               <Stack direction={"row"}>
-                <Tooltip title="Modifier" arrow>
+                <Tooltip title={t("comment.tooltip.title.update")} arrow>
                   <IconButton onClick={handleEdit}>
                     <EditIcon sx={{ fontSize: 18 }} />
                   </IconButton>
                 </Tooltip>
                 <Divider orientation="vertical" flexItem light />
-                <Tooltip title="Supprimer" arrow>
+                <Tooltip title={t("comment.tooltip.title.delete")} arrow>
                   <IconButton onClick={handleDelete}>
                     <DeleteIcon sx={{ fontSize: 18 }} />
                   </IconButton>

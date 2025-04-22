@@ -1,6 +1,7 @@
 import { Avatar } from "@/components/common/avatar";
 import type { User } from "@/lib/auth-client";
 import type { ProjectById } from "@/lib/trpc/types";
+import dayjs from "@/utils/dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PublicIcon from "@mui/icons-material/Public";
@@ -60,7 +61,7 @@ export function ProjectSummary({ project, user }: Props) {
         <Box display="flex" flexDirection={"column"} sx={{ marginLeft: 1 }}>
           <Typography>{project.user.username}</Typography>
           <Typography variant="caption">
-            {new Date(project.publishedAt).toLocaleDateString()}
+            {dayjs(project.publishedAt).format("DD/MM/YYYY")}
           </Typography>
         </Box>
       </Box>
