@@ -625,17 +625,6 @@ export function Annotator() {
                       stage.container().style.cursor = "default";
                     }}
                   />
-                  {isSelected && shape.type === "polygon" && (
-                    <Rect
-                      x={minX}
-                      y={minY}
-                      width={maxX - minX}
-                      height={maxY - minY}
-                      stroke="#FF6B6B"
-                      dash={[4, 4]}
-                      listening={false}
-                    />
-                  )}
                   {isSelected &&
                     points.map((_, index) => {
                       if (index % 2 !== 0) return null;
@@ -794,51 +783,47 @@ export function Annotator() {
                 return null;
             }
           })}
-          {selectedId && (
-            <Transformer
-              ref={trRef}
-              rotateEnabled={false}
-              enabledAnchors={
-                shapes.find((s) => s.id === selectedId)?.type === "polygon"
-                  ? []
-                  : undefined
-              }
-              boundBoxFunc={(oldBox, newBox) => {
-                if (newBox.width < 5 || newBox.height < 5) {
-                  return oldBox;
-                }
-                const boundedX = Math.max(
-                  0,
-                  Math.min(newBox.x, dimensions.width - newBox.width),
-                );
-                const boundedY = Math.max(
-                  0,
-                  Math.min(newBox.y, dimensions.height - newBox.height),
-                );
-                const boundedWidth = Math.min(
-                  newBox.width,
-                  dimensions.width - boundedX,
-                );
-                const boundedHeight = Math.min(
-                  newBox.height,
-                  dimensions.height - boundedY,
-                );
+          {selectedId &&
+            shapes.find((s) => s.id === selectedId)?.type !== "polygon" && (
+              <Transformer
+                ref={trRef}
+                rotateEnabled={false}
+                boundBoxFunc={(oldBox, newBox) => {
+                  if (newBox.width < 5 || newBox.height < 5) {
+                    return oldBox;
+                  }
+                  const boundedX = Math.max(
+                    0,
+                    Math.min(newBox.x, dimensions.width - newBox.width),
+                  );
+                  const boundedY = Math.max(
+                    0,
+                    Math.min(newBox.y, dimensions.height - newBox.height),
+                  );
+                  const boundedWidth = Math.min(
+                    newBox.width,
+                    dimensions.width - boundedX,
+                  );
+                  const boundedHeight = Math.min(
+                    newBox.height,
+                    dimensions.height - boundedY,
+                  );
 
-                return {
-                  ...newBox,
-                  x: boundedX,
-                  y: boundedY,
-                  width: boundedWidth,
-                  height: boundedHeight,
-                };
-              }}
-              borderStroke="#FF6B6B"
-              anchorStroke="#FF6B6B"
-              anchorFill="#fff"
-              anchorSize={8}
-              borderDash={[2, 2]}
-            />
-          )}
+                  return {
+                    ...newBox,
+                    x: boundedX,
+                    y: boundedY,
+                    width: boundedWidth,
+                    height: boundedHeight,
+                  };
+                }}
+                borderStroke="#FF6B6B"
+                anchorStroke="#FF6B6B"
+                anchorFill="#fff"
+                anchorSize={8}
+                borderDash={[2, 2]}
+              />
+            )}
         </Layer>
       </Stage>
     </Box>
