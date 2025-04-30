@@ -15,6 +15,7 @@ import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 import { ContextualOverlay } from "./annotation/contextual/overlay";
 import { ContextualOverlayEditor } from "./annotation/contextual/overlay-editor";
 import { VideoPanel } from "./video-panel";
+import { Annotator } from "./annotation/shapes";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -101,7 +102,6 @@ export function ProjectVideoScreen({ project }: Props) {
         height: "60vh",
         minHeight: "60vh",
         maxHeight: "60vh",
-        paddingX: 2,
       }}
     >
       <Grid item xs={8} sx={{ position: "relative" }}>
@@ -116,6 +116,7 @@ export function ProjectVideoScreen({ project }: Props) {
             onClick={handleAnnotionHintClick}
           />
         ) : null}
+        <Annotator />
         <VideoPlayer
           ref={videoPlayerRef}
           height={"100%"}
@@ -129,6 +130,7 @@ export function ProjectVideoScreen({ project }: Props) {
           height: "100%",
           position: "relative",
           paddingY: 2,
+          paddingX: 2,
         }}
       >
         <VideoPanel
