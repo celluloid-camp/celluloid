@@ -13,8 +13,9 @@ import {
 } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SquareIcon from "@mui/icons-material/Square";
-import CircleIcon from "@mui/icons-material/Circle";
+import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
+import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
+import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
 import PentagonIcon from "@mui/icons-material/Pentagon";
 
 type ShapeType = "rect" | "circle" | "polygon";
@@ -286,7 +287,7 @@ export function Annotator() {
             }}
             color={shapeType === "rect" ? "primary" : "default"}
           >
-            <SquareIcon />
+            <SquareOutlinedIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Circle">
@@ -298,7 +299,7 @@ export function Annotator() {
             }}
             color={shapeType === "circle" ? "primary" : "default"}
           >
-            <CircleIcon />
+            <CircleOutlinedIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Polygon">
@@ -310,7 +311,7 @@ export function Annotator() {
             }}
             color={shapeType === "polygon" ? "primary" : "default"}
           >
-            <PentagonIcon />
+            <PolylineOutlinedIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete Selected">
@@ -357,8 +358,64 @@ export function Annotator() {
 
             if (shape.type === "polygon") {
               const points = shape.points!;
-              const isPolygonDraggable =
-                isSelected && selectedPointIndex === null;
+
+              // Helper function to insert a point into the polygon
+              const insertPoint = (x: number, y: number) => {
+                // Find the closest line segment
+                let minDist = Infinity;
+                let insertIndex = -1;
+
+                for (let i = 0; i < points.length; i += 2) {
+                  const x1 = points[i];
+                  const y1 = points[i + 1];
+                  const x2 = points[(i + 2) % points.length];
+                  const y2 = points[(i + 3) % points.length];
+
+                  // Calculate distance from point to line segment
+                  const A = x - x1;
+                  const B = y - y1;
+                  const C = x2 - x1;
+                  const D = y2 - y1;
+
+                  const dot = A * C + B * D;
+                  const lenSq = C * C + D * D;
+                  let param = -1;
+
+                  if (lenSq !== 0) param = dot / lenSq;
+
+                  let xx, yy;
+
+                  if (param < 0) {
+                    xx = x1;
+                    yy = y1;
+                  } else if (param > 1) {
+                    xx = x2;
+                    yy = y2;
+                  } else {
+                    xx = x1 + param * C;
+                    yy = y1 + param * D;
+                  }
+
+                  const dx = x - xx;
+                  const dy = y - yy;
+                  const dist = Math.sqrt(dx * dx + dy * dy);
+
+                  if (dist < minDist) {
+                    minDist = dist;
+                    insertIndex = i + 2;
+                  }
+                }
+
+                if (insertIndex !== -1) {
+                  const newPoints = [...points];
+                  newPoints.splice(insertIndex, 0, x, y);
+                  setShapes(
+                    shapes.map((s) =>
+                      s.id === shape.id ? { ...s, points: newPoints } : s,
+                    ),
+                  );
+                }
+              };
 
               // Compute live points for bounding box (use drag state if dragging)
               let livePoints = points;
@@ -452,8 +509,6 @@ export function Annotator() {
                     points={points}
                     closed={shape === drawing ? false : true}
                     {...commonProps}
-                    onClick={() => setSelectedId(shape.id)}
-                    onTap={() => setSelectedId(shape.id)}
                   />
                   <Rect
                     x={minX}
@@ -476,8 +531,86 @@ export function Annotator() {
                       stage.container().style.cursor = "grab";
                       handleDragEnd();
                     }}
-                    onClick={() => setSelectedId(shape.id)}
-                    onTap={() => setSelectedId(shape.id)}
+                    onClick={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      const pos = stage.getPointerPosition();
+                      if (!pos) return;
+
+                      // If not selected, just select it
+                      if (!isSelected) {
+                        setSelectedId(shape.id);
+                        return;
+                      }
+
+                      // If dragging or manipulating vertices, don't add new point
+                      if (
+                        selectedPointIndex !== null ||
+                        polygonDragState[shape.id]
+                      ) {
+                        return;
+                      }
+
+                      // Find if we clicked near a line segment
+                      let minDist = Infinity;
+                      let closestSegment = -1;
+
+                      for (let i = 0; i < points.length; i += 2) {
+                        const x1 = points[i];
+                        const y1 = points[i + 1];
+                        const x2 = points[(i + 2) % points.length];
+                        const y2 = points[(i + 3) % points.length];
+
+                        // Calculate distance from click to line segment
+                        const A = pos.x - x1;
+                        const B = pos.y - y1;
+                        const C = x2 - x1;
+                        const D = y2 - y1;
+
+                        const dot = A * C + B * D;
+                        const lenSq = C * C + D * D;
+                        let param = -1;
+
+                        if (lenSq !== 0) param = dot / lenSq;
+
+                        let xx, yy;
+
+                        if (param < 0) {
+                          xx = x1;
+                          yy = y1;
+                        } else if (param > 1) {
+                          xx = x2;
+                          yy = y2;
+                        } else {
+                          xx = x1 + param * C;
+                          yy = y1 + param * D;
+                        }
+
+                        const dx = pos.x - xx;
+                        const dy = pos.y - yy;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < minDist) {
+                          minDist = dist;
+                          closestSegment = i;
+                        }
+                      }
+
+                      // If we're close enough to a line segment (within 10 pixels)
+                      if (minDist < 10) {
+                        // Don't add point if we're too close to an existing vertex
+                        const closeToVertex = points.some((_, index) => {
+                          if (index % 2 !== 0) return false;
+                          const dx = points[index] - pos.x;
+                          const dy = points[index + 1] - pos.y;
+                          return Math.sqrt(dx * dx + dy * dy) < 10;
+                        });
+
+                        if (!closeToVertex) {
+                          insertPoint(pos.x, pos.y);
+                        }
+                      }
+                    }}
                     onMouseEnter={(e) => {
                       const stage = e.target.getStage();
                       if (!stage) return;
