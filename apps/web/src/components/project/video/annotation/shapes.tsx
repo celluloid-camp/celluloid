@@ -463,11 +463,34 @@ export function Annotator() {
                     fill="rgba(0,0,0,0)"
                     draggable={isSelected && selectedPointIndex === null}
                     onMouseDown={() => setSelectedId(shape.id)}
-                    onDragStart={handleDragStart}
+                    onDragStart={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grabbing";
+                      handleDragStart(e);
+                    }}
                     onDragMove={handleDragMove}
-                    onDragEnd={handleDragEnd}
+                    onDragEnd={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grab";
+                      handleDragEnd();
+                    }}
                     onClick={() => setSelectedId(shape.id)}
                     onTap={() => setSelectedId(shape.id)}
+                    onMouseEnter={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor =
+                        isSelected && selectedPointIndex === null
+                          ? "grab"
+                          : "default";
+                    }}
+                    onMouseLeave={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "default";
+                    }}
                   />
                   {isSelected && shape.type === "polygon" && (
                     <Rect
@@ -577,6 +600,26 @@ export function Annotator() {
                     onClick={() => setSelectedId(shape.id)}
                     onTap={() => setSelectedId(shape.id)}
                     onTransformEnd={(e) => handleTransform(e)}
+                    onMouseEnter={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grab";
+                    }}
+                    onMouseLeave={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "default";
+                    }}
+                    onDragStart={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grabbing";
+                    }}
+                    onDragEnd={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grab";
+                    }}
                   />
                 );
               case "circle":
@@ -592,6 +635,26 @@ export function Annotator() {
                     onClick={() => setSelectedId(shape.id)}
                     onTap={() => setSelectedId(shape.id)}
                     onTransformEnd={(e) => handleTransform(e)}
+                    onMouseEnter={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grab";
+                    }}
+                    onMouseLeave={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "default";
+                    }}
+                    onDragStart={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grabbing";
+                    }}
+                    onDragEnd={(e) => {
+                      const stage = e.target.getStage();
+                      if (!stage) return;
+                      stage.container().style.cursor = "grab";
+                    }}
                   />
                 );
               default:
