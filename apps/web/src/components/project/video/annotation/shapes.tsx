@@ -1,7 +1,13 @@
 "use client";
 
-import { Box, IconButton, Tooltip } from "@mui/material";
-import React, { useState, useRef, useEffect } from "react";
+import { Box, IconButton, Tooltip, SvgIcon } from "@mui/material";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   Stage,
   Layer,
@@ -10,6 +16,7 @@ import {
   RegularPolygon,
   Transformer,
   Line,
+  Ellipse,
 } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,8 +24,9 @@ import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
 import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
 import PentagonIcon from "@mui/icons-material/Pentagon";
+import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
 
-type ShapeType = "rect" | "circle" | "polygon";
+type ShapeType = "rect" | "circle" | "polygon" | "ellipse" | "point";
 
 interface Shape {
   id: string;
@@ -28,11 +36,19 @@ interface Shape {
   width?: number;
   height?: number;
   radius?: number;
+  radiusX?: number;
+  radiusY?: number;
   sides?: number;
   stroke: string;
   strokeWidth: number;
   points?: number[];
 }
+
+const OvalIcon = () => (
+  <SvgIcon>
+    <path d="M12 5C7.58 5 4 7.25 4 10C4 12.75 7.58 15 12 15C16.42 15 20 12.75 20 10C20 7.25 16.42 5 12 5ZM12 13C8.69 13 6 11.65 6 10C6 8.35 8.69 7 12 7C15.31 7 18 8.35 18 10C18 11.65 15.31 13 12 13Z" />
+  </SvgIcon>
+);
 
 export function Annotator() {
   const [shapeType, setShapeType] = useState<ShapeType>("rect");
@@ -60,6 +76,29 @@ export function Annotator() {
     };
   }>({});
 
+  // Memoize common props
+  const commonProps = useMemo(
+    () => ({
+      stroke: "#FF6B6B",
+      strokeWidth: 2,
+      fill: "transparent",
+      shadowColor: "black",
+      shadowBlur: 5,
+      shadowOpacity: 0.3,
+      shadowOffset: { x: 2, y: 2 },
+    }),
+    [],
+  );
+
+  // Constants for minimum sizes
+  const MIN_SIZE = useMemo(
+    () => ({
+      rect: { width: 20, height: 20 }, // minimum 20px
+      circle: { radius: 10 }, // minimum 10px radius
+    }),
+    [],
+  );
+
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
@@ -82,105 +121,172 @@ export function Annotator() {
     };
   }, []);
 
-  const handleMouseDown = (e: any) => {
-    if (shapes.length > 0) return;
+  const handleMouseDown = useCallback(
+    (e: any) => {
+      if (shapes.length > 0) return;
 
-    const stage = stageRef.current;
-    const pointer = stage.getPointerPosition();
-    if (!pointer) return;
+      const stage = stageRef.current;
+      const pointer = stage.getPointerPosition();
+      if (!pointer) return;
 
-    const relX = pointer.x / dimensions.width;
-    const relY = pointer.y / dimensions.height;
+      const relX = pointer.x / dimensions.width;
+      const relY = pointer.y / dimensions.height;
 
-    if (shapeType === "polygon") {
-      if (!drawing) {
-        // Start new polygon: points in absolute canvas coordinates
+      if (shapeType === "polygon") {
+        if (!drawing) {
+          const newShape: Shape = {
+            id: `shape-${Date.now()}`,
+            type: "polygon",
+            x: 0,
+            y: 0,
+            stroke: "#FF6B6B",
+            strokeWidth: 2,
+            points: [pointer.x, pointer.y],
+          };
+          setDrawing(newShape);
+          setCurrentPolygonPoints([pointer.x, pointer.y]);
+        } else {
+          const firstPoint = [drawing.points![0], drawing.points![1]];
+          const distance = Math.sqrt(
+            Math.pow(pointer.x - firstPoint[0], 2) +
+              Math.pow(pointer.y - firstPoint[1], 2),
+          );
+          if (distance < 10 && drawing.points!.length >= 6) {
+            setShapes((prev) => [...prev, drawing]);
+            setDrawing(null);
+            setCurrentPolygonPoints([]);
+          } else {
+            setCurrentPolygonPoints((prev) => [...prev, pointer.x, pointer.y]);
+            setDrawing((prev) =>
+              prev
+                ? { ...prev, points: [...prev.points!, pointer.x, pointer.y] }
+                : null,
+            );
+          }
+        }
+        return;
+      }
+
+      if (shapeType === "ellipse") {
         const newShape: Shape = {
           id: `shape-${Date.now()}`,
-          type: "polygon",
-          x: 0,
-          y: 0,
+          type: "ellipse",
+          x: relX,
+          y: relY,
+          radiusX: 0.001,
+          radiusY: 0.001,
           stroke: "#FF6B6B",
           strokeWidth: 2,
-          points: [pointer.x, pointer.y],
         };
         setDrawing(newShape);
-        setCurrentPolygonPoints([pointer.x, pointer.y]);
-      } else {
-        // Add new point in absolute canvas coordinates
-        // Check if click is near first point (within 10 pixels)
-        const firstPoint = [drawing.points![0], drawing.points![1]];
-        const distance = Math.sqrt(
-          Math.pow(pointer.x - firstPoint[0], 2) +
-            Math.pow(pointer.y - firstPoint[1], 2),
-        );
-        if (distance < 10 && drawing.points!.length >= 6) {
-          // Close the polygon
-          setShapes((prev) => [...prev, drawing]);
-          setDrawing(null);
-          setCurrentPolygonPoints([]);
+        return;
+      }
+
+      if (shapeType === "point") {
+        const newShape: Shape = {
+          id: `shape-${Date.now()}`,
+          type: "point",
+          x: relX,
+          y: relY,
+          stroke: "#FF6B6B",
+          strokeWidth: 2,
+        };
+        setShapes((prev) => [...prev, newShape]);
+        setSelectedId(newShape.id);
+        return;
+      }
+
+      const newShape: Shape = {
+        id: `shape-${Date.now()}`,
+        type: shapeType,
+        x: relX,
+        y: relY,
+        stroke: "#FF6B6B",
+        strokeWidth: 2,
+        ...(shapeType === "circle" && { radius: 0.001 }),
+        ...(shapeType === "rect" && { width: 0.001, height: 0.001 }),
+      };
+
+      setDrawing(newShape);
+    },
+    [shapes.length, drawing, dimensions, shapeType],
+  );
+
+  const handleMouseMove = useCallback(
+    (e: any) => {
+      if (!drawing) return;
+      if (drawing.type === "polygon") return;
+
+      const stage = stageRef.current;
+      const pointer = stage.getPointerPosition();
+      if (!pointer) return;
+
+      const relX = pointer.x / dimensions.width;
+      const relY = pointer.y / dimensions.height;
+
+      const deltaX = relX - drawing.x;
+      const deltaY = relY - drawing.y;
+
+      const updated: Shape = { ...drawing };
+
+      if (drawing.type === "rect") {
+        const width = Math.abs(deltaX);
+        const height = Math.abs(deltaY);
+
+        // If shift is pressed, make it a square
+        if (e.evt.shiftKey) {
+          const size = Math.max(width, height);
+          updated.width = size;
+          updated.height = size;
+          // Adjust position to maintain the square shape
+          if (deltaX < 0) updated.x = drawing.x - size;
+          if (deltaY < 0) updated.y = drawing.y - size;
         } else {
-          setCurrentPolygonPoints((prev) => [...prev, pointer.x, pointer.y]);
-          setDrawing((prev) =>
-            prev
-              ? { ...prev, points: [...prev.points!, pointer.x, pointer.y] }
-              : null,
-          );
+          // Regular rectangle
+          const minWidth = MIN_SIZE.rect.width / dimensions.width;
+          const minHeight = MIN_SIZE.rect.height / dimensions.height;
+
+          updated.width = Math.max(width, minWidth);
+          updated.height = Math.max(height, minHeight);
+          updated.x =
+            deltaX < 0 ? Math.min(relX, drawing.x - minWidth) : drawing.x;
+          updated.y =
+            deltaY < 0 ? Math.min(relY, drawing.y - minHeight) : drawing.y;
+        }
+      } else if (drawing.type === "circle") {
+        const minRadius = MIN_SIZE.circle.radius / dimensions.width;
+        updated.radius = Math.max(
+          Math.sqrt(deltaX ** 2 + deltaY ** 2),
+          minRadius,
+        );
+      } else if (drawing.type === "ellipse") {
+        const minRadius = MIN_SIZE.circle.radius / dimensions.width;
+        const radiusX = Math.max(Math.abs(deltaX), minRadius);
+        const radiusY = Math.max(Math.abs(deltaY), minRadius);
+
+        if (e.evt.shiftKey) {
+          const radius = Math.max(radiusX, radiusY);
+          updated.radiusX = radius;
+          updated.radiusY = radius;
+        } else {
+          updated.radiusX = radiusX;
+          updated.radiusY = radiusY;
         }
       }
-      return;
-    }
 
-    const newShape: Shape = {
-      id: `shape-${Date.now()}`,
-      type: shapeType,
-      x: relX,
-      y: relY,
-      stroke: "#FF6B6B",
-      strokeWidth: 2,
-      ...(shapeType === "circle" && { radius: 0.001 }),
-      ...(shapeType === "rect" && { width: 0.001, height: 0.001 }),
-    };
+      setDrawing(updated);
+    },
+    [drawing, dimensions, MIN_SIZE],
+  );
 
-    setDrawing(newShape);
-  };
-
-  const handleMouseMove = (e: any) => {
-    if (!drawing) return;
-    if (drawing.type === "polygon") return;
-
-    const stage = stageRef.current;
-    const pointer = stage.getPointerPosition();
-    if (!pointer) return;
-
-    const relX = pointer.x / dimensions.width;
-    const relY = pointer.y / dimensions.height;
-
-    const deltaX = relX - drawing.x;
-    const deltaY = relY - drawing.y;
-
-    const updated: Shape = { ...drawing };
-
-    if (drawing.type === "rect") {
-      updated.width = Math.abs(deltaX);
-      updated.height = Math.abs(deltaY);
-      updated.x = deltaX < 0 ? relX : drawing.x;
-      updated.y = deltaY < 0 ? relY : drawing.y;
-    } else if (drawing.type === "circle") {
-      updated.radius = Math.sqrt(deltaX ** 2 + deltaY ** 2);
-    }
-
-    setDrawing(updated);
-  };
-
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     if (!drawing) return;
     if (drawing.type === "polygon") return;
 
     setShapes((prev) => [...prev, drawing]);
     setSelectedId(drawing.id);
     setDrawing(null);
-  };
+  }, [drawing]);
 
   const handleStageDoubleClick = () => {
     if (drawing?.type === "polygon" && currentPolygonPoints.length >= 6) {
@@ -191,46 +297,109 @@ export function Annotator() {
     }
   };
 
-  const handleTransform = (e: KonvaEventObject<Event>) => {
-    const node = e.target;
-    const scaleX = node.scaleX();
-    const scaleY = node.scaleY();
-    const x = node.x();
-    const y = node.y();
+  const handleTransform = useCallback(
+    (e: KonvaEventObject<Event>) => {
+      const node = e.target;
+      const scaleX = node.scaleX();
+      const scaleY = node.scaleY();
+      const x = node.x();
+      const y = node.y();
 
-    if (!selectedId) return;
+      if (!selectedId) return;
 
-    const shape = shapes.find((s) => s.id === selectedId);
-    if (!shape) return;
+      const shape = shapes.find((s) => s.id === selectedId);
+      if (!shape) return;
 
-    if (shape.type === "rect") {
-      updateShape(selectedId, {
-        x: x / dimensions.width,
-        y: y / dimensions.height,
-        width: (shape.width || 0) * scaleX,
-        height: (shape.height || 0) * scaleY,
-      });
-    } else if (shape.type === "circle") {
-      updateShape(selectedId, {
-        x: x / dimensions.width,
-        y: y / dimensions.height,
-        radius: (shape.radius || 0) * scaleX,
-      });
-    }
+      if (shape.type === "rect") {
+        const minWidth = MIN_SIZE.rect.width / dimensions.width;
+        const minHeight = MIN_SIZE.rect.height / dimensions.height;
+        let newWidth = Math.max((shape.width || 0) * scaleX, minWidth);
+        let newHeight = Math.max((shape.height || 0) * scaleY, minHeight);
 
-    // Reset the transform
-    node.scaleX(1);
-    node.scaleY(1);
-  };
+        // If shift is pressed, make it a square
+        if (e.evt.shiftKey) {
+          const size = Math.max(newWidth, newHeight);
+          newWidth = size;
+          newHeight = size;
+        }
 
-  const updateShape = (id: string, updates: Partial<Shape>) => {
+        updateShape(selectedId, {
+          x: x / dimensions.width,
+          y: y / dimensions.height,
+          width: newWidth,
+          height: newHeight,
+        });
+      } else if (shape.type === "circle") {
+        const minRadius = MIN_SIZE.circle.radius / dimensions.width;
+        const newRadius = Math.max((shape.radius || 0) * scaleX, minRadius);
+
+        updateShape(selectedId, {
+          x: shape.x,
+          y: shape.y,
+          radius: newRadius,
+        });
+
+        // Update the transformer size to match the new radius
+        if (trRef.current) {
+          const stage = node.getStage();
+          if (!stage) return;
+
+          const newWidth = newRadius * 2 * dimensions.width;
+          trRef.current.nodes([node]);
+          node.width(newWidth);
+          node.height(newWidth);
+          trRef.current.getLayer().batchDraw();
+        }
+      } else if (shape.type === "ellipse") {
+        const minRadius = MIN_SIZE.circle.radius / dimensions.width;
+        const newRadiusX = Math.max((shape.radiusX || 0) * scaleX, minRadius);
+        const newRadiusY = Math.max((shape.radiusY || 0) * scaleY, minRadius);
+
+        if (e.evt.shiftKey) {
+          const radius = Math.max(newRadiusX, newRadiusY);
+          updateShape(selectedId, {
+            x: shape.x,
+            y: shape.y,
+            radiusX: radius,
+            radiusY: radius,
+          });
+        } else {
+          updateShape(selectedId, {
+            x: shape.x,
+            y: shape.y,
+            radiusX: newRadiusX,
+            radiusY: newRadiusY,
+          });
+        }
+
+        if (trRef.current) {
+          const stage = node.getStage();
+          if (!stage) return;
+
+          const newWidth = newRadiusX * 2 * dimensions.width;
+          const newHeight = newRadiusY * 2 * dimensions.height;
+          trRef.current.nodes([node]);
+          node.width(newWidth);
+          node.height(newHeight);
+          trRef.current.getLayer().batchDraw();
+        }
+      }
+
+      // Reset the transform
+      node.scaleX(1);
+      node.scaleY(1);
+    },
+    [selectedId, shapes, dimensions, MIN_SIZE],
+  );
+
+  const updateShape = useCallback((id: string, updates: Partial<Shape>) => {
     setShapes((prev) =>
       prev.map((shape) => {
         if (shape.id !== id) return shape;
         return { ...shape, ...updates };
       }),
     );
-  };
+  }, []);
 
   // Attach transformer to selected shape
   useEffect(() => {
@@ -244,11 +413,637 @@ export function Annotator() {
     }
   }, [selectedId, shapes]);
 
-  const handleDeleteShape = () => {
+  const handleDeleteShape = useCallback(() => {
     if (!selectedId) return;
     setShapes((prev) => prev.filter((shape) => shape.id !== selectedId));
     setSelectedId(null);
-  };
+  }, [selectedId]);
+
+  const handlePolygonVertexAdd = useCallback(
+    (shape: Shape, pos: { x: number; y: number }) => {
+      if (!shape.points) return;
+
+      let minDist = Infinity;
+      let insertIndex = -1;
+
+      for (let i = 0; i < shape.points.length; i += 2) {
+        const x1 = shape.points[i];
+        const y1 = shape.points[i + 1];
+        const x2 = shape.points[(i + 2) % shape.points.length];
+        const y2 = shape.points[(i + 3) % shape.points.length];
+
+        const A = pos.x - x1;
+        const B = pos.y - y1;
+        const C = x2 - x1;
+        const D = y2 - y1;
+
+        const dot = A * C + B * D;
+        const lenSq = C * C + D * D;
+        let param = -1;
+
+        if (lenSq !== 0) param = dot / lenSq;
+
+        let xx, yy;
+
+        if (param < 0) {
+          xx = x1;
+          yy = y1;
+        } else if (param > 1) {
+          xx = x2;
+          yy = y2;
+        } else {
+          xx = x1 + param * C;
+          yy = y1 + param * D;
+        }
+
+        const dx = pos.x - xx;
+        const dy = pos.y - yy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < minDist) {
+          minDist = dist;
+          insertIndex = i + 2;
+        }
+      }
+
+      if (minDist < 10) {
+        const closeToVertex = shape.points.some((_, index) => {
+          if (index % 2 !== 0) return false;
+          const dx = shape.points![index] - pos.x;
+          const dy = shape.points![index + 1] - pos.y;
+          return Math.sqrt(dx * dx + dy * dy) < 10;
+        });
+
+        if (!closeToVertex) {
+          const newPoints = [...shape.points];
+          newPoints.splice(insertIndex, 0, pos.x, pos.y);
+          setShapes((prev) =>
+            prev.map((s) =>
+              s.id === shape.id ? { ...s, points: newPoints } : s,
+            ),
+          );
+        }
+      }
+    },
+    [],
+  );
+
+  // Update the Transformer boundBoxFunc to enforce minimum size
+  const transformerBoundBoxFunc = useCallback(
+    (oldBox: any, newBox: any) => {
+      const selectedShape = shapes.find((s) => s.id === selectedId);
+
+      if (selectedShape?.type === "circle") {
+        const minDiameter = MIN_SIZE.circle.radius * 2;
+        const newWidth = Math.max(newBox.width, minDiameter);
+        return {
+          ...oldBox,
+          width: newWidth,
+          height: newWidth,
+          x: oldBox.x,
+          y: oldBox.y,
+        };
+      }
+
+      // For rectangles
+      const minWidth = MIN_SIZE.rect.width;
+      const minHeight = MIN_SIZE.rect.height;
+
+      if (newBox.width < minWidth || newBox.height < minHeight) {
+        return oldBox;
+      }
+
+      // If shift is pressed, make it a square
+      if (window.event?.shiftKey && selectedShape?.type === "rect") {
+        const size = Math.max(newBox.width, newBox.height);
+        newBox = {
+          ...newBox,
+          width: size,
+          height: size,
+        };
+      }
+
+      const boundedX = Math.max(
+        0,
+        Math.min(newBox.x, dimensions.width - newBox.width),
+      );
+      const boundedY = Math.max(
+        0,
+        Math.min(newBox.y, dimensions.height - newBox.height),
+      );
+      const boundedWidth = Math.min(newBox.width, dimensions.width - boundedX);
+      const boundedHeight = Math.min(
+        newBox.height,
+        dimensions.height - boundedY,
+      );
+
+      return {
+        ...newBox,
+        x: boundedX,
+        y: boundedY,
+        width: boundedWidth,
+        height: boundedHeight,
+      };
+    },
+    [dimensions, MIN_SIZE, selectedId, shapes],
+  );
+
+  // Memoize the rendered shapes
+  const renderedShapes = useMemo(
+    () =>
+      [...shapes, ...(drawing ? [drawing] : [])].map((shape) => {
+        const x = shape.x * dimensions.width;
+        const y = shape.y * dimensions.height;
+        const isSelected = shape.id === selectedId;
+
+        if (shape.type === "polygon") {
+          const points = shape.points!;
+          let livePoints = points;
+          const drag = polygonDragState[shape.id];
+          if (drag) {
+            if (typeof drag.draggingPoint === "number") {
+              const dx = (drag.lastX ?? drag.startX) - drag.startX;
+              const dy = (drag.lastY ?? drag.startY) - drag.startY;
+              livePoints = [...drag.startPoints];
+              livePoints[drag.draggingPoint * 2] += dx;
+              livePoints[drag.draggingPoint * 2 + 1] += dy;
+            } else {
+              const dx = (drag.lastX ?? drag.startX) - drag.startX;
+              const dy = (drag.lastY ?? drag.startY) - drag.startY;
+              livePoints = drag.startPoints.map((p, i) =>
+                i % 2 === 0 ? p + dx : p + dy,
+              );
+            }
+          }
+
+          const xs = livePoints.filter((_, i) => i % 2 === 0);
+          const ys = livePoints.filter((_, i) => i % 2 === 1);
+          const minX = Math.min(...xs);
+          const minY = Math.min(...ys);
+          const maxX = Math.max(...xs);
+          const maxY = Math.max(...ys);
+
+          const insertPoint = (x: number, y: number) => {
+            let minDist = Infinity;
+            let insertIndex = -1;
+
+            for (let i = 0; i < points.length; i += 2) {
+              const x1 = points[i];
+              const y1 = points[i + 1];
+              const x2 = points[(i + 2) % points.length];
+              const y2 = points[(i + 3) % points.length];
+
+              const A = x - x1;
+              const B = y - y1;
+              const C = x2 - x1;
+              const D = y2 - y1;
+
+              const dot = A * C + B * D;
+              const lenSq = C * C + D * D;
+              let param = -1;
+
+              if (lenSq !== 0) param = dot / lenSq;
+
+              let xx, yy;
+
+              if (param < 0) {
+                xx = x1;
+                yy = y1;
+              } else if (param > 1) {
+                xx = x2;
+                yy = y2;
+              } else {
+                xx = x1 + param * C;
+                yy = y1 + param * D;
+              }
+
+              const dx = x - xx;
+              const dy = y - yy;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+
+              if (dist < minDist) {
+                minDist = dist;
+                insertIndex = i + 2;
+              }
+            }
+
+            if (insertIndex !== -1) {
+              const newPoints = [...points];
+              newPoints.splice(insertIndex, 0, x, y);
+              setShapes(
+                shapes.map((s) =>
+                  s.id === shape.id ? { ...s, points: newPoints } : s,
+                ),
+              );
+            }
+          };
+
+          const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
+            if (selectedPointIndex !== null) return;
+            const stage = e.target.getStage();
+            if (!stage) return;
+            const pos = stage.getPointerPosition();
+            if (!pos) return;
+            setPolygonDragState((prev) => ({
+              ...prev,
+              [shape.id]: {
+                startX: pos.x,
+                startY: pos.y,
+                startPoints: [...points],
+                draggingPoint: undefined,
+              },
+            }));
+          };
+
+          const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
+            if (selectedPointIndex !== null) return;
+            const stage = e.target.getStage();
+            if (!stage) return;
+            const pos = stage.getPointerPosition();
+            if (!pos) return;
+            setPolygonDragState((prev) => {
+              const drag = prev[shape.id];
+              if (!drag) return prev;
+              const dx = pos.x - drag.startX;
+              const dy = pos.y - drag.startY;
+              setShapes((shapes) =>
+                shapes.map((s) => {
+                  if (s.id !== shape.id || !s.points) return s;
+                  const newPoints = drag.startPoints.map((p, i) =>
+                    i % 2 === 0 ? p + dx : p + dy,
+                  );
+                  return { ...s, points: newPoints };
+                }),
+              );
+              return {
+                ...prev,
+                [shape.id]: {
+                  ...drag,
+                  lastX: pos.x,
+                  lastY: pos.y,
+                },
+              };
+            });
+          };
+
+          const handleDragEnd = () => {
+            setPolygonDragState((prev) => {
+              const updated = { ...prev };
+              delete updated[shape.id];
+              return updated;
+            });
+          };
+
+          return (
+            <React.Fragment key={shape.id}>
+              <Line
+                id={shape.id}
+                points={points}
+                closed={shape === drawing ? false : true}
+                {...commonProps}
+              />
+              <Rect
+                x={minX}
+                y={minY}
+                width={maxX - minX}
+                height={maxY - minY}
+                fill="rgba(0,0,0,0)"
+                draggable={isSelected && selectedPointIndex === null}
+                onMouseDown={() => setSelectedId(shape.id)}
+                onDragStart={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grabbing";
+                  handleDragStart(e);
+                }}
+                onDragMove={handleDragMove}
+                onDragEnd={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                  handleDragEnd();
+                }}
+                onClick={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  const pos = stage.getPointerPosition();
+                  if (!pos) return;
+
+                  if (!isSelected) {
+                    setSelectedId(shape.id);
+                    return;
+                  }
+
+                  if (
+                    selectedPointIndex !== null ||
+                    polygonDragState[shape.id]
+                  ) {
+                    return;
+                  }
+
+                  handlePolygonVertexAdd(shape, pos);
+                }}
+                onMouseEnter={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor =
+                    isSelected && selectedPointIndex === null
+                      ? "grab"
+                      : "default";
+                }}
+                onMouseLeave={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "default";
+                }}
+              />
+              {isSelected &&
+                points.map((_, index) => {
+                  if (index % 2 !== 0) return null;
+                  const pointIndex = index / 2;
+                  return (
+                    <Circle
+                      key={index}
+                      x={points[index]}
+                      y={points[index + 1]}
+                      radius={6}
+                      fill="#FF6B6B"
+                      stroke="white"
+                      strokeWidth={2}
+                      draggable
+                      onDragStart={(e) => {
+                        const stage = e.target.getStage();
+                        if (!stage) return;
+                        const pos = stage.getPointerPosition();
+                        if (!pos) return;
+                        setSelectedPointIndex(pointIndex);
+                        setPolygonDragState((prev) => ({
+                          ...prev,
+                          [shape.id]: {
+                            startX: pos.x,
+                            startY: pos.y,
+                            startPoints: [...points],
+                            draggingPoint: pointIndex,
+                          },
+                        }));
+                      }}
+                      onDragMove={(e) => {
+                        const stage = e.target.getStage();
+                        if (!stage) return;
+                        const pos = stage.getPointerPosition();
+                        if (!pos) return;
+                        setPolygonDragState((prev) => {
+                          const drag = prev[shape.id];
+                          if (!drag || drag.draggingPoint !== pointIndex)
+                            return prev;
+                          const dx = pos.x - drag.startX;
+                          const dy = pos.y - drag.startY;
+                          setShapes((shapes) =>
+                            shapes.map((s) => {
+                              if (s.id !== shape.id || !s.points) return s;
+                              const newPoints = [...drag.startPoints];
+                              newPoints[pointIndex * 2] =
+                                drag.startPoints[pointIndex * 2] + dx;
+                              newPoints[pointIndex * 2 + 1] =
+                                drag.startPoints[pointIndex * 2 + 1] + dy;
+                              return { ...s, points: newPoints };
+                            }),
+                          );
+                          return {
+                            ...prev,
+                            [shape.id]: {
+                              ...drag,
+                              lastX: pos.x,
+                              lastY: pos.y,
+                            },
+                          };
+                        });
+                      }}
+                      onDragEnd={() => {
+                        setSelectedPointIndex(null);
+                        setPolygonDragState((prev) => {
+                          const updated = { ...prev };
+                          delete updated[shape.id];
+                          return updated;
+                        });
+                      }}
+                      onMouseDown={(e) => {
+                        e.cancelBubble = true;
+                        setSelectedPointIndex(pointIndex);
+                      }}
+                      onMouseUp={() => setSelectedPointIndex(null)}
+                    />
+                  );
+                })}
+            </React.Fragment>
+          );
+        }
+
+        switch (shape.type) {
+          case "rect":
+            return (
+              <Rect
+                key={shape.id}
+                id={shape.id}
+                x={x}
+                y={y}
+                width={(shape.width || 0) * dimensions.width}
+                height={(shape.height || 0) * dimensions.height}
+                {...commonProps}
+                draggable
+                onClick={() => setSelectedId(shape.id)}
+                onTap={() => setSelectedId(shape.id)}
+                onTransformEnd={handleTransform}
+                onMouseEnter={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                }}
+                onMouseLeave={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "default";
+                }}
+                onDragStart={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grabbing";
+                }}
+                onDragEnd={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                }}
+              />
+            );
+          case "circle":
+            return (
+              <Circle
+                key={shape.id}
+                id={shape.id}
+                x={x}
+                y={y}
+                radius={(shape.radius || 0) * dimensions.width}
+                width={(shape.radius || 0) * 2 * dimensions.width}
+                height={(shape.radius || 0) * 2 * dimensions.width}
+                {...commonProps}
+                draggable
+                onClick={() => setSelectedId(shape.id)}
+                onTap={() => setSelectedId(shape.id)}
+                onTransformEnd={handleTransform}
+                onMouseEnter={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                }}
+                onMouseLeave={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "default";
+                }}
+                onDragStart={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grabbing";
+                }}
+                onDragEnd={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                }}
+              />
+            );
+          case "ellipse":
+            return (
+              <Ellipse
+                key={shape.id}
+                id={shape.id}
+                x={x}
+                y={y}
+                radiusX={(shape.radiusX || 0) * dimensions.width}
+                radiusY={(shape.radiusY || 0) * dimensions.height}
+                {...commonProps}
+                draggable
+                onClick={() => setSelectedId(shape.id)}
+                onTap={() => setSelectedId(shape.id)}
+                onTransformEnd={handleTransform}
+                onMouseEnter={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                }}
+                onMouseLeave={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "default";
+                }}
+                onDragStart={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grabbing";
+                }}
+                onDragEnd={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                }}
+              />
+            );
+          case "point":
+            return (
+              <Circle
+                key={shape.id}
+                id={shape.id}
+                x={x}
+                y={y}
+                radius={8}
+                fill="#FF6B6B"
+                stroke="white"
+                strokeWidth={2}
+                draggable
+                onClick={() => setSelectedId(shape.id)}
+                onTap={() => setSelectedId(shape.id)}
+                onMouseEnter={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+                }}
+                onMouseLeave={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "default";
+                }}
+                onDragStart={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grabbing";
+                }}
+                onDragEnd={(e) => {
+                  const stage = e.target.getStage();
+                  if (!stage) return;
+                  stage.container().style.cursor = "grab";
+
+                  // Update the point's position after drag
+                  const node = e.target;
+                  updateShape(shape.id, {
+                    x: node.x() / dimensions.width,
+                    y: node.y() / dimensions.height,
+                  });
+                }}
+              />
+            );
+          default:
+            return null;
+        }
+      }),
+    [
+      shapes,
+      drawing,
+      selectedId,
+      dimensions,
+      commonProps,
+      handleTransform,
+      polygonDragState,
+      selectedPointIndex,
+      setShapes,
+      setSelectedId,
+      setPolygonDragState,
+      setSelectedPointIndex,
+      handlePolygonVertexAdd,
+    ],
+  );
+
+  const handleStageMouseEnter = useCallback(
+    (e: KonvaEventObject<MouseEvent>) => {
+      const stage = e.target.getStage();
+      if (!stage) return;
+
+      if (shapes.length === 0 || drawing) {
+        stage.container().style.cursor = "crosshair";
+      } else {
+        stage.container().style.cursor = "default";
+      }
+    },
+    [shapes.length, drawing],
+  );
+
+  const handleStageMouseLeave = useCallback(
+    (e: KonvaEventObject<MouseEvent>) => {
+      const stage = e.target.getStage();
+      if (!stage) return;
+      stage.container().style.cursor = "default";
+    },
+    [],
+  );
+
+  const setShapeTypeAndCursor = useCallback((type: ShapeType) => {
+    setShapeType(type);
+    setCurrentPolygonPoints([]);
+    setDrawing(null);
+    if (stageRef.current) {
+      stageRef.current.container().style.cursor = "crosshair";
+    }
+  }, []);
 
   return (
     <Box
@@ -280,11 +1075,7 @@ export function Annotator() {
       >
         <Tooltip title="Rectangle">
           <IconButton
-            onClick={() => {
-              setShapeType("rect");
-              setCurrentPolygonPoints([]);
-              setDrawing(null);
-            }}
+            onClick={() => setShapeTypeAndCursor("rect")}
             color={shapeType === "rect" ? "primary" : "default"}
           >
             <SquareOutlinedIcon />
@@ -292,11 +1083,7 @@ export function Annotator() {
         </Tooltip>
         <Tooltip title="Circle">
           <IconButton
-            onClick={() => {
-              setShapeType("circle");
-              setCurrentPolygonPoints([]);
-              setDrawing(null);
-            }}
+            onClick={() => setShapeTypeAndCursor("circle")}
             color={shapeType === "circle" ? "primary" : "default"}
           >
             <CircleOutlinedIcon />
@@ -304,14 +1091,26 @@ export function Annotator() {
         </Tooltip>
         <Tooltip title="Polygon">
           <IconButton
-            onClick={() => {
-              setShapeType("polygon");
-              setCurrentPolygonPoints([]);
-              setDrawing(null);
-            }}
+            onClick={() => setShapeTypeAndCursor("polygon")}
             color={shapeType === "polygon" ? "primary" : "default"}
           >
             <PolylineOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Ellipse">
+          <IconButton
+            onClick={() => setShapeTypeAndCursor("ellipse")}
+            color={shapeType === "ellipse" ? "primary" : "default"}
+          >
+            <OvalIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Point">
+          <IconButton
+            onClick={() => setShapeTypeAndCursor("point")}
+            color={shapeType === "point" ? "primary" : "default"}
+          >
+            <FiberManualRecordOutlinedIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete Selected">
@@ -339,489 +1138,37 @@ export function Annotator() {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onDblClick={handleStageDoubleClick}
+        onMouseEnter={handleStageMouseEnter}
+        onMouseLeave={handleStageMouseLeave}
       >
         <Layer>
-          {[...shapes, ...(drawing ? [drawing] : [])].map((shape) => {
-            const x = shape.x * dimensions.width;
-            const y = shape.y * dimensions.height;
-            const isSelected = shape.id === selectedId;
-
-            const commonProps = {
-              stroke: shape.stroke,
-              strokeWidth: shape.strokeWidth,
-              fill: "transparent",
-              shadowColor: "black",
-              shadowBlur: 5,
-              shadowOpacity: 0.3,
-              shadowOffset: { x: 2, y: 2 },
-            };
-
-            if (shape.type === "polygon") {
-              const points = shape.points!;
-
-              // Helper function to insert a point into the polygon
-              const insertPoint = (x: number, y: number) => {
-                // Find the closest line segment
-                let minDist = Infinity;
-                let insertIndex = -1;
-
-                for (let i = 0; i < points.length; i += 2) {
-                  const x1 = points[i];
-                  const y1 = points[i + 1];
-                  const x2 = points[(i + 2) % points.length];
-                  const y2 = points[(i + 3) % points.length];
-
-                  // Calculate distance from point to line segment
-                  const A = x - x1;
-                  const B = y - y1;
-                  const C = x2 - x1;
-                  const D = y2 - y1;
-
-                  const dot = A * C + B * D;
-                  const lenSq = C * C + D * D;
-                  let param = -1;
-
-                  if (lenSq !== 0) param = dot / lenSq;
-
-                  let xx, yy;
-
-                  if (param < 0) {
-                    xx = x1;
-                    yy = y1;
-                  } else if (param > 1) {
-                    xx = x2;
-                    yy = y2;
-                  } else {
-                    xx = x1 + param * C;
-                    yy = y1 + param * D;
-                  }
-
-                  const dx = x - xx;
-                  const dy = y - yy;
-                  const dist = Math.sqrt(dx * dx + dy * dy);
-
-                  if (dist < minDist) {
-                    minDist = dist;
-                    insertIndex = i + 2;
-                  }
-                }
-
-                if (insertIndex !== -1) {
-                  const newPoints = [...points];
-                  newPoints.splice(insertIndex, 0, x, y);
-                  setShapes(
-                    shapes.map((s) =>
-                      s.id === shape.id ? { ...s, points: newPoints } : s,
-                    ),
-                  );
-                }
-              };
-
-              // Compute live points for bounding box (use drag state if dragging)
-              let livePoints = points;
-              const drag = polygonDragState[shape.id];
-              if (drag) {
-                if (typeof drag.draggingPoint === "number") {
-                  // If dragging a point, update only that point
-                  const dx = (drag.lastX ?? drag.startX) - drag.startX;
-                  const dy = (drag.lastY ?? drag.startY) - drag.startY;
-                  livePoints = [...drag.startPoints];
-                  livePoints[drag.draggingPoint * 2] += dx;
-                  livePoints[drag.draggingPoint * 2 + 1] += dy;
-                } else {
-                  // If dragging the whole polygon, update all points
-                  const dx = (drag.lastX ?? drag.startX) - drag.startX;
-                  const dy = (drag.lastY ?? drag.startY) - drag.startY;
-                  livePoints = drag.startPoints.map((p, i) =>
-                    i % 2 === 0 ? p + dx : p + dy,
-                  );
-                }
-              }
-
-              // Compute bounding box for drag handle and selection
-              const xs = livePoints.filter((_, i) => i % 2 === 0);
-              const ys = livePoints.filter((_, i) => i % 2 === 1);
-              const minX = Math.min(...xs);
-              const minY = Math.min(...ys);
-              const maxX = Math.max(...xs);
-              const maxY = Math.max(...ys);
-
-              const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
-                if (selectedPointIndex !== null) return;
-                const stage = e.target.getStage();
-                if (!stage) return;
-                const pos = stage.getPointerPosition();
-                if (!pos) return;
-                setPolygonDragState((prev) => ({
-                  ...prev,
-                  [shape.id]: {
-                    startX: pos.x,
-                    startY: pos.y,
-                    startPoints: [...points],
-                    draggingPoint: undefined,
-                  },
-                }));
-              };
-
-              const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
-                if (selectedPointIndex !== null) return;
-                const stage = e.target.getStage();
-                if (!stage) return;
-                const pos = stage.getPointerPosition();
-                if (!pos) return;
-                setPolygonDragState((prev) => {
-                  const drag = prev[shape.id];
-                  if (!drag) return prev;
-                  const dx = pos.x - drag.startX;
-                  const dy = pos.y - drag.startY;
-                  setShapes((shapes) =>
-                    shapes.map((s) => {
-                      if (s.id !== shape.id || !s.points) return s;
-                      const newPoints = drag.startPoints.map((p, i) =>
-                        i % 2 === 0 ? p + dx : p + dy,
-                      );
-                      return { ...s, points: newPoints };
-                    }),
-                  );
-                  return {
-                    ...prev,
-                    [shape.id]: {
-                      ...drag,
-                      lastX: pos.x,
-                      lastY: pos.y,
-                    },
-                  };
-                });
-              };
-
-              const handleDragEnd = () => {
-                setPolygonDragState((prev) => {
-                  const updated = { ...prev };
-                  delete updated[shape.id];
-                  return updated;
-                });
-              };
-
-              return (
-                <React.Fragment key={shape.id}>
-                  <Line
-                    id={shape.id}
-                    points={points}
-                    closed={shape === drawing ? false : true}
-                    {...commonProps}
-                  />
-                  <Rect
-                    x={minX}
-                    y={minY}
-                    width={maxX - minX}
-                    height={maxY - minY}
-                    fill="rgba(0,0,0,0)"
-                    draggable={isSelected && selectedPointIndex === null}
-                    onMouseDown={() => setSelectedId(shape.id)}
-                    onDragStart={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grabbing";
-                      handleDragStart(e);
-                    }}
-                    onDragMove={handleDragMove}
-                    onDragEnd={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grab";
-                      handleDragEnd();
-                    }}
-                    onClick={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      const pos = stage.getPointerPosition();
-                      if (!pos) return;
-
-                      // If not selected, just select it
-                      if (!isSelected) {
-                        setSelectedId(shape.id);
-                        return;
-                      }
-
-                      // If dragging or manipulating vertices, don't add new point
-                      if (
-                        selectedPointIndex !== null ||
-                        polygonDragState[shape.id]
-                      ) {
-                        return;
-                      }
-
-                      // Find if we clicked near a line segment
-                      let minDist = Infinity;
-                      let closestSegment = -1;
-
-                      for (let i = 0; i < points.length; i += 2) {
-                        const x1 = points[i];
-                        const y1 = points[i + 1];
-                        const x2 = points[(i + 2) % points.length];
-                        const y2 = points[(i + 3) % points.length];
-
-                        // Calculate distance from click to line segment
-                        const A = pos.x - x1;
-                        const B = pos.y - y1;
-                        const C = x2 - x1;
-                        const D = y2 - y1;
-
-                        const dot = A * C + B * D;
-                        const lenSq = C * C + D * D;
-                        let param = -1;
-
-                        if (lenSq !== 0) param = dot / lenSq;
-
-                        let xx, yy;
-
-                        if (param < 0) {
-                          xx = x1;
-                          yy = y1;
-                        } else if (param > 1) {
-                          xx = x2;
-                          yy = y2;
-                        } else {
-                          xx = x1 + param * C;
-                          yy = y1 + param * D;
-                        }
-
-                        const dx = pos.x - xx;
-                        const dy = pos.y - yy;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-
-                        if (dist < minDist) {
-                          minDist = dist;
-                          closestSegment = i;
-                        }
-                      }
-
-                      // If we're close enough to a line segment (within 10 pixels)
-                      if (minDist < 10) {
-                        // Don't add point if we're too close to an existing vertex
-                        const closeToVertex = points.some((_, index) => {
-                          if (index % 2 !== 0) return false;
-                          const dx = points[index] - pos.x;
-                          const dy = points[index + 1] - pos.y;
-                          return Math.sqrt(dx * dx + dy * dy) < 10;
-                        });
-
-                        if (!closeToVertex) {
-                          insertPoint(pos.x, pos.y);
-                        }
-                      }
-                    }}
-                    onMouseEnter={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor =
-                        isSelected && selectedPointIndex === null
-                          ? "grab"
-                          : "default";
-                    }}
-                    onMouseLeave={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "default";
-                    }}
-                  />
-                  {isSelected &&
-                    points.map((_, index) => {
-                      if (index % 2 !== 0) return null;
-                      const pointIndex = index / 2;
-                      return (
-                        <Circle
-                          key={index}
-                          x={points[index]}
-                          y={points[index + 1]}
-                          radius={6}
-                          fill="#FF6B6B"
-                          stroke="white"
-                          strokeWidth={2}
-                          draggable
-                          onDragStart={(e) => {
-                            const stage = e.target.getStage();
-                            if (!stage) return;
-                            const pos = stage.getPointerPosition();
-                            if (!pos) return;
-                            setSelectedPointIndex(pointIndex);
-                            setPolygonDragState((prev) => ({
-                              ...prev,
-                              [shape.id]: {
-                                startX: pos.x,
-                                startY: pos.y,
-                                startPoints: [...points],
-                                draggingPoint: pointIndex,
-                              },
-                            }));
-                          }}
-                          onDragMove={(e) => {
-                            const stage = e.target.getStage();
-                            if (!stage) return;
-                            const pos = stage.getPointerPosition();
-                            if (!pos) return;
-                            setPolygonDragState((prev) => {
-                              const drag = prev[shape.id];
-                              if (!drag || drag.draggingPoint !== pointIndex)
-                                return prev;
-                              const dx = pos.x - drag.startX;
-                              const dy = pos.y - drag.startY;
-                              setShapes((shapes) =>
-                                shapes.map((s) => {
-                                  if (s.id !== shape.id || !s.points) return s;
-                                  const newPoints = [...drag.startPoints];
-                                  newPoints[pointIndex * 2] =
-                                    drag.startPoints[pointIndex * 2] + dx;
-                                  newPoints[pointIndex * 2 + 1] =
-                                    drag.startPoints[pointIndex * 2 + 1] + dy;
-                                  return { ...s, points: newPoints };
-                                }),
-                              );
-                              return {
-                                ...prev,
-                                [shape.id]: {
-                                  ...drag,
-                                  lastX: pos.x,
-                                  lastY: pos.y,
-                                },
-                              };
-                            });
-                          }}
-                          onDragEnd={() => {
-                            setSelectedPointIndex(null);
-                            setPolygonDragState((prev) => {
-                              const updated = { ...prev };
-                              delete updated[shape.id];
-                              return updated;
-                            });
-                          }}
-                          onMouseDown={(e) => {
-                            e.cancelBubble = true;
-                            setSelectedPointIndex(pointIndex);
-                          }}
-                          onMouseUp={() => setSelectedPointIndex(null)}
-                        />
-                      );
-                    })}
-                </React.Fragment>
-              );
-            }
-
-            switch (shape.type) {
-              case "rect":
-                return (
-                  <Rect
-                    key={shape.id}
-                    id={shape.id}
-                    x={x}
-                    y={y}
-                    width={(shape.width || 0) * dimensions.width}
-                    height={(shape.height || 0) * dimensions.height}
-                    {...commonProps}
-                    draggable
-                    onClick={() => setSelectedId(shape.id)}
-                    onTap={() => setSelectedId(shape.id)}
-                    onTransformEnd={(e) => handleTransform(e)}
-                    onMouseEnter={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grab";
-                    }}
-                    onMouseLeave={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "default";
-                    }}
-                    onDragStart={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grabbing";
-                    }}
-                    onDragEnd={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grab";
-                    }}
-                  />
-                );
-              case "circle":
-                return (
-                  <Circle
-                    key={shape.id}
-                    id={shape.id}
-                    x={x}
-                    y={y}
-                    radius={(shape.radius || 0) * dimensions.width}
-                    {...commonProps}
-                    draggable
-                    onClick={() => setSelectedId(shape.id)}
-                    onTap={() => setSelectedId(shape.id)}
-                    onTransformEnd={(e) => handleTransform(e)}
-                    onMouseEnter={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grab";
-                    }}
-                    onMouseLeave={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "default";
-                    }}
-                    onDragStart={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grabbing";
-                    }}
-                    onDragEnd={(e) => {
-                      const stage = e.target.getStage();
-                      if (!stage) return;
-                      stage.container().style.cursor = "grab";
-                    }}
-                  />
-                );
-              default:
-                return null;
-            }
-          })}
+          {renderedShapes}
           {selectedId &&
-            shapes.find((s) => s.id === selectedId)?.type !== "polygon" && (
+            shapes.find((s) => s.id === selectedId)?.type !== "polygon" &&
+            shapes.find((s) => s.id === selectedId)?.type !== "point" && (
               <Transformer
                 ref={trRef}
                 rotateEnabled={false}
-                boundBoxFunc={(oldBox, newBox) => {
-                  if (newBox.width < 5 || newBox.height < 5) {
-                    return oldBox;
-                  }
-                  const boundedX = Math.max(
-                    0,
-                    Math.min(newBox.x, dimensions.width - newBox.width),
-                  );
-                  const boundedY = Math.max(
-                    0,
-                    Math.min(newBox.y, dimensions.height - newBox.height),
-                  );
-                  const boundedWidth = Math.min(
-                    newBox.width,
-                    dimensions.width - boundedX,
-                  );
-                  const boundedHeight = Math.min(
-                    newBox.height,
-                    dimensions.height - boundedY,
-                  );
-
-                  return {
-                    ...newBox,
-                    x: boundedX,
-                    y: boundedY,
-                    width: boundedWidth,
-                    height: boundedHeight,
-                  };
-                }}
+                boundBoxFunc={transformerBoundBoxFunc}
                 borderStroke="#FF6B6B"
                 anchorStroke="#FF6B6B"
                 anchorFill="#fff"
                 anchorSize={8}
                 borderDash={[2, 2]}
+                enabledAnchors={
+                  shapes.find((s) => s.id === selectedId)?.type === "circle"
+                    ? ["middle-right"]
+                    : [
+                        "top-left",
+                        "top-center",
+                        "top-right",
+                        "middle-left",
+                        "middle-right",
+                        "bottom-left",
+                        "bottom-center",
+                        "bottom-right",
+                      ]
+                }
               />
             )}
         </Layer>
