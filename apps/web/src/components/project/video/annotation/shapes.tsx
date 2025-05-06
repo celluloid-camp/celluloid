@@ -81,6 +81,7 @@ export function Annotator() {
     () => ({
       rect: { width: 20, height: 20 }, // minimum 20px
       circle: { radius: 10 }, // minimum 10px radius
+      ellipse: { radiusX: 10, radiusY: 10 }, // minimum 10px radius
     }),
     [],
   );
@@ -140,6 +141,7 @@ export function Annotator() {
             setShapes((prev) => [...prev, drawing]);
             setDrawing(null);
             setCurrentPolygonPoints([]);
+            setSelectedId(drawing.id);
           } else {
             setCurrentPolygonPoints((prev) => [...prev, pointer.x, pointer.y]);
             setDrawing((prev) =>
@@ -181,18 +183,20 @@ export function Annotator() {
         return;
       }
 
-      const newShape: Shape = {
-        id: `shape-${Date.now()}`,
-        type: shapeType,
-        x: relX,
-        y: relY,
-        stroke: "#FF6B6B",
-        strokeWidth: 2,
-        ...(shapeType === "circle" && { radius: 0.001 }),
-        ...(shapeType === "rect" && { width: 0.001, height: 0.001 }),
-      };
-
-      setDrawing(newShape);
+      if (shapeType === "rect") {
+        const newShape: Shape = {
+          id: `shape-${Date.now()}`,
+          type: "rect",
+          x: relX,
+          y: relY,
+          width: MIN_SIZE.rect.width / dimensions.width,
+          height: MIN_SIZE.rect.height / dimensions.height,
+          stroke: "#FF6B6B",
+          strokeWidth: 2,
+        };
+        setDrawing(newShape);
+        return;
+      }
     },
     [shapes.length, drawing, dimensions, shapeType],
   );
@@ -215,28 +219,31 @@ export function Annotator() {
       const updated: Shape = { ...drawing };
 
       if (drawing.type === "rect") {
-        const width = Math.abs(deltaX);
-        const height = Math.abs(deltaY);
+        const minWidth = MIN_SIZE.rect.width / dimensions.width;
+        const minHeight = MIN_SIZE.rect.height / dimensions.height;
+        let width = Math.abs(deltaX);
+        let height = Math.abs(deltaY);
 
         // If shift is pressed, make it a square
         if (e.evt.shiftKey) {
           const size = Math.max(width, height);
-          updated.width = size;
-          updated.height = size;
-          // Adjust position to maintain the square shape
-          if (deltaX < 0) updated.x = drawing.x - size;
-          if (deltaY < 0) updated.y = drawing.y - size;
-        } else {
-          // Regular rectangle
-          const minWidth = MIN_SIZE.rect.width / dimensions.width;
-          const minHeight = MIN_SIZE.rect.height / dimensions.height;
+          width = size;
+          height = size;
+        }
 
-          updated.width = Math.max(width, minWidth);
-          updated.height = Math.max(height, minHeight);
-          updated.x =
-            deltaX < 0 ? Math.min(relX, drawing.x - minWidth) : drawing.x;
-          updated.y =
-            deltaY < 0 ? Math.min(relY, drawing.y - minHeight) : drawing.y;
+        // Ensure minimum size
+        width = Math.max(width, minWidth);
+        height = Math.max(height, minHeight);
+
+        updated.width = width;
+        updated.height = height;
+
+        // Adjust position to maintain minimum size when dragging in negative direction
+        if (deltaX < 0) {
+          updated.x = Math.min(relX, drawing.x - minWidth);
+        }
+        if (deltaY < 0) {
+          updated.y = Math.min(relY, drawing.y - minHeight);
         }
       } else if (drawing.type === "circle") {
         const minRadius = MIN_SIZE.circle.radius / dimensions.width;
@@ -245,9 +252,10 @@ export function Annotator() {
           minRadius,
         );
       } else if (drawing.type === "ellipse") {
-        const minRadius = MIN_SIZE.circle.radius / dimensions.width;
-        const radiusX = Math.max(Math.abs(deltaX), minRadius);
-        const radiusY = Math.max(Math.abs(deltaY), minRadius);
+        const minRadiusX = MIN_SIZE.ellipse.radiusX / dimensions.width;
+        const minRadiusY = MIN_SIZE.ellipse.radiusY / dimensions.height;
+        const radiusX = Math.max(Math.abs(deltaX), minRadiusX);
+        const radiusY = Math.max(Math.abs(deltaY), minRadiusY);
 
         if (e.evt.shiftKey) {
           const radius = Math.max(radiusX, radiusY);
@@ -296,10 +304,16 @@ export function Annotator() {
       if (!shape) return;
 
       if (shape.type === "rect") {
-        const minWidth = MIN_SIZE.rect.width / dimensions.width;
-        const minHeight = MIN_SIZE.rect.height / dimensions.height;
-        let newWidth = Math.max((shape.width || 0) * scaleX, minWidth);
-        let newHeight = Math.max((shape.height || 0) * scaleY, minHeight);
+        const minWidth = MIN_SIZE.rect.width;
+        const minHeight = MIN_SIZE.rect.height;
+        let newWidth = Math.max(
+          (shape.width || 0) * dimensions.width * scaleX,
+          minWidth,
+        );
+        let newHeight = Math.max(
+          (shape.height || 0) * dimensions.height * scaleY,
+          minHeight,
+        );
 
         // If shift is pressed, make it a square
         if (e.evt.shiftKey) {
@@ -311,8 +325,8 @@ export function Annotator() {
         updateShape(selectedId, {
           x: x / dimensions.width,
           y: y / dimensions.height,
-          width: newWidth,
-          height: newHeight,
+          width: newWidth / dimensions.width,
+          height: newHeight / dimensions.height,
         });
       } else if (shape.type === "circle") {
         const minRadius = MIN_SIZE.circle.radius / dimensions.width;
@@ -336,9 +350,10 @@ export function Annotator() {
           trRef.current.getLayer().batchDraw();
         }
       } else if (shape.type === "ellipse") {
-        const minRadius = MIN_SIZE.circle.radius / dimensions.width;
-        const newRadiusX = Math.max((shape.radiusX || 0) * scaleX, minRadius);
-        const newRadiusY = Math.max((shape.radiusY || 0) * scaleY, minRadius);
+        const minRadiusX = MIN_SIZE.ellipse.radiusX / dimensions.width;
+        const minRadiusY = MIN_SIZE.ellipse.radiusY / dimensions.height;
+        const newRadiusX = Math.max((shape.radiusX || 0) * scaleX, minRadiusX);
+        const newRadiusY = Math.max((shape.radiusY || 0) * scaleY, minRadiusY);
 
         if (e.evt.shiftKey) {
           const radius = Math.max(newRadiusX, newRadiusY);
@@ -490,25 +505,45 @@ export function Annotator() {
         };
       }
 
-      // For rectangles
-      const minWidth = MIN_SIZE.rect.width;
-      const minHeight = MIN_SIZE.rect.height;
-
-      if (newBox.width < minWidth || newBox.height < minHeight) {
-        return oldBox;
+      if (selectedShape?.type === "ellipse") {
+        const minWidth = MIN_SIZE.ellipse.radiusX * 2;
+        const minHeight = MIN_SIZE.ellipse.radiusY * 2;
+        const newWidth = Math.max(newBox.width, minWidth);
+        const newHeight = Math.max(newBox.height, minHeight);
+        return {
+          ...oldBox,
+          width: newWidth,
+          height: newHeight,
+          x: oldBox.x,
+          y: oldBox.y,
+        };
       }
 
-      // If shift is pressed, make it a square
-      if (
-        (window.event as MouseEvent)?.shiftKey &&
-        selectedShape?.type === "rect"
-      ) {
-        const size = Math.max(newBox.width, newBox.height);
-        return {
-          ...newBox,
-          width: size,
-          height: size,
-        };
+      if (selectedShape?.type === "rect") {
+        const minWidth = MIN_SIZE.rect.width;
+        const minHeight = MIN_SIZE.rect.height;
+
+        // If shift is pressed, make it a square
+        if ((window.event as MouseEvent)?.shiftKey) {
+          const size = Math.max(
+            Math.max(newBox.width, minWidth),
+            Math.max(newBox.height, minHeight),
+          );
+          return {
+            ...newBox,
+            width: size,
+            height: size,
+          };
+        }
+
+        // Enforce minimum size
+        if (newBox.width < minWidth || newBox.height < minHeight) {
+          return {
+            ...oldBox,
+            width: Math.max(oldBox.width, minWidth),
+            height: Math.max(oldBox.height, minHeight),
+          };
+        }
       }
 
       const boundedX = Math.max(
@@ -745,7 +780,7 @@ export function Annotator() {
                   stage.container().style.cursor = "default";
                 }}
               />
-              {isSelected &&
+              {(isSelected || shape === drawing) &&
                 points.map((_, index) => {
                   if (index % 2 !== 0) return null;
                   const pointIndex = index / 2;
@@ -758,8 +793,9 @@ export function Annotator() {
                       fill="#FF6B6B"
                       stroke="white"
                       strokeWidth={2}
-                      draggable
+                      draggable={isSelected}
                       onDragStart={(e) => {
+                        if (!isSelected) return;
                         const stage = e.target.getStage();
                         if (!stage) return;
                         const pos = stage.getPointerPosition();
@@ -776,6 +812,7 @@ export function Annotator() {
                         }));
                       }}
                       onDragMove={(e) => {
+                        if (!isSelected) return;
                         const stage = e.target.getStage();
                         if (!stage) return;
                         const pos = stage.getPointerPosition();
@@ -808,6 +845,7 @@ export function Annotator() {
                         });
                       }}
                       onDragEnd={() => {
+                        if (!isSelected) return;
                         setSelectedPointIndex(null);
                         setPolygonDragState((prev) => {
                           const updated = { ...prev };
@@ -816,14 +854,18 @@ export function Annotator() {
                         });
                       }}
                       onMouseDown={(e) => {
+                        if (!isSelected) return;
                         e.cancelBubble = true;
                         setSelectedPointIndex(pointIndex);
                       }}
-                      onMouseUp={() => setSelectedPointIndex(null)}
+                      onMouseUp={() => {
+                        if (!isSelected) return;
+                        setSelectedPointIndex(null);
+                      }}
                       onDblClick={(e) => {
+                        if (!isSelected) return;
                         e.cancelBubble = true;
                         if (points.length > 6) {
-                          // Keep at least 3 points (6 coordinates)
                           const newPoints = [...points];
                           newPoints.splice(pointIndex * 2, 2);
                           setShapes((prev) =>
