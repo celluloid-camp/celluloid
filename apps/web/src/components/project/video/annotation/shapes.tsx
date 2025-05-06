@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, IconButton, Tooltip, SvgIcon } from "@mui/material";
+import { Box } from "@mui/material";
 import React, {
   useState,
   useRef,
@@ -13,20 +13,12 @@ import {
   Layer,
   Rect,
   Circle,
-  RegularPolygon,
   Transformer,
   Line,
   Ellipse,
 } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
-import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
-import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
-import PentagonIcon from "@mui/icons-material/Pentagon";
-import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
-
-type ShapeType = "rect" | "circle" | "polygon" | "ellipse" | "point";
+import { ShapeType, Toolbox } from "./toolbox";
 
 interface Shape {
   id: string;
@@ -43,12 +35,6 @@ interface Shape {
   strokeWidth: number;
   points?: number[];
 }
-
-const OvalIcon = () => (
-  <SvgIcon>
-    <path d="M12 5C7.58 5 4 7.25 4 10C4 12.75 7.58 15 12 15C16.42 15 20 12.75 20 10C20 7.25 16.42 5 12 5ZM12 13C8.69 13 6 11.65 6 10C6 8.35 8.69 7 12 7C15.31 7 18 8.35 18 10C18 11.65 15.31 13 12 13Z" />
-  </SvgIcon>
-);
 
 export function Annotator() {
   const [shapeType, setShapeType] = useState<ShapeType>("rect");
@@ -108,7 +94,6 @@ export function Annotator() {
     };
 
     updateDimensions();
-    // Use ResizeObserver for container, not window resize
     const observer = new window.ResizeObserver(updateDimensions);
     if (containerRef.current) {
       observer.observe(containerRef.current);
@@ -298,7 +283,7 @@ export function Annotator() {
   };
 
   const handleTransform = useCallback(
-    (e: KonvaEventObject<Event>) => {
+    (e: KonvaEventObject<MouseEvent>) => {
       const node = e.target;
       const scaleX = node.scaleX();
       const scaleY = node.scaleY();
@@ -514,9 +499,12 @@ export function Annotator() {
       }
 
       // If shift is pressed, make it a square
-      if (window.event?.shiftKey && selectedShape?.type === "rect") {
+      if (
+        (window.event as MouseEvent)?.shiftKey &&
+        selectedShape?.type === "rect"
+      ) {
         const size = Math.max(newBox.width, newBox.height);
-        newBox = {
+        return {
           ...newBox,
           width: size,
           height: size,
@@ -832,6 +820,21 @@ export function Annotator() {
                         setSelectedPointIndex(pointIndex);
                       }}
                       onMouseUp={() => setSelectedPointIndex(null)}
+                      onDblClick={(e) => {
+                        e.cancelBubble = true;
+                        if (points.length > 6) {
+                          // Keep at least 3 points (6 coordinates)
+                          const newPoints = [...points];
+                          newPoints.splice(pointIndex * 2, 2);
+                          setShapes((prev) =>
+                            prev.map((s) =>
+                              s.id === shape.id
+                                ? { ...s, points: newPoints }
+                                : s,
+                            ),
+                          );
+                        }
+                      }}
                     />
                   );
                 })}
@@ -1058,71 +1061,12 @@ export function Annotator() {
         overflow: "hidden",
       }}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          top: 16,
-          left: 16,
-          zIndex: 1000,
-          display: "flex",
-          flexDirection: "column",
-          gap: 1,
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          padding: 1,
-          borderRadius: 1,
-          boxShadow: 1,
-        }}
-      >
-        <Tooltip title="Rectangle">
-          <IconButton
-            onClick={() => setShapeTypeAndCursor("rect")}
-            color={shapeType === "rect" ? "primary" : "default"}
-          >
-            <SquareOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Circle">
-          <IconButton
-            onClick={() => setShapeTypeAndCursor("circle")}
-            color={shapeType === "circle" ? "primary" : "default"}
-          >
-            <CircleOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Polygon">
-          <IconButton
-            onClick={() => setShapeTypeAndCursor("polygon")}
-            color={shapeType === "polygon" ? "primary" : "default"}
-          >
-            <PolylineOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Ellipse">
-          <IconButton
-            onClick={() => setShapeTypeAndCursor("ellipse")}
-            color={shapeType === "ellipse" ? "primary" : "default"}
-          >
-            <OvalIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Point">
-          <IconButton
-            onClick={() => setShapeTypeAndCursor("point")}
-            color={shapeType === "point" ? "primary" : "default"}
-          >
-            <FiberManualRecordOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete Selected">
-          <IconButton
-            onClick={handleDeleteShape}
-            disabled={!selectedId}
-            color="error"
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      </Box>
+      <Toolbox
+        shapeType={shapeType}
+        onShapeTypeChange={setShapeTypeAndCursor}
+        onDelete={handleDeleteShape}
+        hasSelectedShape={!!selectedId}
+      />
 
       <Stage
         ref={stageRef}
