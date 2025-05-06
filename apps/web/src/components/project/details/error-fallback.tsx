@@ -2,12 +2,14 @@
 
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 import type { FallbackProps } from "react-error-boundary";
 
 export const projectFallbackRender = ({
   error,
   resetErrorBoundary,
 }: FallbackProps) => {
+  const t = useTranslations();
   return (
     <Box display="flex" flexDirection="column">
       <Grid
