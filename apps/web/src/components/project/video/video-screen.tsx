@@ -15,7 +15,7 @@ import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 import { ContextualOverlay } from "./annotation/contextual/overlay";
 import { ContextualOverlayEditor } from "./annotation/contextual/overlay-editor";
 import { VideoPanel } from "./video-panel";
-import { Annotator } from "./annotation/shapes";
+import { ShapesEditor } from "./annotation/shapes-editor";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -116,7 +116,7 @@ export function ProjectVideoScreen({ project }: Props) {
             onClick={handleAnnotionHintClick}
           />
         ) : null}
-        <Annotator />
+        <ShapesEditor />
         <VideoPlayer
           ref={videoPlayerRef}
           height={"100%"}

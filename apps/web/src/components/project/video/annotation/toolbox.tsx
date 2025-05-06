@@ -42,7 +42,11 @@ export function Toolbox({
         boxShadow: 1,
       }}
     >
-      <Tooltip title="Rectangle">
+      <Tooltip
+        title="Rectangle"
+        placement="right"
+        slotProps={{ tooltip: { sx: { userSelect: "none" } } }}
+      >
         <IconButton
           onClick={() => onShapeTypeChange("rect")}
           color={shapeType === "rect" ? "primary" : "default"}
@@ -50,7 +54,11 @@ export function Toolbox({
           <SquareOutlinedIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Circle">
+      <Tooltip
+        title="Circle"
+        placement="right"
+        slotProps={{ tooltip: { sx: { userSelect: "none" } } }}
+      >
         <IconButton
           onClick={() => onShapeTypeChange("circle")}
           color={shapeType === "circle" ? "primary" : "default"}
@@ -58,7 +66,11 @@ export function Toolbox({
           <CircleOutlinedIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Polygon">
+      <Tooltip
+        title="Polygon"
+        placement="right"
+        slotProps={{ tooltip: { sx: { userSelect: "none" } } }}
+      >
         <IconButton
           onClick={() => onShapeTypeChange("polygon")}
           color={shapeType === "polygon" ? "primary" : "default"}
@@ -66,7 +78,11 @@ export function Toolbox({
           <PolylineOutlinedIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Ellipse">
+      <Tooltip
+        title="Ellipse"
+        placement="right"
+        slotProps={{ tooltip: { sx: { userSelect: "none" } } }}
+      >
         <IconButton
           onClick={() => onShapeTypeChange("ellipse")}
           color={shapeType === "ellipse" ? "primary" : "default"}
@@ -74,7 +90,11 @@ export function Toolbox({
           <OvalIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Point">
+      <Tooltip
+        title="Point"
+        placement="right"
+        slotProps={{ tooltip: { sx: { userSelect: "none" } } }}
+      >
         <IconButton
           onClick={() => onShapeTypeChange("point")}
           color={shapeType === "point" ? "primary" : "default"}
@@ -82,7 +102,11 @@ export function Toolbox({
           <FiberManualRecordOutlinedIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Delete Selected">
+      <Tooltip
+        title="Delete"
+        placement="right"
+        slotProps={{ tooltip: { sx: { userSelect: "none" } } }}
+      >
         <IconButton onClick={onDelete} color="error">
           <DeleteIcon />
         </IconButton>
