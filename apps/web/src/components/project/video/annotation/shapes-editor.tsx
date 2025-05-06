@@ -843,6 +843,13 @@ export function ShapesEditor() {
                   const stage = e.target.getStage();
                   if (!stage) return;
                   stage.container().style.cursor = "grab";
+
+                  // Update the shape's position after drag
+                  const node = e.target;
+                  updateShapeStore(shape.id, {
+                    x: node.x() / dimensions.width,
+                    y: node.y() / dimensions.height,
+                  });
                 }}
               />
             );
@@ -880,6 +887,13 @@ export function ShapesEditor() {
                   const stage = e.target.getStage();
                   if (!stage) return;
                   stage.container().style.cursor = "grab";
+
+                  // Update the shape's position after drag
+                  const node = e.target;
+                  updateShapeStore(shape.id, {
+                    x: node.x() / dimensions.width,
+                    y: node.y() / dimensions.height,
+                  });
                 }}
               />
             );
@@ -916,6 +930,13 @@ export function ShapesEditor() {
                   const stage = e.target.getStage();
                   if (!stage) return;
                   stage.container().style.cursor = "grab";
+
+                  // Update the shape's position after drag
+                  const node = e.target;
+                  updateShapeStore(shape.id, {
+                    x: node.x() / dimensions.width,
+                    y: node.y() / dimensions.height,
+                  });
                 }}
               />
             );
