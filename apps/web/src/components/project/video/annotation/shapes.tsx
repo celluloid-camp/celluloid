@@ -197,6 +197,20 @@ export function Annotator() {
         setDrawing(newShape);
         return;
       }
+
+      if (shapeType === "circle") {
+        const newShape: Shape = {
+          id: `shape-${Date.now()}`,
+          type: "circle",
+          x: relX,
+          y: relY,
+          radius: MIN_SIZE.circle.radius / dimensions.width,
+          stroke: "#FF6B6B",
+          strokeWidth: 2,
+        };
+        setDrawing(newShape);
+        return;
+      }
     },
     [shapes.length, drawing, dimensions, shapeType],
   );
@@ -414,9 +428,12 @@ export function Annotator() {
   }, [selectedId, shapes]);
 
   const handleDeleteShape = useCallback(() => {
-    if (!selectedId) return;
-    setShapes((prev) => prev.filter((shape) => shape.id !== selectedId));
-    setSelectedId(null);
+    if (selectedId) {
+      setShapes((prev) => prev.filter((shape) => shape.id !== selectedId));
+      setSelectedId(null);
+    } else {
+      setShapes([]);
+    }
   }, [selectedId]);
 
   const handlePolygonVertexAdd = useCallback(
