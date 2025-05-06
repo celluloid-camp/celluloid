@@ -16,6 +16,7 @@ import { ContextualOverlay } from "./annotation/contextual/overlay";
 import { ContextualOverlayEditor } from "./annotation/contextual/overlay-editor";
 import { VideoPanel } from "./video-panel";
 import { ShapesEditor } from "./annotation/shapes-editor";
+import { ShapesDemo } from "./annotation/shapes-demo";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -116,7 +117,7 @@ export function ProjectVideoScreen({ project }: Props) {
             onClick={handleAnnotionHintClick}
           />
         ) : null}
-        <ShapesEditor />
+        <ShapesDemo />
         <VideoPlayer
           ref={videoPlayerRef}
           height={"100%"}
