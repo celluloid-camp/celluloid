@@ -668,19 +668,9 @@ export function ShapesEditor() {
                 fill="rgba(0,0,0,0)"
                 draggable={isSelected && selectedPointIndex === null}
                 onMouseDown={() => setSelectedId(shape.id)}
-                onDragStart={(e) => {
-                  const stage = e.target.getStage();
-                  if (!stage) return;
-                  stage.container().style.cursor = "grabbing";
-                  handleDragStart(e);
-                }}
+                onDragStart={handleDragStart}
                 onDragMove={handleDragMove}
-                onDragEnd={(e) => {
-                  const stage = e.target.getStage();
-                  if (!stage) return;
-                  stage.container().style.cursor = "grab";
-                  handleDragEnd();
-                }}
+                onDragEnd={handleDragEnd}
                 onClick={(e) => {
                   const stage = e.target.getStage();
                   if (!stage) return;
@@ -758,10 +748,11 @@ export function ShapesEditor() {
                             return prev;
                           const dx = pos.x - drag.startX;
                           const dy = pos.y - drag.startY;
+                          const newPoints = [...drag.startPoints];
+                          newPoints[pointIndex * 2] += dx;
+                          newPoints[pointIndex * 2 + 1] += dy;
                           updateShapeStore(shape.id, {
-                            points: drag.startPoints.map((p, i) =>
-                              i % 2 === 0 ? p + dx : p + dy,
-                            ),
+                            points: newPoints,
                           });
                           return {
                             ...prev,
@@ -948,8 +939,7 @@ export function ShapesEditor() {
                 x={x}
                 y={y}
                 radius={8}
-                fill="#FF6B6B"
-                stroke="white"
+                stroke="#FF6B6B"
                 strokeWidth={2}
                 draggable
                 onClick={() => setSelectedId(shape.id)}
@@ -1083,7 +1073,6 @@ export function ShapesEditor() {
                 boundBoxFunc={transformerBoundBoxFunc}
                 borderStroke="#FF6B6B"
                 anchorStroke="#FF6B6B"
-                anchorFill="#fff"
                 anchorSize={8}
                 borderDash={[2, 2]}
                 enabledAnchors={

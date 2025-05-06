@@ -10,7 +10,6 @@ type Mode = "edit" | "view";
 
 export function ShapesDemo() {
   const [mode, setMode] = useState<Mode>("edit");
-  const shapes = useShapesStore((state) => state.shapes);
 
   return (
     <Box
@@ -51,15 +50,6 @@ export function ShapesDemo() {
         >
           View
         </Button>
-        {shapes.length > 0 && (
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => useShapesStore.getState().deleteAllShapes()}
-          >
-            Clear All
-          </Button>
-        )}
       </Stack>
 
       {mode === "edit" ? <ShapesEditor /> : <ShapesViewer />}
