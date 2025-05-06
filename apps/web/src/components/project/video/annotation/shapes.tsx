@@ -19,26 +19,16 @@ import {
 } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { ShapeType, Toolbox } from "./toolbox";
-
-interface Shape {
-  id: string;
-  type: ShapeType;
-  x: number;
-  y: number;
-  width?: number;
-  height?: number;
-  radius?: number;
-  radiusX?: number;
-  radiusY?: number;
-  sides?: number;
-  stroke: string;
-  strokeWidth: number;
-  points?: number[];
-}
+import { Shape } from "./types";
+import { useShapesStore } from "./shapes-store";
 
 export function Annotator() {
   const [shapeType, setShapeType] = useState<ShapeType>("rect");
-  const [shapes, setShapes] = useState<Shape[]>([]);
+  const shapes = useShapesStore((state) => state.shapes);
+  const addShape = useShapesStore((state) => state.addShape);
+  const updateShapeStore = useShapesStore((state) => state.updateShape);
+  const deleteShape = useShapesStore((state) => state.deleteShape);
+  const deleteAllShapes = useShapesStore((state) => state.deleteAllShapes);
   const [drawing, setDrawing] = useState<Shape | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const stageRef = useRef<any>(null);
@@ -138,7 +128,7 @@ export function Annotator() {
               Math.pow(pointer.y - firstPoint[1], 2),
           );
           if (distance < 10 && drawing.points!.length >= 6) {
-            setShapes((prev) => [...prev, drawing]);
+            addShape(drawing);
             setDrawing(null);
             setCurrentPolygonPoints([]);
             setSelectedId(drawing.id);
@@ -178,7 +168,7 @@ export function Annotator() {
           stroke: "#FF6B6B",
           strokeWidth: 2,
         };
-        setShapes((prev) => [...prev, newShape]);
+        addShape(newShape);
         setSelectedId(newShape.id);
         return;
       }
@@ -212,7 +202,7 @@ export function Annotator() {
         return;
       }
     },
-    [shapes.length, drawing, dimensions, shapeType],
+    [shapes.length, drawing, dimensions, shapeType, addShape],
   );
 
   const handleMouseMove = useCallback(
@@ -290,14 +280,14 @@ export function Annotator() {
     if (!drawing) return;
     if (drawing.type === "polygon") return;
 
-    setShapes((prev) => [...prev, drawing]);
+    addShape(drawing);
     setSelectedId(drawing.id);
     setDrawing(null);
-  }, [drawing]);
+  }, [drawing, addShape]);
 
   const handleStageDoubleClick = () => {
     if (drawing?.type === "polygon" && currentPolygonPoints.length >= 6) {
-      setShapes((prev) => [...prev, drawing]);
+      addShape(drawing);
       setSelectedId(drawing.id);
       setDrawing(null);
       setCurrentPolygonPoints([]);
@@ -336,7 +326,7 @@ export function Annotator() {
           newHeight = size;
         }
 
-        updateShape(selectedId, {
+        updateShapeStore(selectedId, {
           x: x / dimensions.width,
           y: y / dimensions.height,
           width: newWidth / dimensions.width,
@@ -346,7 +336,7 @@ export function Annotator() {
         const minRadius = MIN_SIZE.circle.radius / dimensions.width;
         const newRadius = Math.max((shape.radius || 0) * scaleX, minRadius);
 
-        updateShape(selectedId, {
+        updateShapeStore(selectedId, {
           x: shape.x,
           y: shape.y,
           radius: newRadius,
@@ -371,14 +361,14 @@ export function Annotator() {
 
         if (e.evt.shiftKey) {
           const radius = Math.max(newRadiusX, newRadiusY);
-          updateShape(selectedId, {
+          updateShapeStore(selectedId, {
             x: shape.x,
             y: shape.y,
             radiusX: radius,
             radiusY: radius,
           });
         } else {
-          updateShape(selectedId, {
+          updateShapeStore(selectedId, {
             x: shape.x,
             y: shape.y,
             radiusX: newRadiusX,
@@ -403,17 +393,8 @@ export function Annotator() {
       node.scaleX(1);
       node.scaleY(1);
     },
-    [selectedId, shapes, dimensions, MIN_SIZE],
+    [selectedId, shapes, dimensions, MIN_SIZE, updateShapeStore],
   );
-
-  const updateShape = useCallback((id: string, updates: Partial<Shape>) => {
-    setShapes((prev) =>
-      prev.map((shape) => {
-        if (shape.id !== id) return shape;
-        return { ...shape, ...updates };
-      }),
-    );
-  }, []);
 
   // Attach transformer to selected shape
   useEffect(() => {
@@ -429,12 +410,12 @@ export function Annotator() {
 
   const handleDeleteShape = useCallback(() => {
     if (selectedId) {
-      setShapes((prev) => prev.filter((shape) => shape.id !== selectedId));
+      deleteShape(selectedId);
       setSelectedId(null);
     } else {
-      setShapes([]);
+      deleteAllShapes();
     }
-  }, [selectedId]);
+  }, [selectedId, deleteShape, deleteAllShapes]);
 
   const handlePolygonVertexAdd = useCallback(
     (shape: Shape, pos: { x: number; y: number }) => {
@@ -494,15 +475,11 @@ export function Annotator() {
         if (!closeToVertex) {
           const newPoints = [...shape.points];
           newPoints.splice(insertIndex, 0, pos.x, pos.y);
-          setShapes((prev) =>
-            prev.map((s) =>
-              s.id === shape.id ? { ...s, points: newPoints } : s,
-            ),
-          );
+          updateShapeStore(shape.id, { points: newPoints });
         }
       }
     },
-    [],
+    [updateShapeStore],
   );
 
   // Update the Transformer boundBoxFunc to enforce minimum size
@@ -670,11 +647,9 @@ export function Annotator() {
             if (insertIndex !== -1) {
               const newPoints = [...points];
               newPoints.splice(insertIndex, 0, x, y);
-              setShapes(
-                shapes.map((s) =>
-                  s.id === shape.id ? { ...s, points: newPoints } : s,
-                ),
-              );
+              updateShapeStore(shape.id, {
+                points: newPoints,
+              });
             }
           };
 
@@ -706,15 +681,11 @@ export function Annotator() {
               if (!drag) return prev;
               const dx = pos.x - drag.startX;
               const dy = pos.y - drag.startY;
-              setShapes((shapes) =>
-                shapes.map((s) => {
-                  if (s.id !== shape.id || !s.points) return s;
-                  const newPoints = drag.startPoints.map((p, i) =>
-                    i % 2 === 0 ? p + dx : p + dy,
-                  );
-                  return { ...s, points: newPoints };
-                }),
-              );
+              updateShapeStore(shape.id, {
+                points: drag.startPoints.map((p, i) =>
+                  i % 2 === 0 ? p + dx : p + dy,
+                ),
+              });
               return {
                 ...prev,
                 [shape.id]: {
@@ -840,17 +811,11 @@ export function Annotator() {
                             return prev;
                           const dx = pos.x - drag.startX;
                           const dy = pos.y - drag.startY;
-                          setShapes((shapes) =>
-                            shapes.map((s) => {
-                              if (s.id !== shape.id || !s.points) return s;
-                              const newPoints = [...drag.startPoints];
-                              newPoints[pointIndex * 2] =
-                                drag.startPoints[pointIndex * 2] + dx;
-                              newPoints[pointIndex * 2 + 1] =
-                                drag.startPoints[pointIndex * 2 + 1] + dy;
-                              return { ...s, points: newPoints };
-                            }),
-                          );
+                          updateShapeStore(shape.id, {
+                            points: drag.startPoints.map((p, i) =>
+                              i % 2 === 0 ? p + dx : p + dy,
+                            ),
+                          });
                           return {
                             ...prev,
                             [shape.id]: {
@@ -885,13 +850,9 @@ export function Annotator() {
                         if (points.length > 6) {
                           const newPoints = [...points];
                           newPoints.splice(pointIndex * 2, 2);
-                          setShapes((prev) =>
-                            prev.map((s) =>
-                              s.id === shape.id
-                                ? { ...s, points: newPoints }
-                                : s,
-                            ),
-                          );
+                          updateShapeStore(shape.id, {
+                            points: newPoints,
+                          });
                         }
                       }}
                     />
@@ -1047,7 +1008,7 @@ export function Annotator() {
 
                   // Update the point's position after drag
                   const node = e.target;
-                  updateShape(shape.id, {
+                  updateShapeStore(shape.id, {
                     x: node.x() / dimensions.width,
                     y: node.y() / dimensions.height,
                   });
@@ -1067,11 +1028,10 @@ export function Annotator() {
       handleTransform,
       polygonDragState,
       selectedPointIndex,
-      setShapes,
-      setSelectedId,
       setPolygonDragState,
       setSelectedPointIndex,
       handlePolygonVertexAdd,
+      updateShapeStore,
     ],
   );
 
