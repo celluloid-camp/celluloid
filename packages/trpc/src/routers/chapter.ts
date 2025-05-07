@@ -1,12 +1,11 @@
-import { prisma } from '@celluloid/prisma';
-import { Prisma } from '@celluloid/prisma';
-import { TRPCError } from '@trpc/server';
-import { EventEmitter } from 'node:events';
-import { z } from 'zod';
+import { EventEmitter } from "node:events";
+import { prisma } from "@celluloid/prisma";
+import { Prisma } from "@celluloid/prisma";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-import { protectedProcedure, publicProcedure, router } from '../trpc';
-import { chaptersQueue } from '@celluloid/queue';
-
+import { chaptersQueue } from "@celluloid/queue";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 // create a global event emitter (could be replaced by redis, etc)
 const ee = new EventEmitter();
@@ -22,11 +21,10 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
       id: true,
       //@ts-expect-error dynamic
       publicUrl: true,
-      path: true
-    }
-  }
+      path: true,
+    },
+  },
 });
-
 
 export const chapterRouter = router({
   byProjectId: publicProcedure
@@ -44,15 +42,15 @@ export const chapterRouter = router({
             select: {
               id: true,
               publicUrl: true,
-              path: true
-            }
+              path: true,
+            },
           },
           lastEditedBy: {
-            select: defaultUserSelect
+            select: defaultUserSelect,
           },
         },
         orderBy: {
-          startTime: 'asc',
+          startTime: "asc",
         },
       });
       // if (!project) {
@@ -70,34 +68,29 @@ export const chapterRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user?.id && ctx.requireRoles(['teacher', 'admin'])) {
-
+      if (ctx.user?.id && ctx.requireRoles(["teacher", "admin"])) {
         // Find the project by its ID (you need to replace 'projectId' with the actual ID)
         const project = await prisma.project.findUnique({
           where: {
             id: input.projectId,
-            userId: ctx.user.id
-          }
+            userId: ctx.user.id,
+          },
         });
 
         if (!project) {
-          throw new Error('Project not found');
+          throw new Error("Project not found");
         }
 
         const jobId = await chaptersQueue.add({ projectId: project.id });
-        const updatedProject = await prisma.project.update({
-          where: { id: project.id },
+        const projectJob = await prisma.projectQueueJob.create({
           data: {
-            chapterJob: {
-              connect: {
-                id: jobId.id
-              }
-            }
-          }
-        })
-        console.log("job enqueued", jobId)
-        return updatedProject;
-
+            projectId: project.id,
+            type: "chapter",
+            queueJobId: jobId.id,
+          },
+        });
+        console.log("job enqueued", jobId);
+        return projectJob;
       }
     }),
   create: protectedProcedure
@@ -111,20 +104,18 @@ export const chapterRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-
       const project = await prisma.project.findUnique({
         where: { id: input.projectId },
         select: {
-          userId: true
-        }
+          userId: true,
+        },
       });
 
       if (!project) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Project not found"
-        }
-        );
+          message: "Project not found",
+        });
       }
 
       if (ctx.user?.role === "admin" || project.userId === ctx.user?.id) {
@@ -137,26 +128,23 @@ export const chapterRouter = router({
             description: input.description,
           },
           select: {
-            id: true
-          }
+            id: true,
+          },
         });
 
         if (!chapter) {
           throw new TRPCError({
             code: "BAD_REQUEST",
-            message: "Failed to create chapter"
-          }
-          );
+            message: "Failed to create chapter",
+          });
         }
         return chapter;
       }
 
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Can't edit this annotation"
-      }
-      );
-
+        message: "Can't edit this annotation",
+      });
     }),
   edit: protectedProcedure
     .input(
@@ -168,30 +156,30 @@ export const chapterRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-
-
       const chapter = await prisma.chapter.findUnique({
         where: { id: input.chapterId },
         include: {
-          project: true
-        }
+          project: true,
+        },
       });
 
       if (!chapter) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Annotation not found"
-        }
-        );
+          message: "Annotation not found",
+        });
       }
 
-      if (ctx.user?.role === "admin" || chapter.project.userId === ctx.user?.id) {
+      if (
+        ctx.user?.role === "admin" ||
+        chapter.project.userId === ctx.user?.id
+      ) {
         // Perform the update
         const updatedChapter = await prisma.chapter.update({
           where: { id: input.chapterId },
           data: {
             title: input.title ?? chapter.title,
-            description: input.description ?? chapter.description
+            description: input.description ?? chapter.description,
           },
         });
 
@@ -201,12 +189,9 @@ export const chapterRouter = router({
 
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Can't edit this annotation"
-      }
-      );
-
+        message: "Can't edit this annotation",
+      });
     }),
-
   delete: protectedProcedure
     .input(
       z.object({
@@ -214,24 +199,25 @@ export const chapterRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-
       // Check if the annotation with the given ID exists
       const chapter = await prisma.chapter.findUnique({
         where: { id: input.chapterId },
         include: {
-          project: true
-        }
+          project: true,
+        },
       });
 
       if (!chapter) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "chapter not found"
-        }
-        );
+          message: "chapter not found",
+        });
       }
 
-      if (ctx.user?.role === "admin" || chapter.project.userId === ctx.user?.id) {
+      if (
+        ctx.user?.role === "admin" ||
+        chapter.project.userId === ctx.user?.id
+      ) {
         const chapter = await prisma.chapter.delete({
           where: { id: input.chapterId },
         });
@@ -240,10 +226,8 @@ export const chapterRouter = router({
       }
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Can't edit this chapter"
-      }
-      );
-
+        message: "Can't edit this chapter",
+      });
     }),
   reset: protectedProcedure
     .input(
@@ -252,36 +236,28 @@ export const chapterRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-
       const project = await prisma.project.findUnique({
         where: { id: input.projectId },
         select: {
-          userId: true
-        }
+          userId: true,
+        },
       });
 
       if (!project) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Project not found"
-        }
-        );
+          message: "Project not found",
+        });
       }
 
       if (ctx.user?.role === "admin" || project.userId === ctx.user?.id) {
-
         // Check if the annotation with the given ID exists
         await prisma.chapter.deleteMany({
-          where: { projectId: input.projectId }
+          where: { projectId: input.projectId },
         });
 
-        await prisma.project.update({
-          where: { id: input.projectId },
-          data: {
-            chapterJob: {
-              disconnect: true
-            }
-          }
+        await prisma.projectQueueJob.delete({
+          where: { id: input.projectId, type: "chapter" },
         });
 
         // ee.emit('change', chapter);
@@ -289,9 +265,7 @@ export const chapterRouter = router({
       }
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Can't edit this chapter"
-      }
-      );
-
+        message: "Can't edit this chapter",
+      });
     }),
 });

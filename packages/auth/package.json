@@ -14,41 +14,28 @@
   },
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
-    },
-    "./env": {
-      "types": "./dist/env.d.ts",
-      "default": "./src/env.ts"
-    },
-    "./plugins": {
-      "types": "./dist/plugins/index.d.ts",
-      "default": "./src/plugins/index.ts"
-    }
+    ".": "./src/index.ts",
+    "./env": "./src/env.ts",
+    "./plugins": "./src/plugins/index.ts",
+    "./client/plugins": "./src/plugins/client.ts"
   },
   "scripts": {
-    "build": "tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc"
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@celluloid/prisma": "workspace:*",
-    "@celluloid/utils": "workspace:*",
     "@celluloid/queue": "workspace:*",
-    "@prisma/client": "^5.22.0",
-    "@t3-oss/env-core": "^0.11.1",
+    "@celluloid/utils": "workspace:*",
+    "@prisma/client": "^6.5.0",
+    "@t3-oss/env-core": "catalog:",
     "bcryptjs": "^2.4.3",
-    "better-auth": "^1.0.21",
-    "express": "^4.21.2",
+    "better-auth": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@celluloid/config": "workspace:*",
     "@types/bcryptjs": "^2.4.5",
-    "@types/express": "^5.0.0",
     "@types/node": "^18.14.2",
-    "tsup": "^8.3.0",
     "typescript": "catalog:"
   }
 }

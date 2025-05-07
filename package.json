@@ -13,85 +13,50 @@
   "scripts": {
     "dev": "dotenv -- turbo watch dev --continue",
     "clean": "turbo clean",
-    "build": "dotenv -- turbo run build --no-cache",
-    "eslint": "eslint --ext .js,.jsx,.ts,.tsx",
-    "prepare": "husky install",
-    "prettier:all": "prettier --ignore-path .eslintignore \"**/*.{js,jsx,ts,tsx,md}\"",
-    "test": "npx playwright test",
-    "start": "pm2-runtime start ecosystem.config.js",
+    "build": "SKIP_ENV_VALIDATIONS=true turbo run build --no-cache",
+    "lint": "biome check --fix",
+    "prepare": "husky",
+    "test": "pnpm exec playwright test",
+    "test:codegen": "pnpm exec playwright codegen http://localhost:3000",
     "--shortcuts to run commands in workspaces--": "",
-    "frontend": "dotenv -- pnpm --filter frontend",
-    "admin": "dotenv -- pnpm --filter admin",
+    "web": "dotenv -- pnpm --filter web",
+    "worker": "dotenv -- pnpm --filter worker",
     "auth": "dotenv -- pnpm --filter auth",
-    "backend": "dotenv -- pnpm --filter backend",
     "prisma": "dotenv -- pnpm --filter @celluloid/prisma",
-    "docker:build": "docker build -t celluloid:latest .",
-    "docker:run": "docker run -it --rm --env-file .env -p 3000:3000  celluloid:latest"
+    "docker:web:build": "docker buildx build --target=web --build-arg NODE_ENV=production --build-arg NEXT_PUBLIC_VERSION_TAG=latest -t celluloid-web .",
+    "docker:web:run": "docker run -it --rm --env-file .env -p 3000:3000 celluloid-web",
+    "docker:worker:build": "docker buildx build --target=worker --build-arg NODE_ENV=production -t celluloid-worker .",
+    "docker:worker:run": "docker run -it --rm --env-file .env celluloid-worker"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.7.2",
-    "@commitlint/config-conventional": "^17.7.0",
-    "@playwright/test": "^1.39.0",
-    "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
-    "eslint": "^8.50.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-react": "^1.1.7",
-    "eslint-plugin-import": "^2.23.3",
-    "eslint-plugin-jest": "latest",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-simple-import-sort": "^8.0.0",
-    "husky": "^8.0.3",
-    "jest": "^27.0.1",
-    "lint-staged": "^14.0.1",
+    "@biomejs/biome": "^1.9.4",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@playwright/test": "^1.52.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.14.1",
+    "git-format-staged": "^3.1.1",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
     "mock-req": "^0.2.0",
     "mock-res": "^0.5.0",
     "prettier": "^3.0.3",
-    "rimraf": "^3.0.2",
+    "rimraf": "^6.0.1",
     "start-server-and-test": "^2.0.1",
     "ts-jest": "^27.0.1",
     "tsup": "^8.3.0",
-    "turbo": "^2.3.3",
+    "turbo": "^2.5.0",
     "typescript": "catalog:",
     "wait-port": "^1.1.0"
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "proseWrap": "always",
-    "overrides": [
-      {
-        "files": [
-          "*.yml",
-          "*.yaml"
-        ],
-        "options": {
-          "printWidth": 120
-        }
-      }
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "engines": {
     "node": ">=20"
   },
-  "lint-staged": {
-    "*.{js,ts,tsx,jsx}": "eslint --cache --fix",
-    "*.{js,css,md,ts,tsx,jsx}": "prettier --write"
-  },
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "dotenv": "^16.3.1",
-    "dotenv-cli": "^7.3.0",
-    "node-fetch": "2",
-    "pm2": "^5.3.0"
+    "dotenv": "^16.5.0",
+    "dotenv-cli": "^8.0.0",
+    "node-fetch": "2"
   },
   "packageManager": "pnpm@9.15.0"
 }

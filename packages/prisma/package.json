@@ -13,14 +13,16 @@
     "url": "https://github.com/udecode/plate/celluloid/issues"
   },
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
+      "import": "./dist/index.js"
     },
     "./env": {
       "types": "./dist/env.d.ts",
-      "default": "./src/env.ts"
+      "import": "./dist/env.js"
     }
   },
   "prisma": {
@@ -28,9 +30,8 @@
     "seed": "tsx src/seed.ts"
   },
   "scripts": {
-    "build": "pnpm run generate && tsc",
+    "build": "pnpm run generate && pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc",
     "setup": "pnpm db:push && pnpm migrate:init && migrate:deploy && pnpm generate",
     "migrate": "pnpm prisma migrate",
     "db": "pnpm prisma db",
@@ -57,9 +58,9 @@
     "@types/randomcolor": "^0.5.7",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.50.0",
+    "pkgroll": "^2.11.2",
     "prisma": "^6.0.1",
     "rimraf": "^5.0.1",
-    "tsup": "^8.3.0",
     "typescript": "catalog:"
   },
   "dependencies": {

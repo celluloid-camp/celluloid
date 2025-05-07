@@ -1,26 +1,32 @@
 {
   "name": "@celluloid/types",
-  "main": "dist/index.js",
   "version": "3.0.0",
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
-  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc"
+    "build": "pkgroll build",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {
-    "tsup": "^8.3.0",
-    "typescript": "catalog:",
-    "@celluloid/config": "workspace:*"
+    "@celluloid/config": "workspace:*",
+    "pkgroll": "^2.11.2",
+    "typescript": "catalog:"
+  },
+  "pkgroll": {
+    "input": "src/index.ts",
+    "output": "dist",
+    "format": "esm",
+    "minify": true,
+    "sourcemap": true
   }
 }

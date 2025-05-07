@@ -4,7 +4,9 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string(),
+    STORAGE_URL: z.string(),
   },
   runtimeEnv: process.env,
-  emptyStringAsUndefined: true
-},);
+  skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
+  emptyStringAsUndefined: true,
+});

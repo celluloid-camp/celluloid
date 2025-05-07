@@ -60,26 +60,14 @@ The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/
 └── .env                 # Environment variables
 ```
 
-
-### 📦 Database
-
-You will need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 13 or later.
-
-We provide a complete docker compose [stack.yml](stack.yml) ready to run :
+# Deploy in production
+We provide a complete docker stack [stack.yml](stack.yml) ready to use :
 
 ```bash
 docker compose -f stack.yml up
 ```
 
-### 📬 Emails
-
-A functioning SMTP server is necessary for sending account confirmation emails.
-we've configured Nodemailer to use [ethereal.email](https://ethereal.email) to catch all development emails, and regular SMTP in production (easy to replace with a different provider thanks to Nodemailer)
-
-### 🗂️ Storage
-
-You are required to supply an S3-compatible storage service. For this purpose, we have set up the project to utilize [Minio](https://min.io/).
-
+# Development
 
 ## Installation from Source
 
@@ -101,6 +89,27 @@ Copy the sample environment file:
 cp env.sample .env
 ```
 
+
+### 📦 Database
+
+You will need a working [PostgreSQL server](https://www.postgresql.org/docs/current/static/tutorial-install.html), version 13 or later.
+
+you can use this docker compose file to start a all services required to run the project :
+
+```bash
+docker compose -f docker-compose.yml up
+```
+
+### 📬 Emails
+
+A functioning SMTP server is necessary for sending account confirmation emails.
+we've configured Nodemailer to use [ethereal.email](https://ethereal.email) to catch all development emails, and regular SMTP in production (easy to replace with a different provider thanks to Nodemailer)
+
+### 🗂️ Storage
+
+You are required to supply an S3-compatible storage service. For this purpose, we have set up the project to utilize [Minio](https://min.io/).
+
+
 Open the newly created .env file with your preferred text editor and configure the values according to your requirements.
 
 ### Development Mode
@@ -116,7 +125,7 @@ pnpm dev
 This will initiate an interactive build and open the app in a browser window while continuously monitoring source files for modifications.
 If everything worked without errors, you should be all set. Otherwise, please review the instructions above carefully.
 
-### Production Mode
+### Production Preview
 
 Build and start the application:
 

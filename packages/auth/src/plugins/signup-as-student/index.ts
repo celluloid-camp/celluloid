@@ -1,15 +1,6 @@
-import type { Account } from "@celluloid/prisma";
-import {
-  type BetterAuthPlugin,
-  parseSetCookieHeader,
-  setSessionCookie,
-  type User,
-} from "better-auth";
-import {
-  APIError,
-  getSessionFromCtx,
-  sendVerificationEmailFn,
-} from "better-auth/api";
+import type { BetterAuthPlugin, User } from "better-auth";
+import { APIError } from "better-auth/api";
+import { setSessionCookie } from "better-auth/cookies";
 import { createAuthEndpoint, createAuthMiddleware } from "better-auth/plugins";
 import { z } from "zod";
 
@@ -26,7 +17,6 @@ const ERROR_CODES = {
   PASSWORD_TOO_LONG: "Password too long",
 };
 
-
 export const signupAsStudent = () => {
   return {
     id: "signupAsStudent",
@@ -35,6 +25,7 @@ export const signupAsStudent = () => {
         "/sign-up-as-student",
         {
           method: "POST",
+          // use: [sessionMiddleware],
           body: z.object({
             username: z.string({
               description: "The username of the user",
@@ -77,7 +68,8 @@ export const signupAsStudent = () => {
         async (ctx) => {
           const password = ctx.body.password;
 
-          const minPasswordLength = ctx.context.password.config.minPasswordLength;
+          const minPasswordLength =
+            ctx.context.password.config.minPasswordLength;
           if (password.length < minPasswordLength) {
             ctx.context.logger.error("Password is too short");
             throw new APIError("BAD_REQUEST", {
@@ -85,7 +77,8 @@ export const signupAsStudent = () => {
             });
           }
 
-          const maxPasswordLength = ctx.context.password.config.maxPasswordLength;
+          const maxPasswordLength =
+            ctx.context.password.config.maxPasswordLength;
           if (password.length > maxPasswordLength) {
             ctx.context.logger.error("Password is too long");
             throw new APIError("BAD_REQUEST", {
@@ -94,7 +87,7 @@ export const signupAsStudent = () => {
           }
 
           const id = ctx.context.generateId({ model: "user" });
-          const email = `temp-${id}@celluloid.com`;
+          const email = `temp-${id}@celluloid.me`;
           const newUser = await ctx.context.internalAdapter.createUser({
             id,
             email,
@@ -110,11 +103,10 @@ export const signupAsStudent = () => {
               status: 500,
               body: {
                 message: ERROR_CODES.FAILED_TO_CREATE_USER,
-                status: 500,
+                status: "error",
               },
             });
           }
-
           const hash = await ctx.context.password.hash(password);
           await ctx.context.internalAdapter.linkAccount({
             userId: newUser.id,
@@ -122,11 +114,11 @@ export const signupAsStudent = () => {
             accountId: newUser.id,
             password: hash,
           });
-
           const session = await ctx.context.internalAdapter.createSession(
             newUser.id,
             ctx.request,
           );
+
           if (!session) {
             return ctx.json(null, {
               status: 400,
@@ -140,12 +132,15 @@ export const signupAsStudent = () => {
             user: newUser,
           });
           return ctx.json({
-            id: newUser.id,
-            email: newUser.email,
-            emailVerified: newUser.emailVerified,
-            name: newUser.name,
-            createdAt: newUser.createdAt,
-            updatedAt: newUser.updatedAt,
+            user: {
+              id: newUser.id,
+              email: newUser.email,
+              emailVerified: newUser.emailVerified,
+              name: newUser.name,
+              createdAt: newUser.createdAt,
+              updatedAt: newUser.updatedAt,
+            },
+            session,
           });
         },
       ),
@@ -153,10 +148,8 @@ export const signupAsStudent = () => {
     hooks: {
       before: [
         {
-          matcher(context) {
-            return context.path === "/sign-up-as-student";
-          },
-          async handler(ctx) {
+          matcher: (context) => context.path === "/sign-up-as-student",
+          handler: createAuthMiddleware(async (ctx) => {
             const username = ctx.body.username;
             if (username) {
               const user = await ctx.context.adapter.findOne<User>({
@@ -174,9 +167,9 @@ export const signupAsStudent = () => {
                 });
               }
             }
-          },
+          }),
         },
       ],
-    }
+    },
   } satisfies BetterAuthPlugin;
 };

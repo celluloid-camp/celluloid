@@ -1,45 +1,98 @@
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat ffmpeg bash openssl openssl-dev
-RUN npm install -g turbo pnpm
+ARG PNPM_VERSION=9.15.0
+ENV CI=true
+ENV PNPM_HOME="/pnpm"
+ENV PATH="${PNPM_HOME}:${PATH}"
+RUN apk add --no-cache libc6-compat bash openssl openssl-dev
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
-FROM base AS pruned
-WORKDIR /app
+FROM base AS builder
+# Set working directory
+WORKDIR /workspace
+RUN pnpm install -g turbo
 COPY . .
-RUN turbo prune --scope=frontend --docker
+RUN turbo prune --scope=web --scope=worker --docker
 
+# Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-WORKDIR /app
+WORKDIR /workspace
 
-COPY --from=pruned /app/out/json/ .
-COPY --from=pruned /app/out/pnpm-lock.yaml /app/pnpm-lock.yaml
+# COPY .gitignore .gitignore
+COPY --from=builder /workspace/out/json/ .
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
+# ↑ By caching the content-addressable store we stop downloading the same packages again and again
 
-RUN \
-  --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=private \
-  pnpm install --frozen-lockfile
 
-FROM base as builder
-WORKDIR /app
-ARG COMMIT
-ENV COMMIT=${COMMIT}
+FROM installer AS web-builder
 
-COPY --from=installer --link /app .
-COPY --from=pruned /app/out/full/ .
-COPY turbo.json turbo.json
-COPY tsconfig.json tsconfig.json
+# Build the project
+COPY --from=builder /workspace/out/full/ .
+RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
+  pnpm install --filter=web... --filter=worker... -r --workspace-root --frozen-lockfile --unsafe-perm
 
-RUN turbo run build --no-cache
+# copy local cache
+# COPY apps/web/.next ./apps/web/.next
+COPY --from=builder /workspace/out/full/ ./
+RUN pnpm prisma generate
+RUN pnpm run build --filter=web...
 
-RUN \
-  --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=private \
-  pnpm install --frozen-lockfile
+FROM installer AS worker-builder
 
-FROM base AS runner
-WORKDIR /app
-RUN apk add --no-cache ffmpeg curl bash openssl openssl-dev
+COPY --from=builder /workspace/out/full/ .
+RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
+  pnpm install --filter=worker... -r --workspace-root --frozen-lockfile --unsafe-perm
+RUN pnpm run build --filter=worker...
 
-COPY --from=builder /app .
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
-  CMD curl -f http://localhost:3000/ || exit 1
+FROM base AS web
+WORKDIR /workspace
 
-CMD ["sh", "-c", "pnpm prisma migrate:deploy & pnpm frontend start"]
+# Install openssl in the runner stage
+RUN apk add --no-cache curl bash openssl openssl-dev wget
+
+ARG NEXT_PUBLIC_VERSION_TAG
+ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
+ARG NODE_ENV
+ENV NODE_ENV=${NODE_ENV}
+
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY --from=web-builder /workspace/apps/web/.next/standalone .
+COPY --from=web-builder /workspace/apps/web/public apps/web/public
+COPY --from=web-builder /workspace/apps/web/.next/static apps/web/.next/static
+
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+USER nodejs
+
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "-qO-", "http://localhost:3000/api/health" ]
+
+# server.js is created by next build from the standalone output
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+CMD ["node", "apps/web/server.js"]
+
+FROM base AS worker
+
+RUN apk add --no-cache curl bash openssl openssl-dev ffmpeg wget
+
+WORKDIR /workspace
+
+ARG NODE_ENV
+ENV NODE_ENV=${NODE_ENV}
+ENV SKIP_ENV_VALIDATIONS=true
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+USER nodejs
+
+COPY --from=worker-builder --chown=nodejs:nodejs /workspace .
+
+ENV WORKER_PORT=3000
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "-qO-", "http://localhost:3000/healthcheck" ]
+
+CMD ["sh", "-c", "pnpm prisma migrate:deploy && node apps/worker/dist/index.js"]
+

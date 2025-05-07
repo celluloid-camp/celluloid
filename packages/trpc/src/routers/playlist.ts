@@ -1,10 +1,9 @@
-import { prisma } from "@celluloid/prisma"
-import { generateUniqueShareName } from '@celluloid/utils';
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
+import { prisma } from "@celluloid/prisma";
+import { generateUniqueShareName } from "@celluloid/utils";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-import { protectedProcedure, publicProcedure, router } from '../trpc';
-
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
 //   id: true,
@@ -13,7 +12,6 @@ import { protectedProcedure, publicProcedure, router } from '../trpc';
 //   createdAt: true,
 //   updatedAt: true,
 // });
-
 
 export const PlaylistProjectSchema = z.object({
   id: z.string(),
@@ -43,8 +41,6 @@ export const PlaylistSchema = z.object({
   projects: z.array(PlaylistProjectSchema),
 });
 
-
-
 export const playlistRouter = router({
   list: publicProcedure
     .input(
@@ -71,16 +67,14 @@ export const playlistRouter = router({
         where: {
           userId: input.authoredOnly && ctx.user ? ctx.user.id : undefined,
         },
-        include: {
-
-        },
+        include: {},
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
-          publishedAt: 'desc',
+          publishedAt: "desc",
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -111,7 +105,7 @@ export const playlistRouter = router({
       });
       if (!project) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
+          code: "NOT_FOUND",
           message: `No playlist with id '${id}'`,
         });
       }
@@ -122,16 +116,18 @@ export const playlistRouter = router({
       z.object({
         title: z.string().min(1),
         description: z.string(),
-        projects: z.array(z.object({
-          title: z.string(),
-          description: z.string(),
-          videoId: z.string(),
-          host: z.string(),
-          duration: z.number(),
-          thumbnailURL: z.string().url(),
-          metadata: z.any(),
-          keywords: z.array(z.string())
-        })),
+        projects: z.array(
+          z.object({
+            title: z.string(),
+            description: z.string(),
+            videoId: z.string(),
+            host: z.string(),
+            duration: z.number(),
+            thumbnailURL: z.string().url(),
+            metadata: z.any(),
+            keywords: z.array(z.string()),
+          }),
+        ),
         objective: z.string(),
         levelStart: z.number(),
         levelEnd: z.number(),
@@ -142,7 +138,7 @@ export const playlistRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user && ctx.requireRoles(['teacher', 'admin'])) {
+      if (ctx.user && ctx.requireRoles(["teacher", "admin"])) {
         const userId = ctx.user.id;
 
         const project = await prisma.playlist.create({
@@ -155,7 +151,7 @@ export const playlistRouter = router({
             description: input.description,
             projects: {
               createMany: {
-                data: input.projects.map(p => ({
+                data: input.projects.map((p) => ({
                   videoId: p.videoId,
                   host: p.host,
                   title: p.title,
@@ -171,11 +167,10 @@ export const playlistRouter = router({
                   metadata: p.metadata,
                   userId: userId,
                   shareCode: generateUniqueShareName(p.title),
-                  keywords: p.keywords
-                }))
-              }
-            }
-
+                  keywords: p.keywords,
+                })),
+              },
+            },
           },
           // select: defaultPostSelect,
         });

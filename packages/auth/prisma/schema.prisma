@@ -22,8 +22,16 @@ model User {
   banReason  String?
   banExpires DateTime?
 
+  username        String?
+  displayUsername String?
+  color           String?
+  initial         String?
+  sessions        Session[]
+  accounts        Account[]
+
   @@unique([email])
   @@map("user")
+  @@unique([username])
 }
 
 model Session {

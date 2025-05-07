@@ -53,3 +53,7 @@ node_modules/
 sandbox
 .adminjs
 .eslintcache
+dist
+
+# Playwright
+/blob-report/
