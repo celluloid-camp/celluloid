@@ -35,8 +35,8 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
           console.log(
             // Escapes equivalent to chalk.bold
             "\x1B[1m" +
-            " ✉️ Emails in development are sent via ethereal.email; your credentials follow:" +
-            "\x1B[22m"
+              " ✉️ Emails in development are sent via ethereal.email; your credentials follow:" +
+              "\x1B[22m",
           );
           console.log("  Site:     https://ethereal.email/login");
           console.log(`  Username: ${account.user}`);
@@ -65,9 +65,7 @@ export default function getTransport(): Promise<nodemailer.Transporter> {
           pass: env.SMTP_PASSWORD,
         },
       });
-
     })();
   }
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
   return transporterPromise!;
 }

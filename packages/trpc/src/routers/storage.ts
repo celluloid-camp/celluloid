@@ -2,8 +2,8 @@ import { Prisma, prisma } from "@celluloid/prisma";
 import * as Minio from "minio";
 import { z } from "zod";
 
-import { protectedProcedure, router } from "../trpc";
 import { env } from "../env";
+import { protectedProcedure, router } from "../trpc";
 
 const defaultStorageSelect = Prisma.validator<Prisma.StorageSelect>()({
   id: true,
@@ -33,6 +33,18 @@ function parseUrl(url: string): {
   };
 }
 
+function getMinioClient() {
+  const storageUrlInfo = parseUrl(env.STORAGE_URL);
+  const minioClient = new Minio.Client({
+    endPoint: storageUrlInfo.host,
+    port: storageUrlInfo.port,
+    useSSL: storageUrlInfo.isSecure,
+    accessKey: env.STORAGE_ACCESS_KEY,
+    secretKey: env.STORAGE_SECRET_KEY,
+  });
+  return minioClient;
+}
+
 export const storageRouter = router({
   presignedUrl: protectedProcedure
     .input(
@@ -40,38 +52,35 @@ export const storageRouter = router({
         name: z.string(),
       }),
     )
+    .output(
+      z.object({
+        uploadUrl: z.string(),
+        path: z.string(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
       if (ctx.user?.id) {
-        const storageUrlInfo = parseUrl(env.STORAGE_URL);
-
-        const minioClient = new Minio.Client({
-          endPoint: storageUrlInfo.host,
-          port: storageUrlInfo.port,
-          useSSL: storageUrlInfo.isSecure,
-          accessKey: env.STORAGE_ACCESS_KEY,
-          secretKey: env.STORAGE_SECRET_KEY,
-        });
-
+        const minioClient = getMinioClient();
         const path = `${ctx.user.id}/${input.name}`;
-        return new Promise((resolve, reject) =>
-          minioClient.presignedPutObject(
-            env.STORAGE_BUCKET,
-            path,
-            (err, url) => {
-              if (err) {
-                console.log(err);
-                reject(err.message);
-              }
-              resolve({ uploadUrl: url, path });
-            },
-          ),
+        const url = await minioClient.presignedPutObject(
+          env.STORAGE_BUCKET,
+          path,
+          24 * 60 * 60, // 24 hours expiry
         );
+        return { uploadUrl: url, path };
       }
+      return { uploadUrl: "", path: "" };
     }),
   add: protectedProcedure
     .input(
       z.object({
         path: z.string(),
+      }),
+    )
+    .output(
+      z.object({
+        id: z.string(),
+        publicUrl: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -88,22 +97,38 @@ export const storageRouter = router({
           },
           select: defaultStorageSelect,
         });
-        return file;
+        return { id: file.id, publicUrl: file.publicUrl };
       }
+      return { id: "", publicUrl: "" };
     }),
   delete: protectedProcedure
     .input(
       z.object({
-        commentId: z.string(),
+        storageId: z.string(),
       }),
     )
+    .output(z.boolean())
     .mutation(async ({ input, ctx }) => {
-      //TODO : check if project owner or collaborator
-      if (ctx.user?.id) {
-        const comment = await prisma.comment.delete({
-          where: { id: input.commentId },
+      try {
+        const minioClient = getMinioClient();
+        const storage = await prisma.storage.findUnique({
+          where: { id: input.storageId },
+          select: { ...defaultStorageSelect, user: { select: { id: true } } },
         });
-        return comment;
+
+        if (!storage || storage.user?.id !== ctx.user?.id) {
+          throw new Error("Storage not found or access denied");
+        }
+
+        await minioClient.removeObject(storage.bucket, storage.path);
+
+        await prisma.storage.delete({
+          where: { id: input.storageId },
+        });
+
+        return true;
+      } catch (error) {
+        throw new Error("Failed to delete storage");
       }
     }),
 });

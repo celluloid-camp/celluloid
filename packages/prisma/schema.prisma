@@ -77,10 +77,19 @@ model Project {
 
   fileDownloadUrl String?
 
-  chapterJob   QueueJob? @relation(fields: [chapterJobId], references: [id])
-  chapterJobId BigInt?   @db.BigInt
+  jobs        ProjectQueueJob[]
+  chapters    Chapter[]
+  notes       ProjectNote[]
+  transcripts ProjectTranscript?
+}
 
-  chapters Chapter[]
+model ProjectQueueJob {
+  id         String    @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String    @db.Uuid
+  type       String
+  queueJob   QueueJob? @relation(fields: [queueJobId], references: [id], onDelete: SetNull)
+  queueJobId BigInt?   @db.BigInt
 }
 
 model Chapter {
@@ -121,16 +130,16 @@ model Playlist {
 }
 
 model User {
-  id       String  @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email    String? @unique(map: "user_email_unique") @db.VarChar(255)
-  username String  @unique(map: "user_username_unique") @db.VarChar(255)
-
-  annotation    Annotation[]
-  comment       Comment[]
-  project       Project[]
-  UserToProject UserToProject[]
-  role          String?
-  playlist      Playlist[]
+  id              String          @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String?         @unique(map: "user_email_unique") @db.VarChar(255)
+  username        String          @unique(map: "user_username_unique") @db.VarChar(255)
+  displayUsername String?
+  annotation      Annotation[]
+  comment         Comment[]
+  project         Project[]
+  UserToProject   UserToProject[]
+  role            String?
+  playlist        Playlist[]
 
   firstname String? @db.VarChar(255)
   lastname  String? @db.VarChar(255)
@@ -155,7 +164,8 @@ model User {
   banReason  String?
   banExpires DateTime?
 
-  extra Json? @default("{}")
+  extra Json?         @default("{}")
+  notes ProjectNote[]
 }
 
 model Session {
@@ -228,27 +238,54 @@ model Storage {
 }
 
 model QueueJob {
-  id          BigInt    @id @default(autoincrement()) @db.BigInt
+  id          BigInt            @id @default(autoincrement()) @db.BigInt
   queue       String
   key         String?
   cron        String?
   payload     Json?
   result      Json?
   error       Json?
-  progress    Int       @default(0)
-  priority    Int       @default(0)
-  attempts    Int       @default(0)
+  progress    Int               @default(0)
+  priority    Int               @default(0)
+  attempts    Int               @default(0)
   maxAttempts Int?
-  runAt       DateTime  @default(now())
+  runAt       DateTime          @default(now())
   notBefore   DateTime?
   finishedAt  DateTime?
   processedAt DateTime?
   failedAt    DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  projects    Project[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  projects    ProjectQueueJob[]
 
   @@unique([key, runAt])
   @@index([queue, priority, runAt, finishedAt])
   @@map("queue_jobs")
+}
+
+model ProjectNote {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String?   @db.Uuid
+  userId    String   @db.Uuid
+  project   Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull, onUpdate: SetNull, map: "projectnote_projectid_foreign")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "projectnote_userid_foreign")
+  content   Json?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([projectId, userId])
+  @@index([projectId, userId])
+}
+
+model ProjectTranscript {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String   @unique @db.Uuid
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  language  String
+  entries   Json
+
+  @@unique([projectId, language])
 }

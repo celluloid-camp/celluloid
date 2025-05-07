@@ -1,23 +1,23 @@
-
-import { render } from '@react-email/components';
+import { EmailVerification, ForgetPasswordEmail } from "@celluloid/emails";
+import { render } from "@react-email/components";
 import * as nodemailer from "nodemailer";
-import { EmailVerification, ForgetPasswordEmail } from '@celluloid/emails';
 
+import { env } from "../env";
 import getTransport from "./transport";
-import { env } from '../env';
 const isDev = process.env.NODE_ENV !== "production";
 const isCI_TEST = process.env.CI_TEST;
 
-export async function sendMail(
-  to: string, subject: string, html: string) {
-
+export async function sendMail(to: string, subject: string, html: string) {
   if (isCI_TEST) {
-    return console.log(`email send to ${to}`)
+    return console.log(`email send to ${to}`);
   }
 
   const transport = await getTransport();
   const mailOptions = {
-    from: `"Celluloid" <${env.SMTP_EMAIL_FROM}>`, to, subject, html
+    from: `"Celluloid" <${env.SMTP_EMAIL_FROM}>`,
+    to,
+    subject,
+    html,
   };
   await transport.sendMail(mailOptions);
   // if (isDev) {
@@ -30,21 +30,24 @@ export async function sendMail(
   //   }
   // }
   return true;
-
 }
 
-
-
-export async function sendForgetPassword({ username, email, otp }: { username?: string, email: string, otp: string }) {
+export async function sendForgetPassword({
+  username,
+  email,
+  otp,
+}: { username?: string; email: string; otp: string }) {
   const subject = "[Celluloid] Réinitialisation de votre mot de passe.";
   const emailHtml = await render(ForgetPasswordEmail({ username, email, otp }));
-  return sendMail(email, subject, emailHtml)
+  return sendMail(email, subject, emailHtml);
 }
 
-
-export async function sendEmailVerification({ username, email, otp }: { username?: string, email: string, otp: string }) {
+export async function sendEmailVerification({
+  username,
+  email,
+  otp,
+}: { username?: string; email: string; otp: string }) {
   const subject = "[Celluloid] Vérification de votre email";
   const emailHtml = await render(EmailVerification({ username, otp }));
-  return sendMail(email, subject, emailHtml)
-
+  return sendMail(email, subject, emailHtml);
 }

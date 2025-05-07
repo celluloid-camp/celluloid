@@ -1,7 +1,7 @@
-import { prisma } from '@celluloid/prisma';
-import { z } from 'zod';
+import { prisma } from "@celluloid/prisma";
+import { z } from "zod";
 
-import { protectedProcedure, router } from '../trpc';
+import { protectedProcedure, router } from "../trpc";
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
 //   id: true,
@@ -21,7 +21,6 @@ export const commentRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-
       //TODO : check if project owner or collaborator
       if (ctx.user && ctx.user.id) {
         const comment = await prisma.comment.create({
@@ -29,7 +28,7 @@ export const commentRouter = router({
             userId: ctx.user.id,
             annotationId: input.annotationId,
             text: input.comment,
-          }
+          },
           // select: defaultPostSelect,
         });
         return comment;
@@ -53,7 +52,7 @@ export const commentRouter = router({
           },
           data: {
             text: input.comment,
-          }
+          },
           // select: defaultPostSelect,
         });
         return comment;

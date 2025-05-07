@@ -17,24 +17,41 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: celluloid
 
-  celluloid:
-    image: celluloid:latest
+  celluloid-web:
+    image: celluloid-web:latest
     # build:
     #   context: .
-    #   dockerfile: ./apps/frontend/Dockerfile
+    #   dockerfile: ./Dockerfile
+    #   target: web
     depends_on:
       - postgres
     ports:
       - "8080:80"
     environment:
       DATABASE_URL: postgres://postgres:root@localhost:5432/celluloid
-      COOKIE_SECRET: changethistosecretcookie
-      COOKIE_DOMAIN: 127.0.0.1
-      COOKIE_SECURE: false
+      AUTH_SECRET: changethistosecretcookie
       STORAGE_URL: http://localhost:9000
       STORAGE_BUCKET: celluloid
       STORAGE_ACCESS_KEY: root
       STORAGE_SECRET_KEY: StrongPass2022
+
+  celluloid-worker:
+    image: celluloid-worker:latest
+    # build:
+    #   context: .
+    #   dockerfile: ./Dockerfile
+    #   target: worker
+    depends_on:
+      - postgres
+    ports:
+      - "8080:80"
+    environment:
+      DATABASE_URL: postgres://postgres:root@localhost:5432/celluloid
+      STORAGE_URL: http://localhost:9000
+      STORAGE_BUCKET: celluloid
+      STORAGE_ACCESS_KEY: root
+      STORAGE_SECRET_KEY: StrongPass2022
+
 
   minio:
     image: minio/minio

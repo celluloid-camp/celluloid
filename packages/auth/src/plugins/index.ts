@@ -1,1 +1,1 @@
-export * from "./signup-as-student/client";
+export * from "./signup-as-student";

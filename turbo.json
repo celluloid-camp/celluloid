@@ -1,20 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "ui": "tui",
+  "ui": "stream",
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "lint": {},
     "dev": {
-      "dependsOn": [
-        "^dev"
-      ],
+      "dependsOn": ["^dev"],
       "cache": false,
       "persistent": false
     },
@@ -38,11 +32,8 @@
     "SMTP_SECURE",
     "SMTP_USER",
     "SMTP_PASSWORD",
-    "SMTP_EMAIL_FROM"
+    "SMTP_EMAIL_FROM",
+    "SKIP_ENV_VALIDATIONS"
   ],
-  "globalPassThroughEnv": [
-    "NODE_ENV",
-    "CI",
-    "npm_lifecycle_event"
-  ]
+  "globalPassThroughEnv": ["NODE_ENV", "CI", "npm_lifecycle_event"]
 }

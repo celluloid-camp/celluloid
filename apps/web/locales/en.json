@@ -1,0 +1,739 @@
+{
+  "about": {
+    "intro": "The development of <celluloid>Celluloid</celluloid> is led by Michaël Bourgatte and Laurent Tessier within a multidisciplinary <consortium>Huma-Num Consortium</consortium> gathering researchers mobilizing audiovisual corpora.",
+    "opensource": {
+      "github": "Celluloid is an Open Source project in Digital Humanities. The code and the instructions for use are freely available on <github>GitHub</github>.",
+      "prefix": "The version 2.0, \"Alphaville\", as well as its successive developments, are realized within the framework of the consortium Huma-Num <canevas>CANEVAS</canevas> (within the <mshpn>Maison des Sciences de l'Homme Paris Nord</mshpn>). This version is developed by Younès Benomar."
+    },
+    "support": "Version 1.0 of Celluloid, \"Pierrot\", as well as its successive developments, were supported by the Catholic University of Paris, Saint Matthieu Foundation and La Paillasse projects incubator. This version was developed by Erwan Queffélec with the participation of Jean-Frédéric Bruzek, Souleymane Thiam and Guillaume Aichhorn.",
+    "title": "About"
+  },
+  "simple": "test",
+  "simple2": "test2",
+  "annotation": {
+    "comment": {
+      "cancel": "Cancel",
+      "reply": "Reply",
+      "send": "Send"
+    },
+    "commentLabel": "{{count}} comment",
+    "commentLabel_one": "one comment",
+    "commentLabel_other": "{{count}} comments",
+    "commentLabel_plural": "{{count}} comments",
+    "commentPlaceholder": "Leave a comment…",
+    "confirm-delete": {
+      "description": "Are you sure you want to delete the annotation?",
+      "title": "Delete annotation"
+    },
+    "contentPlaceholder": "type in your annotation…",
+    "create": {
+      "cancel": "Cancel",
+      "send": "Send"
+    },
+    "edit": {
+      "send": "Edit"
+    },
+    "form": {
+      "add-annotation": "Add annotation"
+    },
+    "hintLabel": "{ count} annotation",
+    "hintLabel_many": "{{count}} annotations",
+    "hintLabel_one": "{{count}} annotation",
+    "hintLabel_other": "{{count}} annotations",
+    "hintLabel_plural": "{{count}} annotations",
+    "hintLabelNone": "No annotation at this time",
+    "pauseLabel": "Pause video ?",
+    "delete": {
+      "success": "Annotation deleted",
+      "error": "Error while deleting annotation, please try again."
+    }
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "create": "Save",
+    "delete": "Delete",
+    "print": "Print",
+    "share": "Share"
+  },
+  "errors": {
+    "ALREADY_EXISTING_PROJECT": "A project with the same title already exists, please rename the project",
+    "UNKNOWN": "An unknown error has occurred. Please try again later or contact support for assistance.",
+    "LOADING_PROJECTS": "Unable to load projects. Please try again later or contact support for assistance."
+  },
+  "footer": {
+    "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
+    "legalNotice": "Legal notice",
+    "termsAndConditions": "Terms & Conditions"
+  },
+  "home": {
+    "addVideo": "Add a link to a PeerTube video...",
+    "description": "A webservice to annotate, comment and analyze audiovisual content (movies, series, TV shows or your own videos – interviews, ethnographic documentary…), alone or as a team",
+    "emptySearchResult": "No matching projects",
+    "joinProject": "join a project",
+    "myProjects": "My projects",
+    "newProject": "Create project",
+    "publicProjects": "Explore",
+    "searchProject": "Type anything…",
+    "title": "What is Celluloid ?",
+    "teachers": "Teacher",
+    "students": "Student",
+    "projects": {
+      "retry": "Retry"
+    },
+    "tutoriel": {
+      "description": "Go to <peertube>Peertube</peertube>\nChoose a video or upload a new one\nCopy the link to share the video\nCreate your project in Celluloid, copy the video link and go!\nWant to work with others? Share the project code with your partners",
+      "link": "The tutorial is here: <tutorial>https://video.mshparisnord.fr/w/7r2FxoQdYjun6tYWJfHUCa</tutorial>",
+      "prefix": "To discover the application, you can consult the ",
+      "subtitle": "You want to know more or you encounter difficulties?",
+      "title": "How to use Celluloid ?"
+    },
+    "member": "Joined"
+  },
+  "menu": {
+    "about": "About",
+    "admin": "Admin",
+    "create": "Create",
+    "explore": "Explore",
+    "join": "Join",
+    "login": "login",
+    "logout": "Logout",
+    "profile": "Profile",
+    "signup": "signup",
+    "settings": "Settings"
+  },
+  "notFound": {
+    "action": "back to home",
+    "description": "The page you are looking for might be private or  may have been deleted",
+    "title": "Page not found :("
+  },
+  "profile": {
+    "me": {
+      "project": {
+        "empty": "You have no projects."
+      }
+    },
+    "role": {
+      "student": "Contributor",
+      "teacher": "Creator",
+      "admin": "Admin"
+    },
+    "update": {
+      "title": "Edit Profile",
+      "username": "Username",
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "bio": "Bio",
+      "submit": "Save",
+      "username-already-used": "This username is already used",
+      "success": "The profile has been updated.",
+      "upload-avatar": "Upload",
+      "delete-avatar": "Delete",
+      "error": "Failed to update profile. Please try again."
+    },
+    "security": {
+      "old-password": {
+        "label": "Current password"
+      },
+      "new-password": {
+        "label": "New password"
+      },
+      "confirmation-password": {
+        "label": "Confirm password"
+      },
+      "password-incorrect": "Password incorrect",
+      "change-password": {
+        "title": "Change password",
+        "button": "Change password",
+        "success": "Password changed successfully\n"
+      },
+      "password-required": "This field is required",
+      "password-min-length": "Password must be at least 8 characters",
+      "show-password": "Show password",
+      "hide-password": "Hide password"
+    }
+  },
+  "project": {
+    "add-related-video": "Playlist",
+    "add-video-playlist-description": "Please enter the URL of the video you would like to add to the playlist.",
+    "add-video-to-playlist-button": "Add a video to the playlist.",
+    "annotation": {
+      "hints": {
+        "label": "Display the timeline of annotations."
+      },
+      "title": "Annotations",
+      "singular": "{count} Annotation",
+      "plural": "{count} Annotations",
+      "none": "No annotation at this time",
+      "label": "{count, plural, =0 {No annotation at this time} =1 {1 annotation} other {# annotations}}"
+    },
+    "annotaions": {
+      "empty": "The annotations corresponding to the different times of the video will be displayed here."
+    },
+    "assignment": "Task",
+    "assignmentPlaceholder": "Add a task",
+    "assignmentsHelper": "List the tasks you submitt to the attendees",
+    "assignmentsSection": "Tasks",
+    "cancel-add-video": "Add",
+    "cancelAction": "Cancel",
+    "codeWarning": {
+      "description": "This code will be available on the project page.\n  To reset it, just reshare the project.",
+      "title": "Share this code with the participants"
+    },
+    "collaborative": "Collaborative",
+    "collaborativeHelper": "Attendees to a collaborative project will be allowed to annotate or comment the video. If your project is not collaborative, only you can annotate and comment on it.",
+    "confirm-delete": {
+      "description": "Are you sure ?",
+      "title": "Delete project"
+    },
+    "create": {
+      "error": {
+        "video-info-failed": "Failed to retrieve video information. Please check the URL and try again."
+      },
+      "url": {
+        "not-valid": "The provided URL is not valid. Please check and try again.",
+        "required": "URL is required. Please provide a valid URL."
+      }
+    },
+    "createAction": "Create project",
+    "createTitle": "New project",
+    "creatorRole": "Creator",
+    "delete": {
+      "error": "Failed to delete project. Please try again.",
+      "success": "Project has been successfully deleted"
+    },
+    "description": "Description",
+    "descriptionHelper": "Briefly describe your video",
+    "edit": {
+      "button": "Edit project",
+      "error": "Project could not be edited.",
+      "success": "Project has been updated.",
+      "submit": {
+        "button": "Edit Project"
+      },
+      "delete": {
+        "button": "Delete Project"
+      },
+      "dialog": {
+        "title": "Edit Project"
+      }
+    },
+    "export": {
+      "success": "Project exported successfully",
+      "title": "Export"
+    },
+    "keywords": "keywords",
+    "members": "{ count } attendees",
+    "members_many": "{{ count }} attendees",
+    "members_one": "an attendant",
+    "members_other": "{{ count }} attendees",
+    "members_plural": "{{ count }} attendees",
+    "objective": "Objective",
+    "objectiveHelper": "Choose an objective",
+    "playlist": "Playlist",
+    "public": "Public",
+    "publicHelper": "A public project will be visible by all users, even logged-out. However, they won't be able to see the annotations and comments, nor to add their own.",
+    "share": {
+      "dialog": {
+        "description": "To open printable instructions in a new widow ",
+        "linkText": "Click here"
+      },
+      "guide": {
+        "step1": "Open the web page",
+        "step2": "On the landing page, click 'join project'",
+        "step3": "Enter the project code",
+        "step4": "Enter your username and an answer to a secret question",
+        "step5": "Make sure to read carefully the objective and assignments",
+        "step6": "Complete the assignments and annotate the video while it's playing",
+        "subtitle": "How to use Celluloid ?",
+        "title": "Instructions"
+      },
+      "section": {
+        "title": "Share"
+      }
+    },
+    "shared": "Share",
+    "shareHelper": "A project code will be generated to allow collaborators to annotate your project.",
+    "sharedHelper": "A project code will be generated to allow collaborators to annotate your project.",
+    "sharecode": {
+      "copied": "Project code copied"
+    },
+    "submit-add-video-playlist": "Cancel",
+    "summary": {
+      "playlist": {
+        "title": "Playlist :"
+      }
+    },
+    "title": "Title",
+    "titleHelper": "Choose a meaningful title for your project",
+    "URL_title": "Video URL",
+    "videoUrlHelper": "Link to the original video",
+    "visibilitySection": "Visibility",
+    "chapters": {
+      "title": "Chapiters",
+      "empty": "No chapter found",
+      "in-progress": "Chapters generation in progress",
+      "not-found": "No chapters found for this video.",
+      "button": {
+        "generate": "Generate chapters"
+      },
+      "item": {
+        "placeholder": {
+          "title": "Title",
+          "description": "Chapter description"
+        }
+      }
+    },
+    "note": {
+      "title": "Notes",
+      "update_at": "Last changed",
+      "saving": "Saving..",
+      "button": {
+        "download": "Download"
+      }
+    },
+    "transcript": {
+      "title": "Transcript",
+      "generating": " La transcription est en cours de génération...",
+      "empty": "Video transcript not available.",
+      "button": {
+        "generate": " Generate Transcript",
+        "download": "Download"
+      },
+      "failed": " Failed to load Transcript",
+      "try-again": "Try again"
+    },
+    "failed": {
+      "load": "Error Loading Project"
+    },
+    "error": {
+      "loading": "Error Loading Project",
+      "details": {
+        "title": "Project Details Unavailable",
+        "description": " We couldn't load the project details due to an error.\n"
+      }
+    },
+    "video": {
+      "annotation": {
+        "comment": {
+          "minLength": "Comment doit comporter minimum 2 character",
+          "required": "Comment is required"
+        }
+      }
+    }
+  },
+  "chapter": {
+    "confirm-delete": {
+      "title": "Delete Chapter",
+      "description": "Are you sure you want to delete the chapter?"
+    },
+    "form": {
+      "button": {
+        "add": "Add",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "chapters": {
+    "form": {
+      "reset": {
+        "confirm": {
+          "title": "Reset all chapters",
+          "description": "Are you sure you want to reset all chapters ?"
+        }
+      },
+      "button": {
+        "add": " Add Chapter",
+        "reset": "Reset Chapters"
+      },
+      "title": {
+        "placeholder": "Chapter title"
+      },
+      "description": {
+        "placeholder": "Chapter description"
+      }
+    }
+  },
+  "search": {
+    "placeholder": "Search projet"
+  },
+  "signin": {
+    "alreadyRegistered": "Already registered?",
+    "changePasswordAction": "reset password",
+    "code": "Confirmation code",
+    "codeHelper": "This code was sent to you by email",
+    "confirm": {
+      "button": "Confirm"
+    },
+    "confirmPassword": "Confirm password",
+    "confirmSignupAction": "confirm signup",
+    "confirmSignupTitle": "Confirm Signup",
+    "email": "Email address",
+    "forgotPasswordAction": "Forgot password",
+    "forgotPasswordTitle": "Forgot password",
+    "joinAction": "join",
+    "joinProjectTitle": "Join project",
+    "lastName": "Last name",
+    "login": "Email or username",
+    "loginAction": "Login",
+    "loginTitle": "Login",
+    "notRegistered": "Not registered?",
+    "password": "Password",
+    "passwordHelper": "Minimum 8 characters",
+    "passwordMismatch": "Confirmation doesn't match password",
+    "projectCode": "Project code",
+    "rememberlastName": "Your last name will serve as your login password",
+    "resendCodeAction": "resend code",
+    "resetAction": "reset",
+    "signupAction": "Signup",
+    "signupOrLoginMessage": "Please signup or login to continue",
+    "signupTitle": "Signup",
+    "title": "Sign In",
+    "upgradeAccountMessage": "Please enter a valid email and a password to continue",
+    "username": {
+      "required": "Username required",
+      "placeholder": "Username"
+    },
+    "error": {
+      "user-not-found": "The username/email or password you entered is incorrect."
+    },
+    "usernameRequired": "This field is required",
+    "passwordRequired": "Password required."
+  },
+  "confirm": {
+    "username": {
+      "required": "The username is required.",
+      "label": "Email",
+      "placeholder": "Email"
+    },
+    "code": {
+      "required": "The Code is required.",
+      "label": "Confirmation code",
+      "placeholder": "Confirmation code"
+    },
+    "title": "Confirmation",
+    "button": {
+      "submit": "Send",
+      "resend": "Resend Code"
+    },
+    "generation": {
+      "sent": "Chapters generation started"
+    },
+    "resend": {
+      "success": "Verification code resent."
+    }
+  },
+  "forgot": {
+    "email": {
+      "required": "The Email is required",
+      "placeholder": "Enter your email"
+    },
+    "title": "Forgot your password?",
+    "button": {
+      "recover": "Recover account",
+      "submit": "Get code"
+    }
+  },
+  "join": {
+    "error": {
+      "project-not-found": "Invalid project share code",
+      "project-owner-cannot-join": "The project owner cannot join the project as a member.",
+      "username-taken": "Username is already taken"
+    },
+    "title": "Join project",
+    "shareCode": {
+      "label": "Project code",
+      "placeholder": "Project code"
+    },
+    "button": {
+      "submit": "Join"
+    },
+    "code": {
+      "required": "Share code is required"
+    },
+    "description": "Enter the share code to join the project",
+    "message": {
+      "success": "You have joined the project"
+    }
+  },
+  "password": {
+    "unmatch": "Confirmation password must be the same as your password"
+  },
+  "recover": {
+    "username": {
+      "required": "Username is required",
+      "label": "Email",
+      "paceholder": "Email"
+    },
+    "code": {
+      "required": "Code is required",
+      "label": "Confirmation code",
+      "placeholder": "Confirmation code",
+      "short": "Code is too short - should be 4 chars minimum.",
+      "invalid": "Invalid confirmation code."
+    },
+    "password": {
+      "required": "Password is required",
+      "label": "Password",
+      "placeholder": "Password",
+      "short": "Password is too short - should be 8 chars minimum.",
+      "confirm": {
+        "required": "Password confirmation is required"
+      }
+    },
+    "passwordConfirmation": {
+      "label": "Password confirmation",
+      "placeholder": "Password confirmation"
+    },
+    "title": "Recover account",
+    "button": {
+      "submit": "Recover"
+    },
+    "email": {
+      "required": "Email is required"
+    }
+  },
+  "signup": {
+    "error": {
+      "account_exists": "This email address is already registered."
+    },
+    "title": "Sign up",
+    "username": {
+      "label": "Username",
+      "paceholder": "Username",
+      "length-min": "Username must be at least 3 characters"
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "Email"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Password",
+      "length-min": "Password must be at least 8 characters"
+    },
+    "passwordConfirmation": {
+      "label": "Password confirmation",
+      "placeholder": "Password confirmation"
+    },
+    "button": {
+      "submit": "Signin"
+    }
+  },
+  "student-signup": {
+    "title": "Registration",
+    "shareCode": {
+      "placeholder": "Project code"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Password"
+    },
+    "login": {
+      "button": "Login"
+    },
+    "button": {
+      "submit": "Join"
+    },
+    "share-code-required": "share code is required",
+    "sharecode-required": "Share code is required",
+    "username-required": "Username is required",
+    "password-required": "Password must be at least 8 characters",
+    "password-length-validation": "Password must be at least 8 characters"
+  },
+  "student-student-signup": {
+    "error": {
+      "username-exists": "Email exists"
+    },
+    "shareCode": {
+      "label": "Project code"
+    },
+    "username": {
+      "label": "Name or username",
+      "paceholder": "Name or username"
+    }
+  },
+  "tagSearch": {
+    "createLabel": "Create tag",
+    "prefix": "Tag"
+  },
+  "update": {
+    "action": "Refresh",
+    "message": "This app was just updated!  Please refresh the page."
+  },
+  "user": {
+    "update": {
+      "success": "Profile updated",
+      "password": {
+        "success": "Password updated"
+      },
+      "avatar": "Your photo has been deleted"
+    }
+  },
+  "cancelAction": "Cancel",
+  "createAction": "Save",
+  "deleteAction": "Delete",
+  "admin": {
+    "users": {
+      "title": "User management",
+      "actions": {
+        "edit": {
+          "label": "Modify"
+        },
+        "delete": {
+          "label": "Delete"
+        }
+      },
+      "dialog": {
+        "title": "Delete User",
+        "description": "Are you sure you want to delete this user?"
+      },
+      "delete": {
+        "success": "User deleted successfully",
+        "error": "Failed to delete user. Please try again."
+      }
+    },
+    "projects": {
+      "title": "\tProjects Management",
+      "delete": {
+        "success": "Delete project"
+      },
+      "dialog": {
+        "title": "Delete project",
+        "description": "Are you sure you want to delete this project?"
+      },
+      "empty": "No projects found",
+      "list": {
+        "empty": "No projects found"
+      }
+    },
+    "project": {
+      "delete": {
+        "error": "Failed to delete project. Please try again.",
+        "success": "Project has been successfully deleted"
+      },
+      "setting": {
+        "label": {
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
+      "update": {
+        "success": "Project updated successfully",
+        "error": "Error updating project"
+      },
+      "title": "Project Details",
+      "label": {
+        "title": "Title",
+        "description": "Description",
+        "public": "Public",
+        "collab": "Collaborative",
+        "owner": "Owner",
+        "date": "Date published",
+        "code": "Share Code"
+      },
+      "shared": {
+        "label": "Shared"
+      },
+      "annotations": {
+        "success": "Annotation deleted successfully",
+        "error": "Failed to delete annotation"
+      },
+      "annotation": {
+        "dialog": {
+          "title": "Delete annotation",
+          "description": "Are you sure you want to delete this annotation? This action cannot be undone."
+        }
+      }
+    },
+    "table": {
+      "actions": {
+        "modify": "Modify",
+        "delete": "Delete"
+      }
+    },
+    "annotations": {
+      "list": {
+        "empty": "No annotations found"
+      }
+    },
+    "annotation": {
+      "table": {
+        "username": "Username",
+        "date": "Created At"
+      }
+    }
+  },
+  "edit-platlist": "Edit playlist",
+  "settings": {
+    "title": "Setting",
+    "profile": {
+      "tab": "Profil"
+    },
+    "profil": {
+      "security": "Security",
+      "tab": "Profil"
+    },
+    "profile-tab": "Profil",
+    "security-tab": "Security"
+  },
+  "printAction": "Print",
+  "userNameRequired": "Username required",
+  "forget": {
+    "email": {
+      "invalid": "Invalid email"
+    }
+  },
+  "common": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "password-min-length": "Password must be at least 8 characters"
+  },
+  "profil": {
+    "update": {
+      "avatar": {
+        "success": "Your photo has been deleted",
+        "error": "Something went wrong while deleting your photo. Please try again."
+      }
+    }
+  },
+  "users": {
+    "table": {
+      "userame": "Username",
+      "username": "Username",
+      "email": "Email",
+      "role": "Role",
+      "createAt": "Created At"
+    }
+  },
+  "projects": {
+    "table": {
+      "title": "Title",
+      "public": "Public"
+    }
+  },
+  "otp": {
+    "form": {
+      "invalide-code": "Invalid code. please try again.",
+      "title": "Enter Verification Code",
+      "description": "Enter the verification code sent to your email address.",
+      "success": "You’re signed in successfully",
+      "invalid-code": "Invalid code. Please try again."
+    }
+  },
+  "comment": {
+    "tooltip": {
+      "title": {
+        "delete": "Delete",
+        "update": "Update"
+      }
+    },
+    "update": {
+      "success": "Comment updated",
+      "error": "Error updating comment, please try again."
+    },
+    "delete": {
+      "success": "Comment deleted",
+      "error": "Error deleting comment, please try again."
+    }
+  }
+}
