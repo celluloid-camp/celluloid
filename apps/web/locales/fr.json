@@ -297,7 +297,7 @@
       "generating": "La transcription est en cours de génération...",
       "empty": "Transcription vidéo non disponible.",
       "button": {
-        "generate": "Générer une transcription",
+        "generate": "Générer la transcription",
         "download": "Télécharger"
       },
       "failed": "Échec du chargement de la transcription",
