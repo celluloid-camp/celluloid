@@ -39,7 +39,7 @@ const prismaClientSingleton = () => {
             if (
               a.extra &&
               typeof a.extra === "object" &&
-              !Array.isArray(a.extra)
+              "x" in a.extra
             ) {
               const extraObject = a.extra as Prisma.JsonObject;
               return {
