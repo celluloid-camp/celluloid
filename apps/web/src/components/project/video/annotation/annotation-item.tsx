@@ -85,7 +85,10 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
     },
   });
 
-  const isContextual = Object.keys(annotation.extra || {}).length;
+  const isContextual =
+    annotation.extra &&
+    "x" in annotation.extra &&
+    annotation.extra.x !== undefined;
 
   const canEdit =
     annotation.user.id === user?.id || project.user.id === user?.id;

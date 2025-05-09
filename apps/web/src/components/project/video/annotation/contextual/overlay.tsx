@@ -153,7 +153,10 @@ export const ContextualOverlay: React.FC<ContextualAnnotationsProps> = memo(
       () =>
         annotations.filter((item) => {
           return (
-            typeof item === "object" && Object.keys(item.extra || {}).length
+            typeof item === "object" &&
+            item.extra &&
+            "x" in item.extra &&
+            item.extra.x
           );
         }),
       [annotations],
