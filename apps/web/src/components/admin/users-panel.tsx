@@ -13,6 +13,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -24,9 +25,11 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { UserTableSkeleton } from "./skeleton";
+
 interface UserAdditionalField extends UserWithRole {
   username: string;
 }
+
 export default function UsersPanel() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -36,15 +39,22 @@ export default function UsersPanel() {
   const { enqueueSnackbar } = useSnackbar();
   const t = useTranslations();
 
-  const { data: users, isLoading } = useQuery({
-    queryKey: ["users"],
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { data: usersData, isLoading } = useQuery({
+    queryKey: ["users", page, rowsPerPage],
     queryFn: async () => {
       const usersList = await authClient.admin.listUsers({
         query: {
-          limit: 10,
+          limit: rowsPerPage,
+          offset: page * rowsPerPage,
         },
       });
-      return (usersList.data?.users as UserAdditionalField[]) ?? [];
+      return {
+        users: usersList.data?.users as UserAdditionalField[],
+        total: usersList.data?.total ?? 0,
+      };
     },
   });
 
@@ -104,6 +114,18 @@ export default function UsersPanel() {
     router.push(`/admin/user/${selectedUser}`);
     handleMenuClose();
   };
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <Box>
       <Typography variant="h6" marginBottom={2}>
@@ -113,37 +135,51 @@ export default function UsersPanel() {
       {isLoading ? (
         <UserTableSkeleton />
       ) : (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>{t("users.table.username")}</TableCell>
-                <TableCell>{t("users.table.email")}</TableCell>
-                <TableCell>{t("users.table.role")}</TableCell>
-                <TableCell>{t("users.table.createAt")}</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users?.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </TableCell>
-
-                  <TableCell>
-                    <IconButton onClick={(e) => handleMenuOpen(e, user.id)}>
-                      <MoreVertIcon />
-                    </IconButton>
-                  </TableCell>
+        <Paper>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t("users.table.username")}</TableCell>
+                  <TableCell>{t("users.table.email")}</TableCell>
+                  <TableCell>{t("users.table.role")}</TableCell>
+                  <TableCell>{t("users.table.createAt")}</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {usersData?.users.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                    <TableCell>
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </TableCell>
+
+                    <TableCell>
+                      <IconButton onClick={(e) => handleMenuOpen(e, user.id)}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {usersData?.users && usersData.users.length > 0 && (
+            <TablePagination
+              component="div"
+              count={usersData?.total ?? 0}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 25]}
+              labelRowsPerPage={t("common.table.rowsPerPage")}
+            />
+          )}
+        </Paper>
       )}
 
       <Menu

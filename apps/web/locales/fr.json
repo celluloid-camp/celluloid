@@ -677,7 +677,10 @@
   },
   "common": {
     "add": "Ajouter",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "table": {
+      "rowsPerPage": "Lignes par page"
+    }
   },
   "profil": {
     "update": {

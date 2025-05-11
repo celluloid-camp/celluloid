@@ -16,6 +16,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  TablePagination,
 } from "@mui/material";
 import { User } from "@prisma/client";
 
@@ -200,10 +201,15 @@ function UserProjects({ userId }: UserProjectsProps) {
   const utils = trpc.useUtils();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const { data: projects, isLoading } = trpc.admin.projectsByUser.useQuery({
     userId: userId,
-    limit: 10,
+    limit: rowsPerPage,
+    skip: page * rowsPerPage,
   });
+
   const deleteProject = trpc.admin.deleteUserProject.useMutation({
     onSuccess: () => {
       enqueueSnackbar(t("admin.project.delete.success"), {
@@ -250,6 +256,18 @@ function UserProjects({ userId }: UserProjectsProps) {
     }
     handleMenuClose();
   };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" marginBottom={2}>
@@ -261,69 +279,82 @@ function UserProjects({ userId }: UserProjectsProps) {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>{t("admin.project.label.title")}</TableCell>
-                <TableCell>{t("admin.project.label.public")}</TableCell>
-                <TableCell>{t("admin.project.shared.label")}</TableCell>
-                <TableCell>{t("admin.project.label.collab")}</TableCell>
-                <TableCell>{t("admin.project.label.code")}</TableCell>
-                <TableCell>{t("admin.project.label.date")}</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {projects?.items.length === 0 ? (
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    {t("admin.projects.list.empty")}
-                  </TableCell>
+                  <TableCell>{t("admin.project.label.title")}</TableCell>
+                  <TableCell>{t("admin.project.label.public")}</TableCell>
+                  <TableCell>{t("admin.project.shared.label")}</TableCell>
+                  <TableCell>{t("admin.project.label.collab")}</TableCell>
+                  <TableCell>{t("admin.project.label.code")}</TableCell>
+                  <TableCell>{t("admin.project.label.date")}</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
-              ) : (
-                projects?.items.map((project) => (
-                  <TableRow key={project.id}>
-                    <TableCell>{project.title}</TableCell>
-
-                    <TableCell>
-                      {project.public ? (
-                        <CheckIcon color="success" />
-                      ) : (
-                        <CloseIcon color="error" />
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {project.shared ? (
-                        <CheckIcon color="success" />
-                      ) : (
-                        <CloseIcon color="error" />
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {project.collaborative ? (
-                        <CheckIcon color="success" />
-                      ) : (
-                        <CloseIcon color="error" />
-                      )}
-                    </TableCell>
-                    <TableCell>{project.shareCode}</TableCell>
-                    <TableCell>
-                      {new Date(project.publishedAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={(e) => handleMenuOpen(e, project.id)}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
+              </TableHead>
+              <TableBody>
+                {projects?.items.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} align="center">
+                      {t("admin.projects.list.empty")}
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                ) : (
+                  projects?.items.map((project) => (
+                    <TableRow key={project.id}>
+                      <TableCell>{project.title}</TableCell>
+
+                      <TableCell>
+                        {project.public ? (
+                          <CheckIcon color="success" />
+                        ) : (
+                          <CloseIcon color="error" />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {project.shared ? (
+                          <CheckIcon color="success" />
+                        ) : (
+                          <CloseIcon color="error" />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {project.collaborative ? (
+                          <CheckIcon color="success" />
+                        ) : (
+                          <CloseIcon color="error" />
+                        )}
+                      </TableCell>
+                      <TableCell>{project.shareCode}</TableCell>
+                      <TableCell>
+                        {new Date(project.publishedAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={(e) => handleMenuOpen(e, project.id)}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {projects?.items && projects.items.length > 0 && (
+            <TablePagination
+              component="div"
+              count={projects?.total || 0}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 25]}
+            />
+          )}
+        </>
       )}
       <Menu
         anchorEl={anchorEl}
