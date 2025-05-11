@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TablePagination,
+  Stack,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -25,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { UserTableSkeleton } from "./skeleton";
+import { SearchFilter } from "./search-filter";
 
 interface UserAdditionalField extends UserWithRole {
   username: string;
@@ -41,12 +43,16 @@ export default function UsersPanel() {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: usersData, isLoading } = useQuery({
-    queryKey: ["users", page, rowsPerPage],
+    queryKey: ["users", page, rowsPerPage, searchTerm],
     queryFn: async () => {
       const usersList = await authClient.admin.listUsers({
         query: {
+          searchField: "email",
+          searchValue: searchTerm,
+          searchOperator: "contains",
           limit: rowsPerPage,
           offset: page * rowsPerPage,
         },
@@ -128,9 +134,16 @@ export default function UsersPanel() {
 
   return (
     <Box>
-      <Typography variant="h6" marginBottom={2}>
-        {t("admin.users.title")}
-      </Typography>
+      <Stack direction="row" spacing={4} sx={{ mb: 3 }}>
+        <Typography variant="h6" sx={{ flex: 2 }}>
+          {t("admin.users.title")}
+        </Typography>
+
+        <SearchFilter
+          onFilterChange={setSearchTerm}
+          placeholder={t("admin.users.search.placeholder")}
+        />
+      </Stack>
 
       {isLoading ? (
         <UserTableSkeleton />
@@ -148,22 +161,30 @@ export default function UsersPanel() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {usersData?.users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>{user.username}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell>
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </TableCell>
-
-                    <TableCell>
-                      <IconButton onClick={(e) => handleMenuOpen(e, user.id)}>
-                        <MoreVertIcon />
-                      </IconButton>
+                {usersData?.users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} align="center">
+                      {t("admin.list.empty")}
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  usersData?.users.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>{user.username}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.role}</TableCell>
+                      <TableCell>
+                        {new Date(user.createdAt).toLocaleDateString()}
+                      </TableCell>
+
+                      <TableCell>
+                        <IconButton onClick={(e) => handleMenuOpen(e, user.id)}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>

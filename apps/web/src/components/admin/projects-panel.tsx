@@ -19,6 +19,7 @@ import {
   TablePagination,
   TableRow,
   Typography,
+  Stack,
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
@@ -26,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { ProjectTableSkeleton } from "./skeleton";
+import { SearchFilter } from "./search-filter";
 
 export default function ProjectsPanel() {
   const t = useTranslations();
@@ -36,6 +38,7 @@ export default function ProjectsPanel() {
   const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -43,6 +46,7 @@ export default function ProjectsPanel() {
   const { data, isLoading } = trpc.admin.listProjects.useQuery({
     limit: rowsPerPage,
     skip: page * rowsPerPage,
+    searchTerm,
   });
 
   const deleteProject = trpc.admin.deleteUserProject.useMutation({
@@ -115,9 +119,16 @@ export default function ProjectsPanel() {
 
   return (
     <Box>
-      <Typography variant="h6" marginBottom={2}>
-        {t("admin.projects.title")}
-      </Typography>
+      <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+        <Typography variant="h6" sx={{ flex: 2 }}>
+          {t("admin.projects.title")}
+        </Typography>
+
+        <SearchFilter
+          onFilterChange={setSearchTerm}
+          placeholder={t("admin.projects.search.placeholder")}
+        />
+      </Stack>
 
       {isLoading ? (
         <ProjectTableSkeleton />
@@ -129,9 +140,10 @@ export default function ProjectsPanel() {
                 <TableRow>
                   <TableCell>{t("admin.project.label.title")}</TableCell>
                   <TableCell>{t("admin.project.label.code")}</TableCell>
-                  <TableCell>{t("admin.project.label.public")}</TableCell>
-                  <TableCell>{t("admin.project.shared.label")}</TableCell>
                   <TableCell>{t("admin.project.label.collab")}</TableCell>
+                  <TableCell>{t("admin.project.shared.label")}</TableCell>
+                  <TableCell>{t("admin.project.label.public")}</TableCell>
+
                   <TableCell>{t("admin.project.label.owner")}</TableCell>
                   <TableCell>{t("admin.project.label.date")}</TableCell>
                   <TableCell>Actions</TableCell>
@@ -141,7 +153,7 @@ export default function ProjectsPanel() {
                 {data?.items.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} align="center">
-                      {t("admin.projects.list.empty")}
+                      {t("admin.list.empty")}
                     </TableCell>
                   </TableRow>
                 ) : (

@@ -11,17 +11,29 @@ export const adminRouter = router({
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         skip: z.number().min(0).nullish(),
+        searchTerm: z.string().default(""),
       }),
     )
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 10;
       const skip = input.skip ?? 0;
 
-      const total = await prisma.project.count();
+      const where: Prisma.ProjectWhereInput = {};
+
+      if (input.searchTerm) {
+        where.user = {
+          username: { contains: input.searchTerm, mode: "insensitive" },
+        };
+      }
+
+      const total = await prisma.project.count({
+        where,
+      });
 
       const items = await prisma.project.findMany({
         take: limit,
         skip: skip,
+        where,
         select: {
           id: true,
           userId: true,

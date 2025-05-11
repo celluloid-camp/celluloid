@@ -590,6 +590,9 @@
       "delete": {
         "success": "User deleted successfully",
         "error": "Failed to delete user. Please try again."
+      },
+      "search": {
+        "placeholder": "Search by email"
       }
     },
     "projects": {
@@ -604,6 +607,9 @@
       "empty": "No projects found",
       "list": {
         "empty": "No projects found"
+      },
+      "search": {
+        "placeholder": "Search by owner"
       }
     },
     "project": {
@@ -661,6 +667,9 @@
         "username": "Username",
         "date": "Created At"
       }
+    },
+    "list": {
+      "empty": "No results."
     }
   },
   "edit-platlist": "Edit playlist",
