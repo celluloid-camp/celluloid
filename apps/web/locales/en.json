@@ -590,6 +590,9 @@
       "delete": {
         "success": "User deleted successfully",
         "error": "Failed to delete user. Please try again."
+      },
+      "search": {
+        "placeholder": "Search by email"
       }
     },
     "projects": {
@@ -604,6 +607,9 @@
       "empty": "No projects found",
       "list": {
         "empty": "No projects found"
+      },
+      "search": {
+        "placeholder": "Search by owner"
       }
     },
     "project": {
@@ -661,6 +667,9 @@
         "username": "Username",
         "date": "Created At"
       }
+    },
+    "list": {
+      "empty": "No results."
     }
   },
   "edit-platlist": "Edit playlist",
@@ -686,7 +695,10 @@
   "common": {
     "add": "Add",
     "cancel": "Cancel",
-    "password-min-length": "Password must be at least 8 characters"
+    "password-min-length": "Password must be at least 8 characters",
+    "table": {
+      "rowsPerPage": "Rows per page"
+    }
   },
   "profil": {
     "update": {
