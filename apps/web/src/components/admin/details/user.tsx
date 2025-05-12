@@ -23,6 +23,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  TablePagination,
 } from "@mui/material";
 import { User } from "@prisma/client";
 import { useFormik } from "formik";

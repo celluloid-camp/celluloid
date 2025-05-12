@@ -601,6 +601,9 @@
       "delete": {
         "success": "User deleted successfully",
         "error": "Failed to delete user. Please try again."
+      },
+      "search": {
+        "placeholder": "Search by email"
       }
     },
     "projects": {
