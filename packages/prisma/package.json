@@ -63,12 +63,12 @@
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.50.0",
     "pkgroll": "^2.11.2",
-    "prisma": "^6.0.1",
+    "prisma": "^6.9.0",
     "rimraf": "^5.0.1",
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.1",
+    "@prisma/client": "^6.9.0",
     "prisma-json-types-generator": "^3.4.2",
     "randomcolor": "^0.6.2",
     "tsx": "^4.19.1",

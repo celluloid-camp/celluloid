@@ -1,9 +1,9 @@
-FROM node:20-alpine AS base
-ARG PNPM_VERSION=9.15.0
+FROM node:22-alpine AS base
+ARG PNPM_VERSION=10.12.1
 ENV CI=true
 ENV PNPM_HOME="/pnpm"
 ENV PATH="${PNPM_HOME}:${PATH}"
-RUN apk add --no-cache libc6-compat bash openssl openssl-dev
+RUN apk add --no-cache libc6-compat bash openssl openssl-dev python3
 RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 FROM base AS builder
