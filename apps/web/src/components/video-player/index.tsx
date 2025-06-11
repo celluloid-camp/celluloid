@@ -29,6 +29,7 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
 
   const setVideoPlayerProgress = useSetVideoPlayerProgress();
 
+  const setVideoPlayerState = useSetVideoPlayerState();
   useImperativeHandle(ref, () => playerRef.current);
 
   const dispatcher = useVideoPlayerEvent();
@@ -49,11 +50,13 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
   const handlePlay = () => {
     if (!isReady) {
       setIsReady(true);
+      setVideoPlayerState("READY");
       dispatcher({
         state: "READY",
         progress: playerRef.current?.getCurrentTime() || 0,
       });
     }
+    setVideoPlayerState("PLAYING");
     dispatcher({
       state: "PLAYING",
       progress: playerRef.current?.getCurrentTime() || 0,
@@ -65,6 +68,7 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
   };
 
   const handlePause = () => {
+    setVideoPlayerState("PAUSED");
     dispatcher({
       state: "PAUSED",
       progress: playerRef.current?.getCurrentTime() || 0,
@@ -72,6 +76,7 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
   };
 
   const handleBuffer = () => {
+    setVideoPlayerState("BUFFERING");
     dispatcher({
       state: "BUFFERING",
       progress: playerRef.current?.getCurrentTime() || 0,
@@ -79,6 +84,7 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
   };
 
   const handleSeek = (seconds: number) => {
+    setVideoPlayerState("SEEK");
     dispatcher({
       state: "SEEK",
       progress: seconds,
@@ -87,8 +93,9 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
   };
 
   const handleError = (error: Error) => {
+    setVideoPlayerState("ERROR");
     dispatcher({
-      state: "SEEK",
+      state: "ERROR",
       progress: 0,
       error,
     });

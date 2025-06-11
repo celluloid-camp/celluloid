@@ -1,3 +1,5 @@
+"use client";
+
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import CenterFocusStrongOutlinedIcon from "@mui/icons-material/CenterFocusStrongOutlined";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
@@ -25,10 +27,12 @@ import { useTranslations } from "next-intl";
 import { DurationSlider } from "./duration-slider";
 import {
   useAnnotationFormVisible,
-  useContextualEditorPosition,
   useContextualEditorVisibleState,
   useEditAnnotation,
 } from "./useAnnotationEditor";
+import { useShapesStore } from "./shapes-store";
+import { AnnotationShape } from "@celluloid/prisma";
+import { useEffect } from "react";
 type AnnotationFormProps = {
   duration: number;
   project: ProjectById;
@@ -74,8 +78,9 @@ export const AnnotationFormContent: React.FC<
   const [contextEditorVisible, setContextualEditorVisible] =
     useContextualEditorVisibleState();
 
-  const [contextualEditorPosition, setContextualEditorPosition] =
-    useContextualEditorPosition();
+  const shapes = useShapesStore((state) => state.shapes);
+  const initShapeEditor = useShapesStore((state) => state.init);
+  const resetShapes = useShapesStore((state) => state.reset);
 
   const [editedAnnotation, setEditedAnnotation] = useEditAnnotation();
 
@@ -90,6 +95,12 @@ export const AnnotationFormContent: React.FC<
       .min(2, "Comment doit comporter minimum 5 character")
       .required("Commentaire est obligatoire"),
   });
+
+  useEffect(() => {
+    if (editedAnnotation) {
+      initShapeEditor([editedAnnotation.extra as AnnotationShape]);
+    }
+  }, [editedAnnotation]);
 
   const formik = useFormik({
     initialValues: editedAnnotation
@@ -118,11 +129,12 @@ export const AnnotationFormContent: React.FC<
           startTime: values.startTime,
           stopTime: values.stopTime,
           pause: values.pause,
-          extra: contextualEditorPosition ? contextualEditorPosition : {},
+          extra: shapes.length > 0 ? shapes[0] : null,
         });
         if (changedAnnotation) {
           formik.resetForm();
-          setContextualEditorPosition(undefined);
+          // setContextualEditorPosition(undefined);
+          resetShapes();
           setEditedAnnotation(undefined);
           handleClose();
         }
@@ -133,11 +145,12 @@ export const AnnotationFormContent: React.FC<
           startTime: values.startTime,
           stopTime: values.stopTime,
           pause: values.pause,
-          extra: contextualEditorPosition ? contextualEditorPosition : {},
+          extra: shapes.length > 0 ? shapes[0] : null,
         });
         if (newAnnotation) {
           formik.resetForm();
-          setContextualEditorPosition(undefined);
+          // setContextualEditorPosition(undefined);
+          resetShapes();
           handleClose();
         }
       }
@@ -171,6 +184,7 @@ export const AnnotationFormContent: React.FC<
               formik.setFieldValue("startTime", start);
               formik.setFieldValue("stopTime", stop);
             }}
+            // mono={true}
           />
         </Box>
         <Box

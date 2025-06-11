@@ -2,16 +2,16 @@ import { create } from "zustand";
 
 type VideoPlayerState = {
   state:
-    | "READY"
-    | "START"
-    | "PLAYING"
-    | "PROGRESS"
-    | "BUFFERING"
-    | "SEEK"
-    | "ENDED"
-    | "ERROR"
-    | "PAUSED"
-    | undefined;
+  | "READY"
+  | "START"
+  | "PLAYING"
+  | "PROGRESS"
+  | "BUFFERING"
+  | "SEEK"
+  | "ENDED"
+  | "ERROR"
+  | "PAUSED"
+  | undefined;
   progress: number;
   error?: Error;
   // Actions
@@ -31,11 +31,12 @@ const videoPlayerStore = create<VideoPlayerState>((set) => ({
 // Helper hooks for specific state values
 export const useVideoPlayerProgress = () =>
   videoPlayerStore((state) => state.progress);
+
 export const useSetVideoPlayerProgress = () =>
   videoPlayerStore((state) => state.setProgress);
 
-export const useSetVideoPlayerState = () => {
-  const state = videoPlayerStore((state) => state.state);
-  const setState = videoPlayerStore((state) => state.setState);
-  return [state, setState] as const;
+export const useSetVideoPlayerState = () => videoPlayerStore((state) => state.setState)
+
+export const useVideoPlayerState = () => {
+  return videoPlayerStore((state) => state.state);
 };
