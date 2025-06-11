@@ -27,11 +27,12 @@ import { trpc } from "@/lib/trpc/client";
 import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
 import type { ProjectListItem } from "@/lib/trpc/types";
+import { StyledTitle } from "../common/typography";
 
-const ProjectTitle = dynamic(() => import("./project-title"), {
-  ssr: false,
-  loading: () => <Skeleton variant="text" height={60} width={200} />,
-});
+// const ProjectTitle = dynamic(() => import("./project-title"), {
+//   ssr: false,
+//   loading: () => <Skeleton variant="text" height={60} width={200} />,
+// });
 
 export function ProjectGrid() {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -159,39 +160,70 @@ export function ProjectGrid() {
             ph: 2,
           }}
         >
-          <ProjectTitle
-            ownProjectsLength={ownProjects.length}
-            joinedProjectsLength={joinedProjects.length}
-          />
-
           {ownProjects.length > 0 && (
-            <Grid container={true} spacing={5} direction="row">
-              {ownProjects.map((project: ProjectListItem) => (
-                <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                  <ProjectThumbnail showPublic={true} project={project} />
-                </Grid>
-              ))}
-            </Grid>
+            <>
+              <Fade in={true} appear={true}>
+                <StyledTitle
+                  sx={{
+                    marginBottom: 2,
+                  }}
+                  variant="h4"
+                >
+                  {t("home.myProjects")}
+                </StyledTitle>
+              </Fade>
+              <Grid container={true} spacing={5} direction="row">
+                {ownProjects.map((project: ProjectListItem) => (
+                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                    <ProjectThumbnail showPublic={true} project={project} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
           )}
 
           {joinedProjects.length > 0 && (
-            <Grid container={true} spacing={5} direction="row">
-              {joinedProjects.map((project: ProjectListItem) => (
-                <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                  <ProjectThumbnail showPublic={true} project={project} />
-                </Grid>
-              ))}
-            </Grid>
+            <>
+              <Fade in={true} appear={true}>
+                <StyledTitle
+                  sx={{
+                    marginBottom: 2,
+                  }}
+                  variant="h4"
+                >
+                  {t("home.member")}
+                </StyledTitle>
+              </Fade>
+              <Grid container={true} spacing={5} direction="row">
+                {joinedProjects.map((project: ProjectListItem) => (
+                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                    <ProjectThumbnail showPublic={true} project={project} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
           )}
 
           {publicProjects.length > 0 && (
-            <Grid container={true} spacing={5} direction="row">
-              {publicProjects.map((project: ProjectListItem) => (
-                <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                  <ProjectThumbnail showPublic={false} project={project} />
-                </Grid>
-              ))}
-            </Grid>
+            <>
+              <Fade in={true} appear={true}>
+                <StyledTitle
+                  sx={{
+                    marginBottom: 2,
+                  }}
+                  variant="h4"
+                >
+                  {t("home.publicProjects")}
+                </StyledTitle>
+              </Fade>
+              <Grid container={true} spacing={5} direction="row">
+                {publicProjects.map((project: ProjectListItem) => (
+                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                    <ProjectThumbnail showPublic={false} project={project} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
           )}
 
           {noProjects && (

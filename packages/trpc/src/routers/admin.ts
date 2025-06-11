@@ -10,29 +10,30 @@ export const adminRouter = router({
     .input(
       z.object({
         limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
-        term: z.string().nullish(),
+        skip: z.number().min(0).nullish(),
+        searchTerm: z.string().default(""),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 50;
-      const { cursor, term } = input;
+      const limit = input.limit ?? 10;
+      const skip = input.skip ?? 0;
 
-      const withterm: Prisma.ProjectWhereInput = term
-        ? {
-            title: {
-              search: `%${term}%`,
-            },
-          }
-        : {};
+      const where: Prisma.ProjectWhereInput = {};
+
+      if (input.searchTerm) {
+        where.user = {
+          username: { contains: input.searchTerm, mode: "insensitive" },
+        };
+      }
+
+      const total = await prisma.project.count({
+        where,
+      });
 
       const items = await prisma.project.findMany({
-        // select: defaultPostSelect,
-        // get an extra item at the end which we'll use as next cursor
-        take: limit + 1,
-        where: {
-          ...withterm,
-        },
+        take: limit,
+        skip: skip,
+        where,
         select: {
           id: true,
           userId: true,
@@ -44,33 +45,17 @@ export const adminRouter = router({
           shared: true,
           shareCode: true,
           shareExpiresAt: true,
-          duration: true,
-          thumbnailURL: true,
-          metadata: false,
-          keywords: true,
           user: true,
           members: true,
           _count: true,
         },
-        cursor: cursor
-          ? {
-              id: cursor,
-            }
-          : undefined,
         orderBy: {
           publishedAt: "desc",
         },
       });
-      let nextCursor: typeof cursor | undefined = undefined;
-      if (items.length > limit) {
-        // Remove the last item and use it as next cursor
-        const nextItem = items.pop()!;
-        nextCursor = nextItem.id;
-      }
-
       return {
-        items: items.reverse(),
-        nextCursor,
+        items,
+        total,
       };
     }),
   getUserById: adminProcedure
@@ -161,10 +146,9 @@ export const adminRouter = router({
         where: { id },
         select: {
           user: true,
-          chapterJob: {
+          chapters: {
             select: {
               id: true,
-              error: true,
               finishedAt: true,
               progress: true,
             },
@@ -292,13 +276,13 @@ export const adminRouter = router({
       z.object({
         userId: z.string().uuid(),
         limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
+        skip: z.number().min(0).nullish(),
       }),
     )
     .query(async ({ input }) => {
       const { userId } = input;
       const limit = input.limit ?? 50;
-      const { cursor } = input;
+      const skip = input.skip ?? 0;
 
       try {
         const user = await prisma.user.findUnique({
@@ -312,12 +296,19 @@ export const adminRouter = router({
           });
         }
 
-        const items = await prisma.project.findMany({
-          take: limit + 1,
+        // Get total count for pagination
+        const total = await prisma.project.count({
           where: {
             userId,
           },
+        });
 
+        const items = await prisma.project.findMany({
+          take: limit,
+          skip: skip,
+          where: {
+            userId,
+          },
           select: {
             id: true,
             title: true,
@@ -330,27 +321,14 @@ export const adminRouter = router({
             shareExpiresAt: true,
             duration: true,
           },
-
-          cursor: cursor
-            ? {
-                id: cursor,
-              }
-            : undefined,
           orderBy: {
             publishedAt: "desc",
           },
         });
 
-        let nextCursor: typeof cursor | undefined = undefined;
-        if (items.length > limit) {
-          // Remove the last item and use it as next cursor
-          const nextItem = items.pop()!;
-          nextCursor = nextItem.id;
-        }
-
         return {
           items,
-          nextCursor,
+          total,
         };
       } catch (error) {
         throw new TRPCError({

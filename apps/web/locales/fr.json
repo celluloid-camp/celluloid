@@ -297,7 +297,7 @@
       "generating": "La transcription est en cours de génération...",
       "empty": "Transcription vidéo non disponible.",
       "button": {
-        "generate": "Générer la transcription",
+        "generate": "Générer une transcription",
         "download": "Télécharger"
       },
       "failed": "Échec du chargement de la transcription",
@@ -584,6 +584,9 @@
       "delete": {
         "success": "Utilisateur supprimé avec succès",
         "error": "Échec de la suppression de l'utilisateur. Veuillez réessayer."
+      },
+      "search": {
+        "placeholder": "Rechercher par e-mail"
       }
     },
     "projects": {
@@ -598,6 +601,9 @@
       "empty": "Aucun projet trouvé",
       "list": {
         "empty": "Aucun projet trouvé"
+      },
+      "search": {
+        "placeholder": "Recherche par propriétaire"
       }
     },
     "project": {
@@ -654,6 +660,9 @@
         "username": "Nom d'utilisateur",
         "date": "Date de publication"
       }
+    },
+    "list": {
+      "empty": "Aucun résultat."
     }
   },
   "edit-platlist": "Modifier platlist",
@@ -677,7 +686,10 @@
   },
   "common": {
     "add": "Ajouter",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "table": {
+      "rowsPerPage": "Lignes par page"
+    }
   },
   "profil": {
     "update": {
