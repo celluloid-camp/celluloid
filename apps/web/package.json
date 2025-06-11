@@ -62,7 +62,7 @@
     "react-draggable": "^4.4.6",
     "react-error-boundary": "^5.0.0",
     "react-hook-form": "^7.54.2",
-    "react-konva": "^19.0.3",
+    "react-konva": "^19.0.5",
     "react-markdown": "^10.1.0",
     "react-use-event": "^1.1.1",
     "resize-observer-polyfill": "^1.5.1",

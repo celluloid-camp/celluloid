@@ -1,16 +1,19 @@
 import { create } from "zustand";
 import { Shape } from "./types";
+import { AnnotationShape } from "@celluloid/prisma";
 
 interface ShapesState {
-  shapes: Shape[];
-  addShape: (shape: Shape) => void;
-  updateShape: (id: string, updates: Partial<Shape>) => void;
+  shapes: AnnotationShape[];
+  init: (shapes: AnnotationShape[]) => void;
+  addShape: (shape: AnnotationShape) => void;
+  updateShape: (id: string, updates: Partial<AnnotationShape>) => void;
   deleteShape: (id: string) => void;
-  deleteAllShapes: () => void;
+  reset: () => void;
 }
 
 export const useShapesStore = create<ShapesState>((set) => ({
   shapes: [],
+  init: (shapes) => set({ shapes }),
   addShape: (shape) => set((state) => ({ shapes: [...state.shapes, shape] })),
   updateShape: (id, updates) =>
     set((state) => ({
@@ -22,5 +25,5 @@ export const useShapesStore = create<ShapesState>((set) => ({
     set((state) => ({
       shapes: state.shapes.filter((shape) => shape.id !== id),
     })),
-  deleteAllShapes: () => set({ shapes: [] }),
+  reset: () => set({ shapes: [] }),
 }));

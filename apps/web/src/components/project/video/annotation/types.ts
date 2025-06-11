@@ -11,7 +11,7 @@ export interface Shape {
   radiusX?: number;
   radiusY?: number;
   sides?: number;
-  stroke: string;
-  strokeWidth: number;
+  stroke?: string;
+  strokeWidth?: number;
   points?: number[];
 }

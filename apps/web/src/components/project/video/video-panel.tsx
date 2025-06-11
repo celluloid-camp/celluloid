@@ -1,3 +1,4 @@
+"use client";
 import { useParentSize } from "@cutting/use-get-parent-size";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";

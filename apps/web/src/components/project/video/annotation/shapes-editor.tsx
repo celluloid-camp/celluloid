@@ -28,7 +28,7 @@ export function ShapesEditor() {
   const addShape = useShapesStore((state) => state.addShape);
   const updateShapeStore = useShapesStore((state) => state.updateShape);
   const deleteShape = useShapesStore((state) => state.deleteShape);
-  const deleteAllShapes = useShapesStore((state) => state.deleteAllShapes);
+  const deleteAllShapes = useShapesStore((state) => state.reset);
   const [drawing, setDrawing] = useState<Shape | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const stageRef = useRef<any>(null);
@@ -1036,6 +1036,14 @@ export function ShapesEditor() {
         height: "100%",
         width: "100%",
         overflow: "hidden",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <line x1="10" y1="0" x2="10" y2="20" stroke="gray" stroke-opacity="0.3" stroke-width="1" />
+          <line x1="0" y1="10" x2="20" y2="10" stroke="gray" stroke-opacity="0.3" stroke-width="1" />
+          </svg>`,
+        )}")`,
+        backgroundRepeat: "repeat",
       }}
     >
       <Toolbox

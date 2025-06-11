@@ -4,19 +4,25 @@ import { useSession } from "@/lib/auth-client";
 import type ReactPlayer from "@celluloid/react-player";
 import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import { AnnotationOverlayHints } from "./annotation/overlay-hints";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
 
-import { useVideoPlayerProgress } from "@/components/video-player/store";
+import {
+  useVideoPlayerProgress,
+  useVideoPlayerState,
+} from "@/components/video-player/store";
 import { trpc } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-import { ContextualOverlay } from "./annotation/contextual/overlay";
-import { ContextualOverlayEditor } from "./annotation/contextual/overlay-editor";
 import { VideoPanel } from "./video-panel";
 import { ShapesEditor } from "./annotation/shapes-editor";
-import { ShapesDemo } from "./annotation/shapes-demo";
+import {
+  AnnotationShapeWithMetadata,
+  ShapesViewer,
+} from "./annotation/shapes-viewer";
+import { AnnotationShape } from "@celluloid/prisma";
+import { useMeasure } from "@uidotdev/usehooks";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -29,6 +35,9 @@ interface Props {
 
 export function ProjectVideoScreen({ project }: Props) {
   const videoPlayerRef = React.useRef<ReactPlayer>(null);
+
+  const videoPlayerState = useVideoPlayerState();
+  const [ref, { width, height }] = useMeasure();
 
   const { data: session } = useSession();
   const utils = trpc.useUtils();
@@ -72,6 +81,35 @@ export function ProjectVideoScreen({ project }: Props) {
     [annotations, videoProgress, playerIsReady],
   );
 
+  const shapeAnnotations = useMemo<AnnotationShapeWithMetadata[]>(
+    () =>
+      visibleAnnotations
+        .filter(
+          (annotation) =>
+            annotation.extra !== null && annotation.extra !== undefined,
+        )
+        .map((annotation) => {
+          const extra = annotation.extra as AnnotationShape;
+          return {
+            ...annotation.extra,
+            id: extra.id ?? annotation.id,
+            type: extra.type ?? "point",
+            x: extra.relativeX ?? extra.x,
+            y: extra.relativeY ?? extra.y,
+            pause: annotation.pause,
+            startTime: annotation.startTime,
+            metadata: {
+              color: annotation.user.color,
+              initial: annotation.user.initial,
+              username: annotation.user.username,
+              avatar: annotation.user.avatar?.publicUrl,
+              text: annotation.text,
+            },
+          };
+        }),
+    [visibleAnnotations],
+  );
+
   useEffect(() => {
     const position = videoPlayerRef.current?.getCurrentTime();
     const paused = visibleAnnotations.filter(
@@ -105,10 +143,21 @@ export function ProjectVideoScreen({ project }: Props) {
         maxHeight: "60vh",
       }}
     >
-      <Grid item xs={8} sx={{ position: "relative" }}>
-        {contextualEditorVisible ? <ContextualOverlayEditor /> : null}
-        {!formVisible && !showHints ? (
-          <ContextualOverlay annotations={visibleAnnotations} />
+      <Grid item xs={8} ref={ref} sx={{ position: "relative" }}>
+        {contextualEditorVisible ? <ShapesEditor /> : null}
+        {!formVisible && !showHints && shapeAnnotations.length > 0 ? (
+          <ShapesViewer
+            shapes={shapeAnnotations}
+            width={width ?? 0}
+            height={height ?? 0}
+            onClick={() => {
+              if (videoPlayerState === "PAUSED") {
+                videoPlayerRef.current?.getInternalPlayer().play();
+              } else {
+                videoPlayerRef.current?.getInternalPlayer().pause();
+              }
+            }}
+          />
         ) : null}
         {showHints ? (
           <AnnotationOverlayHints
@@ -117,7 +166,7 @@ export function ProjectVideoScreen({ project }: Props) {
             onClick={handleAnnotionHintClick}
           />
         ) : null}
-        <ShapesDemo />
+        {/* <ShapesDemo /> */}
         <VideoPlayer
           ref={videoPlayerRef}
           height={"100%"}

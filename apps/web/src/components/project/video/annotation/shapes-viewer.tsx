@@ -3,81 +3,72 @@
 import { Box } from "@mui/material";
 import React, { useRef, useEffect, useMemo, useState } from "react";
 import { Stage, Layer, Rect, Circle, Ellipse, Line } from "react-konva";
-import { useShapesStore } from "./shapes-store";
 import { SHAPE_STYLES, DEFAULT_DIMENSIONS, SHAPE_TYPES } from "./shapes-config";
 import { ShapeTooltip } from "./shape-tooltip";
-import { Shape } from "./types";
-
-type Dimensions = {
-  width: number;
-  height: number;
-};
+import type { AnnotationShape } from "@celluloid/prisma";
 
 type TooltipState = {
-  shape: Shape;
+  shape: AnnotationShapeWithMetadata;
   x: number;
   y: number;
 } | null;
 
-export function ShapesViewer() {
-  const shapes = useShapesStore((state) => state.shapes);
+
+export type AnnotationShapeWithMetadata = AnnotationShape & {
+  metadata: {
+    color: string;
+    initial: string;
+    username: string;
+    avatar?: string;
+    text: string;
+  };
+};
+
+export function ShapesViewer({
+  shapes,
+  width = DEFAULT_DIMENSIONS.width,
+  height = DEFAULT_DIMENSIONS.height,
+  onClick,
+}: {
+  shapes: AnnotationShapeWithMetadata[];
+  width: number;
+  height: number;
+  onClick: () => void;
+}) {
   const stageRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] =
-    React.useState<Dimensions>(DEFAULT_DIMENSIONS);
+
   const [tooltip, setTooltip] = useState<TooltipState>(null);
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const { width, height } = containerRef.current.getBoundingClientRect();
-        setDimensions({ width, height });
-      }
-    };
-
-    updateDimensions();
-    const observer = new window.ResizeObserver(updateDimensions);
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-    return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
-      observer.disconnect();
-    };
-  }, []);
-
-  const handleMouseMove = (e: any) => {
-    const stage = e.target.getStage();
+  const handleMouseMove = (e) => {
+    const stage = stageRef.current.getStage();
     if (!stage) return;
 
     const pointer = stage.getPointerPosition();
     if (!pointer) return;
 
     const shape = shapes.find((s) => {
-      const x = s.x * dimensions.width;
-      const y = s.y * dimensions.height;
+      const x = s.x * width;
+      const y = s.y * height;
 
       if (s.type === SHAPE_TYPES.RECT) {
         return (
           pointer.x >= x &&
-          pointer.x <= x + (s.width || 0) * dimensions.width &&
+          pointer.x <= x + (s.width || 0) * width &&
           pointer.y >= y &&
-          pointer.y <= y + (s.height || 0) * dimensions.height
+          pointer.y <= y + (s.height || 0) * height
         );
       }
 
-      if (s.type === SHAPE_TYPES.CIRCLE) {
-        const radius = (s.radius || 0) * dimensions.width;
+      if (s.type === "circle") {
+        const radius = (s.radius || 0) * width;
         const dx = pointer.x - x;
         const dy = pointer.y - y;
         return Math.sqrt(dx * dx + dy * dy) <= radius;
       }
 
       if (s.type === SHAPE_TYPES.ELLIPSE) {
-        const radiusX = (s.radiusX || 0) * dimensions.width;
-        const radiusY = (s.radiusY || 0) * dimensions.height;
+        const radiusX = (s.radiusX || 0) * width;
+        const radiusY = (s.radiusY || 0) * height;
         const dx = pointer.x - x;
         const dy = pointer.y - y;
         return (
@@ -132,8 +123,8 @@ export function ShapesViewer() {
   const renderedShapes = useMemo(
     () =>
       shapes.map((shape) => {
-        const x = shape.x * dimensions.width;
-        const y = shape.y * dimensions.height;
+        const x = shape.x * width;
+        const y = shape.y * height;
 
         if (shape.type === SHAPE_TYPES.POLYGON) {
           return (
@@ -153,18 +144,18 @@ export function ShapesViewer() {
                 key={shape.id}
                 x={x}
                 y={y}
-                width={(shape.width || 0) * dimensions.width}
-                height={(shape.height || 0) * dimensions.height}
+                width={(shape.width || 0) * width}
+                height={(shape.height || 0) * height}
                 {...SHAPE_STYLES.common}
               />
             );
-          case SHAPE_TYPES.CIRCLE:
+          case "circle":
             return (
               <Circle
                 key={shape.id}
                 x={x}
                 y={y}
-                radius={(shape.radius || 0) * dimensions.width}
+                radius={(shape.radius || 0) * width}
                 {...SHAPE_STYLES.common}
               />
             );
@@ -174,47 +165,44 @@ export function ShapesViewer() {
                 key={shape.id}
                 x={x}
                 y={y}
-                radiusX={(shape.radiusX || 0) * dimensions.width}
-                radiusY={(shape.radiusY || 0) * dimensions.height}
+                radiusX={(shape.radiusX || 0) * width}
+                radiusY={(shape.radiusY || 0) * height}
                 {...SHAPE_STYLES.common}
               />
             );
-          case SHAPE_TYPES.POINT:
+          // default to point
+          default:
             return (
               <Circle key={shape.id} x={x} y={y} {...SHAPE_STYLES.point} />
             );
-          default:
-            return null;
         }
       }),
-    [shapes, dimensions],
+    [shapes, width, height],
   );
 
   return (
-    <Box
-      ref={containerRef}
-      sx={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        margin: 0,
-        height: "100%",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
+    <>
       <Stage
         ref={stageRef}
-        width={dimensions.width}
-        height={dimensions.height}
+        width={width}
+        height={height - 100}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onClick={onClick}
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          zIndex: 20,
+        }}
       >
-        <Layer>{renderedShapes}</Layer>
+        <Layer listening={false} preventDefault={false}>
+          {renderedShapes}
+        </Layer>
       </Stage>
       {tooltip && (
-        <ShapeTooltip shape={tooltip.shape} x={tooltip.x} y={tooltip.y} />
+        <ShapeTooltip data={tooltip.shape} x={tooltip.x} y={tooltip.y} />
       )}
-    </Box>
+    </>
   );
 }

@@ -7,6 +7,7 @@ export const SHAPE_STYLES = {
     shadowBlur: 5,
     shadowOpacity: 0.3,
     shadowOffset: { x: 2, y: 2 },
+    pointerEvents: "auto",
   },
   point: {
     radius: 8,

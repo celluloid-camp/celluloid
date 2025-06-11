@@ -5,7 +5,13 @@ import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
 import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
 import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
 
-export type ShapeType = "rect" | "circle" | "polygon" | "ellipse" | "point";
+export type ShapeType =
+  | string
+  | "rect"
+  | "circle"
+  | "polygon"
+  | "ellipse"
+  | "point";
 
 interface ToolboxProps {
   shapeType: ShapeType;
