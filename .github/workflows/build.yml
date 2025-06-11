@@ -7,6 +7,14 @@ concurrency:
 on:
   push:
     branches: [staging, main]
+    paths-ignore:
+      - "**.md"
+      - "LICENSE"
+      - ".vscode/**"
+      - "docs/**"
+      - ".github/ISSUE_TEMPLATE/**"
+      - ".github/PULL_REQUEST_TEMPLATE/**"
+      - ".github/dependabot.yml"
   workflow_dispatch:
 
 jobs:
@@ -43,7 +51,6 @@ jobs:
           target: "web"
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
-            DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 
       - name: Build Worker Container
         uses: docker/build-push-action@v3
@@ -57,4 +64,3 @@ jobs:
           target: "worker"
           build-args: |
             COMMIT=${{ steps.vars.outputs.sha_short }}
-            DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
