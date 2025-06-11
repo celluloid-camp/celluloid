@@ -13,11 +13,6 @@
     "url": "https://github.com/udecode/plate/celluloid/issues"
   },
   "files": [],
-  "dependencies": {
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-turbo": "latest",
-    "eslint-plugin-react": "7.33.2"
-  },
   "devDependencies": {
     "typescript": "catalog:"
   }
