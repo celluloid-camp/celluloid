@@ -29,10 +29,10 @@ import { useSession } from "@/lib/auth-client";
 import type { ProjectListItem } from "@/lib/trpc/types";
 import { StyledTitle } from "../common/typography";
 
-const ProjectTitle = dynamic(() => import("./project-title"), {
-  ssr: false,
-  loading: () => <Skeleton variant="text" height={60} width={200} />,
-});
+// const ProjectTitle = dynamic(() => import("./project-title"), {
+//   ssr: false,
+//   loading: () => <Skeleton variant="text" height={60} width={200} />,
+// });
 
 export function ProjectGrid() {
   const searchInputRef = useRef<HTMLInputElement>(null);
