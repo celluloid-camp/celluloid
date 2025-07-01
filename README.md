@@ -26,7 +26,9 @@ We value your feedback on the application's user experience and design. If you e
 ## Development Team
 
 Celluloid originated from a research project led by **Michaël Bourgatte** and **Laurent Tessier**, two senior lecturers at the [Catholic University of Paris](https://en.icp.fr/english-version/). Their work focuses on educational science and digital humanities.
-Celluloid is currently maintained by [Younes Benaomar](https://github.com/younes200), and we actively encourage contributions and involvement from the community. Feel free to reach out to us on [Discussions](https://github.com/celluloid-camp/celluloid/discussions).
+Celluloid is currently maintained by [Younes Benaomar](https://github.com/younes200) following an initial technical design by [Erwan Queffélec](https://github.com/3rwww1) in 2017-2018.
+
+We actively encourage contributions and involvement from the community. Feel free to reach out to us on [Discussions](https://github.com/celluloid-camp/celluloid/discussions).
 
 # Setup
 
