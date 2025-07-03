@@ -8,6 +8,9 @@ concurrency:
 on:
   push:
     branches: [staging]
+    paths:
+      - "apps/web/**"
+      - "packages/**"
   workflow_dispatch:
 
 jobs:

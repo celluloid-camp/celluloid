@@ -15,11 +15,18 @@
           uses: actions/checkout@v4
           with:
             fetch-depth: 0
+        - name: Git config
+          run: |
+            git config user.name "github-actions[bot]"
+            git config user.email "celluloid-camp[bot]@users.noreply.github.com"
 
-        - name: Running release automation
-          uses: juancarlosjr97/release-it-containerized@0.7.74
+        - name: Install pnpm
+          uses: pnpm/action-setup@v3
           with:
-            plugins_list: "@release-it/conventional-changelog,release-it-pnpm"
-            command: ${{ github.ref_name == 'staging' && '--preReleaseId=rc --preReleaseName=rc' || '' }}
-            github_token: ${{ secrets.PROJECT_GITHUB_TOKEN }}
+            run_install: |
+              - args: [--frozen-lockfile]
 
+        - name: Release
+          run: npx release-it ${{ github.ref_name == 'staging' && '--preReleaseId=rc --preReleaseName=rc' || '' }}
+          env:
+            GITHUB_TOKEN: ${{secrets.PROJECT_GITHUB_TOKEN}}
