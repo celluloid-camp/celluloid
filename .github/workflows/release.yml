@@ -35,7 +35,7 @@
         - name: Release
           run: |
             if [ "${GITHUB_REF_NAME}" = "staging" ]; then
-              npx release-it --preRelease=beta
+              npx release-it --preRelease=alpha
             else
               npx release-it
             fi
