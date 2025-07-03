@@ -6,15 +6,8 @@ concurrency:
 
 on:
   push:
-    branches: [staging, main]
-    paths-ignore:
-      - "**.md"
-      - "LICENSE"
-      - ".vscode/**"
-      - "docs/**"
-      - ".github/ISSUE_TEMPLATE/**"
-      - ".github/PULL_REQUEST_TEMPLATE/**"
-      - ".github/dependabot.yml"
+    tags:
+      - "v*"
   workflow_dispatch:
 
 jobs:
