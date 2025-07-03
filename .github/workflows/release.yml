@@ -15,7 +15,6 @@
           uses: actions/checkout@v4
           with:
             fetch-depth: 0
-            ref: ${{ github.ref }}
 
         - name: Running release automation
           uses: juancarlosjr97/release-it-containerized@0.7.74
