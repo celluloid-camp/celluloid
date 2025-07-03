@@ -2,6 +2,7 @@
   "name": "@celluloid/config",
   "version": "3.0.0",
   "main": "index.js",
+  "private": true,
   "license": "MIT",
   "homepage": "https://celluloid.huma-num.fr",
   "repository": {

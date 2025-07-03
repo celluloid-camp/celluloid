@@ -1,6 +1,7 @@
 {
   "name": "@celluloid/utils",
   "version": "3.0.0",
+  "private": true,
   "type": "module",
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
