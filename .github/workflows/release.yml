@@ -1,0 +1,25 @@
+---
+  name: Release
+  on:
+    push:
+      branches:
+        - main
+        - staging
+    workflow_dispatch:
+
+  jobs:
+    release-automation:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+            ref: ${{ github.ref }}
+
+        - name: Running release automation
+          uses: juancarlosjr97/release-it-containerized@0.7.69
+          with:
+            plugins_list: "@release-it/conventional-changelog,release-it-pnpm"
+            command: ${{ github.ref_name == 'staging' && '--preReleaseId=rc --preReleaseName=rc' || '' }}
+
