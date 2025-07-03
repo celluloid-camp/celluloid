@@ -21,3 +21,10 @@ catalogs:
 
 onlyBuiltDependencies:
   - esbuild
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@tailwindcss/oxide"
+  - canvas
+  - prisma
+  - sharp
+  - vue-demi
