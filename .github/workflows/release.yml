@@ -18,7 +18,7 @@
             ref: ${{ github.ref }}
 
         - name: Running release automation
-          uses: juancarlosjr97/release-it-containerized@0.7.69
+          uses: juancarlosjr97/release-it-containerized@0.7.74
           with:
             plugins_list: "@release-it/conventional-changelog,release-it-pnpm"
             command: ${{ github.ref_name == 'staging' && '--preReleaseId=rc --preReleaseName=rc' || '' }}
