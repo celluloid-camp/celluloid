@@ -27,6 +27,11 @@
               - args: [--frozen-lockfile]
 
         - name: Release
-          run: npx release-it ${{ github.ref_name == 'staging' && '--preReleaseId=rc --preReleaseName=rc' || '' }}
+          run: |
+            if [ "${GITHUB_REF_NAME}" = "staging" ]; then
+              npx release-it --preReleaseId=rc --preReleaseName=rc
+            else
+              npx release-it
+            fi
           env:
             GITHUB_TOKEN: ${{secrets.PROJECT_GITHUB_TOKEN}}
