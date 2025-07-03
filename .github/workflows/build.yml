@@ -24,6 +24,7 @@ jobs:
           images: |
             ghcr.io/${{ github.repository }}/celluloid-web
           tags: |
+            type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
           labels: |
