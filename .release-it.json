@@ -1,11 +1,11 @@
 {
   "git": {
-    "commitMessage": "Released version ${version}",
+    "commitMessage": "chore: release version ${version}",
     "commitsPath": ".",
     "push": true,
     "requireCommits": true,
     "requireCommitsFail": false,
-    "tagName": "${version}"
+    "tagName": "v${version}"
   },
   "github": {
     "release": true,
@@ -73,8 +73,11 @@
       }
     },
     "release-it-pnpm": {
-      "publish": false
+      "publish": false,
+      "inFile": "CHANGELOG.md"
     }
   },
-  "npm": false
+  "npm": {
+    "publish": false
+  }
 }
