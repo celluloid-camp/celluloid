@@ -22,5 +22,5 @@
           with:
             plugins_list: "@release-it/conventional-changelog,release-it-pnpm"
             command: ${{ github.ref_name == 'staging' && '--preReleaseId=rc --preReleaseName=rc' || '' }}
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+            github_token: ${{ secrets.PROJECT_GITHUB_TOKEN }}
 
