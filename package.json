@@ -29,10 +29,11 @@
     "docker:worker:run": "docker run -it --rm --env-file .env celluloid-worker"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.0.6",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@playwright/test": "^1.52.0",
+    "@release-it/conventional-changelog": "^10.0.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.1",
     "git-format-staged": "^3.1.1",
