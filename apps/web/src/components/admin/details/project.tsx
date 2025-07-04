@@ -1,6 +1,4 @@
 "use client";
-import { BackButton } from "@/components/common/back-button";
-import { trpc } from "@/lib/trpc/client";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -12,17 +10,19 @@ import {
   Paper,
   Radio,
   RadioGroup,
+  Skeleton,
   Switch,
   TextField,
   Typography,
 } from "@mui/material";
-import { Skeleton } from "@mui/material";
 import { useFormik } from "formik";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import * as Yup from "yup";
+import { BackButton } from "@/components/common/back-button";
+import { trpc } from "@/lib/trpc/client";
 import { ProjectAnnotations } from "../project-annotations";
 
 export function ProjectDetails({ projectId }: { projectId: string }) {

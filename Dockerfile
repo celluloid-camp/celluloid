@@ -50,8 +50,12 @@ WORKDIR /workspace
 # Install openssl in the runner stage
 RUN apk add --no-cache curl bash openssl openssl-dev wget
 
-ARG NEXT_PUBLIC_VERSION_TAG
-ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
+ARG VERSION
+ENV NEXT_PUBLIC_VERSION=${VERSION}
+
+ARG REVISION
+ENV NEXT_PUBLIC_REVISION=${REVISION}
+
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}
 
@@ -80,6 +84,12 @@ FROM base AS worker
 RUN apk add --no-cache curl bash openssl openssl-dev ffmpeg wget
 
 WORKDIR /workspace
+
+ARG VERSION
+ENV VERSION=${VERSION}
+
+ARG REVISION
+ENV REVISION=${REVISION}
 
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}

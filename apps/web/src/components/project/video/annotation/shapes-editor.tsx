@@ -1,26 +1,26 @@
 "use client";
 
 import { Box } from "@mui/material";
+import { KonvaEventObject } from "konva/lib/Node";
 import React, {
-  useState,
-  useRef,
-  useEffect,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
+  useState,
 } from "react";
 import {
-  Stage,
-  Layer,
-  Rect,
   Circle,
-  Transformer,
-  Line,
   Ellipse,
+  Layer,
+  Line,
+  Rect,
+  Stage,
+  Transformer,
 } from "react-konva";
-import { KonvaEventObject } from "konva/lib/Node";
+import { useShapesStore } from "./shapes-store";
 import { ShapeType, Toolbox } from "./toolbox";
 import { Shape } from "./types";
-import { useShapesStore } from "./shapes-store";
 
 export function ShapesEditor() {
   const [shapeType, setShapeType] = useState<ShapeType>("rect");

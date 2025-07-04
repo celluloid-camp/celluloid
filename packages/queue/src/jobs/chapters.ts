@@ -7,9 +7,6 @@ import { createQueue } from "@mgcrea/prisma-queue";
 import { env } from "../env";
 import { detectScenes } from "../utils/scenes";
 
-const execPromise = promisify(exec);
-const streamPipeline = promisify(pipeline);
-
 type ChapterJobPayload = { projectId: string };
 type JobResult = { status: number };
 

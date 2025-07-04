@@ -1,4 +1,3 @@
-import { authClient } from "@/lib/auth-client";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -8,25 +7,26 @@ import {
   Menu,
   MenuItem,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TablePagination,
-  Stack,
   TableRow,
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { UserWithRole } from "better-auth/plugins/admin";
 import { useConfirm } from "material-ui-confirm";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
-import { UserTableSkeleton } from "./skeleton";
+import { authClient } from "@/lib/auth-client";
 import { SearchFilter } from "./search-filter";
+import { UserTableSkeleton } from "./skeleton";
 
 interface UserAdditionalField extends UserWithRole {
   username: string;

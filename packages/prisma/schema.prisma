@@ -85,6 +85,8 @@ model Project {
   chapters    Chapter[]
   notes       ProjectNote[]
   transcripts ProjectTranscript?
+
+  analysis VideoAnalysis?
 }
 
 model ProjectQueueJob {
@@ -217,6 +219,7 @@ model Verification {
   @@map("verification")
 }
 
+
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model UserToProject {
   id        Int      @id @default(autoincrement())
@@ -238,6 +241,7 @@ model Storage {
   bucket    String
   user      User?
   chapter   Chapter?
+  sprite    VideoAnalysis?
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
 }
 
@@ -292,4 +296,24 @@ model ProjectTranscript {
   entries   Json
 
   @@unique([projectId, language])
+}
+
+
+model VideoAnalysis {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String   @db.Uuid @unique(map: "videoanalysis_projectid_unique")
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  sprite          Storage? @relation(fields: [spriteStorageId], references: [id])
+  spriteStorageId String?  @unique @db.Uuid
+
+  visionJobId String
+  status      String   @default("pending")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  /// [VisionProcessing]
+  processing Json? @default("{}") @db.Json
+  metadata Json? @default("{}") @db.Json
 }

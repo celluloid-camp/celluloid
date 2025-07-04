@@ -1,14 +1,14 @@
-import type { PeerTubeVideoWithThumbnail } from "@/services/peertube";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  Box,
   CircularProgress,
   Grid,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
-import { Box } from "@mui/material";
 import Image from "mui-image";
+import type { PeerTubeVideoWithThumbnail } from "@/services/peertube";
 import { AddVideoButton } from "./add-video-button";
 import { THUMBNAIL_WIDTH } from "./constants";
 

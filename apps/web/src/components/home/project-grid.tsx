@@ -16,16 +16,14 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { debounce } from "lodash";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import * as R from "ramda";
 import type * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
-
-import { trpc } from "@/lib/trpc/client";
-
 import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
 import type { ProjectListItem } from "@/lib/trpc/types";
 import { StyledTitle } from "../common/typography";
 

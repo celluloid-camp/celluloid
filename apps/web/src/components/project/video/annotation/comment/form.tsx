@@ -8,15 +8,14 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
+import { useTranslations } from "next-intl";
 import * as React from "react";
 import * as Yup from "yup";
-
 import { Avatar } from "@/components/common/avatar";
 import { TransparentInput } from "@/components/common/transparent-input";
 import type { User } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-import { useTranslations } from "next-intl";
 
 interface CommentFormProps {
   user: User | undefined;

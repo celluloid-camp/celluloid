@@ -11,15 +11,13 @@ import {
   Divider,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { signIn } from "@/lib/auth-client";
-import { authClient } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { authClient, signIn } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
 export function LoginForm() {

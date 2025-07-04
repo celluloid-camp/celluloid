@@ -66,4 +66,4 @@ export * from "@prisma/client";
 
 export default PrismaModule;
 
-export type AnnotationShape = PrismaJson.AnnotationShape
+export type AnnotationShape = PrismaJson.AnnotationShape;

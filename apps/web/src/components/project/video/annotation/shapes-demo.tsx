@@ -3,8 +3,8 @@
 import { Box, Button, Stack } from "@mui/material";
 import React, { useState } from "react";
 import { ShapesEditor } from "./shapes-editor";
-import { ShapesViewer } from "./shapes-viewer";
 import { useShapesStore } from "./shapes-store";
+import { ShapesViewer } from "./shapes-viewer";
 
 type Mode = "edit" | "view";
 

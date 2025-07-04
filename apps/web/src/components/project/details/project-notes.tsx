@@ -1,7 +1,6 @@
 "use client";
 
-import type { User } from "@/lib/auth-client";
-import type { ProjectById } from "@/lib/trpc/types";
+import DownloadIcon from "@mui/icons-material/Download";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatStrikethroughIcon from "@mui/icons-material/FormatStrikethrough";
@@ -10,12 +9,11 @@ import {
   Button,
   Card,
   CircularProgress,
+  colors,
   Stack,
   ToggleButton,
   Typography,
-  colors,
 } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
 import Placeholder from "@tiptap/extension-placeholder";
 import Strike from "@tiptap/extension-strike";
 import {
@@ -25,12 +23,8 @@ import {
   useEditor,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useTranslations } from "next-intl";
-import { Markdown } from "tiptap-markdown";
-
-import { trpc } from "@/lib/trpc/client";
-import dayjs from "@/utils/dayjs";
 import { debounce } from "lodash";
+import { useTranslations } from "next-intl";
 import {
   forwardRef,
   useCallback,
@@ -38,6 +32,11 @@ import {
   useRef,
   useState,
 } from "react";
+import { Markdown } from "tiptap-markdown";
+import type { User } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
+import type { ProjectById } from "@/lib/trpc/types";
+import dayjs from "@/utils/dayjs";
 
 interface Props {
   project: ProjectById;

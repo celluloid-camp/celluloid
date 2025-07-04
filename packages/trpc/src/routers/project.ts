@@ -1,9 +1,8 @@
 import { Prisma, prisma } from "@celluloid/prisma";
+import { chaptersQueue, transcriptsQueue } from "@celluloid/queue";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
-import { chaptersQueue, transcriptsQueue } from "@celluloid/queue";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { PlaylistSchema } from "./playlist";
 import { UserSchema } from "./user";
@@ -93,10 +92,10 @@ export const projectRouter = router({
 
       const withterm: Prisma.ProjectWhereInput = term
         ? {
-          title: {
-            search: `%${term}%`,
-          },
-        }
+            title: {
+              search: `%${term}%`,
+            },
+          }
         : {};
 
       const items = await prisma.project.findMany({
@@ -112,12 +111,12 @@ export const projectRouter = router({
             { userId: ctx.user ? ctx.user.id : undefined },
             ctx.user
               ? {
-                members: {
-                  some: {
-                    userId: ctx.user.id,
+                  members: {
+                    some: {
+                      userId: ctx.user.id,
+                    },
                   },
-                },
-              }
+                }
               : {},
           ],
         },
@@ -136,8 +135,8 @@ export const projectRouter = router({
         },
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",

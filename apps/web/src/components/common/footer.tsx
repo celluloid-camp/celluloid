@@ -7,14 +7,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useTranslations } from "next-intl";
 import type React from "react";
-
+import { LogoSign } from "@/components/common/logo-sign";
 import { GithubLogo } from "@/images/Github";
 import { HumaNumLogo } from "@/images/HumaNum";
 import { OpenEditionLogo } from "@/images/OpenEdition";
-
-import { LogoSign } from "@/components/common/logo-sign";
-import { useTranslations } from "next-intl";
 
 type FooterProps = BoxProps;
 

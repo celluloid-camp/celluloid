@@ -1,4 +1,5 @@
 import type * as React from "react";
+
 type LogoWithLabelWithProps = {
   variants?: "white" | "black";
 };

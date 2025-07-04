@@ -1,7 +1,7 @@
 "use client";
 import { Box, Container, Skeleton, Stack, Typography } from "@mui/material";
-import { Suspense } from "react";
 import type * as React from "react";
+import { Suspense } from "react";
 
 import { Avatar } from "@/components/common/avatar";
 import { UserProjectGrid } from "@/components/profile/user-project-grid";

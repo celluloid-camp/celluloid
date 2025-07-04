@@ -2,10 +2,9 @@
 import { Box, Container, Paper, Typography } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+import { useTranslations } from "next-intl";
 import type * as React from "react";
 import { useState } from "react";
-
-import { useTranslations } from "next-intl";
 import EditProfileTabForm from "./edit-profile-tab";
 import SecurityTabForm from "./security-tab";
 

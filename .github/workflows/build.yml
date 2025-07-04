@@ -8,6 +8,8 @@ on:
   push:
     tags:
       - "v*"
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -16,6 +18,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref_name }}
 
       - name: Docker meta
         id: meta

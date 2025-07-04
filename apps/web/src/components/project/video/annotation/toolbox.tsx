@@ -1,9 +1,9 @@
-import { Box, IconButton, Tooltip, SvgIcon } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
-import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
-import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
+import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
+import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
+import { Box, IconButton, SvgIcon, Tooltip } from "@mui/material";
 
 export type ShapeType =
   | string

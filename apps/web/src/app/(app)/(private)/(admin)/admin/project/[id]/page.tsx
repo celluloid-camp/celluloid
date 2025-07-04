@@ -1,5 +1,5 @@
-import { ProjectDetails } from "@/components/admin/details/project";
 import { Suspense } from "react";
+import { ProjectDetails } from "@/components/admin/details/project";
 import ProjectPageLoading from "./loading";
 
 export default async function ProjectPage({

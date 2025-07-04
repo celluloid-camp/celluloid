@@ -1,5 +1,5 @@
 declare global {
-  // biome-ignore lint/style/noNamespace: <explanation>
+  // biome-ignore lint/style/noNamespace: used for prisma
   namespace PrismaJson {
     type AnnotationShape = {
       id: string;
