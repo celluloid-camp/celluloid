@@ -12,6 +12,7 @@
   "dependencies": {
     "@celluloid/auth": "workspace:*",
     "@celluloid/prisma": "workspace:*",
+    "@celluloid/vision": "workspace:*",
     "@celluloid/react-player": "2.14.0",
     "@celluloid/trpc": "workspace:*",
     "@celluloid/types": "workspace:*",
