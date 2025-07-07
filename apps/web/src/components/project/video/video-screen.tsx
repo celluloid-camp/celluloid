@@ -21,6 +21,7 @@ import {
 } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
 import { VideoPanel } from "./video-panel";
+import { VideoVision } from "./video-vision";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -164,7 +165,7 @@ export function ProjectVideoScreen({ project }: Props) {
             onClick={handleAnnotionHintClick}
           />
         ) : null}
-        {/* <ShapesDemo /> */}
+        <VideoVision projectId={project.id} />
         <VideoPlayer
           ref={videoPlayerRef}
           height={"100%"}

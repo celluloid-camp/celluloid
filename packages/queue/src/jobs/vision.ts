@@ -1,12 +1,13 @@
 import { type PrismaClient, prisma } from "@celluloid/prisma";
 import type { PeerTubeVideo } from "@celluloid/types";
-import { createAnalyzeVideoTask } from "@celluloid/vision";
+import { createAnalyzeVideoTask, getJobResult } from "@celluloid/vision";
 import { createQueue } from "@mgcrea/prisma-queue";
+import { Client } from "minio";
 import { env } from "../env";
+import { parseUrl } from "../utils/s3";
 
-type VisionJobPayload = { projectId: string, callbackUrl: string };
+type VisionJobPayload = { projectId: string; callbackUrl: string };
 type JobResult = { status: number };
-
 
 export const visionQueue = createQueue<VisionJobPayload, JobResult>(
   { name: "vision", prisma: prisma as unknown as PrismaClient },
@@ -55,7 +56,6 @@ export const visionQueue = createQueue<VisionJobPayload, JobResult>(
         task,
       });
 
-
       await prisma.videoAnalysis.upsert({
         where: { projectId: payload.projectId },
         update: {
@@ -76,11 +76,126 @@ export const visionQueue = createQueue<VisionJobPayload, JobResult>(
         status,
         videoAnalysisJobId: task.job_id,
       };
-
     } catch (error) {
       console.error("Failed to create video analysis task", error);
       return { status: 500 };
     }
-
   },
 );
+
+export const visionResultQueue = createQueue<{
+  projectId: string;
+}, JobResult>(
+  { name: "vision-result", prisma: prisma as unknown as PrismaClient },
+  async (job, prisma) => {
+    const { id, payload } = job;
+    console.log(
+      `Vision result queue processing job#${id} with payload=${JSON.stringify(payload)})`,
+    );
+
+    const analysis = await prisma.videoAnalysis.findUnique({
+      where: { projectId: payload.projectId },
+      select: {
+        status: true,
+        visionJobId: true,
+      },
+    });
+
+    if (!analysis) {
+      console.error("No video analysis job found");
+      return { status: 404 };
+    }
+
+    if (analysis.status === "pending" && analysis.visionJobId) {
+      const result = await getJobResult(analysis.visionJobId);
+
+      if (result) {
+        const spritepathUrl = result?.metadata.sprite.path;
+
+        console.log("Vision result queue processing -- sprite path", {
+          spritepathUrl,
+        });
+
+        await prisma.videoAnalysis.update({
+          where: { projectId: payload.projectId },
+          data: {
+            status: "completed",
+            processing: result,
+          },
+        });
+
+        try {
+          const spritePath = await uploadSpriteToS3(
+            payload.projectId,
+            spritepathUrl,
+          );
+
+          const spriteStorage = await prisma.storage.create({
+            data: {
+              bucket: env.STORAGE_BUCKET,
+              path: spritePath,
+            }
+          });
+          await prisma.videoAnalysis.update({
+            where: { projectId: payload.projectId },
+            data: {
+              sprite: {
+                connect: {
+                  id: spriteStorage.id,
+                },
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Failed to upload sprite to S3", error);
+        }
+      }
+
+      return { status: 200 };
+    }
+
+    return { status: 200 };
+  },
+);
+
+async function uploadSpriteToS3(
+  projectId: string,
+  spriteUrl: string,
+): Promise<string> {
+  const storageUrlInfo = parseUrl(env.STORAGE_URL);
+
+  // Initialize MinIO client
+  const minioClient = new Client({
+    endPoint: storageUrlInfo.host,
+    port: storageUrlInfo.port,
+    useSSL: storageUrlInfo.isSecure,
+    accessKey: env.STORAGE_ACCESS_KEY,
+    secretKey: env.STORAGE_SECRET_KEY,
+  });
+
+  // Ensure the bucket exists
+  const bucketExists = await minioClient.bucketExists(env.STORAGE_BUCKET);
+  if (!bucketExists) {
+    throw new Error("Bucket does not exist");
+  }
+
+  const s3ObjectName = `${projectId}/analysis/sprite.png`;
+
+  // 1. Download the file (using fetch, axios, or another HTTP client)
+  const response = await fetch(spriteUrl);
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  // 2. Upload to S3/MinIO
+  await minioClient.putObject(
+    env.STORAGE_BUCKET,
+    s3ObjectName,
+    buffer,
+    buffer.length,
+    { "Content-Type": "image/jpeg" },
+  );
+
+  console.log(`Uploaded ${s3ObjectName} to ${env.STORAGE_BUCKET}`);
+
+  return s3ObjectName;
+}

@@ -17,6 +17,10 @@
     "./env": {
       "types": "./dist/env.d.ts",
       "import": "./dist/env.js"
+    },
+    "./schema": {
+      "types": "./src/generated/schema.zod.ts",
+      "import": "./src/generated/schema.zod.ts"
     }
   },
   "scripts": {

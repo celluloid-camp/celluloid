@@ -1,6 +1,3 @@
-import { exec } from "node:child_process";
-import { pipeline } from "node:stream";
-import { promisify } from "node:util";
 import { type PrismaClient, prisma } from "@celluloid/prisma";
 import type { PeerTubeVideo } from "@celluloid/types";
 import { createQueue } from "@mgcrea/prisma-queue";

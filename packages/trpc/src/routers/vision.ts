@@ -1,6 +1,7 @@
 import { prisma } from "@celluloid/prisma";
-import { visionQueue } from "@celluloid/queue";
-import { getJobResult } from "@celluloid/vision";
+import { visionQueue, visionResultQueue } from "@celluloid/queue";
+import { getJobResultsResultsJobIdGetResponse } from "@celluloid/vision/schema";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { env } from "../env";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
@@ -28,6 +29,13 @@ export const visionRouter = router({
           status: true,
           visionJobId: true,
           processing: true,
+          sprite: {
+            select: {
+              id: true,
+              publicUrl: true,
+              path: true,
+            },
+          },
         },
       });
 
@@ -71,37 +79,29 @@ export const visionRouter = router({
     .mutation(async ({ input, ctx }) => {
       const { projectId } = input;
 
-      const analysis = await prisma.videoAnalysis.findUnique({
+      const job = await visionResultQueue.add({
+        projectId: projectId,
+      });
+
+      return job.id;
+    }),
+  updateAnalysis: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        analysis: getJobResultsResultsJobIdGetResponse,
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { projectId } = input;
+
+      const analysis = await prisma.videoAnalysis.update({
         where: { projectId: projectId },
-        select: {
-          status: true,
-          visionJobId: true,
+        data: {
+          processing: input.analysis,
         },
       });
 
-      if (!analysis) {
-        return null;
-      }
-
-
-      // if (analysis.status === "completed") {
-      //   return null;
-      // }
-
-      if (analysis.status === "pending" && analysis.visionJobId) {
-        const result = await getJobResult(analysis.visionJobId);
-
-        if (result) {
-          await prisma.videoAnalysis.update({
-            where: { projectId: projectId },
-            data: { status: "completed", processing: result },
-          });
-        }
-
-        return result;
-      }
-
-
-      return null;
+      return analysis;
     }),
 });

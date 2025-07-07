@@ -21,6 +21,7 @@ import { StyledMarkdown } from "@/components/common/markdown";
 import type { User } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
+import { VisionChart } from "./vision-chart";
 
 interface Props {
   project: ProjectById;
@@ -76,7 +77,7 @@ export function ProjectVision({ project, user }: Props) {
     <Card
       sx={{
         my: 2,
-        backgroundColor: colors.yellow[50],
+        backgroundColor: colors.blueGrey[50],
         borderRadius: 1,
       }}
     >
@@ -107,7 +108,7 @@ export function ProjectVision({ project, user }: Props) {
           </Box>
         ) : data?.status === "completed" ? (
           <Box>
-            <Typography variant="body2">Generated</Typography>
+            <VisionChart analysis={data?.processing} />
           </Box>
         ) : (
           <Typography variant="body2">
@@ -138,11 +139,10 @@ export function ProjectVision({ project, user }: Props) {
             Analyze
           </LoadingButton>
         )}
-        <code>{JSON.stringify(data, null, 2)}</code>
 
-        <Button onClick={() => manualCheck.mutate({ projectId: project.id })}>
+        {/* <Button onClick={() => manualCheck.mutate({ projectId: project.id })}>
           Check
-        </Button>
+        </Button> */}
       </CardActions>
     </Card>
   );

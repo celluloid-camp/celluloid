@@ -51,7 +51,20 @@ export async function getJobResult(jobId: string) {
   if (response.data.result_path) {
     const result = await fetch(new URL(response.data.result_path, env.VISION_API_URL).toString());
     const json = await result.json() as DetectionResultsModel;
-    return json;
+
+    const spritePath = json?.metadata.sprite.path;
+    const spriteUrl = new URL(spritePath, env.VISION_API_URL).toString();
+
+    return {
+      ...json,
+      metadata: {
+        ...json.metadata,
+        sprite: {
+          ...json.metadata.sprite,
+          path: spriteUrl
+        },
+      },
+    } as DetectionResultsModel;
   }
   return null;
 }
