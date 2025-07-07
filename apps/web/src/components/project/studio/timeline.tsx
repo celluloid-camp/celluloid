@@ -204,7 +204,7 @@ function Timeline({
   const rowVirtualizer = useVirtualizer({
     count: groupedByIdTimeline.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 50, // estimated row height
+    estimateSize: () => 80, // estimated row height
     overscan: 6,
   });
 
@@ -499,22 +499,8 @@ function Timeline({
                   sprite={sprite}
                   id={id}
                 />
-                {/* Hide old merge button in merge mode */}
-                {!mergeMode && index < groupedByIdTimeline.length - 1 && (
-                  <IconButton
-                    color="primary"
-                    sx={{ ml: 1 }}
-                    onClick={() => {
-                      /* old merge, now hidden */
-                    }}
-                    size="small"
-                    title="Merge with next line"
-                    style={{ display: "none" }}
-                  >
-                    <Typography fontSize={16}>⇩</Typography>
-                  </IconButton>
-                )}
-                <IconButton
+
+                {/* <IconButton
                   color="primary"
                   sx={{ ml: 1 }}
                   onClick={() => handleOpenGallery(id)}
@@ -525,7 +511,7 @@ function Timeline({
                 </IconButton>
                 <IconButton color="error" sx={{ ml: 2 }}>
                   <DeleteIcon fontSize="small" />
-                </IconButton>
+                </IconButton> */}
               </Box>
             );
           })}

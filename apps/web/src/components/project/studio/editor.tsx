@@ -12,6 +12,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useSnackbar } from "notistack";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { trpc } from "@/lib/trpc/client";
@@ -138,19 +139,25 @@ function VisionStudioWrapper({
           >
             <Box
               display="flex"
-              alignItems="center"
-              gap={2}
+              flexDirection="column"
+              alignItems="flex-start"
+              gap={1}
               justifyContent="space-between"
+              sx={{ mb: 1 }}
             >
-              <IconButton>
-                <KeyboardArrowLeftIcon sx={{ color: "black" }} />
-              </IconButton>
-              <Typography
-                variant="h3"
-                sx={{ fontFamily: "abril_fatfaceregular" }}
-              >
-                Studio
-              </Typography>
+              <Box>
+                <Link href={`/project/${projectId}`}>
+                  <IconButton size="small">
+                    <KeyboardArrowLeftIcon sx={{ color: "black" }} />
+                  </IconButton>
+                </Link>
+                <Typography
+                  variant="h5"
+                  sx={{ fontFamily: "abril_fatfaceregular" }}
+                >
+                  Studio
+                </Typography>
+              </Box>
               <Typography align="left" variant="body1">
                 {project.title}
               </Typography>
@@ -204,15 +211,7 @@ function VisionStudioWrapper({
             <Paper sx={{ padding: 2, marginTop: 2 }}>
               <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
                 <Tab label="Timeline" />
-                <Tab
-                  label={`Detections (${
-                    Object.keys(
-                      initialAnalysis.frames.flatMap((f) =>
-                        f.objects.map((o) => o.id),
-                      ),
-                    ).length
-                  })`}
-                />
+                <Tab label={`Detections`} />
               </Tabs>
 
               {tab === 0 && (

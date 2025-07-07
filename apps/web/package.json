@@ -16,6 +16,7 @@
     "@celluloid/trpc": "workspace:*",
     "@celluloid/types": "workspace:*",
     "@celluloid/utils": "workspace:*",
+    "@celluloid/queue": "workspace:*",
     "@celluloid/vision": "workspace:*",
     "@cutting/use-get-parent-size": "^2.1.4",
     "@emotion/cache": "^11.14.0",

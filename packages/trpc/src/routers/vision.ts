@@ -1,10 +1,9 @@
 import { prisma } from "@celluloid/prisma";
 import { visionQueue, visionResultQueue } from "@celluloid/queue";
-import { getJobResultsResultsJobIdGetResponse } from "@celluloid/vision/schema";
-import { TRPCError } from "@trpc/server";
+import { getJobResultsResultsJobIdGetResponse } from "@celluloid/vision";
 import { z } from "zod";
 import { env } from "../env";
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { protectedProcedure, router } from "../trpc";
 
 export const visionRouter = router({
   byProjectId: protectedProcedure

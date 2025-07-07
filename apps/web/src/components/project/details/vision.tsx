@@ -17,7 +17,6 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import type { FallbackProps } from "react-error-boundary";
-import { StyledMarkdown } from "@/components/common/markdown";
 import type { User } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
@@ -83,12 +82,12 @@ export function ProjectVision({ project, user }: Props) {
     >
       <CardHeader
         sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
-        title={"Video Analysis"}
+        title={t("project.vision.title")}
         action={
           canViewStudio ? (
             <Link href={`/project/${project.id}/studio`}>
               <Button
-                variant="text"
+                variant="contained"
                 size="small"
                 startIcon={<ViewTimelineIcon />}
               >
@@ -103,7 +102,7 @@ export function ProjectVision({ project, user }: Props) {
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
             <Typography variant="body2">
-              {t("project.transcript.generating")}
+              {t("project.vision.analyse.in-progress")}
             </Typography>
           </Box>
         ) : data?.status === "completed" ? (
@@ -111,9 +110,7 @@ export function ProjectVision({ project, user }: Props) {
             <VisionChart analysis={data?.processing} />
           </Box>
         ) : (
-          <Typography variant="body2">
-            {t("project.transcript.empty")}
-          </Typography>
+          <Typography variant="body2">{t("project.vision.empty")}</Typography>
         )}
       </CardContent>
 
@@ -136,7 +133,7 @@ export function ProjectVision({ project, user }: Props) {
               });
             }}
           >
-            Analyze
+            {t("project.vision.button.analyse")}
           </LoadingButton>
         )}
 
@@ -163,10 +160,10 @@ export function ProjectVisionFallback({
     >
       <CardHeader
         sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
-        title={"Vision"}
+        title={t("project.vision.title")}
       />
       <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
-        Failed to generate vision
+        Failed to analyze video
         {process.env.NODE_ENV === "development" && <pre>{error.message}</pre>}
         <Button onClick={resetErrorBoundary}>Try again</Button>
       </CardContent>

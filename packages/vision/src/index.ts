@@ -5,6 +5,8 @@ import type { DetectionResultsModel } from "./generated/models";
 export * from "./generated/models";
 import "./prisma";
 
+export * from "./generated/schema.zod";
+
 export async function createAnalyzeVideoTask({
   videoUrl,
   projectId,
