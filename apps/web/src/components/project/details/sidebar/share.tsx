@@ -1,13 +1,13 @@
-import type { ProjectById } from "@/lib/trpc/types";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Box, IconButton, Paper, Typography, colors } from "@mui/material";
+import { Box, colors, IconButton, Paper, Typography } from "@mui/material";
 import copy from "copy-to-clipboard";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
 
 import type { User } from "@/lib/auth-client";
-import Link from "next/link";
+import type { ProjectById } from "@/lib/trpc/types";
 
 interface SharePanelProps {
   project: ProjectById;

@@ -1,5 +1,6 @@
 "use client";
 
+import { AnnotationShape } from "@celluloid/prisma";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import CenterFocusStrongOutlinedIcon from "@mui/icons-material/CenterFocusStrongOutlined";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
@@ -16,23 +17,21 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
+import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 import * as Yup from "yup";
-
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById, UserMe } from "@/lib/trpc/types";
-
 import { useVideoPlayerProgress } from "@/components/video-player/store";
 import type { User } from "@/lib/auth-client";
-import { useTranslations } from "next-intl";
+import { trpc } from "@/lib/trpc/client";
+import type { ProjectById, UserMe } from "@/lib/trpc/types";
 import { DurationSlider } from "./duration-slider";
+import { useShapesStore } from "./shapes-store";
 import {
   useAnnotationFormVisible,
   useContextualEditorVisibleState,
   useEditAnnotation,
 } from "./useAnnotationEditor";
-import { useShapesStore } from "./shapes-store";
-import { AnnotationShape } from "@celluloid/prisma";
-import { useEffect } from "react";
+
 type AnnotationFormProps = {
   duration: number;
   project: ProjectById;

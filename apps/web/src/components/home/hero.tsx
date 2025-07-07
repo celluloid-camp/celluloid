@@ -1,15 +1,14 @@
-import { LogoSign } from "@/components/common/logo-sign";
-import { StudentsIcon } from "@/components/home/students-icon";
-import { TeacherIcon } from "@/components/home/teacher-icon";
+import { auth } from "@celluloid/auth";
 import { Box, Container, Link, Paper, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import { getTranslations } from "next-intl/server";
-
-import { auth } from "@celluloid/auth";
 import { headers } from "next/headers";
 import NextLink from "next/link";
+import { getTranslations } from "next-intl/server";
+import { LogoSign } from "@/components/common/logo-sign";
+import { StudentsIcon } from "@/components/home/students-icon";
+import { TeacherIcon } from "@/components/home/teacher-icon";
 
 export async function HomePageHero() {
   const session = await auth.api.getSession({

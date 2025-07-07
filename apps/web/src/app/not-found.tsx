@@ -1,6 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function NotFound() {
   const t = useTranslations();

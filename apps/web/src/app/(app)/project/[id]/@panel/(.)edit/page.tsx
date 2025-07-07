@@ -1,9 +1,9 @@
 "use client";
+import { useParams, useRouter } from "next/navigation";
+import React, { Suspense } from "react";
 import { StyledDialog } from "@/components/common/styled-dialog";
 import { EditProjectDialog } from "@/components/project/edit/edit-dialog";
 import { EditProjectDialogSkeleton } from "@/components/project/edit/edit-dialog-skeleton";
-import { useParams, useRouter } from "next/navigation";
-import React, { Suspense } from "react";
 
 export default function ProjectEditDialog() {
   const params = useParams();

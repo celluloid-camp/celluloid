@@ -1,18 +1,17 @@
 "use client";
 
-import { Box } from "@mui/material";
-import React, { useRef, useEffect, useMemo, useState } from "react";
-import { Stage, Layer, Rect, Circle, Ellipse, Line } from "react-konva";
-import { SHAPE_STYLES, DEFAULT_DIMENSIONS, SHAPE_TYPES } from "./shapes-config";
-import { ShapeTooltip } from "./shape-tooltip";
 import type { AnnotationShape } from "@celluloid/prisma";
+import { Box } from "@mui/material";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Circle, Ellipse, Layer, Line, Rect, Stage } from "react-konva";
+import { ShapeTooltip } from "./shape-tooltip";
+import { DEFAULT_DIMENSIONS, SHAPE_STYLES, SHAPE_TYPES } from "./shapes-config";
 
 type TooltipState = {
   shape: AnnotationShapeWithMetadata;
   x: number;
   y: number;
 } | null;
-
 
 export type AnnotationShapeWithMetadata = AnnotationShape & {
   metadata: {

@@ -10,13 +10,11 @@ import {
   useRef,
   useState,
 } from "react";
-
+import { useSetVideoPlayerProgress, useSetVideoPlayerState } from "./store";
 import {
   useVideoPlayerEvent,
   useVideoPlayerSeekEvent,
 } from "./user-video-player-events";
-
-import { useSetVideoPlayerProgress, useSetVideoPlayerState } from "./store";
 
 interface VideoPlayerProps {
   url: string;

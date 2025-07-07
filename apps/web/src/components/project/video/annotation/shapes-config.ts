@@ -36,4 +36,4 @@ export const SHAPE_TYPES = {
   POINT: "point",
 } as const;
 
-export type ShapeType = typeof SHAPE_TYPES[keyof typeof SHAPE_TYPES];
+export type ShapeType = (typeof SHAPE_TYPES)[keyof typeof SHAPE_TYPES];

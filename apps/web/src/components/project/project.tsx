@@ -1,15 +1,8 @@
 "use client";
 
-import { trpc } from "@/lib/trpc/client";
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Grid,
-  Paper,
-  Skeleton,
-} from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { Suspense } from "react";
+import { trpc } from "@/lib/trpc/client";
 import { ProjectDetails } from "./details/project-details";
 import { ProjectVideoScreen } from "./video/video-screen";
 

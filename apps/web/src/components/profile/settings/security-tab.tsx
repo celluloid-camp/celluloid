@@ -1,14 +1,12 @@
-import { changePassword } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
 import { LoadingButton } from "@mui/lab";
 import { Alert, Box, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
-
 import { PasswordInput } from "@/components/common/password-input";
-import { isTRPCClientError } from "@/lib/trpc/client";
-import { useTranslations } from "next-intl";
+import { changePassword } from "@/lib/auth-client";
+import { isTRPCClientError, trpc } from "@/lib/trpc/client";
 import SettingsTabPanel from "./settings-tab-panel";
 
 export default function SecurityTabForm({

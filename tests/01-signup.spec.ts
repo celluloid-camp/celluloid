@@ -1,13 +1,10 @@
-import { Page, expect, test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 
 const randomNum = Math.floor(Math.random() * 10000);
 const TEST_USERNANE = `test${randomNum}`;
 const TEST_USER_EMAIL = `${TEST_USERNANE}@server.com`;
 
-
 test.describe("signup", () => {
-
-
   // test.beforeAll(async (page) => {
 
   // });
@@ -15,7 +12,6 @@ test.describe("signup", () => {
   test.afterAll(async ({ page }) => {
     await page.close();
   });
-
 
   test("test user signup", async ({ page }) => {
     await page.goto("http://localhost:3000/");
@@ -50,7 +46,9 @@ test.describe("signup", () => {
     );
   });
 
-  test("test reconnect with existing account without confirmation", async ({ page }) => {
+  test("test reconnect with existing account without confirmation", async ({
+    page,
+  }) => {
     await page.reload();
     await page.goto("http://localhost:3000/login");
 

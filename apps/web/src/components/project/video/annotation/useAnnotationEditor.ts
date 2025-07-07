@@ -1,8 +1,7 @@
-import type { AnnotationByProjectId } from "@/lib/trpc/types";
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
-
+import type { AnnotationByProjectId } from "@/lib/trpc/types";
 
 type AnnotationEditorState = {
   showHints: boolean;

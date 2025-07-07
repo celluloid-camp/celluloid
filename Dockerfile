@@ -3,7 +3,8 @@ ARG PNPM_VERSION=10.12.1
 ENV CI=true
 ENV PNPM_HOME="/pnpm"
 ENV PATH="${PNPM_HOME}:${PATH}"
-RUN apk add --no-cache libc6-compat bash openssl openssl-dev python3
+RUN apk add --no-cache libc6-compat bash openssl openssl-dev python3 \
+    cairo-dev pango-dev giflib-dev pixman-dev jpeg-dev pangomm-dev libpng-dev build-base g++ pkgconfig
 RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 FROM base AS builder
@@ -50,8 +51,12 @@ WORKDIR /workspace
 # Install openssl in the runner stage
 RUN apk add --no-cache curl bash openssl openssl-dev wget
 
-ARG NEXT_PUBLIC_VERSION_TAG
-ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
+ARG VERSION
+ENV NEXT_PUBLIC_VERSION=${VERSION}
+
+ARG REVISION
+ENV NEXT_PUBLIC_REVISION=${REVISION}
+
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}
 
@@ -80,6 +85,12 @@ FROM base AS worker
 RUN apk add --no-cache curl bash openssl openssl-dev ffmpeg wget
 
 WORKDIR /workspace
+
+ARG VERSION
+ENV VERSION=${VERSION}
+
+ARG REVISION
+ENV REVISION=${REVISION}
 
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}

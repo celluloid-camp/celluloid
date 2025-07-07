@@ -1,5 +1,10 @@
 "use client";
-import { trpc } from "@/lib/trpc/client";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -8,34 +13,28 @@ import {
   Menu,
   MenuItem,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   TextField,
   Typography,
-  TablePagination,
 } from "@mui/material";
 import { User } from "@prisma/client";
-
-import { BackButton } from "@/components/common/back-button";
-import type { AdminGetUserById } from "@/lib/trpc/types";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { LoadingButton } from "@mui/lab";
-import { Skeleton } from "@mui/material";
 import { useFormik } from "formik";
 import { useConfirm } from "material-ui-confirm";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useState } from "react";
 import * as Yup from "yup";
+import { BackButton } from "@/components/common/back-button";
+import { trpc } from "@/lib/trpc/client";
+import type { AdminGetUserById } from "@/lib/trpc/types";
 
 export function UserDetails({ data }: { data: AdminGetUserById }) {
   const t = useTranslations();

@@ -1,17 +1,18 @@
+import { Box, Container, Grid, Paper, Skeleton } from "@mui/material";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
-import { Box, Container, Grid, Paper, Skeleton } from "@mui/material";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
 import { projectFallbackRender } from "./error-fallback";
 import { ProjectNotes } from "./project-notes";
 import {
   ProjectTranscript,
   TranscriptErrorFallback,
 } from "./project-transcript";
-import dynamic from "next/dynamic";
 import { ProjectSummary } from "./summary";
+import { ProjectVision } from "./vision";
 
 const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
   ssr: false,
@@ -95,6 +96,7 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
                   }
                 >
                   <ProjectTranscript project={project} user={session?.user} />
+                  <ProjectVision project={project} user={session?.user} />
                 </Suspense>
               </ErrorBoundary>
             </Grid>

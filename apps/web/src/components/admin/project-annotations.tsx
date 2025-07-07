@@ -1,6 +1,3 @@
-import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById } from "@/lib/trpc/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
@@ -24,6 +21,9 @@ import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import type { User } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
+import type { ProjectById } from "@/lib/trpc/types";
 
 interface ProjectAnnotationsProps {
   projectId: string;

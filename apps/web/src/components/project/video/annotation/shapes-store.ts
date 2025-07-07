@@ -1,6 +1,6 @@
+import { AnnotationShape } from "@celluloid/prisma";
 import { create } from "zustand";
 import { Shape } from "./types";
-import { AnnotationShape } from "@celluloid/prisma";
 
 interface ShapesState {
   shapes: AnnotationShape[];
@@ -18,7 +18,7 @@ export const useShapesStore = create<ShapesState>((set) => ({
   updateShape: (id, updates) =>
     set((state) => ({
       shapes: state.shapes.map((shape) =>
-        shape.id === id ? { ...shape, ...updates } : shape
+        shape.id === id ? { ...shape, ...updates } : shape,
       ),
     })),
   deleteShape: (id) =>

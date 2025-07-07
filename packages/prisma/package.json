@@ -28,10 +28,6 @@
       "import": "./dist/env.js"
     }
   },
-  "prisma": {
-    "schema": "schema.prisma",
-    "seed": "tsx src/seed.ts"
-  },
   "scripts": {
     "build": "pnpm run generate && pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
@@ -45,13 +41,9 @@
     "seed": "tsx src/seed.ts",
     "generate": "pnpm prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
-    "prebuild": "pnpm run generate",
-    "predev": "pnpm run generate",
+    "postinstall": "pnpm run generate",
     "studio": "pnpm prisma studio",
-    "prisma": "pnpx prisma",
-    "update-metadata": "tsx ./src/update-metadata.ts",
-    "migrate-sharecode": "tsx ./src/migrate-sharecode.ts",
-    "tsx": "tsx"
+    "prisma": "pnpx prisma"
   },
   "devDependencies": {
     "@celluloid/config": "workspace:*",
@@ -73,5 +65,9 @@
     "@types/randomcolor": "^0.5.7",
     "tsx": "^4.19.1",
     "zod": "catalog:"
+  },
+  "prisma": {
+    "schema": "schema.prisma",
+    "seed": "tsx src/seed.ts"
   }
 }

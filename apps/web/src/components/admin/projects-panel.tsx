@@ -1,9 +1,8 @@
-import { trpc } from "@/lib/trpc/client";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   IconButton,
@@ -11,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -19,15 +19,15 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  Stack,
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
-import { ProjectTableSkeleton } from "./skeleton";
+import { trpc } from "@/lib/trpc/client";
 import { SearchFilter } from "./search-filter";
+import { ProjectTableSkeleton } from "./skeleton";
 
 export default function ProjectsPanel() {
   const t = useTranslations();

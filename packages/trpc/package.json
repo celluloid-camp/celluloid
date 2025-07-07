@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@celluloid/auth": "workspace:*",
+    "@celluloid/vision": "workspace:*",
     "@celluloid/prisma": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/utils": "workspace:*",

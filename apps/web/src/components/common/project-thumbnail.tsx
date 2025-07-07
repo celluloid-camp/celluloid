@@ -1,4 +1,3 @@
-import dayjs from "@/utils/dayjs";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import PeopleIcon from "@mui/icons-material/People";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
@@ -10,15 +9,16 @@ import {
   CircularProgress,
   Grid,
   Stack,
-  Typography,
   styled,
+  Typography,
 } from "@mui/material";
 import Image from "mui-image";
+import { useRouter } from "next/navigation";
 import type * as React from "react";
 
 import { Avatar } from "@/components/common/avatar";
 import type { ProjectListItem } from "@/lib/trpc/types";
-import { useRouter } from "next/navigation";
+import dayjs from "@/utils/dayjs";
 
 const StyledImage = styled(Image)(() => ({
   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -89,55 +89,66 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
           </Stack>
         </Box>
 
-        <Image
-          src={project.thumbnailURL}
-          duration={500}
-          showLoading={<CircularProgress />}
-          bgColor="#000000"
-          wrapperStyle={{
+        <Box
+          sx={{
+            overflow: "hidden",
             minHeight: 200,
+            borderRadius: 2, // optional
+            "& img": {
+              transition:
+                "transform 1.5s cubic-bezier(0.22, 1, 0.36, 1) !important",
+              width: "100%",
+              height: "auto",
+              display: "block",
+            },
+            "&:hover img": {
+              transform: "scale(1.08) !important",
+            },
           }}
-        />
+        >
+          <Image
+            src={project.thumbnailURL}
+            duration={500}
+            showLoading={<CircularProgress />}
+            bgColor="#000000"
+            wrapperStyle={{
+              minHeight: 200,
+            }}
+          />
+        </Box>
       </Box>
 
-      <StyledCardContent sx={{ paddingX: 1, paddingTop: 1, paddingBottom: 0 }}>
-        <Grid container spacing={1}>
-          <Grid item={true} xs={12}>
-            <Typography fontWeight={"bold"} noWrap>
-              {project.title}
+      <Box
+        display="flex"
+        alignItems={"flex-start"}
+        gap={1}
+        sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}
+      >
+        <Avatar
+          sx={{
+            backgroundColor: project.user.color,
+            borderWidth: 2,
+            borderColor: project.user.color,
+            borderStyle: "solid",
+            width: 36,
+            height: 36,
+          }}
+          src={project.user.avatar?.publicUrl}
+        >
+          {project.user.initial}
+        </Avatar>
+        <Stack spacing={0}>
+          <Typography fontWeight={"bold"} noWrap>
+            {project.title}
+          </Typography>
+          <Box display="flex" alignItems={"center"} gap={1}>
+            <Typography variant="body2">{project.user.username}</Typography>
+            <Typography variant="caption" color={"grey.700"}>
+              {dayjs(project.publishedAt).fromNow(true)}
             </Typography>
-          </Grid>
-          <Grid item={true} xs={12}>
-            <Box display="flex" alignItems={"center"}>
-              <Avatar
-                sx={{
-                  backgroundColor: project.user.color,
-                  borderWidth: 2,
-                  borderColor: project.user.color,
-                  borderStyle: "solid",
-                }}
-                sizes="20px"
-                src={project.user.avatar?.publicUrl}
-              >
-                {project.user.initial}
-              </Avatar>
-              <Stack sx={{ ml: 1 }} spacing={0}>
-                <Typography variant="body2">{project.user.username}</Typography>
-                <Typography variant="caption" color={"grey.700"}>
-                  {dayjs(project.publishedAt).fromNow(true)}
-                </Typography>
-              </Stack>
-            </Box>
-          </Grid>
-          {/* <Grid item={true} xs={12}>
-              <Stack direction="row" spacing={1}>
-                {project.public && (
-                  <Chip size="small" label={"public"} icon={<PublicIcon />} />
-                )}
-              </Stack>
-            </Grid> */}
-        </Grid>
-      </StyledCardContent>
+          </Box>
+        </Stack>
+      </Box>
     </Card>
     // </Fade>
     // </ThemeProvider>

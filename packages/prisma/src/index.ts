@@ -33,19 +33,6 @@ const prismaClientSingleton = () => {
           },
         },
       },
-      // annotation: {
-      //   extra: {
-      //     needs: { extra: true },
-      //     compute(a) {
-      //       const extraObject = a.extra as PrismaJson.AnnotationShape;
-      //       return {
-      //         ...extraObject,
-      //         x: extraObject.x ?? extraObject.relativeX,
-      //         y: extraObject.y ?? extraObject.relativeY,
-      //       };
-      //     },
-      //   },
-      // },
     },
   });
 };
@@ -66,4 +53,4 @@ export * from "@prisma/client";
 
 export default PrismaModule;
 
-export type AnnotationShape = PrismaJson.AnnotationShape
+export type AnnotationShape = PrismaJson.AnnotationShape;

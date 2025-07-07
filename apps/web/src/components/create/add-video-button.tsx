@@ -1,7 +1,5 @@
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import { ButtonBase, Typography } from "@mui/material";
-import { Grid } from "@mui/material";
-import { Stack } from "@mui/material";
+import { ButtonBase, Grid, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { THUMBNAIL_WIDTH } from "./constants";
 

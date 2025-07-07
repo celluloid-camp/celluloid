@@ -1,28 +1,27 @@
 "use client";
-import { useVideoPlayerEvent } from "@/hooks/use-video-player";
-import { useSession } from "@/lib/auth-client";
+import { AnnotationShape } from "@celluloid/prisma";
 import type ReactPlayer from "@celluloid/react-player";
 import { Grid } from "@mui/material";
+import { useMeasure } from "@uidotdev/usehooks";
 import dynamic from "next/dynamic";
 import React, { useEffect, useMemo } from "react";
-
-import { AnnotationOverlayHints } from "./annotation/overlay-hints";
-import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
-
 import {
   useVideoPlayerProgress,
   useVideoPlayerState,
 } from "@/components/video-player/store";
+import { useVideoPlayerEvent } from "@/hooks/use-video-player";
+import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-import { VideoPanel } from "./video-panel";
+import { AnnotationOverlayHints } from "./annotation/overlay-hints";
 import { ShapesEditor } from "./annotation/shapes-editor";
 import {
   AnnotationShapeWithMetadata,
   ShapesViewer,
 } from "./annotation/shapes-viewer";
-import { AnnotationShape } from "@celluloid/prisma";
-import { useMeasure } from "@uidotdev/usehooks";
+import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
+import { VideoPanel } from "./video-panel";
+import { VideoVision } from "./video-vision";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -166,7 +165,7 @@ export function ProjectVideoScreen({ project }: Props) {
             onClick={handleAnnotionHintClick}
           />
         ) : null}
-        {/* <ShapesDemo /> */}
+        <VideoVision projectId={project.id} />
         <VideoPlayer
           ref={videoPlayerRef}
           height={"100%"}

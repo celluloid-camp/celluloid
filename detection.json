@@ -1,0 +1,3714 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "video": {
+      "fps": 30,
+      "frame_count": 8076,
+      "width": 256,
+      "height": 144,
+      "source": "https://video.mshparisnord.fr/download/streaming-playlists/hls/videos/1b521ffa-678e-4d90-9fa1-f9b92b70388a-144-fragmented.mp4"
+    },
+    "model": {
+      "name": "efficientdet_lite0",
+      "type": "object_detection",
+      "version": "1.0"
+    },
+    "sprite": {
+      "path": "outputs/de531db6-8286-49c1-98e9-8299c4ef84f5/detections_38b7c7ae-5a30-4653-941a-d46cdcf50a6d_20250704_125339.sprite.jpg",
+      "thumbnail_size": [
+        160,
+        90
+      ]
+    },
+    "processing": {
+      "start_time": "2025-07-04T12:53:41.226017",
+      "end_time": "2025-07-04T13:01:03.267420",
+      "duration_seconds": 442.041403055191,
+      "frames_processed": 8076,
+      "frames_with_detections": 748,
+      "processing_speed": 18.26978184437549,
+      "detection_statistics": {
+        "total_detections": 844,
+        "person_detections": 713,
+        "person_with_face": 73,
+        "person_without_face": 640,
+        "other_detections": 131,
+        "class_counts": {
+          "car": 116,
+          "dog": 13,
+          "person": 713,
+          "bicycle": 1,
+          "motorcycle": 1
+        }
+      }
+    }
+  },
+  "frames": [
+    {
+      "frame_idx": 15,
+      "timestamp": 0.5,
+      "objects": [
+        {
+          "id": "car_0",
+          "class_name": "car",
+          "confidence": 0.8147752285003662,
+          "bbox": {
+            "x": 58,
+            "y": 27,
+            "width": 71,
+            "height": 20
+          },
+          "thumbnail": "sprite.jpg#xywh=0,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 28,
+      "timestamp": 0.933,
+      "objects": [
+        {
+          "id": "car_0",
+          "class_name": "car",
+          "confidence": 0.8002484440803528,
+          "bbox": {
+            "x": 85,
+            "y": 27,
+            "width": 59,
+            "height": 18
+          },
+          "thumbnail": "sprite.jpg#xywh=160,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 60,
+      "timestamp": 2,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8546625375747681,
+          "bbox": {
+            "x": 148,
+            "y": 29,
+            "width": 105,
+            "height": 71
+          },
+          "thumbnail": "sprite.jpg#xywh=320,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 62,
+      "timestamp": 2.066,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8286677598953247,
+          "bbox": {
+            "x": 129,
+            "y": 27,
+            "width": 116,
+            "height": 74
+          },
+          "thumbnail": "sprite.jpg#xywh=480,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 65,
+      "timestamp": 2.166,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8284708261489868,
+          "bbox": {
+            "x": 108,
+            "y": 29,
+            "width": 111,
+            "height": 74
+          },
+          "thumbnail": "sprite.jpg#xywh=640,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 66,
+      "timestamp": 2.2,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8279587030410767,
+          "bbox": {
+            "x": 101,
+            "y": 27,
+            "width": 112,
+            "height": 77
+          },
+          "thumbnail": "sprite.jpg#xywh=800,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 68,
+      "timestamp": 2.266,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8579191565513611,
+          "bbox": {
+            "x": 78,
+            "y": 27,
+            "width": 116,
+            "height": 78
+          },
+          "thumbnail": "sprite.jpg#xywh=960,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 69,
+      "timestamp": 2.3,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8255297541618347,
+          "bbox": {
+            "x": 75,
+            "y": 28,
+            "width": 111,
+            "height": 77
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 70,
+      "timestamp": 2.333,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8321710228919983,
+          "bbox": {
+            "x": 64,
+            "y": 25,
+            "width": 116,
+            "height": 82
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 71,
+      "timestamp": 2.366,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8166910409927368,
+          "bbox": {
+            "x": 53,
+            "y": 26,
+            "width": 118,
+            "height": 81
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 72,
+      "timestamp": 2.4,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8254877924919128,
+          "bbox": {
+            "x": 40,
+            "y": 26,
+            "width": 124,
+            "height": 82
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 73,
+      "timestamp": 2.433,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8581584095954895,
+          "bbox": {
+            "x": 33,
+            "y": 25,
+            "width": 120,
+            "height": 83
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,0,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 74,
+      "timestamp": 2.466,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8267985582351685,
+          "bbox": {
+            "x": 22,
+            "y": 15,
+            "width": 123,
+            "height": 94
+          },
+          "thumbnail": "sprite.jpg#xywh=0,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 75,
+      "timestamp": 2.5,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8208667635917664,
+          "bbox": {
+            "x": 14,
+            "y": 10,
+            "width": 125,
+            "height": 98
+          },
+          "thumbnail": "sprite.jpg#xywh=160,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 84,
+      "timestamp": 2.8,
+      "objects": [
+        {
+          "id": "dog_0",
+          "class_name": "dog",
+          "confidence": 0.8284388780593872,
+          "bbox": {
+            "x": 0,
+            "y": 30,
+            "width": 75,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=320,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 1707,
+      "timestamp": 56.9,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.9157594442367554,
+          "bbox": {
+            "x": 154,
+            "y": 0,
+            "width": 39,
+            "height": 63
+          },
+          "thumbnail": "sprite.jpg#xywh=480,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 1708,
+      "timestamp": 56.933,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.9175065159797668,
+          "bbox": {
+            "x": 155,
+            "y": 0,
+            "width": 40,
+            "height": 63
+          },
+          "thumbnail": "sprite.jpg#xywh=640,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2068,
+      "timestamp": 68.933,
+      "objects": [
+        {
+          "id": "bicycle_0",
+          "class_name": "bicycle",
+          "confidence": 0.8112164735794067,
+          "bbox": {
+            "x": 0,
+            "y": 2,
+            "width": 167,
+            "height": 103
+          },
+          "thumbnail": "sprite.jpg#xywh=800,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2102,
+      "timestamp": 70.066,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8237740397453308,
+          "bbox": {
+            "x": 65,
+            "y": 17,
+            "width": 105,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=960,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2103,
+      "timestamp": 70.1,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.839423418045044,
+          "bbox": {
+            "x": 65,
+            "y": 17,
+            "width": 106,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2104,
+      "timestamp": 70.133,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8399813771247864,
+          "bbox": {
+            "x": 65,
+            "y": 17,
+            "width": 105,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2105,
+      "timestamp": 70.166,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8382130861282349,
+          "bbox": {
+            "x": 64,
+            "y": 17,
+            "width": 107,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2106,
+      "timestamp": 70.2,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8354856967926025,
+          "bbox": {
+            "x": 65,
+            "y": 17,
+            "width": 107,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2107,
+      "timestamp": 70.233,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8294552564620972,
+          "bbox": {
+            "x": 65,
+            "y": 17,
+            "width": 106,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,90,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2108,
+      "timestamp": 70.266,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8171167969703674,
+          "bbox": {
+            "x": 65,
+            "y": 17,
+            "width": 108,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=0,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2109,
+      "timestamp": 70.3,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.806220531463623,
+          "bbox": {
+            "x": 64,
+            "y": 17,
+            "width": 111,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=160,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2110,
+      "timestamp": 70.333,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8086450695991516,
+          "bbox": {
+            "x": 63,
+            "y": 17,
+            "width": 111,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=320,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2112,
+      "timestamp": 70.4,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8011001348495483,
+          "bbox": {
+            "x": 62,
+            "y": 17,
+            "width": 110,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=480,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2117,
+      "timestamp": 70.566,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8015509843826294,
+          "bbox": {
+            "x": 57,
+            "y": 16,
+            "width": 113,
+            "height": 45
+          },
+          "thumbnail": "sprite.jpg#xywh=640,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2129,
+      "timestamp": 70.966,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8262673020362854,
+          "bbox": {
+            "x": 43,
+            "y": 13,
+            "width": 121,
+            "height": 49
+          },
+          "thumbnail": "sprite.jpg#xywh=800,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2130,
+      "timestamp": 71,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8399108648300171,
+          "bbox": {
+            "x": 42,
+            "y": 13,
+            "width": 119,
+            "height": 50
+          },
+          "thumbnail": "sprite.jpg#xywh=960,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2131,
+      "timestamp": 71.033,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8534218668937683,
+          "bbox": {
+            "x": 38,
+            "y": 12,
+            "width": 121,
+            "height": 51
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2132,
+      "timestamp": 71.066,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8592860102653503,
+          "bbox": {
+            "x": 34,
+            "y": 13,
+            "width": 123,
+            "height": 51
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2133,
+      "timestamp": 71.1,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.841846227645874,
+          "bbox": {
+            "x": 32,
+            "y": 12,
+            "width": 126,
+            "height": 51
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2134,
+      "timestamp": 71.133,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8420150279998779,
+          "bbox": {
+            "x": 30,
+            "y": 13,
+            "width": 126,
+            "height": 50
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2135,
+      "timestamp": 71.166,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.841063380241394,
+          "bbox": {
+            "x": 28,
+            "y": 13,
+            "width": 127,
+            "height": 49
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,180,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2136,
+      "timestamp": 71.2,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8040193319320679,
+          "bbox": {
+            "x": 26,
+            "y": 15,
+            "width": 127,
+            "height": 48
+          },
+          "thumbnail": "sprite.jpg#xywh=0,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2137,
+      "timestamp": 71.233,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8265658617019653,
+          "bbox": {
+            "x": 20,
+            "y": 14,
+            "width": 131,
+            "height": 49
+          },
+          "thumbnail": "sprite.jpg#xywh=160,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2138,
+      "timestamp": 71.266,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8341760039329529,
+          "bbox": {
+            "x": 13,
+            "y": 12,
+            "width": 136,
+            "height": 50
+          },
+          "thumbnail": "sprite.jpg#xywh=320,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2139,
+      "timestamp": 71.3,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8178521990776062,
+          "bbox": {
+            "x": 13,
+            "y": 12,
+            "width": 135,
+            "height": 51
+          },
+          "thumbnail": "sprite.jpg#xywh=480,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2140,
+      "timestamp": 71.333,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8345804214477539,
+          "bbox": {
+            "x": 15,
+            "y": 12,
+            "width": 132,
+            "height": 50
+          },
+          "thumbnail": "sprite.jpg#xywh=640,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2141,
+      "timestamp": 71.366,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8445496559143066,
+          "bbox": {
+            "x": 10,
+            "y": 12,
+            "width": 133,
+            "height": 51
+          },
+          "thumbnail": "sprite.jpg#xywh=800,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2142,
+      "timestamp": 71.4,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8426491618156433,
+          "bbox": {
+            "x": 7,
+            "y": 10,
+            "width": 132,
+            "height": 53
+          },
+          "thumbnail": "sprite.jpg#xywh=960,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2143,
+      "timestamp": 71.433,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8702703714370728,
+          "bbox": {
+            "x": 5,
+            "y": 11,
+            "width": 135,
+            "height": 52
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2144,
+      "timestamp": 71.466,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8715261220932007,
+          "bbox": {
+            "x": 3,
+            "y": 11,
+            "width": 137,
+            "height": 52
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2145,
+      "timestamp": 71.5,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8311123251914978,
+          "bbox": {
+            "x": 2,
+            "y": 11,
+            "width": 137,
+            "height": 52
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2181,
+      "timestamp": 72.7,
+      "objects": [
+        {
+          "id": "person_1",
+          "class_name": "person",
+          "confidence": 0.834968626499176,
+          "bbox": {
+            "x": 169,
+            "y": 3,
+            "width": 52,
+            "height": 80
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2184,
+      "timestamp": 72.8,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.803091287612915,
+          "bbox": {
+            "x": 59,
+            "y": 12,
+            "width": 108,
+            "height": 43
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,270,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2185,
+      "timestamp": 72.833,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8205336332321167,
+          "bbox": {
+            "x": 58,
+            "y": 12,
+            "width": 109,
+            "height": 43
+          },
+          "thumbnail": "sprite.jpg#xywh=0,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2186,
+      "timestamp": 72.866,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8301047086715698,
+          "bbox": {
+            "x": 58,
+            "y": 12,
+            "width": 109,
+            "height": 43
+          },
+          "thumbnail": "sprite.jpg#xywh=160,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2187,
+      "timestamp": 72.9,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8252964019775391,
+          "bbox": {
+            "x": 58,
+            "y": 12,
+            "width": 109,
+            "height": 43
+          },
+          "thumbnail": "sprite.jpg#xywh=320,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2193,
+      "timestamp": 73.1,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8013342022895813,
+          "bbox": {
+            "x": 58,
+            "y": 12,
+            "width": 107,
+            "height": 43
+          },
+          "thumbnail": "sprite.jpg#xywh=480,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2194,
+      "timestamp": 73.133,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8046625852584839,
+          "bbox": {
+            "x": 58,
+            "y": 12,
+            "width": 106,
+            "height": 43
+          },
+          "thumbnail": "sprite.jpg#xywh=640,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2238,
+      "timestamp": 74.6,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8150493502616882,
+          "bbox": {
+            "x": 47,
+            "y": 0,
+            "width": 65,
+            "height": 77
+          },
+          "thumbnail": "sprite.jpg#xywh=800,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2249,
+      "timestamp": 74.966,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8874338269233704,
+          "bbox": {
+            "x": 1,
+            "y": 0,
+            "width": 75,
+            "height": 78
+          },
+          "thumbnail": "sprite.jpg#xywh=960,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2250,
+      "timestamp": 75,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.9234721064567566,
+          "bbox": {
+            "x": 0,
+            "y": 0,
+            "width": 75,
+            "height": 76
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2259,
+      "timestamp": 75.3,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8438583612442017,
+          "bbox": {
+            "x": 86,
+            "y": 24,
+            "width": 54,
+            "height": 66
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2281,
+      "timestamp": 76.033,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8030257225036621,
+          "bbox": {
+            "x": 61,
+            "y": 0,
+            "width": 89,
+            "height": 107
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2283,
+      "timestamp": 76.1,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8250410556793213,
+          "bbox": {
+            "x": 55,
+            "y": 0,
+            "width": 89,
+            "height": 106
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2284,
+      "timestamp": 76.133,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8148671388626099,
+          "bbox": {
+            "x": 55,
+            "y": 0,
+            "width": 88,
+            "height": 106
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,360,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2286,
+      "timestamp": 76.2,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8151593804359436,
+          "bbox": {
+            "x": 49,
+            "y": 1,
+            "width": 82,
+            "height": 103
+          },
+          "thumbnail": "sprite.jpg#xywh=0,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2295,
+      "timestamp": 76.5,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8069503307342529,
+          "bbox": {
+            "x": 14,
+            "y": 2,
+            "width": 81,
+            "height": 96
+          },
+          "thumbnail": "sprite.jpg#xywh=160,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2297,
+      "timestamp": 76.566,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8052771091461182,
+          "bbox": {
+            "x": 12,
+            "y": 1,
+            "width": 81,
+            "height": 98
+          },
+          "thumbnail": "sprite.jpg#xywh=320,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2298,
+      "timestamp": 76.6,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8863974809646606,
+          "bbox": {
+            "x": 1,
+            "y": 0,
+            "width": 90,
+            "height": 98
+          },
+          "thumbnail": "sprite.jpg#xywh=480,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2391,
+      "timestamp": 79.7,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8110818862915039,
+          "bbox": {
+            "x": 161,
+            "y": 0,
+            "width": 81,
+            "height": 121
+          },
+          "thumbnail": "sprite.jpg#xywh=640,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2393,
+      "timestamp": 79.766,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8378117084503174,
+          "bbox": {
+            "x": 159,
+            "y": 0,
+            "width": 80,
+            "height": 122
+          },
+          "thumbnail": "sprite.jpg#xywh=800,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2402,
+      "timestamp": 80.066,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8030433654785156,
+          "bbox": {
+            "x": 121,
+            "y": 0,
+            "width": 95,
+            "height": 119
+          },
+          "thumbnail": "sprite.jpg#xywh=960,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2418,
+      "timestamp": 80.6,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8166845440864563,
+          "bbox": {
+            "x": 50,
+            "y": 1,
+            "width": 86,
+            "height": 116
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2426,
+      "timestamp": 80.866,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8068783283233643,
+          "bbox": {
+            "x": 13,
+            "y": 0,
+            "width": 94,
+            "height": 117
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2457,
+      "timestamp": 81.9,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8382266759872437,
+          "bbox": {
+            "x": 125,
+            "y": 0,
+            "width": 126,
+            "height": 144
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2620,
+      "timestamp": 87.333,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8274737596511841,
+          "bbox": {
+            "x": 135,
+            "y": 14,
+            "width": 76,
+            "height": 31
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2621,
+      "timestamp": 87.366,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8222252130508423,
+          "bbox": {
+            "x": 136,
+            "y": 14,
+            "width": 78,
+            "height": 31
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,450,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2622,
+      "timestamp": 87.4,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8067487478256226,
+          "bbox": {
+            "x": 137,
+            "y": 14,
+            "width": 80,
+            "height": 32
+          },
+          "thumbnail": "sprite.jpg#xywh=0,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2662,
+      "timestamp": 88.733,
+      "objects": [
+        {
+          "id": "person_3",
+          "class_name": "person",
+          "confidence": 0.828835129737854,
+          "bbox": {
+            "x": 142,
+            "y": 0,
+            "width": 61,
+            "height": 65
+          },
+          "thumbnail": "sprite.jpg#xywh=160,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 2945,
+      "timestamp": 98.166,
+      "objects": [
+        {
+          "id": "motorcycle_0",
+          "class_name": "motorcycle",
+          "confidence": 0.8513523936271667,
+          "bbox": {
+            "x": 38,
+            "y": 45,
+            "width": 70,
+            "height": 38
+          },
+          "thumbnail": "sprite.jpg#xywh=320,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3278,
+      "timestamp": 109.266,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8100249767303467,
+          "bbox": {
+            "x": 159,
+            "y": 0,
+            "width": 61,
+            "height": 86
+          },
+          "thumbnail": "sprite.jpg#xywh=480,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3308,
+      "timestamp": 110.266,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8171696662902832,
+          "bbox": {
+            "x": 38,
+            "y": 0,
+            "width": 72,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=640,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3309,
+      "timestamp": 110.3,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8942514061927795,
+          "bbox": {
+            "x": 34,
+            "y": 0,
+            "width": 73,
+            "height": 84
+          },
+          "thumbnail": "sprite.jpg#xywh=800,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3311,
+      "timestamp": 110.366,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.9057612419128418,
+          "bbox": {
+            "x": 30,
+            "y": 0,
+            "width": 69,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=960,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3312,
+      "timestamp": 110.4,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8380512595176697,
+          "bbox": {
+            "x": 31,
+            "y": 0,
+            "width": 60,
+            "height": 87
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3321,
+      "timestamp": 110.7,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8170265555381775,
+          "bbox": {
+            "x": 12,
+            "y": 0,
+            "width": 52,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3322,
+      "timestamp": 110.733,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8745437860488892,
+          "bbox": {
+            "x": 11,
+            "y": 0,
+            "width": 54,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3323,
+      "timestamp": 110.766,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8620797395706177,
+          "bbox": {
+            "x": 10,
+            "y": 0,
+            "width": 55,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3324,
+      "timestamp": 110.8,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8632323741912842,
+          "bbox": {
+            "x": 11,
+            "y": 0,
+            "width": 54,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,540,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3325,
+      "timestamp": 110.833,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8698363900184631,
+          "bbox": {
+            "x": 12,
+            "y": 0,
+            "width": 53,
+            "height": 85
+          },
+          "thumbnail": "sprite.jpg#xywh=0,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3326,
+      "timestamp": 110.866,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8714883327484131,
+          "bbox": {
+            "x": 9,
+            "y": 0,
+            "width": 54,
+            "height": 86
+          },
+          "thumbnail": "sprite.jpg#xywh=160,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3327,
+      "timestamp": 110.9,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8746287226676941,
+          "bbox": {
+            "x": 7,
+            "y": 0,
+            "width": 56,
+            "height": 86
+          },
+          "thumbnail": "sprite.jpg#xywh=320,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3338,
+      "timestamp": 111.266,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8225243091583252,
+          "bbox": {
+            "x": 176,
+            "y": 54,
+            "width": 79,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=480,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3339,
+      "timestamp": 111.3,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.831100344657898,
+          "bbox": {
+            "x": 176,
+            "y": 54,
+            "width": 79,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=640,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3340,
+      "timestamp": 111.333,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8351500630378723,
+          "bbox": {
+            "x": 176,
+            "y": 54,
+            "width": 79,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=800,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3341,
+      "timestamp": 111.366,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8361635804176331,
+          "bbox": {
+            "x": 176,
+            "y": 53,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=960,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3342,
+      "timestamp": 111.4,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8469995856285095,
+          "bbox": {
+            "x": 176,
+            "y": 53,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3343,
+      "timestamp": 111.433,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8538550734519958,
+          "bbox": {
+            "x": 175,
+            "y": 52,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3344,
+      "timestamp": 111.466,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8581727147102356,
+          "bbox": {
+            "x": 175,
+            "y": 52,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3345,
+      "timestamp": 111.5,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8552504777908325,
+          "bbox": {
+            "x": 175,
+            "y": 52,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3346,
+      "timestamp": 111.533,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.859959602355957,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,630,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3347,
+      "timestamp": 111.566,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8560483455657959,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=0,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3348,
+      "timestamp": 111.6,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.845727264881134,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=160,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3349,
+      "timestamp": 111.633,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8382197618484497,
+          "bbox": {
+            "x": 175,
+            "y": 52,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=320,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3350,
+      "timestamp": 111.666,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8329259753227234,
+          "bbox": {
+            "x": 175,
+            "y": 52,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=480,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3351,
+      "timestamp": 111.7,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.839011549949646,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 77,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=640,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3352,
+      "timestamp": 111.733,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8250529170036316,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=800,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3353,
+      "timestamp": 111.766,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8267967700958252,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=960,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3354,
+      "timestamp": 111.8,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8308771848678589,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 75,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3355,
+      "timestamp": 111.833,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8265124559402466,
+          "bbox": {
+            "x": 176,
+            "y": 52,
+            "width": 76,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3356,
+      "timestamp": 111.866,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8259432911872864,
+          "bbox": {
+            "x": 176,
+            "y": 51,
+            "width": 75,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3357,
+      "timestamp": 111.9,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8104488849639893,
+          "bbox": {
+            "x": 177,
+            "y": 51,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3358,
+      "timestamp": 111.933,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8037011027336121,
+          "bbox": {
+            "x": 177,
+            "y": 51,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,720,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3359,
+      "timestamp": 111.966,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8024051785469055,
+          "bbox": {
+            "x": 177,
+            "y": 50,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=0,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3360,
+      "timestamp": 112,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8110536336898804,
+          "bbox": {
+            "x": 177,
+            "y": 50,
+            "width": 75,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=160,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3361,
+      "timestamp": 112.033,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8113400340080261,
+          "bbox": {
+            "x": 177,
+            "y": 50,
+            "width": 76,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=320,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3362,
+      "timestamp": 112.066,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8029316663742065,
+          "bbox": {
+            "x": 177,
+            "y": 50,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=480,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3363,
+      "timestamp": 112.1,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8104127049446106,
+          "bbox": {
+            "x": 177,
+            "y": 50,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=640,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3364,
+      "timestamp": 112.133,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8265508413314819,
+          "bbox": {
+            "x": 177,
+            "y": 50,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=800,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3365,
+      "timestamp": 112.166,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8308953046798706,
+          "bbox": {
+            "x": 177,
+            "y": 49,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=960,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3366,
+      "timestamp": 112.2,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8470041751861572,
+          "bbox": {
+            "x": 177,
+            "y": 49,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3367,
+      "timestamp": 112.233,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8354058265686035,
+          "bbox": {
+            "x": 177,
+            "y": 49,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3368,
+      "timestamp": 112.266,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8337087631225586,
+          "bbox": {
+            "x": 177,
+            "y": 49,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3369,
+      "timestamp": 112.3,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8457199931144714,
+          "bbox": {
+            "x": 177,
+            "y": 49,
+            "width": 77,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3370,
+      "timestamp": 112.333,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8363662362098694,
+          "bbox": {
+            "x": 177,
+            "y": 49,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,810,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3371,
+      "timestamp": 112.366,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8361525535583496,
+          "bbox": {
+            "x": 176,
+            "y": 49,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=0,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3372,
+      "timestamp": 112.4,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8403834700584412,
+          "bbox": {
+            "x": 176,
+            "y": 49,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=160,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3373,
+      "timestamp": 112.433,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8357483148574829,
+          "bbox": {
+            "x": 176,
+            "y": 49,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=320,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3374,
+      "timestamp": 112.466,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.840459406375885,
+          "bbox": {
+            "x": 176,
+            "y": 49,
+            "width": 78,
+            "height": 26
+          },
+          "thumbnail": "sprite.jpg#xywh=480,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3375,
+      "timestamp": 112.5,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8348416090011597,
+          "bbox": {
+            "x": 176,
+            "y": 49,
+            "width": 78,
+            "height": 26
+          },
+          "thumbnail": "sprite.jpg#xywh=640,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3376,
+      "timestamp": 112.533,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8400596380233765,
+          "bbox": {
+            "x": 176,
+            "y": 49,
+            "width": 78,
+            "height": 26
+          },
+          "thumbnail": "sprite.jpg#xywh=800,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3377,
+      "timestamp": 112.566,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8427452445030212,
+          "bbox": {
+            "x": 176,
+            "y": 48,
+            "width": 77,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=960,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3378,
+      "timestamp": 112.6,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8416247367858887,
+          "bbox": {
+            "x": 176,
+            "y": 48,
+            "width": 77,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3379,
+      "timestamp": 112.633,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8406826257705688,
+          "bbox": {
+            "x": 176,
+            "y": 48,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3380,
+      "timestamp": 112.666,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8386750221252441,
+          "bbox": {
+            "x": 176,
+            "y": 47,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3381,
+      "timestamp": 112.7,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8416518568992615,
+          "bbox": {
+            "x": 176,
+            "y": 47,
+            "width": 79,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3382,
+      "timestamp": 112.733,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8362706303596497,
+          "bbox": {
+            "x": 176,
+            "y": 47,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,900,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3383,
+      "timestamp": 112.766,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8352099061012268,
+          "bbox": {
+            "x": 177,
+            "y": 47,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=0,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3384,
+      "timestamp": 112.8,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8273475766181946,
+          "bbox": {
+            "x": 177,
+            "y": 47,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=160,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3385,
+      "timestamp": 112.833,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.826167106628418,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=320,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3386,
+      "timestamp": 112.866,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8294289708137512,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=480,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3387,
+      "timestamp": 112.9,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8064846992492676,
+          "bbox": {
+            "x": 178,
+            "y": 46,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=640,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3388,
+      "timestamp": 112.933,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8230787515640259,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=800,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3389,
+      "timestamp": 112.966,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8344142436981201,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 78,
+            "height": 27
+          },
+          "thumbnail": "sprite.jpg#xywh=960,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3390,
+      "timestamp": 113,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.827163815498352,
+          "bbox": {
+            "x": 178,
+            "y": 46,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3391,
+      "timestamp": 113.033,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8305130004882812,
+          "bbox": {
+            "x": 178,
+            "y": 46,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3392,
+      "timestamp": 113.066,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8235502243041992,
+          "bbox": {
+            "x": 178,
+            "y": 46,
+            "width": 77,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3393,
+      "timestamp": 113.1,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8315408229827881,
+          "bbox": {
+            "x": 178,
+            "y": 46,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,990,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3394,
+      "timestamp": 113.133,
+      "objects": [
+        {
+          "id": "person_4",
+          "class_name": "person",
+          "confidence": 0.8954901099205017,
+          "bbox": {
+            "x": 18,
+            "y": 0,
+            "width": 119,
+            "height": 134
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,990,160,90"
+        },
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8355696797370911,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=0,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3395,
+      "timestamp": 113.166,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8354557752609253,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=160,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3396,
+      "timestamp": 113.2,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8320605158805847,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 79,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=320,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3397,
+      "timestamp": 113.233,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8269939422607422,
+          "bbox": {
+            "x": 177,
+            "y": 46,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=480,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3398,
+      "timestamp": 113.266,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.821174681186676,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=640,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3399,
+      "timestamp": 113.3,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8219761848449707,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=800,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3400,
+      "timestamp": 113.333,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8236715793609619,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=960,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3401,
+      "timestamp": 113.366,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8207154870033264,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3402,
+      "timestamp": 113.4,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8126242756843567,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3403,
+      "timestamp": 113.433,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8057978749275208,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3404,
+      "timestamp": 113.466,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8093230724334717,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 29
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3405,
+      "timestamp": 113.5,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8147820830345154,
+          "bbox": {
+            "x": 178,
+            "y": 45,
+            "width": 78,
+            "height": 29
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,1080,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3406,
+      "timestamp": 113.533,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8073647618293762,
+          "bbox": {
+            "x": 179,
+            "y": 44,
+            "width": 77,
+            "height": 29
+          },
+          "thumbnail": "sprite.jpg#xywh=0,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3408,
+      "timestamp": 113.6,
+      "objects": [
+        {
+          "id": "person_4",
+          "class_name": "person",
+          "confidence": 0.8658220767974854,
+          "bbox": {
+            "x": 28,
+            "y": 0,
+            "width": 104,
+            "height": 133
+          },
+          "thumbnail": "sprite.jpg#xywh=160,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3409,
+      "timestamp": 113.633,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8103185296058655,
+          "bbox": {
+            "x": 180,
+            "y": 44,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=320,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3412,
+      "timestamp": 113.733,
+      "objects": [
+        {
+          "id": "person_4",
+          "class_name": "person",
+          "confidence": 0.8372770547866821,
+          "bbox": {
+            "x": 26,
+            "y": 0,
+            "width": 108,
+            "height": 134
+          },
+          "thumbnail": "sprite.jpg#xywh=480,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3416,
+      "timestamp": 113.866,
+      "objects": [
+        {
+          "id": "person_4",
+          "class_name": "person",
+          "confidence": 0.8520971536636353,
+          "bbox": {
+            "x": 25,
+            "y": 0,
+            "width": 110,
+            "height": 133
+          },
+          "thumbnail": "sprite.jpg#xywh=640,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3419,
+      "timestamp": 113.966,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8256608843803406,
+          "bbox": {
+            "x": 181,
+            "y": 45,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=800,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3420,
+      "timestamp": 114,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8137292861938477,
+          "bbox": {
+            "x": 180,
+            "y": 44,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=960,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3421,
+      "timestamp": 114.033,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8109679222106934,
+          "bbox": {
+            "x": 180,
+            "y": 44,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3422,
+      "timestamp": 114.066,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8100423216819763,
+          "bbox": {
+            "x": 180,
+            "y": 44,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3423,
+      "timestamp": 114.1,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8115705251693726,
+          "bbox": {
+            "x": 180,
+            "y": 44,
+            "width": 75,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3424,
+      "timestamp": 114.133,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.805112361907959,
+          "bbox": {
+            "x": 180,
+            "y": 45,
+            "width": 76,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3425,
+      "timestamp": 114.166,
+      "objects": [
+        {
+          "id": "car_1",
+          "class_name": "car",
+          "confidence": 0.8042426109313965,
+          "bbox": {
+            "x": 180,
+            "y": 44,
+            "width": 76,
+            "height": 28
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,1170,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3620,
+      "timestamp": 120.666,
+      "objects": [
+        {
+          "id": "person_5",
+          "class_name": "person",
+          "confidence": 0.88176029920578,
+          "bbox": {
+            "x": 92,
+            "y": 0,
+            "width": 162,
+            "height": 144
+          },
+          "thumbnail": "sprite.jpg#xywh=0,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3621,
+      "timestamp": 120.7,
+      "objects": [
+        {
+          "id": "person_5",
+          "class_name": "person",
+          "confidence": 0.8634060621261597,
+          "bbox": {
+            "x": 98,
+            "y": 0,
+            "width": 156,
+            "height": 144
+          },
+          "thumbnail": "sprite.jpg#xywh=160,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3732,
+      "timestamp": 124.4,
+      "objects": [
+        {
+          "id": "person_5",
+          "class_name": "person",
+          "confidence": 0.8391463756561279,
+          "bbox": {
+            "x": 87,
+            "y": 1,
+            "width": 151,
+            "height": 140
+          },
+          "thumbnail": "sprite.jpg#xywh=320,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3734,
+      "timestamp": 124.466,
+      "objects": [
+        {
+          "id": "person_5",
+          "class_name": "person",
+          "confidence": 0.8423715829849243,
+          "bbox": {
+            "x": 80,
+            "y": 1,
+            "width": 166,
+            "height": 141
+          },
+          "thumbnail": "sprite.jpg#xywh=480,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3914,
+      "timestamp": 130.466,
+      "objects": [
+        {
+          "id": "person_5",
+          "class_name": "person",
+          "confidence": 0.8638877272605896,
+          "bbox": {
+            "x": 77,
+            "y": 0,
+            "width": 124,
+            "height": 126
+          },
+          "thumbnail": "sprite.jpg#xywh=640,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 3924,
+      "timestamp": 130.8,
+      "objects": [
+        {
+          "id": "person_6",
+          "class_name": "person",
+          "confidence": 0.8593899607658386,
+          "bbox": {
+            "x": 46,
+            "y": 0,
+            "width": 204,
+            "height": 143
+          },
+          "thumbnail": "sprite.jpg#xywh=800,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4180,
+      "timestamp": 139.333,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8870483636856079,
+          "bbox": {
+            "x": 86,
+            "y": 1,
+            "width": 88,
+            "height": 93
+          },
+          "thumbnail": "sprite.jpg#xywh=960,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4182,
+      "timestamp": 139.4,
+      "objects": [
+        {
+          "id": "person_2",
+          "class_name": "person",
+          "confidence": 0.8111804723739624,
+          "bbox": {
+            "x": 76,
+            "y": 0,
+            "width": 85,
+            "height": 90
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4206,
+      "timestamp": 140.2,
+      "objects": [
+        {
+          "id": "person_7",
+          "class_name": "person",
+          "confidence": 0.8633179664611816,
+          "bbox": {
+            "x": 97,
+            "y": 0,
+            "width": 90,
+            "height": 103
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4210,
+      "timestamp": 140.333,
+      "objects": [
+        {
+          "id": "person_7",
+          "class_name": "person",
+          "confidence": 0.8043709397315979,
+          "bbox": {
+            "x": 66,
+            "y": 0,
+            "width": 110,
+            "height": 99
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4218,
+      "timestamp": 140.6,
+      "objects": [
+        {
+          "id": "person_7",
+          "class_name": "person",
+          "confidence": 0.8310933113098145,
+          "bbox": {
+            "x": 184,
+            "y": 0,
+            "width": 69,
+            "height": 96
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4219,
+      "timestamp": 140.633,
+      "objects": [
+        {
+          "id": "person_7",
+          "class_name": "person",
+          "confidence": 0.8451430797576904,
+          "bbox": {
+            "x": 185,
+            "y": 0,
+            "width": 68,
+            "height": 97
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,1260,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4235,
+      "timestamp": 141.166,
+      "objects": [
+        {
+          "id": "person_7",
+          "class_name": "person",
+          "confidence": 0.811518669128418,
+          "bbox": {
+            "x": 128,
+            "y": 0,
+            "width": 102,
+            "height": 103
+          },
+          "thumbnail": "sprite.jpg#xywh=0,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4236,
+      "timestamp": 141.2,
+      "objects": [
+        {
+          "id": "person_7",
+          "class_name": "person",
+          "confidence": 0.8500013947486877,
+          "bbox": {
+            "x": 125,
+            "y": 0,
+            "width": 101,
+            "height": 111
+          },
+          "thumbnail": "sprite.jpg#xywh=160,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4249,
+      "timestamp": 141.633,
+      "objects": [
+        {
+          "id": "person_7",
+          "class_name": "person",
+          "confidence": 0.8358426094055176,
+          "bbox": {
+            "x": 101,
+            "y": 16,
+            "width": 87,
+            "height": 98
+          },
+          "thumbnail": "sprite.jpg#xywh=320,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 4941,
+      "timestamp": 164.7,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8065035343170166,
+          "bbox": {
+            "x": 56,
+            "y": 0,
+            "width": 76,
+            "height": 90
+          },
+          "thumbnail": "sprite.jpg#xywh=480,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 5004,
+      "timestamp": 166.8,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8324393033981323,
+          "bbox": {
+            "x": 62,
+            "y": 1,
+            "width": 74,
+            "height": 88
+          },
+          "thumbnail": "sprite.jpg#xywh=640,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 5106,
+      "timestamp": 170.2,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8616772294044495,
+          "bbox": {
+            "x": 60,
+            "y": 0,
+            "width": 80,
+            "height": 90
+          },
+          "thumbnail": "sprite.jpg#xywh=800,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 5109,
+      "timestamp": 170.3,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8504096269607544,
+          "bbox": {
+            "x": 60,
+            "y": 1,
+            "width": 79,
+            "height": 90
+          },
+          "thumbnail": "sprite.jpg#xywh=960,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 6915,
+      "timestamp": 230.5,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8436446189880371,
+          "bbox": {
+            "x": 52,
+            "y": 0,
+            "width": 66,
+            "height": 72
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7770,
+      "timestamp": 259,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8392670750617981,
+          "bbox": {
+            "x": 175,
+            "y": 0,
+            "width": 79,
+            "height": 104
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7778,
+      "timestamp": 259.266,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8300833106040955,
+          "bbox": {
+            "x": 176,
+            "y": 0,
+            "width": 77,
+            "height": 105
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7799,
+      "timestamp": 259.966,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8088169097900391,
+          "bbox": {
+            "x": 175,
+            "y": 0,
+            "width": 78,
+            "height": 106
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7800,
+      "timestamp": 260,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8054473400115967,
+          "bbox": {
+            "x": 176,
+            "y": 0,
+            "width": 78,
+            "height": 106
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,1350,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7803,
+      "timestamp": 260.1,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8030939102172852,
+          "bbox": {
+            "x": 176,
+            "y": 0,
+            "width": 77,
+            "height": 107
+          },
+          "thumbnail": "sprite.jpg#xywh=0,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7804,
+      "timestamp": 260.133,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8051506280899048,
+          "bbox": {
+            "x": 174,
+            "y": 0,
+            "width": 78,
+            "height": 107
+          },
+          "thumbnail": "sprite.jpg#xywh=160,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7805,
+      "timestamp": 260.166,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8015343546867371,
+          "bbox": {
+            "x": 175,
+            "y": 0,
+            "width": 78,
+            "height": 108
+          },
+          "thumbnail": "sprite.jpg#xywh=320,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7809,
+      "timestamp": 260.3,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8255869150161743,
+          "bbox": {
+            "x": 178,
+            "y": 0,
+            "width": 75,
+            "height": 109
+          },
+          "thumbnail": "sprite.jpg#xywh=480,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7810,
+      "timestamp": 260.333,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8254036903381348,
+          "bbox": {
+            "x": 177,
+            "y": 0,
+            "width": 76,
+            "height": 109
+          },
+          "thumbnail": "sprite.jpg#xywh=640,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 7814,
+      "timestamp": 260.466,
+      "objects": [
+        {
+          "id": "person_0",
+          "class_name": "person",
+          "confidence": 0.8357175588607788,
+          "bbox": {
+            "x": 179,
+            "y": 0,
+            "width": 75,
+            "height": 109
+          },
+          "thumbnail": "sprite.jpg#xywh=800,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 8031,
+      "timestamp": 267.7,
+      "objects": [
+        {
+          "id": "person_8",
+          "class_name": "person",
+          "confidence": 0.8484926223754883,
+          "bbox": {
+            "x": 171,
+            "y": 0,
+            "width": 77,
+            "height": 101
+          },
+          "thumbnail": "sprite.jpg#xywh=960,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 8032,
+      "timestamp": 267.733,
+      "objects": [
+        {
+          "id": "person_8",
+          "class_name": "person",
+          "confidence": 0.8426960110664368,
+          "bbox": {
+            "x": 178,
+            "y": 0,
+            "width": 70,
+            "height": 101
+          },
+          "thumbnail": "sprite.jpg#xywh=1120,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 8035,
+      "timestamp": 267.833,
+      "objects": [
+        {
+          "id": "person_8",
+          "class_name": "person",
+          "confidence": 0.8232191801071167,
+          "bbox": {
+            "x": 179,
+            "y": 0,
+            "width": 72,
+            "height": 99
+          },
+          "thumbnail": "sprite.jpg#xywh=1280,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 8036,
+      "timestamp": 267.866,
+      "objects": [
+        {
+          "id": "person_8",
+          "class_name": "person",
+          "confidence": 0.8353967666625977,
+          "bbox": {
+            "x": 182,
+            "y": 0,
+            "width": 71,
+            "height": 102
+          },
+          "thumbnail": "sprite.jpg#xywh=1440,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 8040,
+      "timestamp": 268,
+      "objects": [
+        {
+          "id": "person_8",
+          "class_name": "person",
+          "confidence": 0.8100814819335938,
+          "bbox": {
+            "x": 190,
+            "y": 0,
+            "width": 62,
+            "height": 100
+          },
+          "thumbnail": "sprite.jpg#xywh=1600,1440,160,90"
+        }
+      ]
+    },
+    {
+      "frame_idx": 8041,
+      "timestamp": 268.033,
+      "objects": [
+        {
+          "id": "person_8",
+          "class_name": "person",
+          "confidence": 0.8309392929077148,
+          "bbox": {
+            "x": 191,
+            "y": 0,
+            "width": 61,
+            "height": 100
+          },
+          "thumbnail": "sprite.jpg#xywh=1760,1440,160,90"
+        }
+      ]
+    }
+  ]
+}

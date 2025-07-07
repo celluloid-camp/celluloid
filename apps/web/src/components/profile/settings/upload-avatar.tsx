@@ -1,12 +1,11 @@
 import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type React from "react";
-import { useState } from "react";
-
-import { Avatar } from "@/components/common/avatar";
-import { trpc } from "@/lib/trpc/client";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
+import type React from "react";
+import { useState } from "react";
+import { Avatar } from "@/components/common/avatar";
+import { trpc } from "@/lib/trpc/client";
 
 const Input = styled("input")({
   display: "none",

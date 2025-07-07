@@ -10,10 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "mui-image";
-import { useTranslations } from "next-intl";
-
-import type { ProjectById } from "@/lib/trpc/types";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import type { ProjectById } from "@/lib/trpc/types";
 
 export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
   const router = useRouter();

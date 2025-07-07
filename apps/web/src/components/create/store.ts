@@ -1,5 +1,5 @@
-import type { PeerTubeVideoDataResult } from "@/services/peertube";
 import { create } from "zustand";
+import type { PeerTubeVideoDataResult } from "@/services/peertube";
 
 export type ProjectFormInput = {
   title: string;

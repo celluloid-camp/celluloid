@@ -1,10 +1,10 @@
 "use client";
 
 import { Avatar, Box, colors, Paper, Stack, Typography } from "@mui/material";
-import { Shape } from "./types";
-import { MultiLineTypography } from "@/components/common/multiline-typography";
 import { grey } from "@mui/material/colors";
+import { MultiLineTypography } from "@/components/common/multiline-typography";
 import { AnnotationShapeWithMetadata } from "./shapes-viewer";
+import { Shape } from "./types";
 
 interface ShapeTooltipProps {
   data: AnnotationShapeWithMetadata;
