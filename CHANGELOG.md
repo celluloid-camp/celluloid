@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.1-alpha.3
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Allow video analysis read without session &nbsp;-&nbsp; by **Younes** [<samp>(c107e)</samp>](https://github.com/celluloid-camp/celluloid/commit/c107ef1)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.1-alpha.2...staging)
+
 ## 3.3.1-alpha.2
 
 *No significant changes*
