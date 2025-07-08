@@ -3,10 +3,10 @@ import { visionQueue, visionResultQueue } from "@celluloid/queue";
 import { getJobResultsResultsJobIdGetResponse } from "@celluloid/vision";
 import { z } from "zod";
 import { env } from "../env";
-import { protectedProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const visionRouter = router({
-  byProjectId: protectedProcedure
+  byProjectId: publicProcedure
     .input(
       z.object({
         projectId: z.string(),

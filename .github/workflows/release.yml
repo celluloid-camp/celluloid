@@ -8,7 +8,6 @@
     push:
       branches:
         - main
-        - staging
     workflow_dispatch:
 
 
