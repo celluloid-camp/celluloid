@@ -72,9 +72,9 @@
         ]
       }
     },
-    "release-it-pnpm": {},
-    "npm": {
-      "publish": false
-    }
+    "release-it-pnpm": {}
+  },
+  "npm": {
+    "publish": false
   }
 }
