@@ -72,7 +72,10 @@
         ]
       }
     },
-    "release-it-pnpm": {}
+    "release-it-pnpm": {
+      "publish": false,
+      "inFile": "CHANGELOG.md"
+    }
   },
   "npm": {
     "publish": false
