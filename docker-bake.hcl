@@ -3,10 +3,10 @@ group "default" {
 }
 
 variable "VERSION" {
-  default = ""
+  default = "dev"
 }
 variable "REVISION" {
-  default = ""
+  default = "dev"
 }
 
 target "docker-metadata-action" {

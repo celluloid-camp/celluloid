@@ -8,6 +8,13 @@ const app = express();
 app.disable("x-powered-by");
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/version", (req, res) => {
+  res.json({
+    version: process.env.VERSION,
+    revision: process.env.REVISION,
+  });
+});
+
 emailQueue.start();
 chaptersQueue.start();
 transcriptsQueue.start();

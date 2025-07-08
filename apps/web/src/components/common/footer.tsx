@@ -10,6 +10,7 @@ import {
 import { useTranslations } from "next-intl";
 import type React from "react";
 import { LogoSign } from "@/components/common/logo-sign";
+import { env } from "@/env";
 import { GithubLogo } from "@/images/Github";
 import { HumaNumLogo } from "@/images/HumaNum";
 import { OpenEditionLogo } from "@/images/OpenEdition";
@@ -99,6 +100,9 @@ export const Footer: React.FC<FooterProps> = (props) => {
                     </Link>
                   ),
                 })}
+              </Typography>
+              <Typography variant="body2" color="white">
+                {env.NEXT_PUBLIC_VERSION}-{env.NEXT_PUBLIC_REVISION}
               </Typography>
             </Box>
           </Grid>

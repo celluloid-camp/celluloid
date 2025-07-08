@@ -8,8 +8,14 @@ export const env = createEnv({
   server: {
     BASE_URL: z.string(),
   },
-  client: {},
-  experimental__runtimeEnv: process.env,
+  client: {
+    NEXT_PUBLIC_VERSION: z.string().default("dev"),
+    NEXT_PUBLIC_REVISION: z.string().default("dev"),
+  },
+  experimental__runtimeEnv: {
+    NEXT_PUBLIC_VERSION: process.env.NEXT_PUBLIC_VERSION,
+    NEXT_PUBLIC_REVISION: process.env.NEXT_PUBLIC_REVISION,
+  },
   skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
   extends: [trpcEnv, prismaEnv, authEnv],
 });
