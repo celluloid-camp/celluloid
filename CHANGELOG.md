@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.3.1-alpha.2
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.1-alpha.1...staging)
+
 ## 3.3.1-alpha.1
 
 ### &nbsp;&nbsp;&nbsp;Features
