@@ -26,7 +26,8 @@
     "docker:bake": "docker buildx bake",
     "docker:web:run": "docker run -it --rm --env-file .env -p 3000:3000 celluloid-web",
     "docker:worker:run": "docker run -it --rm --env-file .env celluloid-worker",
-    "release": "pnpm release-it"
+    "release": "pnpm release-it",
+    "prerelease": "pnpm release-it --preRelease=alpha"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
