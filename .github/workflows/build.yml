@@ -31,6 +31,8 @@ jobs:
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            # Add "staging" tag if version contains "-alpha"
+            type=raw,value=staging,enable=${{ contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') }}
           labels: |
             org.opencontainers.image.title=${{ github.repository }}
             org.opencontainers.image.description=Celluloid
