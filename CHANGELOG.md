@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.1-alpha.1
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Video analysis based on vision.celluloid.me &nbsp;-&nbsp; by **Younes** in https://github.com/celluloid-camp/celluloid/issues/326 [<samp>(7ef38)</samp>](https://github.com/celluloid-camp/celluloid/commit/7ef38e3)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.0-alpha.0...staging)
+
 This changelog is auto generated using release-it.
 
 
