@@ -5,7 +5,7 @@ packages:
 catalog:
   typescript: ^5.6.3
   zod: ^3.23.8
-  better-auth: ^1.2.4
+  better-auth: ^1.2.10
   "@t3-oss/env-core": ^0.12.0
 
 catalogs:
