@@ -1,7 +1,13 @@
 import { Box, Container } from "@mui/material";
-import { UserProfile } from "@/components/profile/user-profile";
+import { PublicUserProfile } from "@/components/user/profile";
 
-export default function ProfilePage() {
+export default async function UserPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
   return (
     <Box
       sx={{
@@ -13,7 +19,7 @@ export default function ProfilePage() {
       }}
     >
       <Container>
-        <UserProfile />
+        <PublicUserProfile userId={id} />
       </Container>
     </Box>
   );

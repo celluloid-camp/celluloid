@@ -16,11 +16,11 @@ educational purposes." src="./docs/assets/logo.svg">
 
 Celluloid is a collaborative video annotation application designed for educational purposes.
 
-With Celluloid, you can find a [PeerTube](https://joinpeertube.org/) video, select an educational objective, annotate the video, share it with your students, collect their answers, and respond to their questions.
+With Celluloid, you can import a [PeerTube](https://joinpeertube.org/) video, select an educational objective, annotate the video, share it with your students, collect their answers, and respond to their questions.
 
-## ✨ Demo
+## ✨ Demo 
 
-Visit https://celluloid.huma-num.fr/, create an account, and start using Celluloid.
+Visit https://celluloid.me/, create an account, and start using Celluloid.
 We value your feedback on the application's user experience and design. If you encounter any bugs or issues, please don't hesitate to [report them](https://github.com/celluloid-camp/celluloid/issues).
 
 ## Development Team
@@ -141,7 +141,7 @@ You can access your app at http://localhost:3000.
 Open a terminal at the repository's root and run:
 
 ```bash
-docker build -t  celluloid:latest -f Dockerfile.compact .
+docker compose up
 ```
 
 [Minio](https://min.io/docs/minio/container/index.html) is used for storage, make sure to run local instance or use external service and don't forget to update your [.env](.env.sample) file 
@@ -152,16 +152,6 @@ docker build -t  celluloid:latest -f Dockerfile.compact .
 
 Feel free to open a pull request, [contact us](https://github.com/celluloid-camp/celluloid/discussions), or [report a bug](https://github.com/celluloid-camp/celluloid/issues).
 
-## Technical Stack
-
-Before contributing to Celluloid's development, it's essential to familiarize yourself with some of the following technologies:
-
-- TypeScript (used throughout the project).
-- Frontend: React, TRPC, and Material UI.
-- Backend: Node.js, Express, and Prisma.
-- File Storage : Minio
-- Database: PostgreSQL.
-- Cache / Session : Redis.
 
 ## Translation
 

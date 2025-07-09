@@ -4,6 +4,7 @@ import { createAnalyzeVideoTask, getJobResult } from "@celluloid/vision";
 import { createQueue } from "@mgcrea/prisma-queue";
 import { Client } from "minio";
 import { env } from "../env";
+import { sendProjectAnalysisFinished } from "../mailer/send-mail";
 import { parseUrl } from "../utils/s3";
 
 type VisionJobPayload = { projectId: string; callbackUrl: string };
@@ -83,9 +84,12 @@ export const visionQueue = createQueue<VisionJobPayload, JobResult>(
   },
 );
 
-export const visionResultQueue = createQueue<{
-  projectId: string;
-}, JobResult>(
+export const visionResultQueue = createQueue<
+  {
+    projectId: string;
+  },
+  JobResult
+>(
   { name: "vision-result", prisma: prisma as unknown as PrismaClient },
   async (job, prisma) => {
     const { id, payload } = job;
@@ -98,6 +102,17 @@ export const visionResultQueue = createQueue<{
       select: {
         status: true,
         visionJobId: true,
+        project: {
+          select: {
+            title: true,
+            user: {
+              select: {
+                email: true,
+                username: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -134,7 +149,7 @@ export const visionResultQueue = createQueue<{
             data: {
               bucket: env.STORAGE_BUCKET,
               path: spritePath,
-            }
+            },
           });
           await prisma.videoAnalysis.update({
             where: { projectId: payload.projectId },
@@ -146,6 +161,13 @@ export const visionResultQueue = createQueue<{
               },
             },
           });
+          if (analysis.project.user.email) {
+            await sendProjectAnalysisFinished({
+              email: analysis.project.user.email,
+              projectId: payload.projectId,
+              projectTitle: analysis.project.title,
+            });
+          }
         } catch (error) {
           console.error("Failed to upload sprite to S3", error);
         }

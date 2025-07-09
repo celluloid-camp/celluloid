@@ -4,9 +4,9 @@ import type * as React from "react";
 import { Suspense } from "react";
 
 import { Avatar } from "@/components/common/avatar";
-import { UserProjectGrid } from "@/components/profile/user-project-grid";
 import { useLocaleRole } from "@/i18n/roles";
 import { trpc } from "@/lib/trpc/client";
+import { UserPublicProjects } from "./projects";
 
 function ProfileSkeleton() {
   return (
@@ -20,9 +20,9 @@ function ProfileSkeleton() {
   );
 }
 
-function ProfileContent() {
+function PublicProfileContent({ userId }: { userId: string }) {
   const localeRole = useLocaleRole();
-  const [data] = trpc.user.me.useSuspenseQuery();
+  const [data] = trpc.user.publicById.useSuspenseQuery({ id: userId });
 
   if (!data) return null;
   return (
@@ -52,9 +52,6 @@ function ProfileContent() {
           {data.username}
         </Typography>
         <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>
-          {data.email}
-        </Typography>
-        <Typography variant="body1" color="textPrimary" sx={{ mt: 1 }}>
           {localeRole(data.role)}
         </Typography>
       </Stack>
@@ -64,15 +61,19 @@ function ProfileContent() {
         </Typography>
       </Stack>
 
-      <UserProjectGrid />
+      <UserPublicProjects userId={userId} />
     </>
   );
 }
 
-export function UserProfile() {
+export function PublicUserProfile({ userId }: { userId: string }) {
+  const { data } = trpc.user.byId.useQuery({ id: userId });
+
+  if (!data) return null;
+
   return (
     <Suspense fallback={<ProfileSkeleton />}>
-      <ProfileContent />
+      <PublicProfileContent userId={userId} />
     </Suspense>
   );
 }
