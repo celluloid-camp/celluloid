@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.1-alpha.4
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add user page and send email on video analysis complete &nbsp;-&nbsp; by **Younes** in https://github.com/celluloid-camp/celluloid/issues/327 [<samp>(59aa1)</samp>](https://github.com/celluloid-camp/celluloid/commit/59aa1eb)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.1-alpha.3...staging)
+
 ## 3.3.1-alpha.3
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
