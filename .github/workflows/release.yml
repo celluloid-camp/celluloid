@@ -30,6 +30,6 @@ jobs:
             - args: [--frozen-lockfile]
 
       - name: Release
-        run: npx release-it
+        run: pnpm release
         env:
           GITHUB_TOKEN: ${{secrets.PROJECT_GITHUB_TOKEN}}
