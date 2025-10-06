@@ -51,7 +51,6 @@ const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
 export function ProjectDetails({ projectId }: { projectId: string }) {
   const { data: session } = useSession();
   const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
-  const CelluloidStudioFlagEnabled = useFeatureFlagEnabled("celluloid-studio");
   return (
     <Box
       sx={{
@@ -99,7 +98,7 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
                   }
                 >
                   <ProjectTranscript project={project} user={session?.user} />
-                  {CelluloidStudioFlagEnabled && (
+                  {env.NEXT_PUBLIC_STAGE === "staging" && (
                     <ProjectVision project={project} user={session?.user} />
                   )}
                 </Suspense>
