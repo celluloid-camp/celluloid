@@ -1,14 +1,13 @@
 import { EventEmitter } from "node:events";
-import { prisma } from "@celluloid/prisma";
 import type { Annotation } from "@celluloid/prisma";
-import { Prisma } from "@celluloid/prisma";
+import { Prisma, prisma } from "@celluloid/prisma";
 import { toSrt } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
+import { username } from "better-auth/plugins";
 import { parse as toXML } from "js2xmlparser";
 import Papa from "papaparse";
 import { z } from "zod";
-
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 // create a global event emitter (could be replaced by redis, etc)
@@ -220,6 +219,11 @@ export const annotationRouter = router({
         where: { projectId: projectId },
         include: {
           comments: true,
+          user: {
+            select: {
+              username: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -233,6 +237,7 @@ export const annotationRouter = router({
         comments: a.comments.map((c) => c.text),
         contextX: a.extra ? a.extra.relativeX : null,
         contextY: a.extra ? a.extra.relativeY : null,
+        username: a.user.username,
       }));
 
       let content = "";

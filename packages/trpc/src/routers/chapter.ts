@@ -1,10 +1,8 @@
 import { EventEmitter } from "node:events";
-import { prisma } from "@celluloid/prisma";
-import { Prisma } from "@celluloid/prisma";
+import { Prisma, prisma } from "@celluloid/prisma";
+import { chaptersQueue } from "@celluloid/queue";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
-import { chaptersQueue } from "@celluloid/queue";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 // create a global event emitter (could be replaced by redis, etc)

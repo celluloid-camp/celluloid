@@ -1,10 +1,8 @@
 import { Box, Skeleton } from "@mui/material";
 import type * as React from "react";
-
-import type { ProjectById } from "@/lib/trpc/types";
-import { useSession } from "@/lib/auth-client";
-
 import type { User } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
+import type { ProjectById } from "@/lib/trpc/types";
 import { ExportPanel } from "./sidebar/export-panel";
 import { Members } from "./sidebar/members";
 import { Playlist } from "./sidebar/playlist";

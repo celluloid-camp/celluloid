@@ -155,6 +155,37 @@ export const userRouter = router({
       return user;
     }),
 
+  publicById: publicProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      }),
+    )
+    .query(async (opts) => {
+      const { input } = opts;
+      // Retrieve the user with the given ID
+      const user = await prisma.user.findUnique({
+        select: {
+          id: true,
+          username: true,
+          color: true,
+          role: true,
+          avatar: {
+            select: {
+              id: true,
+              publicUrl: true,
+              path: true,
+            },
+          },
+          bio: true,
+          initial: true,
+        },
+        where: { id: input.id },
+      });
+      return user;
+    }),
+
+
   projects: protectedProcedure
     .input(
       z.object({
@@ -175,12 +206,12 @@ export const userRouter = router({
             { userId: ctx.user ? ctx.user.id : undefined },
             ctx.user
               ? {
-                  members: {
-                    some: {
-                      userId: ctx.user.id,
-                    },
+                members: {
+                  some: {
+                    userId: ctx.user.id,
                   },
-                }
+                },
+              }
               : {},
           ],
         },
@@ -198,8 +229,75 @@ export const userRouter = router({
         },
         cursor: cursor
           ? {
-              id: cursor,
-            }
+            id: cursor,
+          }
+          : undefined,
+        orderBy: {
+          publishedAt: "desc",
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        // Remove the last item and use it as next cursor
+        const nextItem = items.pop();
+        if (nextItem) {
+          nextCursor = nextItem.id;
+        }
+      }
+
+      return {
+        items: items.reverse(),
+        nextCursor,
+      };
+    }),
+  publicProjects: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+        userId: z.string()
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+
+      const items = await prisma.project.findMany({
+        // select: defaultPostSelect,
+        // get an extra item at the end which we'll use as next cursor
+        take: limit + 1,
+        where: {
+          userId: input.userId,
+          public: true,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              color: true,
+              initial: true,
+              avatar: {
+                select: {
+                  id: true,
+                  publicUrl: true,
+                  path: true,
+                },
+              },
+            },
+          },
+          members: true,
+          playlist: {
+            include: {
+              _count: true,
+            },
+          },
+          _count: true,
+        },
+        cursor: cursor
+          ? {
+            id: cursor,
+          }
           : undefined,
         orderBy: {
           publishedAt: "desc",

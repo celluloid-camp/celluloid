@@ -6,8 +6,14 @@ concurrency:
 
 on:
   push:
-    branches: [staging, main]
+    tags:
+      - "v*"
+  release:
+    types: [published]
   workflow_dispatch:
+
+env:
+  POSTHOG_KEY: phc_A7cjBqRMmQE4Ursk2IdMFPaBLcxY2cTvouQQyDMkCvh
 
 jobs:
   build-containers:
@@ -15,46 +21,47 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref_name }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}/celluloid-web
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            # Add "staging" tag if version contains "-alpha"
+            type=raw,value=staging,enable=${{ contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') || github.ref_name == 'staging' }}
+          labels: |
+            org.opencontainers.image.title=${{ github.repository }}
+            org.opencontainers.image.description=Celluloid
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Declare some variables
-        id: vars
-        shell: bash
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Web Container
-        uses: docker/build-push-action@v3
+      - name: Build containers
+        uses: docker/bake-action@v5
+        env:
+          POSTHOG_KEY: ${{ env.POSTHOG_KEY }}
+          STAGE: ${{ contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') || github.ref_name == 'staging' && 'staging' || 'production' }}
         with:
-          file: ./Dockerfile
-          context: .
+          files: |
+            ./docker-bake.hcl
+            cwd://${{ steps.meta.outputs.bake-file }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/celluloid-web:${{github.ref_name}}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          target: "web"
-          build-args: |
-            COMMIT=${{ steps.vars.outputs.sha_short }}
-            DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
-
-      - name: Build Worker Container
-        uses: docker/build-push-action@v3
-        with:
-          file: ./Dockerfile
-          context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}/celluloid-worker:${{github.ref_name}}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          target: "worker"
-          build-args: |
-            COMMIT=${{ steps.vars.outputs.sha_short }}
-            DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+          targets: web,worker
+          set: |
+            *.args.VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            *.args.REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}

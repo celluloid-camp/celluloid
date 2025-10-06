@@ -1,12 +1,12 @@
 "use client";
+import { DialogTitle } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Suspense } from "react";
 import {
   StyledDialog,
   StyledDialogTitle,
 } from "@/components/common/styled-dialog";
-import { DialogTitle } from "@mui/material";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { Suspense } from "react";
 import { EditProjectDialogSkeleton } from "./edit-dialog-skeleton";
 import { EditProjectForm } from "./edit-project-form";
 

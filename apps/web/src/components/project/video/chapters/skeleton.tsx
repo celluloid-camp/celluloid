@@ -7,8 +7,8 @@ import {
   TimelineItem,
   TimelineOppositeContent,
   TimelineSeparator,
+  timelineOppositeContentClasses,
 } from "@mui/lab";
-import { timelineOppositeContentClasses } from "@mui/lab";
 import { Stack } from "@mui/material";
 
 export function ChapterListSkeleton() {

@@ -1,10 +1,8 @@
 "use client";
 import { Box, Button, Paper, Typography } from "@mui/material";
-
-import type React from "react";
-
-import { trpc } from "@/lib/trpc/client";
 import { useTranslations } from "next-intl";
+import type React from "react";
+import { trpc } from "@/lib/trpc/client";
 import { ProjectSummary } from "./details/summary";
 
 export function ShareProject({ projectId }: { projectId: string }) {

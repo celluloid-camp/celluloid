@@ -1,26 +1,15 @@
-import type { AnnotationByProjectId } from "@/lib/trpc/types";
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
-
-type ContextualPosition = {
-  relativeX: number;
-  relativeY: number;
-  x: number;
-  y: number;
-  parentWidth: number;
-  parentHeight: number;
-};
+import type { AnnotationByProjectId } from "@/lib/trpc/types";
 
 type AnnotationEditorState = {
   showHints: boolean;
   playerIsReady: boolean;
   contextualEditorVisible: boolean;
-  contextualPosition?: ContextualPosition;
   formVisible: boolean;
   editedAnnotation?: AnnotationByProjectId;
   // Actions
-  setContextualPosition: (position: ContextualPosition | undefined) => void;
   setHintsVisible: (visible: boolean) => void;
   setContextualEditorVisible: (visible: boolean) => void;
   setFormVisible: (visible: boolean) => void;
@@ -32,10 +21,6 @@ const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
   contextualEditorVisible: false,
   formVisible: false,
   editedAnnotation: undefined,
-  contextualPosition: undefined,
-
-  setContextualPosition: (position) =>
-    set((state) => ({ ...state, contextualPosition: position })),
 
   setHintsVisible: (visible) =>
     set((state) => ({
@@ -52,7 +37,6 @@ const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
       ...state,
       contextualEditorVisible: visible,
       showHints: false,
-      contextualPosition: visible ? state.contextualPosition : undefined,
     })),
 
   setFormVisible: (visible) =>
@@ -90,14 +74,6 @@ export const useContextualEditorVisibleState = () => {
     (state) => state.setContextualEditorVisible,
   );
   return [visible, setVisible] as const;
-};
-
-export const useContextualEditorPosition = () => {
-  const position = annotationEditorStore((state) => state.contextualPosition);
-  const setPosition = annotationEditorStore(
-    (state) => state.setContextualPosition,
-  );
-  return [position, setPosition] as const;
 };
 
 export const useAnnotationHintsVisible = () => {

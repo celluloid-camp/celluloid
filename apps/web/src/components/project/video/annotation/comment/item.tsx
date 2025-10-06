@@ -15,10 +15,11 @@ import {
 import { grey } from "@mui/material/colors";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
+import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 import * as React from "react";
 import { useState } from "react";
 import * as Yup from "yup";
-
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import { TransparentInput } from "@/components/common/transparent-input";
@@ -29,8 +30,7 @@ import type {
   AnnotationCommentByProjectId,
   ProjectById,
 } from "@/lib/trpc/types";
-import { useTranslations } from "next-intl";
-import { useSnackbar } from "notistack";
+
 interface CommentItemProps {
   user?: Partial<User>;
   project: ProjectById;

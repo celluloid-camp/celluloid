@@ -1,6 +1,5 @@
 import { auth } from "@celluloid/auth";
-import { appRouter } from "@celluloid/trpc";
-import { createTRPCContext } from "@celluloid/trpc";
+import { appRouter, createTRPCContext } from "@celluloid/trpc";
 import { headers } from "next/headers";
 import { createOpenApiFetchHandler } from "trpc-to-openapi";
 

@@ -1,13 +1,13 @@
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { Grid, IconButton, Stack, styled } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import Slider, { type SliderValueLabelProps } from "@mui/material/Slider";
 import Tooltip, {
-  tooltipClasses,
   type TooltipProps,
+  tooltipClasses,
 } from "@mui/material/Tooltip";
-import { grey } from "@mui/material/colors";
-import * as React from "react";
+import React from "react";
 
 import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
 import { formatDuration } from "@/utils/duration";
@@ -17,9 +17,10 @@ type DurationSliderProps = {
   startTime: number;
   stopTime: number;
   onChange: (start: number, stop: number) => void;
+  mono?: boolean;
 };
 
-const minDistance = 5;
+const minDistance = 1;
 
 const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -45,115 +46,168 @@ function ValueLabelComponent(props: SliderValueLabelProps) {
   );
 }
 
-export const DurationSlider: React.FC<DurationSliderProps> = ({
-  duration,
-  startTime = 60,
-  stopTime = 1000,
-  onChange,
-}) => {
-  const [value, setValue] = React.useState<number[]>([startTime, stopTime]);
+export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
+  ({ duration, startTime = 60, stopTime = 1000, mono = false, onChange }) => {
+    const [value, setValue] = React.useState<number | number[]>(
+      mono ? startTime : [startTime, stopTime],
+    );
+    const [lastActiveThumb, setLastActiveThumb] = React.useState<
+      number | undefined
+    >();
+    const dispatcher = useVideoPlayerSeekEvent();
 
-  const [lastActiveThumb, setLastActiveThumb] = React.useState<
-    number | undefined
-  >();
-
-  const dispatcher = useVideoPlayerSeekEvent();
-
-  const handleChange = (
-    _event: React.SyntheticEvent | Event,
-    newValue: number | number[],
-    activeThumb: number,
-  ) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
-
-    if (newValue[1] - newValue[0] < minDistance) {
-      if (activeThumb === 0) {
-        const clamped = Math.min(newValue[0], 100 - minDistance);
-        setValue([clamped, clamped + minDistance]);
+    // Sync value with mono/startTime/stopTime changes
+    React.useEffect(() => {
+      if (mono) {
+        setValue((prev) => (Array.isArray(prev) ? prev[0] : prev));
       } else {
-        const clamped = Math.max(newValue[1], minDistance);
-        setValue([clamped - minDistance, clamped]);
+        setValue((prev) => (Array.isArray(prev) ? prev : [prev, stopTime]));
       }
-    } else {
-      setValue(newValue as number[]);
-    }
-    setLastActiveThumb(activeThumb);
-    onChange(newValue[0], newValue[1]);
-  };
+    }, [mono, stopTime]);
 
-  const handleChangeCommitted = (
-    _event: React.SyntheticEvent | Event,
-    newValue: number | number[],
-  ) => {
-    if (lastActiveThumb !== undefined && Array.isArray(newValue)) {
-      const value = newValue[lastActiveThumb];
-      dispatcher({
-        time: value,
-      });
-    }
-  };
+    const handleChange = React.useCallback(
+      (
+        _event: React.SyntheticEvent | Event,
+        newValue: number | number[],
+        activeThumb?: number,
+      ) => {
+        if (mono) {
+          const singleValue = Array.isArray(newValue) ? newValue[0] : newValue;
+          setValue(singleValue);
+          onChange(singleValue, singleValue);
+          return;
+        }
+        if (!Array.isArray(newValue)) return;
+        if (newValue[1] - newValue[0] < minDistance) {
+          if (activeThumb === 0) {
+            const clamped = Math.min(newValue[0], 100 - minDistance);
+            setValue([clamped, clamped + minDistance]);
+            onChange(clamped, clamped + minDistance);
+          } else {
+            const clamped = Math.max(newValue[1], minDistance);
+            setValue([clamped - minDistance, clamped]);
+            onChange(clamped - minDistance, clamped);
+          }
+        } else {
+          setValue(newValue as number[]);
+          onChange(newValue[0], newValue[1]);
+        }
+        if (activeThumb !== undefined) setLastActiveThumb(activeThumb);
+      },
+      [mono, onChange],
+    );
 
-  return (
-    <Grid container spacing={2} alignItems="center">
-      <Stack direction={"row"}>
-        <IconButton
-          size="small"
-          color="secondary"
-          sx={{ p: 0 }}
-          onClick={(e) => handleChange(e, [value[0] - 1, value[1]], 0)}
-        >
-          <ArrowLeftIcon />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="secondary"
-          sx={{ p: 0 }}
-          onClick={(e) => handleChange(e, [value[0] + 1, value[1]], 0)}
-        >
-          <ArrowRightIcon />
-        </IconButton>
-      </Stack>
+    const handleChangeCommitted = React.useCallback(
+      (_event: React.SyntheticEvent | Event, newValue: number | number[]) => {
+        if (mono) {
+          const singleValue = Array.isArray(newValue) ? newValue[0] : newValue;
+          dispatcher({ time: singleValue });
+          return;
+        }
+        if (lastActiveThumb !== undefined && Array.isArray(newValue)) {
+          const commitValue = newValue[lastActiveThumb];
+          dispatcher({ time: commitValue });
+        }
+      },
+      [mono, dispatcher, lastActiveThumb],
+    );
 
-      <Grid item xs>
-        <Slider
-          getAriaLabel={() => "Annotation slider"}
-          value={value}
-          onChange={handleChange}
-          valueLabelFormat={formatDuration}
-          onChangeCommitted={handleChangeCommitted}
-          step={1}
-          size="small"
-          valueLabelDisplay="on"
-          min={0}
-          max={duration}
-          color="secondary"
-          disableSwap
-          slots={{
-            valueLabel: ValueLabelComponent,
-          }}
-          sx={{ mb: 1 }}
-        />
+    const currentValue = React.useMemo((): number[] => {
+      if (mono) {
+        const singleValue = value as number;
+        return [singleValue, singleValue];
+      }
+      return value as number[];
+    }, [mono, value]);
+
+    // Memoized arrow button handlers
+    const handleLeftMono = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(e, Math.max(0, currentValue[0] - 1)),
+      [handleChange, currentValue],
+    );
+    const handleRightMono = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(e, Math.min(duration, currentValue[0] + 1)),
+      [handleChange, currentValue, duration],
+    );
+    const handleLeftDual = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(e, [currentValue[0], Math.max(0, currentValue[1] - 1)], 1),
+      [handleChange, currentValue],
+    );
+    const handleRightDual = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(
+          e,
+          [currentValue[0], Math.min(duration, currentValue[1] + 1)],
+          1,
+        ),
+      [handleChange, currentValue, duration],
+    );
+
+    return (
+      <Grid container spacing={2} alignItems="center">
+        <Stack direction={"row"}>
+          <IconButton
+            size="small"
+            color="secondary"
+            sx={{ p: 0 }}
+            onClick={handleLeftMono}
+          >
+            <ArrowLeftIcon />
+          </IconButton>
+          <IconButton
+            size="small"
+            color="secondary"
+            sx={{ p: 0 }}
+            onClick={handleRightMono}
+          >
+            <ArrowRightIcon />
+          </IconButton>
+        </Stack>
+        <Grid item xs>
+          <Slider
+            getAriaLabel={React.useCallback(
+              () => (mono ? "Mono annotation slider" : "Annotation slider"),
+              [mono],
+            )}
+            value={value}
+            onChange={handleChange}
+            valueLabelFormat={formatDuration}
+            onChangeCommitted={handleChangeCommitted}
+            step={1}
+            size="small"
+            valueLabelDisplay="on"
+            min={0}
+            max={duration}
+            color="secondary"
+            disableSwap={!mono}
+            slots={{ valueLabel: ValueLabelComponent }}
+            sx={{ mb: 1 }}
+          />
+        </Grid>
+        {!mono && (
+          <Stack direction={"row"}>
+            <IconButton
+              size="small"
+              color="secondary"
+              sx={{ p: 0 }}
+              onClick={handleLeftDual}
+            >
+              <ArrowLeftIcon />
+            </IconButton>
+            <IconButton
+              size="small"
+              color="secondary"
+              sx={{ p: 0 }}
+              onClick={handleRightDual}
+            >
+              <ArrowRightIcon />
+            </IconButton>
+          </Stack>
+        )}
       </Grid>
-      <Stack direction={"row"}>
-        <IconButton
-          size="small"
-          color="secondary"
-          sx={{ p: 0 }}
-          onClick={(e) => handleChange(e, [value[0], value[1] - 1], 1)}
-        >
-          <ArrowLeftIcon />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="secondary"
-          sx={{ p: 0 }}
-          onClick={(e) => handleChange(e, [value[0], value[1] + 1], 1)}
-        >
-          <ArrowRightIcon />
-        </IconButton>
-      </Stack>
-    </Grid>
-  );
-};
+    );
+  },
+);

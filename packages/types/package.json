@@ -1,6 +1,7 @@
 {
   "name": "@celluloid/types",
-  "version": "3.0.0",
+  "version": "3.3.1-alpha.4",
+  "private": true,
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
@@ -14,6 +15,7 @@
     }
   },
   "scripts": {
+    "dev": "pkgroll dev",
     "build": "pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },

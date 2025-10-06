@@ -2,6 +2,7 @@
 
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 import type { FallbackProps } from "react-error-boundary";
 
 export const projectFallbackRender = ({
@@ -35,7 +36,7 @@ export const projectFallbackRender = ({
           >
             <ErrorOutlineIcon sx={{ color: "white", fontSize: 60, mb: 2 }} />
             <Typography variant="h6" sx={{ color: "white" }}>
-              {t("project.error.loading")}
+              Error Loading Project
             </Typography>
           </Box>
         </Grid>
@@ -88,10 +89,11 @@ export const projectFallbackRender = ({
                 <Grid item xs={12} md={8} lg={8}>
                   <Box sx={{ p: 2 }}>
                     <Typography variant="h5" color="error" sx={{ mb: 2 }}>
-                      {t("project.error.details.title")}
+                      Project Details Unavailable
                     </Typography>
                     <Typography variant="body1">
-                      {t("project.error.details.description")}
+                      We are unable to load the project details. Please try
+                      again later.
                     </Typography>
                   </Box>
                 </Grid>

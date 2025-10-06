@@ -1,17 +1,16 @@
+"use client";
 import { useParentSize } from "@cutting/use-get-parent-size";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Badge, Box, Fab, Paper, Tab, Tooltip } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useTranslations } from "next-intl";
 import type * as React from "react";
 import { useMemo, useRef, useState } from "react";
-
-import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-
 import type { User } from "@/lib/auth-client";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { useTranslations } from "next-intl";
+import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 import { AnnotationList } from "./annotation/annotation-list";
 import { useAnnotationHintsVisible } from "./annotation/useAnnotationEditor";
 import { ChaptersPanel } from "./chapters/panel";
