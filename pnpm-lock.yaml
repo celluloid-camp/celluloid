@@ -66,6 +66,9 @@ importers:
       '@types/node':
         specifier: ^22.14.1
         version: 22.15.31
+      conventional-changelog-conventionalcommits:
+        specifier: 8.0.0
+        version: 8.0.0
       git-format-staged:
         specifier: ^3.1.1
         version: 3.1.1
