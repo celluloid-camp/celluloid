@@ -102,7 +102,7 @@ export const Footer: React.FC<FooterProps> = (props) => {
                 })}
               </Typography>
               <Typography variant="body2" color="white">
-                {env.NEXT_PUBLIC_VERSION}
+                {env.NEXT_PUBLIC_VERSION} - {env.NEXT_PUBLIC_STAGE}
               </Typography>
             </Box>
           </Grid>

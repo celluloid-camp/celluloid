@@ -12,6 +12,9 @@ on:
     types: [published]
   workflow_dispatch:
 
+env:
+  POSTHOG_KEY: phc_A7cjBqRMmQE4Ursk2IdMFPaBLcxY2cTvouQQyDMkCvh
+
 jobs:
   build-containers:
     runs-on: ubuntu-latest
@@ -32,7 +35,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             # Add "staging" tag if version contains "-alpha"
-            type=raw,value=staging,enable=${{ contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') }}
+            type=raw,value=staging,enable=${{ contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') || github.ref_name == 'staging' }}
           labels: |
             org.opencontainers.image.title=${{ github.repository }}
             org.opencontainers.image.description=Celluloid
@@ -50,6 +53,9 @@ jobs:
 
       - name: Build containers
         uses: docker/bake-action@v5
+        env:
+          POSTHOG_KEY: ${{ env.POSTHOG_KEY }}
+          STAGE: ${{ contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') || github.ref_name == 'staging' && 'staging' || 'production' }}
         with:
           files: |
             ./docker-bake.hcl
