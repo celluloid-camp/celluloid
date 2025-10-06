@@ -36,6 +36,7 @@
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.1",
+    "conventional-changelog-conventionalcommits": "8.0.0",
     "git-format-staged": "^3.1.1",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
@@ -47,18 +48,17 @@
     "rimraf": "^6.0.1",
     "start-server-and-test": "^2.0.1",
     "tsup": "^8.3.0",
-    "turbo": "^2.5.0",
+    "turbo": "^2.5.8",
     "typescript": "catalog:",
-    "wait-port": "^1.1.0",
-    "conventional-changelog-conventionalcommits": "8.0.0"
+    "wait-port": "^1.1.0"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "dotenv": "^16.5.0",
-    "dotenv-cli": "^8.0.0",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^10.0.0",
     "node-fetch": "2"
   },
   "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
