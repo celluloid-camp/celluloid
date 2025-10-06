@@ -11,10 +11,15 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_VERSION: z.string().default("dev"),
     NEXT_PUBLIC_REVISION: z.string().default("dev"),
+
+    NEXT_PUBLIC_POSTHOG_KEY: z.string().default("xxx"),
+    NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://eu.i.posthog.com"),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_VERSION: process.env.NEXT_PUBLIC_VERSION,
     NEXT_PUBLIC_REVISION: process.env.NEXT_PUBLIC_REVISION,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },
   skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
   extends: [trpcEnv, prismaEnv, authEnv],

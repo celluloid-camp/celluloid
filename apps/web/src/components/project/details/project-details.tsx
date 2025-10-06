@@ -1,7 +1,9 @@
 import { Box, Container, Grid, Paper, Skeleton } from "@mui/material";
 import dynamic from "next/dynamic";
+import { useFeatureFlagEnabled } from "posthog-js/react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { env } from "@/env";
 import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
@@ -49,6 +51,7 @@ const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
 export function ProjectDetails({ projectId }: { projectId: string }) {
   const { data: session } = useSession();
   const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
+  const CelluloidStudioFlagEnabled = useFeatureFlagEnabled("celluloid-studio");
   return (
     <Box
       sx={{
@@ -96,7 +99,9 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
                   }
                 >
                   <ProjectTranscript project={project} user={session?.user} />
-                  <ProjectVision project={project} user={session?.user} />
+                  {CelluloidStudioFlagEnabled && (
+                    <ProjectVision project={project} user={session?.user} />
+                  )}
                 </Suspense>
               </ErrorBoundary>
             </Grid>

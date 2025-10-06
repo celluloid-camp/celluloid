@@ -29,6 +29,7 @@
     }
   },
   "scripts": {
+    "dev": "pkgroll dev",
     "build": "pnpm run generate && pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "setup": "pnpm db:push && pnpm migrate:init && migrate:deploy && pnpm generate",
@@ -54,15 +55,15 @@
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.50.0",
     "pkgroll": "^2.11.2",
-    "prisma": "^6.9.0",
+    "prisma": "^6.16.3",
     "rimraf": "^5.0.1",
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@prisma/client": "^6.9.0",
-    "prisma-json-types-generator": "^3.4.2",
-    "randomcolor": "^0.6.2",
+    "@prisma/client": "^6.16.3",
     "@types/randomcolor": "^0.5.7",
+    "prisma-json-types-generator": "^3.6.2",
+    "randomcolor": "^0.6.2",
     "tsx": "^4.19.1",
     "zod": "catalog:"
   },

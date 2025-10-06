@@ -9,6 +9,13 @@ variable "REVISION" {
   default = "dev"
 }
 
+variable "NEXT_PUBLIC_POSTHOG_KEY" {
+  default = "xxx"
+}
+variable "NEXT_PUBLIC_POSTHOG_HOST" {
+  default = "https://eu.i.posthog.com"
+}
+
 target "docker-metadata-action" {
   tags = ["web:latest"]
 }
@@ -25,6 +32,8 @@ target "web" {
   args = {
     VERSION  = "${VERSION}"
     REVISION = "${REVISION}"
+    NEXT_PUBLIC_POSTHOG_KEY = "${NEXT_PUBLIC_POSTHOG_KEY}"
+    NEXT_PUBLIC_POSTHOG_HOST = "${NEXT_PUBLIC_POSTHOG_HOST}"
   }
   push = true
 }

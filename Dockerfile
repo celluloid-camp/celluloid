@@ -26,6 +26,18 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
 
 FROM installer AS web-builder
 
+ARG VERSION
+ENV NEXT_PUBLIC_VERSION=${VERSION}
+
+ARG REVISION
+ENV NEXT_PUBLIC_REVISION=${REVISION}
+
+ARG NEXT_PUBLIC_DISABLE_STUDIO
+ENV NEXT_PUBLIC_DISABLE_STUDIO=${NEXT_PUBLIC_DISABLE_STUDIO}
+
+ARG NEXT_PUBLIC_POSTHOG_KEY
+ENV NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
+
 # Build the project
 COPY --from=builder /workspace/out/full/ .
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
@@ -50,15 +62,6 @@ WORKDIR /workspace
 
 # Install openssl in the runner stage
 RUN apk add --no-cache curl bash openssl openssl-dev wget
-
-ARG VERSION
-ENV NEXT_PUBLIC_VERSION=${VERSION}
-
-ARG REVISION
-ENV NEXT_PUBLIC_REVISION=${REVISION}
-
-ARG NODE_ENV
-ENV NODE_ENV=${NODE_ENV}
 
 ENV NEXT_TELEMETRY_DISABLED=1
 

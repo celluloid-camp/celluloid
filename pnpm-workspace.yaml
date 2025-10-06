@@ -4,26 +4,26 @@ packages:
 
 catalog:
   typescript: ^5.8.3
-  react: ^19.0.0
-  "react-dom": ^19.0.0
-  "@types/react": ^19.0.10
-  "@types/react-dom": ^19.0.4
+  react: ^19.2.0
+  react-dom: ^19.2.0
+  '@types/react': ^19.0.10
+  '@types/react-dom': ^19.0.4
   zod: ^3.23.8
   better-auth: ^1.2.4
-  "@t3-oss/env-core": ^0.12.0
+  '@t3-oss/env-core': ^0.12.0
 
 catalogs:
   react18:
     react: 18.2.0
     react-dom: 18.2.0
-    "@types/react": ^18.3.11
-    "@types/react-dom": ^18.3.1
+    '@types/react': ^18.3.11
+    '@types/react-dom': ^18.3.1
 
 onlyBuiltDependencies:
   - esbuild
-  - "@prisma/client"
-  - "@prisma/engines"
-  - "@tailwindcss/oxide"
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
   - canvas
   - prisma
   - sharp

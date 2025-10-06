@@ -112,15 +112,13 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
       [mono, dispatcher, lastActiveThumb],
     );
 
-    const getCurrentValue = React.useCallback((): number[] => {
+    const currentValue = React.useMemo((): number[] => {
       if (mono) {
         const singleValue = value as number;
         return [singleValue, singleValue];
       }
       return value as number[];
     }, [mono, value]);
-
-    const currentValue = getCurrentValue();
 
     // Memoized arrow button handlers
     const handleLeftMono = React.useCallback(
@@ -170,9 +168,10 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
         </Stack>
         <Grid item xs>
           <Slider
-            getAriaLabel={() =>
-              mono ? "Mono annotation slider" : "Annotation slider"
-            }
+            getAriaLabel={React.useCallback(
+              () => (mono ? "Mono annotation slider" : "Annotation slider"),
+              [mono],
+            )}
             value={value}
             onChange={handleChange}
             valueLabelFormat={formatDuration}

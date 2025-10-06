@@ -12,14 +12,17 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
   const client = new Mistral({ apiKey: apiKey });
 
   const prompt = `
-  You are a helpful assistant that converts captions to a transcript.
-  The captions are in the following format:
-  Important:
-  1- Do not include any other text than the transcript.
-  2 - Do not add any other text like "Here is the transcript" or "Transcript:" or anything like that.
-  3 - format the transcript to be more readable.
+  You are a transcript editor. Your task is to process raw video caption data and reformat it into a clean, highly readable transcript.
 
-  ${captions.entries.map((entry) => `${entry.text}`).join("\n")}
+  **Instructions:**
+  1.  Merge short caption lines into complete, grammatically correct sentences.
+  2.  Remove all timestamps and caption sequence numbers.
+  3.  Create new paragraphs for new speakers or significant pauses and topic shifts.
+  4.  Correct capitalization and punctuation.
+
+  **Strict Rule:** Your output must ONLY be the final transcript. Do not include any introductory text, titles, or explanations like "Here is the transcript."
+
+  ${JSON.stringify(captions.entries)}
   `;
   const chatResponse = await client.chat.stream({
     model: "mistral-large-latest",

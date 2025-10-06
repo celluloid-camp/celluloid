@@ -23,7 +23,7 @@
     "postinstall": "pnpm generate",
     "dev": "pkgroll dev",
     "build": "pkgroll build",
-    "generate": "pnpx orval --config ./orval.config.ts",
+    "generate": "pnpx orval --config ./orval.config.ts || true",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {

@@ -15,6 +15,7 @@
     }
   },
   "scripts": {
+    "dev": "pkgroll dev",
     "build": "pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
