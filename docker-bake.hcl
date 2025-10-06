@@ -13,6 +13,9 @@ variable "POSTHOG_KEY" {
   default = "xxx"
 }
 
+variable "STAGE" {
+  default = "dev"
+}
 target "docker-metadata-action" {
   tags = ["web:latest"]
 }
