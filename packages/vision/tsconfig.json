@@ -1,0 +1,10 @@
+{
+  "extends": "@celluloid/config/tsconfig/node16.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

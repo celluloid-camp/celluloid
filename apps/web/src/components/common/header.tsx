@@ -1,13 +1,11 @@
 "use client";
 import { AppBar, Box, type BoxProps, Button, Toolbar } from "@mui/material";
-import type * as React from "react";
-import { useTranslations } from "next-intl";
-import { LogoWithLabel } from "./logo-with-label";
-
-import { LanguageSwitch } from "./language-switch";
-import { useSession } from "@/lib/auth-client";
-
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import type * as React from "react";
+import { useSession } from "@/lib/auth-client";
+import { LanguageSwitch } from "./language-switch";
+import { LogoWithLabel } from "./logo-with-label";
 import { UserMenu } from "./user-menu";
 
 export const Header: React.FC<BoxProps> = ({ children }) => {

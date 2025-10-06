@@ -1,4 +1,3 @@
-import dayjs from "@/utils/dayjs";
 import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -24,25 +23,24 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useConfirm } from "material-ui-confirm";
+import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 import * as React from "react";
 import { useState } from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
+import type { User } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
 import type {
   AnnotationByProjectId,
   AnnotationCommentByProjectId,
   ProjectById,
 } from "@/lib/trpc/types";
+import dayjs from "@/utils/dayjs";
 import { formatDuration } from "@/utils/duration";
-
-import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
-import { useTranslations } from "next-intl";
 import { CommentForm } from "./comment/form";
 import { CommentItem } from "./comment/item";
 import { useEditAnnotation } from "./useAnnotationEditor";
-import { useSnackbar } from "notistack";
 
 interface AnnotationItemProps {
   project: ProjectById;

@@ -3,20 +3,16 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Grid, Switch, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
-
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useState } from "react";
-
-import { useSession } from "@/lib/auth-client";
 import * as Yup from "yup";
-
 import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
-import { ERR_ALREADY_EXISTING_PROJECT } from "@/i18n/errors";
-import { useHumanizeError } from "@/i18n/errors";
+import { ERR_ALREADY_EXISTING_PROJECT, useHumanizeError } from "@/i18n/errors";
+import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { PeerTubeVideoDataResult } from "@/services/peertube";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 
 export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
   const t = useTranslations();

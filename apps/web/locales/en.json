@@ -319,6 +319,17 @@
           "required": "Comment is required"
         }
       }
+    },
+    "vision": {
+      "button": {
+        "analyse": "Analyze Video"
+      },
+      "empty": "Video analysis not available.",
+      "failed": "Failed to analyse the video.",
+      "analyse": {
+        "in-progress": "Video analysis in progress..."
+      },
+      "title": "Video Analysis"
     }
   },
   "chapter": {

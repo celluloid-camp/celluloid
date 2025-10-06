@@ -1,7 +1,5 @@
 "use client";
 
-import ProjectsPanel from "@/components/admin/projects-panel";
-import UsersPanel from "@/components/admin/users-panel";
 import {
   Box,
   Container,
@@ -12,6 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import ProjectsPanel from "@/components/admin/projects-panel";
+import UsersPanel from "@/components/admin/users-panel";
 
 interface TabPanelProps {
   children?: React.ReactNode;

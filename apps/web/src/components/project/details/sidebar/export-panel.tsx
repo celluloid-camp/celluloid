@@ -1,11 +1,10 @@
 import { Button, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
 import { saveAs } from "file-saver";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
-
 import { trpc } from "@/lib/trpc/client";
 import type { ProjectById, UserMe } from "@/lib/trpc/types";
-import { useTranslations } from "next-intl";
 
 interface Props {
   project: ProjectById;

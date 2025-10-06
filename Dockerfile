@@ -1,9 +1,10 @@
-FROM node:20-alpine AS base
-ARG PNPM_VERSION=9.15.0
+FROM node:22-alpine AS base
+ARG PNPM_VERSION=10.12.1
 ENV CI=true
 ENV PNPM_HOME="/pnpm"
 ENV PATH="${PNPM_HOME}:${PATH}"
-RUN apk add --no-cache libc6-compat bash openssl openssl-dev
+RUN apk add --no-cache libc6-compat bash openssl openssl-dev python3 \
+    cairo-dev pango-dev giflib-dev pixman-dev jpeg-dev pangomm-dev libpng-dev build-base g++ pkgconfig
 RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 FROM base AS builder
@@ -24,6 +25,18 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
 
 
 FROM installer AS web-builder
+
+ARG VERSION
+ENV NEXT_PUBLIC_VERSION=${VERSION}
+
+ARG REVISION
+ENV NEXT_PUBLIC_REVISION=${REVISION}
+
+ARG POSTHOG_KEY
+ENV NEXT_PUBLIC_POSTHOG_KEY=${POSTHOG_KEY}
+
+ARG STAGE
+ENV NEXT_PUBLIC_STAGE=${STAGE}
 
 # Build the project
 COPY --from=builder /workspace/out/full/ .
@@ -50,11 +63,6 @@ WORKDIR /workspace
 # Install openssl in the runner stage
 RUN apk add --no-cache curl bash openssl openssl-dev wget
 
-ARG NEXT_PUBLIC_VERSION_TAG
-ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
-ARG NODE_ENV
-ENV NODE_ENV=${NODE_ENV}
-
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=web-builder /workspace/apps/web/.next/standalone .
@@ -80,6 +88,12 @@ FROM base AS worker
 RUN apk add --no-cache curl bash openssl openssl-dev ffmpeg wget
 
 WORKDIR /workspace
+
+ARG VERSION
+ENV VERSION=${VERSION}
+
+ARG REVISION
+ENV REVISION=${REVISION}
 
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}

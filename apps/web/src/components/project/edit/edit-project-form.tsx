@@ -1,7 +1,4 @@
 "use client";
-import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
-import { useHumanizeError } from "@/i18n/errors";
-import { trpc } from "@/lib/trpc/client";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { LoadingButton } from "@mui/lab";
@@ -17,10 +14,13 @@ import {
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { useConfirm } from "material-ui-confirm";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
+import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
+import { useHumanizeError } from "@/i18n/errors";
+import { trpc } from "@/lib/trpc/client";
 
 export function EditProjectForm({ projectId }: { projectId: string }) {
   const t = useTranslations();

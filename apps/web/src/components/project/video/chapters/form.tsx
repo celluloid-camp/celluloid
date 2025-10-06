@@ -1,15 +1,14 @@
-import { trpc } from "@/lib/trpc/client";
-import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import { Box, Button, ClickAwayListener, Fade, InputBase } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-
-import type { User } from "@/lib/auth-client";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import * as Yup from "yup";
+import type { User } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
+import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 import { ChapterTimestampSlider } from "./slider";
 
 type ChapterFormProps = {

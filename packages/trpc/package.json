@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/trpc",
-  "version": "3.0.0",
+  "version": "3.3.1-alpha.4",
   "private": true,
   "license": "MIT",
   "homepage": "https://celluloid.huma-num.fr",
@@ -22,11 +22,12 @@
   },
   "dependencies": {
     "@celluloid/auth": "workspace:*",
+    "@celluloid/vision": "workspace:*",
     "@celluloid/prisma": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@t3-oss/env-core": "catalog:",
-    "@trpc/server": "11.0.0-rc.840",
+    "@trpc/server": "^11.1.0",
     "bcryptjs": "^2.4.3",
     "better-auth": "catalog:",
     "dotenv": "^16.3.1",

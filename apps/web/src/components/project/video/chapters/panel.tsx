@@ -1,11 +1,11 @@
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById } from "@/lib/trpc/types";
 import { Stack } from "@mui/material";
 import type * as React from "react";
-
-import type { User } from "@/lib/auth-client";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+
+import type { User } from "@/lib/auth-client";
+import { trpc } from "@/lib/trpc/client";
+import type { ProjectById } from "@/lib/trpc/types";
 import { ChapterForm } from "./form";
 import { ChaptersJobInProgress } from "./in-progress";
 import { CreateChaptersJob } from "./job";

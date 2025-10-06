@@ -1,3 +1,4 @@
+import "./types";
 import PrismaModule, { type Prisma, PrismaClient } from "@prisma/client";
 import randomColor from "randomcolor";
 import { env } from "./env";
@@ -32,29 +33,6 @@ const prismaClientSingleton = () => {
           },
         },
       },
-      annotation: {
-        extra: {
-          needs: { extra: true },
-          compute(a) {
-            if (
-              a.extra &&
-              typeof a.extra === "object" &&
-              "x" in a.extra
-            ) {
-              const extraObject = a.extra as Prisma.JsonObject;
-              return {
-                x: extraObject.x,
-                y: extraObject.y,
-                relativeX: extraObject.relativeX,
-                relativeY: extraObject.relativeY,
-                parentWidth: extraObject.parentWidth,
-                parentHeight: extraObject.parentHeight,
-              };
-            }
-            return null;
-          },
-        },
-      },
     },
   });
 };
@@ -74,3 +52,5 @@ export { prisma };
 export * from "@prisma/client";
 
 export default PrismaModule;
+
+export type AnnotationShape = PrismaJson.AnnotationShape;

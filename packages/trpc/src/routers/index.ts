@@ -13,6 +13,7 @@ import { projectRouter } from "./project";
 import { storageRouter } from "./storage";
 import { transcriptRouter } from "./transcript";
 import { userRouter } from "./user";
+import { visionRouter } from "./vision";
 
 export const appRouter = router({
   healthcheck: publicProcedure
@@ -30,6 +31,7 @@ export const appRouter = router({
   admin: adminRouter,
   note: noteRouter,
   transcript: transcriptRouter,
+  vision: visionRouter,
 });
 
 export type AppRouter = typeof appRouter;

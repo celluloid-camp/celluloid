@@ -11,15 +11,14 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useConfirm } from "material-ui-confirm";
+import { useTranslations } from "next-intl";
 import * as React from "react";
 import { useState } from "react";
-
 import { EditableText } from "@/components/common/editable-text";
-
 import type { User } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
-import { useTranslations } from "next-intl";
+
 interface ChapterItemProps {
   project: ProjectById;
   chapter: ChapterByProjectId;

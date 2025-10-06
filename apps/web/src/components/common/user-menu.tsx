@@ -1,13 +1,12 @@
 import { IconButton, Menu, MenuItem, Skeleton } from "@mui/material";
 import Button from "@mui/material/Button";
-import * as React from "react";
-
-import { type User, signOut, useSession } from "@/lib/auth-client";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Avatar } from "./avatar";
+import { useTranslations } from "next-intl";
+import * as React from "react";
 import { useState } from "react";
+import { signOut, type User, useSession } from "@/lib/auth-client";
+import { Avatar } from "./avatar";
 
 export const UserMenu = () => {
   const router = useRouter();

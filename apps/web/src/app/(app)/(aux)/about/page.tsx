@@ -1,14 +1,13 @@
-import { OpenEditionLogo } from "@/images/OpenEdition";
 import { Box, Grid, Link, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type * as React from "react";
-
 import mshparisnordLogo from "@/images/about/hsmparisnord_100px.jpg";
 import logoFsm from "@/images/about/logo-fsm.jpg";
 import logoHN from "@/images/about/logo-huma-num.jpg";
 import logoIcp from "@/images/about/logo-icp.jpg";
 import logoLp from "@/images/about/logo-lp.png";
+import { OpenEditionLogo } from "@/images/OpenEdition";
 
 export default function About() {
   const t = useTranslations();

@@ -1,7 +1,3 @@
-import { Avatar } from "@/components/common/avatar";
-import type { User } from "@/lib/auth-client";
-import type { ProjectById } from "@/lib/trpc/types";
-import dayjs from "@/utils/dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PublicIcon from "@mui/icons-material/Public";
@@ -12,14 +8,18 @@ import {
   CardContent,
   CardHeader,
   Chip,
+  colors,
   IconButton,
   Stack,
   Typography,
-  colors,
 } from "@mui/material";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type * as React from "react";
+import { Avatar } from "@/components/common/avatar";
+import type { User } from "@/lib/auth-client";
+import type { ProjectById } from "@/lib/trpc/types";
+import dayjs from "@/utils/dayjs";
 
 interface Props {
   project: ProjectById;

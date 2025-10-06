@@ -11,15 +11,14 @@ import {
   TextField,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import {
-  type PeerTubeVideoDataResult,
   getPeerTubeVideoData,
+  type PeerTubeVideoDataResult,
 } from "@/services/peertube";
-import { useTranslations } from "next-intl";
 
 type PeerTubeVideoUrlFormProps = {
   onLoaded: (data: PeerTubeVideoDataResult | null) => void;

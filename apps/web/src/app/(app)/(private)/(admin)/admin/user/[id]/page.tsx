@@ -1,6 +1,6 @@
+import { Suspense } from "react";
 import { UserDetails } from "@/components/admin/details/user";
 import { trpc } from "@/lib/trpc/server";
-import { Suspense } from "react";
 import UserPageLoading from "./loading";
 
 export default async function UserPage({

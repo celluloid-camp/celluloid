@@ -1,5 +1,4 @@
 "use client";
-import { authClient } from "@/lib/auth-client";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
@@ -11,10 +10,11 @@ import {
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
-import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
+import { authClient } from "@/lib/auth-client";
 import { StyledDialogTitle } from "../common/styled-dialog";
 
 export function OtpForm() {

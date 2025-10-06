@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface SearchFilterProps {
   onFilterChange: (value: string) => void;

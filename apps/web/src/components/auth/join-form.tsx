@@ -8,13 +8,12 @@ import {
   Typography,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { isTRPCClientError, trpc } from "@/lib/trpc/client";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useSnackbar } from "notistack";
 import { StyledDialogTitle } from "../common/styled-dialog";
 
 export function JoinForm() {

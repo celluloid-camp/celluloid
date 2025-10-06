@@ -1,11 +1,3 @@
-import type { ChapterByProjectId, ProjectById } from "@/lib/trpc/types";
-import { Box, Stack, Typography } from "@mui/material";
-import Image from "mui-image";
-import type * as React from "react";
-
-import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
-import type { User } from "@/lib/auth-client";
-import { formatDuration } from "@/utils/duration";
 import {
   Timeline,
   TimelineConnector,
@@ -16,6 +8,14 @@ import {
   TimelineSeparator,
   timelineOppositeContentClasses,
 } from "@mui/lab";
+import { Box, Stack, Typography } from "@mui/material";
+import Image from "mui-image";
+import type * as React from "react";
+
+import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
+import type { User } from "@/lib/auth-client";
+import type { ChapterByProjectId, ProjectById } from "@/lib/trpc/types";
+import { formatDuration } from "@/utils/duration";
 import { EmptyChapters } from "./empty";
 import { ChapterItem } from "./list-item";
 

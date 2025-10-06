@@ -3,9 +3,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Autocomplete,
   type AutocompleteProps,
+  styled,
   TextField,
   type TextFieldProps,
-  styled,
 } from "@mui/material";
 
 interface TagProps extends ReturnType<AutocompleteGetTagProps> {

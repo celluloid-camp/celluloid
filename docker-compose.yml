@@ -1,5 +1,3 @@
-version: "3.5"
-
 networks:
   local:
     driver: bridge
@@ -10,22 +8,22 @@ volumes:
   minio_data:
 
 services:
-  postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: celluloid
-    volumes:
-      - ./.data:/var/lib/postgresql/data
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "5432:5432"
-    restart: unless-stopped
-    healthcheck:
-      test: "pg_isready -h 127.0.0.1 -U postgres -d celluloid"
-    networks:
-      - local
+  # postgres:
+  #   image: postgres:13
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: root
+  #     POSTGRES_DB: celluloid
+  #   volumes:
+  #     - ./.data:/var/lib/postgresql/data
+  #     - /etc/localtime:/etc/localtime:ro
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: "pg_isready -h 127.0.0.1 -U postgres -d celluloid"
+  #   networks:
+  #     - local
 
   minio:
     restart: unless-stopped
@@ -60,12 +58,12 @@ services:
     networks:
       - local
 
-  redis:
-    image: redis:6-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis:/redis:/data
-    networks:
-      - local
+  # redis:
+  #   image: redis:6-alpine
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis:/redis:/data
+  #   networks:
+  #     - local

@@ -1,8 +1,7 @@
 import InfoIcon from "@mui/icons-material/Info";
 import { Grow, Stack, Typography } from "@mui/material";
-import type * as React from "react";
-
 import { useTranslations } from "next-intl";
+import type * as React from "react";
 
 export function EmptyAnnotation() {
   const t = useTranslations();

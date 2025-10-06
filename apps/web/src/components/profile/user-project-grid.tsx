@@ -1,10 +1,9 @@
 "use client";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-
+import { useTranslations } from "next-intl";
 import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { trpc } from "@/lib/trpc/client";
-import { useTranslations } from "next-intl";
 import { StyledTitle } from "../common/typography";
 
 export const UserProjectGrid: React.FC = () => {

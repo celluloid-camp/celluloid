@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/prisma",
-  "version": "3.0.0",
+  "version": "3.3.1-alpha.4",
   "license": "MIT",
   "private": true,
   "homepage": "https://celluloid.huma-num.fr",
@@ -20,16 +20,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./types": {
+      "import": "./src/types.ts"
+    },
     "./env": {
       "types": "./dist/env.d.ts",
       "import": "./dist/env.js"
     }
   },
-  "prisma": {
-    "schema": "schema.prisma",
-    "seed": "tsx src/seed.ts"
-  },
   "scripts": {
+    "dev": "pkgroll dev",
     "build": "pnpm run generate && pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "setup": "pnpm db:push && pnpm migrate:init && migrate:deploy && pnpm generate",
@@ -42,13 +42,9 @@
     "seed": "tsx src/seed.ts",
     "generate": "pnpm prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
-    "prebuild": "pnpm run generate",
-    "predev": "pnpm run generate",
+    "postinstall": "pnpm run generate",
     "studio": "pnpm prisma studio",
-    "prisma": "pnpx prisma",
-    "update-metadata": "tsx ./src/update-metadata.ts",
-    "migrate-sharecode": "tsx ./src/migrate-sharecode.ts",
-    "tsx": "tsx"
+    "prisma": "pnpx prisma"
   },
   "devDependencies": {
     "@celluloid/config": "workspace:*",
@@ -56,18 +52,23 @@
     "@faker-js/faker": "^9.7.0",
     "@types/dotenv": "^6.0.0",
     "@types/node-fetch": "^2.6.7",
-    "@types/randomcolor": "^0.5.7",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.50.0",
     "pkgroll": "^2.11.2",
-    "prisma": "^6.0.1",
+    "prisma": "^6.16.3",
     "rimraf": "^5.0.1",
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.1",
+    "@prisma/client": "^6.16.3",
+    "@types/randomcolor": "^0.5.7",
+    "prisma-json-types-generator": "^3.6.2",
     "randomcolor": "^0.6.2",
     "tsx": "^4.19.1",
     "zod": "catalog:"
+  },
+  "prisma": {
+    "schema": "schema.prisma",
+    "seed": "tsx src/seed.ts"
   }
 }

@@ -1,13 +1,13 @@
 "use client";
-import { authClient, signUp } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
 import { Alert, DialogActions, DialogContent, Divider } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { authClient, signUp } from "@/lib/auth-client";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
 

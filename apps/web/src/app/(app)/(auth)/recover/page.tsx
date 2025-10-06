@@ -1,5 +1,5 @@
-import { RecoverForm } from "@/components/auth/recover-form";
 import { Paper } from "@mui/material";
+import { RecoverForm } from "@/components/auth/recover-form";
 
 export default async function RecoverPage({
   searchParams,

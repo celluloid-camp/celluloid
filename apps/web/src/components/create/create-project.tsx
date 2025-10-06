@@ -1,15 +1,13 @@
 "use client";
 
 import { Box, Paper } from "@mui/material";
-
+import { useTranslations } from "next-intl";
 import React, { useCallback, useState } from "react";
-
 import { StyledTitle } from "@/components/common/typography";
 import type {
   PeerTubeVideoDataResult,
   PeerTubeVideoWithThumbnail,
 } from "@/services/peertube";
-import { useTranslations } from "next-intl";
 import { AddVideoToPlaylistDialog } from "./add-video-to-playlist-dialog";
 import { CreateProjectForm } from "./create-project-form";
 import { PeerTubeUrlInput } from "./peertube-url-input";

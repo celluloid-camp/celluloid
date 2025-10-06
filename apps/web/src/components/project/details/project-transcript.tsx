@@ -1,7 +1,7 @@
 "use client";
 
-import type { ProjectById } from "@/lib/trpc/types";
 import { Download as DownloadIcon } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -11,20 +11,19 @@ import {
   CardHeader,
   CircularProgress,
   Collapse,
+  colors,
   IconButton,
   Typography,
-  colors,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { FallbackProps } from "react-error-boundary";
 import Markdown from "react-markdown";
-
+import { StyledMarkdown } from "@/components/common/markdown";
 import type { User } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
-import { LoadingButton } from "@mui/lab";
-import { useQueryClient } from "@tanstack/react-query";
-import type { FallbackProps } from "react-error-boundary";
-import { StyledMarkdown } from "@/components/common/markdown";
+import type { ProjectById } from "@/lib/trpc/types";
 
 interface Props {
   project: ProjectById;
@@ -41,16 +40,23 @@ export function ProjectTranscript({ project, user }: Props) {
   const mutation = trpc.transcript.generate.useMutation({
     onSettled: () => {
       utils.project.byId.invalidate({ id: project.id });
+      utils.transcript.byProjectId.invalidate({ projectId: project.id });
     },
   });
+
+  const { transcriptJob, isTranscriptInProgress } = useMemo(() => {
+    const transcriptJob = project.jobs.find((job) => job.type === "transcript");
+    return {
+      transcriptJob,
+      isTranscriptInProgress: transcriptJob
+        ? transcriptJob.queueJob?.progress !== 100
+        : false,
+    };
+  }, [project.jobs]);
 
   if (!data && !user) {
     return null;
   }
-
-  const isTranscriptInProgress =
-    project.jobs.find((job) => job.type === "transcript")?.queueJob?.progress !=
-    100;
 
   const canGenerateTranscript =
     (user?.role === "ADMIN" || user?.id === project.userId) &&

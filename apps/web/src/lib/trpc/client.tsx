@@ -1,12 +1,12 @@
 "use client";
-import { env } from "@/env";
 import type { AppRouter } from "@celluloid/trpc";
 import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { TRPCClientError, httpBatchLink, loggerLink } from "@trpc/client";
+import { httpBatchLink, loggerLink, TRPCClientError } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import SuperJSON from "superjson";
+import { env } from "@/env";
 import { makeQueryClient } from "./query-client";
 
 export const trpc = createTRPCReact<AppRouter>();

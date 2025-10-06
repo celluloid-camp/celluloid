@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
-import Markdown from "react-markdown";
 import { memo } from "react";
+import Markdown from "react-markdown";
 
 export const StyledMarkdown = memo(({ content }: { content: string }) => {
   return (

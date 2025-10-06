@@ -317,6 +317,16 @@
           "required": "Commentaire est obligatoire"
         }
       }
+    },
+    "vision": {
+      "button": {
+        "analyse": "Analyser la vidéo"
+      },
+      "empty": "Analyse vidéo non disponible.",
+      "analyse": {
+        "in-progress": "Analyse vidéo en cours..."
+      },
+      "title": "Analyse vidéo"
     }
   },
   "chapter": {

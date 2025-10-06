@@ -34,7 +34,8 @@ section[data-css="sidebar-resources"] {
 
 @font-face {
   font-family: "lexendregular";
-  src: url("fonts/lexend-variablefont_wght-webfont.woff2") format("woff2"),
+  src:
+    url("fonts/lexend-variablefont_wght-webfont.woff2") format("woff2"),
     url("fonts/lexend-variablefont_wght-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;

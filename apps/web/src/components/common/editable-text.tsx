@@ -5,15 +5,14 @@ import {
   Box,
   IconButton,
   Stack,
+  styled,
   TextField,
   type TextFieldProps,
   Typography,
   type TypographyProps,
-  styled,
 } from "@mui/material";
 import { useClickAway } from "@uidotdev/usehooks";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface EditableTextProps {
   value?: string | null;

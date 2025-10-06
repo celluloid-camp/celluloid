@@ -4,9 +4,7 @@ import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
-
-import { trpc } from "@/lib/trpc/client";
-import { isTRPCClientError } from "@/lib/trpc/client";
+import { isTRPCClientError, trpc } from "@/lib/trpc/client";
 
 import SettingsTabPanel from "./settings-tab-panel";
 import UploadAvatar from "./upload-avatar";

@@ -1,6 +1,6 @@
+import { Box } from "@mui/material";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
-import { Box } from "@mui/material";
 
 export default function Layout({
   modal,

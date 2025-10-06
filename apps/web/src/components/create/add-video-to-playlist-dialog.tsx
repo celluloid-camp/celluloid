@@ -11,14 +11,13 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import * as Yup from "yup";
-
 import {
-  type PeerTubeVideoWithThumbnail,
   getPeerTubeVideoData,
+  type PeerTubeVideoWithThumbnail,
 } from "@/services/peertube";
-import { useTranslations } from "next-intl";
 
 export type AddVideoToPlaylistDialogProps = DialogProps & {
   onClose: () => void;
