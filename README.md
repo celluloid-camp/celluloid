@@ -44,21 +44,6 @@ Celluloid is designed to run on a Linux server. Proficiency with the command-lin
 
 The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html), so Pnpm is required to leverage [pnpm workspace](https://pnpm.io/workspaces).
 
-```
-.
-├── apps/                # Main application containers
-│   ├── frontend/        # Frontend application code
-├── packages/            # Shared packages
-│   ├── i18n/            # Internationalization settings and translations
-│   ├── auth/            # Authentication settings
-│   ├── db/              # Prisma ORM configurations and schema
-│   ├── api/             # tRPC settings and utilities
-│   ├── types/           # Shared TypeScript types
-│   └── utils/           # Shared utilities
-├── tests/               # Test scripts and test-related utilities
-├── packages.json        # Package manifest
-└── .env                 # Environment variables
-```
 
 # Deploy in production
 We provide a complete docker stack [stack.yml](stack.yml) ready to use :
@@ -99,11 +84,6 @@ you can use this docker compose file to start a all services required to run the
 ```bash
 docker compose -f docker-compose.yml up
 ```
-
-### 📬 Emails
-
-A functioning SMTP server is necessary for sending account confirmation emails.
-we've configured Nodemailer to use [ethereal.email](https://ethereal.email) to catch all development emails, and regular SMTP in production (easy to replace with a different provider thanks to Nodemailer)
 
 ### 🗂️ Storage
 
