@@ -38,16 +38,20 @@ export function PeerTubeUrlInput({
       .string()
       .url(t("project.create.url.not-valid"))
       .min(1, t("project.create.url.required")),
-    error: z.any().nullable(),
   });
 
   type FormValues = z.infer<typeof formSchema>;
 
-  const form = useForm<FormValues>({
+  const {
+    register,
+    formState: { errors, isSubmitted, isValid },
+    setError,
+    reset,
+    handleSubmit,
+  } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       url: url,
-      error: null,
     },
   });
 
@@ -75,7 +79,7 @@ export function PeerTubeUrlInput({
   // }, [data, reset, isSubmitted]);
 
   const handleReset = () => {
-    form.reset();
+    reset();
     onReset();
     onLoaded(null);
   };
@@ -85,22 +89,26 @@ export function PeerTubeUrlInput({
       const data = await mutation.mutateAsync(values.url);
       onLoaded(data);
     } catch (e) {
-      form.setValue("error", t("project.create.error.video-info-failed"));
-      form.reset();
+      console.log("error", e);
+      setError(
+        "url",
+        { message: t("project.create.url.not-valid"), type: "focus" },
+        { shouldFocus: true },
+      );
     }
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <TextField
-        {...form.register("url")}
+        {...register("url")}
         label={t("home.addVideo")}
         fullWidth
         margin="normal"
         placeholder={t("home.addVideo") || ""}
-        disabled={form.formState.isSubmitted && form.formState.isValid}
-        error={Boolean(form.formState.errors.url)}
-        helperText={form.formState.errors.url?.message}
+        disabled={isSubmitted && isValid}
+        error={Boolean(errors.url)}
+        helperText={errors.url?.message}
         sx={{ borderRadius: 20 }}
         InputProps={{
           startAdornment: (
@@ -109,7 +117,7 @@ export function PeerTubeUrlInput({
             </InputAdornment>
           ),
           endAdornment:
-            form.formState.isSubmitted && form.formState.isValid ? (
+            isSubmitted && isValid ? (
               <InputAdornment position="end">
                 <IconButton onClick={handleReset} edge="end">
                   <ClearIcon />
@@ -118,7 +126,7 @@ export function PeerTubeUrlInput({
             ) : (
               <IconButton
                 data-testid="submit-url"
-                onClick={form.handleSubmit(onSubmit)}
+                onClick={handleSubmit(onSubmit)}
                 color="primary"
                 edge="end"
               >
@@ -130,11 +138,6 @@ export function PeerTubeUrlInput({
           "data-testid": "url",
         }}
       />
-      {form.formState.errors.error && (
-        <Alert severity="error" sx={{ borderRadius: 0, mt: 0 }}>
-          {JSON.stringify(form.formState.errors.error)}
-        </Alert>
-      )}
     </form>
   );
 }

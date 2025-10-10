@@ -758,5 +758,11 @@
       "success": "Comment deleted",
       "error": "Error deleting comment, please try again."
     }
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "retry": "Try again",
+    "goHome": "Go to home"
   }
 }

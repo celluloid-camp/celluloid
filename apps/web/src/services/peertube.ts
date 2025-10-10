@@ -23,8 +23,7 @@ export const getPeerTubeVideoData = async (
   try {
     parsed = new URL(url);
   } catch (e) {
-    //throw new Error("Invalid URL provided.");
-    return null;
+    throw new Error("Invalid URL provided.");
   }
 
   const host = parsed.host;
@@ -55,19 +54,19 @@ export const getPeerTubeVideoData = async (
       apiURL: apiUrl,
       videos: isPlaylist
         ? data.data.map((d: Playlist) => ({
-            ...d.video,
-            duration: d.video.duration,
-            thumbnailURL: `https://${host}${d.video.thumbnailPath}`,
-            metadata: d.video,
-          }))
+          ...d.video,
+          duration: d.video.duration,
+          thumbnailURL: `https://${host}${d.video.thumbnailPath}`,
+          metadata: d.video,
+        }))
         : [
-            {
-              ...data,
-              duration: data.duration,
-              thumbnailURL: `https://${host}${data.thumbnailPath}`,
-              metadata: data,
-            },
-          ],
+          {
+            ...data,
+            duration: data.duration,
+            thumbnailURL: `https://${host}${data.thumbnailPath}`,
+            metadata: data,
+          },
+        ],
       _raw: data,
     };
   }
