@@ -746,5 +746,11 @@
       "success": "Commentaire supprimé",
       "error": "Erreur lors de la suppression du commentaire, veuillez réessayer."
     }
+  },
+  "error": {
+    "title": "Une erreur s'est produite",
+    "description": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "retry": "Essayer à nouveau",
+    "goHome": "retour à l'accueil"
   }
 }
