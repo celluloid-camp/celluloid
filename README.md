@@ -84,7 +84,7 @@ You will need a working [PostgreSQL server](https://www.postgresql.org/docs/curr
 you can use this docker compose file to start a all services required to run the project :
 
 ```bash
-docker compose -f docker-compose.yml up
+docker compose up
 ```
 
 ### 🗂️ Storage

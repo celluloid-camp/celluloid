@@ -29,7 +29,7 @@
     }
   },
   "scripts": {
-    "dev": "pkgroll dev",
+    "dev": "pkgroll dev && prisma migrate deploy",
     "build": "pnpm run generate && pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "setup": "pnpm db:push && pnpm migrate:init && migrate:deploy && pnpm generate",
@@ -43,8 +43,7 @@
     "generate": "pnpm prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
     "postinstall": "pnpm run generate",
-    "studio": "pnpm prisma studio",
-    "prisma": "pnpx prisma"
+    "studio": "prisma studio"
   },
   "devDependencies": {
     "@celluloid/config": "workspace:*",
