@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
@@ -10,10 +11,10 @@ import {
   TextField,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import {
   getPeerTubeVideoData,
   type PeerTubeVideoWithThumbnail,
@@ -28,63 +29,81 @@ export const AddVideoToPlaylistDialog: React.FC<
 > = ({ onClose, onAddVideo, ...props }) => {
   const t = useTranslations();
 
-  const validationSchema = Yup.object().shape({
-    data: Yup.object(),
-    url: Yup.string()
-      .url(t("project.create.url.not-valid") || "")
-      .required(t("project.create.url.required") || ""),
+  const schema = z.object({
+    url: z
+      .string()
+      .min(1, t("project.create.url.required") || "")
+      .url(t("project.create.url.not-valid") || ""),
+    data: z.custom<PeerTubeVideoWithThumbnail | null>(),
   });
 
-  const formik = useFormik({
-    initialValues: {
-      url: "",
-      data: null,
-    },
-    validationSchema: validationSchema,
-    validateOnBlur: true,
-    validateOnMount: false,
-    onSubmit: (values) => {
-      if (values.data) {
-        onAddVideo(values.data as PeerTubeVideoWithThumbnail);
-        onClose();
-      }
+  type FormValues = z.infer<typeof schema>;
 
-      handleReset();
-    },
-    onReset: () => {
-      // onAddVideo(null);
-    },
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    setError,
+    reset,
+    watch,
+    formState: { errors, isValid, touchedFields },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: { url: "", data: null },
   });
+
+  const url = watch("url");
 
   const query = useQuery({
-    queryKey: ["getAddPeerTubeVideo", formik.values.url],
-    queryFn: () => getPeerTubeVideoData(formik.values.url),
-    enabled: formik.errors.url == null,
-    select: (data) => {
-      if (data?.videos) {
-        formik.setFieldValue("data", data.videos[0]);
-        formik.setFieldTouched("data");
-      }
-      return data;
-    },
+    queryKey: ["getAddPeerTubeVideo", url],
+    queryFn: () => getPeerTubeVideoData(url),
+    enabled: !errors.url && Boolean(url),
   });
 
   useEffect(() => {
-    if (query.error) {
-      formik.setFieldError(
-        "url",
-        t("project.create.error.video-info-failed") || "",
-      );
+    const data = query.data as
+      | { videos?: PeerTubeVideoWithThumbnail[] }
+      | undefined;
+    const next = data?.videos?.[0];
+    if (next) {
+      const current =
+        (watch("data") as PeerTubeVideoWithThumbnail | null) || null;
+      if (!current || (current as any).uuid !== (next as any).uuid) {
+        setValue("data", next, {
+          shouldDirty: false,
+          shouldTouch: true,
+          shouldValidate: false,
+        });
+      }
     }
-  }, [query.error, formik, t]);
+  }, [query.data, setValue, watch]);
+
+  useEffect(() => {
+    if (query.error) {
+      setError("url", {
+        type: "server",
+        message: t("project.create.error.video-info-failed") || "",
+      });
+    }
+  }, [query.error, setError, t]);
 
   const handleReset = () => {
-    formik.resetForm();
+    reset();
   };
 
   return (
     <Dialog onClose={onClose} fullWidth {...props}>
-      <form onSubmit={formik.handleSubmit}>
+      <form
+        onSubmit={handleSubmit((values) => {
+          if (values.data) {
+            onAddVideo(values.data as PeerTubeVideoWithThumbnail);
+            onClose();
+          }
+          handleReset();
+        })}
+      >
         <DialogTitle>{t("project.add-related-video")}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -98,11 +117,9 @@ export const AddVideoToPlaylistDialog: React.FC<
             placeholder={t("home.addVideo") || ""}
             type="url"
             fullWidth
-            value={formik.values.url}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.url && Boolean(formik.errors.url)}
-            helperText={formik.touched.url && formik.errors.url}
+            {...register("url")}
+            error={Boolean(touchedFields.url) && Boolean(errors.url)}
+            helperText={Boolean(touchedFields.url) && errors.url?.message}
             sx={{ borderRadius: 20 }}
           />
         </DialogContent>
@@ -116,7 +133,7 @@ export const AddVideoToPlaylistDialog: React.FC<
             color="primary"
             type="submit"
             loading={query.isFetching}
-            disabled={!formik.isValid}
+            disabled={!isValid}
           >
             {t("project.cancel-add-video")}
           </LoadingButton>
