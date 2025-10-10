@@ -4,6 +4,6 @@
   "recommendations": [
     "editorconfig.editorconfig",
     "Prisma.prisma",
-    "inlang.vs-code-extension"
+    "loccy.loccy"
   ]
 }

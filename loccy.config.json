@@ -1,0 +1,41 @@
+// https://loccy.dev - AI-powered IDE extension to manage i18n with ease
+{
+  "resources": {
+    "paths": {
+      "include": [
+        "apps/web/locales/**/*.json"
+      ],
+      "exclude": []
+    },
+    "file": {
+      "structure": "nested",
+      "sortKeys": "no"
+    }
+  },
+  "usages": {
+    "paths": {
+      "include": [
+        "**/*.{js,ts,jsx,tsx}"
+      ],
+      "exclude": []
+    },
+    "tFunction": {
+      "preset": "next-intl",
+      "customFunctionNames": []
+    },
+    "detectKeysInStrings": true,
+    "quoteType": "single"
+  },
+  "ai": {
+    "translations": {
+      "autoConsistency": true,
+      "customInstructions": "",
+      "customInstructionsPerLocale": {}
+    },
+    "keypaths": {
+      "autoConsistency": true,
+      "customInstructions": ""
+    },
+    "useCodeContext": true
+  }
+}

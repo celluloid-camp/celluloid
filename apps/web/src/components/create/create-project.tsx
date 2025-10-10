@@ -21,17 +21,7 @@ export const CreateProjectPage: React.FC = () => {
 
   const handleVideoInfoLoaded = (data: PeerTubeVideoDataResult | null) => {
     setVideoInfo(data);
-    // resetSavedValue();
   };
-
-  // const savedValue = useProjectInputIntialValue();
-  // const resetSavedValue = userResetProjectInputIntialState;
-
-  // useEffect(() => {
-  //   if (savedValue?.videoInfo && !videoInfo) {
-  //     setVideoInfo(savedValue.videoInfo);
-  //   }
-  // }, [savedValue, videoInfo]);
 
   const handleReset = useCallback(() => {
     setVideoInfo(null);

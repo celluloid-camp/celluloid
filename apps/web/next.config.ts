@@ -10,9 +10,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    reactCompiler: true,
-  },
+  // experimental: {
+  //   reactCompiler: true,
+  // },
   transpilePackages: [
     "@t3-oss/env-nextjs",
     "better-auth",
