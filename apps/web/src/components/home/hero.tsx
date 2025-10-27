@@ -1,21 +1,19 @@
-import { auth } from "@celluloid/auth";
+"use client";
 import { Box, Container, Link, Paper, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import { headers } from "next/headers";
 import NextLink from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { LogoSign } from "@/components/common/logo-sign";
 import { StudentsIcon } from "@/components/home/students-icon";
 import { TeacherIcon } from "@/components/home/teacher-icon";
+import { useSession } from "@/lib/auth-client";
 
-export async function HomePageHero() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export function HomePageHero() {
+  const { data: session } = useSession();
 
-  const t = await getTranslations("home");
+  const t = useTranslations("home");
   return (
     <Box sx={{ backgroundColor: "brand.green" }}>
       <Container maxWidth="lg">
