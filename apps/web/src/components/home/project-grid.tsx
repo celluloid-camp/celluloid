@@ -53,9 +53,15 @@ export function ProjectGrid() {
 
   const { data: session } = useSession();
 
-  const [data, mutation] = trpc.project.list.useSuspenseQuery({
+  const [data, fetch] = trpc.project.list.useSuspenseQuery({
     term: searchTerm,
   });
+
+  useEffect(() => {
+    if (session && !fetch.isFetching) {
+      fetch.refetch();
+    }
+  }, [session]);
 
   const ownProjects = useMemo(
     () =>
@@ -105,7 +111,7 @@ export function ProjectGrid() {
     }
   };
 
-  if (mutation.error) {
+  if (fetch.error) {
     return (
       <Box sx={{ p: 5, minHeight: "100vh" }}>
         <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
@@ -132,7 +138,7 @@ export function ProjectGrid() {
             height: 50,
           }}
         >
-          {mutation.isFetching ? (
+          {fetch.isFetching ? (
             <CircularProgress sx={{ p: "10px", ml: 1 }} size={20} />
           ) : (
             <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
