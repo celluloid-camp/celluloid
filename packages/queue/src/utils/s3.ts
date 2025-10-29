@@ -15,5 +15,3 @@ export function parseUrl(url: string): {
     isSecure: parsedUrl.protocol === "https:",
   };
 }
-
-

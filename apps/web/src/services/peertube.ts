@@ -54,19 +54,19 @@ export const getPeerTubeVideoData = async (
       apiURL: apiUrl,
       videos: isPlaylist
         ? data.data.map((d: Playlist) => ({
-          ...d.video,
-          duration: d.video.duration,
-          thumbnailURL: `https://${host}${d.video.thumbnailPath}`,
-          metadata: d.video,
-        }))
+            ...d.video,
+            duration: d.video.duration,
+            thumbnailURL: `https://${host}${d.video.thumbnailPath}`,
+            metadata: d.video,
+          }))
         : [
-          {
-            ...data,
-            duration: data.duration,
-            thumbnailURL: `https://${host}${data.thumbnailPath}`,
-            metadata: data,
-          },
-        ],
+            {
+              ...data,
+              duration: data.duration,
+              thumbnailURL: `https://${host}${data.thumbnailPath}`,
+              metadata: data,
+            },
+          ],
       _raw: data,
     };
   }
