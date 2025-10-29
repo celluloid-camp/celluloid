@@ -145,6 +145,23 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
         ),
       [handleChange, currentValue, duration],
     );
+    const handleLeftStart = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(e, [Math.max(0, currentValue[0] - 1), currentValue[1]], 0),
+      [handleChange, currentValue],
+    );
+    const handleRightStart = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(
+          e,
+          [
+            Math.min(currentValue[1] - minDistance, currentValue[0] + 1),
+            currentValue[1],
+          ],
+          0,
+        ),
+      [handleChange, currentValue],
+    );
 
     return (
       <Grid container spacing={2} alignItems="center">
@@ -153,7 +170,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
             size="small"
             color="secondary"
             sx={{ p: 0 }}
-            onClick={handleLeftMono}
+            onClick={mono ? handleLeftMono : handleLeftStart}
           >
             <ArrowLeftIcon />
           </IconButton>
@@ -161,7 +178,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
             size="small"
             color="secondary"
             sx={{ p: 0 }}
-            onClick={handleRightMono}
+            onClick={mono ? handleRightMono : handleRightStart}
           >
             <ArrowRightIcon />
           </IconButton>
