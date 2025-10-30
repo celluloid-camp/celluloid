@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.3.3
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.2...3.3.3)
+
+## 3.3.2
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Fix create project error handling &nbsp;-&nbsp; by **Younes** in https://github.com/celluloid-camp/celluloid/issues/334 [<samp>(e7f58)</samp>](https://github.com/celluloid-camp/celluloid/commit/e7f582a)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.1...3.3.2)
+
 ## 3.3.1
 
 *No significant changes*

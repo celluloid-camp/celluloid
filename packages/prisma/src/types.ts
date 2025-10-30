@@ -26,4 +26,4 @@ declare global {
 }
 
 // The file MUST be a module!
-export { };
+export {};

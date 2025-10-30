@@ -1,4 +1,8 @@
-import { EmailVerification, ForgetPasswordEmail, ProjectAnalysisEmail } from "@celluloid/emails";
+import {
+  EmailVerification,
+  ForgetPasswordEmail,
+  ProjectAnalysisEmail,
+} from "@celluloid/emails";
 import { render } from "@react-email/components";
 import * as nodemailer from "nodemailer";
 
@@ -61,8 +65,6 @@ export async function sendEmailVerification({
   return sendMail(email, subject, emailHtml);
 }
 
-
-
 export async function sendProjectAnalysisFinished({
   email,
   projectId,
@@ -73,8 +75,8 @@ export async function sendProjectAnalysisFinished({
   projectTitle: string;
 }) {
   const subject = `[Celluloid] Analyse terminée`;
-  const emailHtml = await render(ProjectAnalysisEmail({ projectId, projectTitle }));
+  const emailHtml = await render(
+    ProjectAnalysisEmail({ projectId, projectTitle }),
+  );
   return sendMail(email, subject, emailHtml);
 }
-
-

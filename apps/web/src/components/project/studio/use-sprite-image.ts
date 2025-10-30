@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
 export function useSpriteImage(spritePath: string) {
-
   const getSpriteThumbnail = useCallback(
     (spriteReference: string): string => {
       if (spriteReference.includes("#xywh=")) {
@@ -9,7 +8,7 @@ export function useSpriteImage(spritePath: string) {
         const [x, y, w, h] = coordsStr.split(",").map(Number);
         return `/api/sprite?url=${encodeURIComponent(spritePath)}&x=${x}&y=${y}&w=${w}&h=${h}`;
       }
-      return ""
+      return "";
     },
     [spritePath],
   );
