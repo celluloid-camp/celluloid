@@ -182,7 +182,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
           handleChange(e, [newStartValue, currentValue[1]], 0);
         }
       },
-      [handleChange, currentValue, duration, mono],
+      [handleChange, currentValue, duration, mono, minDistance],
     );
 
     const handleStopInputChange = React.useCallback(
@@ -199,7 +199,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
         );
         handleChange(e, [currentValue[0], newStopValue], 1);
       },
-      [handleChange, currentValue, duration],
+      [handleChange, currentValue, duration, minDistance],
     );
 
     return (
