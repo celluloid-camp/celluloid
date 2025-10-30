@@ -1,6 +1,6 @@
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { Grid, IconButton, Stack, styled } from "@mui/material";
+import { Grid, IconButton, Stack, styled, TextField } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import Slider, { type SliderValueLabelProps } from "@mui/material/Slider";
 import Tooltip, {
@@ -163,9 +163,48 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
       [handleChange, currentValue],
     );
 
+    // Handlers for manual text input
+    const handleStartInputChange = React.useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        if (inputValue === "") return;
+        const numValue = Number.parseFloat(inputValue);
+        if (Number.isNaN(numValue)) return;
+
+        const clampedValue = Math.max(0, Math.min(duration, numValue));
+        if (mono) {
+          handleChange(e, clampedValue);
+        } else {
+          const newStartValue = Math.min(
+            clampedValue,
+            currentValue[1] - minDistance,
+          );
+          handleChange(e, [newStartValue, currentValue[1]], 0);
+        }
+      },
+      [handleChange, currentValue, duration, mono, minDistance],
+    );
+
+    const handleStopInputChange = React.useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        if (inputValue === "") return;
+        const numValue = Number.parseFloat(inputValue);
+        if (Number.isNaN(numValue)) return;
+
+        const clampedValue = Math.max(0, Math.min(duration, numValue));
+        const newStopValue = Math.max(
+          clampedValue,
+          currentValue[0] + minDistance,
+        );
+        handleChange(e, [currentValue[0], newStopValue], 1);
+      },
+      [handleChange, currentValue, duration, minDistance],
+    );
+
     return (
       <Grid container spacing={2} alignItems="center">
-        <Stack direction={"row"}>
+        <Stack direction={"row"} alignItems="center" spacing={0.5}>
           <IconButton
             size="small"
             color="secondary"
@@ -174,6 +213,25 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
           >
             <ArrowLeftIcon />
           </IconButton>
+          <TextField
+            type="number"
+            value={Math.round(currentValue[0])}
+            onChange={handleStartInputChange}
+            size="small"
+            inputProps={{
+              min: 0,
+              max: duration,
+              step: 1,
+              style: { textAlign: "center" },
+            }}
+            sx={{
+              width: "60px",
+              "& .MuiInputBase-input": {
+                padding: "4px 8px",
+                fontSize: "0.875rem",
+              },
+            }}
+          />
           <IconButton
             size="small"
             color="secondary"
@@ -205,7 +263,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
           />
         </Grid>
         {!mono && (
-          <Stack direction={"row"}>
+          <Stack direction={"row"} alignItems="center" spacing={0.5}>
             <IconButton
               size="small"
               color="secondary"
@@ -214,6 +272,25 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
             >
               <ArrowLeftIcon />
             </IconButton>
+            <TextField
+              type="number"
+              value={Math.round(currentValue[1])}
+              onChange={handleStopInputChange}
+              size="small"
+              inputProps={{
+                min: 0,
+                max: duration,
+                step: 1,
+                style: { textAlign: "center" },
+              }}
+              sx={{
+                width: "60px",
+                "& .MuiInputBase-input": {
+                  padding: "4px 8px",
+                  fontSize: "0.875rem",
+                },
+              }}
+            />
             <IconButton
               size="small"
               color="secondary"
