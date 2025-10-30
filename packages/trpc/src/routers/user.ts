@@ -185,7 +185,6 @@ export const userRouter = router({
       return user;
     }),
 
-
   projects: protectedProcedure
     .input(
       z.object({
@@ -206,12 +205,12 @@ export const userRouter = router({
             { userId: ctx.user ? ctx.user.id : undefined },
             ctx.user
               ? {
-                members: {
-                  some: {
-                    userId: ctx.user.id,
+                  members: {
+                    some: {
+                      userId: ctx.user.id,
+                    },
                   },
-                },
-              }
+                }
               : {},
           ],
         },
@@ -229,8 +228,8 @@ export const userRouter = router({
         },
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",
@@ -255,7 +254,7 @@ export const userRouter = router({
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(),
-        userId: z.string()
+        userId: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -296,8 +295,8 @@ export const userRouter = router({
         },
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",

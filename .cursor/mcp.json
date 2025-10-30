@@ -4,10 +4,7 @@
       "mui-mcp": {
         "type": "stdio",
         "command": "npx",
-        "args": [
-          "-y",
-          "@mui/mcp@latest"
-        ]
+        "args": ["-y", "@mui/mcp@latest"]
       }
     }
   }

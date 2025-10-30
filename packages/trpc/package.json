@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/trpc",
-  "version": "3.3.1",
+  "version": "3.3.3",
   "private": true,
   "license": "MIT",
   "homepage": "https://celluloid.huma-num.fr",
