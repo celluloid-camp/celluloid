@@ -5,10 +5,10 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import PlaylistThumbnail from "@/components/common/playlist-thumbnail";
 import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { trpc } from "@/lib/trpc/client";
 import { StyledTitle } from "../common/typography";
+import PlaylistThumbnail from "./playlist-thumbnail";
 
 function a11yProps(index: number) {
   return {
