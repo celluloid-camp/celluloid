@@ -58,12 +58,12 @@ services:
     networks:
       - local
 
-  # redis:
-  #   image: redis:6-alpine
-  #   restart: unless-stopped
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - redis:/redis:/data
-  #   networks:
-  #     - local
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/redis:/data
+    networks:
+      - local

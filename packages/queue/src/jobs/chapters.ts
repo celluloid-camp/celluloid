@@ -1,5 +1,6 @@
 import { type PrismaClient, prisma } from "@celluloid/prisma";
 import type { PeerTubeVideo } from "@celluloid/types";
+import logger from "@celluloid/utils/logger";
 import { createQueue } from "@mgcrea/prisma-queue";
 import { env } from "../env";
 import { detectScenes } from "../utils/scenes";
@@ -7,12 +8,14 @@ import { detectScenes } from "../utils/scenes";
 type ChapterJobPayload = { projectId: string };
 type JobResult = { status: number };
 
+const log = logger.child({ job: "chapters" });
+
 // https://github.com/marcofaggian/lyricarr/blob/master/services/backend/src/util/queueWrapper.ts
 export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
   { name: "chapters", prisma: prisma as unknown as PrismaClient },
   async (job, prisma) => {
     const { id, payload } = job;
-    console.log(
+    log.debug(
       `Chapter queue processing job#${id} with payload=${JSON.stringify(payload)})`,
     );
 
@@ -35,11 +38,11 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
     const duration = metadata.duration || 0;
 
     if (!videoUrl) {
-      console.error("No video file found");
+      log.error("No video file found");
       return { status: 404 };
     }
 
-    console.log("Chapter queue processing -- metadata loaded", {
+    log.debug("Chapter queue processing -- metadata loaded", {
       videoUrl,
       duration,
       jobId: job.id,
@@ -81,12 +84,12 @@ export const chaptersQueue = createQueue<ChapterJobPayload, JobResult>(
         })),
       });
     } catch (error) {
-      console.error("Error detecting scenes", error);
+      log.error("Error detecting scenes", error);
     }
 
     const status = 200;
 
-    console.log(`Finished job#${id} with status=${status}`);
+    log.debug(`Finished job#${id} with status=${status}`);
     return { status };
   },
 );

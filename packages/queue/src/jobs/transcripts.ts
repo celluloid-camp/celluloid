@@ -1,16 +1,19 @@
 import { type PrismaClient, prisma } from "@celluloid/prisma";
 import { getPeerTubeCaptions } from "@celluloid/utils";
+import logger from "@celluloid/utils/logger";
 import { createQueue } from "@mgcrea/prisma-queue";
 import { convertCaptionsToTranscript } from "../utils/llm";
 
 type TranscriptJobPayload = { projectId: string };
 type JobResult = { status: number };
 
+const log = logger.child({ job: "transcripts" });
+
 export const transcriptsQueue = createQueue<TranscriptJobPayload, JobResult>(
   { name: "transcripts", prisma: prisma as unknown as PrismaClient },
   async (job, prisma) => {
     const { id, payload } = job;
-    console.log(
+    log.debug(
       `Transcript queue processing job#${id} with payload=${JSON.stringify(payload)})`,
     );
 
@@ -34,11 +37,11 @@ export const transcriptsQueue = createQueue<TranscriptJobPayload, JobResult>(
       host: project.host,
     });
     if (captions.length > 0 && captions[0]) {
-      console.log("caption found");
+      log.debug("caption found");
       try {
         const transcript = await convertCaptionsToTranscript(captions[0]);
 
-        console.log("transcript done");
+        log.debug("transcript done");
         await prisma.projectTranscript.upsert({
           where: { projectId: project.id },
           update: { content: transcript },
@@ -53,15 +56,15 @@ export const transcriptsQueue = createQueue<TranscriptJobPayload, JobResult>(
 
         await job.progress(100);
 
-        console.log("transcript saved");
+        log.debug("transcript saved");
       } catch (error) {
-        console.error("error generating transcript", error);
+        log.error("error generating transcript", error);
       }
     }
 
     const status = 200;
 
-    console.log(`Finished job#${id} with status=${status}`);
+    log.debug(`Finished job#${id} with status=${status}`);
     return { status };
   },
 );
