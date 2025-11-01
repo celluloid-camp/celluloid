@@ -163,15 +163,17 @@ Commits are automatically validated with commitlint via Husky hooks.
 
 ## Environment Variables
 
-Required environment variables are defined in `turbo.json` globalEnv:
+Key environment variables used in the codebase:
 - Database: `DATABASE_URL`
 - Redis: `REDIS_URL`
 - Storage: `STORAGE_URL`, `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY`, `STORAGE_SECRET_KEY`
-- Auth: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`
+- Auth: `AUTH_SECRET`, `BASE_URL`
 - SMTP: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_EMAIL_FROM`
-- Other: `BASE_URL`, `NODE_ENV`
+- Other: `NODE_ENV`, `MISTRAL_API_KEY` (optional)
 
 Use `.env` file for local development (copy from `env.sample`).
+
+**Note**: While `turbo.json` lists some environment variables for build caching, the actual variables used in the code are defined in the environment validation schemas in each package (`packages/auth/src/env.ts`, `packages/queue/src/env.ts`, etc.).
 
 ## Important Notes
 
