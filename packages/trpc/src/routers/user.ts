@@ -316,4 +316,56 @@ export const userRouter = router({
         nextCursor,
       };
     }),
+  playlists: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+
+      const items = await prisma.playlist.findMany({
+        take: limit + 1,
+        where: {
+          userId: ctx.user ? ctx.user.id : undefined,
+        },
+        include: {
+          projects: {
+            select: {
+              id: true,
+              title: true,
+              thumbnailURL: true,
+            },
+          },
+          _count: {
+            select: {
+              projects: true,
+            },
+          },
+        },
+        cursor: cursor
+          ? {
+              id: cursor,
+            }
+          : undefined,
+        orderBy: {
+          publishedAt: "desc",
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        if (nextItem) {
+          nextCursor = nextItem.id;
+        }
+      }
+
+      return {
+        items: items.reverse(),
+        nextCursor,
+      };
+    }),
 });
