@@ -183,7 +183,7 @@ export const AnnotationFormContent: React.FC<
               formik.setFieldValue("startTime", start);
               formik.setFieldValue("stopTime", stop);
             }}
-            // mono={contextEditorVisible}
+            mono={contextEditorVisible}
           />
         </Box>
         <Box

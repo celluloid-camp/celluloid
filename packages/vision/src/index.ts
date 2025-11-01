@@ -1,5 +1,6 @@
 import { env } from "./env";
 import {
+  getJobResultsResultsJobIdGet,
   getJobStatusStatusJobIdGet,
   startDetectionAnalysePost,
 } from "./generated/endpoints";
@@ -10,6 +11,7 @@ import "./prisma";
 
 export * from "./generated/schema.zod";
 
+
 export async function createAnalyzeVideoTask({
   videoUrl,
   projectId,
@@ -19,6 +21,7 @@ export async function createAnalyzeVideoTask({
   projectId: string;
   callbackUrl: string;
 }) {
+
   const response = await startDetectionAnalysePost(
     {
       project_id: projectId,
@@ -32,6 +35,7 @@ export async function createAnalyzeVideoTask({
       },
     },
   );
+
 
   console.log("response", response);
   if (response.status !== 202) {
@@ -54,13 +58,19 @@ export async function getJobResult(jobId: string) {
     throw new Error(`Failed to get job result: ${response.status}`);
   }
 
-  if (response.data.result_path) {
-    const result = await fetch(
-      new URL(response.data.result_path, env.VISION_API_URL).toString(),
-    );
-    const json = (await result.json()) as DetectionResultsModel;
+  const result = await getJobResultsResultsJobIdGet(jobId, {
+    headers: {
+      "x-api-key": env.VISION_API_KEY,
+    },
+  });
 
-    const spritePath = json?.metadata.sprite.path;
+  if (result.data) {
+    // const result = await fetch(
+    //   new URL(response.data.result_path, env.VISION_API_URL).toString(),
+    // );
+    const json = result.data as DetectionResultsModel;
+
+    const spritePath = json.metadata.sprite.path;
     const spriteUrl = new URL(spritePath, env.VISION_API_URL).toString();
 
     return {
