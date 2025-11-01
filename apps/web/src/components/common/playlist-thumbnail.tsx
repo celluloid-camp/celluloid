@@ -46,7 +46,7 @@ const PlaylistThumbnail: React.FC<Props> = ({ playlist }) => {
   const thumbnailURL =
     playlist.projects.length > 0
       ? playlist.projects[0].thumbnailURL
-      : "/default-thumbnail.jpg";
+      : "/placeholder.svg";
 
   return (
     <Card

@@ -330,7 +330,7 @@ export const userRouter = router({
       const items = await prisma.playlist.findMany({
         take: limit + 1,
         where: {
-          userId: ctx.user ? ctx.user.id : undefined,
+          userId: ctx.user.id,
         },
         include: {
           projects: {
@@ -352,7 +352,7 @@ export const userRouter = router({
             }
           : undefined,
         orderBy: {
-          publishedAt: "desc",
+          publishedAt: "asc",
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -364,7 +364,7 @@ export const userRouter = router({
       }
 
       return {
-        items: items.reverse(),
+        items,
         nextCursor,
       };
     }),
