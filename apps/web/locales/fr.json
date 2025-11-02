@@ -69,6 +69,7 @@
     "emptySearchResult": "Aucun projet ne correspond à votre recherche",
     "joinProject": "Rejoindre un projet",
     "myProjects": "Mes projets",
+    "myPlaylists": "Mes playlists",
     "newProject": "Créer un projet",
     "publicProjects": "Explorer",
     "searchProject": "Rechercher un projet…",
@@ -108,6 +109,9 @@
     "me": {
       "project": {
         "empty": "Vous n'avez aucun projet"
+      },
+      "playlist": {
+        "empty": "Vous n'avez aucune playlist"
       }
     },
     "role": {
