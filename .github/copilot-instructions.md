@@ -11,7 +11,7 @@ Celluloid is a collaborative video annotation application designed for education
 - **Styling**: Material-UI (MUI) v6+ with Emotion
 - **Backend**: Next.js API routes with tRPC for type-safe APIs
 - **Database**: PostgreSQL 13+ with Prisma ORM
-- **Queue**: Redis with BullMQ for background jobs
+- **Queue**: Prisma-based queue system (@mgcrea/prisma-queue) for background jobs
 - **Storage**: S3-compatible storage (Minio)
 - **Authentication**: better-auth
 - **Video Processing**: Custom vision package for video analysis
@@ -31,14 +31,14 @@ This is a pnpm monorepo with the following structure:
 
 ### Apps (`apps/`)
 - **web**: Main Next.js application (frontend and API)
-- **worker**: Background job processor using BullMQ
+- **worker**: Background job processor using @mgcrea/prisma-queue
 
 ### Packages (`packages/`)
 - **auth**: Authentication logic using better-auth
 - **config**: Shared configuration
 - **emails**: Email templates and sender
 - **prisma**: Database schema and Prisma client
-- **queue**: Redis queue setup with BullMQ
+- **queue**: Prisma-based queue system using @mgcrea/prisma-queue
 - **trpc**: tRPC router definitions and procedures
 - **types**: Shared TypeScript types
 - **utils**: Shared utility functions
@@ -154,7 +154,7 @@ Commits are automatically validated with commitlint via Husky hooks.
 ### Background Jobs
 - Define jobs in `packages/queue/src/`
 - Process jobs in `apps/worker/`
-- Use BullMQ for job management
+- Use @mgcrea/prisma-queue for job management (Prisma-based queue system)
 
 ### State Management
 - Use React hooks for local state
