@@ -293,7 +293,7 @@
     },
     "transcript": {
       "title": "Transcript",
-      "generating": " La transcription est en cours de génération...",
+      "generating": "Transcript generation in progress, you will receive an email when it is available.",
       "empty": "Video transcript not available.",
       "button": {
         "generate": " Generate Transcript",
