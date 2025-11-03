@@ -163,7 +163,6 @@ const PlaylistThumbnail: React.FC<Props> = ({ playlist }) => {
             display={"flex"}
             justifyContent={"flex-end"}
             alignItems={"flex-start"}
-            justifyItems={"flex-end"}
             gap={0.5}
           >
             <IconButton
