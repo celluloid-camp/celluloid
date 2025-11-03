@@ -11,7 +11,6 @@ import "./prisma";
 
 export * from "./generated/schema.zod";
 
-
 export async function createAnalyzeVideoTask({
   videoUrl,
   projectId,
@@ -21,7 +20,6 @@ export async function createAnalyzeVideoTask({
   projectId: string;
   callbackUrl: string;
 }) {
-
   const response = await startDetectionAnalysePost(
     {
       project_id: projectId,
@@ -35,7 +33,6 @@ export async function createAnalyzeVideoTask({
       },
     },
   );
-
 
   console.log("response", response);
   if (response.status !== 202) {
