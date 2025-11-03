@@ -186,13 +186,6 @@ export const playlistRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You must be logged in to update a playlist",
-        });
-      }
-
       const playlist = await prisma.playlist.findUnique({
         where: { id: input.id },
         select: { userId: true },
@@ -229,13 +222,6 @@ export const playlistRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You must be logged in to delete a playlist",
-        });
-      }
-
       const playlist = await prisma.playlist.findUnique({
         where: { id: input.id },
         select: { userId: true },

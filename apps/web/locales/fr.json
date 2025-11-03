@@ -764,6 +764,7 @@
         "title": "Modifier la playlist"
       },
       "title": "Titre",
+      "titleRequired": "Le titre est requis",
       "description": "Description",
       "submit": "Mettre à jour",
       "cancel": "Annuler",

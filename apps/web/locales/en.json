@@ -776,6 +776,7 @@
         "title": "Edit Playlist"
       },
       "title": "Title",
+      "titleRequired": "Title is required",
       "description": "Description",
       "submit": "Update",
       "cancel": "Cancel",

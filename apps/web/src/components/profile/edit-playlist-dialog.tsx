@@ -44,7 +44,7 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = ({
   const utils = trpc.useUtils();
 
   const schema = z.object({
-    title: z.string().min(1, t("playlist.edit.title") || "Title required"),
+    title: z.string().min(1, t("playlist.edit.titleRequired")),
     description: z.string(),
   });
 
