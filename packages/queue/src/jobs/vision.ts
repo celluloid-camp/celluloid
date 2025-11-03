@@ -36,7 +36,7 @@ export const visionQueue = createQueue<VisionJobPayload, JobResult>(
     }
 
     const videoUrl = metadata.streamingPlaylists[0]?.files
-      .sort((a, b) => b.size - a.size) // Sort files by size in ascending order
+      .sort((a, b) => a.size - b.size) // Sort files by size in ascending order
       .find((file) => file.fileDownloadUrl)?.fileDownloadUrl; // Find the first file with a download URL
     const duration = metadata.duration || 0;
 

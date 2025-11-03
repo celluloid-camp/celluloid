@@ -40,8 +40,24 @@ export const UserProjectGrid: React.FC = () => {
     <Box sx={{ padding: 5 }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
         <Tabs value={value} onChange={handleChange} aria-label="Profile tabs">
-          <Tab label={t("home.myProjects")} {...a11yProps(0)} />
-          <Tab label={t("home.myPlaylists")} {...a11yProps(1)} />
+          <Tab
+            label={t("home.myProjects")}
+            {...a11yProps(0)}
+            sx={{
+              fontSize: 20,
+              fontFamily: "abril_fatfaceregular",
+              fontWeight: 600,
+            }}
+          />
+          <Tab
+            label={t("home.myPlaylists")}
+            {...a11yProps(1)}
+            sx={{
+              fontSize: 20,
+              fontFamily: "abril_fatfaceregular",
+              fontWeight: 600,
+            }}
+          />
         </Tabs>
       </Box>
 
