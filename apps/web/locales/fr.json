@@ -756,5 +756,28 @@
     "description": "Une erreur inattendue s'est produite. Veuillez réessayer.",
     "retry": "Essayer à nouveau",
     "goHome": "retour à l'accueil"
+  },
+  "playlist": {
+    "edit": {
+      "button": "Modifier la playlist",
+      "dialog": {
+        "title": "Modifier la playlist"
+      },
+      "title": "Titre",
+      "description": "Description",
+      "submit": "Mettre à jour",
+      "cancel": "Annuler",
+      "success": "La playlist a été mise à jour.",
+      "error": "Échec de la mise à jour de la playlist. Veuillez réessayer."
+    },
+    "delete": {
+      "button": "Supprimer la playlist",
+      "confirm": {
+        "title": "Supprimer la playlist",
+        "description": "Êtes-vous sûr de vouloir supprimer cette playlist ? Cette action ne peut pas être annulée."
+      },
+      "success": "La playlist a été supprimée avec succès.",
+      "error": "Échec de la suppression de la playlist. Veuillez réessayer."
+    }
   }
 }

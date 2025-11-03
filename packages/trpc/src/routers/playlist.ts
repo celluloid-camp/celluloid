@@ -177,4 +177,88 @@ export const playlistRouter = router({
         return project;
       }
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string().min(1),
+        description: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You must be logged in to update a playlist",
+        });
+      }
+
+      const playlist = await prisma.playlist.findUnique({
+        where: { id: input.id },
+        select: { userId: true },
+      });
+
+      if (!playlist) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No playlist with id '${input.id}'`,
+        });
+      }
+
+      if (playlist.userId !== ctx.user.id && !ctx.requireRoles(["admin"])) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to update this playlist",
+        });
+      }
+
+      const updatedPlaylist = await prisma.playlist.update({
+        where: { id: input.id },
+        data: {
+          title: input.title,
+          description: input.description,
+        },
+      });
+
+      return updatedPlaylist;
+    }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You must be logged in to delete a playlist",
+        });
+      }
+
+      const playlist = await prisma.playlist.findUnique({
+        where: { id: input.id },
+        select: { userId: true },
+      });
+
+      if (!playlist) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No playlist with id '${input.id}'`,
+        });
+      }
+
+      if (playlist.userId !== ctx.user.id && !ctx.requireRoles(["admin"])) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to delete this playlist",
+        });
+      }
+
+      await prisma.playlist.delete({
+        where: { id: input.id },
+      });
+
+      return { success: true };
+    }),
 });

@@ -8,7 +8,7 @@ const logger = pino({
     asObject: true,
     write: (o) => {
       console.log(JSON.stringify(o));
-    }
+    },
   },
   // Configure for both environments without worker threads
   transport: {
@@ -18,7 +18,7 @@ const logger = pino({
       translateTime: "SYS:standard",
       ignore: "pid,hostname",
     },
-  }
+  },
 });
 
 export default logger;
