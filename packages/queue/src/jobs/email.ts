@@ -17,9 +17,7 @@ export const emailQueue = createQueue<EmailJobPayload, EmailJobResult>(
   { name: "emails", prisma: prisma as unknown as PrismaClient },
   async (job, client) => {
     const { id, payload } = job;
-    log.debug(
-      `Processing job#${id} with payload=${JSON.stringify(payload)})`,
-    );
+    log.debug(`Processing job#${id} with payload=${JSON.stringify(payload)})`);
 
     try {
       if (["email-verification", "sign-in"].includes(payload.type)) {
