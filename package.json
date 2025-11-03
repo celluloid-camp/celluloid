@@ -23,6 +23,7 @@
     "worker": "dotenv -- pnpm --filter worker",
     "auth": "dotenv -- pnpm --filter auth",
     "prisma": "dotenv -- pnpm --filter @celluloid/prisma",
+    "vision": "dotenv -- pnpm --filter @celluloid/vision",
     "docker:bake": "docker buildx bake",
     "docker:web:run": "docker run -it --rm --env-file .env -p 3000:3000 celluloid-web",
     "docker:worker:run": "docker run -it --rm --env-file .env celluloid-worker",

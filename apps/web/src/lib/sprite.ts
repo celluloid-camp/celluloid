@@ -1,6 +1,7 @@
-
-
-export function getSpriteThumbnail(spriteUrl: string, spriteReference: string): string {
+export function getSpriteThumbnail(
+  spriteUrl: string,
+  spriteReference: string,
+): string {
   if (spriteReference.includes("#xywh=")) {
     const coordsStr = spriteReference.split("#xywh=")[1];
     const [x, y, w, h] = coordsStr.split(",").map(Number);
