@@ -11,7 +11,6 @@ import { parseUrl } from "../utils/s3";
 type VisionJobPayload = { projectId: string; callbackUrl: string };
 type JobResult = { status: number };
 
-
 const log = logger.child({ job: "vision" });
 
 export const visionQueue = createQueue<VisionJobPayload, JobResult>(
