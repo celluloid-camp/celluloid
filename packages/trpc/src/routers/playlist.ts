@@ -205,7 +205,7 @@ export const playlistRouter = router({
         });
       }
 
-      if (playlist.userId !== ctx.user.id && !ctx.requireRoles(["admin"])) {
+      if (playlist.userId !== ctx.user.id && ctx.user.role !== "admin") {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to update this playlist",
@@ -248,7 +248,7 @@ export const playlistRouter = router({
         });
       }
 
-      if (playlist.userId !== ctx.user.id && !ctx.requireRoles(["admin"])) {
+      if (playlist.userId !== ctx.user.id && ctx.user.role !== "admin") {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to delete this playlist",

@@ -44,7 +44,7 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = ({
   const utils = trpc.useUtils();
 
   const schema = z.object({
-    title: z.string().min(1, t("project.create.url.required") || ""),
+    title: z.string().min(1, t("playlist.edit.title") || "Title required"),
     description: z.string(),
   });
 
@@ -94,21 +94,22 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = ({
     },
   });
 
-  const handleDelete = () => {
-    confirm({
-      title: t("playlist.delete.confirm.title"),
-      description: t("playlist.delete.confirm.description"),
-      confirmationText: t("deleteAction"),
-      cancellationText: t("cancelAction"),
-      confirmationButtonProps: {
-        variant: "contained",
-        color: "error",
-      },
-    }).then((result) => {
-      if (result.confirmed) {
-        deleteMutation.mutate({ id: playlist.id });
-      }
-    });
+  const handleDelete = async () => {
+    try {
+      await confirm({
+        title: t("playlist.delete.confirm.title"),
+        description: t("playlist.delete.confirm.description"),
+        confirmationText: t("deleteAction"),
+        cancellationText: t("cancelAction"),
+        confirmationButtonProps: {
+          variant: "contained",
+          color: "error",
+        },
+      });
+      deleteMutation.mutate({ id: playlist.id });
+    } catch (error) {
+      // User cancelled
+    }
   };
 
   const onSubmit = (data: FormValues) => {
