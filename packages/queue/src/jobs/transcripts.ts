@@ -58,7 +58,8 @@ export const transcriptsQueue = createQueue<TranscriptJobPayload, JobResult>(
 
         log.debug("transcript saved");
       } catch (error) {
-        log.error("error generating transcript", error);
+        log.debug(error);
+        log.error("error generating transcript");
       }
     }
 
