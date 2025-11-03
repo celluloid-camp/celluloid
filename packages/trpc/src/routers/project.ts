@@ -150,7 +150,7 @@ export const projectRouter = router({
       }
 
       return {
-        items: items.reverse(),
+        items,
         nextCursor,
       };
     }),
