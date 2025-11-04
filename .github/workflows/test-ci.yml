@@ -40,11 +40,11 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "pnpm"
@@ -78,7 +78,6 @@ jobs:
           pnpm build
 
       - name: Run Playwright tests
-        # with workground https://github.com/microsoft/playwright/issues/6500
         run: pnpm exec playwright test
         env:
           HOME: /root
