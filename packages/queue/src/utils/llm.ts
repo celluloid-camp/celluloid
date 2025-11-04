@@ -55,22 +55,34 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
     modelName: "mistral-large-latest",
     apiKey: apiKey,
     streaming: false,
-    temperature: 0
+    temperature: 0,
   });
 
   // Timeout helper function
-  const withTimeout = <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
+  const withTimeout = <T>(
+    promise: Promise<T>,
+    timeoutMs: number,
+  ): Promise<T> => {
     return Promise.race([
       promise,
       new Promise<T>((_, reject) =>
-        setTimeout(() => reject(new Error(`Request timeout after ${timeoutMs}ms`)), timeoutMs)
+        setTimeout(
+          () => reject(new Error(`Request timeout after ${timeoutMs}ms`)),
+          timeoutMs,
+        ),
       ),
     ]);
   };
 
   // Helper function to process a single chunk with error handling
-  const processChunk = async (chunk: string, chunkIndex: number, totalChunks: number): Promise<string> => {
-    logger.debug(`Processing chunk ${chunkIndex + 1}/${totalChunks} (length: ${chunk.length} chars)`);
+  const processChunk = async (
+    chunk: string,
+    chunkIndex: number,
+    totalChunks: number,
+  ): Promise<string> => {
+    logger.debug(
+      `Processing chunk ${chunkIndex + 1}/${totalChunks} (length: ${chunk.length} chars)`,
+    );
 
     try {
       const messages = [
@@ -81,22 +93,32 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
       logger.debug(`Invoking model for chunk ${chunkIndex + 1}/${totalChunks}`);
       const response = await withTimeout(
         model.invoke(messages),
-        60000 // 1 minute timeout per request
+        60000, // 1 minute timeout per request
       );
 
       if (!response || !response.content) {
-        throw new Error(`Empty response from model for chunk ${chunkIndex + 1}`);
+        throw new Error(
+          `Empty response from model for chunk ${chunkIndex + 1}`,
+        );
       }
 
-      const processedText = typeof response.content === 'string'
-        ? response.content
-        : String(response.content);
+      const processedText =
+        typeof response.content === "string"
+          ? response.content
+          : String(response.content);
 
-      logger.debug(`Completed chunk ${chunkIndex + 1}/${totalChunks} (output length: ${processedText.length} chars)`);
+      logger.debug(
+        `Completed chunk ${chunkIndex + 1}/${totalChunks} (output length: ${processedText.length} chars)`,
+      );
       return processedText;
     } catch (error) {
-      logger.error(`Error processing chunk ${chunkIndex + 1}/${totalChunks}:`, error);
-      throw new Error(`Failed to process chunk ${chunkIndex + 1}/${totalChunks}: ${error instanceof Error ? error.message : String(error)}`);
+      logger.error(
+        `Error processing chunk ${chunkIndex + 1}/${totalChunks}:`,
+        error,
+      );
+      throw new Error(
+        `Failed to process chunk ${chunkIndex + 1}/${totalChunks}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
