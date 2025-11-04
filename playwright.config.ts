@@ -69,7 +69,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: "pnpm prisma migrate deploy && pnpm frontend start",
+      command: "pnpm --filter @celluloid/prisma migrate:deploy && pnpm --filter web start",
       url: "http://localhost:3000",
       reuseExistingServer: !process.env.CI,
       stdout: "ignore",
