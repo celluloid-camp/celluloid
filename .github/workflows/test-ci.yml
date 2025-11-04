@@ -77,8 +77,11 @@ jobs:
           cp .env.ci .env
           pnpm build
 
+      - name: Build packages
+        run: pnpm prisma migrate deploy
+
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: pnpm test
         env:
           HOME: /root
 
