@@ -13,6 +13,7 @@ const SYSTEM_PROMPT = `You are a transcript editor. Your task is to process raw 
 3.  Create new paragraphs for new speakers or significant pauses and topic shifts.
 4.  Correct capitalization and punctuation.
 
+Transcript must be in French.
 **Strict Rule:** Your output must ONLY be the final transcript. Do not include any introductory text, titles, or explanations like "Here is the transcript."`;
 
 const USER_PROMPT_TEMPLATE = (
