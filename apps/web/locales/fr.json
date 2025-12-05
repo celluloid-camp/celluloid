@@ -759,6 +759,15 @@
     "goHome": "retour à l'accueil"
   },
   "playlist": {
+    "create": {
+      "button": "Créer une playlist",
+      "dialog": {
+        "title": "Créer une nouvelle playlist"
+      },
+      "submit": "Créer",
+      "success": "La playlist a été créée avec succès.",
+      "error": "Échec de la création de la playlist. Veuillez réessayer."
+    },
     "edit": {
       "button": "Modifier la playlist",
       "dialog": {

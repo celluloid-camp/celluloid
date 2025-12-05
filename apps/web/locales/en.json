@@ -771,6 +771,15 @@
     "goHome": "Go to home"
   },
   "playlist": {
+    "create": {
+      "button": "Create Playlist",
+      "dialog": {
+        "title": "Create New Playlist"
+      },
+      "submit": "Create",
+      "success": "Playlist has been created successfully.",
+      "error": "Failed to create playlist. Please try again."
+    },
     "edit": {
       "button": "Edit playlist",
       "dialog": {
