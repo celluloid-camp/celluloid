@@ -6,7 +6,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
+  pull_request:
     branches: [staging]
     paths:
       - "apps/web/**"
@@ -17,8 +17,6 @@ jobs:
   tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.48.2-jammy
 
     services:
       redis:
@@ -72,6 +70,9 @@ jobs:
 
       - run: pnpm install
 
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium firefox
+
       - name: Build apps
         run: |
           cp .env.ci .env
@@ -82,8 +83,6 @@ jobs:
 
       - name: Run Playwright tests
         run: pnpm test
-        env:
-          HOME: /root
 
       - uses: actions/upload-artifact@v4
         if: always()

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "pnpm with-env next dev --turbopack",
-    "build": "NODE_ENV=production SKIP_ENV_VALIDATIONS=true next build",
+    "build": "NODE_ENV=production SKIP_ENV_VALIDATIONS=true next build && pnpm postbuild",
+    "postbuild": "cp -r .next/static .next/standalone/apps/web/.next/ && cp -r public .next/standalone/apps/web/ || true",
     "start": "node .next/standalone/apps/web/server.js",
     "lint": "next lint",
     "with-env": "dotenv -e ../../.env --"

@@ -89,6 +89,11 @@ export function SignupForm() {
             disabled={isSubmitting}
             error={!!errors.username}
             helperText={errors.username?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "username",
+              },
+            }}
           />
           <TextField
             {...register("email")}
@@ -101,6 +106,11 @@ export function SignupForm() {
             disabled={isSubmitting}
             error={!!errors.email}
             helperText={errors.email?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "email",
+              },
+            }}
           />
           <PasswordInput
             {...register("password")}
@@ -112,6 +122,11 @@ export function SignupForm() {
             disabled={isSubmitting}
             error={!!errors.password}
             helperText={errors.password?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "password",
+              },
+            }}
           />
           <PasswordInput
             {...register("passwordConfirmation")}
@@ -123,6 +138,11 @@ export function SignupForm() {
             disabled={isSubmitting}
             error={!!errors.passwordConfirmation}
             helperText={errors.passwordConfirmation?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "passwordConfirmation",
+              },
+            }}
           />
         </DialogContent>
         <Divider />
