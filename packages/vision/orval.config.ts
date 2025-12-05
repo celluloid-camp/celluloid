@@ -1,8 +1,9 @@
 import { defineConfig } from "orval";
+import { env } from "./src/env";
 export default defineConfig({
   visionZod: {
     input: {
-      target: "https://vision.celluloid.me/openapi.json",
+      target: `${env.VISION_API_URL}/openapi.json`,
     },
     output: {
       mode: "single",
@@ -13,14 +14,14 @@ export default defineConfig({
   },
   visionFetch: {
     input: {
-      target: "https://vision.celluloid.me/openapi.json",
+      target: `${env.VISION_API_URL}/openapi.json`,
     },
     output: {
       mode: "single",
       client: "fetch",
       target: "src/generated/endpoints.ts",
       schemas: "src/generated/models",
-      baseUrl: "https://vision.celluloid.me",
+      baseUrl: env.VISION_API_URL,
       headers: true,
       biome: true,
     },

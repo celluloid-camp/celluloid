@@ -61,10 +61,8 @@ export const EditableText: React.FC<EditableTextProps> = ({
     setIsEditing(false);
   };
   const handleSave = () => {
-    if (tempValue) {
-      onSave(tempValue);
-      setIsEditing(false);
-    }
+    onSave(tempValue || "");
+    setIsEditing(false);
   };
 
   return (

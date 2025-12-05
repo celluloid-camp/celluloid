@@ -70,8 +70,8 @@ export const playlistRouter = router({
         include: {},
         cursor: cursor
           ? {
-              id: cursor,
-            }
+            id: cursor,
+          }
           : undefined,
         orderBy: {
           publishedAt: "desc",
@@ -99,17 +99,29 @@ export const playlistRouter = router({
     )
     .query(async ({ input }) => {
       const { id } = input;
-      const project = await prisma.playlist.findUnique({
+      const playlist = await prisma.playlist.findUnique({
         where: { id },
-        // select: defaultPostSelect,
+        include: {
+          projects: {
+            select: {
+              id: true,
+              title: true,
+              thumbnailURL: true,
+              description: true,
+            },
+            orderBy: {
+              publishedAt: "asc",
+            },
+          },
+        },
       });
-      if (!project) {
+      if (!playlist) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `No playlist with id '${id}'`,
         });
       }
-      return project;
+      return playlist;
     }),
   add: protectedProcedure
     .input(
@@ -176,5 +188,130 @@ export const playlistRouter = router({
         });
         return project;
       }
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string().min(1),
+        description: z.string(),
+        projectIds: z.array(z.string()).optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const playlist = await prisma.playlist.findUnique({
+        where: { id: input.id },
+        select: { userId: true },
+      });
+
+      if (!playlist) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No playlist with id '${input.id}'`,
+        });
+      }
+
+      if (playlist.userId !== ctx.user.id && ctx.user.role !== "admin") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to update this playlist",
+        });
+      }
+
+      // If projectIds is provided, update the projects in the playlist
+      if (input.projectIds !== undefined) {
+        // First, remove all projects from this playlist
+        await prisma.project.updateMany({
+          where: { playlistId: input.id },
+          data: { playlistId: null },
+        });
+
+        // Then, add the new projects to the playlist
+        if (input.projectIds.length > 0) {
+          await prisma.project.updateMany({
+            where: {
+              id: { in: input.projectIds },
+              userId: ctx.user.id, // Only allow updating own projects
+            },
+            data: { playlistId: input.id },
+          });
+        }
+      }
+
+      const updatedPlaylist = await prisma.playlist.update({
+        where: { id: input.id },
+        data: {
+          title: input.title,
+          description: input.description,
+        },
+      });
+
+      return updatedPlaylist;
+    }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const playlist = await prisma.playlist.findUnique({
+        where: { id: input.id },
+        select: { userId: true },
+      });
+
+      if (!playlist) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No playlist with id '${input.id}'`,
+        });
+      }
+
+      if (playlist.userId !== ctx.user.id && ctx.user.role !== "admin") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to delete this playlist",
+        });
+      }
+
+      await prisma.playlist.delete({
+        where: { id: input.id },
+      });
+
+      return { success: true };
+    }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        description: z.string(),
+        projectIds: z.array(z.string()).optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const playlist = await prisma.playlist.create({
+        data: {
+          userId: ctx.user.id,
+          title: input.title,
+          description: input.description,
+          projects: input.projectIds
+            ? {
+              connect: input.projectIds.map((id) => ({ id })),
+            }
+            : undefined,
+        },
+        include: {
+          projects: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              thumbnailURL: true,
+            },
+          },
+        },
+      });
+
+      return playlist;
     }),
 });
