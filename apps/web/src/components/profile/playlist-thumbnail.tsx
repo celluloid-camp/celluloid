@@ -189,7 +189,7 @@ const PlaylistThumbnail: React.FC<Props> = ({ playlist }) => {
       <EditPlaylistDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        playlist={playlist}
+        playlistId={playlist.id}
       />
     </>
   );
