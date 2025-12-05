@@ -1,6 +1,8 @@
 "use client";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Box,
+  Button,
   CircularProgress,
   Pagination,
   Stack,
@@ -10,6 +12,7 @@ import Grid from "@mui/material/Grid";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { trpc } from "@/lib/trpc/client";
+import CreatePlaylistDialog from "./create-playlist-dialog";
 import PlaylistThumbnail from "./playlist-thumbnail";
 
 const ITEMS_PER_PAGE = 12;
@@ -20,6 +23,7 @@ export const UserPlaylistsGrid: React.FC = () => {
   const [pageCursors, setPageCursors] = useState<Map<number, string>>(
     new Map(),
   );
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   // Get cursor for current page (page 1 has no cursor)
   const cursor = useMemo(() => {
@@ -77,6 +81,21 @@ export const UserPlaylistsGrid: React.FC = () => {
 
   return (
     <Stack spacing={3}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          mb: 2,
+        }}
+      >
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setCreateDialogOpen(true)}
+        >
+          {t("playlist.create.button")}
+        </Button>
+      </Box>
       <Box
         sx={{
           ph: 2,
@@ -149,6 +168,11 @@ export const UserPlaylistsGrid: React.FC = () => {
           />
         </Box>
       )}
+
+      <CreatePlaylistDialog
+        open={createDialogOpen}
+        onClose={() => setCreateDialogOpen(false)}
+      />
     </Stack>
   );
 };

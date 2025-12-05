@@ -280,4 +280,38 @@ export const playlistRouter = router({
 
       return { success: true };
     }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        description: z.string(),
+        projectIds: z.array(z.string()).optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const playlist = await prisma.playlist.create({
+        data: {
+          userId: ctx.user.id,
+          title: input.title,
+          description: input.description,
+          projects: input.projectIds
+            ? {
+              connect: input.projectIds.map((id) => ({ id })),
+            }
+            : undefined,
+        },
+        include: {
+          projects: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              thumbnailURL: true,
+            },
+          },
+        },
+      });
+
+      return playlist;
+    }),
 });
