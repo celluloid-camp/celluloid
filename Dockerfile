@@ -1,11 +1,12 @@
-FROM node:22-alpine AS base
-ARG PNPM_VERSION=10.12.1
+FROM node:22.12.0-alpine AS base
+ARG PNPM_VERSION=10.18.2
 ENV CI=true
 ENV PNPM_HOME="/pnpm"
 ENV PATH="${PNPM_HOME}:${PATH}"
-RUN apk add --no-cache libc6-compat bash openssl openssl-dev python3 \
-    cairo-dev pango-dev giflib-dev pixman-dev jpeg-dev pangomm-dev libpng-dev build-base g++ pkgconfig
-RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
+RUN apk update && apk add --no-cache libc6-compat bash openssl openssl-dev python3 \
+    cairo-dev pango-dev giflib-dev pixman-dev jpeg-dev pangomm-dev libpng-dev build-base g++ pkgconfig py-setuptools
+# Install pnpm directly via npm to avoid corepack signature verification issues
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 FROM base AS builder
 # Set working directory
