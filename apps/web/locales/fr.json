@@ -276,7 +276,7 @@
       "in-progress": "Génération des chapitres en cours",
       "not-found": "Aucun chapitre trouvé pour cette vidéo.",
       "button": {
-        "generate": "Générer des chapitres"
+        "generate": "Générer les chapitres"
       },
       "item": {
         "placeholder": {
@@ -301,8 +301,9 @@
       "generating": "La transcription est en cours de génération, un email vous sera envoyé lorsque celle-ci sera disponible.",
       "empty": "Transcription vidéo non disponible.",
       "button": {
-        "generate": "Générer une transcription",
-        "download": "Télécharger"
+        "generate": "Générer la transcription",
+        "download": "Télécharger",
+        "save": "Enregistrer"
       },
       "failed": "Échec du chargement de la transcription",
       "try-again": "Essayer à nouveau"
@@ -769,7 +770,13 @@
       "submit": "Mettre à jour",
       "cancel": "Annuler",
       "success": "La playlist a été mise à jour.",
-      "error": "Échec de la mise à jour de la playlist. Veuillez réessayer."
+      "error": "Échec de la mise à jour de la playlist. Veuillez réessayer.",
+      "projects": {
+        "current": "Projets actuels",
+        "add": "Ajouter des projets",
+        "empty": "Aucun projet dans la playlist",
+        "noAvailable": "Aucun projet disponible à ajouter"
+      }
     },
     "delete": {
       "button": "Supprimer la playlist",
