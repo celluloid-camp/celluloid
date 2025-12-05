@@ -299,7 +299,7 @@
     "transcript": {
       "title": "Transcription",
       "generating": "La transcription est en cours de génération, un email vous sera envoyé lorsque celle-ci sera disponible.",
-      "empty": "Transcription vidéo non disponible.",
+      "empty": "Transcription de la vidéo non disponible.",
       "button": {
         "generate": "Générer la transcription",
         "download": "Télécharger",
