@@ -301,7 +301,8 @@
       "empty": "Video transcript not available.",
       "button": {
         "generate": " Generate Transcript",
-        "download": "Download"
+        "download": "Download",
+        "save": "Save"
       },
       "failed": " Failed to load Transcript",
       "try-again": "Try again"
@@ -781,7 +782,13 @@
       "submit": "Update",
       "cancel": "Cancel",
       "success": "Playlist has been updated.",
-      "error": "Failed to update playlist. Please try again."
+      "error": "Failed to update playlist. Please try again.",
+      "projects": {
+        "current": "Current Projects",
+        "add": "Add Projects",
+        "empty": "No projects in playlist",
+        "noAvailable": "No available projects to add"
+      }
     },
     "delete": {
       "button": "Delete Playlist",
