@@ -1,5 +1,11 @@
 import { prisma } from "@celluloid/prisma";
-import { chaptersQueue, emailQueue, transcriptsQueue, visionQueue, visionResultQueue } from "@celluloid/queue";
+import {
+  chaptersQueue,
+  emailQueue,
+  transcriptsQueue,
+  visionQueue,
+  visionResultQueue,
+} from "@celluloid/queue";
 import { createTerminus } from "@godaddy/terminus";
 import express from "express";
 import { env } from "./env";

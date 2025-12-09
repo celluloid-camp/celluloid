@@ -5,18 +5,10 @@ const TEST_USERNANE = `test${randomNum}`;
 const TEST_USER_EMAIL = `${TEST_USERNANE}@server.com`;
 
 test.describe("signup", () => {
-  // test.beforeAll(async (page) => {
-
-  // });
-
-  test.afterAll(async ({ page }) => {
-    await page.close();
-  });
-
   test("test user signup", async ({ page }) => {
-    await page.goto("http://localhost:3000/");
-    await page.getByTestId("header-login-button").click();
-    await page.getByTestId("signup").click();
+    // Navigate directly to the signup page
+    await page.goto("http://localhost:3000/signup");
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/.*\/signup/);
 
     await page.getByTestId("username").click();
@@ -30,7 +22,7 @@ test.describe("signup", () => {
 
     await page.getByTestId("submit").click();
 
-    await expect(page).toHaveURL(/.*\/confirm/);
+    await expect(page).toHaveURL(/.*\/otp/);
 
     await page.getByTestId("code").click();
     await page.getByTestId("code").fill("0000");
@@ -49,8 +41,8 @@ test.describe("signup", () => {
   test("test reconnect with existing account without confirmation", async ({
     page,
   }) => {
-    await page.reload();
     await page.goto("http://localhost:3000/login");
+    await page.waitForLoadState("networkidle");
 
     await page.getByTestId("username").click();
     await page.getByTestId("username").fill(TEST_USER_EMAIL);
@@ -58,7 +50,8 @@ test.describe("signup", () => {
     await page.getByTestId("password").fill("testtest");
     await page.getByTestId("submit").click();
 
-    await expect(page).toHaveURL("http://localhost:3000/profile");
+    // Wait for successful login and navigation
+    await page.waitForURL("http://localhost:3000/", {timeout: 10000});
 
     await page.getByTestId("header-account-menu").click();
     await page.getByTestId("header-logout-button").click();

@@ -71,6 +71,7 @@
     "emptySearchResult": "No matching projects",
     "joinProject": "join a project",
     "myProjects": "My projects",
+    "myPlaylists": "My playlists",
     "newProject": "Create project",
     "publicProjects": "Explore",
     "searchProject": "Type anything…",
@@ -110,6 +111,9 @@
     "me": {
       "project": {
         "empty": "You have no projects."
+      },
+      "playlist": {
+        "empty": "You have no playlists."
       }
     },
     "role": {
@@ -293,11 +297,12 @@
     },
     "transcript": {
       "title": "Transcript",
-      "generating": " La transcription est en cours de génération...",
+      "generating": "Transcript generation in progress, you will receive an email when it is available.",
       "empty": "Video transcript not available.",
       "button": {
         "generate": " Generate Transcript",
-        "download": "Download"
+        "download": "Download",
+        "save": "Save"
       },
       "failed": " Failed to load Transcript",
       "try-again": "Try again"
@@ -764,5 +769,44 @@
     "description": "An unexpected error occurred. Please try again.",
     "retry": "Try again",
     "goHome": "Go to home"
+  },
+  "playlist": {
+    "create": {
+      "button": "Create Playlist",
+      "dialog": {
+        "title": "Create New Playlist"
+      },
+      "submit": "Create",
+      "success": "Playlist has been created successfully.",
+      "error": "Failed to create playlist. Please try again."
+    },
+    "edit": {
+      "button": "Edit playlist",
+      "dialog": {
+        "title": "Edit Playlist"
+      },
+      "title": "Title",
+      "titleRequired": "Title is required",
+      "description": "Description",
+      "submit": "Update",
+      "cancel": "Cancel",
+      "success": "Playlist has been updated.",
+      "error": "Failed to update playlist. Please try again.",
+      "projects": {
+        "current": "Current Projects",
+        "add": "Add Projects",
+        "empty": "No projects in playlist",
+        "noAvailable": "No available projects to add"
+      }
+    },
+    "delete": {
+      "button": "Delete Playlist",
+      "confirm": {
+        "title": "Delete playlist",
+        "description": "Are you sure you want to delete this playlist? This action cannot be undone."
+      },
+      "success": "Playlist has been successfully deleted.",
+      "error": "Failed to delete playlist. Please try again."
+    }
   }
 }
