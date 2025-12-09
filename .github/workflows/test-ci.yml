@@ -6,7 +6,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
+  pull_request:
     branches: [staging]
     paths:
       - "apps/web/**"
@@ -17,8 +17,6 @@ jobs:
   tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.48.2-jammy
 
     services:
       redis:
@@ -40,11 +38,11 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "pnpm"
@@ -72,16 +70,19 @@ jobs:
 
       - run: pnpm install
 
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium firefox
+
       - name: Build apps
         run: |
           cp .env.ci .env
           pnpm build
 
+      - name: Build packages
+        run: pnpm prisma migrate deploy
+
       - name: Run Playwright tests
-        # with workground https://github.com/microsoft/playwright/issues/6500
-        run: pnpm exec playwright test
-        env:
-          HOME: /root
+        run: pnpm test
 
       - uses: actions/upload-artifact@v4
         if: always()
