@@ -27,7 +27,7 @@
     "@celluloid/queue": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@t3-oss/env-core": "catalog:",
-    "@trpc/server": "^11.1.0",
+    "@trpc/server": "^11.8.0",
     "bcryptjs": "^2.4.3",
     "better-auth": "catalog:",
     "dotenv": "^16.3.1",
