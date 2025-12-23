@@ -37,7 +37,7 @@
     "@celluloid/types": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@celluloid/vision": "workspace:*",
-    "@langchain/core": "^1.0.2",
+    "@langchain/core": "^1.1.8",
     "@langchain/mistralai": "^1.0.0",
     "@langchain/textsplitters": "^1.0.0",
     "@mgcrea/prisma-queue": "1.12.0",
