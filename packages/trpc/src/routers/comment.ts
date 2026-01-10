@@ -1,6 +1,7 @@
+import { notifications } from "@celluloid/notifications";
 import { prisma } from "@celluloid/prisma";
 import { z } from "zod";
-
+import { env } from "../env";
 import { protectedProcedure, router } from "../trpc";
 
 // const defaultPostSelect = Prisma.validator<Prisma.ProjectSelect>()({
@@ -22,17 +23,40 @@ export const commentRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       //TODO : check if project owner or collaborator
-      if (ctx.user && ctx.user.id) {
-        const comment = await prisma.comment.create({
+
+      const comment = await prisma.comment.create({
+        data: {
+          userId: ctx.user.id,
+          annotationId: input.annotationId,
+          text: input.comment,
+        },
+        // select: defaultPostSelect,
+      });
+      const project = await prisma.project.findUnique({
+        where: {
+          id: input.projectId,
+        },
+        select: {
+          userId: true,
+          title: true,
+        },
+      });
+
+      if (project?.userId !== ctx.user?.id) {
+        await notifications.workflows.trigger("new-annotation", {
+          recipients: [
+            {
+              id: ctx.user?.id,
+            },
+          ],
           data: {
-            userId: ctx.user.id,
-            annotationId: input.annotationId,
-            text: input.comment,
+            message: `Nouveau commentaire de ${ctx.user?.username} sur le projet ${project?.title}`,
+            link: `${env.BASE_URL}/projects/${input.projectId}`,
           },
-          // select: defaultPostSelect,
         });
-        return comment;
       }
+
+      return comment;
     }),
   edit: protectedProcedure
     .input(
