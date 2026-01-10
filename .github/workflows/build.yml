@@ -15,7 +15,9 @@ on:
   workflow_dispatch:
 
 env:
-  POSTHOG_KEY: phc_A7cjBqRMmQE4Ursk2IdMFPaBLcxY2cTvouQQyDMkCvh
+  NEXT_PUBLIC_POSTHOG_KEY: phc_A7cjBqRMmQE4Ursk2IdMFPaBLcxY2cTvouQQyDMkCvh
+  NEXT_PUBLIC_KNOCK_API_KEY: pk_tNNkD19OAJjRRYtcPzpzFRquKSK3uPNDYEapCc3SSNE
+  NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: 27641bef-8e3b-438b-8060-d25446dffbe5
 
 jobs:
   build-containers:
@@ -53,11 +55,19 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set stage
+        id: stage
+        run: |
+          STAGE="${{ (contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') || github.ref_name == 'staging') && 'staging' || 'production' }}"
+          echo "value=$STAGE" >> $GITHUB_OUTPUT
+
       - name: Build containers
         uses: docker/bake-action@v5
         env:
-          POSTHOG_KEY: ${{ env.POSTHOG_KEY }}
-          STAGE: ${{ contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') || github.ref_name == 'staging' && 'staging' || 'production' }}
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_POSTHOG_KEY || '' }}
+          NEXT_PUBLIC_KNOCK_API_KEY: ${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_API_KEY || '' }}
+          NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: ${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID || '' }}
+          STAGE: ${{ steps.stage.outputs.value }}
         with:
           files: |
             ./docker-bake.hcl
