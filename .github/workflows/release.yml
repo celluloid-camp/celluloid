@@ -1,39 +1,90 @@
----
 name: Release
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 on:
   push:
     branches:
-      - main
+      - staging
   workflow_dispatch:
 
-permissions:
-  contents: write
-  id-token: write
-
 jobs:
-  release:
+
+  check-release:
     runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Git config
+          ref: 'staging'
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Check if release needed
+        id: check
+        run: |
+          if npx --yes should-semantic-release; then
+            echo "Check if release needed: YES"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          else
+            status=$?
+            if [ "$status" -eq 1 ]; then
+              echo "Check if release needed: NO"
+              echo "should_release=false" >> $GITHUB_OUTPUT
+              exit 0
+            else
+              echo "Error while running should-semantic-release (exit code $status)"
+              exit "$status"
+            fi
+          fi
+
+  release:
+    name: Merge to main and release
+    needs: check-release
+    if: needs.check-release.outputs.should_release == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: 'staging'
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "celluloid-camp[bot]@users.noreply.github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          run_install: |
-            - args: [--frozen-lockfile]
-
-      - name: Release
+      - name: Run release-it
         run: pnpm release
         env:
-          GITHUB_TOKEN: ${{secrets.PROJECT_GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge staging into main
+        run: |
+          git checkout main
+          git pull
+          git merge origin/staging
+          git push
