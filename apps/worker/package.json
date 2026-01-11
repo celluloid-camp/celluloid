@@ -18,8 +18,6 @@
     "@celluloid/typescript-config": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@godaddy/terminus": "^4.12.1",
-    "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "catalog:",
     "@t3-oss/env-core": "catalog:"
   },
   "devDependencies": {

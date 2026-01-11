@@ -13,17 +13,7 @@ const nextConfig = {
   // experimental: {
   //   reactCompiler: true,
   // },
-  serverExternalPackages: ["pino", "pino-pretty"],
-  transpilePackages: [
-    "@t3-oss/env-nextjs",
-    "better-auth",
-    "@t3-oss/env-core",
-    "@celluloid/trpc",
-    "@celluloid/db",
-    "@celluloid/auth",
-    "@celluloid/types",
-    "@celluloid/utils",
-  ],
+  serverExternalPackages: ["pino", "pino-pretty"]
 } as NextConfig;
 
 const withNextIntl = createNextIntlPlugin({
