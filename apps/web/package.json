@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun run --env-file ../../.env next dev",
-    "build": "bun run --env-file ../../.env next build --debug-prerender",
+    "build": "bun run --env-file ../../.env next build",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "start": "next start",
     "lint": "next lint"
