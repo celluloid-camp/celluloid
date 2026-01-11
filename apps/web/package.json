@@ -12,8 +12,9 @@
   "dependencies": {
     "@celluloid/auth": "workspace:*",
     "@celluloid/db": "workspace:*",
-    "@celluloid/queue": "workspace:*",
+    "@celluloid/emails": "workspace:*",
     "@celluloid/notifications": "workspace:*",
+    "@celluloid/queue": "workspace:*",
     "@celluloid/react-player": "2.14.0",
     "@celluloid/trpc": "workspace:*",
     "@celluloid/types": "workspace:*",
@@ -73,6 +74,7 @@
     "recharts": "^3.0.2",
     "resize-observer-polyfill": "^1.5.1",
     "server-only": "^0.0.1",
+    "sharp": "^0.34.5",
     "superjson": "^2.2.2",
     "tippy.js": "^6.3.7",
     "tiptap-markdown": "^0.8.10",
