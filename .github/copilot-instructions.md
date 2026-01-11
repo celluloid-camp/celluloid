@@ -98,7 +98,7 @@ pnpm dev           # Start development servers
 To run commands in specific workspaces:
 ```bash
 pnpm --filter web <command>
-pnpm --filter @celluloid/prisma <command>
+pnpm --filter @celluloid/db <command>
 ```
 
 ### Database Migrations
@@ -146,7 +146,7 @@ Commits are automatically validated with commitlint via Husky hooks.
 - Type-safe from frontend to backend
 
 ### Database Access
-- Use Prisma client from `@celluloid/prisma`
+- Use Prisma client from `@celluloid/db`
 - Follow Prisma best practices
 - Use transactions for related operations
 - Handle errors appropriately

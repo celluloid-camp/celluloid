@@ -1,4 +1,4 @@
-import { type PrismaClient, prisma } from "@celluloid/prisma";
+import { type PrismaClient, prisma } from "@celluloid/db";
 import type { PeerTubeVideo } from "@celluloid/types";
 import logger from "@celluloid/utils/logger";
 import { createQueue } from "@mgcrea/prisma-queue";

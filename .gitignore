@@ -57,3 +57,5 @@ dist
 
 # Playwright
 /blob-report/
+
+packages/prisma/generated

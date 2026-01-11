@@ -1,4 +1,4 @@
-import { type Prisma, prisma } from "@celluloid/prisma";
+import { type Prisma, prisma } from "@celluloid/db";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -18,22 +18,22 @@ export const adminRouter = router({
       const limit = input.limit ?? 10;
       const skip = input.skip ?? 0;
 
-      const where: Prisma.ProjectWhereInput = {};
-
-      if (input.searchTerm) {
-        where.user = {
-          username: { contains: input.searchTerm, mode: "insensitive" },
-        };
-      }
+      const where: Prisma.ProjectWhereInput = input.searchTerm
+        ? {
+          user: {
+            username: { contains: input.searchTerm, mode: "insensitive" },
+          },
+        }
+        : {};
 
       const total = await prisma.project.count({
-        where,
+        where: where as any,
       });
 
       const items = await prisma.project.findMany({
         take: limit,
         skip: skip,
-        where,
+        where: where as any,
         select: {
           id: true,
           userId: true,
@@ -149,8 +149,6 @@ export const adminRouter = router({
           chapters: {
             select: {
               id: true,
-              finishedAt: true,
-              progress: true,
             },
           },
           playlist: {

@@ -1,0 +1,49 @@
+{
+  "name": "@celluloid/db",
+  "version": "3.3.3",
+  "license": "MIT",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "db:generate": "bun run --env-file ../../.env prisma generate",
+    "migrate": "bun run --env-file ../../.env prisma migrate",
+    "migrate:init": "bun run --env-file ../../.env prisma migrate resolve --applied 0_init",
+    "migrate:deploy": "bun run --env-file ../../.env prisma migrate deploy",
+    "migrate:dev": "bun run --env-file ../../.env prisma migrate dev",
+    "db:push": "bun run --env-file ../../.env prisma db push",
+    "seed": "tsx src/seed.ts",
+    "generate": "bun run --env-file ../../.env prisma generate",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "studio": "prisma studio"
+  },
+  "devDependencies": {
+    "@celluloid/config": "workspace:*",
+    "@celluloid/typescript-config": "workspace:*",
+    "@celluloid/utils": "workspace:*",
+    "@faker-js/faker": "^9.7.0",
+    "@types/node-fetch": "^2.6.7",
+    "eslint": "^8.50.0",
+    "prisma": "catalog:",
+    "rimraf": "^5.0.1",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "catalog:",
+    "@t3-oss/env-nextjs": "^0.12.0",
+    "@types/randomcolor": "^0.5.7",
+    "prisma-json-types-generator": "^4.1.0",
+    "randomcolor": "^0.6.2",
+    "tsx": "^4.19.1",
+    "zod": "catalog:"
+  },
+  "prisma": {
+    "schema": "schema.prisma",
+    "seed": "tsx src/seed.ts"
+  }
+}

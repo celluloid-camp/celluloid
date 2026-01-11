@@ -1,4 +1,4 @@
-import { prisma } from "@celluloid/prisma";
+import { prisma } from "@celluloid/db";
 import { visionQueue, visionResultQueue } from "@celluloid/queue";
 import { getJobResultsResultsJobIdGetResponse } from "@celluloid/vision";
 import { z } from "zod";

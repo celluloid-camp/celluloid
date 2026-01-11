@@ -4,16 +4,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+    ".": "./index.ts"
   },
   "scripts": {
-    "build": "pkgroll build",
-    "dev": "pkgroll dev",
     "email-dev": "email dev -p 3001",
-    "export": "email export"
+    "export": "email export",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@react-email/components": "0.0.42",
@@ -21,8 +18,7 @@
     "@types/react": "catalog:"
   },
   "devDependencies": {
-    "@celluloid/config": "workspace:*",
-    "pkgroll": "^2.11.2",
+    "@celluloid/typescript-config": "workspace:*",
     "typescript": "catalog:"
   }
 }

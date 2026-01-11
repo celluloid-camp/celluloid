@@ -1,4 +1,4 @@
-import { prisma } from "@celluloid/prisma";
+import { prisma } from "@celluloid/db";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";

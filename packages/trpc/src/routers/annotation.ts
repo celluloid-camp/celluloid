@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events";
+import type { Annotation } from "@celluloid/db";
+import { Prisma, prisma } from "@celluloid/db";
 import { notifications } from "@celluloid/notifications";
-import type { Annotation } from "@celluloid/prisma";
-import { Prisma, prisma } from "@celluloid/prisma";
 import { toSrt } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";

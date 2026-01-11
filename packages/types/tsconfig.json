@@ -1,5 +1,10 @@
 {
-  "extends": "@celluloid/config/tsconfig/internal-package.json",
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "extends": "@celluloid/typescript-config/nextjs.json",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

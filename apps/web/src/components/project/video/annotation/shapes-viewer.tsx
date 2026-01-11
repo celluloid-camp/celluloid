@@ -1,6 +1,6 @@
 "use client";
 
-import type { AnnotationShape } from "@celluloid/prisma";
+import type { AnnotationShape } from "@celluloid/db";
 import { Box } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Circle, Ellipse, Layer, Line, Rect, Stage } from "react-konva";

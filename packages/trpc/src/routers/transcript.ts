@@ -1,4 +1,4 @@
-import { Prisma, prisma } from "@celluloid/prisma";
+import { Prisma, prisma } from "@celluloid/db";
 import {
   convertCaptionsToTranscript,
   transcriptsQueue,

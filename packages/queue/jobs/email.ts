@@ -1,4 +1,4 @@
-import { type PrismaClient, prisma } from "@celluloid/prisma";
+import { type PrismaClient, prisma } from "@celluloid/db";
 import logger from "@celluloid/utils/logger";
 import { createQueue } from "@mgcrea/prisma-queue";
 import { sendEmailVerification, sendForgetPassword } from "../mailer/send-mail";

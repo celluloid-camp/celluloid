@@ -1,8 +1,21 @@
 {
-  "extends": "@celluloid/config/tsconfig/internal-package.json",
+  "extends": "@celluloid/typescript-config/nextjs.json",
   "compilerOptions": {
-    "lib": ["ES2020", "DOM"]
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@celluloid/*": [
+        "../../packages/*"
+      ]
+    }
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -3,16 +3,14 @@
   "version": "3.3.3",
   "private": true,
   "scripts": {
-    "dev": "pnpm with-env next dev --turbopack",
-    "build": "NODE_ENV=production SKIP_ENV_VALIDATIONS=true next build && pnpm postbuild",
-    "postbuild": "cp -r .next/static .next/standalone/apps/web/.next/ && cp -r public .next/standalone/apps/web/ || true",
-    "start": "node .next/standalone/apps/web/server.js",
-    "lint": "next lint",
-    "with-env": "dotenv -e ../../.env --"
+    "dev": "bun run --env-file ../../.env next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@celluloid/auth": "workspace:*",
-    "@celluloid/prisma": "workspace:*",
+    "@celluloid/db": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/notifications": "workspace:*",
     "@celluloid/react-player": "2.14.0",

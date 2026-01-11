@@ -2,26 +2,13 @@
   "name": "@celluloid/utils",
   "version": "3.3.3",
   "private": true,
-  "type": "module",
-  "description": "Common types library for Celluloid client and server",
-  "repository": "http://github.com/celluloid-edu/celluloid",
-  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./logger": {
-      "types": "./dist/logger.d.ts",
-      "import": "./dist/logger.js"
-    }
+    ".": "./index.ts"
   },
   "scripts": {
-    "dev": "pkgroll dev",
-    "build": "pkgroll build",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {

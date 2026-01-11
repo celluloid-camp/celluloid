@@ -1,5 +1,5 @@
 import { defineConfig } from "orval";
-import { env } from "./src/env";
+import { env } from "./env";
 export default defineConfig({
   visionZod: {
     input: {
@@ -8,7 +8,7 @@ export default defineConfig({
     output: {
       mode: "single",
       client: "zod",
-      target: "src/generated/schema.zod.ts",
+      target: "generated/schema.zod.ts",
       biome: true,
     },
   },
@@ -19,8 +19,8 @@ export default defineConfig({
     output: {
       mode: "single",
       client: "fetch",
-      target: "src/generated/endpoints.ts",
-      schemas: "src/generated/models",
+      target: "generated/endpoints.ts",
+      schemas: "generated/models",
       baseUrl: env.VISION_API_URL,
       headers: true,
       biome: true,

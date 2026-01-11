@@ -3,38 +3,27 @@
   "version": "3.3.3",
   "private": true,
   "type": "module",
-  "bin": "./dist/index.js",
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch --onSuccess \"pnpm with-env node dist/index.js\"",
-    "start": "node dist/index.js",
-    "with-env": "dotenv -e ../../.env --"
+    "dev": "bun run --env-file ../../.env --watch ./src/server.ts",
+    "start": "bun run --env-file ../../.env ./src/server.ts",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
     "@celluloid/emails": "workspace:*",
-    "@celluloid/prisma": "workspace:*",
+    "@celluloid/db": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/vision": "workspace:*",
     "@celluloid/types": "workspace:*",
+    "@celluloid/typescript-config": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@godaddy/terminus": "^4.12.1",
-    "@t3-oss/env-core": "catalog:",
-    "@types/express": "^4.17.21",
-    "express": "^4.21.2"
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "catalog:",
+    "@t3-oss/env-core": "catalog:"
   },
   "devDependencies": {
-    "tsup": "^8.3.0",
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
-  },
-  "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
-    "splitting": false,
-    "sourcemap": false,
-    "clean": true,
-    "platform": "node",
-    "format": "esm"
   }
 }

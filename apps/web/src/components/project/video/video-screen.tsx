@@ -1,5 +1,5 @@
 "use client";
-import { AnnotationShape } from "@celluloid/prisma";
+import { AnnotationShape } from "@celluloid/db";
 import type ReactPlayer from "@celluloid/react-player";
 import { Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";

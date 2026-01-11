@@ -32,8 +32,7 @@ target "docker-metadata-action" {
 target "web" {
   inherits = ["docker-metadata-action"]
   context    = "."
-  dockerfile = "./Dockerfile"
-  target     = "web"
+  dockerfile = "./apps/web/Dockerfile"
   tags = "${target.docker-metadata-action.tags}"
   cache-from = ["type=gha"]
   cache-to   = ["type=gha,mode=max"]
@@ -51,8 +50,7 @@ target "web" {
 target "worker" {
   inherits = ["docker-metadata-action"]
   context    = "."
-  dockerfile = "./Dockerfile"
-  target     = "worker"
+  dockerfile = "./apps/worker/Dockerfile"
   tags = [for tag in target.docker-metadata-action.tags : replace(tag, "web", "worker")]
   cache-from = ["type=gha"]
   cache-to   = ["type=gha,mode=max"]

@@ -1,4 +1,4 @@
-import { prisma } from "@celluloid/prisma";
+import { prisma } from "@celluloid/db";
 import { emailQueue } from "@celluloid/queue";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";

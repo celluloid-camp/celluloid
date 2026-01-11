@@ -1,5 +1,5 @@
-import { type Project, prisma } from "@celluloid/prisma";
 import fetch from "node-fetch";
+import { type Project, prisma } from "./generated/client";
 
 const getProjectMetadata = async (project: Project) => {
   const apiUrl = `https://${project.host}/api/v1/videos/${project.videoId}`;

@@ -23,10 +23,10 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
-    "@celluloid/prisma": "workspace:*",
+    "@celluloid/db": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/utils": "workspace:*",
-    "@prisma/client": "^6.5.0",
+    "@prisma/client": "catalog:",
     "@t3-oss/env-core": "catalog:",
     "bcryptjs": "^2.4.3",
     "better-auth": "catalog:",

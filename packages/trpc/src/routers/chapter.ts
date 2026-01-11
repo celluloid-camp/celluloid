@@ -1,5 +1,5 @@
 import { EventEmitter } from "node:events";
-import { Prisma, prisma } from "@celluloid/prisma";
+import { Prisma, prisma } from "@celluloid/db";
 import { chaptersQueue } from "@celluloid/queue";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";

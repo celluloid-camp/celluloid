@@ -1,4 +1,4 @@
-import { Prisma, prisma } from "@celluloid/prisma";
+import { Prisma, prisma } from "@celluloid/db";
 import { chaptersQueue, transcriptsQueue } from "@celluloid/queue";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";

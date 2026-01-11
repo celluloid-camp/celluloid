@@ -1,4 +1,4 @@
-import { Prisma, prisma } from "@celluloid/prisma";
+import { Prisma, prisma } from "@celluloid/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -45,8 +45,8 @@ export const noteRouter = router({
         },
         cursor: cursor
           ? {
-              id: cursor,
-            }
+            id: cursor,
+          }
           : undefined,
         orderBy: {
           createdAt: "desc",

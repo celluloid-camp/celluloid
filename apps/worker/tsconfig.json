@@ -1,14 +1,24 @@
 {
+  "extends": "@celluloid/typescript-config/nextjs.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "outDir": "dist",
-    "rootDir": "src"
+    "baseUrl": ".",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ES2022"
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@celluloid/*": [
+        "../../packages/*"
+      ]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+  ]
 }

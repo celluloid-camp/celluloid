@@ -19,7 +19,7 @@ const nextConfig = {
     "better-auth",
     "@t3-oss/env-core",
     "@celluloid/trpc",
-    "@celluloid/prisma",
+    "@celluloid/db",
     "@celluloid/auth",
     "@celluloid/types",
     "@celluloid/utils",

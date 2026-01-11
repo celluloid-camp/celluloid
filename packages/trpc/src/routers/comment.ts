@@ -1,5 +1,5 @@
+import { prisma } from "@celluloid/db";
 import { notifications } from "@celluloid/notifications";
-import { prisma } from "@celluloid/prisma";
 import { z } from "zod";
 import { env } from "../env";
 import { protectedProcedure, router } from "../trpc";

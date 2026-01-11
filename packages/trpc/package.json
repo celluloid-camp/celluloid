@@ -2,28 +2,19 @@
   "name": "@celluloid/trpc",
   "version": "3.3.3",
   "private": true,
-  "license": "MIT",
-  "homepage": "https://celluloid.huma-num.fr",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/celluloid-camp/celluloid.git",
-    "directory": "packages/trpc"
-  },
-  "bugs": {
-    "url": "https://github.com/udecode/plate/celluloid/issues"
-  },
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./env": "./src/env.ts"
   },
   "scripts": {
-    "clean": "git clean -xdf .cache .turbo dist node_modules"
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
     "@celluloid/auth": "workspace:*",
     "@celluloid/vision": "workspace:*",
-    "@celluloid/prisma": "workspace:*",
+    "@celluloid/db": "workspace:*",
     "@celluloid/notifications": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/utils": "workspace:*",
