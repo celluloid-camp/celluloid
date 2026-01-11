@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "bun run --env-file ../../.env next dev",
-    "build": "next build",
+    "build": "bun run --env-file ../../.env next build",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "start": "next start",
     "lint": "next lint"
   },

@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "envMode": "loose",
   "tasks": {
     "build": {
       "dependsOn": [
@@ -67,7 +68,8 @@
     "SMTP_USER",
     "SMTP_PASSWORD",
     "SMTP_EMAIL_FROM",
-    "SKIP_ENV_VALIDATIONS"
+    "SKIP_ENV_VALIDATIONS",
+    "KNOCK_SECRET_API_KEY"
   ],
   "globalPassThroughEnv": [
     "NODE_ENV",
