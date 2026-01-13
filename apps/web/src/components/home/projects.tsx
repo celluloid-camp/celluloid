@@ -10,34 +10,34 @@ import { ProjectGridSkeleton } from "./skeleton";
 export function HomePageProjects() {
   const t = useTranslations();
   return (
-    <Suspense fallback={<ProjectGridSkeleton />}>
-      <QueryErrorResetBoundary>
-        {({ reset }) => (
-          <ErrorBoundary
-            onReset={reset}
-            fallbackRender={({ resetErrorBoundary }) => (
-              <Fade in={true} appear={true}>
-                <Typography
-                  variant="h6"
-                  align="center"
-                  gutterBottom={true}
-                  sx={{
-                    pt: 4,
-                    pb: 1,
-                  }}
-                >
-                  {t("errors.UNKNOWN")}
-                  <Button onClick={() => resetErrorBoundary()}>
-                    {t("home.projects.retry")}
-                  </Button>
-                </Typography>
-              </Fade>
-            )}
-          >
-            <ProjectGrid />
-          </ErrorBoundary>
-        )}
-      </QueryErrorResetBoundary>
-    </Suspense>
+    // <Suspense fallback={<ProjectGridSkeleton />}>
+    <QueryErrorResetBoundary>
+      {({ reset }) => (
+        <ErrorBoundary
+          onReset={reset}
+          fallbackRender={({ resetErrorBoundary }) => (
+            <Fade in={true} appear={true}>
+              <Typography
+                variant="h6"
+                align="center"
+                gutterBottom={true}
+                sx={{
+                  pt: 4,
+                  pb: 1,
+                }}
+              >
+                {t("errors.UNKNOWN")}
+                <Button onClick={() => resetErrorBoundary()}>
+                  {t("home.projects.retry")}
+                </Button>
+              </Typography>
+            </Fade>
+          )}
+        >
+          <ProjectGrid />
+        </ErrorBoundary>
+      )}
+    </QueryErrorResetBoundary>
+    // </Suspense>
   );
 }

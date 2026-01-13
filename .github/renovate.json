@@ -1,0 +1,69 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":separateMajorReleases",
+    ":dependencyDashboard"
+  ],
+  "onboarding": true,
+  "requireConfig": "ignored",
+  "prConcurrentLimit": 5,
+  "timezone": "Europe/Paris",
+  "baseBranches": ["staging"],
+  "rangeStrategy": "bump",
+  "labels": ["dependencies"],
+  "enabledManagers": ["npm", "pnpm", "dockerfile", "github-actions"],
+  "pnpm": { "enabled": true },
+  "npm": { "postUpdateOptions": ["pnpmDedupe"] },
+  "ignorePaths": ["**/node_modules/**", "**/dist/**", "**/.next/**"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch", "digest"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "groupName": "docker base images"
+    },
+    {
+      "matchPackagePatterns": ["^@celluloid/"],
+      "groupName": "workspace internal packages"
+    },
+    {
+      "matchPackageNames": [
+        "turbo",
+        "typescript",
+        "tsup",
+        "pkgroll",
+        "@playwright/test",
+        "@biomejs/biome"
+      ],
+      "groupName": "build tooling"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "dev dependencies"
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 3am on sunday"]
+  },
+  "schedule": ["after 9am and before 6pm on monday"],
+  "regexManagers": [
+    {
+      "fileMatch": ["^pnpm-workspace\\.yaml$"],
+      "matchStrings": [
+        "catalog:\\s*[\\s\\S]*?(?<depName>@?[a-zA-Z0-9_./-]+):\\s*\"?(?<currentValue>\\^?[0-9][^\\n\"\\r]*)"
+      ],
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    }
+  ]
+}
