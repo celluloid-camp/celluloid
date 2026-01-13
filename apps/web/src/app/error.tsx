@@ -35,7 +35,7 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
       <Container maxWidth="sm" sx={{ py: 10 }}>
         <Stack spacing={3} alignItems="center" textAlign="center">
           <Typography variant="h3" component="h1">
-          {t("error.title")}
+            {t("error.title")}
           </Typography>
           <Typography color="text.secondary">
             {t("error.description", {
@@ -44,7 +44,7 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
           </Typography>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Button variant="contained" color="primary" onClick={() => reset()}>
-              {t("error.retry","Try again")}
+              {t("error.retry", "Try again")}
             </Button>
             <Button
               component={Link}

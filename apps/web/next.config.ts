@@ -13,6 +13,7 @@ const nextConfig = {
   // experimental: {
   //   reactCompiler: true,
   // },
+  serverExternalPackages: ["pino", "pino-pretty"],
   transpilePackages: [
     "@t3-oss/env-nextjs",
     "better-auth",

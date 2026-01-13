@@ -185,7 +185,6 @@ export const userRouter = router({
       return user;
     }),
 
-
   projects: protectedProcedure
     .input(
       z.object({
@@ -206,12 +205,12 @@ export const userRouter = router({
             { userId: ctx.user ? ctx.user.id : undefined },
             ctx.user
               ? {
-                members: {
-                  some: {
-                    userId: ctx.user.id,
+                  members: {
+                    some: {
+                      userId: ctx.user.id,
+                    },
                   },
-                },
-              }
+                }
               : {},
           ],
         },
@@ -229,8 +228,8 @@ export const userRouter = router({
         },
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",
@@ -255,7 +254,7 @@ export const userRouter = router({
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(),
-        userId: z.string()
+        userId: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -296,8 +295,8 @@ export const userRouter = router({
         },
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",
@@ -314,6 +313,58 @@ export const userRouter = router({
 
       return {
         items: items.reverse(),
+        nextCursor,
+      };
+    }),
+  playlists: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+
+      const items = await prisma.playlist.findMany({
+        take: limit + 1,
+        where: {
+          userId: ctx.user.id,
+        },
+        include: {
+          projects: {
+            select: {
+              id: true,
+              title: true,
+              thumbnailURL: true,
+            },
+          },
+          _count: {
+            select: {
+              projects: true,
+            },
+          },
+        },
+        cursor: cursor
+          ? {
+              id: cursor,
+            }
+          : undefined,
+        orderBy: {
+          publishedAt: "asc",
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        if (nextItem) {
+          nextCursor = nextItem.id;
+        }
+      }
+
+      return {
+        items,
         nextCursor,
       };
     }),

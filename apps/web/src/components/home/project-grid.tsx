@@ -9,6 +9,7 @@ import {
   Fade,
   IconButton,
   InputBase,
+  Pagination,
   Paper,
   Skeleton,
   Stack,
@@ -32,18 +33,28 @@ import { StyledTitle } from "../common/typography";
 //   loading: () => <Skeleton variant="text" height={60} width={200} />,
 // });
 
+const ITEMS_PER_PAGE = 12;
+
 export function ProjectGrid() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations();
   const [mounted, setMounted] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageCursors, setPageCursors] = useState<Map<number, string>>(
+    new Map(),
+  );
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const [searchTerm, setSearchTerm] = useState<string | undefined>("");
   // Debounce the search function
   const debouncedSearch = debounce((value: string) => {
+    // Reset pagination when search changes
+    setPage(1);
+    setPageCursors(new Map());
+
     if (value.length >= 3) {
       setSearchTerm(value);
     } else if (value.length === 0) {
@@ -53,9 +64,29 @@ export function ProjectGrid() {
 
   const { data: session } = useSession();
 
-  const [data, mutation] = trpc.project.list.useSuspenseQuery({
+  // Get cursor for current page (page 1 has no cursor)
+  const cursor = useMemo(() => {
+    if (page === 1) return undefined;
+    return pageCursors.get(page) ?? undefined;
+  }, [page, pageCursors]);
+
+  const [data, fetch] = trpc.project.list.useSuspenseQuery({
     term: searchTerm,
+    limit: ITEMS_PER_PAGE,
+    cursor,
   });
+
+  // Reset pagination when search term changes externally
+  useEffect(() => {
+    setPage(1);
+    setPageCursors(new Map());
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (session && !fetch.isFetching) {
+      fetch.refetch();
+    }
+  }, [session]);
 
   const ownProjects = useMemo(
     () =>
@@ -100,12 +131,41 @@ export function ProjectGrid() {
 
   const handleResetSearch = () => {
     setSearchTerm(undefined);
+    setPage(1);
+    setPageCursors(new Map());
     if (searchInputRef.current) {
       searchInputRef.current.value = "";
     }
   };
 
-  if (mutation.error) {
+  // Track next cursor for the next page
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    newPage: number,
+  ) => {
+    if (data?.nextCursor && newPage > page) {
+      // Store the cursor for the next page
+      setPageCursors((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(newPage, data.nextCursor!);
+        return newMap;
+      });
+    } else if (newPage < page) {
+      // If navigating back, remove the cursor for the current page
+      setPageCursors((prev) => {
+        const newMap = new Map(prev);
+        newMap.delete(page);
+        return newMap;
+      });
+    }
+    setPage(newPage);
+  };
+
+  // Calculate total pages based on whether we have a next cursor
+  const hasNextPage = !!data?.nextCursor;
+  const totalPages = hasNextPage ? page + 1 : page;
+
+  if (fetch.error) {
     return (
       <Box sx={{ p: 5, minHeight: "100vh" }}>
         <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
@@ -132,7 +192,7 @@ export function ProjectGrid() {
             height: 50,
           }}
         >
-          {mutation.isFetching ? (
+          {fetch.isFetching ? (
             <CircularProgress sx={{ p: "10px", ml: 1 }} size={20} />
           ) : (
             <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
@@ -247,6 +307,29 @@ export function ProjectGrid() {
                   {t("home.emptySearchResult")}
                 </Typography>
               </Stack>
+            </Box>
+          )}
+
+          {/* Pagination */}
+          {!noProjects && data.items.length > 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                pt: 4,
+                pb: 2,
+              }}
+            >
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+                size="large"
+                showFirstButton
+                showLastButton
+              />
             </Box>
           )}
         </Box>

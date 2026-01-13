@@ -1,5 +1,6 @@
 import { type PrismaClient, prisma } from "@celluloid/prisma";
 import type { PeerTubeVideo } from "@celluloid/types";
+import logger from "@celluloid/utils/logger";
 import { createAnalyzeVideoTask, getJobResult } from "@celluloid/vision";
 import { createQueue } from "@mgcrea/prisma-queue";
 import { Client } from "minio";
@@ -10,11 +11,13 @@ import { parseUrl } from "../utils/s3";
 type VisionJobPayload = { projectId: string; callbackUrl: string };
 type JobResult = { status: number };
 
+const log = logger.child({ job: "vision" });
+
 export const visionQueue = createQueue<VisionJobPayload, JobResult>(
   { name: "vision", prisma: prisma as unknown as PrismaClient },
   async (job, prisma) => {
     const { id, payload } = job;
-    console.log(
+    log.debug(
       `Vision queue processing job#${id} with payload=${JSON.stringify(payload)})`,
     );
 
@@ -36,12 +39,17 @@ export const visionQueue = createQueue<VisionJobPayload, JobResult>(
       .find((file) => file.fileDownloadUrl)?.fileDownloadUrl; // Find the first file with a download URL
     const duration = metadata.duration || 0;
 
+    log.debug("Vision queue processing -- video url", {
+      videoUrl,
+      duration,
+      jobId: job.id,
+    });
     if (!videoUrl) {
-      console.error("No video file found");
+      log.error("No video file found");
       return { status: 404 };
     }
 
-    console.log("Vision queue processing -- metadata loaded", {
+    log.debug("Vision queue processing -- metadata loaded", {
       videoUrl,
       duration,
       jobId: job.id,
@@ -53,7 +61,7 @@ export const visionQueue = createQueue<VisionJobPayload, JobResult>(
         projectId: payload.projectId,
         callbackUrl: payload.callbackUrl,
       });
-      console.log("Vision queue processing -- task created", {
+      log.debug("Vision queue processing -- task created", {
         task,
       });
 
@@ -72,13 +80,13 @@ export const visionQueue = createQueue<VisionJobPayload, JobResult>(
 
       const status = 200;
 
-      console.log(`Finished job#${id} with status=${status}`);
+      log.debug(`Finished job#${id} with status=${status}`);
       return {
         status,
         videoAnalysisJobId: task.job_id,
       };
     } catch (error) {
-      console.error("Failed to create video analysis task", error);
+      log.error("Failed to create video analysis task", error);
       return { status: 500 };
     }
   },
@@ -93,7 +101,7 @@ export const visionResultQueue = createQueue<
   { name: "vision-result", prisma: prisma as unknown as PrismaClient },
   async (job, prisma) => {
     const { id, payload } = job;
-    console.log(
+    log.debug(
       `Vision result queue processing job#${id} with payload=${JSON.stringify(payload)})`,
     );
 
@@ -117,17 +125,26 @@ export const visionResultQueue = createQueue<
     });
 
     if (!analysis) {
-      console.error("No video analysis job found");
+      log.error("No video analysis job found");
       return { status: 404 };
     }
+
+    log.debug("Vision result queue processing -- analysis", {
+      analysis,
+    });
 
     if (analysis.status === "pending" && analysis.visionJobId) {
       const result = await getJobResult(analysis.visionJobId);
 
+      if (!result) {
+        log.error("No result found");
+        return { status: 404 };
+      }
+
       if (result) {
         const spritepathUrl = result?.metadata.sprite.path;
 
-        console.log("Vision result queue processing -- sprite path", {
+        log.debug("Vision result queue processing -- sprite path", {
           spritepathUrl,
         });
 
@@ -169,7 +186,7 @@ export const visionResultQueue = createQueue<
             });
           }
         } catch (error) {
-          console.error("Failed to upload sprite to S3", error);
+          log.error("Failed to upload sprite to S3", error);
         }
       }
 
@@ -217,7 +234,7 @@ async function uploadSpriteToS3(
     { "Content-Type": "image/jpeg" },
   );
 
-  console.log(`Uploaded ${s3ObjectName} to ${env.STORAGE_BUCKET}`);
+  log.debug(`Uploaded ${s3ObjectName} to ${env.STORAGE_BUCKET}`);
 
   return s3ObjectName;
 }

@@ -1,4 +1,5 @@
 import { type PrismaClient, prisma } from "@celluloid/prisma";
+import logger from "@celluloid/utils/logger";
 import { createQueue } from "@mgcrea/prisma-queue";
 import { sendEmailVerification, sendForgetPassword } from "../mailer/send-mail";
 
@@ -10,13 +11,13 @@ type EmailJobPayload = {
 };
 type EmailJobResult = { status: number };
 
+const log = logger.child({ job: "email" });
+
 export const emailQueue = createQueue<EmailJobPayload, EmailJobResult>(
   { name: "emails", prisma: prisma as unknown as PrismaClient },
   async (job, client) => {
     const { id, payload } = job;
-    console.log(
-      `Processing job#${id} with payload=${JSON.stringify(payload)})`,
-    );
+    log.debug(`Processing job#${id} with payload=${JSON.stringify(payload)})`);
 
     try {
       if (["email-verification", "sign-in"].includes(payload.type)) {
@@ -35,11 +36,11 @@ export const emailQueue = createQueue<EmailJobPayload, EmailJobResult>(
         });
       }
     } catch (error) {
-      console.error("Error sending email", error);
+      log.error("Error sending email", error);
     }
 
     const status = 200;
-    console.log(`Finished job#${id} with status=${status}`);
+    log.debug(`Finished job#${id} with status=${status}`);
     return { status };
   },
 );

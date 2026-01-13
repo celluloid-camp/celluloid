@@ -22,19 +22,6 @@ import type { ProjectListItem } from "@/lib/trpc/types";
 import dayjs from "@/utils/dayjs";
 import { formatDuration } from "@/utils/duration";
 
-const StyledImage = styled(Image)(() => ({
-  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  "&:hover": {
-    transform: "scale(1.05)",
-  },
-}));
-
-const StyledCardContent = styled(CardContent)(() => ({
-  "&.MuiCardContent-root:last-child": {
-    paddingBottom: "0px",
-  },
-}));
-
 interface Props {
   showPublic?: boolean;
   project: ProjectListItem;
@@ -115,7 +102,7 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
             showLoading={<CircularProgress />}
             bgColor="#000000"
             wrapperStyle={{
-              minHeight: 200,
+              height: 200,
             }}
           />
         </Box>

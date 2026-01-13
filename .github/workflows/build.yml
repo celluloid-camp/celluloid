@@ -8,6 +8,8 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - staging
   release:
     types: [published]
   workflow_dispatch:
@@ -20,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name || github.ref_name }}
 

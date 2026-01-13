@@ -87,6 +87,7 @@ export function LoginForm() {
       setError("root", { message: t("signin.error.user-not-found") });
       return;
     }
+    router.refresh();
     router.back();
   };
 

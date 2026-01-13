@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/vision",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "private": true,
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
@@ -22,7 +22,7 @@
   "scripts": {
     "postinstall": "pnpm generate",
     "dev": "pkgroll dev",
-    "build": "pkgroll build",
+    "build": "pnpm generate && pkgroll build",
     "generate": "pnpx orval --config ./orval.config.ts || true",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },

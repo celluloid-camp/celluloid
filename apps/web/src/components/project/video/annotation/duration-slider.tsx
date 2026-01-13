@@ -1,6 +1,6 @@
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { Grid, IconButton, Stack, styled } from "@mui/material";
+import { Grid, IconButton, Stack, styled, TextField } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import Slider, { type SliderValueLabelProps } from "@mui/material/Slider";
 import Tooltip, {
@@ -21,6 +21,52 @@ type DurationSliderProps = {
 };
 
 const minDistance = 1;
+
+// Parse time string (MM:SS or M:SS) to seconds
+function parseTimeToSeconds(timeString: string): number | null {
+  // Remove whitespace
+  const cleaned = timeString.trim();
+
+  // Match patterns: M:SS, MM:SS, H:MM:SS, or just numbers (seconds)
+  const patterns = [
+    /^(\d{1,2}):(\d{2})$/, // MM:SS or M:SS
+    /^(\d{1,2}):(\d{2}):(\d{2})$/, // H:MM:SS
+    /^\d+$/, // Just numbers (seconds)
+  ];
+
+  // Try MM:SS pattern first
+  const match1 = cleaned.match(/^(\d{1,2}):(\d{2})$/);
+  if (match1) {
+    const minutes = Number.parseInt(match1[1], 10);
+    const seconds = Number.parseInt(match1[2], 10);
+    if (seconds >= 60 || isNaN(minutes) || isNaN(seconds)) return null;
+    return minutes * 60 + seconds;
+  }
+
+  // Try H:MM:SS pattern
+  const match2 = cleaned.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
+  if (match2) {
+    const hours = Number.parseInt(match2[1], 10);
+    const minutes = Number.parseInt(match2[2], 10);
+    const seconds = Number.parseInt(match2[3], 10);
+    if (
+      minutes >= 60 ||
+      seconds >= 60 ||
+      isNaN(hours) ||
+      isNaN(minutes) ||
+      isNaN(seconds)
+    )
+      return null;
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+
+  // Try just numbers (treat as seconds)
+  if (/^\d+$/.test(cleaned)) {
+    return Number.parseInt(cleaned, 10);
+  }
+
+  return null;
+}
 
 const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -54,6 +100,22 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
     const [lastActiveThumb, setLastActiveThumb] = React.useState<
       number | undefined
     >();
+    const currentValueMemo = React.useMemo((): number[] => {
+      if (mono) {
+        const singleValue = value as number;
+        return [singleValue, singleValue];
+      }
+      return value as number[];
+    }, [mono, value]);
+
+    const [startInputValue, setStartInputValue] = React.useState<string>(() =>
+      formatDuration(currentValueMemo[0]),
+    );
+    const [stopInputValue, setStopInputValue] = React.useState<string>(() =>
+      formatDuration(currentValueMemo[1]),
+    );
+    const [isEditingStart, setIsEditingStart] = React.useState(false);
+    const [isEditingStop, setIsEditingStop] = React.useState(false);
     const dispatcher = useVideoPlayerSeekEvent();
 
     // Sync value with mono/startTime/stopTime changes
@@ -112,13 +174,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
       [mono, dispatcher, lastActiveThumb],
     );
 
-    const currentValue = React.useMemo((): number[] => {
-      if (mono) {
-        const singleValue = value as number;
-        return [singleValue, singleValue];
-      }
-      return value as number[];
-    }, [mono, value]);
+    const currentValue = currentValueMemo;
 
     // Memoized arrow button handlers
     const handleLeftMono = React.useCallback(
@@ -145,50 +201,172 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
         ),
       [handleChange, currentValue, duration],
     );
+    const handleLeftStart = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(e, [Math.max(0, currentValue[0] - 1), currentValue[1]], 0),
+      [handleChange, currentValue],
+    );
+    const handleRightStart = React.useCallback(
+      (e: React.MouseEvent) =>
+        handleChange(
+          e,
+          [
+            Math.min(currentValue[1] - minDistance, currentValue[0] + 1),
+            currentValue[1],
+          ],
+          0,
+        ),
+      [handleChange, currentValue],
+    );
+
+    // Sync input values when not editing
+    React.useEffect(() => {
+      if (!isEditingStart) {
+        setStartInputValue(formatDuration(currentValue[0]));
+      }
+    }, [currentValue[0], isEditingStart]);
+
+    React.useEffect(() => {
+      if (!isEditingStop) {
+        setStopInputValue(formatDuration(currentValue[1]));
+      }
+    }, [currentValue[1], isEditingStop]);
+
+    // Handlers for manual text input
+    const handleStartInputChange = React.useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        setStartInputValue(inputValue);
+        setIsEditingStart(true);
+      },
+      [],
+    );
+
+    const handleStartInputBlur = React.useCallback(
+      (e: React.FocusEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value.trim();
+        setIsEditingStart(false);
+
+        if (inputValue === "") {
+          setStartInputValue(formatDuration(currentValue[0]));
+          return;
+        }
+
+        const numValue = parseTimeToSeconds(inputValue);
+        if (numValue === null) {
+          // Invalid format, revert to current value
+          setStartInputValue(formatDuration(currentValue[0]));
+          return;
+        }
+
+        const clampedValue = Math.max(0, Math.min(duration, numValue));
+        if (mono) {
+          handleChange(e, clampedValue);
+        } else {
+          const newStartValue = Math.min(
+            clampedValue,
+            currentValue[1] - minDistance,
+          );
+          handleChange(e, [newStartValue, currentValue[1]], 0);
+        }
+      },
+      [handleChange, currentValue, duration, mono, minDistance],
+    );
+
+    const handleStopInputChange = React.useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        setStopInputValue(inputValue);
+        setIsEditingStop(true);
+      },
+      [],
+    );
+
+    const handleStopInputBlur = React.useCallback(
+      (e: React.FocusEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value.trim();
+        setIsEditingStop(false);
+
+        if (inputValue === "") {
+          setStopInputValue(formatDuration(currentValue[1]));
+          return;
+        }
+
+        const numValue = parseTimeToSeconds(inputValue);
+        if (numValue === null) {
+          // Invalid format, revert to current value
+          setStopInputValue(formatDuration(currentValue[1]));
+          return;
+        }
+
+        const clampedValue = Math.max(0, Math.min(duration, numValue));
+        const newStopValue = Math.max(
+          clampedValue,
+          currentValue[0] + minDistance,
+        );
+        handleChange(e, [currentValue[0], newStopValue], 1);
+      },
+      [handleChange, currentValue, duration, minDistance],
+    );
 
     return (
-      <Grid container spacing={2} alignItems="center">
-        <Stack direction={"row"}>
+      <Grid container alignItems="center" spacing={1}>
+        <Stack direction={"row"} alignItems="center">
           <IconButton
             size="small"
             color="secondary"
             sx={{ p: 0 }}
-            onClick={handleLeftMono}
+            onClick={mono ? handleLeftMono : handleLeftStart}
           >
             <ArrowLeftIcon />
           </IconButton>
+          <TextField
+            type="text"
+            value={startInputValue}
+            onChange={handleStartInputChange}
+            onBlur={handleStartInputBlur}
+            size="small"
+            inputProps={{
+              pattern: "([0-9]{1,2}:)?[0-9]{1,2}:[0-9]{2}",
+              placeholder: "00:00",
+              style: { textAlign: "center" },
+            }}
+            sx={{
+              width: "60px",
+              "& .MuiInputBase-input": {
+                padding: "4px 8px",
+                fontSize: "0.8rem",
+                color: "white",
+              },
+            }}
+          />
           <IconButton
             size="small"
             color="secondary"
             sx={{ p: 0 }}
-            onClick={handleRightMono}
+            onClick={mono ? handleRightMono : handleRightStart}
           >
             <ArrowRightIcon />
           </IconButton>
         </Stack>
         <Grid item xs>
           <Slider
-            getAriaLabel={React.useCallback(
-              () => (mono ? "Mono annotation slider" : "Annotation slider"),
-              [mono],
-            )}
             value={value}
             onChange={handleChange}
             valueLabelFormat={formatDuration}
             onChangeCommitted={handleChangeCommitted}
             step={1}
             size="small"
-            valueLabelDisplay="on"
             min={0}
             max={duration}
             color="secondary"
+            sx={{ mb: 0.5 }}
             disableSwap={!mono}
-            slots={{ valueLabel: ValueLabelComponent }}
-            sx={{ mb: 1 }}
+            // slots={{ valueLabel: ValueLabelComponent }}
           />
         </Grid>
         {!mono && (
-          <Stack direction={"row"}>
+          <Stack direction={"row"} alignItems="center" sx={{ ml: 2 }}>
             <IconButton
               size="small"
               color="secondary"
@@ -197,6 +375,26 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
             >
               <ArrowLeftIcon />
             </IconButton>
+            <TextField
+              type="text"
+              value={stopInputValue}
+              onChange={handleStopInputChange}
+              onBlur={handleStopInputBlur}
+              size="small"
+              inputProps={{
+                pattern: "([0-9]{1,2}:)?[0-9]{1,2}:[0-9]{2}",
+                placeholder: "00:00",
+                style: { textAlign: "center" },
+              }}
+              sx={{
+                width: "60px",
+                "& .MuiInputBase-input": {
+                  padding: "4px 8px",
+                  fontSize: "0.8rem",
+                  color: "white",
+                },
+              }}
+            />
             <IconButton
               size="small"
               color="secondary"
