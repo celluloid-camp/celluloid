@@ -552,20 +552,20 @@ importers:
         specifier: workspace:*
         version: link:../vision
       '@langchain/core':
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^1.1.12
+        version: 1.1.12
       '@langchain/mistralai':
-        specifier: ^1.0.0
-        version: 1.0.0(@langchain/core@1.0.2)(zod@3.25.61)
+        specifier: ^1.0.2
+        version: 1.0.2(@langchain/core@1.1.12)
       '@langchain/textsplitters':
-        specifier: ^1.0.0
-        version: 1.0.0(@langchain/core@1.0.2)
+        specifier: ^1.0.1
+        version: 1.0.1(@langchain/core@1.1.12)
       '@mgcrea/prisma-queue':
         specifier: 1.12.0
         version: 1.12.0(@prisma/client@6.16.3(prisma@6.16.3(typescript@5.9.3))(typescript@5.9.3))
       '@mistralai/mistralai':
-        specifier: ^1.5.2
-        version: 1.7.2(zod@3.25.61)
+        specifier: ^1.11.0
+        version: 1.11.0
       '@t3-oss/env-core':
         specifier: 'catalog:'
         version: 0.12.0(typescript@5.9.3)(valibot@1.0.0-beta.15(typescript@5.9.3))(zod@3.25.61)
@@ -1910,18 +1910,18 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@langchain/core@1.0.2':
-    resolution: {integrity: sha512-6mOn4bZyO6XT0GGrEijRtMVrmYJGZ8y1BcwyTPDptFz38lP0CEzrKEYB++h+u3TEcAd3eO25l1aGw/zVlVgw2Q==}
+  '@langchain/core@1.1.12':
+    resolution: {integrity: sha512-sHWLvhyLi3fntlg3MEPB89kCjxEX7/+imlIYJcp6uFGCAZfGxVWklqp22HwjT1szorUBYrkO8u0YA554ReKxGQ==}
     engines: {node: '>=20'}
 
-  '@langchain/mistralai@1.0.0':
-    resolution: {integrity: sha512-gzRjDjGGgd5RApF3pSO1t15nJmnbmutT/XcNfyemmJjL5LhD7+Z0PeMqDshmGdMh/holBo6b7su8aCLGon+X8g==}
+  '@langchain/mistralai@1.0.2':
+    resolution: {integrity: sha512-l6N3ox4JLWXHoN+H9XBKMF9VyvvknTifopVh+T0WJFPQkMAWDU8EgESyNHLtRHEirMt1EQgl4DqKaU9lqfdGCA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@langchain/core': ^1.0.0
 
-  '@langchain/textsplitters@1.0.0':
-    resolution: {integrity: sha512-L1gOwOJXeM+6MKzrj9shSsDyH32j898jgqvVArOjdge2zLyY+Mv4aOuyAAxbPyaFdQXlxKfa9xjqIUyv8TzrqA==}
+  '@langchain/textsplitters@1.0.1':
+    resolution: {integrity: sha512-rheJlB01iVtrOUzttscutRgLybPH9qR79EyzBEbf1u97ljWyuxQfCwIWK+SjoQTM9O8M7GGLLRBSYE26Jmcoww==}
     engines: {node: '>=20'}
     peerDependencies:
       '@langchain/core': ^1.0.0
@@ -1965,10 +1965,8 @@ packages:
     peerDependencies:
       '@prisma/client': '>=3'
 
-  '@mistralai/mistralai@1.7.2':
-    resolution: {integrity: sha512-lsBFADWVH1RRnAdSof49ZwmI+mBiaWdha9yYj87JMjp/o3d6SDvaEFpk+phDjRxAS+uVFvWD7HXk8ezhTXxRJA==}
-    peerDependencies:
-      zod: '>= 3'
+  '@mistralai/mistralai@1.11.0':
+    resolution: {integrity: sha512-6/BVj2mcaggYbpMzNSxtqtM2Tv/Jb5845XFd2CMYFO+O5VBkX70iLjtkBBTI4JFhh1l9vTCIMYXBVOjLoBVHGQ==}
 
   '@mui/base@5.0.0-beta.40-1':
     resolution: {integrity: sha512-agKXuNNy0bHUmeU7pNmoZwNFr7Hiyhojkb9+2PVyDG5+6RafYuyMgbrav8CndsB7KUc/U51JAw9vKNDLYBzaUA==}
@@ -3566,9 +3564,6 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
-
-  '@types/retry@0.12.0':
-    resolution: {integrity: sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==}
 
   '@types/semver@7.7.0':
     resolution: {integrity: sha512-k107IF4+Xr7UHjwDc7Cfd6PRQfbdkiRabXGRjo07b4WyPahFBZCZ1sE+BNxYIJPPg73UkfOsVOLwqVc/6ETrIA==}
@@ -6170,8 +6165,8 @@ packages:
     resolution: {integrity: sha512-FIyV/64EkKhJmjgC0g2hygpBv5RNWVPyNCqSAD7eTCv6eFWNIi4PN1UvdSJGicN/o35bnevgis4Y0UDC0qi8jQ==}
     engines: {node: '>=14.0.0'}
 
-  langsmith@0.3.77:
-    resolution: {integrity: sha512-wbS/9IX/hOAsOEOtPj8kCS8H0tFHaelwQ97gTONRtIfoPPLd9MMUmhk0KQB5DdsGAI5abg966+f0dZ/B+YRRzg==}
+  langsmith@0.4.5:
+    resolution: {integrity: sha512-9N4JSQLz6fWiZwVXaiy0erlvNHlC68EtGJZG2OX+1y9mqj7KvKSL+xJnbCFc+ky3JN8s1d6sCfyyDdi4uDdLnQ==}
     peerDependencies:
       '@opentelemetry/api': '*'
       '@opentelemetry/exporter-trace-otlp-proto': '*'
@@ -7052,10 +7047,6 @@ packages:
 
   p-queue@6.6.2:
     resolution: {integrity: sha512-RwFpb72c/BhQLEXIZ5K2e+AhgNVmIejGlTgiB9MzZ0e93GRvqZ7uSi0dvRF7/XIXDeNkra2fNHBxTyPDGySpjQ==}
-    engines: {node: '>=8'}
-
-  p-retry@4.6.2:
-    resolution: {integrity: sha512-312Id396EbJdvRONlngUx0NydfrIQ5lsYu0znKVUzVvArzEIt08V1qhtyESbGVd1FGX7UKtiFp5uwKZdM8wIuQ==}
     engines: {node: '>=8'}
 
   p-timeout@3.2.0:
@@ -8964,10 +8955,10 @@ packages:
     peerDependencies:
       zod: ^3.21.4
 
-  zod-to-json-schema@3.24.5:
-    resolution: {integrity: sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g==}
+  zod-to-json-schema@3.25.1:
+    resolution: {integrity: sha512-pM/SU9d3YAggzi6MtR4h7ruuQlqKtad8e9S0fmxcMi+ueAK5Korys/aWcV9LIIHTVbj01NdzxcnXSN+O74ZIVA==}
     peerDependencies:
-      zod: ^3.24.1
+      zod: ^3.25 || ^4
 
   zod@3.24.1:
     resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
@@ -8980,6 +8971,9 @@ packages:
 
   zod@4.1.11:
     resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
+
+  zod@4.3.5:
+    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
 
   zustand@5.0.5:
     resolution: {integrity: sha512-mILtRfKW9xM47hqxGIxCv12gXusoY/xTSHBYApXozR0HmQv299whhBeeAcRy+KrPPybzosvJBCOmVjq6x12fCg==}
@@ -10321,36 +10315,33 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@langchain/core@1.0.2':
+  '@langchain/core@1.1.12':
     dependencies:
       '@cfworker/json-schema': 4.1.1
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.21
-      langsmith: 0.3.77
+      langsmith: 0.4.5
       mustache: 4.2.0
       p-queue: 6.6.2
-      p-retry: 4.6.2
       uuid: 10.0.0
-      zod: 3.25.76
+      zod: 4.3.5
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - '@opentelemetry/exporter-trace-otlp-proto'
       - '@opentelemetry/sdk-trace-base'
       - openai
 
-  '@langchain/mistralai@1.0.0(@langchain/core@1.0.2)(zod@3.25.61)':
+  '@langchain/mistralai@1.0.2(@langchain/core@1.1.12)':
     dependencies:
-      '@langchain/core': 1.0.2
-      '@mistralai/mistralai': 1.7.2(zod@3.25.61)
+      '@langchain/core': 1.1.12
+      '@mistralai/mistralai': 1.11.0
       uuid: 10.0.0
-    transitivePeerDependencies:
-      - zod
 
-  '@langchain/textsplitters@1.0.0(@langchain/core@1.0.2)':
+  '@langchain/textsplitters@1.0.1(@langchain/core@1.1.12)':
     dependencies:
-      '@langchain/core': 1.0.2
+      '@langchain/core': 1.1.12
       js-tiktoken: 1.0.21
 
   '@levischuck/tiny-cbor@0.2.11': {}
@@ -10411,10 +10402,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mistralai/mistralai@1.7.2(zod@3.25.61)':
+  '@mistralai/mistralai@1.11.0':
     dependencies:
       zod: 3.25.61
-      zod-to-json-schema: 3.24.5(zod@3.25.61)
+      zod-to-json-schema: 3.25.1(zod@3.25.61)
 
   '@mui/base@5.0.0-beta.40-1(@types/react@19.1.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
@@ -12392,8 +12383,6 @@ snapshots:
       redis: 4.7.1
 
   '@types/resolve@1.20.2': {}
-
-  '@types/retry@0.12.0': {}
 
   '@types/semver@7.7.0': {}
 
@@ -15494,14 +15483,13 @@ snapshots:
 
   kysely@0.27.6: {}
 
-  langsmith@0.3.77:
+  langsmith@0.4.5:
     dependencies:
       '@types/uuid': 10.0.0
       chalk: 4.1.2
       console-table-printer: 2.15.0
       p-queue: 6.6.2
-      p-retry: 4.6.2
-      semver: 7.7.2
+      semver: 7.7.3
       uuid: 10.0.0
 
   lazy-ass@1.6.0: {}
@@ -16556,11 +16544,6 @@ snapshots:
     dependencies:
       eventemitter3: 4.0.7
       p-timeout: 3.2.0
-
-  p-retry@4.6.2:
-    dependencies:
-      '@types/retry': 0.12.0
-      retry: 0.13.1
 
   p-timeout@3.2.0:
     dependencies:
@@ -18863,7 +18846,7 @@ snapshots:
     dependencies:
       zod: 3.25.61
 
-  zod-to-json-schema@3.24.5(zod@3.25.61):
+  zod-to-json-schema@3.25.1(zod@3.25.61):
     dependencies:
       zod: 3.25.61
 
@@ -18871,9 +18854,12 @@ snapshots:
 
   zod@3.25.61: {}
 
-  zod@3.25.76: {}
+  zod@3.25.76:
+    optional: true
 
   zod@4.1.11: {}
+
+  zod@4.3.5: {}
 
   zustand@5.0.5(@types/react@19.1.8)(immer@10.1.1)(react@19.2.0)(use-sync-external-store@1.4.0(react@19.2.0)):
     optionalDependencies:
