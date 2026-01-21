@@ -26,7 +26,11 @@ const peertubePlayerEntry: PlayerEntry = {
 };
 
 // Register the custom PeerTube player
-ReactPlayer.addCustomPlayer?.(peertubePlayerEntry);
+if (typeof ReactPlayer.addCustomPlayer === "function") {
+  ReactPlayer.addCustomPlayer(peertubePlayerEntry);
+} else {
+  console.warn("ReactPlayer.addCustomPlayer is not available. PeerTube videos may not work.");
+}
 
 interface OnProgressProps {
   playedSeconds: number;

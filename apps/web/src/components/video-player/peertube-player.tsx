@@ -109,7 +109,9 @@ export class PeerTubePlayerComponent extends Component<VideoElementProps> {
       return "";
     }
 
-    const peertubeConfig = (config as any)?.peertube || {};
+    const peertubeConfig = config && typeof config === "object" && "peertube" in config
+      ? (config as { peertube?: Record<string, any> }).peertube || {}
+      : {};
     const query = queryString({
       ...peertubeConfig,
       api: 1,
@@ -138,7 +140,7 @@ export class PeerTubePlayerComponent extends Component<VideoElementProps> {
             if (this.props.onProgress) {
               this.props.onProgress({
                 playedSeconds: data.position,
-                loadedSeconds: data.position, // PeerTube doesn't provide loaded seconds
+                loadedSeconds: 0, // PeerTube doesn't provide buffered/loaded seconds
               });
             }
 
@@ -244,8 +246,6 @@ export class PeerTubePlayerComponent extends Component<VideoElementProps> {
         ref={this.ref}
         style={style}
         src={this.getEmbedUrl()}
-        frameBorder="0"
-        scrolling="no"
         id="peerTubeContainer"
         allow="autoplay; fullscreen"
         sandbox="allow-same-origin allow-scripts allow-popups"
