@@ -1,5 +1,6 @@
 import type React from "react";
 import { Component } from "react";
+import type { VideoElementProps } from "react-player";
 
 // PeerTube URL pattern
 const MATCH_URL_PEERTUBE = /^(https?):\/\/(.*)\/w\/(.*)$/;
@@ -39,47 +40,8 @@ function getSDK(url: string, sdkGlobal: string): Promise<void> {
 function queryString(params: Record<string, any>): string {
   return Object.keys(params)
     .filter((key) => params[key] !== undefined && params[key] !== null)
-    .map(
-      (key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`,
-    )
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
     .join("&");
-}
-
-interface PeerTubePlayerConfig {
-  controls?: number;
-  controlBar?: number;
-  peertubeLink?: number;
-  title?: number;
-  warningTitle?: number;
-  p2p?: number;
-  autoplay?: number;
-}
-
-interface PeerTubePlayerProps {
-  url: string;
-  config?: {
-    peertube?: PeerTubePlayerConfig;
-  };
-  playing?: boolean;
-  volume?: number;
-  muted?: boolean;
-  playbackRate?: number;
-  width?: string | number;
-  height?: string | number;
-  onReady?: () => void;
-  onPlay?: () => void;
-  onPause?: () => void;
-  onBuffer?: () => void;
-  onBufferEnd?: () => void;
-  onEnded?: () => void;
-  onError?: (error: Error) => void;
-  onProgress?: (state: {
-    playedSeconds: number;
-    loadedSeconds: number;
-  }) => void;
-  onDuration?: (duration: number) => void;
-  onSeek?: (seconds: number) => void;
-  onMount?: (component: any) => void;
 }
 
 interface PeerTubePlayer {
@@ -95,7 +57,7 @@ interface PeerTubePlayer {
   removeEventListener: (event: string, handler: (data?: any) => void) => void;
 }
 
-export class PeerTubePlayerComponent extends Component<PeerTubePlayerProps> {
+export class PeerTubePlayerComponent extends Component<VideoElementProps> {
   static displayName = "PeerTubePlayer";
 
   static canPlay(url: string): boolean {
@@ -119,7 +81,7 @@ export class PeerTubePlayerComponent extends Component<PeerTubePlayerProps> {
     }
   }
 
-  componentDidUpdate(prevProps: PeerTubePlayerProps) {
+  componentDidUpdate(prevProps: VideoElementProps) {
     const { playing, volume, muted, playbackRate } = this.props;
 
     if (playing !== prevProps.playing) {
@@ -140,15 +102,16 @@ export class PeerTubePlayerComponent extends Component<PeerTubePlayerProps> {
   }
 
   private getEmbedUrl = (): string => {
-    const { config, url } = this.props;
-    const match = MATCH_URL_PEERTUBE.exec(url);
+    const { config, src } = this.props;
+    const match = MATCH_URL_PEERTUBE.exec(src);
 
     if (!match) {
       return "";
     }
 
+    const peertubeConfig = (config as any)?.peertube || {};
     const query = queryString({
-      ...(config?.peertube || {}),
+      ...peertubeConfig,
       api: 1,
     });
 
@@ -185,16 +148,13 @@ export class PeerTubePlayerComponent extends Component<PeerTubePlayerProps> {
             }
           });
 
-          this.player?.addEventListener(
-            "playbackStatusChange",
-            (status: string) => {
-              if (status === "playing") {
-                this.props.onPlay?.();
-              } else if (status === "paused") {
-                this.props.onPause?.();
-              }
-            },
-          );
+          this.player?.addEventListener("playbackStatusChange", (status: string) => {
+            if (status === "playing") {
+              this.props.onPlay?.();
+            } else if (status === "paused") {
+              this.props.onPause?.();
+            }
+          });
 
           // Start progress updates if playing
           if (this.props.playing) {
@@ -276,11 +236,11 @@ export class PeerTubePlayerComponent extends Component<PeerTubePlayerProps> {
       overflow: "hidden",
     };
 
-    const { url } = this.props;
+    const { src } = this.props;
 
     return (
       <iframe
-        key={url}
+        key={src}
         ref={this.ref}
         style={style}
         src={this.getEmbedUrl()}
