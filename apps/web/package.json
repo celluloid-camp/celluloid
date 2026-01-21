@@ -55,6 +55,7 @@
     "konva": "^10.0.12",
     "lodash": "^4.17.21",
     "material-ui-confirm": "^4.0.0",
+    "media-chrome": "^4.4.0",
     "mui-image": "^1.0.7",
     "next": "15.5.4",
     "next-intl": "^4.3.12",

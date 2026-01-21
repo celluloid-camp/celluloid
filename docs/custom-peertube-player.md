@@ -17,11 +17,32 @@ The custom PeerTube player component (`peertube-player.tsx`) implements react-pl
 
 2. **VideoPlayer** (`apps/web/src/components/video-player/index.tsx`)
    - Registers the custom PeerTube player using `ReactPlayer.addCustomPlayer()`
-   - Wraps ReactPlayer and manages state through Zustand store
+   - Wraps ReactPlayer with custom Material UI controls
+   - Manages state through Zustand store
+   - Provides rich UI controls with auto-hiding behavior
+
+### Material UI Custom Controls
+
+The video player now features a fully custom control bar built with Material UI components:
+
+**Features:**
+- **Play/Pause Button**: Material UI IconButton with PlayArrow/Pause icons
+- **Skip Controls**: FastForward/FastRewind buttons for 10-second jumps
+- **Volume Control**: Slider with mute toggle (VolumeUp/VolumeOff icons)
+- **Seek Bar**: Material UI Slider for timeline navigation with time display (MM:SS format)
+- **Fullscreen Toggle**: Enter/exit fullscreen mode
+- **Auto-hide Behavior**: Controls automatically fade out after 3 seconds of inactivity when playing
+- **Responsive Design**: Gradient overlay background for better visibility
+
+**Styling:**
+- Consistent with Material UI theme
+- White icons on dark gradient background
+- Smooth opacity transitions
+- Primary color for seek bar
 
 ### Key Features
 
-- **URL Detection**: Uses regex pattern `/^(https?):\/\/(.*)\/w\/(.*)$/` to detect PeerTube URLs
+- **URL Detection**: Uses regex pattern `/(https?):\/\/([^/]+)\/(?:videos\/watch|w)\/(.+)$/` to detect PeerTube URLs
 - **Event Handling**: Supports all standard player events (onPlay, onPause, onReady, onProgress, etc.)
 - **Configuration**: Supports PeerTube-specific configuration options (controls, controlBar, peertubeLink, etc.)
 - **Playback Control**: Implements play, pause, seek, volume control, and playback rate adjustment

@@ -246,6 +246,9 @@ importers:
       material-ui-confirm:
         specifier: ^4.0.0
         version: 4.0.0(@mui/material@6.4.12(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.2.0))(@types/react@19.1.8)(react@19.2.0))(@types/react@19.1.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      media-chrome:
+        specifier: ^4.4.0
+        version: 4.17.2(react@19.2.0)
       mui-image:
         specifier: ^1.0.7
         version: 1.0.7(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.2.0))(@types/react@19.1.8)(react@19.2.0))(@mui/material@6.4.12(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.2.0))(@types/react@19.1.8)(react@19.2.0))(@types/react@19.1.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(prop-types@15.8.1)(react@19.2.0)
