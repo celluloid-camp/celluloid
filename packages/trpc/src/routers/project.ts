@@ -92,11 +92,11 @@ export const projectRouter = router({
 
       const withterm: Prisma.ProjectWhereInput = term
         ? {
-          title: {
-            contains: term,
-            mode: "insensitive",
-          },
-        }
+            title: {
+              contains: term,
+              mode: "insensitive",
+            },
+          }
         : {};
 
       const items = await prisma.project.findMany({
@@ -112,12 +112,12 @@ export const projectRouter = router({
             { userId: ctx.user ? ctx.user.id : undefined },
             ctx.user
               ? {
-                members: {
-                  some: {
-                    userId: ctx.user.id,
+                  members: {
+                    some: {
+                      userId: ctx.user.id,
+                    },
                   },
-                },
-              }
+                }
               : {},
           ],
         },
@@ -136,8 +136,8 @@ export const projectRouter = router({
         },
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",
