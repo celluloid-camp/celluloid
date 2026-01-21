@@ -45,9 +45,17 @@ ReactPlayer.addCustomPlayer(peertubePlayerEntry);
 
 ### URL Pattern Matching
 
-PeerTube URLs follow the pattern: `https://<instance>/w/<video-id>`
+PeerTube URLs follow multiple patterns (v3.3+):
+- **Short format**: `https://<instance>/w/<video-id>`
+- **Full format**: `https://<instance>/videos/watch/<video-id>`
 
-Example: `https://peertube.example.com/w/abc123`
+Both formats are supported and converted to the embed URL format: `https://<instance>/videos/embed/<video-id>`
+
+Examples: 
+- `https://peertube.example.com/w/abc123`
+- `https://peertube.example.com/videos/watch/abc123`
+- `https://framatube.org/w/9c9de5e8-0a1e-484a-b099-e80766180a6d`
+- `https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d`
 
 ### Embed API Integration
 
@@ -56,7 +64,7 @@ The player loads the PeerTube Embed API from a CDN:
 const SDK_URL = "https://unpkg.com/@peertube/embed-api/build/player.min.js";
 ```
 
-The API is loaded dynamically when a PeerTube video is played, avoiding unnecessary network requests for non-PeerTube videos.
+The API is loaded dynamically when a PeerTube video is played, avoiding unnecessary network requests for non-PeerTube videos. The implementation includes protection against multiple concurrent loading attempts, ensuring the SDK is loaded only once even if multiple players are initialized simultaneously.
 
 ### Configuration Options
 

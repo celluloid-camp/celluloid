@@ -2,26 +2,40 @@ import type React from "react";
 import { Component } from "react";
 import type { VideoElementProps } from "react-player";
 
-// PeerTube URL pattern
-const MATCH_URL_PEERTUBE = /^(https?):\/\/(.*)\/w\/(.*)$/;
+// PeerTube URL pattern - supports both /w/ and /videos/watch/ formats (v3.3+)
+const MATCH_URL_PEERTUBE = /(https?):\/\/(.*)(\/(videos\/watch|w))\/(.*)$/;
 
 // SDK configuration
 const SDK_URL = "https://unpkg.com/@peertube/embed-api/build/player.min.js";
 const SDK_GLOBAL = "PeerTubePlayer";
 
-// Helper function to load the PeerTube SDK
-function getSDK(url: string, sdkGlobal: string): Promise<void> {
+// Store resolve functions for concurrent SDK loading attempts
+const sdkResolves: Record<string, Array<(sdk: any) => void>> = {};
+
+// Helper function to load the PeerTube SDK with support for concurrent loading
+function getSDK(url: string, sdkGlobal: string): Promise<any> {
   return new Promise((resolve, reject) => {
     // Check if SDK is already loaded
     if ((window as any)[sdkGlobal]) {
-      resolve();
+      resolve((window as any)[sdkGlobal]);
       return;
     }
+
+    // If we are already loading the SDK, add the resolve function to the array
+    if (sdkResolves[url]) {
+      sdkResolves[url].push(resolve);
+      return;
+    }
+    sdkResolves[url] = [resolve];
 
     // Check if script is already being loaded
     const existingScript = document.querySelector(`script[src="${url}"]`);
     if (existingScript) {
-      existingScript.addEventListener("load", () => resolve());
+      existingScript.addEventListener("load", () => {
+        const sdk = (window as any)[sdkGlobal];
+        sdkResolves[url].forEach((res) => res(sdk));
+        delete sdkResolves[url];
+      });
       existingScript.addEventListener("error", reject);
       return;
     }
@@ -30,7 +44,12 @@ function getSDK(url: string, sdkGlobal: string): Promise<void> {
     const script = document.createElement("script");
     script.src = url;
     script.async = true;
-    script.onload = () => resolve();
+    script.onload = () => {
+      const sdk = (window as any)[sdkGlobal];
+      // When loaded, resolve all pending promises
+      sdkResolves[url].forEach((res) => res(sdk));
+      delete sdkResolves[url];
+    };
     script.onerror = reject;
     document.head.appendChild(script);
   });
@@ -117,7 +136,8 @@ export class PeerTubePlayerComponent extends Component<VideoElementProps> {
       api: 1,
     });
 
-    return `${match[1]}://${match[2]}/videos/embed/${match[3]}?${query}`;
+    // Always use /videos/embed/ path, extract video ID from match[5]
+    return `${match[1]}://${match[2]}/videos/embed/${match[5]}?${query}`;
   };
 
   load() {
