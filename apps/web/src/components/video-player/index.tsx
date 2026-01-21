@@ -20,6 +20,8 @@ import {
   FullscreenExit,
   FastForward,
   FastRewind,
+  ClosedCaption,
+  ClosedCaptionDisabled,
 } from "@mui/icons-material";
 import { PeerTubePlayerComponent } from "./peertube-player";
 import { useSetVideoPlayerProgress, useSetVideoPlayerState } from "./store";
@@ -74,6 +76,8 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
   const [seeking, setSeeking] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
+  const [hasSubtitles, setHasSubtitles] = useState(false);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
 
   const setVideoPlayerProgress = useSetVideoPlayerProgress();
@@ -117,6 +121,42 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
 
   const handleReady = () => {
     setIsReady(true);
+    // Check if video has text tracks (subtitles)
+    checkForSubtitles();
+  };
+
+  const checkForSubtitles = () => {
+    try {
+      const internalPlayer = playerRef.current?.getInternalPlayer();
+      if (internalPlayer && internalPlayer.textTracks) {
+        const tracks = Array.from(internalPlayer.textTracks);
+        setHasSubtitles(tracks.length > 0);
+      }
+    } catch (error) {
+      console.error("Error checking for subtitles:", error);
+    }
+  };
+
+  const handleToggleSubtitles = () => {
+    try {
+      const internalPlayer = playerRef.current?.getInternalPlayer();
+      if (internalPlayer && internalPlayer.textTracks) {
+        const tracks = Array.from(internalPlayer.textTracks) as TextTrack[];
+        if (tracks.length > 0) {
+          // Toggle the first subtitle track
+          const track = tracks[0];
+          if (subtitlesEnabled) {
+            track.mode = "hidden";
+            setSubtitlesEnabled(false);
+          } else {
+            track.mode = "showing";
+            setSubtitlesEnabled(true);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error toggling subtitles:", error);
+    }
   };
 
   const handlePlay = () => {
@@ -392,6 +432,17 @@ const VideoPlayer = forwardRef(({ url, height }: VideoPlayerProps, ref) => {
           </Typography>
           
           <Box sx={{ flexGrow: 1 }} />
+          
+          {hasSubtitles && (
+            <IconButton
+              onClick={handleToggleSubtitles}
+              sx={{ color: "white" }}
+              size="small"
+              title={subtitlesEnabled ? "Hide subtitles" : "Show subtitles"}
+            >
+              {subtitlesEnabled ? <ClosedCaption /> : <ClosedCaptionDisabled />}
+            </IconButton>
+          )}
           
           <IconButton
             onClick={handleFullscreen}
