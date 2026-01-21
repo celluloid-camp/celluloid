@@ -1,10 +1,10 @@
 "use client";
 import { AnnotationShape } from "@celluloid/prisma";
-import type ReactPlayer from "@celluloid/react-player";
 import { Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
 import dynamic from "next/dynamic";
 import React, { useEffect, useMemo } from "react";
+import type ReactPlayer from "react-player";
 import {
   useVideoPlayerProgress,
   useVideoPlayerState,

@@ -1,7 +1,5 @@
 "use client";
 
-import ReactPlayer from "@celluloid/react-player";
-import type { OnProgressProps } from "@celluloid/react-player/base";
 import * as React from "react";
 import {
   forwardRef,
@@ -10,11 +8,21 @@ import {
   useRef,
   useState,
 } from "react";
+import ReactPlayer from "react-player";
+import { PeerTubePlayerComponent } from "./peertube-player";
 import { useSetVideoPlayerProgress, useSetVideoPlayerState } from "./store";
 import {
   useVideoPlayerEvent,
   useVideoPlayerSeekEvent,
 } from "./user-video-player-events";
+
+// Register the custom PeerTube player
+ReactPlayer.addCustomPlayer(PeerTubePlayerComponent);
+
+interface OnProgressProps {
+  playedSeconds: number;
+  loadedSeconds: number;
+}
 
 interface VideoPlayerProps {
   url: string;
