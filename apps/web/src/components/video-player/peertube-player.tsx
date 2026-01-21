@@ -3,7 +3,8 @@ import { Component } from "react";
 import type { VideoElementProps } from "react-player";
 
 // PeerTube URL pattern - supports both /w/ and /videos/watch/ formats (v3.3+)
-const MATCH_URL_PEERTUBE = /(https?):\/\/(.*)(\/(videos\/watch|w))\/(.*)$/;
+// Matches: https://domain.com/w/video-id OR https://domain.com/videos/watch/video-id
+const MATCH_URL_PEERTUBE = /(https?):\/\/([^/]+)\/(?:videos\/watch|w)\/(.+)$/;
 
 // SDK configuration
 const SDK_URL = "https://unpkg.com/@peertube/embed-api/build/player.min.js";
@@ -33,8 +34,10 @@ function getSDK(url: string, sdkGlobal: string): Promise<any> {
     if (existingScript) {
       existingScript.addEventListener("load", () => {
         const sdk = (window as any)[sdkGlobal];
-        sdkResolves[url].forEach((res) => res(sdk));
-        delete sdkResolves[url];
+        if (sdkResolves[url]) {
+          sdkResolves[url].forEach((res) => res(sdk));
+          delete sdkResolves[url];
+        }
       });
       existingScript.addEventListener("error", reject);
       return;
@@ -136,8 +139,8 @@ export class PeerTubePlayerComponent extends Component<VideoElementProps> {
       api: 1,
     });
 
-    // Always use /videos/embed/ path, extract video ID from match[5]
-    return `${match[1]}://${match[2]}/videos/embed/${match[5]}?${query}`;
+    // Always use /videos/embed/ path, extract video ID from match[3]
+    return `${match[1]}://${match[2]}/videos/embed/${match[3]}?${query}`;
   };
 
   load() {
