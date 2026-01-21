@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import ReactPlayer from "react-player";
+import type { PlayerEntry } from "react-player";
 import { PeerTubePlayerComponent } from "./peertube-player";
 import { useSetVideoPlayerProgress, useSetVideoPlayerState } from "./store";
 import {
@@ -16,8 +17,16 @@ import {
   useVideoPlayerSeekEvent,
 } from "./user-video-player-events";
 
+// Create a PlayerEntry for the PeerTube player
+const peertubePlayerEntry: PlayerEntry = {
+  key: "peertube",
+  name: "PeerTube",
+  canPlay: PeerTubePlayerComponent.canPlay,
+  player: PeerTubePlayerComponent,
+};
+
 // Register the custom PeerTube player
-ReactPlayer.addCustomPlayer(PeerTubePlayerComponent);
+ReactPlayer.addCustomPlayer?.(peertubePlayerEntry);
 
 interface OnProgressProps {
   playedSeconds: number;
