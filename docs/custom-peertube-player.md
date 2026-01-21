@@ -30,9 +30,16 @@ The video player now features a fully custom control bar built with Material UI 
 - **Skip Controls**: FastForward/FastRewind buttons for 10-second jumps
 - **Volume Control**: Slider with mute toggle (VolumeUp/VolumeOff icons)
 - **Seek Bar**: Material UI Slider for timeline navigation with time display (MM:SS format)
+- **Subtitle Toggle**: ClosedCaption button to show/hide subtitles (only visible when video has text tracks)
 - **Fullscreen Toggle**: Enter/exit fullscreen mode
 - **Auto-hide Behavior**: Controls automatically fade out after 3 seconds of inactivity when playing
 - **Responsive Design**: Gradient overlay background for better visibility
+
+**Subtitle Support:**
+- Automatically detects if video has text tracks (subtitles/captions)
+- Shows ClosedCaption icon when subtitles are enabled, ClosedCaptionDisabled when disabled
+- Button only appears when subtitles are available
+- Toggles the first available text track on/off
 
 **Styling:**
 - Consistent with Material UI theme
