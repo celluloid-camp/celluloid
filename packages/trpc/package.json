@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/trpc",
-  "version": "3.3.3",
+  "version": "3.4.0",
   "private": true,
   "license": "MIT",
   "homepage": "https://celluloid.huma-num.fr",
@@ -24,6 +24,7 @@
     "@celluloid/auth": "workspace:*",
     "@celluloid/vision": "workspace:*",
     "@celluloid/prisma": "workspace:*",
+    "@celluloid/notifications": "workspace:*",
     "@celluloid/queue": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@t3-oss/env-core": "catalog:",
