@@ -490,6 +490,9 @@ importers:
       '@t3-oss/env-nextjs':
         specifier: ^0.13.8
         version: 0.13.10(typescript@5.9.3)(valibot@1.0.0-beta.15(typescript@5.9.3))(zod@4.3.5)
+      notistack:
+        specifier: ^3.0.1
+        version: 3.0.2(csstype@3.2.3)(react-dom@19.2.0(react@19.2.1))(react@19.2.1)
       react:
         specifier: 19.2.1
         version: 19.2.1
@@ -590,13 +593,13 @@ importers:
         version: link:../vision
       '@langchain/core':
         specifier: ^1.1.12
-        version: 1.1.12
+        version: 1.1.17
       '@langchain/mistralai':
         specifier: ^1.0.2
-        version: 1.0.2(@langchain/core@1.1.12)
+        version: 1.0.2(@langchain/core@1.1.17)
       '@langchain/textsplitters':
         specifier: ^1.0.1
-        version: 1.0.1(@langchain/core@1.1.12)
+        version: 1.0.1(@langchain/core@1.1.17)
       '@mgcrea/prisma-queue':
         specifier: 1.12.0
         version: 1.12.0(@prisma/client@6.16.3(prisma@6.16.3(typescript@5.9.3))(typescript@5.9.3))
@@ -617,7 +620,7 @@ importers:
         version: 6.10.1
       resend:
         specifier: ^6.9.0
-        version: 6.9.0(@react-email/render@1.1.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 6.9.0(@react-email/render@1.1.2(react-dom@19.2.0(react@19.2.1))(react@19.2.1))
       zod:
         specifier: 'catalog:'
         version: 3.25.61
@@ -1982,8 +1985,8 @@ packages:
   '@knocklabs/types@0.1.5':
     resolution: {integrity: sha512-Wu/0XsrTKBM2JO2eoazhz6MWpnmm6uCUsozPyg4aeJS7vndtqLPwniW6fzVn1gSrR7upWkWThrv5ZzokZ6BAHQ==}
 
-  '@langchain/core@1.0.2':
-    resolution: {integrity: sha512-6mOn4bZyO6XT0GGrEijRtMVrmYJGZ8y1BcwyTPDptFz38lP0CEzrKEYB++h+u3TEcAd3eO25l1aGw/zVlVgw2Q==}
+  '@langchain/core@1.1.17':
+    resolution: {integrity: sha512-g7/kcKbKEwNZSyyT7aT0utxn7wTOtKErqz0cL6VjrV4v/aOb9g+dKcfj17YkSm42YQmJp/rB2IXGc17vQPEBqA==}
     engines: {node: '>=20'}
 
   '@langchain/mistralai@1.0.2':
@@ -11171,7 +11174,7 @@ snapshots:
 
   '@knocklabs/types@0.1.5': {}
 
-  '@langchain/core@1.0.2':
+  '@langchain/core@1.1.17':
     dependencies:
       '@cfworker/json-schema': 4.1.1
       ansi-styles: 5.2.0
@@ -11189,15 +11192,15 @@ snapshots:
       - '@opentelemetry/sdk-trace-base'
       - openai
 
-  '@langchain/mistralai@1.0.2(@langchain/core@1.1.12)':
+  '@langchain/mistralai@1.0.2(@langchain/core@1.1.17)':
     dependencies:
-      '@langchain/core': 1.1.12
+      '@langchain/core': 1.1.17
       '@mistralai/mistralai': 1.11.0
       uuid: 10.0.0
 
-  '@langchain/textsplitters@1.0.1(@langchain/core@1.1.12)':
+  '@langchain/textsplitters@1.0.1(@langchain/core@1.1.17)':
     dependencies:
-      '@langchain/core': 1.1.12
+      '@langchain/core': 1.1.17
       js-tiktoken: 1.0.21
 
   '@levischuck/tiny-cbor@0.2.11': {}
@@ -17845,6 +17848,15 @@ snapshots:
     transitivePeerDependencies:
       - csstype
 
+  notistack@3.0.2(csstype@3.2.3)(react-dom@19.2.0(react@19.2.1))(react@19.2.1):
+    dependencies:
+      clsx: 1.2.1
+      goober: 2.1.16(csstype@3.2.3)
+      react: 19.2.1
+      react-dom: 19.2.0(react@19.2.1)
+    transitivePeerDependencies:
+      - csstype
+
   npm-run-path@4.0.1:
     dependencies:
       path-key: 3.1.1
@@ -19025,12 +19037,12 @@ snapshots:
 
   reselect@5.1.1: {}
 
-  resend@6.9.0(@react-email/render@1.1.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)):
+  resend@6.9.0(@react-email/render@1.1.2(react-dom@19.2.0(react@19.2.1))(react@19.2.1)):
     dependencies:
       mailparser: 3.7.2
       svix: 1.84.1
     optionalDependencies:
-      '@react-email/render': 1.1.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@react-email/render': 1.1.2(react-dom@19.2.0(react@19.2.1))(react@19.2.1)
 
   resize-observer-polyfill@1.5.1: {}
 
