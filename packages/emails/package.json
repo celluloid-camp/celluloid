@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/emails",
-  "version": "3.4.29",
+  "version": "3.4.30",
   "private": true,
   "type": "module",
   "exports": {
