@@ -1,4 +1,5 @@
 import { env as authEnv } from "@celluloid/auth/env";
+import { keys as notifications } from "@celluloid/notifications/keys";
 import { env as prismaEnv } from "@celluloid/prisma/env";
 import { env as trpcEnv } from "@celluloid/trpc/env";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -24,5 +25,5 @@ export const env = createEnv({
     NEXT_PUBLIC_STAGE: process.env.NEXT_PUBLIC_STAGE,
   },
   skipValidation: process.env.SKIP_ENV_VALIDATIONS === "true",
-  extends: [trpcEnv, prismaEnv, authEnv],
+  extends: [trpcEnv, prismaEnv, authEnv, notifications()],
 });

@@ -1,4 +1,5 @@
 import { EventEmitter } from "node:events";
+import { getNotificationsClient } from "@celluloid/notifications";
 import type { Annotation } from "@celluloid/prisma";
 import { Prisma, prisma } from "@celluloid/prisma";
 import { toSrt } from "@celluloid/utils";
@@ -8,6 +9,7 @@ import { username } from "better-auth/plugins";
 import { parse as toXML } from "js2xmlparser";
 import Papa from "papaparse";
 import { z } from "zod";
+import { env } from "../env";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 // create a global event emitter (could be replaced by redis, etc)
@@ -109,6 +111,31 @@ export const annotationRouter = router({
         });
 
         ee.emit("change", annotation);
+
+        const project = await prisma.project.findUnique({
+          where: {
+            id: input.projectId,
+          },
+          select: {
+            userId: true,
+            title: true,
+          },
+        });
+
+        if (project?.userId !== ctx.user?.id) {
+          await getNotificationsClient().workflows.trigger("new-annotation", {
+            recipients: [
+              {
+                id: ctx.user?.id,
+              },
+            ],
+            data: {
+              message: `Nouvelle annotation de ${ctx.user?.username} sur le projet ${project?.title}`,
+              link: `${env.BASE_URL}/projects/${input.projectId}`,
+            },
+          });
+        }
+
         return annotation;
       }
     }),

@@ -4,36 +4,20 @@ import {
   ProjectAnalysisEmail,
 } from "@celluloid/emails";
 import { render } from "@react-email/components";
-import * as nodemailer from "nodemailer";
-
+import { Resend } from "resend";
 import { env } from "../env";
-import getTransport from "./transport";
-
-const isDev = process.env.NODE_ENV !== "production";
-const isCI_TEST = process.env.CI_TEST;
 
 export async function sendMail(to: string, subject: string, html: string) {
-  if (isCI_TEST) {
-    return console.log(`email send to ${to}`);
-  }
+  const recipient =
+    process.env.NODE_ENV === "development" ? "delivered@resend.dev" : to;
 
-  const transport = await getTransport();
-  const mailOptions = {
-    from: `"Celluloid" <${env.SMTP_EMAIL_FROM}>`,
-    to,
+  const resend = new Resend(env.RESEND_API_KEY);
+  resend.emails.send({
+    from: env.EMAIL_FROM,
+    to: recipient,
     subject,
     html,
-  };
-  await transport.sendMail(mailOptions);
-  // if (isDev) {
-  //   const url = nodemailer.getTestMessageUrl(info);
-  //   if (url) {
-  //     // Hex codes here equivalent to chalk.blue.underline
-  //     console.log(
-  //       `Development email preview: \x1B[34m\x1B[4m${url}\x1B[24m\x1B[39m`
-  //     );
-  //   }
-  // }
+  });
   return true;
 }
 

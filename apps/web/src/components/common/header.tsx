@@ -6,6 +6,7 @@ import type * as React from "react";
 import { useSession } from "@/lib/auth-client";
 import { LanguageSwitch } from "./language-switch";
 import { LogoWithLabel } from "./logo-with-label";
+import { Notifications } from "./notifications";
 import { UserMenu } from "./user-menu";
 
 export const Header: React.FC<BoxProps> = ({ children }) => {
@@ -72,6 +73,7 @@ export const Header: React.FC<BoxProps> = ({ children }) => {
           {t("menu.about")}
         </Button>
 
+        <Notifications />
         <UserMenu />
         <LanguageSwitch />
       </Toolbar>

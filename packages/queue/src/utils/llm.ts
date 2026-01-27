@@ -92,10 +92,12 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
       ];
 
       logger.debug(`Invoking model for chunk ${chunkIndex + 1}/${totalChunks}`);
-      const response = await withTimeout(
-        model.invoke(messages),
-        60000, // 1 minute timeout per request
-      );
+      // const response = await withTimeout(
+      //   model.invoke(messages),
+      //   60000, // 1 minute timeout per request
+      // );
+
+      const response = await model.invoke(messages);
 
       if (!response || !response.content) {
         throw new Error(
