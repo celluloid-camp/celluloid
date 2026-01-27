@@ -1,6 +1,6 @@
 {
   "name": "worker",
-  "version": "3.4.28",
+  "version": "3.4.29",
   "private": true,
   "type": "module",
   "bin": "./dist/index.js",
