@@ -1,5 +1,239 @@
 # Changelog
 
+## 3.4.32
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.30...v3.4.31)
+
+## 3.4.31
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.29...v3.4.30)
+
+## 3.4.30
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.28...v3.4.29)
+
+## 3.4.29
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.27...v3.4.28)
+
+## 3.4.28
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.26...v3.4.27)
+
+## 3.4.27
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.25...v3.4.26)
+
+## 3.4.26
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.24...v3.4.25)
+
+## 3.4.25
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.23...v3.4.24)
+
+## 3.4.24
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.22...v3.4.23)
+
+## 3.4.23
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.21...v3.4.22)
+
+## 3.4.22
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.20...v3.4.21)
+
+## 3.4.21
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.19...v3.4.20)
+
+## 3.4.20
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.18...v3.4.19)
+
+## 3.4.19
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.17...v3.4.18)
+
+## 3.4.18
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.16...v3.4.17)
+
+## 3.4.17
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.15...v3.4.16)
+
+## 3.4.16
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.14...v3.4.15)
+
+## 3.4.15
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.13...v3.4.14)
+
+## 3.4.14
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.12...v3.4.13)
+
+## 3.4.13
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.11...v3.4.12)
+
+## 3.4.12
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.10...v3.4.11)
+
+## 3.4.11
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.9...v3.4.10)
+
+## 3.4.10
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.8...v3.4.9)
+
+## 3.4.9
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.7...v3.4.8)
+
+## 3.4.8
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.6...v3.4.7)
+
+## 3.4.7
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.5...v3.4.6)
+
+## 3.4.6
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.4...v3.4.5)
+
+## 3.4.5
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.3...v3.4.4)
+
+## 3.4.4
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.2...v3.4.3)
+
+## 3.4.3
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.1...v3.4.2)
+
+## 3.4.2
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.0...v3.4.1)
+
+## 3.4.1
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Enhance login and project grid components with session handling and error management &nbsp;-&nbsp; by **Younes** [<samp>(7f78c)</samp>](https://github.com/celluloid-camp/celluloid/commit/7f78ca0)
+- Add manual time input fields to duration slider &nbsp;-&nbsp; by **Copilot** and **younes200** in https://github.com/celluloid-camp/celluloid/issues/341 [<samp>(5017e)</samp>](https://github.com/celluloid-camp/celluloid/commit/5017e51)
+- Enhance duration slider with manual time input and validation. &nbsp;-&nbsp; by **Younes** [<samp>(c7bf5)</samp>](https://github.com/celluloid-camp/celluloid/commit/c7bf51d)
+- Add My Playlists tab to user profile &nbsp;-&nbsp; by **Copilot** and **younes200** in https://github.com/celluloid-camp/celluloid/issues/343 [<samp>(9468f)</samp>](https://github.com/celluloid-camp/celluloid/commit/9468f23)
+- Enhance user profile with My Projects and My Playlists tabs &nbsp;-&nbsp; by **Younes** [<samp>(761e6)</samp>](https://github.com/celluloid-camp/celluloid/commit/761e6ed)
+- Add create playlist functionality with dialog and translations &nbsp;-&nbsp; by **Younes** [<samp>(916f8)</samp>](https://github.com/celluloid-camp/celluloid/commit/916f879)
+- Integrate notifications system &nbsp;-&nbsp; by **Younes** [<samp>(b6fcf)</samp>](https://github.com/celluloid-camp/celluloid/commit/b6fcf49)
+- Update environment variables for PostHog and Knock API integration &nbsp;-&nbsp; by **Younes** [<samp>(ddb27)</samp>](https://github.com/celluloid-camp/celluloid/commit/ddb27c3)
+- Integrate Resend for email sending and update environment variables &nbsp;-&nbsp; by **Younes** [<samp>(dfe76)</samp>](https://github.com/celluloid-camp/celluloid/commit/dfe761a)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Fix create project error handling &nbsp;-&nbsp; by **Younes** [<samp>(5e163)</samp>](https://github.com/celluloid-camp/celluloid/commit/5e163c3)
+- Update transcript generation messages in English and French locales for clarity &nbsp;-&nbsp; by **Younes** [<samp>(15bcf)</samp>](https://github.com/celluloid-camp/celluloid/commit/15bcfd0)
+- Update French translation for video transcript message &nbsp;-&nbsp; by **Younes** [<samp>(7b786)</samp>](https://github.com/celluloid-camp/celluloid/commit/7b786cf)
+- Specify that the transcript must be in French in the system prompt &nbsp;-&nbsp; by **Younes** [<samp>(5520d)</samp>](https://github.com/celluloid-camp/celluloid/commit/5520d48)
+- Specify that the transcript must be in French in the system prompt &nbsp;-&nbsp; by **Younes** in https://github.com/celluloid-camp/celluloid/issues/370 [<samp>(4c365)</samp>](https://github.com/celluloid-camp/celluloid/commit/4c36566)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.3...v3.4.0)
+
+## 3.4.0
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Enhance login and project grid components with session handling and error management &nbsp;-&nbsp; by **Younes** [<samp>(7f78c)</samp>](https://github.com/celluloid-camp/celluloid/commit/7f78ca0)
+- Add manual time input fields to duration slider &nbsp;-&nbsp; by **Copilot** and **younes200** in https://github.com/celluloid-camp/celluloid/issues/341 [<samp>(5017e)</samp>](https://github.com/celluloid-camp/celluloid/commit/5017e51)
+- Enhance duration slider with manual time input and validation. &nbsp;-&nbsp; by **Younes** [<samp>(c7bf5)</samp>](https://github.com/celluloid-camp/celluloid/commit/c7bf51d)
+- Add My Playlists tab to user profile &nbsp;-&nbsp; by **Copilot** and **younes200** in https://github.com/celluloid-camp/celluloid/issues/343 [<samp>(9468f)</samp>](https://github.com/celluloid-camp/celluloid/commit/9468f23)
+- Enhance user profile with My Projects and My Playlists tabs &nbsp;-&nbsp; by **Younes** [<samp>(761e6)</samp>](https://github.com/celluloid-camp/celluloid/commit/761e6ed)
+- Add create playlist functionality with dialog and translations &nbsp;-&nbsp; by **Younes** [<samp>(916f8)</samp>](https://github.com/celluloid-camp/celluloid/commit/916f879)
+- Integrate notifications system &nbsp;-&nbsp; by **Younes** [<samp>(b6fcf)</samp>](https://github.com/celluloid-camp/celluloid/commit/b6fcf49)
+- Update environment variables for PostHog and Knock API integration &nbsp;-&nbsp; by **Younes** [<samp>(ddb27)</samp>](https://github.com/celluloid-camp/celluloid/commit/ddb27c3)
+- Integrate Resend for email sending and update environment variables &nbsp;-&nbsp; by **Younes** [<samp>(dfe76)</samp>](https://github.com/celluloid-camp/celluloid/commit/dfe761a)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Fix create project error handling &nbsp;-&nbsp; by **Younes** [<samp>(5e163)</samp>](https://github.com/celluloid-camp/celluloid/commit/5e163c3)
+- Update transcript generation messages in English and French locales for clarity &nbsp;-&nbsp; by **Younes** [<samp>(15bcf)</samp>](https://github.com/celluloid-camp/celluloid/commit/15bcfd0)
+- Update French translation for video transcript message &nbsp;-&nbsp; by **Younes** [<samp>(7b786)</samp>](https://github.com/celluloid-camp/celluloid/commit/7b786cf)
+- Specify that the transcript must be in French in the system prompt &nbsp;-&nbsp; by **Younes** [<samp>(5520d)</samp>](https://github.com/celluloid-camp/celluloid/commit/5520d48)
+- Specify that the transcript must be in French in the system prompt &nbsp;-&nbsp; by **Younes** in https://github.com/celluloid-camp/celluloid/issues/370 [<samp>(4c365)</samp>](https://github.com/celluloid-camp/celluloid/commit/4c36566)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.3.3...staging)
+
 ## 3.3.3
 
 *No significant changes*
