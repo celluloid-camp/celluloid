@@ -41,8 +41,8 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
   // Mistral Large has context window of 32k tokens, we'll use ~10k tokens per chunk as safety margin
   // Assuming ~4 characters per token, that's roughly 40k characters per chunk
   const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 40000,
-    chunkOverlap: 2000, // Small overlap to maintain context between chunks
+    chunkSize: 20000,
+    chunkOverlap: 1000, // Small overlap to maintain context between chunks
     separators: ["\n\n", "\n", " ", ""], // Split on newlines first to preserve caption structure
   });
 
@@ -92,10 +92,12 @@ export const convertCaptionsToTranscript = async (captions: Caption) => {
       ];
 
       logger.debug(`Invoking model for chunk ${chunkIndex + 1}/${totalChunks}`);
-      const response = await withTimeout(
-        model.invoke(messages),
-        60000, // 1 minute timeout per request
-      );
+      // const response = await withTimeout(
+      //   model.invoke(messages),
+      //   60000, // 1 minute timeout per request
+      // );
+
+      const response = await model.invoke(messages);
 
       if (!response || !response.content) {
         throw new Error(
