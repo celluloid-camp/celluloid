@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.4.2
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.0...v3.4.1)
+
 ## 3.4.1
 
 ### &nbsp;&nbsp;&nbsp;Features
