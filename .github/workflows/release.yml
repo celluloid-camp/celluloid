@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
   check-release:
     runs-on: ubuntu-latest
     outputs:
@@ -18,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: 'staging'
+          ref: "staging"
           ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Check if release needed
@@ -53,7 +52,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: 'staging'
+          ref: "staging"
           ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Setup pnpm
@@ -64,8 +63,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -3,4 +3,7 @@ import { keys } from "./keys";
 
 const key = keys().KNOCK_SECRET_API_KEY;
 
-export const notifications = new Knock({ apiKey: key, });
+export function getNotificationsClient() {
+  const notifications = new Knock({ apiKey: key });
+  return notifications;
+}
