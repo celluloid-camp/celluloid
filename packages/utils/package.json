@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/utils",
-  "version": "3.4.17",
+  "version": "3.4.18",
   "private": true,
   "type": "module",
   "description": "Common types library for Celluloid client and server",
