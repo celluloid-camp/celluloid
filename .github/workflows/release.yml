@@ -81,6 +81,12 @@ jobs:
       - name: Merge staging into main
         run: |
           git checkout main
-          git pull
-          git merge origin/staging
-          git push
+          git pull origin main
+          # Use theirs strategy to prefer staging's changes for conflicts (especially pnpm-lock.yaml)
+          git merge origin/staging -X theirs --no-edit
+          # Only commit if lock file changed
+          if ! git diff --quiet pnpm-lock.yaml; then
+            git add pnpm-lock.yaml
+            git commit -m "chore: regenerate lock file after merge"
+          fi
+          git push origin main
