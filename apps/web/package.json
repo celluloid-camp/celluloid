@@ -14,6 +14,7 @@
     "@celluloid/auth": "workspace:*",
     "@celluloid/prisma": "workspace:*",
     "@celluloid/queue": "workspace:*",
+    "@celluloid/notifications": "workspace:*",
     "@celluloid/react-player": "2.14.0",
     "@celluloid/trpc": "workspace:*",
     "@celluloid/types": "workspace:*",

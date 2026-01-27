@@ -9,7 +9,15 @@ variable "REVISION" {
   default = "dev"
 }
 
-variable "POSTHOG_KEY" {
+variable "NEXT_PUBLIC_POSTHOG_KEY" {
+  default = "xxx"
+}
+
+variable "NEXT_PUBLIC_KNOCK_API_KEY" {
+  default = "xxx"
+}
+
+variable "NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID" {
   default = "xxx"
 }
 
@@ -32,7 +40,9 @@ target "web" {
   args = {
     VERSION  = "${VERSION}"
     REVISION = "${REVISION}"
-    POSTHOG_KEY = "${POSTHOG_KEY}"
+    NEXT_PUBLIC_POSTHOG_KEY = "${NEXT_PUBLIC_POSTHOG_KEY}"
+    NEXT_PUBLIC_KNOCK_API_KEY = "${NEXT_PUBLIC_KNOCK_API_KEY}"
+    NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID = "${NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID}"
     STAGE = "${STAGE}"
   }
   push = true
