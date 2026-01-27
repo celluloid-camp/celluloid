@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "3.4.21",
+  "version": "3.4.22",
   "private": true,
   "scripts": {
     "dev": "pnpm with-env next dev --turbopack",
