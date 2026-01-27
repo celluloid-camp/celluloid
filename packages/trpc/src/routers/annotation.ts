@@ -1,5 +1,5 @@
 import { EventEmitter } from "node:events";
-import { notifications } from "@celluloid/notifications";
+import { getNotificationsClient } from "@celluloid/notifications";
 import type { Annotation } from "@celluloid/prisma";
 import { Prisma, prisma } from "@celluloid/prisma";
 import { toSrt } from "@celluloid/utils";
@@ -123,7 +123,7 @@ export const annotationRouter = router({
         });
 
         if (project?.userId !== ctx.user?.id) {
-          await notifications.workflows.trigger("new-annotation", {
+          await getNotificationsClient().workflows.trigger("new-annotation", {
             recipients: [
               {
                 id: ctx.user?.id,
