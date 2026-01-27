@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/vision",
-  "version": "3.4.19",
+  "version": "3.4.20",
   "private": true,
   "description": "Common types library for Celluloid client and server",
   "repository": "http://github.com/celluloid-edu/celluloid",
