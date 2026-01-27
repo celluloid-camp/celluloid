@@ -1,6 +1,6 @@
 {
   "name": "@celluloid/config",
-  "version": "3.4.23",
+  "version": "3.4.24",
   "main": "index.js",
   "private": true,
   "license": "MIT",
