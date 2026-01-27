@@ -38,7 +38,7 @@ jobs:
   release:
     name: Merge to main and release
     needs: check-release
-    if: needs.check-release.outputs.should_release == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    if: needs.check-release.outputs.should_release == 'true' && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     permissions:
       contents: write
