@@ -1,4 +1,4 @@
-import { notifications } from "@celluloid/notifications";
+import { getNotificationsClient } from "@celluloid/notifications";
 import { prisma } from "@celluloid/prisma";
 import { z } from "zod";
 import { env } from "../env";
@@ -43,7 +43,7 @@ export const commentRouter = router({
       });
 
       if (project?.userId !== ctx.user?.id) {
-        await notifications.workflows.trigger("new-annotation", {
+        await getNotificationsClient().workflows.trigger("new-annotation", {
           recipients: [
             {
               id: ctx.user?.id,
