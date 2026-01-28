@@ -1,13 +1,9 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - staging
   workflow_dispatch:
 
 jobs:
-
   check-release:
     runs-on: ubuntu-latest
     outputs:
@@ -18,8 +14,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: 'staging'
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          ref: "staging"
+          ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
 
       - name: Check if release needed
         id: check
@@ -42,7 +38,7 @@ jobs:
   release:
     name: Merge to main and release
     needs: check-release
-    if: needs.check-release.outputs.should_release == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    if: needs.check-release.outputs.should_release == 'true' && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -50,11 +46,11 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          ref: 'staging'
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          ref: "staging"
+          ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -64,8 +60,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -85,6 +81,14 @@ jobs:
       - name: Merge staging into main
         run: |
           git checkout main
-          git pull
-          git merge origin/staging
-          git push
+          git pull origin main
+          # Use theirs strategy to prefer staging's changes for conflicts (especially pnpm-lock.yaml)
+          git merge origin/staging -X theirs --no-edit
+          # Regenerate lock file to ensure consistency after merge
+          pnpm install --frozen-lockfile || pnpm install
+          # Only commit if lock file changed
+          if ! git diff --quiet pnpm-lock.yaml; then
+            git add pnpm-lock.yaml
+            git commit -m "chore: regenerate lock file after merge"
+          fi
+          git push origin main
