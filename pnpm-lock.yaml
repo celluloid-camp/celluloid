@@ -41,6 +41,9 @@ importers:
       dotenv-cli:
         specifier: ^10.0.0
         version: 10.0.0
+      media-chrome:
+        specifier: ^4.17.2
+        version: 4.17.2(react@19.2.4)
       node-fetch:
         specifier: '2'
         version: 2.7.0
@@ -222,6 +225,9 @@ importers:
       canvas:
         specifier: ^3.2.1
         version: 3.2.1
+      ce-la-react:
+        specifier: ^0.3.2
+        version: 0.3.2(react@19.2.4)
       client-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -240,6 +246,9 @@ importers:
       konva:
         specifier: ^10.2.0
         version: 10.2.0
+      load-script:
+        specifier: ^2.0.0
+        version: 2.0.0
       lodash:
         specifier: ^4.17.23
         version: 4.17.23
@@ -247,7 +256,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(@mui/material@6.5.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.4))(@types/react@19.2.10)(react@19.2.4))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       media-chrome:
-        specifier: ^4.4.0
+        specifier: ^4.17.2
         version: 4.17.2(react@19.2.4)
       mui-image:
         specifier: ^1.0.9
@@ -7428,6 +7437,9 @@ packages:
 
   linkify-it@5.0.0:
     resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
+
+  load-script@2.0.0:
+    resolution: {integrity: sha512-km6cyoPW4rM22JMGb+SHUKPMZVDpUaMpMAKrv8UHWllIxc/qjgMGHD91nY+5hM+/NFs310OZ2pqQeJKs7HqWPA==}
 
   load-tsconfig@0.2.5:
     resolution: {integrity: sha512-IXO6OCs9yg8tMKzfPZ1YmheJbZCiEsnBdcB03l0OcfK9prKnJb96siuHCr5Fl37/yo9DnKU+TLpxzTUspw9shg==}
@@ -17930,6 +17942,8 @@ snapshots:
   linkify-it@5.0.0:
     dependencies:
       uc.micro: 2.1.0
+
+  load-script@2.0.0: {}
 
   load-tsconfig@0.2.5: {}
 
