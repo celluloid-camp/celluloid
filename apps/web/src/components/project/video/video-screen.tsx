@@ -2,6 +2,10 @@
 import { AnnotationShape } from "@celluloid/prisma";
 import { Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
+import {
+  useMediaFullscreenRef,
+  useMediaSelector,
+} from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
 import React, { useEffect, useMemo } from "react";
 import type ReactPlayer from "react-player";
@@ -20,6 +24,7 @@ import {
   ShapesViewer,
 } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
+import { FullscreenButton } from "./controls/fullscreen-button";
 import { VideoPanel } from "./video-panel";
 import { VideoVision } from "./video-vision";
 
@@ -34,6 +39,8 @@ interface Props {
 
 export function ProjectVideoScreen({ project }: Props) {
   const videoPlayerRef = React.useRef<ReactPlayer>(null);
+
+  const fullscreenRefCallback = useMediaFullscreenRef();
 
   const videoPlayerState = useVideoPlayerState();
   const [ref, { width, height }] = useMeasure();
@@ -135,6 +142,8 @@ export function ProjectVideoScreen({ project }: Props) {
   return (
     <Grid
       container
+      id="fullscreen"
+      ref={fullscreenRefCallback}
       sx={{
         backgroundColor: "black",
         height: "60vh",
@@ -167,7 +176,6 @@ export function ProjectVideoScreen({ project }: Props) {
         ) : null}
         <VideoVision projectId={project.id} />
         <VideoPlayer
-          ref={videoPlayerRef}
           height={"100%"}
           url={`https://${project.host}/w/${project.videoId}`}
         />
