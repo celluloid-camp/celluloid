@@ -52,7 +52,7 @@
     "@types/dotenv": "^6.0.0",
     "@types/node-fetch": "^2.6.7",
     "dotenv-cli": "^7.3.0",
-    "eslint": "^8.50.0",
+    "eslint": "^9.26.0",
     "pkgroll": "^2.11.2",
     "prisma": "^6.16.3",
     "rimraf": "^5.0.1",
