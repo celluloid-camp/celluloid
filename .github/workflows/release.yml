@@ -84,6 +84,8 @@ jobs:
           git pull origin main
           # Use theirs strategy to prefer staging's changes for conflicts (especially pnpm-lock.yaml)
           git merge origin/staging -X theirs --no-edit
+          # Regenerate lock file to ensure consistency after merge
+          pnpm install --frozen-lockfile || pnpm install
           # Only commit if lock file changed
           if ! git diff --quiet pnpm-lock.yaml; then
             git add pnpm-lock.yaml
