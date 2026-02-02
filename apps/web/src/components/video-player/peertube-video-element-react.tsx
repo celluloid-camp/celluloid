@@ -5,7 +5,6 @@ import { createComponent, defaultToAttributeName } from "ce-la-react";
 import * as React from "react";
 import PeerTubeVideoElement from "./peertube-video-element";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const PeerTubeVideo = createComponent({
   react: React as any,
   tagName: "peertube-video",
