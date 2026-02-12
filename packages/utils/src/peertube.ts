@@ -53,11 +53,13 @@ export const getPeerTubeCaptions = async ({
 
   const apiUrl = `https://${host}/api/v1/videos/${videoId}/captions`;
 
+  console.log(`apiUrl: ${apiUrl}`);
   const response = await fetch(apiUrl, {
     method: "GET",
     headers: new Headers(headers),
   });
 
+  console.log(`response: response.status: ${response.status}`);
   if (response.status === 200) {
     const captionsResponse = (await response.json()) as PeerTubeCaptionResponse;
 
@@ -69,7 +71,7 @@ export const getPeerTubeCaptions = async ({
     // Fetch content for each caption
     const captions = await Promise.all(
       captionsResponse.data.map(async (caption) => {
-        const captionUrl = `https://${host}${caption.captionPath}`;
+        const captionUrl = caption.fileUrl ?? `https://${host}${caption.captionPath}`;
         const captionResponse = await fetch(captionUrl);
         const content = await captionResponse.text();
         const parsed = parse(content);

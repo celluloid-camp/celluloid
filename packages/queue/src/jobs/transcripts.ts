@@ -36,10 +36,11 @@ export const transcriptsQueue = createQueue<TranscriptJobPayload, JobResult>(
       videoId: project.videoId,
       host: project.host,
     });
-    if (captions.length > 0 && captions[0]) {
+    const frenchCaption = captions.find((caption) => caption.language === "fr");
+    if (frenchCaption) {
       log.debug("caption found");
       try {
-        const transcript = await convertCaptionsToTranscript(captions[0]);
+        const transcript = await convertCaptionsToTranscript(frenchCaption);
 
         log.debug("transcript done");
         await prisma.projectTranscript.upsert({
@@ -48,9 +49,8 @@ export const transcriptsQueue = createQueue<TranscriptJobPayload, JobResult>(
           create: {
             projectId: project.id,
             content: transcript,
-            language: captions[0].language,
-            // @ts-ignore
-            entries: captions[0].entries as unknown as JsonValue,
+            language: frenchCaption.language,
+            entries: frenchCaption.entries,
           },
         });
 

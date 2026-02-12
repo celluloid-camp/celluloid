@@ -6,7 +6,8 @@ export interface PeerTubeCaptionLanguage {
 export interface PeerTubeCaption {
   language: PeerTubeCaptionLanguage;
   automaticallyGenerated: boolean;
-  captionPath: string;
+  captionPath?: string;
+  fileUrl?: string;
   updatedAt: string;
 }
 
