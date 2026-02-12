@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.5.0
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Enhance query client with mutation cache and error handling; update transcript processing to use French captions; add job status query to project router; make captionPath optional in PeerTubeCaption interface &nbsp;-&nbsp; by **Younes** [<samp>(b64e6)</samp>](https://github.com/celluloid-camp/celluloid/commit/b64e6fb)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/celluloid-camp/celluloid/compare/v3.4.1...staging)
+
 ## 3.4.1
 
 *No significant changes*
