@@ -92,11 +92,11 @@ export const projectRouter = router({
 
       const withterm: Prisma.ProjectWhereInput = term
         ? {
-          title: {
-            contains: term,
-            mode: "insensitive",
-          },
-        }
+            title: {
+              contains: term,
+              mode: "insensitive",
+            },
+          }
         : {};
 
       const items = await prisma.project.findMany({
@@ -112,12 +112,12 @@ export const projectRouter = router({
             { userId: ctx.user ? ctx.user.id : undefined },
             ctx.user
               ? {
-                members: {
-                  some: {
-                    userId: ctx.user.id,
+                  members: {
+                    some: {
+                      userId: ctx.user.id,
+                    },
                   },
-                },
-              }
+                }
               : {},
           ],
         },
@@ -136,8 +136,8 @@ export const projectRouter = router({
         },
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",
@@ -243,6 +243,60 @@ export const projectRouter = router({
               project.collaborative)),
       };
     }),
+
+  getJob: publicProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        type: z.enum(["chapter", "transcript", "vision"]),
+      }),
+    )
+    .output(
+      z.object({
+        progress: z.number(),
+        failedAt: z.date().nullable(),
+        status: z.enum(["pending", "completed", "failed", "in_progress"]),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const { projectId, type } = input;
+      const job = await prisma.projectQueueJob.findFirst({
+        where: { projectId, type },
+        select: {
+          id: true,
+          queueJob: {
+            select: {
+              id: true,
+              progress: true,
+              failedAt: true,
+              error: true,
+              processedAt: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+        },
+      });
+      if (!job) {
+        return {
+          progress: 0,
+          failedAt: null,
+          status: "pending",
+        };
+      }
+      const status = job.queueJob?.failedAt
+        ? "failed"
+        : job.queueJob?.processedAt
+          ? "completed"
+          : "in_progress";
+
+      return {
+        progress: job.queueJob?.progress ?? 0,
+        failedAt: job.queueJob?.failedAt ?? null,
+        status,
+      };
+    }),
+
   add: protectedProcedure
     .input(
       z.object({
