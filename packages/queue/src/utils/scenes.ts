@@ -190,7 +190,6 @@ async function uploadThumbnailsToS3(
       },
     );
 
-    console.log(`Uploaded ${s3ObjectName} to ${env.STORAGE_BUCKET}`);
     // Update the thumbnailPath with the S3 URL
     scene.thumbnailPath = s3ObjectName;
 
