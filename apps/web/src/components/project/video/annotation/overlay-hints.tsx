@@ -136,6 +136,7 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
           width: "100%",
           backgroundColor: "rgba(0, 0, 0, 0.6)",
           overflow: "hidden",
+          zIndex: 1000,
         }}
       >
         <Box

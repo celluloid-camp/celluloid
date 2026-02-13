@@ -51,7 +51,7 @@ test.describe("signup", () => {
     await page.getByTestId("submit").click();
 
     // Wait for successful login and navigation
-    await page.waitForURL("http://localhost:3000/", {timeout: 10000});
+    await page.waitForURL("http://localhost:3000/", { timeout: 10000 });
 
     await page.getByTestId("header-account-menu").click();
     await page.getByTestId("header-logout-button").click();

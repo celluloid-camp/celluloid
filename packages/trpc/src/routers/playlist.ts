@@ -70,8 +70,8 @@ export const playlistRouter = router({
         include: {},
         cursor: cursor
           ? {
-            id: cursor,
-          }
+              id: cursor,
+            }
           : undefined,
         orderBy: {
           publishedAt: "desc",
@@ -296,8 +296,8 @@ export const playlistRouter = router({
           description: input.description,
           projects: input.projectIds
             ? {
-              connect: input.projectIds.map((id) => ({ id })),
-            }
+                connect: input.projectIds.map((id) => ({ id })),
+              }
             : undefined,
         },
         include: {
