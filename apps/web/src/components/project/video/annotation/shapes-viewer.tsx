@@ -2,7 +2,12 @@
 
 import type { AnnotationShape } from "@celluloid/prisma";
 import { Box } from "@mui/material";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+  useMediaSelector,
+} from "media-chrome/react/media-store";
+import React, { useMemo, useRef, useState } from "react";
 import { Circle, Ellipse, Layer, Line, Rect, Stage } from "react-konva";
 import { ShapeTooltip } from "./shape-tooltip";
 import { DEFAULT_DIMENSIONS, SHAPE_STYLES, SHAPE_TYPES } from "./shapes-config";
@@ -27,14 +32,25 @@ export function ShapesViewer({
   shapes,
   width = DEFAULT_DIMENSIONS.width,
   height = DEFAULT_DIMENSIONS.height,
-  onClick,
 }: {
   shapes: AnnotationShapeWithMetadata[];
   width: number;
   height: number;
-  onClick: () => void;
 }) {
   const stageRef = useRef<any>(null);
+
+  const dispatch = useMediaDispatch();
+  const mediaPaused = useMediaSelector(
+    (state) => typeof state.mediaPaused !== "boolean" || state.mediaPaused,
+  );
+
+  const handleClick = () => {
+    if (mediaPaused) {
+      dispatch({ type: MediaActionTypes.MEDIA_PLAY_REQUEST });
+    } else {
+      dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
+    }
+  };
 
   const [tooltip, setTooltip] = useState<TooltipState>(null);
 
@@ -187,7 +203,7 @@ export function ShapesViewer({
         height={height - 100}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onClick={onClick}
+        onClick={handleClick}
         style={{
           position: "absolute",
           left: 0,

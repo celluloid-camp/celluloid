@@ -22,7 +22,16 @@ export const Seekbar = () => {
         dispatch({ type, detail });
       }}
       size="small"
-      sx={{ mx: 2 }}
+      sx={{
+        mx: 2,
+        "& .MuiSlider-thumb": {
+          opacity: 0,
+          transition: "opacity 0.2s ease",
+        },
+        "&:hover .MuiSlider-thumb": {
+          opacity: 1,
+        },
+      }}
     />
   );
 };

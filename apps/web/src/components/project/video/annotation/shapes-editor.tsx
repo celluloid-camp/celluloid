@@ -1044,6 +1044,7 @@ export function ShapesEditor() {
           </svg>`,
         )}")`,
         backgroundRepeat: "repeat",
+        zIndex: 1000,
       }}
     >
       <Toolbox

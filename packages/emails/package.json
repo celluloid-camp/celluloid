@@ -13,7 +13,8 @@
     "build": "pkgroll build",
     "dev": "pkgroll dev",
     "email-dev": "email dev -p 3001",
-    "export": "email export"
+    "export": "email export",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@react-email/components": "0.0.42",

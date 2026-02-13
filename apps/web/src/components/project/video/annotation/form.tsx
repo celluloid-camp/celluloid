@@ -17,10 +17,10 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useFormik } from "formik";
+import { useMediaSelector } from "media-chrome/react/media-store";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import * as Yup from "yup";
-import { useVideoPlayerProgress } from "@/components/video-player/store";
 import type { User } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { ProjectById, UserMe } from "@/lib/trpc/types";
@@ -83,7 +83,7 @@ export const AnnotationFormContent: React.FC<
 
   const [editedAnnotation, setEditedAnnotation] = useEditAnnotation();
 
-  const videoProgress = useVideoPlayerProgress();
+  const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
 
   const t = useTranslations();
   const validationSchema = Yup.object().shape({
@@ -110,8 +110,8 @@ export const AnnotationFormContent: React.FC<
           text: editedAnnotation.text,
         }
       : {
-          startTime: videoProgress,
-          stopTime: videoProgress + 600, // 10 minutes
+          startTime: mediaCurrentTime ?? 0,
+          stopTime: (mediaCurrentTime ?? 0) + 600, // 10 minutes
           pause: true,
           text: "",
         },

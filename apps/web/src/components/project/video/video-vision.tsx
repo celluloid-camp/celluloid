@@ -1,17 +1,22 @@
 "use client";
 
 import { Box, Button, colors } from "@mui/material";
-import { useVideoPlayerProgress } from "@/components/video-player/store";
+import { useMediaSelector } from "media-chrome/react/media-store";
 import { trpc } from "@/lib/trpc/client";
 import { formatDuration } from "@/utils/duration";
 import { DetectionOverlay } from "../studio/detection-overlay";
 
 export function VideoVision({ projectId }: { projectId: string }) {
-  const videoProgress = useVideoPlayerProgress();
+  const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
   const [analysis] = trpc.vision.byProjectId.useSuspenseQuery({
     projectId,
   });
-  if (!analysis || !analysis.processing || !analysis.processing.metadata) {
+  if (
+    !analysis ||
+    !mediaCurrentTime ||
+    !analysis.processing ||
+    !analysis.processing.metadata
+  ) {
     return null;
   }
   return (
@@ -23,7 +28,7 @@ export function VideoVision({ projectId }: { projectId: string }) {
       </Box> */}
       <DetectionOverlay
         analysis={analysis.processing}
-        currentTime={videoProgress}
+        currentTime={mediaCurrentTime}
         videoWidth={analysis.processing.metadata.video.width}
         videoHeight={analysis.processing.metadata.video.height}
       />

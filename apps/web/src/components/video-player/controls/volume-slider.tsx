@@ -28,7 +28,7 @@ export const VolumeSlider = ({
         }}
         orientation={orientation}
         size="small"
-        sx={{ mx: 2, width: 100 }}
+        sx={{ mx: 2, width: 80 }}
       />
     </Tooltip>
   );

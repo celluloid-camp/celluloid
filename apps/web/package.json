@@ -9,7 +9,8 @@
     "start": "node .next/standalone/apps/web/server.js",
     "lint": "next lint",
     "upgrage": "next upgrade",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env --",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@celluloid/auth": "workspace:*",

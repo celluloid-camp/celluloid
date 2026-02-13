@@ -8,6 +8,7 @@ import { CaptionsMenuButton } from "./captions-menu-button";
 import { CurrentTimeDisplay } from "./current-time-display";
 import { DurationDisplay } from "./duration-display";
 import { FullscreenButton } from "./fullscreen-button";
+import { LoadingBackdrop } from "./loading-backdrop";
 import { MuteButton } from "./mute-button";
 import { PlayButton } from "./play-button";
 import { PlaybackRateMenuButton } from "./playback-rate-menu-button";
@@ -35,7 +36,7 @@ export const ControlsContainer = () => {
         bottom: 0,
         right: 0,
         left: 0,
-        background: "linear-gradient(to top, rgb(0, 0, 0, 0.5), transparent)",
+        background: "linear-gradient(to top, rgb(0, 0, 0, 1), transparent)",
         opacity: mediaPaused || userActive ? 1 : 0,
         "&:hover": {
           opacity: 1,
