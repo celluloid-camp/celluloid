@@ -140,7 +140,7 @@ import ReactPlayer from "react-player";
 
 To test the custom player:
 
-1. Ensure the web app is running: `pnpm dev`
+1. Ensure the web app is running: `bun run dev`
 2. Navigate to a project with a PeerTube video
 3. Verify that:
    - Video loads and plays correctly
@@ -160,7 +160,7 @@ If PeerTube videos don't load, check the browser console for warnings:
 ### TypeScript Errors
 
 If you encounter TypeScript errors related to the player:
-1. Ensure react-player is properly installed: `pnpm install`
+1. Ensure react-player is properly installed: `bun install`
 2. Check that VideoElementProps is imported correctly
 3. Verify that the PlayerEntry structure matches the installed react-player version
 

@@ -1,9 +1,21 @@
 {
-  "extends": "@celluloid/config/tsconfig/internal-package.json",
-  "include": ["src"],
-  "exclude": ["dist", "build", "node_modules"],
+  "extends": "@celluloid/typescript-config/nextjs.json",
   "compilerOptions": {
-    "strict": true,
-    "jsx": "react-jsx"
-  }
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@celluloid/*": [
+        "../../packages/*"
+      ]
+    }
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

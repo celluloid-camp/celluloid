@@ -21,7 +21,6 @@ import {
   ToggleButton,
   Typography,
 } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
 import Placeholder from "@tiptap/extension-placeholder";
 import Strike from "@tiptap/extension-strike";
 import {

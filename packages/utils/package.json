@@ -3,32 +3,13 @@
   "version": "3.5.0",
   "private": true,
   "type": "module",
-  "description": "Common types library for Celluloid client and server",
-  "repository": "http://github.com/celluloid-edu/celluloid",
-  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./logger": {
-      "types": "./dist/logger.d.ts",
-      "import": "./dist/logger.js"
-    }
-  },
   "scripts": {
-    "dev": "pkgroll dev",
-    "build": "pkgroll build",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {
-    "@celluloid/config": "workspace:*",
+    "@celluloid/typescript-config": "workspace:*",
     "@celluloid/types": "workspace:*",
-    "pkgroll": "^2.11.2",
-    "typescript": "catalog:"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@plussub/srt-vtt-parser": "^2.0.5",
@@ -39,6 +20,6 @@
     "pino-pretty": "^13.1.2",
     "redis": "^4.6.10",
     "unique-slug": "^4.0.0",
-    "zod": "catalog:"
+    "zod": "^3.23.8"
   }
 }

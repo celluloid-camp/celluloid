@@ -1,5 +1,5 @@
 import type { auth } from "@celluloid/auth";
-import { signupAsStudentClient } from "@celluloid/auth/client/plugins";
+import { signupAsStudentClient } from "@celluloid/auth/plugins/client";
 import {
   adminClient,
   emailOTPClient,

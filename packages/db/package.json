@@ -1,0 +1,46 @@
+{
+  "name": "@celluloid/db",
+  "version": "3.5.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "build": "prisma generate --no-hints --schema=./prisma/schema.prisma",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "setup": "bun run db:push && bun run migrate:init && bun run migrate:deploy && bun run generate",
+    "migrate": "bunx prisma migrate",
+    "db": "bunx prisma db",
+    "migrate:init": "bunx prisma migrate resolve --applied 0_init",
+    "migrate:deploy": "bunx prisma migrate deploy",
+    "migrate:dev": "bunx prisma migrate dev",
+    "db:push": "bunx prisma db push",
+    "seed": "bun run seed.ts",
+    "generate": "bunx prisma generate",
+    "studio": "prisma studio"
+  },
+  "devDependencies": {
+    "@celluloid/typescript-config": "workspace:*",
+    "@celluloid/utils": "workspace:*",
+    "@faker-js/faker": "^10.3.0",
+    "@types/dotenv": "^8.2.3",
+    "@types/node-fetch": "^2.6.7",
+    "@types/pg": "^8.16.0",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "7.4.0",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.4.0",
+    "@prisma/client": "7.4.0",
+    "@prisma/client-runtime-utils": "^7.4.0",
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "@types/randomcolor": "^0.5.7",
+    "pg": "^8.18.0",
+    "prisma-json-types-generator": "^4.1.1",
+    "randomcolor": "^0.6.2",
+    "zod": "^4.3.6"
+  }
+}

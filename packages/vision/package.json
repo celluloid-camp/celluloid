@@ -2,37 +2,19 @@
   "name": "@celluloid/vision",
   "version": "3.5.0",
   "private": true,
-  "description": "Common types library for Celluloid client and server",
-  "repository": "http://github.com/celluloid-edu/celluloid",
-  "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "license": "MIT",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./env": {
-      "types": "./dist/env.d.ts",
-      "import": "./dist/env.js"
-    }
-  },
   "scripts": {
-    "postinstall": "pnpm generate",
-    "dev": "pkgroll dev",
-    "build": "pnpm generate && pkgroll build",
-    "generate": "pnpx orval --config ./orval.config.ts || true",
+    "generate": "bunx orval --config ./orval.config.ts || true",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {
-    "@celluloid/config": "workspace:*",
-    "typescript": "catalog:"
+    "@celluloid/typescript-config": "workspace:*",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "orval": "^7.10.0",
-    "@t3-oss/env-core": "catalog:",
-    "zod": "catalog:"
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "zod": "^3.23.8"
   }
 }

@@ -1,11 +1,21 @@
 {
-  "extends": "@celluloid/config/tsconfig/internal-package.json",
+  "extends": "@celluloid/typescript-config/nextjs.json",
   "compilerOptions": {
-    "declaration": false,
-    "composite": false,
-    "declarationMap": false,
-    "emitDeclarationOnly": false
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@celluloid/*": [
+        "../../packages/*"
+      ]
+    }
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

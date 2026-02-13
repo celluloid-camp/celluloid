@@ -1,0 +1,21 @@
+{
+  "name": "@celluloid/workflows",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "server-only": "^0.0.1",
+    "workflow": "4.0.1-beta.38",
+    "zod": "^3.23.8",
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
+    "@celluloid/db": "workspace:*",
+    "@celluloid/typescript-config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}

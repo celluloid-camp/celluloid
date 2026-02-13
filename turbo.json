@@ -1,55 +1,55 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
   "ui": "tui",
+  "envMode": "loose",
   "tasks": {
     "build": {
       "dependsOn": [
         "^build"
       ],
       "outputs": [
-        "dist/**"
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
       ]
     },
-    "lint": {},
     "dev": {
-      "dependsOn": [
-        "^dev"
-      ],
       "cache": false,
-      "persistent": false
+      "persistent": true
     },
-    "//clean": {
+    "lint": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "typecheck": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "test:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "i18n:extract": {
       "cache": false
     },
     "clean": {
-      "cache": false,
-      "dependsOn": [
-        "^clean"
-      ]
+      "cache": false
+    },
+    "//#clean": {
+      "cache": false
     }
-  },
-  "globalEnv": [
-    "BASE_URL",
-    "NODE_ENV",
-    "DATABASE_URL",
-    "REDIS_URL",
-    "STORAGE_URL",
-    "STORAGE_BUCKET",
-    "STORAGE_ACCESS_KEY",
-    "STORAGE_SECRET_KEY",
-    "BETTER_AUTH_SECRET",
-    "BETTER_AUTH_URL",
-    "SMTP_HOST",
-    "SMTP_PORT",
-    "SMTP_SECURE",
-    "SMTP_USER",
-    "SMTP_PASSWORD",
-    "SMTP_EMAIL_FROM",
-    "SKIP_ENV_VALIDATIONS"
-  ],
-  "globalPassThroughEnv": [
-    "NODE_ENV",
-    "CI",
-    "npm_lifecycle_event"
-  ]
+  }
 }

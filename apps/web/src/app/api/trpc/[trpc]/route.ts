@@ -12,10 +12,7 @@ const handler = async (req: Request) => {
     endpoint: "/api/trpc",
     req,
     router: appRouter,
-    createContext: () =>
-      createTRPCContext({
-        session,
-      }),
+    createContext: createTRPCContext,
     onError:
       process.env.NODE_ENV === "development"
         ? (p) => {
