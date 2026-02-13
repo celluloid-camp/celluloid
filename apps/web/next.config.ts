@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { withWorkflow } from "workflow/next";
-
 import "./src/env.ts";
 
 const nextConfig = {
@@ -20,7 +19,7 @@ const nextConfig = {
     // reactCompiler: true,
     // deferredEntries: false,
   },
-  serverExternalPackages: ["pino", "pino-pretty", "@workflow-worlds/redis"],
+  serverExternalPackages: [],
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
 } as NextConfig;
 

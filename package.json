@@ -2,31 +2,7 @@
   "name": "celluloid",
   "version": "3.5.0",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
-  "license": "MIT",
-  "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
   "repository": "http://github.com/celluloid-edu/celluloid",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "turbo run dev",
-    "clean": "turbo run clean",
-    "build": "turbo run build --no-cache",
-    "lint": "biome check --fix",
-    "prepare": "husky",
-    "test": "bunx playwright test",
-    "test:codegen": "bunx playwright codegen http://localhost:3000",
-    "--shortcuts to run commands in workspaces--": "",
-    "web": "dotenv -- bun run --filter web",
-    "auth": "dotenv -- bun run --filter auth",
-    "db": "dotenv -- bun run --filter @celluloid/db",
-    "vision": "dotenv -- bun run --filter @celluloid/vision",
-    "docker:build": "docker buildx build -f apps/web/Dockerfile -t celluloid-web .",
-    "docker:run": "docker run -it --rm --env-file ./apps/web/.env -p 3000:3000 celluloid-web",
-    "release": "bun run release-it"
-  },
   "devDependencies": {
     "@biomejs/biome": "^2.2.5",
     "@commitlint/cli": "^20.1.0",
@@ -50,16 +26,62 @@
     "typescript": "^5.9.3",
     "wait-port": "^1.1.0"
   },
+  "catalog": {
+    "@prisma/adapter-pg": "^7.4.0",
+    "@prisma/client": "7.4.0",
+    "@prisma/client-runtime-utils": "^7.4.0",
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "@trpc/server": "^11.10.0",
+    "@types/node": "^22.14.1",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "bcryptjs": "^2.4.3",
+    "better-auth": "^1.4.18",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
+    "lodash": "^4.17.23",
+    "notistack": "^3.0.2",
+    "prisma": "7.4.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "rimraf": "^6.1.2",
+    "server-only": "^0.0.1",
+    "superjson": "^2.2.6",
+    "trpc-to-openapi": "^2.4.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.9.3",
+    "workflow": "4.0.1-beta.38",
+    "zod": "^4.3.6"
+  },
+  "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
   "engines": {
     "node": ">=20"
   },
-  "dependencies": {
-    "abort-controller": "^3.0.0",
-    "dotenv": "^17.2.3",
-    "dotenv-cli": "^10.0.0",
-    "node-fetch": "2"
-  },
+  "ignoreScripts": [
+    "sharp",
+    "unrs-resolver"
+  ],
+  "license": "MIT",
   "packageManager": "bun@1.3.8",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "clean:all": "turbo run clean && git clean -xdf .cache .turbo dist node_modules ",
+    "build": "turbo run build --no-cache",
+    "lint": "biome check --fix",
+    "prepare": "husky",
+    "test": "bunx playwright test",
+    "test:codegen": "bunx playwright codegen http://localhost:3000",
+    "--shortcuts to run commands in workspaces--": "",
+    "web": "dotenv -- bun run --filter web",
+    "auth": "dotenv -- bun run --filter auth",
+    "db": "dotenv -- bun run --filter @celluloid/db",
+    "vision": "dotenv -- bun run --filter @celluloid/vision",
+    "docker:build": "docker buildx build -f apps/web/Dockerfile -t celluloid-web .",
+    "docker:run": "docker run -it --rm --env-file ./apps/web/.env -p 3000:3000 celluloid-web",
+    "release": "bun run release-it"
+  },
   "trustedDependencies": [
     "@parcel/watcher",
     "@prisma/client",
@@ -74,8 +96,11 @@
     "sharp",
     "vue-demi"
   ],
-  "ignoreScripts": [
-    "sharp",
-    "unrs-resolver"
-  ]
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "@workflow-worlds/redis": "^0.2.2"
+  }
 }

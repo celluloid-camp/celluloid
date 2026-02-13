@@ -3,7 +3,6 @@ import randomColor from "randomcolor";
 import { PrismaClient } from "./generated/client";
 import { keys } from "./keys";
 import "./types";
-import { Pool } from "pg";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 

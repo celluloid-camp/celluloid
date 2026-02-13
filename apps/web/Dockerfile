@@ -65,6 +65,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 USER nextjs
 
 EXPOSE 3000
@@ -73,5 +74,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://127.0.0.1:3000/api/health || exit 1
 
 WORKDIR /app/apps/web
+
 
 CMD ["node", "server.js"]

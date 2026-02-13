@@ -1,0 +1,12 @@
+{
+  "name": "prisma-studio",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "BROWSER=none bun --env-file ../web/.env  prisma studio --config=../../packages/db/prisma.config.ts ",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "devDependencies": {
+    "prisma": "catalog:"
+  }
+}

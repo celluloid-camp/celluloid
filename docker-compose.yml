@@ -8,6 +8,30 @@ volumes:
   minio_data:
 
 services:
+  # web:
+  #   image: celluloid-web:latest
+  #   # build:
+  #   #   context: .
+  #   #   dockerfile: ./Dockerfile
+  #   #   target: web
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #     - minio
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
+  #     WORKFLOW_TARGET_WORLD: "@workflow-worlds/redis"
+  #     WORKFLOW_REDIS_URI: redis://redis:6379
+  #     AUTH_SECRET: 0/cB/YzCq87Yp6MmClnzap7vOhDywpQ5Q+yTGCnHnLU=
+  #     REDIS_URL: redis://redis:6379
+  #     STORAGE_URL: http://minio:9000
+  #     STORAGE_BUCKET: celluloid
+  #     STORAGE_ACCESS_KEY: root
+  #     STORAGE_SECRET_KEY: StrongPass2022
+  #   networks:
+  #     - local
   postgres:
     image: postgres:13
     environment:

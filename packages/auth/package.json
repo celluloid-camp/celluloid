@@ -11,16 +11,16 @@
   "dependencies": {
     "@celluloid/db": "workspace:*",
     "@celluloid/utils": "workspace:*",
-    "@prisma/client": "^6.5.0",
-    "@t3-oss/env-nextjs": "^0.13.8",
-    "bcryptjs": "^2.4.3",
-    "better-auth": "^1.4.18",
-    "zod": "^3.23.8"
+    "@prisma/client": "catalog:",
+    "@t3-oss/env-nextjs": "catalog:",
+    "bcryptjs": "catalog:",
+    "better-auth": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
     "@types/bcryptjs": "^2.4.5",
-    "@types/node": "^18.14.2",
-    "typescript": "^5.9.3"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

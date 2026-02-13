@@ -1,0 +1,14 @@
+{
+  "name": "workflow-web",
+  "version": "1.0.0",
+  "private": true,
+  "peerDependencies": {
+    "@workflow-worlds/redis": "^0.2.2"
+  },
+  "scripts": {
+    "dev": "bun --env-file ../web/.env workflow web --noBrowser"
+  },
+  "dependencies": {
+    "workflow": "catalog:"
+  }
+}

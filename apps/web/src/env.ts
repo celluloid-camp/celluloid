@@ -8,7 +8,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     BASE_URL: z.string(),
-    WORKFLOW_REDIS_URI: z.string(),
+    REDIS_URL: z.string(),
   },
   client: {
     NEXT_PUBLIC_VERSION: z.string().default("0.0.0"),

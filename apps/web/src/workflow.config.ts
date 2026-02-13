@@ -1,6 +1,6 @@
 import { createWorld } from "@workflow-worlds/redis";
-import { env } from "./src/env";
+import { env } from "./env";
 
 const world = createWorld({
-  redisUrl: env.WORKFLOW_REDIS_URI,
+  redisUrl: env.REDIS_URL,
 });

@@ -9,16 +9,16 @@
   "dependencies": {
     "@knocklabs/node": "^1.24.0",
     "@knocklabs/react": "^0.9.4",
-    "@t3-oss/env-nextjs": "^0.13.8",
-    "notistack": "^3.0.1",
-    "react": "19.2.1",
-    "zod": "^4.1.13"
+    "@t3-oss/env-nextjs": "catalog:",
+    "notistack": "catalog:",
+    "react": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
-    "typescript": "^5.9.3",
-    "@types/node": "24.10.1",
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3"
+    "typescript": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:"
   }
 }
