@@ -537,6 +537,13 @@ class PeerTubeVideoElement extends HTMLElement {
     this.toggleAttribute("autoplay", Boolean(val));
   }
 
+  get seekable(): TimeRanges {
+    if (this.#duration > 0) {
+      return createTimeRanges(0, this.#duration);
+    }
+    return createTimeRanges();
+  }
+
   get buffered(): TimeRanges {
     if (this.#progress > 0) {
       return createTimeRanges(0, this.#progress);

@@ -1,6 +1,6 @@
 import { prisma } from "@celluloid/prisma";
 import { visionQueue, visionResultQueue } from "@celluloid/queue";
-import { getJobResultsResultsJobIdGetResponse } from "@celluloid/vision";
+import { GetJobResultsResultsJobIdGetResponse } from "@celluloid/vision";
 import { z } from "zod";
 import { env } from "../env";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
@@ -88,7 +88,7 @@ export const visionRouter = router({
     .input(
       z.object({
         projectId: z.string(),
-        analysis: getJobResultsResultsJobIdGetResponse,
+        analysis: GetJobResultsResultsJobIdGetResponse,
       }),
     )
     .mutation(async ({ input, ctx }) => {

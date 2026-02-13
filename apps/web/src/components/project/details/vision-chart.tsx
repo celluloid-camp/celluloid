@@ -2,6 +2,7 @@
 
 import type { DetectionResultsModel } from "@celluloid/vision";
 import { Box } from "@mui/material";
+import { useMediaSelector } from "media-chrome/react/media-store";
 import React, { useMemo } from "react";
 import {
   Bar,
@@ -14,13 +15,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useVideoPlayerProgress } from "@/components/video-player/store";
 import { getSpriteThumbnail } from "@/lib/sprite";
 import { formatDuration } from "@/utils/duration";
 
 export function VisionChart({ analysis }: { analysis: DetectionResultsModel }) {
   const spriteUrl = analysis.metadata.sprite.path;
-  const videoProgress = useVideoPlayerProgress();
+  const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
   // Pre-process data once to be more efficient for the timeline
   const objectsByTime = useMemo(() => {
     const objects: Record<string, any> = {};
@@ -83,7 +83,7 @@ export function VisionChart({ analysis }: { analysis: DetectionResultsModel }) {
             {/* This is how you can customize each bar if needed */}
           </Bar>
           {/* Custom element for the playhead */}
-          <ReferenceLine x={videoProgress} stroke="red" strokeWidth={2} />
+          <ReferenceLine x={mediaCurrentTime} stroke="red" strokeWidth={2} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -20,13 +20,11 @@ interface VideoPanelProps {
   project: ProjectById;
   annotations: AnnotationByProjectId[];
   annotationCount: number;
-  playerIsReady: boolean;
   user?: User;
 }
 
 export const VideoPanel: React.FC<VideoPanelProps> = ({
   annotationCount,
-  playerIsReady,
   ...props
 }) => {
   const [value, setValue] = useState("1");

@@ -3,17 +3,13 @@ import { AnnotationShape } from "@celluloid/prisma";
 import { Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
 import {
+  MediaActionTypes,
+  useMediaDispatch,
   useMediaFullscreenRef,
   useMediaSelector,
 } from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
 import React, { useEffect, useMemo } from "react";
-import type ReactPlayer from "react-player";
-import {
-  useVideoPlayerProgress,
-  useVideoPlayerState,
-} from "@/components/video-player/store";
-import { useVideoPlayerEvent } from "@/hooks/use-video-player";
 import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
@@ -24,7 +20,6 @@ import {
   ShapesViewer,
 } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
-import { FullscreenButton } from "./controls/fullscreen-button";
 import { VideoPanel } from "./video-panel";
 import { VideoVision } from "./video-vision";
 
@@ -38,17 +33,14 @@ interface Props {
 }
 
 export function ProjectVideoScreen({ project }: Props) {
-  const videoPlayerRef = React.useRef<ReactPlayer>(null);
-
+  const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
+  const dispatch = useMediaDispatch();
   const fullscreenRefCallback = useMediaFullscreenRef();
 
-  const videoPlayerState = useVideoPlayerState();
   const [ref, { width, height }] = useMeasure();
 
   const { data: session } = useSession();
   const utils = trpc.useUtils();
-  const videoProgress = useVideoPlayerProgress();
-  const [playerIsReady, setPlayerIsReady] = React.useState(false);
 
   const [annotations] = trpc.annotation.byProjectId.useSuspenseQuery({
     id: project.id,
@@ -56,12 +48,6 @@ export function ProjectVideoScreen({ project }: Props) {
 
   const { contextualEditorVisible, formVisible, showHints } =
     useAnnotationEditorState();
-
-  useVideoPlayerEvent((event) => {
-    if (event.state === "READY") {
-      setPlayerIsReady(true);
-    }
-  });
 
   // trpc.annotation.onChange.useSubscription(undefined, {
   //   onData() {
@@ -77,14 +63,14 @@ export function ProjectVideoScreen({ project }: Props) {
 
   const visibleAnnotations = useMemo(
     () =>
-      playerIsReady && annotations
+      mediaCurrentTime && annotations
         ? annotations.filter(
             (annotation) =>
-              videoProgress >= annotation.startTime &&
-              videoProgress <= annotation.stopTime,
+              mediaCurrentTime >= annotation.startTime &&
+              mediaCurrentTime <= annotation.stopTime,
           )
         : [],
-    [annotations, videoProgress, playerIsReady],
+    [annotations, mediaCurrentTime],
   );
 
   const shapeAnnotations = useMemo<AnnotationShapeWithMetadata[]>(
@@ -117,26 +103,33 @@ export function ProjectVideoScreen({ project }: Props) {
   );
 
   useEffect(() => {
-    const position = videoPlayerRef.current?.getCurrentTime();
+    if (!mediaCurrentTime) return;
     const paused = visibleAnnotations.filter(
       (annotation) =>
-        annotation.pause && annotation.startTime === Math.floor(videoProgress),
+        annotation.pause &&
+        annotation.startTime === Math.floor(mediaCurrentTime),
     );
 
-    if (paused.length > 0 && position) {
-      videoPlayerRef.current?.getInternalPlayer().pause();
-      videoPlayerRef.current?.seekTo(position + 1, "seconds");
+    if (paused.length > 0) {
+      dispatch({
+        type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+        detail: mediaCurrentTime + 1,
+      });
+      dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
-  }, [visibleAnnotations, videoProgress]);
+  }, [visibleAnnotations, mediaCurrentTime]);
 
   useEffect(() => {
-    if (formVisible && videoPlayerRef) {
-      videoPlayerRef.current?.getInternalPlayer().pause();
+    if (formVisible) {
+      dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
   }, [formVisible]);
 
   const handleAnnotionHintClick = (annotation: AnnotationByProjectId) => {
-    videoPlayerRef.current?.seekTo(annotation.startTime, "seconds");
+    dispatch({
+      type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+      detail: annotation.startTime,
+    });
   };
 
   return (
@@ -158,13 +151,6 @@ export function ProjectVideoScreen({ project }: Props) {
             shapes={shapeAnnotations}
             width={width ?? 0}
             height={height ?? 0}
-            onClick={() => {
-              if (videoPlayerState === "PAUSED") {
-                videoPlayerRef.current?.getInternalPlayer().play();
-              } else {
-                videoPlayerRef.current?.getInternalPlayer().pause();
-              }
-            }}
           />
         ) : null}
         {showHints ? (
@@ -175,10 +161,8 @@ export function ProjectVideoScreen({ project }: Props) {
           />
         ) : null}
         <VideoVision projectId={project.id} />
-        <VideoPlayer
-          height={"100%"}
-          url={`https://${project.host}/w/${project.videoId}`}
-        />
+
+        <VideoPlayer url={`https://${project.host}/w/${project.videoId}`} />
       </Grid>
       <Grid
         item
@@ -194,7 +178,6 @@ export function ProjectVideoScreen({ project }: Props) {
           project={project}
           annotations={visibleAnnotations}
           annotationCount={annotations.length}
-          playerIsReady={playerIsReady}
           user={session?.user}
         />
       </Grid>
