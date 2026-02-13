@@ -1,6 +1,6 @@
 "use client";
-
 import { Box, CircularProgress } from "@mui/material";
+import { MediaProvider } from "media-chrome/react/media-store";
 import { Suspense } from "react";
 import { trpc } from "@/lib/trpc/client";
 import { ProjectDetails } from "./details/project-details";
@@ -10,27 +10,29 @@ export function ProjectMainScreen({ projectId }: { projectId: string }) {
   const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
   return (
     <Box display={"flex"} flexDirection={"column"}>
-      <Suspense
-        fallback={
-          <Box
-            display={"flex"}
-            alignContent={"center"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            sx={{
-              backgroundColor: "black",
-              height: "60vh",
-              minHeight: "60vh",
-            }}
-          >
-            <CircularProgress sx={{ color: "white" }} />
-          </Box>
-        }
-      >
-        <ProjectVideoScreen project={project} />
-      </Suspense>
+      <MediaProvider>
+        <Suspense
+          fallback={
+            <Box
+              display={"flex"}
+              alignContent={"center"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              sx={{
+                backgroundColor: "black",
+                height: "60vh",
+                minHeight: "60vh",
+              }}
+            >
+              <CircularProgress sx={{ color: "white" }} />
+            </Box>
+          }
+        >
+          <ProjectVideoScreen project={project} />
+        </Suspense>
 
-      <ProjectDetails projectId={projectId} />
+        <ProjectDetails projectId={projectId} />
+      </MediaProvider>
     </Box>
   );
 }

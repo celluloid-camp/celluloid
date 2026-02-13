@@ -14,15 +14,9 @@
     "jsx": "preserve",
     "noEmit": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@repo/*": [
-        "../../packages/*"
-      ]
+      "@/*": ["./*"],
+      "@repo/*": ["../../packages/*"]
     }
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

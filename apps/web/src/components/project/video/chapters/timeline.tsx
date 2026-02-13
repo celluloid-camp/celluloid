@@ -9,10 +9,12 @@ import {
   timelineOppositeContentClasses,
 } from "@mui/lab";
 import { Box, Stack, Typography } from "@mui/material";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+} from "media-chrome/react/media-store";
 import Image from "mui-image";
 import type * as React from "react";
-
-import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
 import type { User } from "@/lib/auth-client";
 import type { ChapterByProjectId, ProjectById } from "@/lib/trpc/types";
 import { formatDuration } from "@/utils/duration";
@@ -28,7 +30,7 @@ export function ChapterTimeline({
   user?: User;
   project: ProjectById;
 }) {
-  const dispatcher = useVideoPlayerSeekEvent();
+  const dispatch = useMediaDispatch();
 
   if (chapters.length === 0) {
     return (
@@ -44,8 +46,9 @@ export function ChapterTimeline({
   }
 
   const handleClick = (chapter: ChapterByProjectId) => {
-    dispatcher({
-      time: chapter.startTime,
+    dispatch({
+      type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+      detail: chapter.startTime as number,
     });
   };
 

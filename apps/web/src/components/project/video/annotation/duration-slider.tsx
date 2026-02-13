@@ -7,9 +7,11 @@ import Tooltip, {
   type TooltipProps,
   tooltipClasses,
 } from "@mui/material/Tooltip";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+} from "media-chrome/react/media-store";
 import React from "react";
-
-import { useVideoPlayerSeekEvent } from "@/hooks/use-video-player";
 import { formatDuration } from "@/utils/duration";
 
 type DurationSliderProps = {
@@ -116,7 +118,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
     );
     const [isEditingStart, setIsEditingStart] = React.useState(false);
     const [isEditingStop, setIsEditingStop] = React.useState(false);
-    const dispatcher = useVideoPlayerSeekEvent();
+    const dispatch = useMediaDispatch();
 
     // Sync value with mono/startTime/stopTime changes
     React.useEffect(() => {
@@ -163,15 +165,21 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
       (_event: React.SyntheticEvent | Event, newValue: number | number[]) => {
         if (mono) {
           const singleValue = Array.isArray(newValue) ? newValue[0] : newValue;
-          dispatcher({ time: singleValue });
+          dispatch({
+            type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+            detail: singleValue,
+          });
           return;
         }
         if (lastActiveThumb !== undefined && Array.isArray(newValue)) {
           const commitValue = newValue[lastActiveThumb];
-          dispatcher({ time: commitValue });
+          dispatch({
+            type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+            detail: commitValue,
+          });
         }
       },
-      [mono, dispatcher, lastActiveThumb],
+      [mono, dispatch, lastActiveThumb],
     );
 
     const currentValue = currentValueMemo;
