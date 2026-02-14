@@ -1,8 +1,10 @@
 import { db } from "@celluloid/db";
+import { handleUserSignup } from "@celluloid/workflows/user-signup";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { admin, emailOTP, username } from "better-auth/plugins";
+import { start } from "workflow/api";
 import { keys } from "./keys";
 import { signupAsStudent } from "./plugins/signup-as-student";
 
@@ -51,6 +53,7 @@ export const auth = betterAuth({
       async sendVerificationOTP({ email, otp, type }) {
         console.log("sendVerificationOTP", email, otp, type);
         // emailQueue.add({ email, type, otp });
+        // const run = await start(handleUserSignup, [email]);
       },
     }),
     nextCookies(),

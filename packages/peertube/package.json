@@ -1,0 +1,15 @@
+{
+  "name": "@celluloid/peertube",
+  "version": "3.5.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
+  },
+  "devDependencies": {
+    "@celluloid/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@plussub/srt-vtt-parser": "^2.0.5"
+  }
+}

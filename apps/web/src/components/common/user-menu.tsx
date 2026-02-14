@@ -1,3 +1,4 @@
+"use client";
 import { NotificationsTrigger } from "@celluloid/notifications/components/trigger";
 import { Box, IconButton, Menu, MenuItem, Skeleton } from "@mui/material";
 import Button from "@mui/material/Button";

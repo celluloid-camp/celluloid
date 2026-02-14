@@ -1,5 +1,5 @@
 {
-  "$schema": "https://turbo.build/schema.json",
+  "$schema": "https://turborepo.com/schema.json",
   "globalDependencies": [
     "**/.env.*local"
   ],
@@ -8,41 +8,35 @@
   "tasks": {
     "build": {
       "dependsOn": [
-        "^build"
+        "^build",
+        "test"
       ],
       "outputs": [
-        "dist/**",
         ".next/**",
-        "!.next/cache/**"
+        "!.next/cache/**",
+        "**/generated/**",
+        "storybook-static/**",
+        ".react-email/**"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ]
+    },
+    "analyze": {
+      "dependsOn": [
+        "^analyze"
       ]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "lint": {
+    "translate": {
       "dependsOn": [
-        "^build"
-      ]
-    },
-    "typecheck": {
-      "dependsOn": [
-        "^build"
+        "^translate"
       ],
-      "cache": false
-    },
-    "test": {
-      "dependsOn": [
-        "^build"
-      ]
-    },
-    "test:e2e": {
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": false
-    },
-    "i18n:extract": {
       "cache": false
     },
     "clean": {

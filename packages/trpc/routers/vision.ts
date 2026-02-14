@@ -58,12 +58,12 @@ export const visionRouter = router({
       //   callbackUrl: `${env.BASE_URL}/api/vision/webhook`,
       // });
 
-      await db.project.update({
-        where: { id: projectId },
-        data: {
-          jobs: { create: { type: "vision", queueJobId: null } },
-        },
-      });
+      // await db.project.update({
+      //   where: { id: projectId },
+      //   data: {
+      //     jobs: { create: { type: "vision", queueJobId: null } },
+      //   },
+      // });
 
       return null;
     }),

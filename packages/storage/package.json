@@ -1,12 +1,18 @@
 {
-  "name": "@celluloid/types",
+  "name": "@celluloid/storage",
   "version": "3.5.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
+    "@t3-oss/env-nextjs": "catalog:",
     "typescript": "catalog:"
+  },
+  "dependencies": {
+    "minio": "^7.1.3",
+    "zod": "catalog:"
   }
 }

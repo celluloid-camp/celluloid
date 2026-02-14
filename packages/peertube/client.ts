@@ -1,7 +1,7 @@
-import type { PeerTubeCaptionResponse, PeerTubeVideo } from "@celluloid/types";
-
 import { parse } from "@plussub/srt-vtt-parser";
 import type { Entry } from "@plussub/srt-vtt-parser/dist/types";
+import { PeerTubeCaptionResponse } from "./types/caption";
+import { PeerTubeVideo } from "./types/video";
 
 export const getPeerTubeVideoData = async ({
   videoId,
@@ -71,7 +71,8 @@ export const getPeerTubeCaptions = async ({
     // Fetch content for each caption
     const captions = await Promise.all(
       captionsResponse.data.map(async (caption) => {
-        const captionUrl = caption.fileUrl ?? `https://${host}${caption.captionPath}`;
+        const captionUrl =
+          caption.fileUrl ?? `https://${host}${caption.captionPath}`;
         const captionResponse = await fetch(captionUrl);
         const content = await captionResponse.text();
         const parsed = parse(content);

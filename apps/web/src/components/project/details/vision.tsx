@@ -49,16 +49,6 @@ export function ProjectVision({ project, user }: Props) {
     },
   });
 
-  const { visionJob, isVisionInProgress } = useMemo(() => {
-    const visionJob = project.jobs.find((job) => job.type === "vision");
-    return {
-      visionJob,
-      isVisionInProgress: visionJob
-        ? visionJob.queueJob?.progress !== 100
-        : false,
-    };
-  }, [project.jobs]);
-
   if (!data && !user) {
     return null;
   }
@@ -66,7 +56,7 @@ export function ProjectVision({ project, user }: Props) {
   const canGenerateVision =
     (user?.role === "ADMIN" || user?.id === project.userId) &&
     !data &&
-    !isVisionInProgress;
+    project.analysisProcessingStatus === "in_progress";
 
   const canViewStudio =
     user?.role === "ADMIN" ||

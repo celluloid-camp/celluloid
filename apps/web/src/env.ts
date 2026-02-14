@@ -1,6 +1,7 @@
 import { keys as authKeys } from "@celluloid/auth/keys";
 import { keys as dbKeys } from "@celluloid/db/keys";
 import { keys as notifications } from "@celluloid/notifications/keys";
+import { keys as storageKeys } from "@celluloid/storage/keys";
 import { keys as trpcKeys } from "@celluloid/trpc/keys";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
@@ -26,5 +27,5 @@ export const env = createEnv({
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     NEXT_PUBLIC_STAGE: process.env.NEXT_PUBLIC_STAGE,
   },
-  extends: [trpcKeys(), dbKeys(), authKeys(), notifications()],
+  extends: [trpcKeys(), dbKeys(), authKeys(), notifications(), storageKeys()],
 });

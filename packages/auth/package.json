@@ -11,10 +11,12 @@
   "dependencies": {
     "@celluloid/db": "workspace:*",
     "@celluloid/utils": "workspace:*",
+    "@celluloid/workflows": "workspace:*",
     "@prisma/client": "catalog:",
     "@t3-oss/env-nextjs": "catalog:",
     "bcryptjs": "catalog:",
     "better-auth": "catalog:",
+    "workflow": "^4.1.0-beta.57",
     "zod": "catalog:"
   },
   "devDependencies": {

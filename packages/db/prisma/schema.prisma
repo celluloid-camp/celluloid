@@ -1,6 +1,5 @@
 datasource db {
   provider = "postgresql"
-  
 }
 
 generator client {
@@ -80,21 +79,20 @@ model Project {
 
   fileDownloadUrl String?
 
-  jobs        ProjectQueueJob[]
+  scenesProcessingRunId  String?
+  scenesProcessingStatus String? @default("not_started")
+
   chapters    Chapter[]
   notes       ProjectNote[]
   transcripts ProjectTranscript?
 
-  analysis VideoAnalysis?
-}
+  transcriptProcessingRunId  String?
+  transcriptProcessingStatus String? @default("not_started")
 
-model ProjectQueueJob {
-  id         String    @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId  String    @db.Uuid
-  type       String
-  queueJob   QueueJob? @relation(fields: [queueJobId], references: [id], onDelete: SetNull)
-  queueJobId BigInt?   @db.BigInt
+  // analysisProcessingRunId  String?
+  // analysisProcessingStatus String? @default("not_started")
+
+  analysis VideoAnalysis?
 }
 
 model Chapter {
@@ -241,32 +239,6 @@ model Storage {
   chapter   Chapter?
   sprite    VideoAnalysis?
   createdAt DateTime?      @default(now()) @db.Timestamptz(6)
-}
-
-model QueueJob {
-  id          BigInt            @id @default(autoincrement()) @db.BigInt
-  queue       String
-  key         String?
-  cron        String?
-  payload     Json?
-  result      Json?
-  error       Json?
-  progress    Int               @default(0)
-  priority    Int               @default(0)
-  attempts    Int               @default(0)
-  maxAttempts Int?
-  runAt       DateTime          @default(now())
-  notBefore   DateTime?
-  finishedAt  DateTime?
-  processedAt DateTime?
-  failedAt    DateTime?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  projects    ProjectQueueJob[]
-
-  @@unique([key, runAt])
-  @@index([queue, priority, runAt, finishedAt])
-  @@map("queue_jobs")
 }
 
 model ProjectNote {

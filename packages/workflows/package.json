@@ -8,6 +8,9 @@
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "catalog:",
+    "@celluloid/peertube": "workspace:*",
+    "@celluloid/storage": "workspace:*",
+    "@celluloid/db": "workspace:*",
     "server-only": "catalog:",
     "workflow": "catalog:",
     "zod": "catalog:",

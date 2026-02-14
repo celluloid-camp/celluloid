@@ -8,11 +8,9 @@
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
-    "@celluloid/types": "workspace:*",
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@plussub/srt-vtt-parser": "^2.0.5",
     "@types/bcryptjs": "^2.4.6",
     "@types/redis": "^4.0.11",
     "bcryptjs": "catalog:",

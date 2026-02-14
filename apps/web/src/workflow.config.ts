@@ -1,6 +1,6 @@
-import { createWorld } from "@workflow-worlds/redis";
+import { createWorld } from "@workflow/world-postgres";
 import { env } from "./env";
 
 const world = createWorld({
-  redisUrl: env.REDIS_URL,
+  connectionString: env.DATABASE_URL,
 });

@@ -18,7 +18,7 @@ type ChaptersPanelProps = {
 };
 
 export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
-  if (!project.jobs.find((job) => job.type === "chapter")) {
+  if (project.scenesProcessingStatus === "not_started") {
     return (
       <CreateChaptersJob
         projectId={project.id}
@@ -27,9 +27,7 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
     );
   }
 
-  if (
-    !project.jobs.find((job) => job.type === "chapter")?.queueJob?.finishedAt
-  ) {
+  if (project.scenesProcessingStatus === "in_progress") {
     return <ChaptersJobInProgress />;
   }
   return (

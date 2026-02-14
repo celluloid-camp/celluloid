@@ -51,7 +51,7 @@
     "trpc-to-openapi": "^2.4.0",
     "tsup": "^8.3.0",
     "typescript": "^5.9.3",
-    "workflow": "4.0.1-beta.38",
+    "workflow": "4.1.0-beta.57",
     "zod": "^4.3.6"
   },
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
@@ -74,10 +74,10 @@
     "test": "bunx playwright test",
     "test:codegen": "bunx playwright codegen http://localhost:3000",
     "--shortcuts to run commands in workspaces--": "",
-    "web": "dotenv -- bun run --filter web",
-    "auth": "dotenv -- bun run --filter auth",
-    "db": "dotenv -- bun run --filter @celluloid/db",
-    "vision": "dotenv -- bun run --filter @celluloid/vision",
+    "web": "bun run --filter web",
+    "auth": "bun run --filter auth",
+    "db": "bun run --filter @celluloid/db",
+    "vision": "bun run --filter @celluloid/vision",
     "docker:build": "docker buildx build -f apps/web/Dockerfile -t celluloid-web .",
     "docker:run": "docker run -it --rm --env-file ./apps/web/.env -p 3000:3000 celluloid-web",
     "release": "bun run release-it"
@@ -101,6 +101,6 @@
     "packages/*"
   ],
   "dependencies": {
-    "@workflow-worlds/redis": "^0.2.2"
+    "@workflow/world-postgres": "^4.1.0-beta.34"
   }
 }

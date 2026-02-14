@@ -17,7 +17,7 @@ COPY --parents packages/*/package.json apps/web/package.json ./
 
 # Install dependencies with Bun
 RUN --mount=type=cache,target=/root/.bun \
-    bun install --frozen-lockfile
+    bun install
 
 # Build stage
 FROM deps AS builder
@@ -44,7 +44,7 @@ RUN --mount=type=cache,target=/app/apps/web/.next/cache \
     bun run build
 
 # Production runtime stage
-FROM node:24-alpine AS runner
+FROM oven/bun:1.3.8-alpine AS runner
 
 RUN apk add --no-cache libc6-compat vips curl ffmpeg
 
@@ -76,4 +76,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 WORKDIR /app/apps/web
 
 
-CMD ["node", "server.js"]
+CMD ["bun", "--bun", "server.js"]

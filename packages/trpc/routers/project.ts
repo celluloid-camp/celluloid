@@ -2,7 +2,9 @@ import { db, Prisma } from "@celluloid/db";
 import { defaultUserSelect } from "@celluloid/db/validator";
 // import { chaptersQueue, transcriptsQueue } from "@celluloid/queue";
 import { generateUniqueShareName } from "@celluloid/utils";
+import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
 import { TRPCError } from "@trpc/server";
+import { start } from "workflow/api";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { PlaylistSchema } from "./playlist";
@@ -49,7 +51,7 @@ export const ProjectSchema = z.object({
   shared: z.boolean(),
   shareCode: z.string().nullable(),
   shareExpiresAt: z.null().nullable(),
-  extra: z.record(z.unknown()),
+  extra: z.record(z.string(), z.unknown()),
   playlistId: z.string(),
   duration: z.number(),
   thumbnailURL: z.string(),
@@ -155,18 +157,10 @@ export const projectRouter = router({
           user: {
             select: defaultUserSelect,
           },
-          jobs: {
-            select: {
-              type: true,
-              queueJob: {
-                select: {
-                  id: true,
-                  finishedAt: true,
-                  progress: true,
-                },
-              },
-            },
-          },
+          scenesProcessingRunId: true,
+          scenesProcessingStatus: true,
+          transcriptProcessingRunId: true,
+          transcriptProcessingStatus: true,
           playlist: {
             select: {
               id: true,
@@ -229,59 +223,6 @@ export const projectRouter = router({
       };
     }),
 
-  getJob: publicProcedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        type: z.enum(["chapter", "transcript", "vision"]),
-      }),
-    )
-    .output(
-      z.object({
-        progress: z.number(),
-        failedAt: z.date().nullable(),
-        status: z.enum(["pending", "completed", "failed", "in_progress"]),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const { projectId, type } = input;
-      const job = await db.projectQueueJob.findFirst({
-        where: { projectId, type },
-        select: {
-          id: true,
-          queueJob: {
-            select: {
-              id: true,
-              progress: true,
-              failedAt: true,
-              error: true,
-              processedAt: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
-        },
-      });
-      if (!job) {
-        return {
-          progress: 0,
-          failedAt: null,
-          status: "pending",
-        };
-      }
-      const status = job.queueJob?.failedAt
-        ? "failed"
-        : job.queueJob?.processedAt
-          ? "completed"
-          : "in_progress";
-
-      return {
-        progress: job.queueJob?.progress ?? 0,
-        failedAt: job.queueJob?.failedAt ?? null,
-        status,
-      };
-    }),
-
   add: protectedProcedure
     .input(
       z.object({
@@ -326,35 +267,15 @@ export const projectRouter = router({
           },
           // select: defaultPostSelect,
         });
-        // const jobId = await chaptersQueue.add({ projectId: project.id });
-        // const transcriptJobId = await transcriptsQueue.add({
-        //   projectId: project.id,
-        // });
+        const run = await start(processScenesWorkflow, [project.id]);
         await db.project.update({
           where: { id: project.id },
           data: {
-            jobs: {
-              create: [
-                {
-                  type: "chapter",
-                  queueJob: {
-                    connect: {
-                      id: null,
-                    },
-                  },
-                },
-                {
-                  type: "transcript",
-                  queueJob: {
-                    connect: {
-                      id: null,
-                    },
-                  },
-                },
-              ],
-            },
+            scenesProcessingRunId: run.runId,
+            scenesProcessingStatus: "in_progress",
           },
         });
+
         return project;
       }
     }),

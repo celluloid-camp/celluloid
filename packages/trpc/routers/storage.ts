@@ -1,7 +1,6 @@
 import { db, Prisma } from "@celluloid/db";
-import * as Minio from "minio";
+import { deleteFile, generatePresignedUrl } from "@celluloid/storage/client";
 import { z } from "zod";
-
 import { keys } from "../keys";
 import { protectedProcedure, router } from "../trpc";
 
@@ -33,19 +32,6 @@ function parseUrl(url: string): {
   };
 }
 
-function getMinioClient() {
-  const env = keys();
-  const storageUrlInfo = parseUrl(env.STORAGE_URL);
-  const minioClient = new Minio.Client({
-    endPoint: storageUrlInfo.host,
-    port: storageUrlInfo.port,
-    useSSL: storageUrlInfo.isSecure,
-    accessKey: env.STORAGE_ACCESS_KEY,
-    secretKey: env.STORAGE_SECRET_KEY,
-  });
-  return minioClient;
-}
-
 export const storageRouter = router({
   presignedUrl: protectedProcedure
     .input(
@@ -62,14 +48,9 @@ export const storageRouter = router({
     .mutation(async ({ input, ctx }) => {
       const env = keys();
       if (ctx.user?.id) {
-        const minioClient = getMinioClient();
         const path = `${ctx.user.id}/${input.name}`;
-        const url = await minioClient.presignedPutObject(
-          env.STORAGE_BUCKET,
-          path,
-          24 * 60 * 60, // 24 hours expiry
-        );
-        return { uploadUrl: url, path };
+        const presignedUrl = await generatePresignedUrl(path);
+        return { uploadUrl: presignedUrl, path };
       }
       return { uploadUrl: "", path: "" };
     }),
@@ -113,7 +94,6 @@ export const storageRouter = router({
     .output(z.boolean())
     .mutation(async ({ input, ctx }) => {
       try {
-        const minioClient = getMinioClient();
         const storage = await db.storage.findUnique({
           where: { id: input.storageId },
           select: { ...defaultStorageSelect, user: { select: { id: true } } },
@@ -123,7 +103,7 @@ export const storageRouter = router({
           throw new Error("Storage not found or access denied");
         }
 
-        await minioClient.removeObject(storage.bucket, storage.path);
+        await deleteFile(storage.path);
 
         await db.storage.delete({
           where: { id: input.storageId },

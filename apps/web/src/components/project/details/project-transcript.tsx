@@ -79,16 +79,6 @@ export function ProjectTranscript({ project, user }: Props) {
     },
   });
 
-  const { transcriptJob, isTranscriptInProgress } = useMemo(() => {
-    const transcriptJob = project.jobs.find((job) => job.type === "transcript");
-    return {
-      transcriptJob,
-      isTranscriptInProgress: transcriptJob
-        ? transcriptJob.queueJob?.progress !== 100
-        : false,
-    };
-  }, [project.jobs]);
-
   if (!data && !user) {
     return null;
   }
@@ -101,7 +91,7 @@ export function ProjectTranscript({ project, user }: Props) {
   const canGenerateTranscript =
     (user?.role === "admin" || user?.id === project.userId) &&
     !data?.content &&
-    !isTranscriptInProgress;
+    project.transcriptProcessingStatus === "in_progress";
 
   const downloadTranscript = (content: string) => {
     const blob = new Blob([content], { type: "text/plain" });

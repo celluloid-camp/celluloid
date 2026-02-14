@@ -47,12 +47,12 @@ export const transcriptRouter = router({
 
       // const job = await transcriptsQueue.add({ projectId: projectId });
 
-      await db.project.update({
-        where: { id: projectId },
-        data: {
-          jobs: { create: { type: "transcript", queueJobId: null } },
-        },
-      });
+      // await db.project.update({
+      //   where: { id: projectId },
+      //   data: {
+      //     jobs: { create: { type: "transcript", queueJobId: null } },
+      //   },
+      // });
 
       return null;
     }),
