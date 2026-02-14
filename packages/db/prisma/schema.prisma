@@ -1,0 +1,288 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
+model Annotation {
+  id        String    @id @unique(map: "annotation_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  text      String
+  startTime Float     @db.Real
+  stopTime  Float     @db.Real
+  pause     Boolean
+  userId    String    @db.Uuid
+  projectId String    @db.Uuid
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
+  /// [AnnotationShape]
+  extra     Json?     @default("{}")
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_projectid_foreign")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "annotation_userid_foreign")
+  comments  Comment[]
+
+  orignalURL String?
+}
+
+model Comment {
+  id           String     @id @unique(map: "comment_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  text         String
+  annotationId String     @db.Uuid
+  userId       String     @db.Uuid
+  createdAt    DateTime?  @default(now()) @db.Timestamptz(6)
+  extra        Json?      @default("{}")
+  annotation   Annotation @relation(fields: [annotationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_annotationid_foreign")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comment_userid_foreign")
+}
+
+model Language {
+  id   String @unique(map: "language_id_unique")
+  name String
+}
+
+model Project {
+  id            String   @id @unique(map: "project_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  videoId       String
+  userId        String   @db.Uuid
+  title         String
+  description   String
+  host          String?
+  assignments   String[]
+  publishedAt   DateTime @default(now()) @db.Timestamptz(6)
+  objective     String?
+  levelStart    Int?
+  levelEnd      Int?
+  public        Boolean  @default(false)
+  collaborative Boolean
+  shared        Boolean  @default(false)
+
+  shareCode      String?   @unique(map: "project_share_code_unique")
+  shareExpiresAt DateTime? @db.Timestamptz(6)
+
+  extra       Json?           @default("{}") @db.Json
+  annotations Annotation[]
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "project_userid_foreign")
+  members     UserToProject[]
+
+  playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId String?   @db.Uuid
+
+  duration     Float    @default(0)
+  thumbnailURL String   @default("")
+  metadata     Json?    @default("{}") @db.Json
+  keywords     String[]
+
+  fileDownloadUrl String?
+
+  scenesProcessingRunId  String?
+  scenesProcessingStatus String? @default("not_started")
+
+  chapters    Chapter[]
+  notes       ProjectNote[]
+  transcripts ProjectTranscript?
+
+  transcriptProcessingRunId  String?
+  transcriptProcessingStatus String? @default("not_started")
+
+  // analysisProcessingRunId  String?
+  // analysisProcessingStatus String? @default("not_started")
+
+  analysis VideoAnalysis?
+}
+
+model Chapter {
+  id        String @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String @db.Uuid
+  startTime Float
+  endTime   Float
+
+  title       String?
+  description String?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  thumbnail          Storage? @relation(fields: [thumbnailStorageId], references: [id])
+  thumbnailStorageId String?  @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lastEditedBy   User?   @relation(fields: [lastEditedById], references: [id])
+  lastEditedById String? @db.Uuid
+
+  @@index([projectId])
+}
+
+model Playlist {
+  id String @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  title       String
+  description String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+
+  projects Project[]
+
+  publishedAt DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model User {
+  id              String          @id @unique(map: "user_id_unique") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String?         @unique(map: "user_email_unique") @db.VarChar(255)
+  username        String          @unique(map: "user_username_unique") @db.VarChar(255)
+  displayUsername String?
+  annotation      Annotation[]
+  comment         Comment[]
+  project         Project[]
+  UserToProject   UserToProject[]
+  role            String?
+  playlist        Playlist[]
+
+  firstname String? @db.VarChar(255)
+  lastname  String? @db.VarChar(255)
+  bio       String? @db.Text()
+
+  avatar          Storage? @relation(fields: [avatarStorageId], references: [id])
+  avatarStorageId String?  @unique @db.Uuid
+
+  chapters Chapter[]
+
+  name          String?
+  emailVerified Boolean @default(false)
+  image         String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  sessions Session[]
+  accounts Account[]
+
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
+
+  extra Json?         @default("{}")
+  notes ProjectNote[]
+}
+
+model Session {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  accountId             String
+  providerId            String
+  userId                String    @db.Uuid
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model UserToProject {
+  id        Int      @id @default(autoincrement())
+  userId    String?  @db.Uuid
+  projectId String?  @db.Uuid
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_projectid_foreign")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usertoproject_userid_foreign")
+}
+
+enum UserRole {
+  Admin
+  Teacher
+  Student
+}
+
+model Storage {
+  id        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  path      String
+  bucket    String
+  user      User?
+  chapter   Chapter?
+  sprite    VideoAnalysis?
+  createdAt DateTime?      @default(now()) @db.Timestamptz(6)
+}
+
+model ProjectNote {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String?  @db.Uuid
+  userId    String   @db.Uuid
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull, onUpdate: SetNull, map: "projectnote_projectid_foreign")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "projectnote_userid_foreign")
+  content   Json?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([projectId, userId])
+  @@index([projectId, userId])
+}
+
+model ProjectTranscript {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String   @unique @db.Uuid
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  language  String
+  entries   Json
+
+  @@unique([projectId, language])
+}
+
+model VideoAnalysis {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId String  @unique(map: "videoanalysis_projectid_unique") @db.Uuid
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  sprite          Storage? @relation(fields: [spriteStorageId], references: [id])
+  spriteStorageId String?  @unique @db.Uuid
+
+  visionJobId String
+  status      String @default("pending")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  /// [VisionProcessing]
+  processing Json? @default("{}") @db.Json
+  metadata   Json? @default("{}") @db.Json
+}

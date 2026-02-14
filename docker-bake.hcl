@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["web", "worker"]
+  targets = ["web"]
 }
 
 variable "VERSION" {
@@ -33,7 +33,7 @@ target "web" {
   inherits = ["docker-metadata-action"]
   context    = "."
   dockerfile = "./Dockerfile"
-  target     = "web"
+  target     = "runner"
   tags = "${target.docker-metadata-action.tags}"
   cache-from = ["type=gha"]
   cache-to   = ["type=gha,mode=max"]
@@ -44,21 +44,6 @@ target "web" {
     NEXT_PUBLIC_KNOCK_API_KEY = "${NEXT_PUBLIC_KNOCK_API_KEY}"
     NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID = "${NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID}"
     STAGE = "${STAGE}"
-  }
-  push = true
-}
-
-target "worker" {
-  inherits = ["docker-metadata-action"]
-  context    = "."
-  dockerfile = "./Dockerfile"
-  target     = "worker"
-  tags = [for tag in target.docker-metadata-action.tags : replace(tag, "web", "worker")]
-  cache-from = ["type=gha"]
-  cache-to   = ["type=gha,mode=max"]
-  args = {
-    VERSION  = "${VERSION}"
-    REVISION = "${REVISION}"
   }
   push = true
 }

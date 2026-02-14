@@ -57,3 +57,11 @@ dist
 
 # Playwright
 /blob-report/
+
+
+# Database
+packages/db/generated
+
+# react.email
+.react-email
+sandbox

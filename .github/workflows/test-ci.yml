@@ -40,25 +40,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
 
       - name: Cache turbo build setup
         uses: actions/cache@v4
@@ -68,21 +54,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
-      - run: pnpm install
+      - run: bun install --frozen-lockfile
 
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps chromium firefox
+        run: bunx playwright install --with-deps chromium firefox
 
       - name: Build apps
         run: |
           cp .env.ci .env
-          pnpm build
+          bun run build
 
       - name: Build packages
-        run: pnpm prisma migrate deploy
+        run: bunx prisma migrate deploy
 
       - name: Run Playwright tests
-        run: pnpm test
+        run: bun run test
 
       - uses: actions/upload-artifact@v4
         if: always()

@@ -1,21 +1,47 @@
-.docker
-.env
+# Version control
 .git
+.gitignore
 .github
-.vscode
 
+# Editor / IDE
+.vscode
+.idea
+.cursor
+
+# Docker files (avoid recursion)
 *Dockerfile*
 *docker-compose*
+docker-bake.hcl
 
-**/.DS_Store
-**/.next
+# Dependencies (will be installed fresh in container)
 **/node_modules
+.pnpm-store
+
+# Build outputs (will be built fresh in container)
 **/dist
+**/.next
+**/build
+**/out
+**/.turbo
+**/.cache
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+**/.DS_Store
+**/Thumbs.db
+
+# Tests
 **/__tests__
+**/*.test.*
+**/*.spec.*
+playwright-report
 
-node_modules
-
-.yarnclean
-yarn-error.log*
+# Logs
+*.log
+npm-debug.log*
 yarn-debug.log*
-npm-error.log*
+yarn-error.log*

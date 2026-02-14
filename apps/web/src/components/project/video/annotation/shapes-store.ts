@@ -1,4 +1,4 @@
-import { AnnotationShape } from "@celluloid/prisma";
+import { AnnotationShape } from "@celluloid/db";
 import { create } from "zustand";
 import { Shape } from "./types";
 

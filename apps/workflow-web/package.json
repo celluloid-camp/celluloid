@@ -1,0 +1,11 @@
+{
+  "name": "workflow-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun --env-file ../web/.env workflow web --noBrowser"
+  },
+  "dependencies": {
+    "workflow": "catalog:"
+  }
+}

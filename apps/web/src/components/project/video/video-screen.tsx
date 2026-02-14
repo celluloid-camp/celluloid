@@ -1,5 +1,5 @@
 "use client";
-import { AnnotationShape } from "@celluloid/prisma";
+import { AnnotationShape } from "@celluloid/db";
 import { Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
 import {

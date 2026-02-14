@@ -1,0 +1,24 @@
+{
+  "name": "@celluloid/workflows",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "catalog:",
+    "@celluloid/peertube": "workspace:*",
+    "@celluloid/storage": "workspace:*",
+    "@celluloid/db": "workspace:*",
+    "server-only": "catalog:",
+    "workflow": "catalog:",
+    "zod": "catalog:",
+    "date-fns": "catalog:"
+  },
+  "devDependencies": {
+    "@celluloid/db": "workspace:*",
+    "@celluloid/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

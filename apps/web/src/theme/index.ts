@@ -9,8 +9,6 @@ import {
 import { baseThemeOptions } from "./base-theme-options";
 import { celluloidThemeOptions } from "./celluloid-theme-options";
 
-// import { reactRouterThemeOptions } from "./react-router-link";
-
 interface Neutral {
   100: string;
   200: string;

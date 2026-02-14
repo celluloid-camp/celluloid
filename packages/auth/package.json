@@ -2,40 +2,27 @@
   "name": "@celluloid/auth",
   "version": "3.5.0",
   "private": true,
-  "license": "MIT",
-  "homepage": "https://celluloid.huma-num.fr",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/celluloid-camp/celluloid.git",
-    "directory": "packages/auth"
-  },
-  "bugs": {
-    "url": "https://github.com/udecode/plate/celluloid/issues"
-  },
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts",
-    "./env": "./src/env.ts",
-    "./plugins": "./src/plugins/index.ts",
-    "./client/plugins": "./src/plugins/client.ts"
-  },
+  "main": "./index.ts",
+  "types": "./index.ts",
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
-    "@celluloid/prisma": "workspace:*",
-    "@celluloid/queue": "workspace:*",
+    "@celluloid/db": "workspace:*",
     "@celluloid/utils": "workspace:*",
-    "@prisma/client": "^6.5.0",
-    "@t3-oss/env-core": "catalog:",
-    "bcryptjs": "^2.4.3",
+    "@celluloid/workflows": "workspace:*",
+    "@prisma/client": "catalog:",
+    "@t3-oss/env-nextjs": "catalog:",
+    "bcryptjs": "catalog:",
     "better-auth": "catalog:",
+    "workflow": "^4.1.0-beta.57",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@celluloid/config": "workspace:*",
+    "@celluloid/typescript-config": "workspace:*",
     "@types/bcryptjs": "^2.4.5",
-    "@types/node": "^18.14.2",
+    "@types/node": "catalog:",
     "typescript": "catalog:"
   }
 }

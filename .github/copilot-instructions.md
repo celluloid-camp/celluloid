@@ -18,7 +18,7 @@ Celluloid is a collaborative video annotation application designed for education
 - **Email**: Nodemailer for transactional emails
 
 ### Build & Dev Tools
-- **Package Manager**: pnpm (required for workspace support)
+- **Package Manager**: Bun (for workspace support and fast installs)
 - **Monorepo**: Turborepo for build orchestration
 - **Linting & Formatting**: Biome (configured in `biome.json`)
 - **Testing**: Playwright for E2E tests
@@ -27,7 +27,7 @@ Celluloid is a collaborative video annotation application designed for education
 
 ## Project Structure
 
-This is a pnpm monorepo with the following structure:
+This is a Bun monorepo with the following structure:
 
 ### Apps (`apps/`)
 - **web**: Main Next.js application (frontend and API)
@@ -48,7 +48,7 @@ This is a pnpm monorepo with the following structure:
 
 ### Code Style
 - Use **Biome** for linting and formatting (not Prettier or ESLint)
-- Run `pnpm lint` to check and auto-fix issues
+- Run `bun run lint` to check and auto-fix issues
 - Indentation: 2 spaces
 - Quotes: Double quotes for JavaScript/TypeScript
 - TypeScript strict mode is enabled
@@ -77,34 +77,34 @@ This is a pnpm monorepo with the following structure:
 
 ### Initial Setup
 ```bash
-pnpm install
+bun install
 cp env.sample .env
 # Edit .env with your configuration
 docker compose up  # Start PostgreSQL, Redis, Minio
-pnpm dev           # Start development servers
+bun run dev        # Start development servers
 ```
 
 ### Common Commands
-- `pnpm dev` - Start all apps in watch mode
-- `pnpm build` - Build all packages and apps
-- `pnpm lint` - Run Biome linter/formatter
-- `pnpm test` - Run Playwright E2E tests
-- `pnpm clean` - Clean build artifacts
-- `pnpm web` - Run commands in web app workspace
-- `pnpm worker` - Run commands in worker app workspace
-- `pnpm prisma` - Run Prisma commands
+- `bun run dev` - Start all apps in watch mode
+- `bun run build` - Build all packages and apps
+- `bun run lint` - Run Biome linter/formatter
+- `bun run test` - Run Playwright E2E tests
+- `bun run clean` - Clean build artifacts
+- `bun run web` - Run commands in web app workspace
+- `bun run db` - Run commands in db workspace
+- `bunx prisma` - Run Prisma commands
 
 ### Working with Workspaces
 To run commands in specific workspaces:
 ```bash
-pnpm --filter web <command>
-pnpm --filter @celluloid/prisma <command>
+bun run --filter web <command>
+bun run --filter @celluloid/db <command>
 ```
 
 ### Database Migrations
 ```bash
-pnpm prisma -- prisma migrate dev
-pnpm prisma -- prisma generate
+bunx prisma migrate dev
+bunx prisma generate
 ```
 
 ## Git Commit Guidelines
@@ -127,8 +127,8 @@ Commits are automatically validated with commitlint via Husky hooks.
 ### E2E Testing with Playwright
 - Test files are in `tests/` directory
 - Configuration in `playwright.config.ts`
-- Run tests: `pnpm test`
-- Generate test code: `pnpm test:codegen`
+- Run tests: `bun run test`
+- Generate test code: `bun run test:codegen`
 
 ### Writing Tests
 - Test user workflows, not implementation details
@@ -146,7 +146,7 @@ Commits are automatically validated with commitlint via Husky hooks.
 - Type-safe from frontend to backend
 
 ### Database Access
-- Use Prisma client from `@celluloid/prisma`
+- Use Prisma client from `@celluloid/db`
 - Follow Prisma best practices
 - Use transactions for related operations
 - Handle errors appropriately
@@ -178,9 +178,9 @@ Use `.env` file for local development (copy from `env.sample`).
 ## Important Notes
 
 ### Dependencies
-- Always use `pnpm` for package management
+- Always use `bun` for package management
 - Add dependencies to the appropriate workspace package
-- Run `pnpm install` at the root to update all workspaces
+- Run `bun install` at the root to update all workspaces
 
 ### Docker
 - Production deployment uses Docker with multi-stage builds

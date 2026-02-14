@@ -1,6 +1,6 @@
 "use client";
 
-import type { AnnotationShape } from "@celluloid/prisma";
+import type { AnnotationShape } from "@celluloid/db";
 import { Box } from "@mui/material";
 import {
   MediaActionTypes,

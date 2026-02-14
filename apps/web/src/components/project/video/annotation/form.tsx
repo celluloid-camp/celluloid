@@ -1,6 +1,6 @@
 "use client";
 
-import { AnnotationShape } from "@celluloid/prisma";
+import { AnnotationShape } from "@celluloid/db";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import CenterFocusStrongOutlinedIcon from "@mui/icons-material/CenterFocusStrongOutlined";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";

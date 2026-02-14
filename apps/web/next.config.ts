@@ -1,29 +1,26 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { withWorkflow } from "workflow/next";
+import "./src/env.ts";
 
 const nextConfig = {
   /* config options here */
   output: "standalone",
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
-  // experimental: {
-  //   reactCompiler: true,
+  // logging: {
+  //   incomingRequests: true,
+  //   fetches: {
+  //     fullUrl: true,
+  //   },
   // },
-  serverExternalPackages: ["pino", "pino-pretty"],
-  transpilePackages: [
-    "@t3-oss/env-nextjs",
-    "better-auth",
-    "@t3-oss/env-core",
-    "@celluloid/trpc",
-    "@celluloid/prisma",
-    "@celluloid/auth",
-    "@celluloid/types",
-    "@celluloid/utils",
-  ],
+  experimental: {
+    // reactCompiler: true,
+    // deferredEntries: false,
+  },
+  serverExternalPackages: [],
+  transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
 } as NextConfig;
 
 const withNextIntl = createNextIntlPlugin({
@@ -31,4 +28,4 @@ const withNextIntl = createNextIntlPlugin({
     createMessagesDeclaration: "./locales/en.json",
   },
 });
-export default withNextIntl(nextConfig);
+export default withWorkflow(withNextIntl(nextConfig));

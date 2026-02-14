@@ -52,19 +52,16 @@ jobs:
           ref: "staging"
           ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -74,7 +71,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Run release-it
-        run: pnpm release
+        run: bun run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -82,13 +79,13 @@ jobs:
         run: |
           git checkout main
           git pull origin main
-          # Use theirs strategy to prefer staging's changes for conflicts (especially pnpm-lock.yaml)
+          # Use theirs strategy to prefer staging's changes for conflicts (especially bun.lock)
           git merge origin/staging -X theirs --no-edit
           # Regenerate lock file to ensure consistency after merge
-          pnpm install --frozen-lockfile || pnpm install
+          bun install --frozen-lockfile || bun install
           # Only commit if lock file changed
-          if ! git diff --quiet pnpm-lock.yaml; then
-            git add pnpm-lock.yaml
+          if ! git diff --quiet bun.lock; then
+            git add bun.lock
             git commit -m "chore: regenerate lock file after merge"
           fi
           git push origin main

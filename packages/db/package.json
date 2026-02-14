@@ -1,0 +1,44 @@
+{
+  "name": "@celluloid/db",
+  "version": "3.5.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "build": "prisma generate --no-hints --schema=./prisma/schema.prisma",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "setup": "bun run db:push && bun run migrate:init && bun run migrate:deploy && bun run generate",
+    "migrate": "bunx prisma migrate",
+    "db": "bunx prisma db",
+    "migrate:init": "bunx prisma migrate resolve --applied 0_init",
+    "migrate:deploy": "bunx prisma migrate deploy",
+    "migrate:dev": "bunx prisma migrate dev",
+    "db:push": "bunx prisma db push",
+    "seed": "bun run seed.ts",
+    "generate": "bunx prisma generate"
+  },
+  "devDependencies": {
+    "@celluloid/typescript-config": "workspace:*",
+    "@faker-js/faker": "^10.3.0",
+    "@types/dotenv": "^8.2.3",
+    "@types/node-fetch": "^2.6.7",
+    "@types/pg": "^8.16.0",
+    "dotenv": "^17.3.1",
+    "dotenv-cli": "catalog:",
+    "prisma": "catalog:",
+    "rimraf": "catalog:",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "catalog:",
+    "@prisma/client": "catalog:",
+    "@prisma/client-runtime-utils": "catalog:",
+    "@t3-oss/env-nextjs": "catalog:",
+    "@types/randomcolor": "^0.5.7",
+    "prisma-json-types-generator": "^4.1.1",
+    "randomcolor": "^0.6.2",
+    "zod": "catalog:"
+  }
+}
