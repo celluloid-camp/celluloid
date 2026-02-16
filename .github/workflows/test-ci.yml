@@ -45,7 +45,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: false
-          env-file: ./apps/web/.env.ci
 
       - name: Install Playwright Browsers
         run: bunx playwright install --with-deps chromium firefox
