@@ -1,7 +1,8 @@
 import logger from "@celluloid/utils/lib/logger";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { ChatMistralAI } from "@langchain/mistralai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { mistralLargeModel } from "../models";
+import { keys } from "../keys";
 import { SYSTEM_PROMPT } from "./prompts";
 
 const USER_PROMPT_TEMPLATE = (
@@ -17,6 +18,7 @@ export const transcribeCaptions = async (
     text: string;
   }[],
 ) => {
+  const env = keys();
   logger.debug("Converting captions to transcript");
 
   // Convert captions to text format
@@ -39,22 +41,6 @@ export const transcribeCaptions = async (
 
   logger.debug(`Split captions into ${chunks.length} chunks`);
 
-  // Timeout helper function
-  const withTimeout = <T>(
-    promise: Promise<T>,
-    timeoutMs: number,
-  ): Promise<T> => {
-    return Promise.race([
-      promise,
-      new Promise<T>((_, reject) =>
-        setTimeout(
-          () => reject(new Error(`Request timeout after ${timeoutMs}ms`)),
-          timeoutMs,
-        ),
-      ),
-    ]);
-  };
-
   // Helper function to process a single chunk with error handling
   const processChunk = async (
     chunk: string,
@@ -76,6 +62,13 @@ export const transcribeCaptions = async (
       //   model.invoke(messages),
       //   60000, // 1 minute timeout per request
       // );
+
+      const mistralLargeModel = new ChatMistralAI({
+        modelName: "mistral-large-latest",
+        apiKey: env.MISTRAL_API_KEY,
+        streaming: false,
+        temperature: 0,
+      });
 
       const response = await mistralLargeModel.invoke(messages);
 
