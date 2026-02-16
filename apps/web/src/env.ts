@@ -10,8 +10,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    BASE_URL: z.string(),
-    REDIS_URL: z.string(),
+    BASE_URL: z.string().default("http://localhost:3000"),
   },
   client: {
     NEXT_PUBLIC_VERSION: z.string().default("0.0.0"),
