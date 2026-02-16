@@ -1,5 +1,3 @@
-import { Prisma } from "./generated/client";
-
 export const defaultUserSelect = {
   id: true,
   username: true,
@@ -10,15 +8,10 @@ export const defaultUserSelect = {
   initial: true,
   color: true,
   avatar: {
-    select: {
+    with: {
       id: true,
-      //@ts-expect-error dynamic
       publicUrl: true,
       path: true,
     },
   },
-} satisfies Prisma.UserSelect;
-
-export type UserPayload = Prisma.UserGetPayload<{
-  select: typeof defaultUserSelect;
-}>;
+};

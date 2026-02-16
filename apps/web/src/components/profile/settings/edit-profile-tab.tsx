@@ -1,11 +1,16 @@
 import { LoadingButton } from "@mui/lab";
 import { Alert, Box, TextField, Typography } from "@mui/material";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
 import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
-import { isTRPCClientError, trpc } from "@/lib/trpc/client";
-
+import { useTRPC } from "@/lib/trpc/client";
 import SettingsTabPanel from "./settings-tab-panel";
 import UploadAvatar from "./upload-avatar";
 
@@ -16,12 +21,13 @@ export default function EditProfileTabForm({
   value: number;
   index: number;
 }) {
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
   const t = useTranslations();
-  const mutation = trpc.user.update.useMutation();
+  const mutation = useMutation(api.user.update.mutationOptions());
   const { enqueueSnackbar } = useSnackbar();
 
-  const [user] = trpc.user.me.useSuspenseQuery();
+  const { data: user } = useSuspenseQuery(api.user.me.queryOptions());
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required(),
@@ -54,13 +60,13 @@ export default function EditProfileTabForm({
           avatarStorageId: values.avatarStorageId,
         });
 
-        utils.user.me.invalidate();
+        queryClient.invalidateQueries(api.user.me.queryFilter());
         enqueueSnackbar(t("profile.update.success"), {
           variant: "success",
           key: "user.update.success",
         });
       } catch (e) {
-        if (isTRPCClientError(e)) {
+        if (e as TRPCClientError) {
           formik.setFieldError(
             "error",
             t("profile.update.username-already-used"),

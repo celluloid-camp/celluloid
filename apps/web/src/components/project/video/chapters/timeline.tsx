@@ -75,7 +75,7 @@ export function ChapterTimeline({
                 overflow: "hidden",
                 cursor: "pointer",
               }}
-              src={chapter.thumbnail?.publicUrl ?? "/placeholder.svg"}
+              src={chapter.thumbnailUrl ?? "/placeholder.svg"}
             />
             <Stack direction="row" spacing={1}>
               <Typography

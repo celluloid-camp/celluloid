@@ -13,12 +13,17 @@ import {
   colors,
   Typography,
 } from "@mui/material";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import type { FallbackProps } from "react-error-boundary";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 import { VisionChart } from "./vision-chart";
 
@@ -29,25 +34,36 @@ interface Props {
 export function ProjectVision({ project, user }: Props) {
   const t = useTranslations();
 
-  const utils = trpc.useUtils();
-  const [data] = trpc.vision.byProjectId.useSuspenseQuery({
-    projectId: project.id,
-  });
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const { data } = useSuspenseQuery(
+    api.vision.byProjectId.queryOptions({
+      projectId: project.id,
+    }),
+  );
 
-  const mutation = trpc.vision.generate.useMutation({
-    onSettled: () => {
-      utils.project.byId.invalidate({ id: project.id });
-    },
-  });
+  const mutation = useMutation(
+    api.vision.generate.mutationOptions({
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+      },
+    }),
+  );
 
-  const manualCheck = trpc.vision.check.useMutation({
-    onSuccess: (data) => {
-      console.log("data", data);
-    },
-    onSettled: () => {
-      utils.project.byId.invalidate({ id: project.id });
-    },
-  });
+  const manualCheck = useMutation(
+    api.vision.check.mutationOptions({
+      onSuccess: (data) => {
+        console.log("data", data);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+      },
+    }),
+  );
 
   if (!data && !user) {
     return null;
@@ -88,7 +104,7 @@ export function ProjectVision({ project, user }: Props) {
         }
       />
       <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
-        {isVisionInProgress ? (
+        {project.analysisProcessingStatus === "in_progress" ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
             <Typography variant="body2">

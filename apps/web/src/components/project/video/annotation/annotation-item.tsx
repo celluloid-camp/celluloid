@@ -22,6 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
@@ -30,7 +31,7 @@ import { useState } from "react";
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type {
   AnnotationByProjectId,
   AnnotationCommentByProjectId,
@@ -62,26 +63,31 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const confirm = useConfirm();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
   const handleEdit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
     setEditedAnnotation(annotation);
   };
 
-  const mutation = trpc.annotation.delete.useMutation({
-    onSuccess: () => {
-      utils.annotation.byProjectId.invalidate({ id: project.id });
-      enqueueSnackbar(t("annotation.delete.success"), {
-        variant: "success",
-      });
-    },
-    onError: () => {
-      enqueueSnackbar(t("annotation.delete.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const mutation = useMutation(
+    api.annotation.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("annotation.delete.success"), {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar(t("annotation.delete.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
   const isContextual =
     annotation.extra &&
@@ -121,14 +127,18 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
       },
     }).then(async (value) => {
       if (value.confirmed) {
-        utils.annotation.byProjectId.setData({ id: project.id }, (oldData) =>
-          oldData?.filter((c) => c.id !== annotation.id),
-        );
+        // queryClient.setQueryData(
+        //   api.annotation.byProjectId.queryFilter({ id: project.id }),
+        //   (oldData: AnnotationByProjectId []) =>
+        //     oldData?.filter((c) => c.id !== annotation.id),
+        // );
 
         await mutation.mutateAsync({
           annotationId: annotation.id,
         });
-        utils.annotation.byProjectId.invalidate({ id: project.id });
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
       }
     });
   };

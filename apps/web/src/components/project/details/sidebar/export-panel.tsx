@@ -3,8 +3,8 @@ import { saveAs } from "file-saver";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById, UserMe } from "@/lib/trpc/types";
+import { trpcClient } from "@/lib/trpc/provider";
+import type { ProjectById } from "@/lib/trpc/types";
 
 interface Props {
   project: ProjectById;
@@ -13,11 +13,10 @@ interface Props {
 export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
   const t = useTranslations();
 
-  const utils = trpc.useUtils();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleExport = async (format: "csv" | "xml" | "srt") => {
-    const data = await utils.client.annotation.export.mutate({
+    const data = await trpcClient.annotation.export.mutate({
       projectId: project.id,
       format,
     });

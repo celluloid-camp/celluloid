@@ -11,19 +11,17 @@ import {
   Divider,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { authClient, signIn } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
+
 export function LoginForm() {
   const t = useTranslations();
   const router = useRouter();
-  const utils = trpc.useUtils();
 
   const loginSchema = z.object({
     username: z.string().min(1, t("signin.usernameRequired")),
@@ -74,7 +72,7 @@ export function LoginForm() {
     if (error?.code === "EMAIL_NOT_VERIFIED") {
       await authClient.emailOtp.sendVerificationOtp({
         email: values.username,
-        type: "sign-in",
+        type: "email-verification",
       });
 
       router.replace(`/otp?email=${values.username}`);

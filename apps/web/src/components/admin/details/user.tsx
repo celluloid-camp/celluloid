@@ -24,7 +24,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { User } from "@prisma/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
@@ -33,12 +33,13 @@ import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useState } from "react";
 import * as Yup from "yup";
 import { BackButton } from "@/components/common/back-button";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { AdminGetUserById } from "@/lib/trpc/types";
 
 export function UserDetails({ data }: { data: AdminGetUserById }) {
   const t = useTranslations();
-
+  const api = useTRPC();
+  const queryClient = useQueryClient();
   const validationSchema = Yup.object().shape({
     username: Yup.string().required(),
     firstName: Yup.string().required(),
@@ -46,22 +47,25 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
   });
   const { enqueueSnackbar } = useSnackbar();
 
-  const mutation = trpc.admin.updateUser.useMutation({
-    onSuccess: () => {
-      enqueueSnackbar(t("profile.update.success"), {
-        variant: "success",
-        key: "profile.update.success",
-      });
-      utils.admin.getUserById.invalidate({ id: data.id });
-    },
-    onError: () => {
-      enqueueSnackbar(t("profile.update.error"), {
-        variant: "error",
-        key: "profile.update.error",
-      });
-    },
-  });
-  const utils = trpc.useUtils();
+  const mutation = useMutation(
+    api.admin.updateUser.mutationOptions({
+      onSuccess: () => {
+        enqueueSnackbar(t("profile.update.success"), {
+          variant: "success",
+          key: "profile.update.success",
+        });
+        queryClient.invalidateQueries(
+          api.admin.getUserById.queryFilter({ id: data.id }),
+        );
+      },
+      onError: () => {
+        enqueueSnackbar(t("profile.update.error"), {
+          variant: "error",
+          key: "profile.update.error",
+        });
+      },
+    }),
+  );
 
   const formik = useFormik({
     initialValues: {
@@ -81,7 +85,9 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
           lastName: values.lastName,
         });
 
-        utils.admin.getUserById.invalidate({ id: data.id });
+        queryClient.invalidateQueries(
+          api.admin.getUserById.queryFilter({ id: data.id }),
+        );
       } catch (error) {
         console.error("Error updating user:", error);
       }
@@ -197,32 +203,37 @@ function UserProjects({ userId }: UserProjectsProps) {
   const t = useTranslations();
   const confirm = useConfirm();
   const [selectedProject, setSelectedProject] = useState<string>("");
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const { data: projects, isLoading } = trpc.admin.projectsByUser.useQuery({
-    userId: userId,
-    limit: rowsPerPage,
-    skip: page * rowsPerPage,
-  });
+  const { data: projects, isLoading } = useQuery(
+    api.admin.projectsByUser.queryOptions({
+      userId: userId,
+      limit: rowsPerPage,
+      skip: page * rowsPerPage,
+    }),
+  );
 
-  const deleteProject = trpc.admin.deleteUserProject.useMutation({
-    onSuccess: () => {
-      enqueueSnackbar(t("admin.project.delete.success"), {
-        variant: "success",
-        key: "admin.project.delete.success",
-      });
-    },
-    onError: () => {
-      enqueueSnackbar(t("admin.project.delete.error"), {
-        variant: "error",
-        key: "admin.project.delete.error",
-      });
-    },
-  });
+  const deleteProject = useMutation(
+    api.admin.deleteUserProject.mutationOptions({
+      onSuccess: () => {
+        enqueueSnackbar(t("admin.project.delete.success"), {
+          variant: "success",
+          key: "admin.project.delete.success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar(t("admin.project.delete.error"), {
+          variant: "error",
+          key: "admin.project.delete.error",
+        });
+      },
+    }),
+  );
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     projectId: string,
@@ -249,7 +260,9 @@ function UserProjects({ userId }: UserProjectsProps) {
       await deleteProject.mutateAsync({
         projectId: selectedProject,
       });
-      utils.admin.projectsByUser.invalidate({ userId: userId });
+      queryClient.invalidateQueries(
+        api.admin.projectsByUser.queryFilter({ userId: userId }),
+      );
     } catch (error) {
       console.error("Error deleting project:", error);
     }

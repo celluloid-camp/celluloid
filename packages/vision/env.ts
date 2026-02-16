@@ -6,5 +6,5 @@ export const env = createEnv({
     VISION_API_URL: z.string().default("https://vision.celluloid.me"),
     VISION_API_KEY: z.string().default("test"),
   },
-  runtimeEnv: process.env,
+  experimental__runtimeEnv: process.env,
 });

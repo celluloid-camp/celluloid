@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "generate": "bunx orval --config ./orval.config.ts || true",
-    "clean": "git clean -xdf .cache .turbo dist node_modules"
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",

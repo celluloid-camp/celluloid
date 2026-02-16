@@ -1,13 +1,12 @@
 import { Box, Container, Grid, Paper, Skeleton } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useFeatureFlagEnabled } from "posthog-js/react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { env } from "@/env";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById } from "@/lib/trpc/types";
-import { projectFallbackRender } from "./error-fallback";
+import { useTRPC } from "@/lib/trpc/client";
 import { ProjectNotes } from "./project-notes";
 import {
   ProjectTranscript,
@@ -50,7 +49,10 @@ const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
 
 export function ProjectDetails({ projectId }: { projectId: string }) {
   const { data: session } = useSession();
-  const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
+  const api = useTRPC();
+  const { data: project } = useSuspenseQuery(
+    api.project.byId.queryOptions({ id: projectId }),
+  );
   return (
     <Box
       sx={{

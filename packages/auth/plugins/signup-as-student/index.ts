@@ -3,6 +3,7 @@ import { APIError } from "better-auth/api";
 import { setSessionCookie } from "better-auth/cookies";
 import { createAuthEndpoint, createAuthMiddleware } from "better-auth/plugins";
 import { z } from "zod";
+import { generateId } from "../../lib/utils";
 
 const ERROR_CODES = {
   INVALID_USERNAME_OR_PASSWORD: "invalid username or password",
@@ -28,14 +29,14 @@ export const signupAsStudent = () => {
           // use: [sessionMiddleware],
           body: z.object({
             username: z.string({
-              description: "The username of the user",
+              message: "The username of the user",
             }),
             password: z.string({
-              description: "The password of the user",
+              message: "The password of the user",
             }),
             rememberMe: z
               .boolean({
-                description: "Remember the user session",
+                message: "Remember the user session",
               })
               .optional(),
           }),
@@ -86,10 +87,9 @@ export const signupAsStudent = () => {
             });
           }
 
-          const id = ctx.context.generateId({ model: "user" });
+          const id = generateId();
           const email = `temp-${id}@celluloid.me`;
           const newUser = await ctx.context.internalAdapter.createUser({
-            id,
             email,
             emailVerified: true,
             name: ctx.body.username,
@@ -116,7 +116,6 @@ export const signupAsStudent = () => {
           });
           const session = await ctx.context.internalAdapter.createSession(
             newUser.id,
-            ctx.request,
           );
 
           if (!session) {

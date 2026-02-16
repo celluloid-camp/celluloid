@@ -1,13 +1,14 @@
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import { Box, Button, ClickAwayListener, Fade, InputBase } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import * as Yup from "yup";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 import { ChapterTimestampSlider } from "./slider";
 
@@ -23,8 +24,9 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const confirm = useConfirm();
   const t = useTranslations();
 
-  const utils = trpc.useUtils();
-  const resetMutation = trpc.chapter.reset.useMutation();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const resetMutation = useMutation(api.chapter.reset.mutationOptions());
 
   const handleOpen = () => {
     setShowForm(true);
@@ -66,9 +68,11 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
         await resetMutation.mutateAsync({
           projectId: props.project.id,
         });
-        utils.chapter.byProjectId.invalidate({
-          projectId: props.project.id,
-        });
+        queryClient.invalidateQueries(
+          api.chapter.byProjectId.queryFilter({
+            projectId: props.project.id,
+          }),
+        );
       }
     });
   };
@@ -113,8 +117,9 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
 export const ChapterFormContent: React.FC<
   ChapterFormProps & { onClose: () => void }
 > = ({ project, onClose }) => {
-  const utils = trpc.useUtils();
-  const createMutation = trpc.chapter.create.useMutation();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const createMutation = useMutation(api.chapter.create.mutationOptions());
 
   const t = useTranslations();
 
@@ -150,7 +155,9 @@ export const ChapterFormContent: React.FC<
         formik.resetForm();
         handleClose();
       }
-      utils.chapter.byProjectId.invalidate({ projectId: project.id });
+      queryClient.invalidateQueries(
+        api.chapter.byProjectId.queryFilter({ projectId: project.id }),
+      );
     },
   });
 

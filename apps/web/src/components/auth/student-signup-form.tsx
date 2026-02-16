@@ -8,13 +8,15 @@ import {
   Divider,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { useMutation } from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
 import { authClient } from "@/lib/auth-client";
-import { isTRPCClientError, trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
 
@@ -23,8 +25,10 @@ export function StudentSignupForm() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
+  const api = useTRPC();
+
   // const utils = trpc.useContext();
-  const mutation = trpc.user.joinProject.useMutation();
+  const mutation = useMutation(api.user.joinProject.mutationOptions());
 
   const validationSchema = Yup.object().shape({
     shareCode: Yup.string().required(t("student-signup.sharecode-required")),
@@ -81,7 +85,7 @@ export function StudentSignupForm() {
         formik.setStatus("submited");
         // utils.user.me.invalidate();
       } catch (e) {
-        if (isTRPCClientError(e)) {
+        if (e instanceof TRPCClientError) {
           // `cause` is now typed as your router's `TRPCClientError`
           if (e.message === "PROJECT_OWNER_CANNOT_JOIN") {
             // `cause` is now typed as your router's `TRPCClientError`

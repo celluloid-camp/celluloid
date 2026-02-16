@@ -16,13 +16,15 @@ import {
   Tooltip,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import * as Yup from "yup";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
+import { trpc } from "@/lib/trpc/server";
 import type { ProjectById, UserMe } from "@/lib/trpc/types";
 import { DurationSlider } from "./duration-slider";
 import { useShapesStore } from "./shapes-store";
@@ -70,9 +72,11 @@ export const AnnotationForm: React.FC<AnnotationFormProps> = (props) => {
 export const AnnotationFormContent: React.FC<
   AnnotationFormProps & { onClose: () => void }
 > = ({ duration, project, onClose }) => {
-  const utils = trpc.useUtils();
-  const addMutation = trpc.annotation.add.useMutation();
-  const editMutation = trpc.annotation.edit.useMutation();
+  const api = useTRPC();
+
+  const queryClient = useQueryClient();
+  const addMutation = useMutation(api.annotation.add.mutationOptions());
+  const editMutation = useMutation(api.annotation.edit.mutationOptions());
 
   const [contextEditorVisible, setContextualEditorVisible] =
     useContextualEditorVisibleState();
@@ -154,7 +158,9 @@ export const AnnotationFormContent: React.FC<
         }
       }
 
-      utils.annotation.byProjectId.invalidate({ id: project.id });
+      queryClient.invalidateQueries(
+        api.annotation.byProjectId.queryFilter({ id: project.id }),
+      );
     },
   });
 

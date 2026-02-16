@@ -7,7 +7,6 @@ import type { DetectionResultsModel } from "./api/models";
 import { env } from "./env";
 
 export * from "./api/models";
-import "./prisma";
 
 export * from "./api/schema.zod";
 

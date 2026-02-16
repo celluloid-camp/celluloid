@@ -9,9 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import CreatePlaylistDialog from "./create-playlist-dialog";
 import PlaylistThumbnail from "./playlist-thumbnail";
 
@@ -19,6 +20,7 @@ const ITEMS_PER_PAGE = 12;
 
 export const UserPlaylistsGrid: React.FC = () => {
   const t = useTranslations();
+  const api = useTRPC();
   const [page, setPage] = useState(1);
   const [pageCursors, setPageCursors] = useState<Map<number, string>>(
     new Map(),
@@ -35,10 +37,12 @@ export const UserPlaylistsGrid: React.FC = () => {
     data: playlistsData,
     error: playlistsError,
     isFetching: playlistsFetching,
-  } = trpc.user.playlists.useQuery({
-    limit: ITEMS_PER_PAGE,
-    cursor,
-  });
+  } = useQuery(
+    api.user.playlists.queryOptions({
+      limit: ITEMS_PER_PAGE,
+      cursor,
+    }),
+  );
 
   // Track next cursor for the next page
   const handlePageChange = (

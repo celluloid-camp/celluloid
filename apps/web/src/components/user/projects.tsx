@@ -1,17 +1,21 @@
 "use client";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import ProjectThumbnail from "@/components/common/project-thumbnail";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { StyledTitle } from "../common/typography";
 
 export function UserPublicProjects({ userId }: { userId: string }) {
   const t = useTranslations();
 
-  const { data, error, isFetching } = trpc.user.publicProjects.useQuery({
-    userId,
-  });
+  const api = useTRPC();
+  const { data, error, isFetching } = useSuspenseQuery(
+    api.user.publicProjects.queryOptions({
+      userId,
+    }),
+  );
 
   return (
     <Box sx={{ padding: 5 }}>

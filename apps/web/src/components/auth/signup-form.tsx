@@ -58,10 +58,10 @@ export function SignupForm() {
     }
 
     if (!data.user.emailVerified) {
-      await authClient.emailOtp.sendVerificationOtp({
-        email: values.email,
-        type: "sign-in",
-      });
+      // await authClient.emailOtp.sendVerificationOtp({
+      //   email: values.email,
+      //   type: "sign-in",
+      // });
       router.replace(`/otp?email=${values.email}`);
     } else {
       router.back();

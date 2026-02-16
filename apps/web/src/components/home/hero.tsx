@@ -1,7 +1,7 @@
 "use client";
 import { Box, Container, Link, Paper, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import NextLink from "next/link";
 import { useTranslations } from "next-intl";
@@ -46,7 +46,7 @@ export function HomePageHero() {
                   </Typography>
                   <Typography variant="subtitle1" gutterBottom={true}>
                     {t.rich("tutoriel.description", {
-                      peertube: (chunks) => (
+                      peertube: (chunks: string) => (
                         <Link
                           href="https://joinpeertube.org/fr_FR"
                           target="_blank"
@@ -66,7 +66,7 @@ export function HomePageHero() {
 
                   <Typography variant="subtitle1" gutterBottom={true}>
                     {t.rich("tutoriel.link", {
-                      tutorial: (chunks) => (
+                      tutorial: (chunks: string) => (
                         <Link
                           href="https://video.mshparisnord.fr/w/7r2FxoQdYjun6tYWJfHUCa"
                           target="_blank"

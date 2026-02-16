@@ -3,10 +3,11 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import ProjectThumbnail from "@/components/common/project-thumbnail";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { StyledTitle } from "../common/typography";
 import PlaylistThumbnail from "./playlist-thumbnail";
 
@@ -19,18 +20,19 @@ function a11yProps(index: number) {
 
 export const UserProjectGrid: React.FC = () => {
   const t = useTranslations();
+  const api = useTRPC();
   const [value, setValue] = useState(0);
 
   const {
     data: projectsData,
     error: projectsError,
     isFetching: projectsFetching,
-  } = trpc.user.projects.useQuery({});
+  } = useQuery(api.user.projects.queryOptions({}));
   const {
     data: playlistsData,
     error: playlistsError,
     isFetching: playlistsFetching,
-  } = trpc.user.playlists.useQuery({});
+  } = useQuery(api.user.playlists.queryOptions({}));
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

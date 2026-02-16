@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
@@ -24,7 +25,7 @@ import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import { TransparentInput } from "@/components/common/transparent-input";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type {
   AnnotationByProjectId,
   AnnotationCommentByProjectId,
@@ -49,35 +50,44 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   const [edition, setEdition] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
-  const editMutation = trpc.comment.edit.useMutation({
-    onSuccess: () => {
-      utils.annotation.byProjectId.invalidate({ id: project.id });
-      enqueueSnackbar(t("comment.update.success"), {
-        variant: "success",
-      });
-    },
-    onError: () => {
-      enqueueSnackbar(t("comment.update.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const editMutation = useMutation(
+    api.comment.edit.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("comment.update.success"), {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar(t("comment.update.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
-  const deleteMutation = trpc.comment.delete.useMutation({
-    onSuccess: () => {
-      utils.annotation.byProjectId.invalidate({ id: project.id });
-      enqueueSnackbar(t("comment.delete.success"), {
-        variant: "success",
-      });
-    },
-    onError: () => {
-      enqueueSnackbar(t("comment.delete.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const deleteMutation = useMutation(
+    api.comment.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("comment.delete.success"), {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar(t("comment.delete.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
   const validationSchema = Yup.object().shape({
     comment: Yup.string()

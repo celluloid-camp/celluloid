@@ -1,11 +1,11 @@
 "use client";
 import { Box, Container, Skeleton, Stack, Typography } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import { Suspense } from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { useLocaleRole } from "@/i18n/roles";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { UserPublicProjects } from "./projects";
 
 function ProfileSkeleton() {
@@ -22,7 +22,10 @@ function ProfileSkeleton() {
 
 function PublicProfileContent({ userId }: { userId: string }) {
   const localeRole = useLocaleRole();
-  const [data] = trpc.user.publicById.useSuspenseQuery({ id: userId });
+  const api = useTRPC();
+  const { data } = useSuspenseQuery(
+    api.user.publicById.queryOptions({ id: userId }),
+  );
 
   if (!data) return null;
   return (
@@ -67,7 +70,8 @@ function PublicProfileContent({ userId }: { userId: string }) {
 }
 
 export function PublicUserProfile({ userId }: { userId: string }) {
-  const { data } = trpc.user.byId.useQuery({ id: userId });
+  const api = useTRPC();
+  const { data } = useSuspenseQuery(api.user.byId.queryOptions({ id: userId }));
 
   if (!data) return null;
 

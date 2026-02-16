@@ -1,5 +1,5 @@
+import { appRouter, createTRPCContext } from "@celluloid/api";
 import { auth } from "@celluloid/auth";
-import { appRouter, createTRPCContext } from "@celluloid/trpc";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { headers } from "next/headers";
 

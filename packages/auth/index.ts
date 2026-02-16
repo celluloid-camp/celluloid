@@ -1,7 +1,7 @@
 import { db } from "@celluloid/db";
 import { handleUserSignup } from "@celluloid/workflows/user-signup";
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, emailOTP, username } from "better-auth/plugins";
 import { start } from "workflow/api";
@@ -13,15 +13,15 @@ export const auth = betterAuth({
   logger: {
     level: process.env.NODE_ENV === "development" ? "debug" : "info",
   },
-  database: prismaAdapter(db, {
-    provider: "postgresql",
+  database: drizzleAdapter(db, {
+    provider: "pg",
   }),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
   },
   user: {
-    modelName: "User",
+    modelName: "user",
     additionalFields: {
       role: {
         type: "string",
@@ -52,8 +52,12 @@ export const auth = betterAuth({
 
       async sendVerificationOTP({ email, otp, type }) {
         console.log("sendVerificationOTP", email, otp, type);
-        // emailQueue.add({ email, type, otp });
-        // const run = await start(handleUserSignup, [email]);
+        if (email.includes("temp-")) {
+          return;
+        }
+        if (type === "email-verification") {
+          await start(handleUserSignup, [email, otp]);
+        }
       },
     }),
     nextCookies(),

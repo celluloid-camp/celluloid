@@ -48,11 +48,13 @@
     "rimraf": "^6.1.2",
     "server-only": "^0.0.1",
     "superjson": "^2.2.6",
-    "trpc-to-openapi": "^2.4.0",
+    "trpc-to-openapi": "^3.1.0",
     "tsup": "^8.3.0",
     "typescript": "^5.9.3",
     "workflow": "4.1.0-beta.57",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "drizzle-orm": "^0.45.1",
+    "drizzle-kit": "^0.31.9"
   },
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
   "engines": {
@@ -84,14 +86,11 @@
   },
   "trustedDependencies": [
     "@parcel/watcher",
-    "@prisma/client",
-    "@prisma/engines",
     "@swc/core",
     "@tailwindcss/oxide",
     "canvas",
     "core-js",
     "esbuild",
-    "prisma",
     "protobufjs",
     "sharp",
     "vue-demi"

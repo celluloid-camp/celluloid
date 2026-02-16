@@ -19,6 +19,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import Image from "mui-image";
 import { useRouter } from "next/navigation";
@@ -32,7 +33,7 @@ import {
   BootstrapDialog,
   StyledDialogTitle,
 } from "@/components/common/styled-dialog";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 
 interface EditPlaylistDialogProps {
   open: boolean;
@@ -49,17 +50,18 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = ({
   const confirm = useConfirm();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
 
   // Fetch playlist with projects
-  const { data: playlistData, isLoading: isLoadingPlaylist } =
-    trpc.playlist.byId.useQuery({ id: playlistId }, { enabled: open });
+  const { data: playlistData, isLoading: isLoadingPlaylist } = useQuery(
+    api.playlist.byId.queryOptions({ id: playlistId }, { enabled: open }),
+  );
 
   // Fetch user's available projects
-  const { data: userProjectsData } = trpc.user.projects.useQuery(
-    {},
-    { enabled: open },
+  const { data: userProjectsData } = useQuery(
+    api.user.projects.queryOptions({}, { enabled: open }),
   );
 
   // Initialize selected projects from playlist
@@ -99,37 +101,43 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = ({
     }
   }, [playlistData, reset]);
 
-  const updateMutation = trpc.playlist.update.useMutation({
-    onSuccess: () => {
-      utils.user.playlists.invalidate();
-      utils.playlist.byId.invalidate({ id: playlistId });
-      enqueueSnackbar(t("playlist.edit.success"), {
-        variant: "success",
-      });
-      onClose();
-    },
-    onError: () => {
-      enqueueSnackbar(t("playlist.edit.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const updateMutation = useMutation(
+    api.playlist.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(api.user.playlists.queryFilter());
+        queryClient.invalidateQueries(
+          api.playlist.byId.queryFilter({ id: playlistId }),
+        );
+        enqueueSnackbar(t("playlist.edit.success"), {
+          variant: "success",
+        });
+        onClose();
+      },
+      onError: () => {
+        enqueueSnackbar(t("playlist.edit.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
-  const deleteMutation = trpc.playlist.delete.useMutation({
-    onSuccess: () => {
-      utils.user.playlists.invalidate();
-      enqueueSnackbar(t("playlist.delete.success"), {
-        variant: "success",
-      });
-      onClose();
-      router.push("/profile/myPlaylists");
-    },
-    onError: () => {
-      enqueueSnackbar(t("playlist.delete.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const deleteMutation = useMutation(
+    api.playlist.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(api.user.playlists.queryFilter());
+        enqueueSnackbar(t("playlist.delete.success"), {
+          variant: "success",
+        });
+        onClose();
+        router.push("/profile/myPlaylists");
+      },
+      onError: () => {
+        enqueueSnackbar(t("playlist.delete.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
   const handleDelete = async () => {
     try {

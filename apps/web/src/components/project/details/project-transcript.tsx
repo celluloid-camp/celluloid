@@ -21,6 +21,11 @@ import {
   ToggleButton,
   Typography,
 } from "@mui/material";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import Placeholder from "@tiptap/extension-placeholder";
 import Strike from "@tiptap/extension-strike";
 import {
@@ -44,7 +49,7 @@ import type { FallbackProps } from "react-error-boundary";
 import { Markdown as TiptapMarkdown } from "tiptap-markdown";
 import { StyledMarkdown } from "@/components/common/markdown";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 import dayjs from "@/utils/dayjs";
 
@@ -60,24 +65,37 @@ export function ProjectTranscript({ project, user }: Props) {
     getContentAsMarkdown: () => string;
   }>(null);
 
-  const utils = trpc.useUtils();
-  const [data] = trpc.transcript.byProjectId.useSuspenseQuery({
-    projectId: project.id,
-  });
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const { data } = useSuspenseQuery(
+    api.transcript.byProjectId.queryOptions({
+      projectId: project.id,
+    }),
+  );
 
-  const generateMutation = trpc.transcript.generate.useMutation({
-    onSettled: () => {
-      utils.project.byId.invalidate({ id: project.id });
-      utils.transcript.byProjectId.invalidate({ projectId: project.id });
-    },
-  });
+  const generateMutation = useMutation(
+    api.transcript.generate.mutationOptions({
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+        queryClient.invalidateQueries(
+          api.transcript.byProjectId.queryFilter({ projectId: project.id }),
+        );
+      },
+    }),
+  );
 
-  const updateMutation = trpc.transcript.update.useMutation({
-    onSuccess: () => {
-      setHasUnsavedChanges(false);
-      utils.transcript.byProjectId.invalidate({ projectId: project.id });
-    },
-  });
+  const updateMutation = useMutation(
+    api.transcript.update.mutationOptions({
+      onSuccess: () => {
+        setHasUnsavedChanges(false);
+        queryClient.invalidateQueries(
+          api.transcript.byProjectId.queryFilter({ projectId: project.id }),
+        );
+      },
+    }),
+  );
 
   if (!data && !user) {
     return null;
@@ -150,7 +168,7 @@ export function ProjectTranscript({ project, user }: Props) {
         }
       />
       <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
-        {isTranscriptInProgress ? (
+        {project.transcriptProcessingStatus === "in_progress" ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
             <Typography variant="body2">

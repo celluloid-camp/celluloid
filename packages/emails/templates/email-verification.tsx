@@ -16,9 +16,10 @@ import * as React from "react";
 
 const baseUrl = process.env.BASE_URL ?? "";
 
-interface EmailVerificationProps {
+export type EmailVerificationProps = {
   username?: string;
   otp: string;
+  email: string;
 }
 
 export const EmailVerification = ({

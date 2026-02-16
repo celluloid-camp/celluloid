@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -22,35 +23,40 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import * as Yup from "yup";
 import { BackButton } from "@/components/common/back-button";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { ProjectAnnotations } from "../project-annotations";
 
 export function ProjectDetails({ projectId }: { projectId: string }) {
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const { data: project, isLoading } = useQuery(
+    api.admin.getProjectById.queryOptions({
+      id: projectId,
+    }),
+  );
 
-  const { data: project, isLoading } = trpc.admin.getProjectById.useQuery({
-    id: projectId,
-  });
-
-  const utils = trpc.useUtils();
-
-  const mutation = trpc.admin.updateProject.useMutation({
-    onSuccess: () => {
-      enqueueSnackbar(t("admin.project.update.success"), {
-        variant: "success",
-        key: "admin.project.update.success",
-      });
-      utils.admin.getProjectById.invalidate({ id: projectId });
-    },
-    onError: (error) => {
-      console.error("Error updating project:", error);
-      enqueueSnackbar(t("admin.project.update.error"), {
-        variant: "error",
-        key: "admin.project.update.error",
-      });
-    },
-  });
+  const mutation = useMutation(
+    api.admin.updateProject.mutationOptions({
+      onSuccess: () => {
+        enqueueSnackbar(t("admin.project.update.success"), {
+          variant: "success",
+          key: "admin.project.update.success",
+        });
+        queryClient.invalidateQueries(
+          api.admin.getProjectById.queryFilter({ id: projectId }),
+        );
+      },
+      onError: (error) => {
+        console.error("Error updating project:", error);
+        enqueueSnackbar(t("admin.project.update.error"), {
+          variant: "error",
+          key: "admin.project.update.error",
+        });
+      },
+    }),
+  );
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required(),

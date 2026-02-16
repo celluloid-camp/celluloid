@@ -13,17 +13,16 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-interface ForgetPasswordEmailProps {
+export type ForgetPasswordEmailProps = {
   username?: string;
-  email: string;
   otp: string;
-}
+  email: string;
+};
 
 const baseUrl = process.env.BASE_URL ? `https://${process.env.BASE_URL}` : "";
 
 export const ForgetPasswordEmail = ({
   username = "",
-  email = "john.doe@example.com",
   otp = "123456",
 }: ForgetPasswordEmailProps) => {
   return (
@@ -48,7 +47,7 @@ export const ForgetPasswordEmail = ({
             <Text className="text-black text-[14px] leading-[24px]">
               Bonjour {username}, <br />
               Nous avons reçu une demande de réinitialisation de mot de passe
-              pour l'adresse email {email}
+              pour le site {baseUrl}.
             </Text>
 
             <Text className="text-black text-[14px] ">

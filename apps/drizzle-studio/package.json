@@ -1,0 +1,11 @@
+{
+  "name": "drizzle-studio",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "bun --env-file ../web/.env -F @celluloid/db studio",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
+  },
+  "devDependencies": {
+    "drizzle-kit": "catalog:"
+  }
+}

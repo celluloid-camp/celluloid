@@ -1,8 +1,9 @@
 "use client";
 import { Box, Button, Paper, Typography } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type React from "react";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { ProjectSummary } from "./details/summary";
 
 export function ShareProject({ projectId }: { projectId: string }) {
@@ -11,9 +12,10 @@ export function ShareProject({ projectId }: { projectId: string }) {
   const href = window.location.host;
   const protocol = window.location.protocol;
 
-  const [project] = trpc.project.byId.useSuspenseQuery({
-    id: projectId,
-  });
+  const api = useTRPC();
+  const { data: project } = useSuspenseQuery(
+    api.project.byId.queryOptions({ id: projectId }),
+  );
   const handleClickPrint = () => window.print();
 
   const steps = [

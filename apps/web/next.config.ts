@@ -19,6 +19,7 @@ const nextConfig = {
     // reactCompiler: true,
     // deferredEntries: false,
   },
+  logLevel: "error",
   serverExternalPackages: [],
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
 } as NextConfig;

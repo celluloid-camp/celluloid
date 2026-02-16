@@ -1,6 +1,7 @@
 "use client";
 import { AnnotationShape } from "@celluloid/db";
 import { Grid } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMeasure } from "@uidotdev/usehooks";
 import {
   MediaActionTypes,
@@ -11,7 +12,7 @@ import {
 import dynamic from "next/dynamic";
 import React, { useEffect, useMemo } from "react";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 import { AnnotationOverlayHints } from "./annotation/overlay-hints";
 import { ShapesEditor } from "./annotation/shapes-editor";
@@ -40,11 +41,13 @@ export function ProjectVideoScreen({ project }: Props) {
   const [ref, { width, height }] = useMeasure();
 
   const { data: session } = useSession();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
 
-  const [annotations] = trpc.annotation.byProjectId.useSuspenseQuery({
-    id: project.id,
-  });
+  const { data: annotations } = useSuspenseQuery(
+    api.annotation.byProjectId.queryOptions({
+      id: project.id,
+    }),
+  );
 
   const { contextualEditorVisible, formVisible, showHints } =
     useAnnotationEditorState();

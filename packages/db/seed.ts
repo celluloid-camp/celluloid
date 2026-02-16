@@ -1,12 +1,11 @@
+import type { UserInsert } from "@celluloid/db";
+import { db, project, user } from "@celluloid/db";
 import { faker } from "@faker-js/faker";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 async function main() {
   console.log("Starting to seed users...");
 
-  const users = [];
+  const usersData: UserInsert[] = [];
 
   for (let i = 0; i < 50; i++) {
     const firstName = faker.person.firstName();
@@ -14,7 +13,7 @@ async function main() {
     const username = faker.internet
       .username({ firstName, lastName })
       .toLowerCase();
-    const user = {
+    usersData.push({
       email: faker.internet.email({ firstName, lastName }).toLowerCase(),
       username,
       emailVerified: true,
@@ -22,29 +21,28 @@ async function main() {
       lastname: lastName,
       bio: faker.person.bio(),
       name: `${firstName} ${lastName}`,
-      createdAt: faker.date.past(),
-      role: "teacher",
-    };
-
-    users.push(user);
+      role: "Teacher",
+    });
   }
 
-  // Insert all users in a single transaction
-  const result = await prisma.$transaction(
-    users.map((user) => prisma.user.create({ data: user })),
-  );
+  const insertedUsers = await db.transaction(async (tx) => {
+    const result = [];
+    for (const userData of usersData) {
+      const [row] = await tx.insert(user).values(userData).returning();
+      if (row) result.push(row);
+    }
+    return result;
+  });
 
-  console.log(`Successfully created ${result.length} users`);
+  console.log(`Successfully created ${insertedUsers.length} users`);
 
-  // Create projects for some users
   console.log("Starting to seed projects...");
 
-  const projects = [];
+  const projectsData: (typeof project.$inferInsert)[] = [];
 
-  // Create 20 projects distributed among the first 10 users
   for (let i = 0; i < 20; i++) {
     const userIndex = i % 10;
-    const userId = result[userIndex]?.id;
+    const userId = insertedUsers[userIndex]?.id;
 
     if (!userId) {
       console.log(
@@ -53,10 +51,9 @@ async function main() {
       continue;
     }
 
-    const title = faker.lorem.words(3);
-    const project = {
+    projectsData.push({
       userId,
-      title,
+      title: faker.lorem.words(3),
       description: faker.lorem.paragraph(),
       videoId: faker.string.alphanumeric(11),
       host: "youtube",
@@ -64,28 +61,22 @@ async function main() {
       public: faker.datatype.boolean(),
       collaborative: faker.datatype.boolean(),
       shared: faker.datatype.boolean(),
-      thumbnailURL: faker.image.url(),
-      shareCode: undefined,
+      thumbnailUrl: faker.image.url(),
       keywords: faker.word.words(5).split(" "),
-      publishedAt: faker.date.anytime(),
-    };
-
-    projects.push(project);
+      publishedAt: faker.date.anytime().toISOString(),
+    });
   }
 
-  // Insert all projects in a single transaction
-  const projectResult = await prisma.$transaction(
-    projects.map((project) => prisma.project.create({ data: project })),
-  );
+  await db.transaction(async (tx) => {
+    for (const projectData of projectsData) {
+      await tx.insert(project).values(projectData);
+    }
+  });
 
-  console.log(`Successfully created ${projectResult.length} projects`);
+  console.log(`Successfully created ${projectsData.length} projects`);
 }
 
-main()
-  .catch((e) => {
-    console.error("Error seeding database:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((e) => {
+  console.error("Error seeding database:", e);
+  process.exit(1);
+});

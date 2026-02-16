@@ -2,6 +2,7 @@
 
 import { LoadingButton } from "@mui/lab";
 import { Box, Grid, Switch, TextField, Typography } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,7 +12,7 @@ import * as Yup from "yup";
 import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
 import { ERR_ALREADY_EXISTING_PROJECT, useHumanizeError } from "@/i18n/errors";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { PeerTubeVideoDataResult } from "@/services/peertube";
 
 export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
@@ -21,8 +22,10 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
   const humanizeError = useHumanizeError();
   const { data: session } = useSession();
 
-  const playlistMutation = trpc.playlist.add.useMutation();
-  const projectMutation = trpc.project.add.useMutation();
+  const api = useTRPC();
+
+  const playlistMutation = useMutation(api.playlist.add.mutationOptions());
+  const projectMutation = useMutation(api.project.add.mutationOptions());
 
   // const [initialValue, setInitialValue] = useProjectInputIntialState();
   // const resetSavedValue = userResetProjectInputIntialState;

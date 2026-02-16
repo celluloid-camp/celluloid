@@ -1,11 +1,13 @@
 import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type React from "react";
 import { useState } from "react";
 import { Avatar } from "@/components/common/avatar";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
+import { trpcClient } from "@/lib/trpc/provider";
 
 const Input = styled("input")({
   display: "none",
@@ -26,7 +28,8 @@ export default function UploadAvatar({
   onChange,
 }: UploadAvatarProps) {
   const [avatar, setAvatar] = useState<string | undefined>(url ?? "");
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
   const handleAvatarChange = async (
@@ -42,7 +45,7 @@ export default function UploadAvatar({
         reader.readAsDataURL(file);
 
         const { uploadUrl, path } =
-          await utils.client.storage.presignedUrl.mutate({
+          await trpcClient.storage.presignedUrl.mutate({
             name: file.name,
           });
 
@@ -50,7 +53,7 @@ export default function UploadAvatar({
           method: "PUT",
           body: file,
         });
-        const { id, publicUrl } = await utils.client.storage.add.mutate({
+        const { id, publicUrl } = await trpcClient.storage.add.mutate({
           path: path,
         });
 
@@ -66,7 +69,7 @@ export default function UploadAvatar({
   const handleDelete = async () => {
     if (storageId) {
       try {
-        await utils.client.storage.delete.mutate({
+        await trpcClient.storage.delete.mutate({
           storageId: storageId,
         });
 

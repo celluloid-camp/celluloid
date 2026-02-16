@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "clean": "git clean -xdf .cache .turbo dist node_modules"
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@react-email/components": "0.0.42",
-    "react-email": "4.0.16",
-    "@types/react": "^19.0.10"
+    "@react-email/components": "1.0.7",
+    "@t3-oss/env-nextjs": "catalog:",
+    "@types/react": "^19.0.10",
+    "resend": "^6.9.2",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",

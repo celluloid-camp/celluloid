@@ -7,6 +7,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import * as React from "react";
@@ -14,7 +15,7 @@ import * as Yup from "yup";
 import { Avatar } from "@/components/common/avatar";
 import { TransparentInput } from "@/components/common/transparent-input";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 
 interface CommentFormProps {
@@ -32,8 +33,9 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 }) => {
   const t = useTranslations();
 
-  const utils = trpc.useUtils();
-  const mutation = trpc.comment.add.useMutation();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const mutation = useMutation(api.comment.add.mutationOptions());
 
   const validationSchema = Yup.object().shape({
     comment: Yup.string()
@@ -63,7 +65,9 @@ export const CommentForm: React.FC<CommentFormProps> = ({
         formik.resetForm();
         onClose();
       }
-      utils.annotation.byProjectId.invalidate({ id: project.id });
+      queryClient.invalidateQueries(
+        api.annotation.byProjectId.queryFilter({ id: project.id }),
+      );
     },
   });
 

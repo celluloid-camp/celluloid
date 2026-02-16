@@ -8,13 +8,14 @@ import {
   Typography,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { isTRPCClientError, trpc } from "@/lib/trpc/client";
-import { StyledDialogTitle } from "../common/styled-dialog";
+import { isTRPCClientError, trpc, useTRPC } from "@/lib/trpc/client";
+import { StyledDialogTitle, useMutation } from "../common/styled-dialog";
 
 export function JoinForm() {
   const t = useTranslations();
@@ -27,33 +28,36 @@ export function JoinForm() {
 
   type JoinFormValues = z.infer<typeof joinFormSchema>;
 
-  const utils = trpc.useUtils();
-  const mutation = trpc.user.joinProject.useMutation({
-    onSuccess: (data) => {
-      enqueueSnackbar(t("join.message.success"), {
-        variant: "success",
-      });
-      router.push(`/project/${data.projectId}`);
-      utils.user.me.invalidate();
-    },
-    onError: (error) => {
-      if (isTRPCClientError(error)) {
-        if (error.message === "PROJECT_OWNER_CANNOT_JOIN") {
-          setError("shareCode", {
-            message: t("join.error.project-owner-cannot-join"),
-          });
-        } else if (error.message === "CODE_NOT_FOUND") {
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    api.user.joinProject.mutationOptions({
+      onSuccess: (data) => {
+        enqueueSnackbar(t("join.message.success"), {
+          variant: "success",
+        });
+        router.push(`/project/${data.projectId}`);
+        queryClient.invalidateQueries(api.user.me.queryFilter());
+      },
+      onError: (error) => {
+        if (isTRPCClientError(error)) {
+          if (error.message === "PROJECT_OWNER_CANNOT_JOIN") {
+            setError("shareCode", {
+              message: t("join.error.project-owner-cannot-join"),
+            });
+          } else if (error.message === "CODE_NOT_FOUND") {
+            setError("shareCode", {
+              message: t("join.error.project-not-found"),
+            });
+          }
+        } else {
           setError("shareCode", {
             message: t("join.error.project-not-found"),
           });
         }
-      } else {
-        setError("shareCode", {
-          message: t("join.error.project-not-found"),
-        });
-      }
-    },
-  });
+      },
+    }),
+  );
 
   const {
     register,

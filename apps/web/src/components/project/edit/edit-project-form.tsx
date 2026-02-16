@@ -12,6 +12,11 @@ import {
   Typography,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
@@ -20,30 +25,35 @@ import { useSnackbar } from "notistack";
 import * as Yup from "yup";
 import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
 import { useHumanizeError } from "@/i18n/errors";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 
 export function EditProjectForm({ projectId }: { projectId: string }) {
   const t = useTranslations();
   const confirm = useConfirm();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const humanizeError = useHumanizeError();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
+  const { data: project } = useSuspenseQuery(
+    api.project.byId.queryOptions({ id: projectId }),
+  );
 
-  const deleteMutation = trpc.project.delete.useMutation({
-    onSuccess: () => {
-      utils.project.list.invalidate();
-      router.push("/");
-    },
-    onError: (e) => {
-      enqueueSnackbar(t("project.delete.error"), {
-        variant: "error",
-        key: "project.delete.error",
-      });
-    },
-  });
+  const deleteMutation = useMutation(
+    api.project.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(api.project.list.queryFilter());
+        router.push("/");
+      },
+      onError: (e) => {
+        enqueueSnackbar(t("project.delete.error"), {
+          variant: "error",
+          key: "project.delete.error",
+        });
+      },
+    }),
+  );
   const handleDelete = () => {
     deleteMutation.mutate({
       projectId: project.id,
@@ -67,21 +77,25 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
     });
   };
 
-  const mutation = trpc.project.update.useMutation({
-    onSuccess: () => {
-      utils.project.byId.invalidate({ id: project.id });
-      enqueueSnackbar(t("project.edit.success"), {
-        variant: "success",
-        key: "project.edit.success",
-      });
-    },
-    onError: (e) => {
-      enqueueSnackbar(t("project.edit.error"), {
-        variant: "error",
-        key: "project.edit.error",
-      });
-    },
-  });
+  const mutation = useMutation(
+    api.project.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("project.edit.success"), {
+          variant: "success",
+          key: "project.edit.success",
+        });
+      },
+      onError: (e) => {
+        enqueueSnackbar(t("project.edit.error"), {
+          variant: "error",
+          key: "project.edit.error",
+        });
+      },
+    }),
+  );
 
   const validationSchema = Yup.object().shape({
     title: Yup.string()

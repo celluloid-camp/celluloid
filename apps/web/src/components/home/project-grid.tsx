@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
@@ -24,7 +25,7 @@ import type * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ProjectThumbnail from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectListItem } from "@/lib/trpc/types";
 import { StyledTitle } from "../common/typography";
 
@@ -38,6 +39,7 @@ const ITEMS_PER_PAGE = 12;
 export function ProjectGrid() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations();
+  const api = useTRPC();
   const [mounted, setMounted] = useState(false);
   const [page, setPage] = useState(1);
   const [pageCursors, setPageCursors] = useState<Map<number, string>>(
@@ -70,11 +72,13 @@ export function ProjectGrid() {
     return pageCursors.get(page) ?? undefined;
   }, [page, pageCursors]);
 
-  const [data, fetch] = trpc.project.list.useSuspenseQuery({
-    term: searchTerm,
-    limit: ITEMS_PER_PAGE,
-    cursor,
-  });
+  const { data, isFetching, error, refetch } = useSuspenseQuery(
+    api.project.list.queryOptions({
+      term: searchTerm,
+      limit: ITEMS_PER_PAGE,
+      cursor,
+    }),
+  );
 
   // Reset pagination when search term changes externally
   useEffect(() => {
@@ -83,8 +87,8 @@ export function ProjectGrid() {
   }, [searchTerm]);
 
   useEffect(() => {
-    if (session && !fetch.isFetching) {
-      fetch.refetch();
+    if (session && !isFetching) {
+      refetch();
     }
   }, [session]);
 
@@ -165,7 +169,7 @@ export function ProjectGrid() {
   const hasNextPage = !!data?.nextCursor;
   const totalPages = hasNextPage ? page + 1 : page;
 
-  if (fetch.error) {
+  if (error) {
     return (
       <Box sx={{ p: 5, minHeight: "100vh" }}>
         <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
@@ -192,7 +196,7 @@ export function ProjectGrid() {
             height: 50,
           }}
         >
-          {fetch.isFetching ? (
+          {isFetching ? (
             <CircularProgress sx={{ p: "10px", ml: 1 }} size={20} />
           ) : (
             <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">

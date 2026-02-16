@@ -2,13 +2,22 @@
 
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { notFound } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { FallbackProps } from "react-error-boundary";
+
+function isNotFoundError(error: unknown): boolean {
+  const code = (error as { data?: { code?: string } })?.data?.code;
+  return code === "NOT_FOUND";
+}
 
 export const projectFallbackRender = ({
   error,
   resetErrorBoundary,
 }: FallbackProps) => {
+  if (isNotFoundError(error)) {
+    notFound();
+  }
   return (
     <Box display="flex" flexDirection="column">
       <Grid

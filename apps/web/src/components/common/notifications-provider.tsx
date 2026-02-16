@@ -12,12 +12,8 @@ export const NotificationsProvider = ({
   children,
   userId,
 }: NotificationsProviderProperties) => {
-  if (!userId) {
-    return children;
-  }
-
   return (
-    <RawNotificationsProvider theme="light" userId={userId}>
+    <RawNotificationsProvider theme="light" userId={userId ?? ""}>
       {children}
     </RawNotificationsProvider>
   );

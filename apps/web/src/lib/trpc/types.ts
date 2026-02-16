@@ -1,4 +1,4 @@
-import type { AppRouter } from "@celluloid/trpc";
+import type { AppRouter } from "@celluloid/api";
 import type { inferRouterOutputs } from "@trpc/server";
 
 type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]

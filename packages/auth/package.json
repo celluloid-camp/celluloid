@@ -6,12 +6,14 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "clean": "git clean -xdf .cache .turbo dist node_modules"
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
     "@celluloid/db": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@celluloid/workflows": "workspace:*",
+    "@paralleldrive/cuid2": "^3.3.0",
     "@prisma/client": "catalog:",
     "@t3-oss/env-nextjs": "catalog:",
     "bcryptjs": "catalog:",

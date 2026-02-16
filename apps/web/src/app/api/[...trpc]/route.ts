@@ -1,5 +1,5 @@
+import { appRouter, createTRPCContext } from "@celluloid/api";
 import { auth } from "@celluloid/auth";
-import { appRouter, createTRPCContext } from "@celluloid/trpc";
 import { headers } from "next/headers";
 import { createOpenApiFetchHandler } from "trpc-to-openapi";
 
@@ -14,10 +14,7 @@ const handler = async (req: Request) => {
   return createOpenApiFetchHandler({
     endpoint: "/api",
     router: appRouter,
-    createContext: () =>
-      createTRPCContext({
-        session,
-      }),
+    createContext: createTRPCContext,
     req,
   });
 };

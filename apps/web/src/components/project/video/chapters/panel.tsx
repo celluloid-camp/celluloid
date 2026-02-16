@@ -1,10 +1,10 @@
 import { Stack } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 import { ChapterForm } from "./form";
 import { ChaptersJobInProgress } from "./in-progress";
@@ -32,7 +32,7 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
   }
   return (
     <ErrorBoundary
-      fallbackRender={({ error }) => <div>Error: {error.message}</div>}
+      fallbackRender={({ error }) => <div>Failed to load chapters</div>}
     >
       <Suspense fallback={<ChapterListSkeleton />}>
         <ChaptersPanelContent project={project} user={user} />
@@ -42,9 +42,12 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
 }
 
 export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
-  const [chapters] = trpc.chapter.byProjectId.useSuspenseQuery({
-    projectId: project.id,
-  });
+  const api = useTRPC();
+  const { data: chapters } = useSuspenseQuery(
+    api.chapter.byProjectId.queryOptions({
+      projectId: project.id,
+    }),
+  );
 
   return (
     <Stack height="100%">

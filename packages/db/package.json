@@ -7,17 +7,15 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "build": "prisma generate --no-hints --schema=./prisma/schema.prisma",
+    "build": "bun generate",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "setup": "bun run db:push && bun run migrate:init && bun run migrate:deploy && bun run generate",
-    "migrate": "bunx prisma migrate",
-    "db": "bunx prisma db",
-    "migrate:init": "bunx prisma migrate resolve --applied 0_init",
-    "migrate:deploy": "bunx prisma migrate deploy",
-    "migrate:dev": "bunx prisma migrate dev",
-    "db:push": "bunx prisma db push",
-    "seed": "bun run seed.ts",
-    "generate": "bunx prisma generate"
+    "push": "drizzle-kit push",
+    "migrate": "bun --env-file ../../apps/web/.env migrate.ts",
+    "studio": "drizzle-kit studio",
+    "generate": "drizzle-kit generate",
+    "drop": "drizzle-kit drop",
+    "seed": "bun run seed.ts"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
@@ -26,18 +24,16 @@
     "@types/node-fetch": "^2.6.7",
     "@types/pg": "^8.16.0",
     "dotenv": "^17.3.1",
-    "dotenv-cli": "catalog:",
-    "prisma": "catalog:",
-    "rimraf": "catalog:",
+    "drizzle-kit": "catalog:",
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "catalog:",
-    "@prisma/client": "catalog:",
-    "@prisma/client-runtime-utils": "catalog:",
+    "@celluloid/vision": "workspace:*",
+    "@celluloid/peertube": "workspace:*",
     "@t3-oss/env-nextjs": "catalog:",
     "@types/randomcolor": "^0.5.7",
-    "prisma-json-types-generator": "^4.1.1",
+    "drizzle-orm": "catalog:",
+    "pg": "^8.18.0",
     "randomcolor": "^0.6.2",
     "zod": "catalog:"
   }

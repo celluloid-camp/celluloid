@@ -10,13 +10,14 @@ import {
   Tooltip,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { useState } from "react";
 import { EditableText } from "@/components/common/editable-text";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 
 interface ChapterItemProps {
@@ -36,19 +37,13 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
   const [hovering, setHovering] = useState(false);
 
   const confirm = useConfirm();
-  const utils = trpc.useUtils();
 
-  const editMutation = trpc.chapter.edit.useMutation({
-    onSuccess: () => {
-      utils.chapter.byProjectId.invalidate({ projectId: project.id });
-    },
-  });
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
-  const deleteMutation = trpc.chapter.delete.useMutation({
-    onSuccess: () => {
-      utils.chapter.byProjectId.invalidate({ projectId: project.id });
-    },
-  });
+  const editMutation = useMutation(api.chapter.edit.mutationOptions());
+
+  const deleteMutation = useMutation(api.chapter.delete.mutationOptions());
 
   const handleEdit = async (field: "title" | "description", value: string) => {
     try {
@@ -59,11 +54,13 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
       });
     } catch (error) {
       // Revert optimistic update on error
-      utils.chapter.byProjectId.invalidate({ projectId: project.id });
+      queryClient.invalidateQueries(
+        api.chapter.byProjectId.queryFilter({ projectId: project.id }),
+      );
     }
   };
 
-  const canEdit = project.user.id === user?.id || user?.role === "admin";
+  const canEdit = project.userId === user?.id || user?.role === "admin";
 
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -95,15 +92,12 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
       },
     }).then(async (value) => {
       if (value.confirmed) {
-        utils.chapter.byProjectId.setData(
-          { projectId: project.id },
-          (oldData) => oldData?.filter((c) => c.id !== chapter.id),
-        );
-
         await deleteMutation.mutateAsync({
           chapterId: chapter.id,
         });
-        utils.chapter.byProjectId.invalidate({ projectId: project.id });
+        queryClient.invalidateQueries(
+          api.chapter.byProjectId.queryFilter({ projectId: project.id }),
+        );
       }
     });
   };
