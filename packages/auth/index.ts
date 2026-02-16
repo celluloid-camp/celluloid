@@ -1,4 +1,5 @@
 import { db } from "@celluloid/db";
+import { generateOtp } from "@celluloid/utils";
 import { handleUserSignup } from "@celluloid/workflows/user-signup";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -6,6 +7,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, emailOTP, username } from "better-auth/plugins";
 import { start } from "workflow/api";
 import { keys } from "./keys";
+import { saveOTPForTesting } from "./lib/testing";
 import { signupAsStudent } from "./plugins/signup-as-student";
 
 export const auth = betterAuth({
@@ -48,6 +50,12 @@ export const auth = betterAuth({
       defaultRole: "teacher",
     }),
     emailOTP({
+      generateOTP: () => {
+        if (process.env.NODE_ENV === "test" || process.env.CI_TEST === "true") {
+          return "123456";
+        }
+        return generateOtp();
+      },
       sendVerificationOnSignUp: true,
 
       async sendVerificationOTP({ email, otp, type }) {
@@ -55,6 +63,7 @@ export const auth = betterAuth({
         if (email.includes("temp-")) {
           return;
         }
+
         if (type === "email-verification") {
           await start(handleUserSignup, [email, otp]);
         }

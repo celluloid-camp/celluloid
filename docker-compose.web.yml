@@ -1,16 +1,22 @@
 services:
   web:
     image: celluloid-web:latest
-    # build:
-    #   context: .
-    #   dockerfile: ./apps/web/Dockerfile
-    #   target: runner
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
     depends_on:
       - postgres
       - redis
       - minio
+
     ports:
       - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     environment:
       DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
       WORKFLOW_TARGET_WORLD: "@workflow/world-postgres"
@@ -22,5 +28,6 @@ services:
       STORAGE_ACCESS_KEY: root
       STORAGE_SECRET_KEY: StrongPass2022
       MISTRAL_API_KEY: xxx
+      CI_TEST: "true"
     networks:
       - local

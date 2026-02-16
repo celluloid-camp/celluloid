@@ -17,24 +17,9 @@ jobs:
   tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-
-    services:
-      redis:
-        image: redis
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: celluloid
-        ports:
-          - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+      options: --user 1001
 
     steps:
       - name: Checkout
@@ -42,33 +27,19 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Cache turbo build setup
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - run: bun install --frozen-lockfile
-
-      - name: Install Playwright Browsers
-        run: bunx playwright install --with-deps chromium firefox
-
-      - name: Build apps
+      - name: Build and start services with Docker Compose
         run: |
-          cp apps/web/.env.ci apps/web/.env
-          bun run build
-
-      - name: Build packages
-        run: bun db migrate
+          docker compose -f docker-compose.yml -f docker-compose.web.yml --build up -d
+          # Wait for web container to be healthy
+          timeout 120 bash -c 'until [ "$(docker compose -f docker-compose.yml -f docker-compose.web.yml ps -q web)" ] && [ "$(docker inspect --format="{{.State.Health.Status}}" $(docker compose -f docker-compose.yml -f docker-compose.web.yml ps -q web))" = "healthy" ]; do echo "Waiting for web container to be healthy..."; sleep 2; done'
 
       - name: Run Playwright tests
-        run: bun run test:e2e
+        run: bunx playwright test
+
+      - name: Stop services
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.web.yml down -v
 
       - uses: actions/upload-artifact@v4
         if: always()

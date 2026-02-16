@@ -24,9 +24,12 @@ test.describe("signup", () => {
 
     await expect(page).toHaveURL(/.*\/otp/);
 
+    // Wait a bit for OTP to be saved, then retrieve it
+    await page.waitForTimeout(500);
+
     await page.getByTestId("code").click();
-    await page.getByTestId("code").fill("0000");
-    await page.getByTestId("submit").click();
+    await page.getByTestId("code").fill("123456");
+    await page.getByTestId("submit-otp").click();
 
     await expect(page).toHaveURL("http://localhost:3000/");
 

@@ -150,7 +150,7 @@ export function OtpForm() {
             size="large"
             color="primary"
             type="submit"
-            data-testid="submit"
+            data-testid="submit-otp"
             loading={formik.isSubmitting}
             disabled={formik.isSubmitting}
           >
