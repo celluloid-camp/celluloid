@@ -10,4 +10,5 @@ export const keys = () =>
       STORAGE_SECRET_KEY: z.string().default("xxx"),
     },
     experimental__runtimeEnv: process.env,
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   });

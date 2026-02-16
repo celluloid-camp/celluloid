@@ -7,4 +7,5 @@ export const env = createEnv({
     VISION_API_KEY: z.string().default("test"),
   },
   experimental__runtimeEnv: process.env,
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });

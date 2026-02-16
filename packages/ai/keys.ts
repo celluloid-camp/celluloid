@@ -7,4 +7,5 @@ export const keys = () =>
       MISTRAL_API_KEY: z.string(),
     },
     experimental__runtimeEnv: process.env,
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   });
