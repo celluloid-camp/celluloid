@@ -9,4 +9,5 @@ export const keys = () =>
     },
     experimental__runtimeEnv: process.env,
     extends: [storageKeys()],
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   });
