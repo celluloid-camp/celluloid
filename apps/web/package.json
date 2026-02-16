@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@celluloid/api": "workspace:*",
+    "@celluloid/ai": "workspace:*",
     "@celluloid/auth": "workspace:*",
     "@celluloid/db": "workspace:*",
     "@celluloid/notifications": "workspace:*",

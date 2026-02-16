@@ -1,3 +1,4 @@
+import { keys as aiKeys } from "@celluloid/ai/keys";
 import { keys as apiKeys } from "@celluloid/api/keys";
 import { keys as authKeys } from "@celluloid/auth/keys";
 import { keys as dbKeys } from "@celluloid/db/keys";
@@ -30,6 +31,7 @@ export const env = createEnv({
   },
   extends: [
     apiKeys(),
+    aiKeys(),
     dbKeys(),
     authKeys(),
     notifications(),
