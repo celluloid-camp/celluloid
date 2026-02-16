@@ -14,4 +14,5 @@ export const keys = () =>
       BASE_URL: z.string(),
     },
     experimental__runtimeEnv: process.env,
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   });
