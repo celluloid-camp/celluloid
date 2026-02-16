@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --bun next dev",
-    "build": "NODE_ENV=production bun --bun next build",
+    "build": "NODE_ENV=production SKIP_ENV_VALIDATION=true bun --bun next build",
     "start": "bun --bun .next/standalone/apps/web/server.js",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "clean": "git clean -xdf .cache .turbo dist node_modules"

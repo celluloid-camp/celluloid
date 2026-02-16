@@ -10,7 +10,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    BASE_URL: z.string().default("http://localhost:3000"),
+    BASE_URL: z.string(),
   },
   client: {
     NEXT_PUBLIC_VERSION: z.string().default("0.0.0"),
@@ -37,4 +37,5 @@ export const env = createEnv({
     storageKeys(),
     emailsKeys(),
   ],
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
