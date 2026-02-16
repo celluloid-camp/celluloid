@@ -8,14 +8,15 @@ import {
   Typography,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { isTRPCClientError, trpc, useTRPC } from "@/lib/trpc/client";
-import { StyledDialogTitle, useMutation } from "../common/styled-dialog";
+import { useTRPC } from "@/lib/trpc/client";
+import { StyledDialogTitle } from "../common/styled-dialog";
 
 export function JoinForm() {
   const t = useTranslations();
@@ -40,7 +41,7 @@ export function JoinForm() {
         queryClient.invalidateQueries(api.user.me.queryFilter());
       },
       onError: (error) => {
-        if (isTRPCClientError(error)) {
+        if (error instanceof TRPCClientError) {
           if (error.message === "PROJECT_OWNER_CANNOT_JOIN") {
             setError("shareCode", {
               message: t("join.error.project-owner-cannot-join"),
