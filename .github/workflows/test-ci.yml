@@ -61,11 +61,11 @@ jobs:
 
       - name: Build apps
         run: |
-          cp .env.ci .env
+          cp apps/web/.env.ci apps/web/.env
           bun run build
 
       - name: Build packages
-        run: bunx prisma migrate deploy
+        run: bun db migrate
 
       - name: Run Playwright tests
         run: bun run test
