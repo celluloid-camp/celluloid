@@ -6,7 +6,7 @@ import { Client } from "pg";
 
 async function waitForPostgres(
   connectionString: string,
-  maxRetries = 30,
+  maxRetries = 10,
   delayMs = 1000,
 ): Promise<Client> {
   for (let i = 0; i < maxRetries; i++) {

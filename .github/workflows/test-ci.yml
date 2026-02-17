@@ -50,20 +50,20 @@ jobs:
         run: bunx playwright install --with-deps chromium firefox
 
       - name: Start services with Docker Compose
-        run: docker compose -f docker-compose.yml -f docker-compose.web.yml up -d
+        run: docker compose -f docker-compose.ci.yml up -d
 
       - name: Show Docker status
         run: |
           docker ps
-          docker compose -f docker-compose.yml -f docker-compose.web.yml ps
-          docker compose -f docker-compose.yml -f docker-compose.web.yml logs web
+          docker compose -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.ci.yml logs web
 
       - name: Install Playwright test dependency
         run: bun install @playwright/test
 
       - name: Wait for web container to be healthy
         run: |
-          MAX_RETRIES=30
+          MAX_RETRIES=10
           SLEEP_SECONDS=5
           COUNT=0
           until curl -fsS http://localhost:3000/api/health; do
@@ -71,9 +71,9 @@ jobs:
             if [ "$COUNT" -ge "$MAX_RETRIES" ]; then
               echo "Web healthcheck failed after ${MAX_RETRIES} attempts."
               echo "---- docker compose ps ----"
-              docker compose -f docker-compose.yml -f docker-compose.web.yml ps || true
+              docker compose -f docker-compose.ci.yml ps || true
               echo "---- web container logs ----"
-              docker compose -f docker-compose.yml -f docker-compose.web.yml logs web || true
+              docker compose -f docker-compose.ci.yml logs web || true
               exit 1
             fi
             echo "Waiting for web (http://localhost:3000/api/health) to be healthy... (attempt ${COUNT}/${MAX_RETRIES})"
@@ -86,7 +86,7 @@ jobs:
       - name: Stop services
         if: always()
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.web.yml down -v
+          docker compose -f docker-compose.ci.yml down -v
 
       - uses: actions/upload-artifact@v4
         if: always()

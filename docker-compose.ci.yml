@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: celluloid
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: "pg_isready -h 127.0.0.1 -U postgres -d celluloid"
+
+  minio:
+    restart: unless-stopped
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY}
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c " mc alias set myminio http://minio:9000 ${STORAGE_ACCESS_KEY} ${STORAGE_SECRET_KEY}; mc mb
+      myminio/${STORAGE_BUCKET}; mc anonymous set public myminio/${STORAGE_BUCKET}; echo '{\"Version\": \"2012-10-17\",
+      \"Statement\": [{\"Effect\": \"Allow\", \"Action\": \"s3:PutObject\", \"Resource\":
+      \"arn:aws:s3:::${STORAGE_BUCKET}/*\"}]}' > /tmp/mypolicy.json; mc admin policy create myminio mypolicy
+      /tmp/mypolicy.json; exit 0; "
+
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  web:
+    image: celluloid-web:latest
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
+      WORKFLOW_TARGET_WORLD: "@workflow/world-postgres"
+      WORKFLOW_POSTGRES_URL: postgres://postgres:root@postgres:5432/celluloid
+      AUTH_SECRET: "0/cB/YzCq87Yp6MmClnzap7vOhDywpQ5Q+yTGCnHnLU="
+      REDIS_URL: redis://redis:6379
+      STORAGE_URL: http://minio:9000
+      STORAGE_BUCKET: celluloid
+      STORAGE_ACCESS_KEY: root
+      STORAGE_SECRET_KEY: StrongPass2022
+      MISTRAL_API_KEY: xxx
+      CI_TEST: "true"
