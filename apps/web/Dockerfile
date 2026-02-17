@@ -17,7 +17,7 @@ COPY --parents packages/*/package.json apps/web/package.json ./
 
 # Install dependencies with Bun
 RUN --mount=type=cache,target=/root/.bun \
-    bun install
+    bun install --ignore-scripts
 
 # Build stage
 FROM deps AS builder
