@@ -85,7 +85,6 @@
     "superjson": "catalog:",
     "tippy.js": "^6.3.7",
     "tiptap-markdown": "^0.8.10",
-    "trpc-to-openapi": "catalog:",
     "workflow": "catalog:",
     "xml2js": "^0.6.2",
     "yup": "^1.7.1",

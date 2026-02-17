@@ -21,7 +21,6 @@
     "release-it": "^19.0.5",
     "rimraf": "^6.0.1",
     "start-server-and-test": "^2.0.1",
-    "tsup": "^8.3.0",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3",
     "wait-port": "^1.1.0"
@@ -48,7 +47,6 @@
     "rimraf": "^6.1.2",
     "server-only": "^0.0.1",
     "superjson": "^2.2.6",
-    "trpc-to-openapi": "^3.1.0",
     "tsup": "^8.3.0",
     "typescript": "^5.9.3",
     "workflow": "4.1.0-beta.57",
@@ -70,7 +68,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "clean:all": "turbo run clean && git clean -xdf .cache .turbo dist node_modules ",
-    "build": "turbo run build --no-cache",
+    "build": "turbo run build",
     "lint": "biome check --fix",
     "prepare": "husky",
     "test": "turbo run test",

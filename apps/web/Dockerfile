@@ -10,7 +10,7 @@ RUN apk add --no-cache libc6-compat python3 make g++ pkgconfig nodejs npm \
 WORKDIR /app
 
 # Copy workspace configuration
-COPY package.json bun.lock* ./
+COPY package.json bun.lock* turbo.json ./
 
 # Copy all workspace package.json files preserving directory structure
 COPY --parents packages/*/package.json apps/web/package.json ./
@@ -25,8 +25,6 @@ FROM deps AS builder
 COPY packages ./packages
 COPY apps/web ./apps/web
 
-RUN cd packages/db && bun run build
-
 ARG VERSION=latest
 ARG COMMIT_SHA
 ARG BUILD_TIME
@@ -38,10 +36,7 @@ ENV NEXT_PUBLIC_STAGE=${NEXT_PUBLIC_STAGE}
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build Next.js with Bun
-WORKDIR /app/apps/web
-RUN --mount=type=cache,target=/app/apps/web/.next/cache \
-    bun run build
+RUN bun run build
 
 # Production runtime stage
 FROM oven/bun:1.3.8-alpine AS runner
@@ -53,32 +48,20 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV HOSTNAME=0.0.0.0
-ENV PORT=3000
-
-LABEL org.opencontainers.image.source="https://github.com/celluloid-edu/celluloid"
-
 # Copy standalone build
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-COPY --from=builder --chown=nextjs:nodejs /app/packages/db ./packages/db
 
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/packages/db/dist/migrate ./migrate
+COPY --chown=nextjs:nodejs /packages/db/migrations ./migrations
+
+RUN bun install @workflow/world-postgres
 
 # Copy and set up startup script
 COPY --chown=nextjs:nodejs apps/web/start.sh /app/start.sh
-RUN chmod +x /app/start.sh
 
 USER nextjs
 
-EXPOSE 3000
-
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://127.0.0.1:3000/api/health || exit 1
-
-WORKDIR /app/apps/web
-
 CMD ["/app/start.sh"]
+# CMD ["sleep", "infinity"]

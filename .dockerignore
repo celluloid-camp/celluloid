@@ -28,7 +28,6 @@ docker-bake.hcl
 # Environment / secrets
 .env
 .env.*
-!.env.example
 
 # OS files
 **/.DS_Store

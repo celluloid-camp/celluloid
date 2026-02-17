@@ -24,7 +24,6 @@
     "lodash": "catalog:",
     "papaparse": "^5.4.1",
     "superjson": "catalog:",
-    "trpc-to-openapi": "catalog:",
     "uuid": "^9.0.1",
     "workflow": "^4.1.0-beta.57",
     "ws": "^8.18.0",

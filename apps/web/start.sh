@@ -11,16 +11,15 @@ echo "------------------------------------------"
 cd /app
 
 # Run migrations - output will be visible in container logs
-bun packages/db/migrate.ts 2>&1
-MIGRATION_EXIT_CODE=$?
-
-if [ $MIGRATION_EXIT_CODE -eq 0 ]; then
+# Run the compiled migrate binary file (compiled with bun build --compile)
+if /app/migrate 2>&1; then
   echo ""
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] ✓ Migrations completed successfully"
 else
+  EXIT_CODE=$?
   echo ""
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] ✗ Migration failed with exit code: $MIGRATION_EXIT_CODE"
-  exit $MIGRATION_EXIT_CODE
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] ✗ Migration failed with exit code: ${EXIT_CODE}"
+  exit "${EXIT_CODE}"
 fi
 
 # Start the Next.js server
@@ -29,4 +28,4 @@ echo "[$(date +'%Y-%m-%d %H:%M:%S')] Starting Next.js server..."
 echo "------------------------------------------"
 cd /app/apps/web
 
-exec bun --bun server.js
+bun --bun server.js

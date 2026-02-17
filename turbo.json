@@ -14,7 +14,7 @@
       "outputs": [
         ".next/**",
         "!.next/cache/**",
-        "**/generated/**",
+        "migrate",
         "storybook-static/**",
         ".react-email/**"
       ]

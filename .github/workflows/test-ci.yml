@@ -52,6 +52,9 @@ jobs:
       - name: Start services with Docker Compose
         run: docker compose -f docker-compose.yml -f docker-compose.web.yml up -d
 
+      - name: Wait for web container to be healthy
+        run: bun install @playwright/test
+
       - name: Run Playwright tests
         run: bunx playwright test
 

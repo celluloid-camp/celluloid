@@ -3,7 +3,6 @@ import { db } from "@celluloid/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import superjson from "superjson";
-import type { OpenApiMeta } from "trpc-to-openapi";
 import { ZodError } from "zod";
 import { keys } from "./keys";
 
@@ -34,20 +33,16 @@ export async function createTRPCContext(opts: FetchCreateContextFnOptions) {
 
 export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 
-const t = initTRPC
-  .context<Context>()
-  .meta<OpenApiMeta>()
-  .create({
-    transformer: superjson,
-    errorFormatter: ({ shape, error }) => ({
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    }),
-  });
+const t = initTRPC.context<Context>().create({
+  transformer: superjson,
+  errorFormatter: ({ shape, error }) => ({
+    ...shape,
+    data: {
+      ...shape.data,
+      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+    },
+  }),
+});
 
 const isAuthed = t.middleware(({ ctx, next }) => {
   if (ctx.user === undefined || ctx.user.id === undefined) {
