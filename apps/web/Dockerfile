@@ -61,7 +61,13 @@ RUN bun install @workflow/world-postgres
 # Copy and set up startup script
 COPY --chown=nextjs:nodejs apps/web/start.sh /app/start.sh
 
+
 USER nextjs
+
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
 
 CMD ["/app/start.sh"]
 # CMD ["sleep", "infinity"]

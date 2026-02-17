@@ -52,8 +52,17 @@ jobs:
       - name: Start services with Docker Compose
         run: docker compose -f docker-compose.yml -f docker-compose.web.yml up -d
 
-      - name: Wait for web container to be healthy
+      - name: Install Playwright test dependency
         run: bun install @playwright/test
+
+      - name: Wait for web container to be healthy
+        run: |
+          timeout 180s bash -c '
+            until curl -fsS http://localhost:3000/api/health; do
+              echo "Waiting for web (http://localhost:3000/api/health) to be healthy..."
+              sleep 5
+            done
+          '
 
       - name: Run Playwright tests
         run: bunx playwright test
