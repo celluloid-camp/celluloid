@@ -1,16 +1,11 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalDependencies": [
-    "**/.env.*local"
-  ],
+  "globalDependencies": ["**/.env.*local"],
   "ui": "tui",
   "envMode": "loose",
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build",
-        "test"
-      ],
+      "dependsOn": ["^build", "test"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -20,23 +15,17 @@
       ]
     },
     "test": {
-      "dependsOn": [
-        "^test"
-      ]
+      "dependsOn": ["^test"]
     },
     "analyze": {
-      "dependsOn": [
-        "^analyze"
-      ]
+      "dependsOn": ["^analyze"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "translate": {
-      "dependsOn": [
-        "^translate"
-      ],
+      "dependsOn": ["^translate"],
       "cache": false
     },
     "clean": {

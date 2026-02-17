@@ -6,7 +6,9 @@ import { z } from "zod";
 import { keys } from "../keys";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
-function getSpritePublicUrl(storage: { id: string; path: string; bucket: string } | null) {
+function getSpritePublicUrl(
+  storage: { id: string; path: string; bucket: string } | null,
+) {
   if (!storage) return null;
   const baseUrl = keys().STORAGE_URL?.replace(/\/$/, "") ?? "";
   return `${baseUrl}/${storage.bucket}/${storage.path}`;
@@ -90,7 +92,9 @@ export const visionRouter = router({
     .mutation(async ({ input }) => {
       const [updated] = await db
         .update(videoAnalysis)
-        .set({ processing: input.analysis as unknown as Record<string, unknown> })
+        .set({
+          processing: input.analysis as unknown as Record<string, unknown>,
+        })
         .where(eq(videoAnalysis.projectId, input.projectId))
         .returning();
 

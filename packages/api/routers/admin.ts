@@ -234,7 +234,10 @@ export const adminRouter = router({
         .where(eq(project.id, input.projectId))
         .limit(1);
       if (!proj) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
       }
 
       let shareCode = proj.shareCode;
@@ -290,7 +293,9 @@ export const adminRouter = router({
           message: "Project not found",
         });
       }
-      await db.delete(projectNote).where(eq(projectNote.projectId, input.projectId));
+      await db
+        .delete(projectNote)
+        .where(eq(projectNote.projectId, input.projectId));
       await db.delete(project).where(eq(project.id, input.projectId));
       return proj;
     }),
@@ -365,7 +370,9 @@ export const adminRouter = router({
           message: "Project not found or doesn't belong to specified user",
         });
       }
-      await db.delete(projectNote).where(eq(projectNote.projectId, input.projectId));
+      await db
+        .delete(projectNote)
+        .where(eq(projectNote.projectId, input.projectId));
       await db.delete(project).where(eq(project.id, input.projectId));
       return proj;
     }),

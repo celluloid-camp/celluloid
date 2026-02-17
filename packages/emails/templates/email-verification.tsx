@@ -20,7 +20,7 @@ export type EmailVerificationProps = {
   username?: string;
   otp: string;
   email: string;
-}
+};
 
 export const EmailVerification = ({
   username = "",

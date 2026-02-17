@@ -12,12 +12,8 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@celluloid/*": [
-        "../../packages/*"
-      ]
+      "@/*": ["./src/*"],
+      "@celluloid/*": ["../../packages/*"]
     }
   },
   "include": [

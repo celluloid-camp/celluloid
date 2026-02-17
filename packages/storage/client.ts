@@ -34,12 +34,18 @@ export async function uploadImageFile(s3Path: string, localFilePath: string) {
   return s3Path;
 }
 
-
-export async function generatePresignedUrl(s3Path: string, expiresIn: number = 24 * 60 * 60) {
+export async function generatePresignedUrl(
+  s3Path: string,
+  expiresIn: number = 24 * 60 * 60,
+) {
   const env = keys();
   const minioClient = getMinioClient();
   await ensureBucketExists(minioClient, env.STORAGE_BUCKET);
-  return await minioClient.presignedGetObject(env.STORAGE_BUCKET, s3Path, expiresIn);
+  return await minioClient.presignedGetObject(
+    env.STORAGE_BUCKET,
+    s3Path,
+    expiresIn,
+  );
 }
 
 export async function deleteFile(s3Path: string) {

@@ -32,11 +32,8 @@
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
     "@types/express": "^5.0.0",
-    "@types/mjml": "^4.7.3",
-    "@types/nodemailer": "^6.4.13",
     "@types/papaparse": "^5.3.10",
     "@types/uuid": "^9.0.4",
-    "tsup": "catalog:",
     "typescript": "catalog:"
   }
 }
