@@ -46,6 +46,9 @@ services:
 
   web:
     image: celluloid-web:latest
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
     depends_on:
       - postgres
       - redis
