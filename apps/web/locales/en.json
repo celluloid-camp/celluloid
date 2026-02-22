@@ -285,7 +285,9 @@
           "title": "Title",
           "description": "Chapter description"
         }
-      }
+      },
+      "failed": "Scenes processing failed",
+      "retry": "Retry generation"
     },
     "note": {
       "title": "Notes",
@@ -362,10 +364,18 @@
         "reset": "Reset Chapters"
       },
       "title": {
-        "placeholder": "Chapter title"
+        "placeholder": "Chapter title",
+        "label": "Title"
       },
       "description": {
-        "placeholder": "Chapter description"
+        "placeholder": "Chapter description",
+        "label": "Description"
+      },
+      "timeRange": {
+        "label": "Time range"
+      },
+      "edit": {
+        "title": "Edit Scene"
       }
     }
   },
@@ -714,7 +724,8 @@
     "password-min-length": "Password must be at least 8 characters",
     "table": {
       "rowsPerPage": "Rows per page"
-    }
+    },
+    "save": "Save"
   },
   "profil": {
     "update": {

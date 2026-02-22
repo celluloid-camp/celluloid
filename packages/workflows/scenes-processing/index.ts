@@ -31,11 +31,10 @@ export async function processScenesWorkflow(projectId: string) {
       const updatedScenes = await uploadThumbnails(projectId, scenes);
       await updateProjectScenes(projectId, updatedScenes);
     }
+    await updateProjectStatus(projectId, "completed");
   } catch (error) {
     await updateProjectStatus(projectId, "failed");
     throw error;
-  } finally {
-    await updateProjectStatus(projectId, "completed");
   }
 }
 

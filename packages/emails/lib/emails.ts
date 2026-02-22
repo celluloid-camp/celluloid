@@ -6,6 +6,8 @@ import {
   EmailVerificationProps,
   ForgetPasswordEmail,
   ForgetPasswordEmailProps,
+  ProjectAnalysisEmail,
+  ProjectAnalysisEmailProps,
 } from "../templates";
 
 export function getResendClient() {
@@ -97,6 +99,37 @@ export async function sendEmailVerificationEmail(
     html,
     text,
     subject: "Vérification de votre email Celluloid",
+    email,
+  });
+}
+
+export async function sendProjectAnalysisCompletedEmail(
+  params: ProjectAnalysisEmailProps,
+) {
+  const { projectId, projectTitle, email } = params;
+
+  // Render React Email component to HTML
+  const html = await render(
+    ProjectAnalysisEmail({
+      projectId,
+      projectTitle,
+      email,
+    }),
+  );
+
+  const text = await render(
+    ProjectAnalysisEmail({
+      projectId,
+      projectTitle,
+      email,
+    }),
+    { plainText: true },
+  );
+
+  return await sendEmail({
+    html,
+    text,
+    subject: `Analyse terminée pour le projet ${projectTitle}`,
     email,
   });
 }

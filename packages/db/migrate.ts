@@ -40,7 +40,8 @@ async function waitForPostgres(
     const client = await waitForPostgres(process.env.DATABASE_URL || "");
     console.log("Database connected successfully");
 
-    const migrationsFolder = resolve("/app/", "migrations");
+    const currentDir = dirname(fileURLToPath(import.meta.url));
+    const migrationsFolder = resolve(currentDir, "migrations");
     console.log(`Running migrations from: ${migrationsFolder}`);
 
     const db = drizzle(client);

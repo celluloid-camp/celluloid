@@ -149,6 +149,8 @@ export const chapterRouter = router({
         chapterId: z.string(),
         title: z.string().optional(),
         description: z.string().optional(),
+        startTime: z.number().optional(),
+        endTime: z.number().optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -180,6 +182,8 @@ export const chapterRouter = router({
           .set({
             title: input.title ?? record.title,
             description: input.description ?? record.description,
+            startTime: input.startTime ?? record.startTime,
+            endTime: input.endTime ?? record.endTime,
             updatedAt: sql`CURRENT_TIMESTAMP`,
             lastEditedById: ctx.user.id,
           })

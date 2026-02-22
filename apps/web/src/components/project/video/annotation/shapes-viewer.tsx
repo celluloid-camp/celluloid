@@ -9,6 +9,7 @@ import {
 } from "media-chrome/react/media-store";
 import React, { useMemo, useRef, useState } from "react";
 import { Circle, Ellipse, Layer, Line, Rect, Stage } from "react-konva";
+import { AnnotationsByProjectId } from "@/lib/trpc/types";
 import { ShapeTooltip } from "./shape-tooltip";
 import { DEFAULT_DIMENSIONS, SHAPE_STYLES, SHAPE_TYPES } from "./shapes-config";
 

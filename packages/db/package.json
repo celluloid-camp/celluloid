@@ -30,7 +30,6 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@celluloid/vision": "workspace:*",
     "@celluloid/peertube": "workspace:*",
     "@t3-oss/env-nextjs": "catalog:",
     "drizzle-orm": "catalog:",

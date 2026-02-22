@@ -33,12 +33,10 @@ export async function videoTranscriptWorkflow(projectId: string) {
   } catch (error) {
     await updateProjectStatus(projectId, "failed");
     throw error;
-  } finally {
-    await updateProjectStatus(projectId, "completed");
   }
 }
 
-export async function updateProjectStatus(
+async function updateProjectStatus(
   projectId: string,
   status: "completed" | "failed" | "in_progress",
 ) {

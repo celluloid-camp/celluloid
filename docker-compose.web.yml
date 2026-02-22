@@ -28,5 +28,3 @@ services:
       STORAGE_SECRET_KEY: StrongPass2022
       MISTRAL_API_KEY: xxx
       CI_TEST: "true"
-    networks:
-      - local

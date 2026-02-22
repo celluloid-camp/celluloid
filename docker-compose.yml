@@ -1,12 +1,3 @@
-networks:
-  local:
-    driver: bridge
-
-volumes:
-  postgres:
-  redis:
-  minio_data:
-
 services:
   postgres:
     image: postgres:13
@@ -15,15 +6,13 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: celluloid
     volumes:
-      - ./.data:/var/lib/postgresql/data
+      - ./.data/postgres:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
       test: "pg_isready -h 127.0.0.1 -U postgres -d celluloid"
-    networks:
-      - local
 
   minio:
     restart: unless-stopped
@@ -32,31 +21,27 @@ services:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - minio_data:/data
+      - ./.data/minio:/data
     environment:
-      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY}
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: StrongPass2022
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - local
 
   createbuckets:
     image: minio/mc
     depends_on:
       - minio
     entrypoint: >
-      /bin/sh -c " mc alias set myminio http://minio:9000 ${STORAGE_ACCESS_KEY} ${STORAGE_SECRET_KEY}; mc mb
-      myminio/${STORAGE_BUCKET}; mc anonymous set public myminio/${STORAGE_BUCKET}; echo '{\"Version\": \"2012-10-17\",
+      /bin/sh -c " mc alias set myminio http://minio:9000 root StrongPass2022; mc mb
+      myminio/celluloid; mc anonymous set public myminio/celluloid; echo '{\"Version\": \"2012-10-17\",
       \"Statement\": [{\"Effect\": \"Allow\", \"Action\": \"s3:PutObject\", \"Resource\":
-      \"arn:aws:s3:::${STORAGE_BUCKET}/*\"}]}' > /tmp/mypolicy.json; mc admin policy create myminio mypolicy
+      \"arn:aws:s3:::celluloid/*\"}]}' > /tmp/mypolicy.json; mc admin policy create myminio mypolicy
       /tmp/mypolicy.json; exit 0; "
-    networks:
-      - local
 
   redis:
     image: redis:6-alpine
@@ -65,5 +50,12 @@ services:
       - "6379:6379"
     volumes:
       - ./.data/redis:/data
-    networks:
-      - local
+
+  databasus:
+    container_name: databasus
+    image: databasus/databasus:latest
+    ports:
+      - "4005:4005"
+    volumes:
+      - ./.data/databasus-data:/databasus-data
+    restart: unless-stopped

@@ -1,19 +1,20 @@
 import CancelIcon from "@mui/icons-material/Clear";
 import { Box, Fade, IconButton, Paper, Stack, Typography } from "@mui/material";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+} from "media-chrome/react/media-store";
 import { useTranslations } from "next-intl";
 import React from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-
 import { HtmlTooltip } from "./html-tooltip";
 import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 
 interface AnnotationHintsProps {
   project: ProjectById;
   annotations: AnnotationByProjectId[];
-  onClick: (annotation: AnnotationByProjectId) => void;
 }
 
 type AnnotationHintsItemProps = {
@@ -47,7 +48,7 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
                   borderColor: annotation.user.color,
                   borderStyle: "solid",
                 }}
-                src={annotation.user.avatar?.publicUrl}
+                src={annotation.user.image ?? undefined}
               >
                 {annotation.user.initial}
               </Avatar>
@@ -90,7 +91,7 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
         border: `2px solid ${annotation.user.color}`,
       }}
       style={{
-        backgroundColor: annotation.user.color,
+        backgroundColor: annotation.user.color ?? undefined,
       }}
       onClick={onClick}
     />
@@ -100,9 +101,9 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
 export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
   project,
   annotations,
-  onClick,
 }) => {
   const t = useTranslations();
+  const dispatch = useMediaDispatch();
 
   const [_, setHintsVisible] = useAnnotationHintsVisible();
 
@@ -120,7 +121,11 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
   };
 
   const handleClick = (annotation: AnnotationByProjectId) => {
-    onClick(annotation);
+    dispatch({
+      type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+      detail: annotation.startTime,
+    });
+
     setHintsVisible(false);
   };
 

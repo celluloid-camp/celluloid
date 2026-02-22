@@ -1,8 +1,10 @@
 import { Button, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { saveAs } from "file-saver";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
+import { useTRPC } from "@/lib/trpc/client";
 import { trpcClient } from "@/lib/trpc/provider";
 import type { ProjectById } from "@/lib/trpc/types";
 
@@ -13,7 +15,13 @@ interface Props {
 export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
   const t = useTranslations();
 
+  const api = useTRPC();
   const { enqueueSnackbar } = useSnackbar();
+  const { data: annotations } = useQuery(
+    api.annotation.byProjectId.queryOptions({
+      id: project.id,
+    }),
+  );
 
   const handleExport = async (format: "csv" | "xml" | "srt") => {
     const data = await trpcClient.annotation.export.mutate({
@@ -32,7 +40,7 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
     });
   };
 
-  if (project._count.annotations === 0) {
+  if (annotations?.length === 0) {
     return null;
   }
 

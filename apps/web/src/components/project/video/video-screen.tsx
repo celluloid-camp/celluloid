@@ -1,7 +1,7 @@
 "use client";
 import { AnnotationShape } from "@celluloid/db";
-import { Grid } from "@mui/material";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useMeasure } from "@uidotdev/usehooks";
 import {
   MediaActionTypes,
@@ -10,10 +10,11 @@ import {
   useMediaSelector,
 } from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo } from "react";
+import React, { Suspense, useEffect, useMemo } from "react";
 import { useSession } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
+import { useAnnotations } from "@/stores/annotations";
 import { AnnotationOverlayHints } from "./annotation/overlay-hints";
 import { ShapesEditor } from "./annotation/shapes-editor";
 import {
@@ -41,12 +42,9 @@ export function ProjectVideoScreen({ project }: Props) {
   const [ref, { width, height }] = useMeasure();
 
   const { data: session } = useSession();
-  const api = useTRPC();
 
-  const { data: annotations } = useSuspenseQuery(
-    api.annotation.byProjectId.queryOptions({
-      id: project.id,
-    }),
+  const { visibleAnnotations, shapeAnnotations, annotations } = useAnnotations(
+    project.id,
   );
 
   const { contextualEditorVisible, formVisible, showHints } =
@@ -63,47 +61,6 @@ export function ProjectVideoScreen({ project }: Props) {
   //     utils.annotation.byProjectId.invalidate();
   //   },
   // });
-
-  const visibleAnnotations = useMemo(
-    () =>
-      mediaCurrentTime && annotations
-        ? annotations.filter(
-            (annotation) =>
-              mediaCurrentTime >= annotation.startTime &&
-              mediaCurrentTime <= annotation.stopTime,
-          )
-        : [],
-    [annotations, mediaCurrentTime],
-  );
-
-  const shapeAnnotations = useMemo<AnnotationShapeWithMetadata[]>(
-    () =>
-      visibleAnnotations
-        .filter(
-          (annotation) =>
-            annotation.extra !== null && annotation.extra !== undefined,
-        )
-        .map((annotation) => {
-          const extra = annotation.extra as AnnotationShape;
-          return {
-            ...annotation.extra,
-            id: extra.id ?? annotation.id,
-            type: extra.type ?? "point",
-            x: extra.relativeX ?? extra.x,
-            y: extra.relativeY ?? extra.y,
-            pause: annotation.pause,
-            startTime: annotation.startTime,
-            metadata: {
-              color: annotation.user.color,
-              initial: annotation.user.initial,
-              username: annotation.user.username,
-              avatar: annotation.user.avatar?.publicUrl,
-              text: annotation.text,
-            },
-          };
-        }),
-    [visibleAnnotations],
-  );
 
   useEffect(() => {
     if (!mediaCurrentTime) return;
@@ -127,13 +84,6 @@ export function ProjectVideoScreen({ project }: Props) {
       dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
   }, [formVisible]);
-
-  const handleAnnotionHintClick = (annotation: AnnotationByProjectId) => {
-    dispatch({
-      type: MediaActionTypes.MEDIA_SEEK_REQUEST,
-      detail: annotation.startTime,
-    });
-  };
 
   return (
     <Grid
@@ -159,13 +109,29 @@ export function ProjectVideoScreen({ project }: Props) {
         {showHints ? (
           <AnnotationOverlayHints
             project={project}
-            annotations={annotations}
-            onClick={handleAnnotionHintClick}
+            annotations={annotations ?? []}
           />
         ) : null}
         <VideoVision projectId={project.id} />
 
-        <VideoPlayer url={`https://${project.host}/w/${project.videoId}`} />
+        <Suspense
+          fallback={
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <CircularProgress color="primary" />
+            </Box>
+          }
+        >
+          <VideoPlayer url={`https://${project.host}/w/${project.videoId}`} />
+        </Suspense>
       </Grid>
       <Grid
         item
@@ -177,10 +143,21 @@ export function ProjectVideoScreen({ project }: Props) {
           paddingX: 2,
         }}
       >
+        <Box>
+          <Typography variant="body1" color="white">
+            All annotations: {annotations?.length}
+          </Typography>
+          <Typography variant="body1" color="white">
+            Shape annotations: {shapeAnnotations.length}
+          </Typography>
+          <Typography variant="body1" color="white">
+            Visible annotations: {visibleAnnotations.length}
+          </Typography>
+        </Box>
         <VideoPanel
           project={project}
-          annotations={visibleAnnotations}
-          annotationCount={annotations.length}
+          annotations={annotations ?? []}
+          annotationCount={annotations?.length ?? 0}
           user={session?.user}
         />
       </Grid>

@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import { Suspense } from "react";
@@ -11,6 +11,7 @@ import { ChaptersJobInProgress } from "./in-progress";
 import { CreateChaptersJob } from "./job";
 import { ChapterListSkeleton } from "./skeleton";
 import { ChapterTimeline } from "./timeline";
+import { ScenesProcessingFailed } from "./workflow-failed";
 
 type ChaptersPanelProps = {
   project: ProjectById;
@@ -30,9 +31,18 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
   if (project.scenesProcessingStatus === "in_progress") {
     return <ChaptersJobInProgress />;
   }
+  if (project.scenesProcessingStatus === "failed") {
+    return (
+      <ScenesProcessingFailed
+        projectId={project.id}
+        canGenerate={project.userId === user?.id || user?.role === "admin"}
+      />
+    );
+  }
+
   return (
     <ErrorBoundary
-      fallbackRender={({ error }) => <div>Failed to load chapters</div>}
+      fallbackRender={({ error }) => <Box>Failed to load chapters</Box>}
     >
       <Suspense fallback={<ChapterListSkeleton />}>
         <ChaptersPanelContent project={project} user={user} />

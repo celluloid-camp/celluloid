@@ -12,14 +12,8 @@ export default async function Layout({
   modal: React.ReactNode;
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-    query: {
-      disableCookieCache: true,
-    },
-  });
   return (
-    <NotificationsProvider userId={session?.user?.id}>
+    <NotificationsProvider>
       <Box
         sx={{
           minHeight: "100vh",

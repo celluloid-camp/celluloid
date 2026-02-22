@@ -503,7 +503,10 @@ export const videoAnalysis = pgTable(
     }).notNull(),
     processing: json().default({}),
     metadata: json().default({}),
-    status: text().default("pending").notNull(),
+    status: text()
+      .$type<"pending" | "processing" | "completed" | "failed">()
+      .default("pending")
+      .notNull(),
     visionJobId: text().notNull(),
   },
   (table) => [

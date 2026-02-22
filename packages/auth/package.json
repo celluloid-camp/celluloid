@@ -14,16 +14,13 @@
     "@celluloid/utils": "workspace:*",
     "@celluloid/workflows": "workspace:*",
     "@paralleldrive/cuid2": "^3.3.0",
-    "@prisma/client": "catalog:",
     "@t3-oss/env-nextjs": "catalog:",
-    "bcryptjs": "catalog:",
     "better-auth": "catalog:",
     "workflow": "^4.1.0-beta.57",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
-    "@types/bcryptjs": "^2.4.5",
     "@types/node": "catalog:",
     "typescript": "catalog:"
   }

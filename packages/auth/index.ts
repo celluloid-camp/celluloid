@@ -1,15 +1,15 @@
 import { db } from "@celluloid/db";
-import { generateOtp } from "@celluloid/utils";
+import { generate6DigitOtp } from "@celluloid/utils";
 import { handleUserSignup } from "@celluloid/workflows/user-signup";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, emailOTP, username } from "better-auth/plugins";
+import { admin, emailOTP, genericOAuth, username } from "better-auth/plugins";
 import { start } from "workflow/api";
 import { keys } from "./keys";
-import { saveOTPForTesting } from "./lib/testing";
 import { signupAsStudent } from "./plugins/signup-as-student";
 
+const PEERTUBE_URL = "https://digitalanimalities.eu";
 export const auth = betterAuth({
   baseURL: keys().BASE_URL,
   logger: {
@@ -50,11 +50,11 @@ export const auth = betterAuth({
       defaultRole: "teacher",
     }),
     emailOTP({
-      generateOTP: () => {
+      generateOTP() {
         if (process.env.NODE_ENV === "test" || process.env.CI_TEST === "true") {
           return "123456";
         }
-        return generateOtp();
+        return generate6DigitOtp();
       },
       sendVerificationOnSignUp: true,
 

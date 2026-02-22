@@ -286,7 +286,9 @@
       },
       "inProgress": {
         "description": "La génération des chapitres est en cours..."
-      }
+      },
+      "failed": "Échec du traitement des scènes",
+      "retry": "Réessayer la génération"
     },
     "note": {
       "title": "Notes",
@@ -359,10 +361,18 @@
         "reset": "Réinitialiser les chapitres"
       },
       "title": {
-        "placeholder": "Titre du chapitre"
+        "placeholder": "Titre du chapitre",
+        "label": "Titre"
       },
       "description": {
-        "placeholder": "Description du chapitre"
+        "placeholder": "Description du chapitre",
+        "label": "Description"
+      },
+      "timeRange": {
+        "label": "Plage horaire"
+      },
+      "edit": {
+        "title": "Modifier le plan"
       }
     }
   },
@@ -704,7 +714,8 @@
     "cancel": "Annuler",
     "table": {
       "rowsPerPage": "Lignes par page"
-    }
+    },
+    "save": "Enregistrer les modifications"
   },
   "profil": {
     "update": {

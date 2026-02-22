@@ -1,20 +1,12 @@
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { List, ListItem, Paper, Stack, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type * as React from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { useLocaleRole } from "@/i18n/roles";
 import type { User } from "@/lib/auth-client";
-import type { ProjectById, ProjectMembers } from "@/lib/trpc/types";
+import { useTRPC } from "@/lib/trpc/client";
+import type { ProjectById } from "@/lib/trpc/types";
 
 interface SideBarProps {
   project: ProjectById;
@@ -26,6 +18,11 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
 
   const localeRole = useLocaleRole();
 
+  const api = useTRPC();
+  const { data: members } = useQuery(
+    api.project.members.queryOptions({ projectId: project.id }),
+  );
+
   return (
     <Paper
       sx={{
@@ -35,7 +32,7 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
       }}
     >
       <Typography variant="h6" mb={2}>
-        {t("project.members", { count: String(project._count.members) })}
+        {t("project.members", { count: String(members?.length ?? 0) })}
       </Typography>
       <List
         dense={true}
@@ -54,7 +51,7 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
         <ListItem>
           <Stack direction="row" spacing={1} alignItems="center">
             <Avatar
-              src={project.user.avatar?.publicUrl}
+              src={project.user.image ?? undefined}
               sx={{
                 background: project.user.color,
                 borderWidth: 2,
@@ -73,7 +70,7 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
           </Stack>
         </ListItem>
 
-        {project.members.map((member: ProjectMembers) => (
+        {members?.map((member) => (
           <ListItem key={member.id}>
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
@@ -83,7 +80,7 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
                   borderColor: member.user?.color,
                   borderStyle: "solid",
                 }}
-                src={member.user?.avatar?.publicUrl}
+                src={member.user?.image ?? undefined}
               >
                 {member.user?.initial}
               </Avatar>

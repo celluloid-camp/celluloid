@@ -6,7 +6,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { AppProviders } from "@/components/providers";
 
-import "@celluloid/db/types";
 export const dynamic = "force-dynamic";
 
 const abril_fatfaceregular = localFont({

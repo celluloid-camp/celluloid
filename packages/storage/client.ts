@@ -1,4 +1,6 @@
+import { log } from "console";
 import * as Minio from "minio";
+import { env } from "process";
 import { keys } from "./keys";
 
 export function getMinioClient() {
@@ -31,6 +33,31 @@ export async function uploadImageFile(s3Path: string, localFilePath: string) {
   await minioClient.fPutObject(env.STORAGE_BUCKET, s3Path, localFilePath, {
     "Content-Type": "image/jpeg",
   });
+  return s3Path;
+}
+
+export async function uploadImageUrl(
+  s3Path: string,
+  imageUrl: string,
+): Promise<string> {
+  const env = keys();
+  const minioClient = getMinioClient();
+  await ensureBucketExists(minioClient, env.STORAGE_BUCKET);
+
+  // 1. Download the file (using fetch, axios, or another HTTP client)
+  const response = await fetch(imageUrl);
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  // 2. Upload to S3/MinIO
+  await minioClient.putObject(
+    env.STORAGE_BUCKET,
+    s3Path,
+    buffer,
+    buffer.length,
+    { "Content-Type": "image/jpeg" },
+  );
+
   return s3Path;
 }
 

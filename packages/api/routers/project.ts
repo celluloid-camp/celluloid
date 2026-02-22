@@ -176,79 +176,60 @@ export const projectRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const [proj] = await db
-        .select()
-        .from(project)
-        .where(eq(project.id, input.id))
-        .limit(1);
+      const proj = await db.query.project.findFirst({
+        where: eq(project.id, input.id),
+        columns: {
+          id: true,
+          videoId: true,
+          title: true,
+          description: true,
+          host: true,
+          publishedAt: true,
+          public: true,
+          collaborative: true,
+          shared: true,
+          shareCode: true,
+          shareExpiresAt: true,
+          extra: true,
+          userId: true,
+          playlistId: true,
+          duration: true,
+          thumbnailUrl: true,
+          scenesProcessingRunId: true,
+          scenesProcessingStatus: true,
+          transcriptProcessingRunId: true,
+          transcriptProcessingStatus: true,
+          keywords: true,
+        },
+        with: {
+          userToProjects: {
+            columns: {
+              userId: true,
+            },
+          },
+          user: {
+            columns: {
+              id: true,
+              username: true,
+              role: true,
+              initial: true,
+              color: true,
+              bio: true,
+              image: true,
+            },
+          },
+        },
+      });
 
       if (!proj) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `No project with id '${input.id}'`,
+          message: "Project not found",
         });
-      }
-
-      const enrichmentMap = await fetchProjectsEnrichment([proj.id]);
-      const e = enrichmentMap.get(proj.id);
-
-      let playlistWithProjects: z.infer<typeof PlaylistSchema> | null = null;
-      if (proj.playlistId) {
-        const pl = await db.query.playlist.findFirst({
-          where: eq(playlist.id, proj.playlistId),
-          with: {
-            projects: {
-              columns: {
-                id: true,
-                videoId: true,
-                userId: true,
-                title: true,
-                description: true,
-                host: true,
-                publishedAt: true,
-                public: true,
-                collaborative: true,
-                shared: true,
-                shareCode: true,
-                shareExpiresAt: true,
-                extra: true,
-                playlistId: true,
-                duration: true,
-                thumbnailUrl: true,
-                keywords: true,
-              },
-            },
-          },
-        });
-        if (pl) {
-          const projectList = (pl.projects ?? []).map((p) =>
-            toProjectResponse(p),
-          );
-          playlistWithProjects = {
-            id: pl.id,
-            title: pl.title,
-            description: pl.description,
-            userId: pl.userId,
-            publishedAt: pl.publishedAt,
-            projects: projectList as z.infer<typeof PlaylistSchema>["projects"],
-          };
-        }
       }
 
       const result = {
-        ...toProjectResponse(proj),
-        id: proj.id,
-        scenesProcessingRunId: proj.scenesProcessingRunId,
-        scenesProcessingStatus: proj.scenesProcessingStatus,
-        transcriptProcessingRunId: proj.transcriptProcessingRunId,
-        transcriptProcessingStatus: proj.transcriptProcessingStatus,
-        user: e?.user ?? null,
-        duration: proj.duration,
-        userId: proj.userId,
-        members: e?.members ?? [],
-        title: proj.title,
-        playlist: playlistWithProjects ?? e?.playlist ?? null,
-        _count: e?._count ?? { annotations: 0, members: 0 },
+        ...proj,
         editable:
           !!ctx.user &&
           (ctx.user.id === proj.userId || ctx.user.role === "admin"),
@@ -259,13 +240,17 @@ export const projectRouter = router({
           !!ctx.user &&
           (ctx.user.id === proj.userId ||
             ctx.user.role === "admin" ||
-            (e?.members?.some((m) => ctx.user && m.userId === ctx.user.id) &&
+            (proj.userToProjects?.some(
+              (m) => ctx.user && m.userId === ctx.user.id,
+            ) &&
               proj.collaborative)),
         commentable:
           !!ctx.user &&
           (ctx.user.id === proj.userId ||
             ctx.user.role === "admin" ||
-            (e?.members?.some((m) => ctx.user && m.userId === ctx.user.id) &&
+            (proj.userToProjects?.some(
+              (m) => ctx.user && m.userId === ctx.user.id,
+            ) &&
               proj.collaborative)),
       };
 
@@ -441,5 +426,57 @@ export const projectRouter = router({
       await db.delete(project).where(eq(project.id, input.projectId));
 
       return true;
+    }),
+  playlist: publicProcedure
+    .input(
+      z.object({
+        playlistId: z.string(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const pl = await db.query.playlist.findFirst({
+        where: eq(playlist.id, input.playlistId),
+        with: {
+          projects: {
+            columns: {
+              id: true,
+              title: true,
+              description: true,
+              thumbnailUrl: true,
+            },
+          },
+        },
+      });
+      if (!pl) {
+        return null;
+      }
+
+      return {
+        ...pl,
+        canEdit: ctx.user?.id === pl.userId || ctx.user?.role === "admin",
+      };
+    }),
+  members: publicProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      return await db.query.userToProject.findMany({
+        where: eq(userToProject.projectId, input.projectId),
+        with: {
+          user: {
+            columns: {
+              id: true,
+              username: true,
+              role: true,
+              initial: true,
+              color: true,
+              image: true,
+            },
+          },
+        },
+      });
     }),
 });

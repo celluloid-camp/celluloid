@@ -1,5 +1,4 @@
 import { db, videoAnalysis } from "@celluloid/db";
-import { GetJobResultsResultsJobIdGetResponse } from "@celluloid/vision";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -86,7 +85,7 @@ export const visionRouter = router({
     .input(
       z.object({
         projectId: z.string(),
-        analysis: GetJobResultsResultsJobIdGetResponse,
+        analysis: z.unknown(),
       }),
     )
     .mutation(async ({ input }) => {

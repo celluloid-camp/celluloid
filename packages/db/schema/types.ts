@@ -12,10 +12,4 @@ export type AnnotationShape = {
   stroke?: string;
   strokeWidth?: number;
   points?: number[];
-
-  //old fields
-  relativeX?: number;
-  relativeY?: number;
-  // parentWidth?: number;
-  // parentHeight?: number;
 };

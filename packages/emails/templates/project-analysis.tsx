@@ -13,18 +13,20 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { keys } from "../keys";
 
-interface ProjectAnalysisEmailProps {
+export interface ProjectAnalysisEmailProps {
   projectId: string;
   projectTitle: string;
+  email: string;
 }
-
-const baseUrl = process.env.BASE_URL ? `https://${process.env.BASE_URL}` : "";
 
 export const ProjectAnalysisEmail = ({
   projectId = "john.doe@example.com",
   projectTitle = "Project Title",
 }: ProjectAnalysisEmailProps) => {
+  const env = keys();
+  const baseUrl = env.BASE_URL;
   return (
     <Html>
       <Head />

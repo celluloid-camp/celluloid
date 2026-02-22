@@ -1,4 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Grow,
@@ -8,16 +9,14 @@ import {
   Paper,
   Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { useState } from "react";
-import { EditableText } from "@/components/common/editable-text";
 import type { User } from "@/lib/auth-client";
-import { useTRPC } from "@/lib/trpc/client";
 import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 
 interface ChapterItemProps {
@@ -25,6 +24,8 @@ interface ChapterItemProps {
   chapter: ChapterByProjectId;
   user?: User;
   index: number;
+  onEditChapter?: (chapter: ChapterByProjectId) => void;
+  onDeleteChapter?: (chapter: ChapterByProjectId) => void;
 }
 
 export const ChapterItem: React.FC<ChapterItemProps> = ({
@@ -32,33 +33,13 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
   project,
   user,
   index,
+  onEditChapter,
+  onDeleteChapter,
 }) => {
   const t = useTranslations();
   const [hovering, setHovering] = useState(false);
 
   const confirm = useConfirm();
-
-  const api = useTRPC();
-  const queryClient = useQueryClient();
-
-  const editMutation = useMutation(api.chapter.edit.mutationOptions());
-
-  const deleteMutation = useMutation(api.chapter.delete.mutationOptions());
-
-  const handleEdit = async (field: "title" | "description", value: string) => {
-    try {
-      await editMutation.mutateAsync({
-        chapterId: chapter.id,
-        [field]: value,
-        projectId: project.id,
-      });
-    } catch (error) {
-      // Revert optimistic update on error
-      queryClient.invalidateQueries(
-        api.chapter.byProjectId.queryFilter({ projectId: project.id }),
-      );
-    }
-  };
 
   const canEdit = project.userId === user?.id || user?.role === "admin";
 
@@ -92,12 +73,7 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
       },
     }).then(async (value) => {
       if (value.confirmed) {
-        await deleteMutation.mutateAsync({
-          chapterId: chapter.id,
-        });
-        queryClient.invalidateQueries(
-          api.chapter.byProjectId.queryFilter({ projectId: project.id }),
-        );
+        onDeleteChapter?.(chapter);
       }
     });
   };
@@ -127,41 +103,22 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
         >
           <ListItemText
             primary={
-              <React.Fragment>
-                <EditableText
-                  textProps={{
-                    color: chapter.title ? "white" : "gray",
-                    variant: "body2",
-                  }}
-                  disabled={!canEdit}
-                  value={chapter.title}
-                  placeholder={t("project.chapters.item.placeholder.title")}
-                  onSave={(e) => handleEdit("title", e)}
-                  textFieldProps={{
-                    sx: { color: "white" },
-                  }}
-                />
-              </React.Fragment>
+              <Typography
+                variant="body2"
+                color={chapter.title ? "white" : "gray"}
+              >
+                {chapter.title || t("project.chapters.item.placeholder.title")}
+              </Typography>
             }
             secondary={
-              <React.Fragment>
-                <EditableText
-                  textProps={{
-                    color: chapter.title ? "white" : "gray",
-                    variant: "body2",
-                  }}
-                  disabled={!canEdit}
-                  value={chapter.description}
-                  onSave={(e) => handleEdit("description", e)}
-                  textFieldProps={{
-                    multiline: true,
-                    sx: { color: "white" },
-                  }}
-                  placeholder={t(
-                    "project.chapters.item.placeholder.description",
-                  )}
-                />
-              </React.Fragment>
+              <Typography
+                variant="body2"
+                color={chapter.description ? "white" : "gray"}
+                sx={{ whiteSpace: "pre-wrap" }}
+              >
+                {chapter.description ||
+                  t("project.chapters.item.placeholder.description")}
+              </Typography>
             }
           />
           <Box
@@ -177,6 +134,17 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
                 <Tooltip title="Supprimer" arrow>
                   <IconButton onClick={handleDelete}>
                     <DeleteIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Edit" arrow>
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onEditChapter?.(chapter);
+                    }}
+                  >
+                    <EditIcon sx={{ fontSize: 18 }} />
                   </IconButton>
                 </Tooltip>
               </Stack>

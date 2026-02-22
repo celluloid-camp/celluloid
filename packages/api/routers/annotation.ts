@@ -265,8 +265,8 @@ export const annotationRouter = router({
         endTime: a.stopTime,
         text: a.text,
         comments: a.comments.map((c) => c.text),
-        contextX: a.extra ? a.extra.relativeX : null,
-        contextY: a.extra ? a.extra.relativeY : null,
+        contextX: a.extra ? a.extra.x : null,
+        contextY: a.extra ? a.extra.y : null,
         username: a.user.username,
       }));
 
