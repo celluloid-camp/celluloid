@@ -47,11 +47,6 @@ export function LoginForm() {
     router.replace("/signup");
   };
 
-  const handlePeerTubeLogin = () => {
-    authClient.signIn.oauth2({
-      providerId: "peertube",
-    });
-  };
   const onSubmit = async (values: LoginFormData) => {
     const isEmail = values.username.includes("@");
     let loginResult: {
@@ -174,7 +169,6 @@ export function LoginForm() {
             >
               {t("signin.loginAction")}
             </LoadingButton>
-            <Button onClick={handlePeerTubeLogin}>Login with PeerTube</Button>
           </Box>
         </DialogActions>
       </form>

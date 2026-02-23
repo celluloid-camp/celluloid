@@ -11,18 +11,19 @@ import { createClient } from "@celluloid/vision-api/client";
 import { createHook, FatalError } from "workflow";
 import { z } from "zod";
 import { keys } from "../keys";
+import { getMetadata } from "../scenes-processing/steps/get-metadata";
 import { VisionWebhook } from "./webhook";
 
 export async function visionAnalysisWorkflow(projectId: string) {
   "use workflow";
 
-  const videoFileUrl = await getVideoFileUrl(projectId);
+  const { videoUrl } = await getMetadata(projectId);
 
-  if (!videoFileUrl) {
+  if (!videoUrl) {
     throw new FatalError("Project not found");
   }
 
-  await startVisionAnalysis({ projectId, videoFileUrl });
+  await startVisionAnalysis({ projectId, videoFileUrl: videoUrl });
 
   const hook = createHook<VisionWebhook>({
     token: `vision_results:${projectId}`,
@@ -33,22 +34,6 @@ export async function visionAnalysisWorkflow(projectId: string) {
     await fetchVisionAnalysis({ projectId, visionJobId: result.job_id });
     await sendProjectNotificationEmail({ projectId });
   }
-}
-
-async function getVideoFileUrl(projectId: string) {
-  "use step";
-  const proj = await db.query.project.findFirst({
-    where: eq(project.id, projectId),
-  });
-
-  if (!proj) {
-    throw new FatalError("Project not found");
-  }
-  const metadata = proj.metadata as unknown as PeerTubeVideo;
-  if (!metadata) {
-    return null;
-  }
-  return metadata.files[0].fileDownloadUrl;
 }
 
 async function startVisionAnalysis({
@@ -73,11 +58,12 @@ async function startVisionAnalysis({
     body: {
       external_id: projectId,
       video_url: videoFileUrl,
-      callback_url: `${env.BASE_URL}/api/vision/webhook`,
+      // callback_url: `${env.BASE_URL}/api/vision/webhook`,
+      callback_url: `https://b988-41-251-30-20.ngrok-free.app/api/vision/webhook/callback`,
     },
   });
 
-  if (!analysisResponse) {
+  if (!analysisResponse || response.status !== 200) {
     throw new FatalError("Failed to start vision analysis");
   }
 
@@ -88,8 +74,7 @@ async function startVisionAnalysis({
       visionJobId: analysisResponse.job_id,
       updatedAt: new Date().toISOString(),
     })
-    .where(eq(videoAnalysis.projectId, projectId))
-    .returning();
+    .where(eq(videoAnalysis.projectId, projectId));
 }
 
 async function fetchVisionAnalysis({

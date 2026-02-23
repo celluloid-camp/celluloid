@@ -11,6 +11,7 @@ import {
 } from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
 import React, { Suspense, useEffect, useMemo } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useSession } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
@@ -112,7 +113,30 @@ export function ProjectVideoScreen({ project }: Props) {
             annotations={annotations ?? []}
           />
         ) : null}
-        <VideoVision projectId={project.id} />
+        <Suspense>
+          <ErrorBoundary
+            FallbackComponent={({ error }) =>
+              process.env.NODE_ENV === "development" ? (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    inset: 0,
+                    display: "flex",
+                    pointerEvents: "none",
+                    color: "white",
+                    zIndex: 1000,
+                  }}
+                >
+                  Failed to load vision
+                </Box>
+              ) : null
+            }
+          >
+            <VideoVision projectId={project.id} />
+          </ErrorBoundary>
+        </Suspense>
 
         <Suspense
           fallback={

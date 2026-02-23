@@ -2,6 +2,7 @@ import { db, playlist, project, userToProject } from "@celluloid/db";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
 import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
+import { visionAnalysisWorkflow } from "@celluloid/workflows/vision";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, ilike, inArray, lt, or } from "drizzle-orm";
 import { start } from "workflow/api";
@@ -315,6 +316,7 @@ export const projectRouter = router({
 
       const scenesRun = await start(processScenesWorkflow, [created.id]);
       const transcriptRun = await start(videoTranscriptWorkflow, [created.id]);
+      const visionRun = await start(visionAnalysisWorkflow, [created.id]);
       await db
         .update(project)
         .set({
