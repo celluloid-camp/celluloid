@@ -10,6 +10,7 @@ export async function createTRPCContext(opts: FetchCreateContextFnOptions) {
   const { req } = opts;
 
   // Get session from Better Auth
+
   const session = await auth.api.getSession({
     headers: req.headers,
   });

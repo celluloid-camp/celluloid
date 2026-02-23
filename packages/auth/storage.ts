@@ -3,7 +3,7 @@ import { createClient } from "redis";
 import { keys } from "./keys";
 
 const redis = createClient({ url: keys().REDIS_URL });
-await redis.connect();
+redis.connect();
 
 export function getSecondaryStorage(): SecondaryStorage {
   return {
