@@ -15,3 +15,7 @@ export default defineConfig({
   verbose: true,
   strict: true,
 });
+
+// INSERT INTO drizzle.__drizzle_migrations(
+// 	id, hash, created_at)
+// 	VALUES (0, "db257c25f4193b7a020e26c0dbe1e20e8953769d06fb27297c37785f1622829a", 1771843579732);

@@ -257,7 +257,7 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                               >
                                 <Image
                                   src={
-                                    project.thumbnailUrl || "/placeholder.svg"
+                                    project.thumbnailURL || "/placeholder.svg"
                                   }
                                   duration={500}
                                   showLoading={<CircularProgress />}
@@ -405,7 +405,7 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                               >
                                 <Image
                                   src={
-                                    project.thumbnailUrl || "/placeholder.svg"
+                                    project.thumbnailURL || "/placeholder.svg"
                                   }
                                   duration={500}
                                   showLoading={<CircularProgress />}

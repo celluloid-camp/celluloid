@@ -26,7 +26,8 @@ export const visionRouter = router({
         columns: {
           status: true,
           visionJobId: true,
-          processing: true,
+          data: true,
+          spriteURL: true,
         },
         with: {
           storage: {
@@ -56,8 +57,8 @@ export const visionRouter = router({
       return {
         status: analysis.status,
         visionJobId: analysis.visionJobId,
-        processing: analysis.processing,
-        sprite,
+        data: analysis.data,
+        spriteURL: analysis.spriteURL,
       };
     }),
 

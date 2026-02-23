@@ -60,7 +60,6 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("values", values);
       if (!session) {
         router.push("/login");
       } else {

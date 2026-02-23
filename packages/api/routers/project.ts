@@ -1,4 +1,12 @@
-import { db, playlist, project, userToProject } from "@celluloid/db";
+import {
+  db,
+  ProjectSelect,
+  playlist,
+  project,
+  userToProject,
+  videoAnalysis,
+} from "@celluloid/db";
+import { getDbErrorMessage } from "@celluloid/db/utils";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
 import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
@@ -62,11 +70,11 @@ export const ProjectSchema = z.object({
 });
 
 function toProjectResponse(p: {
-  thumbnailUrl?: string | null;
+  thumbnailURL?: string | null;
   [k: string]: unknown;
 }) {
-  const { thumbnailUrl, ...rest } = p;
-  return { ...rest, thumbnailURL: thumbnailUrl ?? "" };
+  const { thumbnailURL, ...rest } = p;
+  return { ...rest, thumbnailURL: thumbnailURL ?? "" };
 }
 
 export const projectRouter = router({
@@ -195,7 +203,7 @@ export const projectRouter = router({
           userId: true,
           playlistId: true,
           duration: true,
-          thumbnailUrl: true,
+          thumbnailURL: true,
           scenesProcessingRunId: true,
           scenesProcessingStatus: true,
           transcriptProcessingRunId: true,
@@ -285,27 +293,43 @@ export const projectRouter = router({
         });
       }
 
-      const [created] = await db
-        .insert(project)
-        .values({
-          userId: ctx.user.id,
-          title: input.title,
-          description: input.description,
-          videoId: input.videoId,
-          host: input.host,
-          objective: input.objective,
-          levelStart: input.levelStart,
-          levelEnd: input.levelEnd,
-          public: input.public,
-          collaborative: input.collaborative,
-          shared: input.shared,
-          duration: input.duration,
-          thumbnailUrl: input.thumbnailURL,
-          metadata: input.metadata,
-          shareCode: input.shared ? generateUniqueShareName(input.title) : null,
-          keywords: input.keywords,
-        })
-        .returning();
+      let created: ProjectSelect | undefined;
+      try {
+        [created] = await db
+          .insert(project)
+          .values({
+            userId: ctx.user.id,
+            title: input.title,
+            description: input.description,
+            videoId: input.videoId,
+            host: input.host,
+            objective: input.objective,
+            levelStart: input.levelStart,
+            levelEnd: input.levelEnd,
+            public: input.public,
+            collaborative: input.collaborative,
+            shared: input.shared,
+            duration: input.duration,
+            thumbnailURL: input.thumbnailURL,
+            metadata: input.metadata,
+            shareCode: input.shared
+              ? generateUniqueShareName(input.title)
+              : null,
+            keywords: input.keywords,
+          })
+          .returning();
+      } catch (error) {
+        const { message, constraint } = getDbErrorMessage(error);
+        console.error("Database operation failed:", {
+          message,
+          constraint,
+          originalError: error,
+        });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create project",
+        });
+      }
 
       if (!created) {
         throw new TRPCError({
@@ -326,6 +350,15 @@ export const projectRouter = router({
           transcriptProcessingStatus: "not_started",
         })
         .where(eq(project.id, created.id));
+
+      // await db
+      // .insert(videoAnalysis)
+      // .values({
+      //   projectId:created.id,
+      //   status: "processing",
+      //   visionJobId: analysisResponse.job_id,
+      //   updatedAt: new Date().toISOString(),
+      // }).where(eq(videoAnalysis.projectId, created.id));
 
       return { id: created.id };
     }),
@@ -444,7 +477,7 @@ export const projectRouter = router({
               id: true,
               title: true,
               description: true,
-              thumbnailUrl: true,
+              thumbnailURL: true,
             },
           },
         },

@@ -104,16 +104,16 @@ export function ProjectVision({ project, user }: Props) {
         }
       />
       <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
-        {project.analysisProcessingStatus === "in_progress" ? (
+        {data?.status === "processing" ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
             <Typography variant="body2">
               {t("project.vision.analyse.in-progress")}
             </Typography>
           </Box>
-        ) : data?.status === "completed" ? (
+        ) : data?.status === "completed" && data.data ? (
           <Box>
-            <VisionChart analysis={data?.processing} />
+            <VisionChart data={data} />
           </Box>
         ) : (
           <Typography variant="body2">{t("project.vision.empty")}</Typography>
@@ -170,7 +170,9 @@ export function ProjectVisionFallback({
       />
       <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
         Failed to analyze video
-        {process.env.NODE_ENV === "development" && <pre>{error.message}</pre>}
+        {process.env.NODE_ENV === "development" && (
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+        )}
         <Button onClick={resetErrorBoundary}>Try again</Button>
       </CardContent>
     </Card>

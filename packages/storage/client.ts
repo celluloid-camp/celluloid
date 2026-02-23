@@ -58,7 +58,7 @@ export async function uploadImageUrl(
     { "Content-Type": "image/jpeg" },
   );
 
-  return s3Path;
+  return `${env.STORAGE_URL}/${env.STORAGE_BUCKET}/${s3Path}`;
 }
 
 export async function generatePresignedUrl(

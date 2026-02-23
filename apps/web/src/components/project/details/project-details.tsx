@@ -13,7 +13,7 @@ import {
   TranscriptErrorFallback,
 } from "./project-transcript";
 import { ProjectSummary } from "./summary";
-import { ProjectVision } from "./vision";
+import { ProjectVision, ProjectVisionFallback } from "./vision";
 
 const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
   ssr: false,
@@ -100,9 +100,20 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
                   }
                 >
                   <ProjectTranscript project={project} user={session?.user} />
-                  {env.NEXT_PUBLIC_STAGE === "staging" && (
-                    <ProjectVision project={project} user={session?.user} />
-                  )}
+                </Suspense>
+              </ErrorBoundary>
+
+              <ErrorBoundary FallbackComponent={ProjectVisionFallback}>
+                <Suspense
+                  fallback={
+                    <Skeleton
+                      variant="rectangular"
+                      height={300}
+                      sx={{ borderRadius: 2, my: 2 }}
+                    />
+                  }
+                >
+                  <ProjectVision project={project} user={session?.user} />
                 </Suspense>
               </ErrorBoundary>
             </Grid>

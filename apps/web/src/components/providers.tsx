@@ -1,4 +1,5 @@
 "use client";
+import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
 import { ThemeProvider } from "@mui/material/styles";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ConfirmProvider } from "material-ui-confirm";
@@ -10,12 +11,14 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider theme={theme}>
       <TRPCProvider>
-        <ConfirmProvider>
-          <SnackbarProvider maxSnack={3} autoHideDuration={2000}>
-            {children}
-            <ReactQueryDevtools initialIsOpen={false} />
-          </SnackbarProvider>
-        </ConfirmProvider>
+        <AuthQueryProvider>
+          <ConfirmProvider>
+            <SnackbarProvider maxSnack={3} autoHideDuration={2000}>
+              {children}
+              <ReactQueryDevtools initialIsOpen={false} />
+            </SnackbarProvider>
+          </ConfirmProvider>
+        </AuthQueryProvider>
       </TRPCProvider>
     </ThemeProvider>
   );

@@ -475,7 +475,7 @@ export const userRouter = router({
         .select({
           id: project.id,
           title: project.title,
-          thumbnailUrl: project.thumbnailUrl,
+          thumbnailURL: project.thumbnailURL,
           playlistId: project.playlistId,
         })
         .from(project)
@@ -490,7 +490,7 @@ export const userRouter = router({
         projects: (projectsByPlaylist[i] ?? []).map((q) => ({
           id: q.id,
           title: q.title,
-          thumbnailURL: q.thumbnailUrl,
+          thumbnailURL: q.thumbnailURL,
         })),
         _count: { projects: (projectsByPlaylist[i] ?? []).length },
       }));

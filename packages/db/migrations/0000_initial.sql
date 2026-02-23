@@ -1,83 +1,4 @@
-CREATE SCHEMA "workflow";
---> statement-breakpoint
-CREATE TYPE "public"."step_status" AS ENUM('pending', 'running', 'completed', 'failed', 'cancelled');--> statement-breakpoint
-CREATE TYPE "public"."status" AS ENUM('pending', 'running', 'completed', 'failed', 'cancelled');--> statement-breakpoint
 CREATE TYPE "public"."UserRole" AS ENUM('Admin', 'Teacher', 'Student');--> statement-breakpoint
-CREATE TABLE "workflow"."workflow_events" (
-	"id" varchar PRIMARY KEY NOT NULL,
-	"type" varchar NOT NULL,
-	"correlation_id" varchar,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"run_id" varchar NOT NULL,
-	"payload" jsonb,
-	"payload_cbor" "bytea",
-	"spec_version" integer
-);
---> statement-breakpoint
-CREATE TABLE "workflow"."workflow_hooks" (
-	"run_id" varchar NOT NULL,
-	"hook_id" varchar PRIMARY KEY NOT NULL,
-	"token" varchar NOT NULL,
-	"owner_id" varchar NOT NULL,
-	"project_id" varchar NOT NULL,
-	"environment" varchar NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"metadata" jsonb,
-	"metadata_cbor" "bytea",
-	"spec_version" integer
-);
---> statement-breakpoint
-CREATE TABLE "workflow"."workflow_runs" (
-	"id" varchar PRIMARY KEY NOT NULL,
-	"output" jsonb,
-	"output_cbor" "bytea",
-	"deployment_id" varchar NOT NULL,
-	"status" "status" NOT NULL,
-	"name" varchar NOT NULL,
-	"spec_version" integer,
-	"execution_context" jsonb,
-	"execution_context_cbor" "bytea",
-	"input" jsonb,
-	"input_cbor" "bytea",
-	"error" text,
-	"error_cbor" "bytea",
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	"completed_at" timestamp,
-	"started_at" timestamp,
-	"expired_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE "workflow"."workflow_steps" (
-	"run_id" varchar NOT NULL,
-	"step_id" varchar PRIMARY KEY NOT NULL,
-	"step_name" varchar NOT NULL,
-	"status" "step_status" NOT NULL,
-	"input" jsonb,
-	"input_cbor" "bytea",
-	"output" jsonb,
-	"output_cbor" "bytea",
-	"error" text,
-	"error_cbor" "bytea",
-	"attempt" integer NOT NULL,
-	"started_at" timestamp,
-	"completed_at" timestamp,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	"retry_after" timestamp,
-	"spec_version" integer
-);
---> statement-breakpoint
-CREATE TABLE "workflow"."workflow_stream_chunks" (
-	"id" varchar NOT NULL,
-	"stream_id" varchar NOT NULL,
-	"run_id" varchar,
-	"data" "bytea" NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"eof" boolean NOT NULL,
-	CONSTRAINT "workflow_stream_chunks_stream_id_id_pk" PRIMARY KEY("stream_id","id")
-);
---> statement-breakpoint
 CREATE TABLE "account" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"accountId" text NOT NULL,
@@ -142,6 +63,17 @@ CREATE TABLE "Playlist" (
 	"publishedAt" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "_prisma_migrations" (
+	"id" varchar(36) PRIMARY KEY NOT NULL,
+	"checksum" varchar(64) NOT NULL,
+	"finished_at" timestamp with time zone,
+	"migration_name" varchar(255) NOT NULL,
+	"logs" text,
+	"rolled_back_at" timestamp with time zone,
+	"started_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"applied_steps_count" integer DEFAULT 0 NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "Project" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"videoId" text NOT NULL,
@@ -165,11 +97,7 @@ CREATE TABLE "Project" (
 	"thumbnailUrl" text DEFAULT '' NOT NULL,
 	"shareCode" text,
 	"keywords" text[],
-	"fileDownloadUrl" text,
-	"scenesProcessingRunId" text,
-	"scenesProcessingStatus" text DEFAULT 'not_started' NOT NULL,
-	"transcriptProcessingRunId" text,
-	"transcriptProcessingStatus" text DEFAULT 'not_started' NOT NULL
+	"fileDownloadUrl" text
 );
 --> statement-breakpoint
 CREATE TABLE "ProjectNote" (
@@ -181,6 +109,13 @@ CREATE TABLE "ProjectNote" (
 	"updatedAt" timestamp(6) with time zone NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "ProjectQueueJob" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"projectId" uuid NOT NULL,
+	"type" text NOT NULL,
+	"queueJobId" bigint
+);
+--> statement-breakpoint
 CREATE TABLE "ProjectTranscript" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"projectId" uuid NOT NULL,
@@ -189,6 +124,27 @@ CREATE TABLE "ProjectTranscript" (
 	"updatedAt" timestamp(6) with time zone NOT NULL,
 	"language" text NOT NULL,
 	"entries" jsonb NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "queue_jobs" (
+	"id" bigserial PRIMARY KEY NOT NULL,
+	"queue" text NOT NULL,
+	"key" text,
+	"cron" text,
+	"payload" jsonb,
+	"result" jsonb,
+	"error" jsonb,
+	"progress" integer DEFAULT 0 NOT NULL,
+	"priority" integer DEFAULT 0 NOT NULL,
+	"attempts" integer DEFAULT 0 NOT NULL,
+	"maxAttempts" integer,
+	"runAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"notBefore" timestamp(3),
+	"finishedAt" timestamp(3),
+	"processedAt" timestamp(3),
+	"failedAt" timestamp(3),
+	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp(3) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -213,12 +169,10 @@ CREATE TABLE "User" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" varchar(255),
 	"username" varchar(255) NOT NULL,
-	"role" text DEFAULT 'Teacher' NOT NULL,
+	"role" text,
 	"extra" jsonb DEFAULT '{}'::jsonb,
 	"avatarStorageId" uuid,
 	"bio" text,
-	"initial" text,
-	"color" text,
 	"firstname" varchar(255),
 	"lastname" varchar(255),
 	"banExpires" timestamp(3),
@@ -255,8 +209,8 @@ CREATE TABLE "VideoAnalysis" (
 	"updatedAt" timestamp(6) with time zone NOT NULL,
 	"processing" json DEFAULT '{}'::json,
 	"metadata" json DEFAULT '{}'::json,
-	"status" text DEFAULT 'pending' NOT NULL,
-	"visionJobId" text NOT NULL
+	"status" text,
+	"visionJobId" text
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
@@ -272,6 +226,8 @@ ALTER TABLE "Project" ADD CONSTRAINT "project_userid_foreign" FOREIGN KEY ("user
 ALTER TABLE "Project" ADD CONSTRAINT "Project_playlistId_fkey" FOREIGN KEY ("playlistId") REFERENCES "public"."Playlist"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "ProjectNote" ADD CONSTRAINT "projectnote_projectid_foreign" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE set null ON UPDATE set null;--> statement-breakpoint
 ALTER TABLE "ProjectNote" ADD CONSTRAINT "projectnote_userid_foreign" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "ProjectQueueJob" ADD CONSTRAINT "ProjectQueueJob_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "ProjectQueueJob" ADD CONSTRAINT "ProjectQueueJob_queueJobId_fkey" FOREIGN KEY ("queueJobId") REFERENCES "public"."queue_jobs"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "ProjectTranscript" ADD CONSTRAINT "ProjectTranscript_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "User" ADD CONSTRAINT "User_avatarStorageId_fkey" FOREIGN KEY ("avatarStorageId") REFERENCES "public"."Storage"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
@@ -279,15 +235,6 @@ ALTER TABLE "UserToProject" ADD CONSTRAINT "usertoproject_projectid_foreign" FOR
 ALTER TABLE "UserToProject" ADD CONSTRAINT "usertoproject_userid_foreign" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "VideoAnalysis" ADD CONSTRAINT "VideoAnalysis_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "VideoAnalysis" ADD CONSTRAINT "VideoAnalysis_spriteStorageId_fkey" FOREIGN KEY ("spriteStorageId") REFERENCES "public"."Storage"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
-CREATE INDEX "workflow_events_run_id_index" ON "workflow"."workflow_events" USING btree ("run_id");--> statement-breakpoint
-CREATE INDEX "workflow_events_correlation_id_index" ON "workflow"."workflow_events" USING btree ("correlation_id");--> statement-breakpoint
-CREATE INDEX "workflow_hooks_run_id_index" ON "workflow"."workflow_hooks" USING btree ("run_id");--> statement-breakpoint
-CREATE INDEX "workflow_hooks_token_index" ON "workflow"."workflow_hooks" USING btree ("token");--> statement-breakpoint
-CREATE INDEX "workflow_runs_name_index" ON "workflow"."workflow_runs" USING btree ("name");--> statement-breakpoint
-CREATE INDEX "workflow_runs_status_index" ON "workflow"."workflow_runs" USING btree ("status");--> statement-breakpoint
-CREATE INDEX "workflow_steps_run_id_index" ON "workflow"."workflow_steps" USING btree ("run_id");--> statement-breakpoint
-CREATE INDEX "workflow_steps_status_index" ON "workflow"."workflow_steps" USING btree ("status");--> statement-breakpoint
-CREATE INDEX "workflow_stream_chunks_run_id_index" ON "workflow"."workflow_stream_chunks" USING btree ("run_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "annotation_id_unique" ON "Annotation" USING btree ("id" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "Chapter_id_key" ON "Chapter" USING btree ("id" uuid_ops);--> statement-breakpoint
 CREATE INDEX "Chapter_projectId_idx" ON "Chapter" USING btree ("projectId" uuid_ops);--> statement-breakpoint
@@ -299,7 +246,11 @@ CREATE UNIQUE INDEX "project_id_unique" ON "Project" USING btree ("id" uuid_ops)
 CREATE UNIQUE INDEX "project_share_code_unique" ON "Project" USING btree ("shareCode" text_ops);--> statement-breakpoint
 CREATE INDEX "ProjectNote_projectId_userId_idx" ON "ProjectNote" USING btree ("projectId" uuid_ops,"userId" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "ProjectNote_projectId_userId_key" ON "ProjectNote" USING btree ("projectId" uuid_ops,"userId" uuid_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "ProjectQueueJob_id_key" ON "ProjectQueueJob" USING btree ("id" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "ProjectTranscript_projectId_key" ON "ProjectTranscript" USING btree ("projectId" uuid_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "ProjectTranscript_projectId_language_key" ON "ProjectTranscript" USING btree ("projectId" text_ops,"language" text_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "queue_jobs_key_runAt_key" ON "queue_jobs" USING btree ("key" text_ops,"runAt" timestamp_ops);--> statement-breakpoint
+CREATE INDEX "queue_jobs_queue_priority_runAt_finishedAt_idx" ON "queue_jobs" USING btree ("queue" text_ops,"priority" text_ops,"runAt" int4_ops,"finishedAt" timestamp_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "session_token_key" ON "session" USING btree ("token" text_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "User_avatarStorageId_key" ON "User" USING btree ("avatarStorageId" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "user_email_unique" ON "User" USING btree ("email" text_ops);--> statement-breakpoint

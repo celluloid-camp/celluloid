@@ -134,7 +134,7 @@ export const playlistRouter = router({
         .select({
           id: project.id,
           title: project.title,
-          thumbnailUrl: project.thumbnailUrl,
+          thumbnailURL: project.thumbnailURL,
           description: project.description,
         })
         .from(project)
@@ -145,7 +145,7 @@ export const playlistRouter = router({
         ...pl,
         projects: projects.map((p) => ({
           ...p,
-          thumbnailURL: p.thumbnailUrl,
+          thumbnailURL: p.thumbnailURL,
         })),
       };
     }),
@@ -208,7 +208,7 @@ export const playlistRouter = router({
             collaborative: input.collaborative,
             shared: input.shared,
             duration: p.duration,
-            thumbnailUrl: p.thumbnailURL,
+            thumbnailURL: p.thumbnailURL,
             metadata: p.metadata,
             userId: ctx.user.id,
             shareCode: generateUniqueShareName(p.title),
@@ -228,7 +228,7 @@ export const playlistRouter = router({
         ...createdPlaylist,
         projects: projects.map((p) => ({
           ...p,
-          thumbnailURL: p.thumbnailUrl,
+          thumbnailURL: p.thumbnailURL,
         })),
       };
     }),
@@ -363,7 +363,7 @@ export const playlistRouter = router({
           id: project.id,
           title: project.title,
           description: project.description,
-          thumbnailUrl: project.thumbnailUrl,
+          thumbnailURL: project.thumbnailURL,
         })
         .from(project)
         .where(eq(project.playlistId, created.id))
@@ -373,7 +373,7 @@ export const playlistRouter = router({
         ...created,
         projects: projects.map((p) => ({
           ...p,
-          thumbnailURL: p.thumbnailUrl,
+          thumbnailURL: p.thumbnailURL,
         })),
       };
     }),

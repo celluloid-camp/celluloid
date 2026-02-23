@@ -59,22 +59,34 @@ async function startVisionAnalysis({
       external_id: projectId,
       video_url: videoFileUrl,
       // callback_url: `${env.BASE_URL}/api/vision/webhook`,
-      callback_url: `https://b988-41-251-30-20.ngrok-free.app/api/vision/webhook/callback`,
+      callback_url: `https://c162-41-251-30-20.ngrok-free.app/api/vision/webhook`,
     },
   });
 
-  if (!analysisResponse || response.status !== 200) {
-    throw new FatalError("Failed to start vision analysis");
+  if (!analysisResponse) {
+    throw new FatalError(
+      "Failed to start vision analysis, caused by: " + response.statusText,
+    );
   }
 
   await db
-    .update(videoAnalysis)
-    .set({
+    .insert(videoAnalysis)
+    .values({
+      projectId,
       status: "processing",
       visionJobId: analysisResponse.job_id,
       updatedAt: new Date().toISOString(),
     })
-    .where(eq(videoAnalysis.projectId, projectId));
+    .onConflictDoUpdate({
+      target: videoAnalysis.projectId,
+      set: {
+        status: "processing",
+        visionJobId: analysisResponse.job_id,
+        updatedAt: new Date().toISOString(),
+      },
+    });
+
+  return analysisResponse;
 }
 
 async function fetchVisionAnalysis({
@@ -113,34 +125,38 @@ async function fetchVisionAnalysis({
     .update(videoAnalysis)
     .set({
       status: "completed",
-      processing: analysisResponse,
+      data: analysisResponse.data,
     })
     .where(eq(videoAnalysis.projectId, projectId))
     .returning();
 
-  const spritepathUrl = analysis.metadata.sprite.path;
+  try {
+    const spritepathUrl = `${env.VISION_API_URL}/${analysis.metadata.sprite.path}`;
 
-  const s3ObjectName = `${projectId}/analysis/sprite.png`;
+    const s3ObjectName = `${projectId}/analysis/sprite.png`;
 
-  await uploadImageUrl(s3ObjectName, spritepathUrl);
+    const spriteURL = await uploadImageUrl(s3ObjectName, spritepathUrl);
 
-  const [spriteStorage] = await db
-    .insert(storage)
-    .values({
-      bucket: getBucketName(),
-      path: s3ObjectName,
-    })
-    .returning();
+    const [spriteStorage] = await db
+      .insert(storage)
+      .values({
+        bucket: getBucketName(),
+        path: s3ObjectName,
+      })
+      .returning();
 
-  await db
-    .update(videoAnalysis)
-    .set({
-      status: "completed",
-      spriteStorageId: spriteStorage.id,
-    })
-    .where(eq(videoAnalysis.projectId, projectId))
-    .returning();
-
+    await db
+      .update(videoAnalysis)
+      .set({
+        status: "completed",
+        spriteStorageId: spriteStorage.id,
+        spriteURL: spriteURL,
+      })
+      .where(eq(videoAnalysis.projectId, projectId))
+      .returning();
+  } catch (error) {
+    console.error("Error uploading sprite image", error);
+  }
   return analysisResponse;
 }
 

@@ -35,7 +35,7 @@ export function OtpForm() {
     if (email) {
       await authClient.emailOtp.sendVerificationOtp({
         email: email,
-        type: "sign-in",
+        type: "email-verification",
       });
 
       enqueueSnackbar(t("confirm.resend.success"), {
@@ -58,9 +58,10 @@ export function OtpForm() {
       formik.setSubmitting(true);
 
       try {
-        const { error } = await authClient.signIn.emailOtp({
+        const { error } = await authClient.emailOtp.checkVerificationOtp({
           email: values.email,
           otp: values.code,
+          type: "email-verification",
         });
         //otp.form.invalid-code =>  Invalid code. Please try again. Code invalide. Veuillez réessayer.
         if (error?.code === "INVALID_OTP") {

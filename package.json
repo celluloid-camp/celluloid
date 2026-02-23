@@ -46,7 +46,6 @@
     "node": ">=20"
   },
   "ignoreScripts": [
-    "sharp",
     "unrs-resolver"
   ],
   "license": "MIT",

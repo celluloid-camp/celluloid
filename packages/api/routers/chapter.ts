@@ -47,7 +47,7 @@ export const chapterRouter = router({
       });
       return chapters.map((c) => ({
         ...c,
-        thumbnailUrl: getThumbnailUrl(c.storage),
+        thumbnailURL: getThumbnailUrl(c.storage),
         lastEditedBy: c.user?.username ?? null,
       }));
     }),

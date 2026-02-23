@@ -1,7 +1,7 @@
-import { PeerTubeVideo } from "@celluloid/peertube";
-import type { DetectionResultsModel } from "@celluloid/vision-api/types";
 import { sql } from "drizzle-orm";
 import {
+  bigint,
+  bigserial,
   boolean,
   doublePrecision,
   foreignKey,
@@ -19,69 +19,24 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { AnnotationShape } from "./types";
+
 export const userRole = pgEnum("UserRole", ["Admin", "Teacher", "Student"]);
 
-export const user = pgTable(
-  "User",
-  {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    email: varchar({ length: 255 }),
-    username: varchar({ length: 255 }).notNull(),
-    role: text()
-      .notNull()
-      .$type<"Admin" | "Teacher" | "Student">()
-      .default("Teacher"),
-    extra: jsonb().default({}),
-    avatarStorageId: uuid(),
-    bio: text(),
-    initial: text(),
-    color: text(),
-    firstname: varchar({ length: 255 }),
-    lastname: varchar({ length: 255 }),
-    banExpires: timestamp({ precision: 3, mode: "string" }),
-    banReason: text(),
-    banned: boolean(),
-    createdAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    emailVerified: boolean().default(false).notNull(),
-    image: text(),
-    name: text(),
-    updatedAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    displayUsername: text(),
-  },
-  (table) => [
-    uniqueIndex("User_avatarStorageId_key").using(
-      "btree",
-      table.avatarStorageId.asc().nullsLast().op("uuid_ops"),
-    ),
-    uniqueIndex("user_email_unique").using(
-      "btree",
-      table.email.asc().nullsLast().op("text_ops"),
-    ),
-    uniqueIndex("user_id_unique").using(
-      "btree",
-      table.id.asc().nullsLast().op("uuid_ops"),
-    ),
-    uniqueIndex("user_username_unique").using(
-      "btree",
-      table.username.asc().nullsLast().op("text_ops"),
-    ),
-    foreignKey({
-      columns: [table.avatarStorageId],
-      foreignColumns: [storage.id],
-      name: "User_avatarStorageId_fkey",
-    })
-      .onUpdate("cascade")
-      .onDelete("set null"),
-  ],
-);
-
-export type UserSelect = typeof user.$inferSelect;
-export type UserInsert = typeof user.$inferInsert;
+export const prismaMigrations = pgTable("_prisma_migrations", {
+  id: varchar({ length: 36 }).primaryKey().notNull(),
+  checksum: varchar({ length: 64 }).notNull(),
+  finishedAt: timestamp("finished_at", { withTimezone: true, mode: "string" }),
+  migrationName: varchar("migration_name", { length: 255 }).notNull(),
+  logs: text(),
+  rolledBackAt: timestamp("rolled_back_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
+  startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+  appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
+});
 
 export const language = pgTable(
   "Language",
@@ -150,78 +105,6 @@ export const userToProject = pgTable(
   ],
 );
 
-export const project = pgTable(
-  "Project",
-  {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    videoId: text().notNull(),
-    userId: uuid().notNull(),
-    title: text().notNull(),
-    description: text().notNull(),
-    host: text(),
-    assignments: text().array(),
-    publishedAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    objective: text(),
-    levelStart: integer(),
-    levelEnd: integer(),
-    public: boolean().default(false).notNull(),
-    collaborative: boolean().notNull(),
-    shared: boolean().default(false).notNull(),
-    shareExpiresAt: timestamp({
-      precision: 6,
-      withTimezone: true,
-      mode: "string",
-    }),
-    extra: json().default({}),
-    playlistId: uuid(),
-    duration: doublePrecision().default(0).notNull(),
-    metadata: json()
-      .$type<PeerTubeVideo>()
-      .default({} as PeerTubeVideo),
-    thumbnailURL: text("thumbnail_url").default("").notNull(),
-    shareCode: text(),
-    keywords: text().array(),
-    fileDownloadUrl: text(),
-    scenesProcessingRunId: text(),
-    scenesProcessingStatus: text()
-      .notNull()
-      .$type<"not_started" | "in_progress" | "completed" | "failed">()
-      .default("not_started"),
-    transcriptProcessingRunId: text(),
-    transcriptProcessingStatus: text()
-      .notNull()
-      .$type<"not_started" | "in_progress" | "completed" | "failed">()
-      .default("not_started"),
-  },
-  (table) => [
-    uniqueIndex("project_id_unique").using(
-      "btree",
-      table.id.asc().nullsLast().op("uuid_ops"),
-    ),
-    uniqueIndex("project_share_code_unique").using(
-      "btree",
-      table.shareCode.asc().nullsLast().op("text_ops"),
-    ),
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [user.id],
-      name: "project_userid_foreign",
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.playlistId],
-      foreignColumns: [playlist.id],
-      name: "Project_playlistId_fkey",
-    })
-      .onUpdate("cascade")
-      .onDelete("set null"),
-  ],
-);
-
-export type ProjectSelect = typeof project.$inferSelect;
-export type ProjectInsert = typeof project.$inferInsert;
-
 export const annotation = pgTable(
   "Annotation",
   {
@@ -237,9 +120,7 @@ export const annotation = pgTable(
       withTimezone: true,
       mode: "string",
     }).default(sql`CURRENT_TIMESTAMP`),
-    extra: jsonb()
-      .$type<AnnotationShape>()
-      .default({} as AnnotationShape),
+    extra: jsonb().default({}),
     orignalUrl: text(),
   },
   (table) => [
@@ -259,9 +140,6 @@ export const annotation = pgTable(
     }).onDelete("cascade"),
   ],
 );
-
-export type AnnotationSelect = typeof annotation.$inferSelect;
-export type AnnotationInsert = typeof annotation.$inferInsert;
 
 export const playlist = pgTable(
   "Playlist",
@@ -289,6 +167,63 @@ export const playlist = pgTable(
   ],
 );
 
+export const project = pgTable(
+  "Project",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    videoId: text().notNull(),
+    userId: uuid().notNull(),
+    title: text().notNull(),
+    description: text().notNull(),
+    host: text(),
+    assignments: text().array(),
+    publishedAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    objective: text(),
+    levelStart: integer(),
+    levelEnd: integer(),
+    public: boolean().default(false).notNull(),
+    collaborative: boolean().notNull(),
+    shared: boolean().default(false).notNull(),
+    shareExpiresAt: timestamp({
+      precision: 6,
+      withTimezone: true,
+      mode: "string",
+    }),
+    extra: json().default({}),
+    playlistId: uuid(),
+    duration: doublePrecision().default(0).notNull(),
+    metadata: json().default({}),
+    thumbnailUrl: text().default("").notNull(),
+    shareCode: text(),
+    keywords: text().array(),
+    fileDownloadUrl: text(),
+  },
+  (table) => [
+    uniqueIndex("project_id_unique").using(
+      "btree",
+      table.id.asc().nullsLast().op("uuid_ops"),
+    ),
+    uniqueIndex("project_share_code_unique").using(
+      "btree",
+      table.shareCode.asc().nullsLast().op("text_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [user.id],
+      name: "project_userid_foreign",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.playlistId],
+      foreignColumns: [playlist.id],
+      name: "Project_playlistId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("set null"),
+  ],
+);
+
 export const storage = pgTable("Storage", {
   id: uuid().defaultRandom().primaryKey().notNull(),
   path: text().notNull(),
@@ -299,6 +234,48 @@ export const storage = pgTable("Storage", {
     mode: "string",
   }).default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const queueJobs = pgTable(
+  "queue_jobs",
+  {
+    id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+    queue: text().notNull(),
+    key: text(),
+    cron: text(),
+    payload: jsonb(),
+    result: jsonb(),
+    error: jsonb(),
+    progress: integer().default(0).notNull(),
+    priority: integer().default(0).notNull(),
+    attempts: integer().default(0).notNull(),
+    maxAttempts: integer(),
+    runAt: timestamp({ precision: 3, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    notBefore: timestamp({ precision: 3, mode: "string" }),
+    finishedAt: timestamp({ precision: 3, mode: "string" }),
+    processedAt: timestamp({ precision: 3, mode: "string" }),
+    failedAt: timestamp({ precision: 3, mode: "string" }),
+    createdAt: timestamp({ precision: 3, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+  },
+  (table) => [
+    uniqueIndex("queue_jobs_key_runAt_key").using(
+      "btree",
+      table.key.asc().nullsLast().op("text_ops"),
+      table.runAt.asc().nullsLast().op("timestamp_ops"),
+    ),
+    index("queue_jobs_queue_priority_runAt_finishedAt_idx").using(
+      "btree",
+      table.queue.asc().nullsLast().op("text_ops"),
+      table.priority.asc().nullsLast().op("text_ops"),
+      table.runAt.asc().nullsLast().op("int4_ops"),
+      table.finishedAt.asc().nullsLast().op("timestamp_ops"),
+    ),
+  ],
+);
 
 export const chapter = pgTable(
   "Chapter",
@@ -342,11 +319,64 @@ export const chapter = pgTable(
       name: "Chapter_thumbnailStorageId_fkey",
     })
       .onUpdate("cascade")
-      .onDelete("cascade"),
+      .onDelete("set null"),
     foreignKey({
       columns: [table.lastEditedById],
       foreignColumns: [user.id],
       name: "Chapter_lastEditedById_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("set null"),
+  ],
+);
+
+export const user = pgTable(
+  "User",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    email: varchar({ length: 255 }),
+    username: varchar({ length: 255 }).notNull(),
+    role: text(),
+    extra: jsonb().default({}),
+    avatarStorageId: uuid(),
+    bio: text(),
+    firstname: varchar({ length: 255 }),
+    lastname: varchar({ length: 255 }),
+    banExpires: timestamp({ precision: 3, mode: "string" }),
+    banReason: text(),
+    banned: boolean(),
+    createdAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    emailVerified: boolean().default(false).notNull(),
+    image: text(),
+    name: text(),
+    updatedAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    displayUsername: text(),
+  },
+  (table) => [
+    uniqueIndex("User_avatarStorageId_key").using(
+      "btree",
+      table.avatarStorageId.asc().nullsLast().op("uuid_ops"),
+    ),
+    uniqueIndex("user_email_unique").using(
+      "btree",
+      table.email.asc().nullsLast().op("text_ops"),
+    ),
+    uniqueIndex("user_id_unique").using(
+      "btree",
+      table.id.asc().nullsLast().op("uuid_ops"),
+    ),
+    uniqueIndex("user_username_unique").using(
+      "btree",
+      table.username.asc().nullsLast().op("text_ops"),
+    ),
+    foreignKey({
+      columns: [table.avatarStorageId],
+      foreignColumns: [storage.id],
+      name: "User_avatarStorageId_fkey",
     })
       .onUpdate("cascade")
       .onDelete("set null"),
@@ -483,6 +513,11 @@ export const projectTranscript = pgTable(
       "btree",
       table.projectId.asc().nullsLast().op("uuid_ops"),
     ),
+    uniqueIndex("ProjectTranscript_projectId_language_key").using(
+      "btree",
+      table.projectId.asc().nullsLast().op("text_ops"),
+      table.language.asc().nullsLast().op("text_ops"),
+    ),
     foreignKey({
       columns: [table.projectId],
       foreignColumns: [project.id],
@@ -490,6 +525,37 @@ export const projectTranscript = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("cascade"),
+  ],
+);
+
+export const projectQueueJob = pgTable(
+  "ProjectQueueJob",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    projectId: uuid().notNull(),
+    type: text().notNull(),
+    // You can use { mode: "bigint" } if numbers are exceeding js number limitations
+    queueJobId: bigint({ mode: "number" }),
+  },
+  (table) => [
+    uniqueIndex("ProjectQueueJob_id_key").using(
+      "btree",
+      table.id.asc().nullsLast().op("uuid_ops"),
+    ),
+    foreignKey({
+      columns: [table.projectId],
+      foreignColumns: [project.id],
+      name: "ProjectQueueJob_projectId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("cascade"),
+    foreignKey({
+      columns: [table.queueJobId],
+      foreignColumns: [queueJobs.id],
+      name: "ProjectQueueJob_queueJobId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("set null"),
   ],
 );
 
@@ -507,13 +573,9 @@ export const videoAnalysis = pgTable(
       withTimezone: true,
       mode: "string",
     }).notNull(),
-    data: json().$type<DetectionResultsModel>(),
-    spriteURL: text("sprite_url"),
+    processing: json().default({}),
     metadata: json().default({}),
-    status: text()
-      .$type<"pending" | "processing" | "completed" | "failed">()
-      .default("pending")
-      .notNull(),
+    status: text(),
     visionJobId: text(),
   },
   (table) => [

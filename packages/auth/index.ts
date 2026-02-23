@@ -1,15 +1,16 @@
 import { db } from "@celluloid/db";
 import { generate6DigitOtp } from "@celluloid/utils";
 import { handleUserSignup } from "@celluloid/workflows/user-signup";
-import { betterAuth } from "better-auth";
+import { betterAuth, SecondaryStorage } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, emailOTP, genericOAuth, username } from "better-auth/plugins";
+import { createClient } from "redis";
 import { start } from "workflow/api";
 import { keys } from "./keys";
 import { signupAsStudent } from "./plugins/signup-as-student";
+import { getSecondaryStorage } from "./storage";
 
-const PEERTUBE_URL = "https://digitalanimalities.eu";
 export const auth = betterAuth({
   baseURL: keys().BASE_URL,
   logger: {
@@ -50,14 +51,14 @@ export const auth = betterAuth({
       defaultRole: "teacher",
     }),
     emailOTP({
+      overrideDefaultEmailVerification: true,
+      sendVerificationOnSignUp: true,
       generateOTP() {
         if (process.env.NODE_ENV === "test" || process.env.CI_TEST === "true") {
           return "123456";
         }
         return generate6DigitOtp();
       },
-      sendVerificationOnSignUp: true,
-
       async sendVerificationOTP({ email, otp, type }) {
         console.log("sendVerificationOTP", email, otp, type);
         if (email.includes("temp-")) {
@@ -71,6 +72,7 @@ export const auth = betterAuth({
     }),
     nextCookies(),
   ],
+  secondaryStorage: getSecondaryStorage(),
   session: {
     cookieCache: {
       enabled: true,

@@ -129,7 +129,7 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
                     height={100}
                   >
                     <Image
-                      src={p.thumbnailUrl}
+                      src={p.thumbnailURL}
                       showLoading={<CircularProgress />}
                       bgColor="#000000"
                     />
