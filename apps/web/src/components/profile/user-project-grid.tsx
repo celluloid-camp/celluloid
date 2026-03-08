@@ -6,7 +6,7 @@ import Tabs from "@mui/material/Tabs";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import ProjectThumbnail from "@/components/common/project-thumbnail";
+import { ProjectThumbnail } from "@/components/common/project-thumbnail";
 import { useTRPC } from "@/lib/trpc/client";
 import { StyledTitle } from "../common/typography";
 import PlaylistThumbnail from "./playlist-thumbnail";
@@ -90,9 +90,12 @@ export const UserProjectGrid: React.FC = () => {
               }}
             >
               {projectsData.items?.length > 0 && (
-                <Grid container={true} spacing={5} direction="row">
+                <Grid container spacing={5}>
                   {projectsData.items.map((project) => (
-                    <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                    <Grid
+                      size={{ xs: 12, sm: 6, lg: 4, xl: 3 }}
+                      key={project.id}
+                    >
                       <ProjectThumbnail showPublic={true} project={project} />
                     </Grid>
                   ))}
@@ -157,9 +160,12 @@ export const UserProjectGrid: React.FC = () => {
               }}
             >
               {playlistsData.items?.length > 0 && (
-                <Grid container={true} spacing={5} direction="row">
+                <Grid container spacing={5}>
                   {playlistsData.items.map((playlist) => (
-                    <Grid xs={12} sm={6} lg={4} xl={3} item key={playlist.id}>
+                    <Grid
+                      size={{ xs: 12, sm: 6, lg: 4, xl: 3 }}
+                      key={playlist.id}
+                    >
                       <PlaylistThumbnail playlist={playlist} />
                     </Grid>
                   ))}

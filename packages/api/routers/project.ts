@@ -3,16 +3,17 @@ import {
   ProjectSelect,
   playlist,
   project,
+  user,
   userToProject,
   videoAnalysis,
 } from "@celluloid/db";
-import { getDbErrorMessage } from "@celluloid/db/utils";
+import { getDbErrorMessage, withPagination } from "@celluloid/db/utils";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
 import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
 import { visionAnalysisWorkflow } from "@celluloid/workflows/vision";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, ilike, inArray, lt, or } from "drizzle-orm";
+import { and, count, desc, eq, ilike, inArray, lt, or, sql } from "drizzle-orm";
 import { start } from "workflow/api";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
@@ -81,100 +82,65 @@ export const projectRouter = router({
   list: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
+        pageSize: z.number().min(1).max(100).default(50),
+        page: z.number().min(1).default(1),
         term: z.string().nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const limit = (input.limit ?? 50) + 1;
-      const { cursor, term } = input;
+      const { page, pageSize, term } = input;
 
-      const memberProjectIds: string[] =
-        ctx.user?.id != null
-          ? (
-              await db
-                .select({ projectId: userToProject.projectId })
-                .from(userToProject)
-                .where(eq(userToProject.userId, ctx.user.id))
-            )
-              .map((r) => r.projectId)
-              .filter((id): id is string => id != null)
-          : [];
-
-      const termFilter = term ? ilike(project.title, `%${term}%`) : undefined;
-
-      let baseWhere: ReturnType<typeof eq> | ReturnType<typeof or> | undefined;
-      if (ctx.user?.id != null) {
-        baseWhere =
-          memberProjectIds.length > 0
-            ? or(
-                eq(project.public, true),
-                eq(project.userId, ctx.user.id),
-                inArray(project.id, memberProjectIds),
-              )
-            : or(eq(project.public, true), eq(project.userId, ctx.user.id));
-      } else {
-        baseWhere = eq(project.public, true);
+      let whereClause:
+        | ReturnType<typeof eq>
+        | ReturnType<typeof or>
+        | undefined;
+      if (term) {
+        whereClause = ilike(project.title, `%${term}%`);
       }
 
-      const whereClause =
-        termFilter != null ? and(baseWhere, termFilter) : baseWhere;
-
-      let cursorWhere = whereClause;
-      if (cursor) {
-        const [cursorRow] = await db
-          .select({ publishedAt: project.publishedAt, id: project.id })
-          .from(project)
-          .where(eq(project.id, cursor))
-          .limit(1);
-        if (cursorRow) {
-          cursorWhere = and(
-            whereClause,
-            or(
-              lt(project.publishedAt, cursorRow.publishedAt),
-              and(
-                eq(project.publishedAt, cursorRow.publishedAt),
-                lt(project.id, cursor),
-              ),
-            ),
-          )!;
-        }
-      }
-
-      const rows = await db
-        .select()
+      const [total] = await db
+        .select({ count: count(project.id) })
         .from(project)
-        .where(cursorWhere)
-        .orderBy(desc(project.publishedAt))
-        .limit(limit);
+        .where(whereClause);
 
-      const hasMore = rows.length === limit;
-      const items = hasMore ? rows.slice(0, -1) : rows;
-      const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
+      const baseQuery = db
+        .select({
+          id: project.id,
+          title: project.title,
+          thumbnailURL: project.thumbnailURL,
+          publishedAt: project.publishedAt,
+          userId: project.userId,
+          public: project.public,
+          collaborative: project.collaborative,
+          shared: project.shared,
+          playlistId: project.playlistId,
+          duration: project.duration,
+          user: {
+            id: user.id,
+            username: user.username,
+            role: user.role,
+            initial: user.initial,
+            color: user.color,
+            image: user.image,
+          },
+        })
+        .from(project)
+        .leftJoin(user, eq(project.userId, user.id))
+        .where(whereClause)
+        .$dynamic();
 
-      if (items.length === 0) {
-        return { items: [], nextCursor };
-      }
-
-      const enrichmentMap = await fetchProjectsEnrichment(
-        items.map((p) => p.id),
-      );
-      const enriched = items.map((p) => {
-        const e = enrichmentMap.get(p.id);
-        const row = {
-          ...p,
-          user: e?.user ?? null,
-          members: e?.members ?? [],
-          playlist: e?.playlist ?? null,
-          _count: e?._count ?? { annotations: 0, members: 0 },
-        };
-        return toProjectResponse(row);
+      const paginatedQuery = withPagination({
+        query: baseQuery,
+        orderBy: [desc(project.publishedAt)],
+        pageSize,
+        page,
       });
 
+      const rows = await paginatedQuery;
+
       return {
-        items: enriched,
-        nextCursor,
+        items: rows,
+        total: total?.count ?? 0,
       };
     }),
 

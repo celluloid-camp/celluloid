@@ -20,9 +20,8 @@ import type { User } from "@/lib/auth-client";
 import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 
 interface ChapterItemProps {
-  project: ProjectById;
+  canEdit: boolean;
   chapter: ChapterByProjectId;
-  user?: User;
   index: number;
   onEditChapter?: (chapter: ChapterByProjectId) => void;
   onDeleteChapter?: (chapter: ChapterByProjectId) => void;
@@ -30,8 +29,7 @@ interface ChapterItemProps {
 
 export const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
-  project,
-  user,
+  canEdit,
   index,
   onEditChapter,
   onDeleteChapter,
@@ -40,8 +38,6 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
   const [hovering, setHovering] = useState(false);
 
   const confirm = useConfirm();
-
-  const canEdit = project.userId === user?.id || user?.role === "admin";
 
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -105,20 +101,21 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
             primary={
               <Typography
                 variant="body2"
-                color={chapter.title ? "white" : "gray"}
+                color={chapter.title ? "white" : grey[700]}
               >
                 {chapter.title || t("project.chapters.item.placeholder.title")}
               </Typography>
             }
             secondary={
-              <Typography
-                variant="body2"
-                color={chapter.description ? "white" : "gray"}
-                sx={{ whiteSpace: "pre-wrap" }}
-              >
-                {chapter.description ||
-                  t("project.chapters.item.placeholder.description")}
-              </Typography>
+              chapter.description ? (
+                <Typography
+                  variant="body2"
+                  color={chapter.description ? "white" : "gray"}
+                  sx={{ whiteSpace: "pre-wrap" }}
+                >
+                  {chapter.description}
+                </Typography>
+              ) : null
             }
           />
           <Box

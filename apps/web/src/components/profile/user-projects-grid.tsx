@@ -9,8 +9,9 @@ import {
 import Grid from "@mui/material/Grid";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
-import ProjectThumbnail from "@/components/common/project-thumbnail";
+import { parseAsInteger, useQueryState } from "nuqs";
+import { useEffect, useMemo, useState } from "react";
+import { ProjectThumbnail } from "@/components/common/project-thumbnail";
 import { useTRPC } from "@/lib/trpc/client";
 
 const ITEMS_PER_PAGE = 12;
@@ -18,7 +19,7 @@ const ITEMS_PER_PAGE = 12;
 export const UserProjectsGrid: React.FC = () => {
   const t = useTranslations();
   const api = useTRPC();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
   const [pageCursors, setPageCursors] = useState<Map<number, string>>(
     new Map(),
   );
@@ -40,7 +41,29 @@ export const UserProjectsGrid: React.FC = () => {
     }),
   );
 
-  // Track next cursor for the next page
+  // Which page does the current data represent? (cursor undefined => page 1)
+  const dataPage = useMemo(() => {
+    if (cursor === undefined) return 1;
+    const entry = Array.from(pageCursors.entries()).find(
+      ([, c]) => c === cursor,
+    );
+    return entry?.[0] ?? 1;
+  }, [cursor, pageCursors]);
+
+  // Bootstrap: when landing on ?page=N, we may need to fetch page 1, then 2, … to
+  // collect cursors. Each response’s nextCursor is the cursor for (dataPage + 1).
+  useEffect(() => {
+    if (!projectsData?.nextCursor || dataPage >= page) return;
+    const nextPage = dataPage + 1;
+    setPageCursors((prev) => {
+      if (prev.has(nextPage)) return prev;
+      const next = new Map(prev);
+      next.set(nextPage, projectsData.nextCursor!);
+      return next;
+    });
+  }, [dataPage, page, projectsData?.nextCursor]);
+
+  // Track next cursor for the next page when user clicks forward
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     newPage: number,
@@ -62,7 +85,9 @@ export const UserProjectsGrid: React.FC = () => {
   const hasNextPage = !!projectsData?.nextCursor;
   const totalPages = hasNextPage ? page + 1 : page;
 
-  if (projectsFetching || !projectsData) {
+  const isLoading = projectsFetching || !projectsData || dataPage !== page;
+
+  if (isLoading) {
     return (
       <Box
         mx={2}
@@ -87,9 +112,9 @@ export const UserProjectsGrid: React.FC = () => {
         }}
       >
         {projectsData.items?.length > 0 && (
-          <Grid container={true} spacing={5} direction="row">
+          <Grid container spacing={5}>
             {projectsData.items.map((project) => (
-              <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+              <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={project.id}>
                 <ProjectThumbnail showPublic={true} project={project} />
               </Grid>
             ))}

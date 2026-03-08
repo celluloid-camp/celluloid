@@ -27,7 +27,7 @@ interface Props {
   project: ProjectListItem;
 }
 
-const ProjectThumbnail: React.FC<Props> = ({ project }) => {
+export function ProjectThumbnail({ project }: Props) {
   const router = useRouter();
 
   const handleClick = () => {
@@ -35,6 +35,8 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   };
 
   return (
+    // </Fade>
+    // </ThemeProvider>
     <Card
       elevation={0}
       sx={{
@@ -107,7 +109,6 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
           />
         </Box>
       </Box>
-
       <Box
         display="flex"
         alignItems={"flex-start"}
@@ -116,34 +117,34 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
       >
         <Avatar
           sx={{
-            backgroundColor: project.user.color,
+            backgroundColor: project.user?.color,
             borderWidth: 2,
-            borderColor: project.user.color,
+            borderColor: project.user?.color,
             borderStyle: "solid",
             width: 36,
             height: 36,
             textDecoration: "none",
           }}
-          src={project.user.avatar?.publicUrl}
+          src={project.user?.image ?? undefined}
           onClick={() => {
-            router.push(`/user/${project.user.id}`);
+            router.push(`/user/${project.userId}`);
           }}
         >
-          {project.user.initial}
+          {project.user?.initial}
         </Avatar>
         <Stack spacing={0}>
           <Typography fontWeight={"bold"} noWrap>
             {project.title}
           </Typography>
           <Box display="flex" alignItems={"center"} gap={1}>
-            <Typography variant="body2">{project.user.username}</Typography>
+            <Typography variant="body2">{project.user?.username}</Typography>
             <Typography variant="caption" color={"grey.700"}>
               {dayjs(project.publishedAt).fromNow(true)}
             </Typography>
           </Box>
         </Stack>
 
-        <Box
+        {/* <Box
           display={"flex"}
           justifyContent={"flex-end"}
           alignItems={"flex-end"}
@@ -168,12 +169,8 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
               sx={{ px: 0.5 }}
             />
           </Stack>
-        </Box>
+        </Box> */}
       </Box>
     </Card>
-    // </Fade>
-    // </ThemeProvider>
   );
-};
-
-export default ProjectThumbnail;
+}

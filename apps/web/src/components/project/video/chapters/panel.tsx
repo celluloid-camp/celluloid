@@ -61,7 +61,7 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
 
   return (
     <Stack height="100%">
-      <ChapterTimeline project={project} user={user} chapters={chapters} />
+      <ChapterTimeline project={project} chapters={chapters} />
       {user?.id === project.userId || user?.role === "admin" ? (
         <ChapterForm project={project} user={user} chapters={chapters} />
       ) : null}

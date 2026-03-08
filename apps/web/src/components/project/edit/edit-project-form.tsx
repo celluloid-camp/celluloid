@@ -265,7 +265,7 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
         </Box>
 
         <Grid container spacing={2} sx={{ mt: 2 }}>
-          <Grid item xs={4}>
+          <Grid size={4}>
             {project.deletable && (
               <LoadingButton
                 variant="outlined"
@@ -280,7 +280,7 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
             )}
           </Grid>
 
-          <Grid item xs={8} display={"flex"} justifyContent={"flex-end"}>
+          <Grid display={"flex"} justifyContent={"flex-end"} size={8}>
             <LoadingButton
               variant="contained"
               size="medium"

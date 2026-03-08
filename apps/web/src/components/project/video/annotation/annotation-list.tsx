@@ -3,19 +3,20 @@ import { Box, List } from "@mui/material";
 import type * as React from "react";
 import type { User } from "@/lib/auth-client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
+import { useAnnotations } from "@/stores/annotations";
 import { AnnotationItem } from "./annotation-item";
 import { EmptyAnnotation } from "./empty";
 import { AnnotationForm } from "./form";
 
 interface AnnotationPanelProps {
   project: ProjectById;
-  annotations: AnnotationByProjectId[];
   user?: User;
 }
 
 export const AnnotationList: React.FC<
   Omit<AnnotationPanelProps, "annotationCount" | "onShowHintsClick">
-> = ({ project, annotations = [], user }) => {
+> = ({ project, user }) => {
+  const { annotations } = useAnnotations(project.id);
   return (
     <Box
       sx={{

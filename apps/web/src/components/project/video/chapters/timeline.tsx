@@ -1,15 +1,17 @@
-import {
-  Timeline,
-  TimelineConnector,
-  TimelineContent,
-  TimelineDot,
-  TimelineItem,
-  TimelineOppositeContent,
-  TimelineSeparator,
+import Timeline from "@mui/lab/Timeline";
+import TimelineConnector from "@mui/lab/TimelineConnector";
+import TimelineContent from "@mui/lab/TimelineContent";
+import TimelineDot from "@mui/lab/TimelineDot";
+import TimelineItem from "@mui/lab/TimelineItem";
+import TimelineOppositeContent, {
   timelineOppositeContentClasses,
-} from "@mui/lab";
-import { Box, Stack, Typography } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+} from "@mui/lab/TimelineOppositeContent";
+import TimelineSeparator from "@mui/lab/TimelineSeparator";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+
+import { useMutation } from "@tanstack/react-query";
 import {
   MediaActionTypes,
   useMediaDispatch,
@@ -27,15 +29,12 @@ import { ChapterItem } from "./list-item";
 
 export function ChapterTimeline({
   chapters,
-  user,
   project,
 }: {
   chapters: ChapterByProjectId[];
-  user?: User;
   project: ProjectById;
 }) {
   const api = useTRPC();
-  const queryClient = useQueryClient();
   const deleteMutation = useMutation(api.chapter.delete.mutationOptions());
   const [editingChapter, setEditingChapter] =
     useState<ChapterByProjectId | null>(null);
@@ -75,13 +74,8 @@ export function ChapterTimeline({
       await deleteMutation.mutateAsync({
         chapterId: chapter.id,
       });
-      queryClient.invalidateQueries(
-        api.chapter.byProjectId.queryFilter({ projectId: project.id }),
-      );
     } catch {
-      queryClient.invalidateQueries(
-        api.chapter.byProjectId.queryFilter({ projectId: project.id }),
-      );
+      console.error("Failed to delete chapter");
     }
   };
 
@@ -143,8 +137,7 @@ export function ChapterTimeline({
               <ChapterItem
                 chapter={chapter}
                 key={chapter.id}
-                user={user}
-                project={project}
+                canEdit={project.editable}
                 index={index}
                 onEditChapter={handleOpenEditDialog}
                 onDeleteChapter={handleDeleteChapter}

@@ -97,8 +97,7 @@ export const ChapterTimestampSlider: React.FC<DurationSliderProps> = ({
           <ArrowRightIcon />
         </IconButton>
       </Stack>
-
-      <Grid item xs>
+      <Grid size="grow">
         <Slider
           getAriaLabel={() => "Annotation slider"}
           value={value}

@@ -2,6 +2,7 @@
 
 import type { AnnotationShape } from "@celluloid/db";
 import { Box } from "@mui/material";
+import { KonvaEventObject } from "konva/lib/Node";
 import {
   MediaActionTypes,
   useMediaDispatch,
@@ -55,7 +56,7 @@ export function ShapesViewer({
 
   const [tooltip, setTooltip] = useState<TooltipState>(null);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: KonvaEventObject<MouseEvent>) => {
     const stage = stageRef.current.getStage();
     if (!stage) return;
 

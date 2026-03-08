@@ -72,7 +72,13 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
           }}
         >
           <Grid container direction="row" alignItems="flex-start" spacing={4}>
-            <Grid item xs={12} md={8} lg={8}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 8,
+                lg: 8,
+              }}
+            >
               <ProjectSummary project={project} user={session?.user} />
               {session ? (
                 <ErrorBoundary FallbackComponent={() => <Box>Failed</Box>}>
@@ -117,7 +123,13 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
                 </Suspense>
               </ErrorBoundary>
             </Grid>
-            <Grid item xs={12} md={4} lg={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+                lg: 4,
+              }}
+            >
               <SideBar project={project} />
             </Grid>
           </Grid>

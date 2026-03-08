@@ -1,4 +1,4 @@
-import { ShapeType } from "./toolbox";
+import { ShapeType } from "@celluloid/db/schema/types";
 
 export interface Shape {
   id: string;

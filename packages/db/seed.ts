@@ -61,7 +61,7 @@ async function main() {
       public: faker.datatype.boolean(),
       collaborative: faker.datatype.boolean(),
       shared: faker.datatype.boolean(),
-      thumbnailUrl: faker.image.url(),
+      thumbnailURL: faker.image.url(),
       keywords: faker.word.words(5).split(" "),
       publishedAt: faker.date.anytime().toISOString(),
     });

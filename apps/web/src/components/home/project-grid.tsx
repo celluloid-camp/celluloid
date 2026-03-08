@@ -16,14 +16,14 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { debounce } from "lodash";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import * as R from "ramda";
+import { parseAsInteger, useQueryState } from "nuqs";
 import type * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import ProjectThumbnail from "@/components/common/project-thumbnail";
+import { useEffect, useRef, useState } from "react";
+import { ProjectThumbnail } from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectListItem } from "@/lib/trpc/types";
@@ -40,91 +40,36 @@ export function ProjectGrid() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations();
   const api = useTRPC();
-  const [mounted, setMounted] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageCursors, setPageCursors] = useState<Map<number, string>>(
-    new Map(),
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+  const [searchTerm, setSearchTerm] = useQueryState("q");
+
+  const debouncedSearch = useDebouncedCallback(
+    (value: string) => {
+      setPage(1);
+      if (value.length >= 3) {
+        setSearchTerm(value);
+      } else if (value.length === 0) {
+        setSearchTerm(null);
+      }
+    },
+    { wait: 1000 },
   );
-  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Debounce the search function
-  const debouncedSearch = debounce((value: string) => {
-    // Reset pagination when search changes
-    setPage(1);
-    setPageCursors(new Map());
-
-    if (value.length >= 3) {
-      setSearchTerm(value);
-    } else if (value.length === 0) {
-      setSearchTerm(undefined);
-    }
-  }, 1000);
 
   const { data: session } = useSession();
 
-  // Get cursor for current page (page 1 has no cursor)
-  const cursor = useMemo(() => {
-    if (page === 1) return undefined;
-    return pageCursors.get(page) ?? undefined;
-  }, [page, pageCursors]);
-
   const { data, isFetching, error, refetch } = useSuspenseQuery(
     api.project.list.queryOptions({
-      term: searchTerm,
-      limit: ITEMS_PER_PAGE,
-      cursor,
+      term: searchTerm ?? undefined,
+      pageSize: ITEMS_PER_PAGE,
+      page: page,
     }),
   );
-
-  // Reset pagination when search term changes externally
-  useEffect(() => {
-    setPage(1);
-    setPageCursors(new Map());
-  }, [searchTerm]);
 
   useEffect(() => {
     if (session && !isFetching) {
       refetch();
     }
   }, [session]);
-
-  const ownProjects = useMemo(
-    () =>
-      data.items
-        .filter(
-          (project: ProjectListItem) =>
-            session?.user && project.userId === session?.user?.id,
-        )
-        .sort(
-          (a: ProjectListItem, b: ProjectListItem) =>
-            new Date(b.publishedAt).getTime() -
-            new Date(a.publishedAt).getTime(),
-        ),
-    [session?.user, data],
-  );
-
-  const joinedProjects = useMemo(
-    () =>
-      data.items
-        .filter((project: ProjectListItem) =>
-          project.members.some((member) => member.userId === session?.user?.id),
-        )
-        .sort(
-          (a: ProjectListItem, b: ProjectListItem) =>
-            new Date(b.publishedAt).getTime() -
-            new Date(a.publishedAt).getTime(),
-        ),
-    [session?.user, data],
-  );
-
-  const publicProjects = R.difference(data.items, [
-    ...ownProjects,
-    ...joinedProjects,
-  ]);
 
   const noProjects = data.items.length === 0;
 
@@ -134,9 +79,8 @@ export function ProjectGrid() {
   };
 
   const handleResetSearch = () => {
-    setSearchTerm(undefined);
+    setSearchTerm(null);
     setPage(1);
-    setPageCursors(new Map());
     if (searchInputRef.current) {
       searchInputRef.current.value = "";
     }
@@ -147,27 +91,8 @@ export function ProjectGrid() {
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    if (data?.nextCursor && newPage > page) {
-      // Store the cursor for the next page
-      setPageCursors((prev) => {
-        const newMap = new Map(prev);
-        newMap.set(newPage, data.nextCursor!);
-        return newMap;
-      });
-    } else if (newPage < page) {
-      // If navigating back, remove the cursor for the current page
-      setPageCursors((prev) => {
-        const newMap = new Map(prev);
-        newMap.delete(page);
-        return newMap;
-      });
-    }
     setPage(newPage);
   };
-
-  // Calculate total pages based on whether we have a next cursor
-  const hasNextPage = !!data?.nextCursor;
-  const totalPages = hasNextPage ? page + 1 : page;
 
   if (error) {
     return (
@@ -205,8 +130,10 @@ export function ProjectGrid() {
           )}
           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
           <InputBase
+            key={searchTerm ?? "empty"}
             sx={{ ml: 1, flex: 1 }}
             inputRef={searchInputRef}
+            defaultValue={searchTerm ?? ""}
             onChange={handleSearchChange}
             placeholder={t("search.placeholder")}
           />
@@ -222,71 +149,23 @@ export function ProjectGrid() {
             ph: 2,
           }}
         >
-          {ownProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle
-                  sx={{
-                    marginBottom: 2,
-                  }}
-                  variant="h4"
-                >
-                  {t("home.myProjects")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {ownProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={true} project={project} />
-                  </Grid>
-                ))}
+          <Fade in={true} appear={true}>
+            <StyledTitle
+              sx={{
+                marginBottom: 2,
+              }}
+              variant="h4"
+            >
+              {t("home.myProjects")}
+            </StyledTitle>
+          </Fade>
+          <Grid container spacing={5}>
+            {data.items.map((project: ProjectListItem) => (
+              <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={project.id}>
+                <ProjectThumbnail showPublic={true} project={project} />
               </Grid>
-            </>
-          )}
-
-          {joinedProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle
-                  sx={{
-                    marginBottom: 2,
-                  }}
-                  variant="h4"
-                >
-                  {t("home.member")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {joinedProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={true} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
-
-          {publicProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle
-                  sx={{
-                    marginBottom: 2,
-                  }}
-                  variant="h4"
-                >
-                  {t("home.publicProjects")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {publicProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={false} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
+            ))}
+          </Grid>
 
           {noProjects && (
             <Box
@@ -326,7 +205,7 @@ export function ProjectGrid() {
               }}
             >
               <Pagination
-                count={totalPages}
+                count={Math.ceil(data.total / ITEMS_PER_PAGE)}
                 page={page}
                 onChange={handlePageChange}
                 color="primary"

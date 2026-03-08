@@ -14,12 +14,12 @@ export default async function ProjectPage({
 
   // void prefetch(trpc.project.byId.queryOptions({ id }));
   return (
-    <HydrateClient>
-      <ErrorBoundary fallbackRender={projectFallbackRender}>
-        <Suspense fallback={<ProjectSkeleton />}>
-          <ProjectMainScreen projectId={id} />
-        </Suspense>
-      </ErrorBoundary>
-    </HydrateClient>
+    // <HydrateClient>
+    // </HydrateClient>
+    <ErrorBoundary fallbackRender={projectFallbackRender}>
+      <Suspense fallback={<ProjectSkeleton />}>
+        <ProjectMainScreen projectId={id} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

@@ -2,9 +2,8 @@
 import { useParentSize } from "@cutting/use-get-parent-size";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
-import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { Badge, Box, Fab, Paper, Tab, Tooltip } from "@mui/material";
+import { Badge, Box, Paper, Tab } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useTranslations } from "next-intl";
 import type * as React from "react";
@@ -12,7 +11,6 @@ import { useMemo, useRef, useState } from "react";
 import type { User } from "@/lib/auth-client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 import { AnnotationList } from "./annotation/annotation-list";
-import { useAnnotationHintsVisible } from "./annotation/useAnnotationEditor";
 import { ChaptersPanel } from "./chapters/panel";
 
 const TABLIST_HEIGHT = 60;
@@ -38,8 +36,6 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const { height } = useParentSize(ref);
 
-  const [hintsVisible, setHintsVisible] = useAnnotationHintsVisible();
-
   const availableHeight = useMemo(
     () => (height ? height - TABLIST_HEIGHT - 12 : "100%"),
     [height],
@@ -64,18 +60,6 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             position: "relative",
           }}
         >
-          <Box position={"absolute"} right={0} top={14}>
-            <Tooltip title={t("project.annotation.hints.label")}>
-              <Fab
-                color="secondary"
-                size="small"
-                onClick={() => setHintsVisible(!hintsVisible)}
-              >
-                <ViewTimelineIcon />
-              </Fab>
-            </Tooltip>
-          </Box>
-
           <TabList
             onChange={handleChange}
             textColor="secondary"
@@ -95,7 +79,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             <Tab
               icon={<BookmarksIcon />}
               iconPosition="start"
-              label={t("project.chapters.title")}
+              label={t("project.scenes.title")}
               value="2"
             />
           </TabList>

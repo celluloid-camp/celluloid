@@ -1,7 +1,7 @@
 "use client";
 import { Box, Container, Link, Paper, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import NextLink from "next/link";
 import { useTranslations } from "next-intl";

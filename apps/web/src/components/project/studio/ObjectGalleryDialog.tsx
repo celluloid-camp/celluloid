@@ -30,7 +30,14 @@ export function ObjectGalleryDialog({
       <DialogContent>
         <Grid container spacing={2}>
           {objects.map((obj, i) => (
-            <Grid item xs={6} sm={4} md={3} key={i}>
+            <Grid
+              key={i}
+              size={{
+                xs: 6,
+                sm: 4,
+                md: 3,
+              }}
+            >
               <Box
                 sx={{
                   display: "flex",

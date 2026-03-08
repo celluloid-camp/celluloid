@@ -1,7 +1,11 @@
 import type { BetterAuthPlugin, User } from "better-auth";
-import { APIError } from "better-auth/api";
+import {
+  APIError,
+  createAuthEndpoint,
+  createAuthMiddleware,
+} from "better-auth/api";
 import { setSessionCookie } from "better-auth/cookies";
-import { createAuthEndpoint, createAuthMiddleware } from "better-auth/plugins";
+
 import { z } from "zod";
 import { generateId } from "../../lib/utils";
 

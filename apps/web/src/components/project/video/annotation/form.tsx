@@ -124,6 +124,7 @@ export const AnnotationFormContent: React.FC<
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
+      const pause = contextEditorVisible ? true : values.pause;
       if (editedAnnotation) {
         const changedAnnotation = await editMutation.mutateAsync({
           annotationId: editedAnnotation.id,
@@ -131,7 +132,7 @@ export const AnnotationFormContent: React.FC<
           text: values.text,
           startTime: values.startTime,
           stopTime: values.stopTime,
-          pause: values.pause,
+          pause,
           extra: shapes.length > 0 ? shapes[0] : null,
         });
         if (changedAnnotation) {
@@ -147,7 +148,7 @@ export const AnnotationFormContent: React.FC<
           text: values.text,
           startTime: values.startTime,
           stopTime: values.stopTime,
-          pause: values.pause,
+          pause,
           extra: shapes.length > 0 ? shapes[0] : null,
         });
         if (newAnnotation) {
@@ -205,17 +206,16 @@ export const AnnotationFormContent: React.FC<
             id="text"
             name="text"
             sx={{ ml: 1, flex: 1, color: "white" }}
-            placeholder="Saissez votre annotation"
+            placeholder={t("annotation.contentPlaceholder")}
             multiline
             maxRows={5}
             minRows={2}
             value={formik.values.text}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.errors.text}
+            error={!!formik.errors.text}
             disabled={formik.isSubmitting}
             inputProps={{
-              "aria-label": "Saissez votre annotation",
               maxLength: 250,
             }}
           />
@@ -227,7 +227,7 @@ export const AnnotationFormContent: React.FC<
           alignItems={"center"}
         >
           <Box>
-            <Tooltip title="Placer un repère visuel" arrow>
+            <Tooltip title={t("annotation.form.context.tooltip")} arrow>
               <FormControlLabel
                 label="Contexte"
                 sx={{ color: "white" }}
@@ -245,9 +245,16 @@ export const AnnotationFormContent: React.FC<
               />
             </Tooltip>
 
-            <Tooltip title={"Pause automatique à l'ouverture"} arrow>
+            <Tooltip title={t("annotation.form.pause.tooltip")} arrow>
               <FormControlLabel
-                sx={{ color: "white" }}
+                disabled={contextEditorVisible}
+                sx={{
+                  color: "white",
+                  "&.Mui-disabled .MuiFormControlLabel-label": {
+                    color: "white",
+                    opacity: 0.6,
+                  },
+                }}
                 label="Pause"
                 control={
                   <Checkbox
@@ -255,10 +262,17 @@ export const AnnotationFormContent: React.FC<
                     color="secondary"
                     id="pause"
                     name="pause"
-                    checked={formik.values.pause}
+                    checked={contextEditorVisible ? true : formik.values.pause}
+                    disabled={contextEditorVisible}
                     onChange={formik.handleChange}
                     icon={<PauseCircleOutlineOutlinedIcon />}
                     checkedIcon={<PauseCircleIcon />}
+                    sx={{
+                      "&.Mui-disabled": {
+                        color: "secondary.main",
+                        opacity: 0.5,
+                      },
+                    }}
                   />
                 }
               />

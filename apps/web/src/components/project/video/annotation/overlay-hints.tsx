@@ -3,12 +3,14 @@ import { Box, Fade, IconButton, Paper, Stack, Typography } from "@mui/material";
 import {
   MediaActionTypes,
   useMediaDispatch,
+  useMediaSelector,
 } from "media-chrome/react/media-store";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
+import { useAnnotations } from "@/stores/annotations";
 import { HtmlTooltip } from "./html-tooltip";
 import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 
@@ -98,22 +100,20 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
   </HtmlTooltip>
 );
 
-export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
-  project,
-  annotations,
-}) => {
+export function AnnotationOverlayHints({ projectId }: { projectId: string }) {
+  const { annotations } = useAnnotations(projectId);
   const t = useTranslations();
   const dispatch = useMediaDispatch();
 
-  const [_, setHintsVisible] = useAnnotationHintsVisible();
+  const mediaDuration = useMediaSelector((state) => state.mediaDuration) ?? 0;
+
+  const [showHints, setHintsVisible] = useAnnotationHintsVisible();
 
   const getHintStartPosition = (annotation: AnnotationByProjectId) =>
-    `${(annotation.startTime * 100) / project.duration}%`;
+    `${(annotation.startTime * 100) / mediaDuration}%`;
 
   const getHintWidth = (annotation: AnnotationByProjectId) =>
-    `${
-      ((annotation.stopTime - annotation.startTime) * 100) / project.duration
-    }%`;
+    `${((annotation.stopTime - annotation.startTime) * 100) / mediaDuration}%`;
 
   const handleClose: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -129,6 +129,13 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
     setHintsVisible(false);
   };
 
+  if (annotations.length === 0) {
+    return null;
+  }
+
+  if (!showHints) {
+    return null;
+  }
   return (
     <Fade in={true}>
       <Box
@@ -191,4 +198,4 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
       </Box>
     </Fade>
   );
-};
+}

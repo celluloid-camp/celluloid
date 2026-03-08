@@ -1,9 +1,11 @@
 "use client";
 
 import { Box, ThemeProvider } from "@mui/material";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { useMediaRef } from "media-chrome/react/media-store";
 import ReactPlayer from "react-player";
 import type { PlayerEntry } from "react-player/players";
+import { AnnotationOverlayHints } from "../project/video/annotation/overlay-hints";
 import { ControlsContainer } from "./controls/controls-container";
 import { LoadingBackdrop } from "./controls/loading-backdrop";
 import { canPlay } from "./peertube-video-element";
@@ -21,9 +23,15 @@ const peertubePlayerEntry: PlayerEntry = {
 // Register the custom PeerTube player
 ReactPlayer.addCustomPlayer?.(peertubePlayerEntry);
 
-const VideoPlayer = ({ url }: { url: string }) => {
+export default function VideoPlayer({
+  url,
+  projectId,
+}: {
+  url: string;
+  projectId: string;
+}) {
   const mediaRefCallback = useMediaRef();
-
+  const [muted] = useLocalStorage("muted", false);
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -40,6 +48,8 @@ const VideoPlayer = ({ url }: { url: string }) => {
           src={url}
           height="100%"
           width="100%"
+          muted={muted}
+          autoPlay={true}
           controls={false}
           style={{
             width: "100%",
@@ -47,10 +57,9 @@ const VideoPlayer = ({ url }: { url: string }) => {
           }}
         />
         <LoadingBackdrop />
+        <AnnotationOverlayHints projectId={projectId} />
         <ControlsContainer />
       </Box>
     </ThemeProvider>
   );
-};
-
-export default VideoPlayer;
+}

@@ -6,6 +6,7 @@ import {
   db,
   project,
 } from "@celluloid/db";
+import { getDbErrorMessage } from "@celluloid/db/utils";
 import { defaultUserSelect } from "@celluloid/db/validator";
 import { getNotificationsClient } from "@celluloid/notifications";
 import { toSrt } from "@celluloid/utils";
@@ -31,42 +32,51 @@ export const annotationRouter = router({
     )
     .query(async ({ input }) => {
       const { id } = input;
-      const annotations = await db.query.annotation.findMany({
-        where: eq(annotation.projectId, id),
-        with: {
-          comments: {
-            with: {
-              user: {
-                columns: {
-                  id: true,
-                  username: true,
-                  initial: true,
-                  color: true,
-                  image: true,
+      try {
+        const annotations = await db.query.annotation.findMany({
+          where: eq(annotation.projectId, id),
+          with: {
+            comments: {
+              with: {
+                user: {
+                  columns: {
+                    id: true,
+                    username: true,
+                    initial: true,
+                    color: true,
+                    image: true,
+                  },
                 },
               },
+              orderBy: desc(comment.createdAt),
             },
-            orderBy: desc(comment.createdAt),
-          },
-          user: {
-            columns: {
-              id: true,
-              username: true,
-              initial: true,
-              color: true,
-              image: true,
+            user: {
+              columns: {
+                id: true,
+                username: true,
+                initial: true,
+                color: true,
+                image: true,
+              },
             },
           },
-        },
-        orderBy: desc(annotation.createdAt),
-      });
-      // if (!project) {
-      //   throw new TRPCError({
-      //     code: 'NOT_FOUND',
-      //     message: `No project with id '${id}'`,
-      //   });
-      // }
-      return annotations;
+          orderBy: desc(annotation.createdAt),
+        });
+        // if (!project) {
+        //   throw new TRPCError({
+        //     code: 'NOT_FOUND',
+        //     message: `No project with id '${id}'`,
+        //   });
+        // }
+        return annotations;
+      } catch (error) {
+        const { message } = getDbErrorMessage(error);
+        console.error(message);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message,
+        });
+      }
     }),
   onChange: publicProcedure.subscription(() => {
     // return an `observable` with a callback which is triggered immediately

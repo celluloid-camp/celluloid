@@ -3,7 +3,7 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import ProjectThumbnail from "@/components/common/project-thumbnail";
+import { ProjectThumbnail } from "@/components/common/project-thumbnail";
 import { useTRPC } from "@/lib/trpc/client";
 import { StyledTitle } from "../common/typography";
 
@@ -43,9 +43,9 @@ export function UserPublicProjects({ userId }: { userId: string }) {
               <StyledTitle marginBlock={3} variant="h4">
                 Projets publics
               </StyledTitle>
-              <Grid container={true} spacing={5} direction="row">
+              <Grid container spacing={5}>
                 {data.items.map((project) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                  <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={project.id}>
                     <ProjectThumbnail showPublic={true} project={project} />
                   </Grid>
                 ))}

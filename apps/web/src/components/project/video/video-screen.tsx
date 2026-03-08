@@ -31,6 +31,9 @@ const VideoPlayer = dynamic(
   { ssr: false },
 );
 
+/** Tolerance in seconds when matching annotation startTime to media time (player updates at discrete intervals). */
+const PAUSE_AT_ANNOTATION_TOLERANCE_SEC = 0.2;
+
 interface Props {
   project: ProjectById;
 }
@@ -44,7 +47,7 @@ export function ProjectVideoScreen({ project }: Props) {
 
   const { data: session } = useSession();
 
-  const { visibleAnnotations, shapeAnnotations, annotations } = useAnnotations(
+  const { currentAnnotations, shapeAnnotations, annotations } = useAnnotations(
     project.id,
   );
 
@@ -65,20 +68,21 @@ export function ProjectVideoScreen({ project }: Props) {
 
   useEffect(() => {
     if (!mediaCurrentTime) return;
-    const paused = visibleAnnotations.filter(
+    const paused = currentAnnotations.filter(
       (annotation) =>
         annotation.pause &&
-        annotation.startTime === Math.floor(mediaCurrentTime),
+        Math.abs(mediaCurrentTime - annotation.startTime) <=
+          PAUSE_AT_ANNOTATION_TOLERANCE_SEC,
     );
 
     if (paused.length > 0) {
       dispatch({
         type: MediaActionTypes.MEDIA_SEEK_REQUEST,
-        detail: mediaCurrentTime + 1,
+        detail: mediaCurrentTime,
       });
       dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
-  }, [visibleAnnotations, mediaCurrentTime]);
+  }, [currentAnnotations, mediaCurrentTime]);
 
   useEffect(() => {
     if (formVisible) {
@@ -98,19 +102,13 @@ export function ProjectVideoScreen({ project }: Props) {
         maxHeight: "60vh",
       }}
     >
-      <Grid item xs={8} ref={ref} sx={{ position: "relative" }}>
+      <Grid ref={ref} sx={{ position: "relative" }} size={8}>
         {contextualEditorVisible ? <ShapesEditor /> : null}
         {!formVisible && !showHints && shapeAnnotations.length > 0 ? (
           <ShapesViewer
             shapes={shapeAnnotations}
             width={width ?? 0}
             height={height ?? 0}
-          />
-        ) : null}
-        {showHints ? (
-          <AnnotationOverlayHints
-            project={project}
-            annotations={annotations ?? []}
           />
         ) : null}
         <Suspense>
@@ -154,33 +152,24 @@ export function ProjectVideoScreen({ project }: Props) {
             </Box>
           }
         >
-          <VideoPlayer url={`https://${project.host}/w/${project.videoId}`} />
+          <VideoPlayer
+            url={`https://${project.host}/w/${project.videoId}`}
+            projectId={project.id}
+          />
         </Suspense>
       </Grid>
       <Grid
-        item
-        xs={4}
         sx={{
           height: "100%",
           position: "relative",
           paddingY: 2,
           paddingX: 2,
         }}
+        size={4}
       >
-        <Box>
-          <Typography variant="body1" color="white">
-            All annotations: {annotations?.length}
-          </Typography>
-          <Typography variant="body1" color="white">
-            Shape annotations: {shapeAnnotations.length}
-          </Typography>
-          <Typography variant="body1" color="white">
-            Visible annotations: {visibleAnnotations.length}
-          </Typography>
-        </Box>
         <VideoPanel
           project={project}
-          annotations={annotations ?? []}
+          annotations={currentAnnotations}
           annotationCount={annotations?.length ?? 0}
           user={session?.user}
         />

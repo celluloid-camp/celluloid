@@ -240,7 +240,7 @@ export const annotation = pgTable(
     extra: jsonb()
       .$type<AnnotationShape>()
       .default({} as AnnotationShape),
-    orignalUrl: text(),
+    // orignalUrl: text(),
   },
   (table) => [
     uniqueIndex("annotation_id_unique").using(
@@ -493,6 +493,14 @@ export const projectTranscript = pgTable(
   ],
 );
 
+export type VideoAnalysisStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed";
+
+export type VideoAnalysisErrorCode = "timeout" | "internal_error";
+
 export const videoAnalysis = pgTable(
   "VideoAnalysis",
   {
@@ -510,10 +518,9 @@ export const videoAnalysis = pgTable(
     data: json().$type<DetectionResultsModel>(),
     spriteURL: text("sprite_url"),
     metadata: json().default({}),
-    status: text()
-      .$type<"pending" | "processing" | "completed" | "failed">()
-      .default("pending")
-      .notNull(),
+    status: text().$type<VideoAnalysisStatus>().default("pending").notNull(),
+    errorCode: text("error_code").$type<VideoAnalysisErrorCode>(),
+    errorMessage: text("error_message"),
     visionJobId: text(),
   },
   (table) => [

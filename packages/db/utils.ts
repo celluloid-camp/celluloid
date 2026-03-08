@@ -1,4 +1,5 @@
-import { DrizzleError, DrizzleQueryError } from "drizzle-orm";
+import { DrizzleError, DrizzleQueryError, SQL } from "drizzle-orm";
+import { PgSelect } from "drizzle-orm/pg-core";
 import { DatabaseError } from "pg";
 
 // Defines the shape of the error handler functions
@@ -100,4 +101,19 @@ export function getDbErrorMessage(error: unknown): {
 
   // Final fallback for unknown error types
   return { message: "An unknown error occurred.", constraint: null };
+}
+
+export function withPagination<T extends PgSelect>(
+  props: {
+    query: T;
+    orderBy: SQL[];
+  } & {
+    pageSize: number;
+    page: number;
+  },
+) {
+  return props.query
+    .orderBy(...props.orderBy)
+    .limit(props.pageSize)
+    .offset((props.page - 1) * props.pageSize);
 }

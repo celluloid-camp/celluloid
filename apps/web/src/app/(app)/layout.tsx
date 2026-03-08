@@ -20,9 +20,6 @@ export default async function Layout({
 }) {
   const queryClient = new QueryClient();
 
-  const { data, session, user } = await prefetchSession(auth, queryClient, {
-    headers: await headers(),
-  });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <NotificationsProvider>

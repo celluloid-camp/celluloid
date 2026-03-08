@@ -29,7 +29,12 @@ export const Footer: React.FC<FooterProps> = (props) => {
     >
       <Container sx={{ padding: { xs: 5, lg: 5 } }} maxWidth="lg">
         <Grid container spacing={4}>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
             <Stack>
               <Link href="/terms-and-conditions" color="white" variant="body2">
                 {t("footer.termsAndConditions")}
@@ -71,7 +76,12 @@ export const Footer: React.FC<FooterProps> = (props) => {
               </Stack>
             </Stack>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
             <Box
               sx={{
                 flexDirection: "column",

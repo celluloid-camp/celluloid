@@ -178,7 +178,7 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                 borderColor: annotation.user.color,
                 borderStyle: "solid",
               }}
-              src={annotation.user.avatar?.publicUrl}
+              src={annotation.user.image ?? undefined}
             >
               {annotation.user.initial}
             </Avatar>
@@ -241,8 +241,9 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                   color="gray"
                 >
                   {formatDuration(annotation.startTime)}
-                  {" → "}
-                  {formatDuration(annotation.stopTime)}
+                  {!isContextual
+                    ? ` → ${formatDuration(annotation.stopTime)}`
+                    : null}
                 </Typography>
 
                 <Stack direction={"row"} spacing={1} alignItems={"center"}>

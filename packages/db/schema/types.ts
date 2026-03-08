@@ -1,3 +1,5 @@
+export type ShapeType = "rect" | "circle" | "polygon" | "ellipse" | "point";
+
 export type AnnotationShape = {
   id: string;
   type: "point" | "rect" | "circle" | "ellipse" | "polygon";

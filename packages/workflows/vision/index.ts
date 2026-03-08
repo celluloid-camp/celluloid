@@ -1,4 +1,12 @@
-import { db, eq, project, storage, videoAnalysis } from "@celluloid/db";
+import {
+  db,
+  eq,
+  project,
+  storage,
+  VideoAnalysisErrorCode,
+  VideoAnalysisStatus,
+  videoAnalysis,
+} from "@celluloid/db";
 import { sendProjectAnalysisCompletedEmail } from "@celluloid/emails";
 import { PeerTubeVideo } from "@celluloid/peertube";
 import {
@@ -8,7 +16,7 @@ import {
 } from "@celluloid/storage/client";
 import { createAnalysisJob, getJobResults } from "@celluloid/vision-api";
 import { createClient } from "@celluloid/vision-api/client";
-import { createHook, FatalError } from "workflow";
+import { createHook, FatalError, sleep } from "workflow";
 import { z } from "zod";
 import { keys } from "../keys";
 import { getMetadata } from "../scenes-processing/steps/get-metadata";
@@ -20,7 +28,13 @@ export async function visionAnalysisWorkflow(projectId: string) {
   const { videoUrl } = await getMetadata(projectId);
 
   if (!videoUrl) {
-    throw new FatalError("Project not found");
+    await updateVisionAnalysisStatus({
+      projectId,
+      status: "failed",
+      errorCode: "internal_error",
+      errorMessage: `Video file not found for project ${projectId}`,
+    });
+    throw new FatalError("Video URL not found");
   }
 
   await startVisionAnalysis({ projectId, videoFileUrl: videoUrl });
@@ -29,7 +43,20 @@ export async function visionAnalysisWorkflow(projectId: string) {
     token: `vision_results:${projectId}`,
   });
 
-  const result = await hook;
+  const result = await Promise.race([
+    hook,
+    sleep("20min").then(() => "timeout" as const),
+  ]);
+
+  if (result === "timeout") {
+    await updateVisionAnalysisStatus({
+      projectId,
+      status: "failed",
+      errorCode: "timeout",
+    });
+    throw new Error("Processing timed out after 20 minutes");
+  }
+
   if (result.job_id) {
     await fetchVisionAnalysis({ projectId, visionJobId: result.job_id });
     await sendProjectNotificationEmail({ projectId });
@@ -59,11 +86,17 @@ async function startVisionAnalysis({
       external_id: projectId,
       video_url: videoFileUrl,
       // callback_url: `${env.BASE_URL}/api/vision/webhook`,
-      callback_url: `https://c162-41-251-30-20.ngrok-free.app/api/vision/webhook`,
+      callback_url: `https://tame-tarn.slim.show/api/vision/webhook`,
     },
   });
 
   if (!analysisResponse) {
+    await updateVisionAnalysisStatus({
+      projectId,
+      status: "failed",
+      errorCode: "internal_error",
+      errorMessage: response.statusText,
+    });
     throw new FatalError(
       "Failed to start vision analysis, caused by: " + response.statusText,
     );
@@ -193,4 +226,28 @@ async function sendProjectNotificationEmail({
     projectTitle: proj.title,
     email: proj.user.email,
   });
+}
+
+async function updateVisionAnalysisStatus({
+  projectId,
+  status,
+  errorCode,
+  errorMessage,
+}: {
+  projectId: string;
+  status: VideoAnalysisStatus;
+  errorCode?: VideoAnalysisErrorCode;
+  errorMessage?: string;
+}) {
+  "use step";
+
+  await db
+    .update(videoAnalysis)
+    .set({
+      status,
+      updatedAt: new Date().toISOString(),
+      errorCode: errorCode,
+      errorMessage: errorMessage,
+    })
+    .where(eq(videoAnalysis.projectId, projectId));
 }

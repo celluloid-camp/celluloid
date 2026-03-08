@@ -1,5 +1,7 @@
 import { AnnotationShape } from "@celluloid/db/schema/types";
 import { useQuery } from "@tanstack/react-query";
+import { atom } from "jotai";
+import { atomWithQuery } from "jotai-tanstack-query";
 import {
   MediaActionTypes,
   useMediaDispatch,
@@ -10,6 +12,10 @@ import { useMemo } from "react";
 import { AnnotationShapeWithMetadata } from "@/components/project/video/annotation/shapes-viewer";
 import { useTRPC } from "@/lib/trpc/client";
 import type { AnnotationByProjectIdWithExtra } from "@/lib/trpc/types";
+
+const annotationsAtom = atomWithQuery(() => ({
+  queryKey: ["todos"],
+}));
 
 export function useAnnotations(projectId: string) {
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
@@ -22,25 +28,30 @@ export function useAnnotations(projectId: string) {
     placeholderData: [],
   });
 
-  const visibleAnnotations = useMemo(
+  const currentAnnotations = useMemo(
     () =>
       mediaCurrentTime && annotations
-        ? annotations.filter(
-            (annotation) =>
+        ? annotations.filter((annotation) => {
+            const inRange =
               mediaCurrentTime >= annotation.startTime &&
-              mediaCurrentTime <= annotation.stopTime,
-          )
+              mediaCurrentTime <= annotation.stopTime;
+            if (annotation.extra != null) {
+              return (
+                mediaCurrentTime >= annotation.startTime &&
+                mediaCurrentTime <= annotation.startTime + 1
+              );
+            }
+            return inRange;
+          })
         : [],
     [annotations, mediaCurrentTime],
   );
 
   const shapeAnnotations = useMemo<AnnotationShapeWithMetadata[]>(() => {
-    if (!mediaCurrentTime) return [];
-    return annotations
+    return currentAnnotations
       .filter(
         (annotation): annotation is AnnotationByProjectIdWithExtra =>
-          annotation.extra !== null &&
-          Math.floor(mediaCurrentTime) == annotation.startTime,
+          annotation.extra !== null,
       )
       .map((annotation) => {
         const extra = annotation.extra;
@@ -61,7 +72,7 @@ export function useAnnotations(projectId: string) {
           },
         };
       });
-  }, [annotations, mediaCurrentTime]);
+  }, [currentAnnotations]);
 
-  return { annotations, visibleAnnotations, shapeAnnotations, isLoading };
+  return { annotations, currentAnnotations, shapeAnnotations, isLoading };
 }

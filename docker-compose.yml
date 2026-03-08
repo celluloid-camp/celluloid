@@ -59,3 +59,10 @@ services:
     volumes:
       - ./.data/databasus-data:/databasus-data
     restart: unless-stopped
+
+  spotlight:
+    pull_policy: always
+    container_name: spotlight
+    ports:
+      - 8969:8969/tcp
+    image: ghcr.io/getsentry/spotlight:latest
