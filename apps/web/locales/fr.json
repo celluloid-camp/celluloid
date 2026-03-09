@@ -228,7 +228,7 @@
     },
     "export": {
       "success": "Projet exporté avec succès",
-      "title": "Exporter"
+      "title": "Exporter les annotations"
     },
     "keywords": "Mots clés",
     "members": "{ count } participant",
@@ -343,7 +343,7 @@
       "title": "Analyse vidéo"
     },
     "scenes": {
-      "title": "Scènes"
+      "title": "Plans"
     }
   },
   "chapter": {

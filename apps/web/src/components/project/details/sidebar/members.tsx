@@ -1,5 +1,5 @@
 import { List, ListItem, Paper, Stack, Typography } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type * as React from "react";
 import { Avatar } from "@/components/common/avatar";
@@ -19,7 +19,7 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
   const localeRole = useLocaleRole();
 
   const api = useTRPC();
-  const { data: members } = useQuery(
+  const { data: members } = useSuspenseQuery(
     api.project.members.queryOptions({ projectId: project.id }),
   );
 
@@ -32,7 +32,9 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
       }}
     >
       <Typography variant="h6" mb={2}>
-        {t("project.members", { count: String(members?.length ?? 0) })}
+        {t("project.members", {
+          count: members.length == 0 ? 1 : members.length,
+        })}
       </Typography>
       <List
         dense={true}

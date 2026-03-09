@@ -49,7 +49,7 @@ export default function VideoPlayer({
           height="100%"
           width="100%"
           muted={muted}
-          autoPlay={true}
+          autoPlay={false}
           controls={false}
           style={{
             width: "100%",

@@ -16,7 +16,7 @@ interface AnnotationPanelProps {
 export const AnnotationList: React.FC<
   Omit<AnnotationPanelProps, "annotationCount" | "onShowHintsClick">
 > = ({ project, user }) => {
-  const { annotations } = useAnnotations(project.id);
+  const { currentAnnotations } = useAnnotations(project.id);
   return (
     <Box
       sx={{
@@ -36,7 +36,7 @@ export const AnnotationList: React.FC<
           "& ul": { padding: 0 },
         }}
       >
-        {annotations.map((annotation: AnnotationByProjectId) => (
+        {currentAnnotations.map((annotation: AnnotationByProjectId) => (
           <AnnotationItem
             annotation={annotation}
             key={annotation.id}
@@ -45,7 +45,7 @@ export const AnnotationList: React.FC<
           />
         ))}
 
-        {annotations.length === 0 && <EmptyAnnotation />}
+        {currentAnnotations.length === 0 && <EmptyAnnotation />}
       </List>
 
       <Box display={"flex"} flexDirection={"column"}>

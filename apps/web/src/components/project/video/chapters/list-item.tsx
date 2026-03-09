@@ -111,7 +111,14 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
                 <Typography
                   variant="body2"
                   color={chapter.description ? "white" : "gray"}
-                  sx={{ whiteSpace: "pre-wrap" }}
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "normal",
+                  }}
                 >
                   {chapter.description}
                 </Typography>

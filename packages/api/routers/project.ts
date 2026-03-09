@@ -193,6 +193,13 @@ export const projectRouter = router({
               image: true,
             },
           },
+          playlist: {
+            columns: {
+              id: true,
+              title: true,
+              description: true,
+            },
+          },
         },
       });
 
@@ -464,7 +471,7 @@ export const projectRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await db.query.userToProject.findMany({
+      const results = await db.query.userToProject.findMany({
         where: eq(userToProject.projectId, input.projectId),
         with: {
           user: {
@@ -479,5 +486,6 @@ export const projectRouter = router({
           },
         },
       });
+      return results;
     }),
 });

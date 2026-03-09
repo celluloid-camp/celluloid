@@ -86,7 +86,7 @@ async function startVisionAnalysis({
       external_id: projectId,
       video_url: videoFileUrl,
       // callback_url: `${env.BASE_URL}/api/vision/webhook`,
-      callback_url: `https://tame-tarn.slim.show/api/vision/webhook`,
+      callback_url: `https://last-fig.slim.show/api/vision/webhook`,
     },
   });
 

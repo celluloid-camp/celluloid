@@ -45,8 +45,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
     <Paper
       ref={ref}
       sx={{
-        position: "relative",
-        backgroundColor: "background.dark",
+        backgroundColor: { md: "background.dark", xs: "transparent" },
         overflow: "hidden",
         height: "100%",
       }}
@@ -58,6 +57,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             borderColor: grey[800],
             marginX: 2,
             position: "relative",
+            display: { xs: "none", md: "block" },
           }}
         >
           <TabList

@@ -42,23 +42,40 @@ export function ProjectSummary({ project, user }: Props) {
         </Typography>
       ) : null}
 
-      <Typography align="left" variant="h3">
+      <Typography
+        align="left"
+        variant="h3"
+        sx={{ fontSize: { xs: 24, sm: 32 } }}
+      >
         {project.title}
       </Typography>
 
-      <Box display="flex" alignItems={"center"}>
+      <Box
+        display="flex"
+        sx={{
+          mt: 1,
+          alignItems: { xs: "flex-start", sm: "center" },
+          gap: 1,
+        }}
+      >
         <Avatar
           sx={{
             background: project.user.color,
             borderWidth: 2,
             borderColor: project.user.color,
             borderStyle: "solid",
+            width: { xs: 32, sm: 40 },
+            height: { xs: 32, sm: 40 },
           }}
-          src={project.user.avatar?.publicUrl}
+          src={project.user.image ?? undefined}
         >
           {project.user.initial}
         </Avatar>
-        <Box display="flex" flexDirection={"column"} sx={{ marginLeft: 1 }}>
+        <Box
+          display="flex"
+          flexDirection={"column"}
+          sx={{ ml: { xs: 0, sm: 1 } }}
+        >
           <Typography>{project.user.username}</Typography>
           <Typography variant="caption">
             {dayjs(project.publishedAt).format("DD/MM/YYYY")}
@@ -66,7 +83,11 @@ export function ProjectSummary({ project, user }: Props) {
         </Box>
       </Box>
 
-      <Stack direction={"row"} spacing={1} sx={{ my: 2, minHeight: 25 }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={1}
+        sx={{ flexWrap: "wrap" }}
+      >
         {project.public && (
           <Chip
             label={t("project.public")}
@@ -82,12 +103,12 @@ export function ProjectSummary({ project, user }: Props) {
             icon={<GroupsIcon />}
           />
         )}
-        {project.keywords.map((k) => (
+        {project.keywords?.map((k) => (
           <Chip key={k} label={k} size="small" />
         ))}
       </Stack>
 
-      <Card sx={{ my: 2 }}>
+      <Card sx={{ my: 2, maxHeight: 300 }}>
         <CardHeader
           title={t("project.description")}
           sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
@@ -101,17 +122,14 @@ export function ProjectSummary({ project, user }: Props) {
             ) : null
           }
         />
-        <CardContent>
-          <Typography variant="caption">{project.description}</Typography>
-          <Typography
-            align="left"
-            gutterBottom={true}
-            variant="body2"
-            fontWeight={"bold"}
-          >
-            {t("project.URL_title")}
-          </Typography>
-
+        <CardContent
+          sx={{
+            py: 2,
+            maxHeight: 200,
+            overflowY: "auto",
+          }}
+        >
+          <Typography>{project.description}</Typography>
           <Typography align="left" gutterBottom={true} variant="body2">
             <a
               href={`https://${project.host}/w/${project.videoId}`}

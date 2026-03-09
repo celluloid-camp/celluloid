@@ -27,7 +27,7 @@ export function HomePageHero() {
           <Grid size={{ xs: 12, md: 8 }} sx={{ display: "flex" }}>
             <Stack spacing={3} justifyContent="center" sx={{ width: "100%" }}>
               <Box sx={{ width: { xs: 110, sm: 140 } }}>
-                <LogoSign />
+                <LogoSign sx={{ width: "100px", height: "auto" }} />
               </Box>
 
               <Box>

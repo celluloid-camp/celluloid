@@ -1,6 +1,7 @@
 "use client";
 
 import { AnnotationShape } from "@celluloid/db";
+import { zodResolver } from "@hookform/resolvers/zod";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import CenterFocusStrongOutlinedIcon from "@mui/icons-material/CenterFocusStrongOutlined";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
@@ -17,11 +18,11 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useFormik } from "formik";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import type { User } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
 import { trpc } from "@/lib/trpc/server";
@@ -90,14 +91,18 @@ export const AnnotationFormContent: React.FC<
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
 
   const t = useTranslations();
-  const validationSchema = Yup.object().shape({
-    startTime: Yup.number(),
-    stopTime: Yup.number(),
-    pause: Yup.boolean(),
-    text: Yup.string()
+
+  const annotationSchema = z.object({
+    startTime: z.number(),
+    stopTime: z.number(),
+    pause: z.boolean(),
+    text: z
+      .string()
       .min(2, "Comment doit comporter minimum 5 character")
-      .required("Commentaire est obligatoire"),
+      .nonempty("Commentaire est obligatoire"),
   });
+
+  type AnnotationFormValues = z.infer<typeof annotationSchema>;
 
   useEffect(() => {
     if (editedAnnotation) {
@@ -105,65 +110,78 @@ export const AnnotationFormContent: React.FC<
     }
   }, [editedAnnotation]);
 
-  const formik = useFormik({
-    initialValues: editedAnnotation
-      ? {
-          startTime: editedAnnotation.startTime,
-          stopTime: editedAnnotation.stopTime,
-          pause: editedAnnotation.pause,
-          text: editedAnnotation.text,
-        }
-      : {
-          startTime: mediaCurrentTime ?? 0,
-          stopTime: (mediaCurrentTime ?? 0) + 600, // 10 minutes
-          pause: true,
-          text: "",
-        },
-    validateOnMount: false,
-    validationSchema: validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      const pause = contextEditorVisible ? true : values.pause;
-      if (editedAnnotation) {
-        const changedAnnotation = await editMutation.mutateAsync({
-          annotationId: editedAnnotation.id,
-          projectId: project.id,
-          text: values.text,
-          startTime: values.startTime,
-          stopTime: values.stopTime,
-          pause,
-          extra: shapes.length > 0 ? shapes[0] : null,
-        });
-        if (changedAnnotation) {
-          formik.resetForm();
-          // setContextualEditorPosition(undefined);
-          resetShapes();
-          setEditedAnnotation(undefined);
-          handleClose();
-        }
-      } else {
-        const newAnnotation = await addMutation.mutateAsync({
-          projectId: project.id,
-          text: values.text,
-          startTime: values.startTime,
-          stopTime: values.stopTime,
-          pause,
-          extra: shapes.length > 0 ? shapes[0] : null,
-        });
-        if (newAnnotation) {
-          formik.resetForm();
-          // setContextualEditorPosition(undefined);
-          resetShapes();
-          handleClose();
-        }
+  const defaultValues: AnnotationFormValues = editedAnnotation
+    ? {
+        startTime: editedAnnotation.startTime,
+        stopTime: editedAnnotation.stopTime,
+        pause: editedAnnotation.pause,
+        text: editedAnnotation.text,
       }
+    : {
+        startTime: mediaCurrentTime ?? 0,
+        stopTime: (mediaCurrentTime ?? 0) + 600,
+        pause: true,
+        text: "",
+      };
 
-      queryClient.invalidateQueries(
-        api.annotation.byProjectId.queryFilter({ id: project.id }),
-      );
-    },
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting, isValid },
+    reset,
+  } = useForm<AnnotationFormValues>({
+    resolver: zodResolver(annotationSchema),
+    mode: "onChange",
+    defaultValues,
   });
+
+  const shapesRequiredError = contextEditorVisible && shapes.length === 0;
+
+  const onSubmit = async (values: AnnotationFormValues) => {
+    if (shapesRequiredError) {
+      return;
+    }
+
+    const pause = contextEditorVisible ? true : values.pause;
+
+    if (editedAnnotation) {
+      const changedAnnotation = await editMutation.mutateAsync({
+        annotationId: editedAnnotation.id,
+        projectId: project.id,
+        text: values.text,
+        startTime: values.startTime,
+        stopTime: values.stopTime,
+        pause,
+        extra: shapes.length > 0 ? shapes[0] : null,
+      });
+      if (changedAnnotation) {
+        reset(defaultValues);
+        resetShapes();
+        setEditedAnnotation(undefined);
+        handleClose();
+      }
+    } else {
+      const newAnnotation = await addMutation.mutateAsync({
+        projectId: project.id,
+        text: values.text,
+        startTime: values.startTime,
+        stopTime: values.stopTime,
+        pause,
+        extra: shapes.length > 0 ? shapes[0] : null,
+      });
+      if (newAnnotation) {
+        reset(defaultValues);
+        resetShapes();
+        handleClose();
+      }
+    }
+
+    queryClient.invalidateQueries(
+      api.annotation.byProjectId.queryFilter({ id: project.id }),
+    );
+  };
 
   const handleClickAway = () => {
     //TODO: handle click away
@@ -178,17 +196,17 @@ export const AnnotationFormContent: React.FC<
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box
         component="form"
-        onSubmit={formik.handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         sx={{ flexShrink: 0, pt: 5, paddingX: 2 }}
       >
         <Box sx={{ paddingX: 2 }}>
           <DurationSlider
             duration={duration}
-            startTime={formik.values.startTime}
-            stopTime={formik.values.stopTime}
+            startTime={watch("startTime")}
+            stopTime={watch("stopTime")}
             onChange={(start, stop) => {
-              formik.setFieldValue("startTime", start);
-              formik.setFieldValue("stopTime", stop);
+              setValue("startTime", start);
+              setValue("stopTime", stop);
             }}
             mono={contextEditorVisible}
           />
@@ -204,17 +222,14 @@ export const AnnotationFormContent: React.FC<
         >
           <InputBase
             id="text"
-            name="text"
+            {...register("text")}
             sx={{ ml: 1, flex: 1, color: "white" }}
             placeholder={t("annotation.contentPlaceholder")}
             multiline
             maxRows={5}
             minRows={2}
-            value={formik.values.text}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={!!formik.errors.text}
-            disabled={formik.isSubmitting}
+            error={!!errors.text}
+            disabled={isSubmitting}
             inputProps={{
               maxLength: 250,
             }}
@@ -262,9 +277,9 @@ export const AnnotationFormContent: React.FC<
                     color="secondary"
                     id="pause"
                     name="pause"
-                    checked={contextEditorVisible ? true : formik.values.pause}
+                    checked={contextEditorVisible ? true : watch("pause")}
                     disabled={contextEditorVisible}
-                    onChange={formik.handleChange}
+                    onChange={(_, checked) => setValue("pause", checked)}
                     icon={<PauseCircleOutlineOutlinedIcon />}
                     checkedIcon={<PauseCircleIcon />}
                     sx={{
@@ -291,7 +306,7 @@ export const AnnotationFormContent: React.FC<
             <Button
               size="small"
               variant="contained"
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={!isValid || isSubmitting || shapesRequiredError}
               disableElevation
               sx={{
                 borderRadius: 10,
@@ -300,7 +315,7 @@ export const AnnotationFormContent: React.FC<
                   backgroundColor: grey[700],
                 },
               }}
-              onClick={() => formik.handleSubmit()}
+              onClick={handleSubmit(onSubmit)}
             >
               {editedAnnotation
                 ? t("annotation.edit.send")
