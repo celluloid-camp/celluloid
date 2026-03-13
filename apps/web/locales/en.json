@@ -371,7 +371,8 @@
       },
       "button": {
         "add": " Add Chapter",
-        "reset": "Reset Chapters"
+        "reset": "Reset Chapters",
+        "regenerate": "Regenerate chapters"
       },
       "title": {
         "placeholder": "Chapter title",
@@ -540,7 +541,8 @@
     },
     "email": {
       "label": "Email",
-      "placeholder": "Email"
+      "placeholder": "Email",
+      "required": "Email required"
     },
     "password": {
       "label": "Password",
@@ -735,7 +737,9 @@
     "table": {
       "rowsPerPage": "Rows per page"
     },
-    "save": "Save"
+    "save": "Save",
+    "verified": "Verified",
+    "unverified": "Unverified"
   },
   "profil": {
     "update": {
@@ -750,6 +754,7 @@
       "userame": "Username",
       "username": "Username",
       "email": "Email",
+      "emailVerified": "Email Verified",
       "role": "Role",
       "createAt": "Created At"
     }

@@ -1,5 +1,5 @@
-import { LoadingButton } from "@mui/lab";
 import { Alert, Box, TextField, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
 import {
   useMutation,
   useQueryClient,
@@ -189,18 +189,17 @@ export default function EditProfileTabForm({
           />
         </Box>
 
-        <LoadingButton
+        <Button
           variant="contained"
           size="medium"
           color="primary"
           type="submit"
           data-testid="submit"
           loading={mutation.isPending}
-          disabled={mutation.isPending}
           sx={{ textTransform: "uppercase" }}
         >
           {t("profile.update.submit")}
-        </LoadingButton>
+        </Button>
       </form>
     </SettingsTabPanel>
   );

@@ -184,10 +184,16 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primaryTypographyProps={{
-              color: "white",
-              fontWeight: "medium",
-              variant: "body1",
+            slotProps={{
+              primary: {
+                color: "white",
+                fontWeight: "medium",
+                variant: "body1",
+                margin: 0,
+              },
+              secondary: {
+                margin: 0,
+              },
             }}
             primary={
               <React.Fragment>
@@ -199,7 +205,6 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                 </Typography>
               </React.Fragment>
             }
-            secondaryTypographyProps={{ paddingRight: 1 }}
             secondary={
               <React.Fragment>
                 <MultiLineTypography

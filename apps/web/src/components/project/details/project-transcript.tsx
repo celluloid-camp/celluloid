@@ -5,7 +5,6 @@ import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatStrikethroughIcon from "@mui/icons-material/FormatStrikethrough";
 import SaveIcon from "@mui/icons-material/Save";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -176,32 +175,11 @@ export function ProjectTranscript({ project, user }: Props) {
             </Typography>
           </Box>
         ) : data?.content && canEdit ? (
-          <>
-            <TiptapTranscript
-              content={data.content}
-              onContentChange={handleContentChange}
-              ref={transcriptRef}
-            />
-            {data && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  mt: 2,
-                }}
-              >
-                <Typography variant="caption" color="text.secondary">
-                  {t("project.note.update_at")}{" "}
-                  {data?.updatedAt
-                    ? dayjs(data.updatedAt).fromNow()
-                    : data?.createdAt
-                      ? dayjs(data.createdAt).fromNow()
-                      : ""}
-                </Typography>
-              </Box>
-            )}
-          </>
+          <TiptapTranscript
+            content={data.content}
+            onContentChange={handleContentChange}
+            ref={transcriptRef}
+          />
         ) : data?.content ? (
           <StyledMarkdown content={data?.content} />
         ) : (
@@ -216,44 +194,68 @@ export function ProjectTranscript({ project, user }: Props) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          borderTop: 1,
+          borderColor: "divider",
           gap: 1,
         }}
       >
-        <Stack direction="row" spacing={1}>
-          {canEdit && hasUnsavedChanges && (
-            <LoadingButton
-              variant="contained"
-              loading={updateMutation.isPending}
-              color="primary"
-              disabled={updateMutation.isPending}
-              startIcon={<SaveIcon />}
-              onClick={handleSave}
-            >
-              {t("project.transcript.button.save")}
-            </LoadingButton>
-          )}
-          {canGenerateTranscript && (
-            <LoadingButton
-              variant="contained"
-              loading={generateMutation.isPending}
-              color="primary"
-              disabled={generateMutation.isPending}
-              onClick={async () => {
-                generateMutation.mutate({
-                  projectId: project.id,
-                });
-              }}
-            >
-              {t("project.transcript.button.generate")}
-            </LoadingButton>
-          )}
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ justifyContent: "space-between", width: "100%" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography variant="caption" color="text.secondary">
+              {t("project.note.update_at")}{" "}
+              {data?.updatedAt
+                ? dayjs(data.updatedAt).fromNow()
+                : data?.createdAt
+                  ? dayjs(data.createdAt).fromNow()
+                  : ""}
+            </Typography>
+          </Box>
+
+          <Stack direction="row" spacing={1}>
+            {canEdit && hasUnsavedChanges && (
+              <Button
+                variant="contained"
+                loading={updateMutation.isPending}
+                color="primary"
+                startIcon={<SaveIcon />}
+                onClick={handleSave}
+              >
+                {t("project.transcript.button.save")}
+              </Button>
+            )}
+            {canGenerateTranscript && (
+              <Button
+                variant="contained"
+                loading={generateMutation.isPending}
+                color="primary"
+                onClick={async () => {
+                  generateMutation.mutate({
+                    projectId: project.id,
+                  });
+                }}
+              >
+                {t("project.transcript.button.generate")}
+              </Button>
+            )}
+          </Stack>
+          {data?.content ? (
+            <Button onClick={handleDownload} sx={{ color: colors.grey[800] }}>
+              <DownloadIcon />
+              {t("project.transcript.button.download")}
+            </Button>
+          ) : null}
         </Stack>
-        {data?.content ? (
-          <Button onClick={handleDownload} sx={{ color: colors.grey[800] }}>
-            <DownloadIcon />
-            {t("project.transcript.button.download")}
-          </Button>
-        ) : null}
       </CardActions>
     </Card>
   );
@@ -405,7 +407,9 @@ export function TranscriptErrorFallback({
       <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
         {t("project.transcript.failed")}
 
-        {process.env.NODE_ENV === "development" && <pre>{error.message}</pre>}
+        {process.env.NODE_ENV === "development" && (
+          <pre>{(error as Error).message}</pre>
+        )}
         <Button onClick={resetErrorBoundary}>
           {t("project.transcript.try-again")}
         </Button>

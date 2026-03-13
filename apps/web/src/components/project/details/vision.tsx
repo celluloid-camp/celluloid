@@ -1,7 +1,6 @@
 "use client";
 
 import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -128,11 +127,10 @@ export function ProjectVision({ project, user }: Props) {
         }}
       >
         {canGenerateVision && (
-          <LoadingButton
+          <Button
             variant="contained"
             loading={mutation.isPending}
             color="primary"
-            disabled={mutation.isPending}
             onClick={async () => {
               mutation.mutate({
                 projectId: project.id,
@@ -140,7 +138,7 @@ export function ProjectVision({ project, user }: Props) {
             }}
           >
             {t("project.vision.button.analyse")}
-          </LoadingButton>
+          </Button>
         )}
 
         {/* <Button onClick={() => manualCheck.mutate({ projectId: project.id })}>

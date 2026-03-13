@@ -1,5 +1,5 @@
-import { LoadingButton } from "@mui/lab";
 import { Alert, Box, TextField, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
@@ -149,17 +149,16 @@ export default function SecurityTabForm({
             label={t("profile.security.confirmation-password.label")}
           />
         </Box>
-        <LoadingButton
+        <Button
           variant="contained"
           color="primary"
           size="large"
           type="submit"
           data-testid="submit"
           loading={formik.isSubmitting}
-          disabled={formik.isSubmitting}
         >
           {t("profile.security.change-password.button")}
-        </LoadingButton>
+        </Button>
       </form>
     </SettingsTabPanel>
   );

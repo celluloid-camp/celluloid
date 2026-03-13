@@ -12,40 +12,9 @@ import {
   ProjectTranscript,
   TranscriptErrorFallback,
 } from "./project-transcript";
-import { ProjectSummary } from "./summary";
+import { SideBar } from "./sidebar";
+import { ProjectDescription, ProjectHeader } from "./summary";
 import { ProjectVision, ProjectVisionFallback } from "./vision";
-
-const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
-  ssr: false,
-  loading: () => (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-      }}
-    >
-      <Skeleton
-        variant="rectangular"
-        sx={{
-          borderRadius: 2,
-          width: "100%",
-          height: 200,
-          paddingY: 2,
-        }}
-      />
-      <Skeleton
-        variant="rectangular"
-        sx={{
-          borderRadius: 2,
-          width: "100%",
-          height: 100,
-          paddingY: 2,
-        }}
-      />
-    </Box>
-  ),
-});
 
 export function ProjectDetails({ projectId }: { projectId: string }) {
   const { data: session } = useSession();
@@ -58,20 +27,22 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
       sx={{
         backgroundColor: "brand.orange",
         minHeight: "100vh",
-        paddingY: 3,
+        paddingY: 2,
       }}
     >
       <Container maxWidth="lg">
         <Paper
           sx={{
             paddingY: 2,
-            paddingX: 4,
+            paddingX: 2,
             margin: 0,
             backgroundColor: "brand.green",
             minHeight: "100vh",
+            shadow: 0,
           }}
         >
-          <Grid container direction="row" alignItems="flex-start" spacing={4}>
+          <ProjectHeader project={project} />
+          <Grid container direction="row" alignItems="flex-start" spacing={2}>
             <Grid
               size={{
                 xs: 12,
@@ -79,7 +50,8 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
                 lg: 8,
               }}
             >
-              <ProjectSummary project={project} user={session?.user} />
+              <ProjectDescription project={project} />
+
               {session ? (
                 <ErrorBoundary FallbackComponent={() => <Box>Failed</Box>}>
                   <Suspense

@@ -2,11 +2,11 @@
 
 import { AnnotationShape } from "@celluloid/db";
 import { zodResolver } from "@hookform/resolvers/zod";
+import PlusIcon from "@mui/icons-material/Add";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import CenterFocusStrongOutlinedIcon from "@mui/icons-material/CenterFocusStrongOutlined";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
-import RateReviewIcon from "@mui/icons-material/RateReview";
 import {
   Box,
   Button,
@@ -56,15 +56,26 @@ export const AnnotationForm: React.FC<AnnotationFormProps> = (props) => {
 
   if (!showForm) {
     return (
-      <Button
-        variant="outlined"
-        onClick={handleOpen}
-        color="secondary"
-        sx={{ mx: 2 }}
-        startIcon={<RateReviewIcon />}
+      <Box
+        sx={{
+          borderTop: 1,
+          borderColor: grey[800],
+          pt: 2,
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+        }}
       >
-        {t("annotation.form.add-annotation")}
-      </Button>
+        <Button
+          variant="outlined"
+          onClick={handleOpen}
+          color="secondary"
+          sx={{ mx: 2 }}
+          startIcon={<PlusIcon />}
+        >
+          {t("annotation.form.add-annotation")}
+        </Button>
+      </Box>
     );
   }
   return <AnnotationFormContent onClose={handleClose} {...props} />;
@@ -197,9 +208,15 @@ export const AnnotationFormContent: React.FC<
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{ flexShrink: 0, pt: 5, paddingX: 2 }}
+        sx={{
+          flexShrink: 0,
+          pt: 2,
+          paddingX: 2,
+          borderTop: 1,
+          borderColor: grey[800],
+        }}
       >
-        <Box sx={{ paddingX: 2 }}>
+        <Box sx={{ paddingX: 0, pb: 2 }}>
           <DurationSlider
             duration={duration}
             startTime={watch("startTime")}

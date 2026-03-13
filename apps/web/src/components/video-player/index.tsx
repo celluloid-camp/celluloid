@@ -2,7 +2,12 @@
 
 import { Box, ThemeProvider } from "@mui/material";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useMediaRef } from "media-chrome/react/media-store";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+  useMediaRef,
+  useMediaSelector,
+} from "media-chrome/react/media-store";
 import ReactPlayer from "react-player";
 import type { PlayerEntry } from "react-player/players";
 import { AnnotationOverlayHints } from "../project/video/annotation/overlay-hints";
@@ -31,7 +36,44 @@ export default function VideoPlayer({
   projectId: string;
 }) {
   const mediaRefCallback = useMediaRef();
+  const dispatch = useMediaDispatch();
+  const mediaPaused = useMediaSelector(
+    (state) => typeof state.mediaPaused !== "boolean" || state.mediaPaused,
+  );
+  const mediaCurrentTime = useMediaSelector(
+    (state) => state.mediaCurrentTime ?? 0,
+  );
   const [muted] = useLocalStorage("muted", false);
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === " " || event.code === "Space") {
+      event.preventDefault();
+      dispatch({
+        type: mediaPaused
+          ? MediaActionTypes.MEDIA_PLAY_REQUEST
+          : MediaActionTypes.MEDIA_PAUSE_REQUEST,
+      });
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      dispatch({
+        type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+        detail: mediaCurrentTime - 30,
+      });
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      dispatch({
+        type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+        detail: mediaCurrentTime + 30,
+      });
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -40,7 +82,13 @@ export default function VideoPlayer({
           width: "100%",
           height: "100%",
           overflow: "hidden",
+          outline: "none",
+          "&:focus, &:focus-visible": {
+            outline: "none",
+          },
         }}
+        tabIndex={0}
+        onKeyDown={handleKeyPress}
       >
         <ReactPlayer
           ref={mediaRefCallback}

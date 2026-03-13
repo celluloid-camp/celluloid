@@ -1,5 +1,6 @@
 "use client";
 import { Box, List } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import type * as React from "react";
 import type { User } from "@/lib/auth-client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";

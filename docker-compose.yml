@@ -51,15 +51,6 @@ services:
     volumes:
       - ./.data/redis:/data
 
-  databasus:
-    container_name: databasus
-    image: databasus/databasus:latest
-    ports:
-      - "4005:4005"
-    volumes:
-      - ./.data/databasus-data:/databasus-data
-    restart: unless-stopped
-
   spotlight:
     pull_policy: always
     container_name: spotlight

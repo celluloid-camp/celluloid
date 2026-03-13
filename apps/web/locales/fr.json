@@ -368,7 +368,8 @@
       },
       "button": {
         "add": " Ajouter un plan",
-        "reset": "Supprimer le découpage automatique"
+        "reset": "Supprimer le découpage automatique",
+        "regenerate": "Regénérer les plans"
       },
       "title": {
         "placeholder": "Titre du plan",
@@ -534,7 +535,8 @@
     },
     "email": {
       "label": "Adresse email",
-      "placeholder": "Adresse email"
+      "placeholder": "Adresse email",
+      "required": "Saisissez votre adresse e-mail"
     },
     "password": {
       "label": "Mot de passe",
@@ -725,7 +727,9 @@
     "table": {
       "rowsPerPage": "Lignes par page"
     },
-    "save": "Enregistrer les modifications"
+    "save": "Enregistrer les modifications",
+    "verified": "Vérifié",
+    "unverified": "Non vérifié"
   },
   "profil": {
     "update": {
@@ -739,6 +743,7 @@
     "table": {
       "username": "Nom d'utilisateur",
       "email": "E-mail",
+      "emailVerified": "E-mail vérifié",
       "role": "Rôle",
       "createAt": "Date de création"
     }

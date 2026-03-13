@@ -4,11 +4,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
-  CircularProgress,
+  Chip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
   IconButton,
   Menu,
   MenuItem,
@@ -40,12 +43,14 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
   const t = useTranslations();
   const api = useTRPC();
   const queryClient = useQueryClient();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
   const validationSchema = Yup.object().shape({
     username: Yup.string().required(),
     firstName: Yup.string().required(),
     lastName: Yup.string().required(),
   });
-  const { enqueueSnackbar } = useSnackbar();
 
   const mutation = useMutation(
     api.admin.updateUser.mutationOptions({
@@ -54,6 +59,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
           variant: "success",
           key: "profile.update.success",
         });
+        setEditDialogOpen(false);
         queryClient.invalidateQueries(
           api.admin.getUserById.queryFilter({ id: data.id }),
         );
@@ -72,8 +78,6 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
       username: data.username,
       firstName: data.firstname ?? "",
       lastName: data.lastname ?? "",
-      email: data.email,
-      role: data.role,
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -84,10 +88,6 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
           firstName: values.firstName,
           lastName: values.lastName,
         });
-
-        queryClient.invalidateQueries(
-          api.admin.getUserById.queryFilter({ id: data.id }),
-        );
       } catch (error) {
         console.error("Error updating user:", error);
       }
@@ -96,101 +96,176 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
 
   return (
     <Paper sx={{ width: "100%", p: 4 }}>
-      <Box sx={{ display: "flex", marginBottom: 4 }}>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 4, gap: 2 }}>
         <BackButton href="/admin" ariaLabel="back to users list" />
         <Typography variant="h5">{t("profile.update.title")}</Typography>
       </Box>
 
-      <form onSubmit={formik.handleSubmit}>
-        <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              flexGrow: 1,
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Paper variant="outlined" sx={{ p: 3 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+            >
+              <Typography variant="h6">{t("profile.update.title")}</Typography>
+              <IconButton onClick={() => setEditDialogOpen(true)} size="small">
+                <EditIcon />
+              </IconButton>
+            </Box>
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("profile.update.username")}
+                </Typography>
+                <Typography variant="body1">{data.username}</Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  Email
+                </Typography>
+                <Typography variant="body1">{data.email}</Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("profile.update.firstname")}
+                </Typography>
+                <Typography variant="body1">{data.firstname || "-"}</Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("profile.update.lastname")}
+                </Typography>
+                <Typography variant="body1">{data.lastname || "-"}</Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  Role
+                </Typography>
+                <Typography variant="body1">{data.role}</Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("users.table.emailVerified")}
+                </Typography>
+                <Box sx={{ mt: 0.5 }}>
+                  <Chip
+                    label={
+                      data.emailVerified
+                        ? t("common.verified")
+                        : t("common.unverified")
+                    }
+                    color={data.emailVerified ? "success" : "default"}
+                    size="small"
+                    icon={data.emailVerified ? <CheckIcon /> : <CloseIcon />}
+                  />
+                </Box>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("users.table.createAt")}
+                </Typography>
+                <Typography variant="body1">
+                  {new Date(data.createdAt).toLocaleDateString()}
+                </Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 8 }}>
+          <UserProjects userId={data.id} />
+        </Grid>
+      </Grid>
+
+      <Dialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{t("profile.update.title")}</DialogTitle>
+        <DialogContent>
+          <form
+            onSubmit={(e) => {
+              formik.handleSubmit(e);
             }}
           >
-            <TextField
-              id="username"
-              name="username"
-              label={t("profile.update.username")}
-              fullWidth
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.username && Boolean(formik.errors.username)}
-              helperText={formik.touched.username && formik.errors.username}
-              disabled={formik.isSubmitting}
-            />
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
+            >
+              <TextField
+                id="username"
+                name="username"
+                label={t("profile.update.username")}
+                fullWidth
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.username && Boolean(formik.errors.username)
+                }
+                helperText={formik.touched.username && formik.errors.username}
+                disabled={formik.isSubmitting}
+              />
 
-            <TextField
-              id="firstname"
-              name="firstName"
-              label={t("profile.update.firstname")}
-              fullWidth
-              value={formik.values.firstName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.firstName && Boolean(formik.errors.firstName)
-              }
-              helperText={formik.touched.firstName && formik.errors.firstName}
-            />
+              <TextField
+                id="firstname"
+                name="firstName"
+                label={t("profile.update.firstname")}
+                fullWidth
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.firstName && Boolean(formik.errors.firstName)
+                }
+                helperText={formik.touched.firstName && formik.errors.firstName}
+              />
 
-            <TextField
-              id="lastname"
-              name="lastName"
-              label={t("profile.update.lastname")}
-              fullWidth
-              value={formik.values.lastName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-              helperText={formik.touched.lastName && formik.errors.lastName}
-            />
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              flexGrow: 1,
-            }}
-          >
-            <TextField
-              id="email"
-              name="email"
-              label="Email"
-              fullWidth
-              value={formik.values?.email}
-              disabled
-            />
+              <TextField
+                id="lastname"
+                name="lastName"
+                label={t("profile.update.lastname")}
+                fullWidth
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.lastName && Boolean(formik.errors.lastName)
+                }
+                helperText={formik.touched.lastName && formik.errors.lastName}
+              />
 
-            <TextField
-              id="role"
-              name="role"
-              label="Role"
-              fullWidth
-              value={formik.values.role}
-              disabled
-            />
-          </Box>
-        </Box>
-
-        <Box sx={{ mt: 2 }}>
-          <LoadingButton
-            variant="contained"
-            type="submit"
-            loading={formik.isSubmitting}
-            disabled={formik.isSubmitting || !formik.dirty}
-          >
-            {t("profile.update.submit")}
-          </LoadingButton>
-        </Box>
-      </form>
-
-      <UserProjects userId={data.id} />
+              <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    formik.resetForm();
+                    setEditDialogOpen(false);
+                  }}
+                  disabled={formik.isSubmitting}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  loading={formik.isSubmitting}
+                >
+                  {t("profile.update.submit")}
+                </Button>
+              </Box>
+            </Box>
+          </form>
+        </DialogContent>
+      </Dialog>
     </Paper>
   );
 }
@@ -281,18 +356,59 @@ function UserProjects({ userId }: UserProjectsProps) {
   };
 
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box sx={{ height: "100%" }}>
       <Typography variant="h6" marginBottom={2}>
         {t("admin.projects.title")}
       </Typography>
 
       {isLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-          <CircularProgress />
-        </Box>
+        <Paper variant="outlined">
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t("admin.project.label.title")}</TableCell>
+                  <TableCell>{t("admin.project.label.public")}</TableCell>
+                  <TableCell>{t("admin.project.shared.label")}</TableCell>
+                  <TableCell>{t("admin.project.label.collab")}</TableCell>
+                  <TableCell>{t("admin.project.label.code")}</TableCell>
+                  <TableCell>{t("admin.project.label.date")}</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {[...Array(5)].map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={60} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={80} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="circular" width={24} height={24} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
       ) : (
         <>
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} variant="outlined">
             <Table>
               <TableHead>
                 <TableRow>
@@ -388,26 +504,92 @@ function UserProjects({ userId }: UserProjectsProps) {
 
 export function UserSkeleton() {
   return (
-    <Paper sx={{ width: "100%", p: 2 }}>
+    <Paper sx={{ width: "100%", p: 4 }}>
       <Skeleton width="200px" height={32} sx={{ mb: 2 }} />
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          mt: 2,
-          maxWidth: "500px",
-        }}
-      >
-        <Skeleton variant="rectangular" height={56} width="100%" />
-        <Skeleton variant="rectangular" height={56} width="100%" />
-        <Skeleton variant="rectangular" height={56} width="100%" />
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Paper variant="outlined" sx={{ p: 3 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+            >
+              <Skeleton variant="text" width={120} height={28} />
+              <Skeleton variant="circular" width={32} height={32} />
+            </Box>
 
-        <Box sx={{ mt: 2 }}>
-          <Skeleton variant="rectangular" width={120} height={36} />
-        </Box>
-      </Box>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {[...Array(7)].map((_, index) => (
+                <Box key={index}>
+                  <Skeleton variant="text" width={80} height={20} />
+                  <Skeleton variant="text" width={150} height={24} />
+                </Box>
+              ))}
+            </Box>
+          </Paper>
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 8 }}>
+          <Skeleton variant="text" width={150} height={28} sx={{ mb: 2 }} />
+          <Paper variant="outlined">
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <Skeleton variant="text" width={60} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={60} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={80} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={40} />
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {[...Array(5)].map((_, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Skeleton variant="text" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="circular" width={20} height={20} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="circular" width={20} height={20} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="circular" width={20} height={20} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width={60} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width={80} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="circular" width={24} height={24} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
+      </Grid>
     </Paper>
   );
 }

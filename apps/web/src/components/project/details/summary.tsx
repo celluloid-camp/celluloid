@@ -23,14 +23,13 @@ import dayjs from "@/utils/dayjs";
 
 interface Props {
   project: ProjectById;
-  user?: User;
 }
 
-export function ProjectSummary({ project, user }: Props) {
+export function ProjectHeader({ project }: Props) {
   const t = useTranslations();
 
   return (
-    <Box sx={{ padding: 0 }}>
+    <Box sx={{ paddingBottom: 2 }}>
       {project?.playlist ? (
         <Typography
           align="justify"
@@ -42,11 +41,7 @@ export function ProjectSummary({ project, user }: Props) {
         </Typography>
       ) : null}
 
-      <Typography
-        align="left"
-        variant="h3"
-        sx={{ fontSize: { xs: 24, sm: 32 } }}
-      >
+      <Typography align="left" variant="h4">
         {project.title}
       </Typography>
 
@@ -61,21 +56,15 @@ export function ProjectSummary({ project, user }: Props) {
         <Avatar
           sx={{
             background: project.user.color,
-            borderWidth: 2,
+            borderWidth: 1,
             borderColor: project.user.color,
             borderStyle: "solid",
-            width: { xs: 32, sm: 40 },
-            height: { xs: 32, sm: 40 },
           }}
           src={project.user.image ?? undefined}
         >
           {project.user.initial}
         </Avatar>
-        <Box
-          display="flex"
-          flexDirection={"column"}
-          sx={{ ml: { xs: 0, sm: 1 } }}
-        >
+        <Box display="flex" flexDirection={"column"} sx={{ ml: 0 }}>
           <Typography>{project.user.username}</Typography>
           <Typography variant="caption">
             {dayjs(project.publishedAt).format("DD/MM/YYYY")}
@@ -86,7 +75,7 @@ export function ProjectSummary({ project, user }: Props) {
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={1}
-        sx={{ flexWrap: "wrap" }}
+        sx={{ flexWrap: "wrap", pt: 1 }}
       >
         {project.public && (
           <Chip
@@ -107,13 +96,21 @@ export function ProjectSummary({ project, user }: Props) {
           <Chip key={k} label={k} size="small" />
         ))}
       </Stack>
+    </Box>
+  );
+}
 
-      <Card sx={{ my: 2, maxHeight: 300 }}>
+export function ProjectDescription({ project }: Props) {
+  const t = useTranslations();
+
+  return (
+    <Box sx={{ padding: 0 }}>
+      <Card sx={{ maxHeight: 300 }}>
         <CardHeader
           title={t("project.description")}
           sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
           action={
-            user && user.id === project.user.id ? (
+            project.editable ? (
               <Link href={`/project/${project.id}/edit`}>
                 <Button variant="text" size="small" startIcon={<EditIcon />}>
                   {t("project.edit.button")}

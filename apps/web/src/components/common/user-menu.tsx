@@ -27,7 +27,7 @@ export const UserMenu = () => {
   React.useEffect(() => {
     setMounted(true);
   }, []);
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending, refetch } = useSession();
   const t = useTranslations();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -42,6 +42,7 @@ export const UserMenu = () => {
 
   const handleLogout = async () => {
     await signOut();
+    await refetch();
     router.replace("/");
   };
 
@@ -59,8 +60,6 @@ export const UserMenu = () => {
               borderWidth: 2,
               borderColor: session.user.color,
               borderStyle: "solid",
-              width: 40,
-              height: 40,
             }}
             src={session.user.image ?? undefined}
           >
@@ -133,7 +132,9 @@ export const UserMenu = () => {
           },
         }}
       >
-        <ListSubheader>{session?.user?.username}</ListSubheader>
+        <ListSubheader className="mb-1 mt-0 gap-0">
+          <span>{session?.user?.email}</span>
+        </ListSubheader>
         <Divider />
         {session?.user?.role === "admin" ? (
           <MenuItem

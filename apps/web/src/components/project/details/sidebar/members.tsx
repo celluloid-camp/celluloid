@@ -1,4 +1,5 @@
-import { List, ListItem, Paper, Stack, Typography } from "@mui/material";
+import PeopleIcon from "@mui/icons-material/People";
+import { Box, List, ListItem, Paper, Stack, Typography } from "@mui/material";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type * as React from "react";
@@ -26,16 +27,28 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
   return (
     <Paper
       sx={{
-        paddingX: 3,
         marginY: 2,
-        paddingY: 3,
       }}
     >
-      <Typography variant="h6" mb={2}>
-        {t("project.members", {
-          count: members.length == 0 ? 1 : members.length,
-        })}
-      </Typography>
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+          paddingX: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyItems: "center",
+          gap: 1,
+          paddingY: 2,
+        }}
+      >
+        <PeopleIcon />
+        <Typography variant="h6">
+          {t("project.members", {
+            count: members.length == 0 ? 1 : members.length,
+          })}
+        </Typography>
+      </Box>
       <List
         dense={true}
         sx={{
@@ -44,7 +57,8 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
           bgcolor: "neutral.100",
           position: "relative",
           overflow: "auto",
-          borderRadius: 2,
+          borderBottomRightRadius: 4,
+          borderBottomLeftRadius: 4,
           minHeight: 300,
           maxHeight: 300,
           "& ul": { padding: 0 },

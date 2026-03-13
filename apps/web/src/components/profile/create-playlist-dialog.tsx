@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -477,14 +476,13 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
             <Button onClick={handleClose} disabled={isSubmitting}>
               {t("playlist.edit.cancel")}
             </Button>
-            <LoadingButton
+            <Button
               type="submit"
               variant="contained"
               loading={createMutation.isPending}
-              disabled={isSubmitting}
             >
               {t("playlist.create.submit")}
-            </LoadingButton>
+            </Button>
           </Stack>
         </DialogActions>
       </form>

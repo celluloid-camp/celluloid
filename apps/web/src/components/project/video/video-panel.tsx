@@ -55,7 +55,6 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
           sx={{
             borderBottom: 1,
             borderColor: grey[800],
-            marginX: 2,
             position: "relative",
             display: { xs: "none", md: "block" },
           }}
@@ -64,11 +63,15 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             onChange={handleChange}
             textColor="secondary"
             indicatorColor="secondary"
-            sx={{ height: TABLIST_HEIGHT }}
+            sx={{ height: TABLIST_HEIGHT, px: 2 }}
           >
             <Tab
               icon={
-                <Badge badgeContent={annotationCount} color="secondary">
+                <Badge
+                  badgeContent={annotationCount}
+                  color="secondary"
+                  showZero={true}
+                >
                   <SpeakerNotesIcon />
                 </Badge>
               }

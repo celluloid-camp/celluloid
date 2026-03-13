@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoadingButton } from "@mui/lab";
 import { Box, DialogActions, DialogContent, Divider } from "@mui/material";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -65,16 +65,15 @@ export function ForgotForm() {
         <Divider />
         <DialogActions sx={{ marginY: 1, marginX: 2 }}>
           <Box display="flex" justifyContent={"flex-end"} flex={1}>
-            <LoadingButton
+            <Button
               variant="contained"
               size="small"
               color="primary"
               type="submit"
               loading={isSubmitting}
-              disabled={isSubmitting}
             >
               {t("forgot.button.submit")}
-            </LoadingButton>
+            </Button>
           </Box>
         </DialogActions>
       </form>

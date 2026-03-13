@@ -76,6 +76,7 @@ export const celluloidThemeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           backgroundColor: "#EFEFEF",
+          minHeight: 52,
         },
       },
     },
@@ -84,6 +85,9 @@ export const celluloidThemeOptions: ThemeOptions = {
         root: {
           backgroundColor: neutral[500],
           color: "#FFFFFF",
+          width: 34,
+          height: 34,
+          fontSize: 12,
         },
       },
     },
@@ -127,6 +131,33 @@ export const celluloidThemeOptions: ThemeOptions = {
           borderColor: divider,
           borderStyle: "solid",
           borderWidth: 1,
+          borderRadius: 6,
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          minHeight: 34,
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingLeft: 12,
+          paddingRight: 12,
+          fontSize: 12,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          minHeight: 38,
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingLeft: 12,
+          paddingRight: 12,
+          "& .MuiListItemText-primary": {
+            fontSize: 13,
+          },
         },
       },
     },

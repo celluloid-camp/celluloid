@@ -1,20 +1,33 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import PlusIcon from "@mui/icons-material/Add";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import DeleteIcon from "@mui/icons-material/Delete";
+import LoopIcon from "@mui/icons-material/Loop";
 import {
   Box,
   Button,
+  ButtonGroup,
+  ClickAwayListener,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Fade,
+  Grow,
   InputBase,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import type { User } from "@/lib/auth-client";
@@ -31,6 +44,8 @@ type ChapterFormProps = {
 export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const [showForm, setShowForm] = useState(false);
 
+  const [openMenu, setOpenMenu] = useState(false);
+
   const confirm = useConfirm();
   const t = useTranslations();
 
@@ -38,12 +53,22 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const queryClient = useQueryClient();
   const resetMutation = useMutation(api.chapter.reset.mutationOptions());
 
-  const handleOpen = () => {
+  const anchorRef = useRef<HTMLDivElement>(null);
+
+  const handleOpenForm = () => {
     setShowForm(true);
   };
 
-  const handleClose = () => {
+  const handleCloseForm = () => {
     setShowForm(false);
+  };
+
+  const handleCloseMenu = () => {
+    setOpenMenu(false);
+  };
+
+  const handleToggle = () => {
+    setOpenMenu((prevOpen) => !prevOpen);
   };
 
   const handleReset = () => {
@@ -88,35 +113,95 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   };
 
   return (
-    <>
-      <Fade in={!showForm} timeout={300} mountOnEnter unmountOnExit>
-        <Box
-          sx={{ display: showForm ? "none" : "block", flex: 1, paddingX: 2 }}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        alignItems: "flex-end",
+        paddingX: 2,
+        paddingTop: 2,
+        borderTop: 1,
+        borderColor: grey[800],
+      }}
+    >
+      <ButtonGroup
+        variant="outlined"
+        color="secondary"
+        size="small"
+        ref={anchorRef}
+        aria-label="Button group with a nested menu"
+      >
+        <Button onClick={handleOpenForm} startIcon={<PlusIcon />}>
+          {t("chapters.form.button.add")}
+        </Button>
+        <Button
+          size="small"
+          aria-haspopup="menu"
+          onClick={handleToggle}
+          sx={{ width: 10 }}
         >
-          <Button
-            variant="outlined"
-            onClick={handleOpen}
-            color="secondary"
-            sx={{ width: "100%" }}
-            startIcon={<BookmarksIcon />}
+          <ArrowDropDownIcon />
+        </Button>
+      </ButtonGroup>
+      <Popper
+        open={openMenu}
+        anchorEl={anchorRef.current}
+        sx={{
+          backgroundColor: "background.dark",
+          color: "white",
+          zIndex: 1,
+        }}
+        role={undefined}
+        transition
+        disablePortal
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === "bottom" ? "center top" : "center bottom",
+            }}
           >
-            {t("chapters.form.button.add")}
-          </Button>
-          {props.chapters.length > 0 && (
-            <Button
-              size="small"
-              variant="text"
-              color="warning"
-              onClick={handleReset}
-              disabled={resetMutation.isPending}
-            >
-              {t("chapters.form.button.reset")}
-            </Button>
-          )}
-        </Box>
-      </Fade>
-      <ChapterFormContent open={showForm} onClose={handleClose} {...props} />
-    </>
+            <Paper>
+              <ClickAwayListener onClickAway={handleCloseMenu}>
+                <MenuList id="split-button-menu" autoFocusItem>
+                  <MenuItem
+                    onClick={handleReset}
+                    disabled={
+                      resetMutation.isPending || props.chapters.length === 0
+                    }
+                  >
+                    <ListItemIcon>
+                      <DeleteIcon fontSize="small" />
+                    </ListItemIcon>
+
+                    <ListItemText>
+                      {t("chapters.form.button.reset")}
+                    </ListItemText>
+                  </MenuItem>
+                  <MenuItem onClick={handleReset}>
+                    <ListItemIcon>
+                      <LoopIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>
+                      {t("chapters.form.button.regenerate")}
+                    </ListItemText>
+                  </MenuItem>
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+
+      <ChapterFormContent
+        open={showForm}
+        onClose={handleCloseForm}
+        {...props}
+      />
+    </Box>
   );
 };
 

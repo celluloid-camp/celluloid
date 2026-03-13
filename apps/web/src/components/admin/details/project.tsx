@@ -1,5 +1,4 @@
 "use client";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   CircularProgress,
@@ -15,6 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
@@ -264,14 +264,14 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
             </Box>
           </Box>
           <Box sx={{ mt: 3 }}>
-            <LoadingButton
+            <Button
               variant="contained"
               type="submit"
               loading={formik.isSubmitting}
-              disabled={formik.isSubmitting || !formik.dirty}
+              disabled={!formik.dirty}
             >
               {t("profile.update.submit")}
-            </LoadingButton>
+            </Button>
           </Box>
         </Box>
       </form>

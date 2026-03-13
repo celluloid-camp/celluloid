@@ -38,6 +38,7 @@
     "workflow": "4.2.0-beta.67",
     "zod": "^4.3.6",
     "drizzle-orm": "^0.45.1",
+    "pino": "^10.3.1",
     "drizzle-kit": "^0.31.9"
   },
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",

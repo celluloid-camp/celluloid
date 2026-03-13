@@ -46,7 +46,7 @@ export default async function RootLayout({
     >
       <body>
         <NextIntlClientProvider>
-          <AppRouterCacheProvider options={{ key: "css" }}>
+          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <AppProviders>{children}</AppProviders>
           </AppRouterCacheProvider>
         </NextIntlClientProvider>

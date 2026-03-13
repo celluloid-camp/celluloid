@@ -3,8 +3,11 @@ import { generate6DigitOtp } from "@celluloid/utils";
 import { handleUserSignup } from "@celluloid/workflows/user-signup";
 import { betterAuth, SecondaryStorage } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { admin, emailOTP, genericOAuth, username } from "better-auth/plugins";
+import { localization } from "better-auth-localization";
+import randomColor from "randomcolor";
 import { createClient } from "redis";
 import { start } from "workflow/api";
 import { keys } from "./keys";
@@ -35,12 +38,12 @@ export const auth = betterAuth({
       color: {
         type: "string",
         required: false,
-        input: false, // don't allow user to set role
+        input: true, // don't allow user to set role
       },
       initial: {
         type: "string",
         required: false,
-        input: false, // don't allow user to set role
+        input: true, // don't allow user to set role
       },
     },
   },
@@ -52,7 +55,7 @@ export const auth = betterAuth({
     }),
     emailOTP({
       overrideDefaultEmailVerification: true,
-      sendVerificationOnSignUp: true,
+      sendVerificationOnSignUp: false,
       generateOTP() {
         if (process.env.NODE_ENV === "test" || process.env.CI_TEST === "true") {
           return "123456";
@@ -65,12 +68,16 @@ export const auth = betterAuth({
           return;
         }
 
-        if (type === "email-verification") {
+        if (type === "sign-in") {
           await start(handleUserSignup, [email, otp]);
         }
       },
     }),
     nextCookies(),
+    localization({
+      defaultLocale: "fr-FR",
+      fallbackLocale: "default",
+    }),
   ],
   secondaryStorage: getSecondaryStorage(),
   session: {
@@ -83,13 +90,33 @@ export const auth = betterAuth({
     database: {
       generateId: false,
     },
-    cookie: {
-      name: "celluloid_session",
-      options: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+    cookies: {
+      session_token: {
+        name: "celluloid_session",
       },
     },
+  },
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path.includes("sign-up")) {
+        return {
+          context: {
+            ...ctx,
+            body: {
+              ...ctx.body,
+              initial: ctx.body.username
+                .split(" ")
+                .map((part: string) => part.substring(0, 1))
+                .join(""),
+              color: randomColor({
+                seed: ctx.body.id,
+                luminosity: "bright",
+              }),
+            },
+          },
+        };
+      }
+    }),
   },
 });
 

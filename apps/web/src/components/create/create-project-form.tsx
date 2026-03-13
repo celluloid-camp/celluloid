@@ -1,7 +1,7 @@
 "use client";
 
-import { LoadingButton } from "@mui/lab";
 import { Box, Grid, Switch, TextField, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
@@ -298,17 +298,16 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         </Grid>
       </Grid>
       <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
-        <LoadingButton
+        <Button
           variant="contained"
           data-testid="submit"
           size="large"
           color="primary"
           type="submit"
           loading={formik.isSubmitting}
-          disabled={formik.isSubmitting}
         >
           {t("project.createAction")}
-        </LoadingButton>
+        </Button>
       </Box>
     </form>
   );

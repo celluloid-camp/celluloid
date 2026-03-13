@@ -33,7 +33,7 @@ export default async function Layout({
         >
           {modal}
           <Header />
-          <Box sx={{ flexGrow: 1, pt: 8 }}>{children}</Box>
+          <Box sx={{ flexGrow: 1, pt: 6 }}>{children}</Box>
           <Footer />
         </Box>
       </NotificationsProvider>

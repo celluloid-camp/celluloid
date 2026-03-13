@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Grid,
   Link,
+  Skeleton,
   Stack,
   styled,
   Typography,
@@ -49,7 +50,7 @@ export function ProjectThumbnail({ project }: Props) {
         onClick={handleClick}
         sx={{
           borderRadius: 2,
-          border: "1px solid #000000",
+          border: 0,
           overflow: "hidden",
           position: "relative",
         }}
@@ -85,6 +86,7 @@ export function ProjectThumbnail({ project }: Props) {
           sx={{
             overflow: "hidden",
             minHeight: 200,
+            border: 0,
             borderRadius: 2, // optional
             "& img": {
               transition:
@@ -101,10 +103,17 @@ export function ProjectThumbnail({ project }: Props) {
           <Image
             src={project.thumbnailURL}
             duration={500}
-            showLoading={<CircularProgress />}
-            bgColor="#000000"
+            showLoading={
+              <Skeleton
+                variant="rectangular"
+                height={200}
+                width="100%"
+                sx={{ borderRadius: 2 }}
+              />
+            }
             wrapperStyle={{
               height: 200,
+              border: 0,
             }}
           />
         </Box>

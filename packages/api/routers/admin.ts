@@ -126,6 +126,8 @@ export const adminRouter = router({
           firstname: user.firstname,
           lastname: user.lastname,
           email: user.email,
+          emailVerified: user.emailVerified,
+          createdAt: user.createdAt,
           role: user.role,
         })
         .from(user)

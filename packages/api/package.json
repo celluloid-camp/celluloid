@@ -23,7 +23,7 @@
     "papaparse": "^5.4.1",
     "superjson": "catalog:",
     "uuid": "^9.0.1",
-    "workflow": "^4.1.0-beta.57",
+    "workflow": "catalog:",
     "ws": "^8.18.0",
     "zod": "catalog:"
   },

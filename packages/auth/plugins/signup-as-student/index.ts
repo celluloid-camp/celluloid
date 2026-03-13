@@ -5,7 +5,7 @@ import {
   createAuthMiddleware,
 } from "better-auth/api";
 import { setSessionCookie } from "better-auth/cookies";
-
+import randomColor from "randomcolor";
 import { z } from "zod";
 import { generateId } from "../../lib/utils";
 
@@ -13,7 +13,7 @@ const ERROR_CODES = {
   INVALID_USERNAME_OR_PASSWORD: "invalid username or password",
   EMAIL_NOT_VERIFIED: "email not verified",
   UNEXPECTED_ERROR: "unexpected error",
-  USERNAME_IS_ALREADY_TAKEN: "username is already taken. please try another.",
+  USERNAME_IS_ALREADY_TAKEN: "username is already taken. please try another",
   FAILED_TO_CREATE_USER: "Failed to create user",
   COULD_NOT_CREATE_SESSION: "Could not create session",
   ANONYMOUS_USERS_CANNOT_SIGN_IN_AGAIN_ANONYMOUSLY:
@@ -101,6 +101,14 @@ export const signupAsStudent = () => {
             username: ctx.body.username,
             createdAt: new Date(),
             updatedAt: new Date(),
+            initial: ctx.body.username
+              .split(" ")
+              .map((part: string) => part.substring(0, 1))
+              .join(""),
+            color: randomColor({
+              seed: id,
+              luminosity: "bright",
+            }),
           });
           if (!newUser) {
             return ctx.json(null, {
@@ -167,6 +175,7 @@ export const signupAsStudent = () => {
               if (user) {
                 throw new APIError("UNPROCESSABLE_ENTITY", {
                   message: ERROR_CODES.USERNAME_IS_ALREADY_TAKEN,
+                  code: "USERNAME_IS_ALREADY_TAKEN",
                 });
               }
             }
