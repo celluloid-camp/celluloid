@@ -197,10 +197,18 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             }}
             primary={
               <React.Fragment>
-                <Typography component="span" color="white" variant="body2">
+                <Typography
+                  component="span"
+                  className="text-white"
+                  variant="body2"
+                >
                   {annotation.user.username}
                 </Typography>{" "}
-                <Typography fontWeight="medium" variant="caption" color="gray">
+                <Typography
+                  fontWeight="medium"
+                  variant="caption"
+                  className="text-gray-500"
+                >
                   {"-"} {dayjs(annotation.createdAt).fromNow()}
                 </Typography>
               </React.Fragment>
@@ -227,13 +235,13 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
               <Stack direction={"row"}>
                 <Tooltip title={t("comment.tooltip.title.update")} arrow>
                   <IconButton onClick={handleEdit}>
-                    <EditIcon sx={{ fontSize: 18 }} />
+                    <EditIcon className="text-white/50 size-5" />
                   </IconButton>
                 </Tooltip>
                 <Divider orientation="vertical" flexItem light />
                 <Tooltip title={t("comment.tooltip.title.delete")} arrow>
                   <IconButton onClick={handleDelete}>
-                    <DeleteIcon sx={{ fontSize: 18 }} />
+                    <DeleteIcon className="text-white/50 size-5" />
                   </IconButton>
                 </Tooltip>
               </Stack>

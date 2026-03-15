@@ -94,12 +94,10 @@ export default function UploadAvatar({
         alt="User Avatar"
         sx={{
           background: color,
-          width: 100,
-          height: 100,
-          borderWidth: 2,
           borderColor: color,
           borderStyle: "solid",
         }}
+        className="w-20 h-20 border-2 border-color-color text-2xl"
         src={avatar}
       >
         {initial}

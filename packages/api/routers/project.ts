@@ -5,7 +5,6 @@ import {
   project,
   user,
   userToProject,
-  videoAnalysis,
 } from "@celluloid/db";
 import { getDbErrorMessage, withPagination } from "@celluloid/db/utils";
 import { generateUniqueShareName } from "@celluloid/utils";
@@ -13,70 +12,10 @@ import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
 import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
 import { visionAnalysisWorkflow } from "@celluloid/workflows/vision";
 import { TRPCError } from "@trpc/server";
-import { and, count, desc, eq, ilike, inArray, lt, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, ne } from "drizzle-orm";
 import { start } from "workflow/api";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
-import { PlaylistSchema } from "./playlist";
-import { fetchProjectsEnrichment } from "./user";
-
-const UserSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-  role: z.string().nullable(),
-  firstname: z.string().nullable(),
-  lastname: z.string().nullable(),
-  bio: z.string().nullable(),
-  avatar: z
-    .object({
-      id: z.string(),
-      path: z.string(),
-      publicUrl: z.string(),
-    })
-    .nullable()
-    .optional(),
-});
-
-const MemberSchema = z.object({
-  id: z.number(),
-  userId: z.string().nullable(),
-  projectId: z.string().nullable(),
-  user: UserSchema.nullable(),
-});
-
-export const ProjectSchema = z.object({
-  id: z.string(),
-  videoId: z.string(),
-  userId: z.string(),
-  title: z.string(),
-  description: z.string(),
-  host: z.string().nullable(),
-  publishedAt: z.string(),
-  public: z.boolean(),
-  collaborative: z.boolean(),
-  shared: z.boolean(),
-  shareCode: z.string().nullable(),
-  shareExpiresAt: z.string().nullable(),
-  extra: z.record(z.string(), z.unknown()),
-  playlistId: z.string().nullable(),
-  duration: z.number(),
-  thumbnailURL: z.string(),
-  user: UserSchema.nullable(),
-  playlist: PlaylistSchema.nullable(),
-  members: z.array(MemberSchema),
-  _count: z.object({
-    annotations: z.number(),
-    members: z.number(),
-  }),
-});
-
-function toProjectResponse(p: {
-  thumbnailURL?: string | null;
-  [k: string]: unknown;
-}) {
-  const { thumbnailURL, ...rest } = p;
-  return { ...rest, thumbnailURL: thumbnailURL ?? "" };
-}
 
 export const projectRouter = router({
   list: publicProcedure
@@ -85,18 +24,60 @@ export const projectRouter = router({
         pageSize: z.number().min(1).max(100).default(50),
         page: z.number().min(1).default(1),
         term: z.string().nullish(),
+        scope: z.enum(["explorer", "my", "collaboration"]).default("explorer"),
+        sortBy: z
+          .enum(["recent_added", "publication_date", "name"])
+          .default("recent_added"),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { page, pageSize, term } = input;
+      const { page, pageSize, term, scope, sortBy } = input;
 
-      let whereClause:
+      let scopeWhere:
         | ReturnType<typeof eq>
-        | ReturnType<typeof or>
+        | ReturnType<typeof and>
+        | ReturnType<typeof inArray>
         | undefined;
-      if (term) {
-        whereClause = ilike(project.title, `%${term}%`);
+
+      if (scope === "my") {
+        if (!ctx.user?.id) {
+          return { items: [], total: 0 };
+        }
+        scopeWhere = eq(project.userId, ctx.user.id);
+      } else if (scope === "collaboration") {
+        if (!ctx.user?.id) {
+          return { items: [], total: 0 };
+        }
+        const memberProjectIds = (
+          await db
+            .select({ projectId: userToProject.projectId })
+            .from(userToProject)
+            .where(eq(userToProject.userId, ctx.user.id))
+        )
+          .map((r) => r.projectId)
+          .filter((id): id is string => id != null);
+
+        if (memberProjectIds.length === 0) {
+          return { items: [], total: 0 };
+        }
+        scopeWhere = and(
+          inArray(project.id, memberProjectIds),
+          ne(project.userId, ctx.user.id),
+        )!;
       }
+
+      const termWhere = term ? ilike(project.title, `%${term}%`) : undefined;
+      const whereClause = scopeWhere
+        ? termWhere
+          ? and(scopeWhere, termWhere)
+          : scopeWhere
+        : termWhere;
+      const orderBy =
+        sortBy === "name"
+          ? [asc(project.title)]
+          : sortBy === "publication_date"
+            ? [asc(project.publishedAt)]
+            : [desc(project.publishedAt)];
 
       const [total] = await db
         .select({ count: count(project.id) })
@@ -131,7 +112,7 @@ export const projectRouter = router({
 
       const paginatedQuery = withPagination({
         query: baseQuery,
-        orderBy: [desc(project.publishedAt)],
+        orderBy,
         pageSize,
         page,
       });

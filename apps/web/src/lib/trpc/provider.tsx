@@ -1,7 +1,9 @@
 "use client";
 import type { AppRouter } from "@celluloid/api";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import {
   createTRPCClient,
   httpBatchLink,
@@ -47,14 +49,35 @@ export const trpcClient = createTRPCClient<AppRouter>({
   ],
 });
 
+const persister =
+  typeof window !== "undefined"
+    ? createAsyncStoragePersister({
+        storage: window.localStorage,
+      })
+    : undefined;
+
 export function TRPCProvider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
+
+  if (!persister) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TRPCContextProvider trpcClient={trpcClient} queryClient={queryClient}>
+          {children}
+        </TRPCContextProvider>
+      </QueryClientProvider>
+    );
+  }
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister }}
+    >
       <TRPCContextProvider trpcClient={trpcClient} queryClient={queryClient}>
         {children}
       </TRPCContextProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
 

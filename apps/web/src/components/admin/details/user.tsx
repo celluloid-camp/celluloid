@@ -1,4 +1,5 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -28,13 +29,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useFormik } from "formik";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useState } from "react";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { BackButton } from "@/components/common/back-button";
 import { useTRPC } from "@/lib/trpc/client";
 import type { AdminGetUserById } from "@/lib/trpc/types";
@@ -46,11 +47,13 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required(),
-    firstName: Yup.string().required(),
-    lastName: Yup.string().required(),
+  const editUserSchema = z.object({
+    username: z.string().min(1, t("profile.update.username")),
+    firstName: z.string().min(1, t("profile.update.firstname")),
+    lastName: z.string().min(1, t("profile.update.lastname")),
   });
+
+  type EditUserFormValues = z.infer<typeof editUserSchema>;
 
   const mutation = useMutation(
     api.admin.updateUser.mutationOptions({
@@ -73,26 +76,34 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
     }),
   );
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<EditUserFormValues>({
+    resolver: zodResolver(editUserSchema),
+    defaultValues: {
       username: data.username,
       firstName: data.firstname ?? "",
       lastName: data.lastname ?? "",
     },
-    validationSchema,
-    onSubmit: async (values) => {
-      try {
-        await mutation.mutateAsync({
-          userId: data.id,
-          username: values.username,
-          firstName: values.firstName,
-          lastName: values.lastName,
-        });
-      } catch (error) {
-        console.error("Error updating user:", error);
-      }
-    },
+    mode: "onBlur",
   });
+
+  const onSubmit = async (values: EditUserFormValues) => {
+    try {
+      await mutation.mutateAsync({
+        userId: data.id,
+        username: values.username,
+        firstName: values.firstName,
+        lastName: values.lastName,
+      });
+      reset();
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
 
   return (
     <Paper sx={{ width: "100%", p: 4 }}>
@@ -194,7 +205,8 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
         <DialogContent>
           <form
             onSubmit={(e) => {
-              formik.handleSubmit(e);
+              e.preventDefault();
+              handleSubmit(onSubmit)(e);
             }}
           >
             <Box
@@ -202,62 +214,47 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
             >
               <TextField
                 id="username"
-                name="username"
                 label={t("profile.update.username")}
                 fullWidth
-                value={formik.values.username}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.username && Boolean(formik.errors.username)
-                }
-                helperText={formik.touched.username && formik.errors.username}
-                disabled={formik.isSubmitting}
+                {...register("username")}
+                error={Boolean(errors.username)}
+                helperText={errors.username?.message}
+                disabled={isSubmitting}
               />
 
               <TextField
                 id="firstname"
-                name="firstName"
                 label={t("profile.update.firstname")}
                 fullWidth
-                value={formik.values.firstName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.firstName && Boolean(formik.errors.firstName)
-                }
-                helperText={formik.touched.firstName && formik.errors.firstName}
+                {...register("firstName")}
+                error={Boolean(errors.firstName)}
+                helperText={errors.firstName?.message}
               />
 
               <TextField
                 id="lastname"
-                name="lastName"
                 label={t("profile.update.lastname")}
                 fullWidth
-                value={formik.values.lastName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.lastName && Boolean(formik.errors.lastName)
-                }
-                helperText={formik.touched.lastName && formik.errors.lastName}
+                {...register("lastName")}
+                error={Boolean(errors.lastName)}
+                helperText={errors.lastName?.message}
               />
 
               <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    formik.resetForm();
+                    reset();
                     setEditDialogOpen(false);
                   }}
-                  disabled={formik.isSubmitting}
+                  disabled={isSubmitting}
                 >
                   {t("common.cancel")}
                 </Button>
                 <Button
                   variant="contained"
                   type="submit"
-                  loading={formik.isSubmitting}
+                  loading={isSubmitting}
                 >
                   {t("profile.update.submit")}
                 </Button>

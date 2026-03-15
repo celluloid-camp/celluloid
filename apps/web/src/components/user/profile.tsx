@@ -41,7 +41,7 @@ function PublicProfileContent({ userId }: { userId: string }) {
             borderStyle: "solid",
             fontSize: 30,
           }}
-          src={data.avatar?.publicUrl}
+          src={data.image ?? undefined}
         >
           {data.initial}
         </Avatar>

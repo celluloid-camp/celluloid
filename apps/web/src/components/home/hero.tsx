@@ -90,7 +90,7 @@ export function HomePageHero() {
 
           <Grid size={{ xs: 12, md: 4 }}>
             <Stack spacing={2.5} sx={{ height: "100%" }}>
-              <Paper sx={{ width: "100%", px: 3, py: 4 }}>
+              <Paper className="p-8 w-full rounded-lg">
                 <Stack alignItems="center" spacing={1.5}>
                   <Box sx={{ width: 120 }}>
                     <TeacherIcon />
@@ -102,14 +102,14 @@ export function HomePageHero() {
                     size="large"
                     component={NextLink}
                     href="/create"
-                    sx={{ textTransform: "uppercase", fontSize: 12 }}
+                    className="uppercase text-sm font-bold rounded-full"
                   >
                     {t("newProject")}
                   </Button>
                 </Stack>
               </Paper>
 
-              <Paper sx={{ width: "100%", px: 3, py: 4 }}>
+              <Paper className="p-8 w-full">
                 <Stack alignItems="center" spacing={1.5}>
                   <Box sx={{ width: 120 }}>
                     <StudentsIcon />
@@ -120,7 +120,7 @@ export function HomePageHero() {
                     component={NextLink}
                     href={session ? "/join" : "/student-signup"}
                     color="primary"
-                    sx={{ textTransform: "uppercase", fontSize: 12 }}
+                    className="uppercase text-sm font-bold rounded-full"
                   >
                     {t("joinProject")}
                   </Button>

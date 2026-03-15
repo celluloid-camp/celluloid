@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
@@ -8,10 +9,10 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import * as React from "react";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Avatar } from "@/components/common/avatar";
 import { TransparentInput } from "@/components/common/transparent-input";
 import type { User } from "@/lib/auth-client";
@@ -37,44 +38,48 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   const queryClient = useQueryClient();
   const mutation = useMutation(api.comment.add.mutationOptions());
 
-  const validationSchema = Yup.object().shape({
-    comment: Yup.string()
-      .min(2, t("project.video.annotation.comment.minLength"))
-      .required(t("project.video.annotation.comment.required")),
+  const commentSchema = z.object({
+    comment: z.string().min(2, t("project.video.annotation.comment.minLength")),
   });
+  type CommentFormValues = z.infer<typeof commentSchema>;
 
   const handleClose = () => {
     onClose();
   };
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { isSubmitting, isValid },
+  } = useForm<CommentFormValues>({
+    resolver: zodResolver(commentSchema),
+    mode: "onChange",
+    defaultValues: {
       comment: "",
-    },
-    validateOnMount: false,
-    validationSchema: validationSchema,
-    validateOnBlur: false,
-    validateOnChange: false,
-    onSubmit: async (values) => {
-      const newComment = await mutation.mutateAsync({
-        annotationId: annotation.id,
-        projectId: project.id,
-        comment: values.comment,
-      });
-      if (newComment) {
-        formik.resetForm();
-        onClose();
-      }
-      queryClient.invalidateQueries(
-        api.annotation.byProjectId.queryFilter({ id: project.id }),
-      );
     },
   });
 
+  const onSubmit = async (values: CommentFormValues) => {
+    const newComment = await mutation.mutateAsync({
+      annotationId: annotation.id,
+      projectId: project.id,
+      comment: values.comment,
+    });
+    if (newComment) {
+      reset({ comment: "" });
+      onClose();
+    }
+    queryClient.invalidateQueries(
+      api.annotation.byProjectId.queryFilter({ id: project.id }),
+    );
+  };
+
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <ClickAwayListener onClickAway={() => formik.resetForm()}>
-        <React.Fragment>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <ClickAwayListener onClickAway={() => reset({ comment: "" })}>
+        <Box>
           <ListItem sx={{ pl: 4, py: 0 }}>
             <ListItemAvatar sx={{ minWidth: 35 }}>
               <Avatar
@@ -99,9 +104,12 @@ export const CommentForm: React.FC<CommentFormProps> = ({
                     unpadded={true}
                     name="comment"
                     placeholder={t("annotation.commentPlaceholder") || ""}
-                    value={formik.values.comment}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    value={watch("comment")}
+                    onChange={(event) =>
+                      setValue("comment", event.target.value, {
+                        shouldValidate: true,
+                      })
+                    }
                     error={undefined}
                     sx={{ fontSize: 13 }}
                     inputProps={{
@@ -110,13 +118,13 @@ export const CommentForm: React.FC<CommentFormProps> = ({
                     }}
                     maxRows={3}
                     minRows={1}
-                    disabled={formik.isSubmitting}
+                    disabled={isSubmitting}
                     // endAdornment={
                     //   <InputAdornment position="end">
                     //     <IconButton
                     //       aria-label="Send"
-                    //       onClick={() => formik.handleSubmit()}
-                    //       disabled={formik.isSubmitting}
+                    //       onClick={() => handleSubmit(onSubmit)()}
+                    //       disabled={isSubmitting}
                     //       edge="end"
                     //       color="success"
                     //     >
@@ -145,8 +153,9 @@ export const CommentForm: React.FC<CommentFormProps> = ({
               <Button
                 size="small"
                 variant="contained"
-                disabled={!formik.isValid || formik.isSubmitting}
+                disabled={!isValid || isSubmitting}
                 disableElevation
+                type="submit"
                 sx={{
                   borderRadius: 10,
                   fontSize: 12,
@@ -155,13 +164,12 @@ export const CommentForm: React.FC<CommentFormProps> = ({
                     backgroundColor: grey[700],
                   },
                 }}
-                onClick={() => formik.handleSubmit()}
               >
                 {t("annotation.comment.send")}
               </Button>
             </Box>
           </ListItem>
-        </React.Fragment>
+        </Box>
       </ClickAwayListener>
     </form>
   );

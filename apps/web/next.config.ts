@@ -24,6 +24,15 @@ const nextConfig = {
   },
   serverExternalPackages: [],
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*",
+        port: "",
+      },
+    ],
+  },
 } as NextConfig;
 
 const withNextIntl = createNextIntlPlugin({

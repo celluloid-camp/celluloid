@@ -1,5 +1,6 @@
 @layer theme, base, mui, components, utilities;
 @import "tailwindcss";
+@import "./mui.css";
 
 body {
   margin: 0;
@@ -8,6 +9,7 @@ body {
 }
 
 :root {
+  --font-serif: "abril_fatfaceregular", serif;
   --white: #ffffff;
   --black: #000000;
   --gray-1: #e0e0e0;
@@ -173,5 +175,43 @@ body {
         color: var(--primary-light);
       }
     }
+  }
+}
+
+@layer utilities {
+  .bg-brand-orange {
+    background-color: var(--color-brand-orange);
+  }
+
+  .bg-brand-green {
+    background-color: var(--color-brand-green);
+  }
+
+  .text-brand-orange {
+    color: var(--color-brand-orange);
+  }
+
+  .text-brand-green {
+    color: var(--color-brand-green);
+  }
+
+  .border-brand-orange {
+    border-color: var(--color-brand-orange);
+  }
+
+  .border-brand-green {
+    border-color: var(--color-brand-green);
+  }
+
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+
+  .text-primary {
+    color: var(--color-primary);
+  }
+
+  .border-primary {
+    border-color: var(--color-primary);
   }
 }

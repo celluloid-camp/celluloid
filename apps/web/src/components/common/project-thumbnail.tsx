@@ -9,16 +9,14 @@ import {
   CircularProgress,
   Grid,
   Link,
-  Skeleton,
   Stack,
   styled,
   Typography,
 } from "@mui/material";
-import Image from "mui-image";
 import { useRouter } from "next/navigation";
-import type * as React from "react";
 
 import { Avatar } from "@/components/common/avatar";
+import { Image } from "@/components/common/image";
 import type { ProjectListItem } from "@/lib/trpc/types";
 import dayjs from "@/utils/dayjs";
 import { formatDuration } from "@/utils/duration";
@@ -85,14 +83,15 @@ export function ProjectThumbnail({ project }: Props) {
         <Box
           sx={{
             overflow: "hidden",
+            position: "relative",
+            height: 200,
             minHeight: 200,
             border: 0,
-            borderRadius: 2, // optional
+            borderRadius: 2,
+            backgroundColor: "black",
             "& img": {
               transition:
                 "transform 1.5s cubic-bezier(0.22, 1, 0.36, 1) !important",
-              width: "100%",
-              height: "auto",
               display: "block",
             },
             "&:hover img": {
@@ -100,22 +99,7 @@ export function ProjectThumbnail({ project }: Props) {
             },
           }}
         >
-          <Image
-            src={project.thumbnailURL}
-            duration={500}
-            showLoading={
-              <Skeleton
-                variant="rectangular"
-                height={200}
-                width="100%"
-                sx={{ borderRadius: 2 }}
-              />
-            }
-            wrapperStyle={{
-              height: 200,
-              border: 0,
-            }}
-          />
+          <Image src={project.thumbnailURL} alt={project.title} />
         </Box>
       </Box>
       <Box

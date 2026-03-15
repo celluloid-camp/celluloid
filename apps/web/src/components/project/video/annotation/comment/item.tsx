@@ -159,7 +159,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       <ListItemText
         primary={
           <React.Fragment>
-            <Typography component="span" color="white" variant="body2">
+            <Typography component="span" className="text-white" variant="body2">
               {comment.user.username}
             </Typography>
             <Typography

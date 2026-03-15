@@ -94,7 +94,14 @@
       "subtitle": "You want to know more or you encounter difficulties?",
       "title": "How to use Celluloid ?"
     },
-    "member": "Joined"
+    "member": "Joined",
+    "explorer": "Explore",
+    "collaboration": "Collaboration",
+    "sortBy": {
+      "recent_added": "Recently added",
+      "publication_date": "Publication date",
+      "name": "Name"
+    }
   },
   "menu": {
     "about": "About",

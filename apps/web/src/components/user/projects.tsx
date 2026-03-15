@@ -1,5 +1,5 @@
 "use client";
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -20,17 +20,27 @@ export function UserPublicProjects({ userId }: { userId: string }) {
   return (
     <Box sx={{ padding: 5 }}>
       {isFetching || !data ? (
-        <Box
-          mx={2}
-          my={10}
-          display={"flex"}
-          alignContent={"center"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Box>
-            <CircularProgress />
-          </Box>
+        <Box sx={{ ph: 2 }}>
+          <Skeleton variant="text" sx={{ width: 200, height: 48, my: 3 }} />
+          <Grid container spacing={5}>
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={item}>
+                <Skeleton
+                  variant="rectangular"
+                  sx={{
+                    width: "100%",
+                    height: 200,
+                    borderRadius: 2,
+                  }}
+                />
+                <Skeleton
+                  variant="text"
+                  sx={{ width: "80%", height: 24, mt: 1 }}
+                />
+                <Skeleton variant="text" sx={{ width: "60%", height: 20 }} />
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       ) : (
         <Box

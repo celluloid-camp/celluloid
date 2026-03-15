@@ -96,6 +96,7 @@ export const auth = betterAuth({
       },
     },
   },
+  trustedOrigins: ["*.localhost", "https://*.celluloid.me"],
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
       if (ctx.path.includes("sign-up")) {

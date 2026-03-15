@@ -65,10 +65,13 @@ export const chapterRouter = router({
         });
       }
       const record = await db.query.project.findFirst({
-        where: and(
-          eq(project.id, input.projectId),
-          eq(project.userId, ctx.user.id),
-        ),
+        where:
+          ctx.user.role === "admin"
+            ? eq(project.id, input.projectId)
+            : and(
+                eq(project.id, input.projectId),
+                eq(project.userId, ctx.user.id),
+              ),
       });
 
       if (!record) {

@@ -64,15 +64,15 @@ export const Header: React.FC<BoxProps> = () => {
 
   return (
     <>
-      <AppBar color="default" position="fixed">
-        <Toolbar disableGutters sx={{ px: 2 }}>
+      <AppBar color="default" position="fixed" className="shadow-sm">
+        <Toolbar disableGutters className="px-6">
           <Box flexGrow={1}>
             <Link href="/">
               <Button sx={{ p: 0 }}>
                 <Box sx={{ display: { xs: "block", md: "none" } }}>
                   <LogoSign sx={{ width: 80 }} />
                 </Box>
-                <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <Box className="hidden md:block">
                   <LogoWithLabel />
                 </Box>
               </Button>

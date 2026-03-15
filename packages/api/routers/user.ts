@@ -1,5 +1,4 @@
 import {
-  annotation,
   db,
   playlist,
   project,
@@ -7,8 +6,9 @@ import {
   user,
   userToProject,
 } from "@celluloid/db";
+import { withPagination } from "@celluloid/db/utils";
 import { TRPCError } from "@trpc/server";
-import { and, asc, desc, eq, inArray, lt, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, lt, or } from "drizzle-orm";
 import { z } from "zod";
 import { keys } from "../keys";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
@@ -17,10 +17,12 @@ const userColumnsSelect = {
   id: true,
   username: true,
   role: true,
+  color: true,
+  initial: true,
   firstname: true,
   lastname: true,
   bio: true,
-  avatarStorageId: true,
+  image: true,
 } as const;
 
 function withAvatarUrl(
@@ -56,76 +58,6 @@ function withAvatarUrl(
       .map((part) => part.substring(0, 1))
       .join(""),
   };
-}
-
-type ProjectEnrichment = {
-  user: Record<string, unknown> | null;
-  members: Array<{
-    id: number;
-    userId: string | null;
-    projectId: string | null;
-    user: Record<string, unknown> | null;
-  }>;
-  playlist: Record<string, unknown> | null;
-  _count: { annotations: number; members: number };
-};
-
-export async function fetchProjectsEnrichment(
-  projectIds: string[],
-): Promise<Map<string, ProjectEnrichment>> {
-  if (projectIds.length === 0) return new Map();
-  const rows = await db.execute<{
-    project_id: string;
-    owner: Record<string, unknown> | null;
-    members: unknown;
-    playlist: Record<string, unknown> | null;
-    annotation_count: number;
-    member_count: number;
-  }>(sql`
-    SELECT
-      p.id AS project_id,
-      (SELECT row_to_json(u) FROM (SELECT id, username, role, firstname, lastname, bio, "avatarStorageId" FROM "User" u WHERE u.id = p."userId") u) AS owner,
-      (SELECT coalesce(json_agg(m), '[]'::json) FROM (
-        SELECT utp.id, utp."userId", utp."projectId",
-          (SELECT row_to_json(u) FROM (SELECT id, username, role, firstname, lastname, bio, "avatarStorageId" FROM "User" u WHERE u.id = utp."userId") u) AS "user"
-        FROM "UserToProject" utp WHERE utp."projectId" = p.id
-      ) m) AS members,
-      (SELECT row_to_json(pl) FROM "Playlist" pl WHERE pl.id = p."playlistId") AS playlist,
-      (SELECT count(*)::int FROM "Annotation" a WHERE a."projectId" = p.id) AS annotation_count,
-      (SELECT count(*)::int FROM "UserToProject" utp WHERE utp."projectId" = p.id) AS member_count
-    FROM "Project" p
-    WHERE p.id IN (${sql.join(
-      projectIds.map((id) => sql`${id}`),
-      sql`, `,
-    )})
-  `);
-  const result = (
-    rows as {
-      rows: Array<{
-        project_id: string;
-        owner: Record<string, unknown> | null;
-        members: unknown;
-        playlist: Record<string, unknown> | null;
-        annotation_count: number;
-        member_count: number;
-      }>;
-    }
-  ).rows;
-  const map = new Map<string, ProjectEnrichment>();
-  for (const r of result) {
-    const members = Array.isArray(r.members)
-      ? r.members
-      : ((typeof r.members === "string"
-          ? JSON.parse(r.members as string)
-          : []) as ProjectEnrichment["members"]);
-    map.set(r.project_id, {
-      user: r.owner,
-      members,
-      playlist: r.playlist,
-      _count: { annotations: r.annotation_count, members: r.member_count },
-    });
-  }
-  return map;
 }
 
 export const userRouter = router({
@@ -168,9 +100,10 @@ export const userRouter = router({
     if (!ctx.user) return null;
     const record = await db.query.user.findFirst({
       where: eq(user.id, ctx.user.id),
+      columns: { ...userColumnsSelect, email: true, avatarStorageId: true },
       with: { storage: true },
     });
-    return withAvatarUrl(record ?? null);
+    return record;
   }),
 
   update: protectedProcedure
@@ -229,195 +162,143 @@ export const userRouter = router({
     .query(async ({ input }) => {
       const record = await db.query.user.findFirst({
         where: eq(user.id, input.id),
-        columns: userColumnsSelect,
-        with: { storage: true },
       });
-      return withAvatarUrl(record ?? null);
+      if (!record) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+      return record;
     }),
 
   publicById: publicProcedure
     .input(
       z.object({
-        id: z.string().uuid(),
+        id: z.string(),
       }),
     )
     .query(async ({ input }) => {
       const record = await db.query.user.findFirst({
         where: eq(user.id, input.id),
         columns: userColumnsSelect,
-        with: { storage: true },
       });
-      return withAvatarUrl(record ?? null);
+      if (!record) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+      return record;
     }),
 
   projects: protectedProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
+        pageSize: z.number().min(1).max(100).default(50),
+        page: z.number().min(1).default(1),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const limit = (input.limit ?? 50) + 1;
-      const cursor = input.cursor;
-
-      const memberProjectIds: string[] =
-        ctx.user?.id != null
-          ? (
-              await db
-                .select({ projectId: userToProject.projectId })
-                .from(userToProject)
-                .where(eq(userToProject.userId, ctx.user.id))
-            )
-              .map((r) => r.projectId)
-              .filter((id): id is string => id != null)
-          : [];
-
-      let whereClause:
-        | ReturnType<typeof eq>
-        | ReturnType<typeof or>
-        | undefined;
-      if (ctx.user?.id == null) {
-        whereClause = undefined;
-      } else if (memberProjectIds.length > 0) {
-        whereClause = or(
-          eq(project.userId, ctx.user.id),
-          inArray(project.id, memberProjectIds),
-        );
-      } else {
-        whereClause = eq(project.userId, ctx.user.id);
-      }
-
-      if (whereClause === undefined) {
-        return { items: [], nextCursor: undefined };
-      }
-
-      let cursorWhere = whereClause;
-      if (cursor) {
-        const [cursorRow] = await db
-          .select({ publishedAt: project.publishedAt, id: project.id })
-          .from(project)
-          .where(eq(project.id, cursor))
-          .limit(1);
-        if (cursorRow) {
-          cursorWhere = and(
-            whereClause,
-            or(
-              lt(project.publishedAt, cursorRow.publishedAt),
-              and(
-                eq(project.publishedAt, cursorRow.publishedAt),
-                lt(project.id, cursor),
-              ),
-            ),
-          )!;
-        }
-      }
-
-      const rows = await db
-        .select()
+      const whereClause = eq(project.userId, ctx.user.id);
+      const [total] = await db
+        .select({ count: count(project.id) })
         .from(project)
-        .where(cursorWhere)
-        .orderBy(desc(project.publishedAt))
-        .limit(limit);
+        .where(whereClause);
 
-      const hasMore = rows.length === limit;
-      const items = hasMore ? rows.slice(0, -1) : rows;
-      const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
+      const baseQuery = db
+        .select({
+          id: project.id,
+          title: project.title,
+          thumbnailURL: project.thumbnailURL,
+          publishedAt: project.publishedAt,
+          userId: project.userId,
+          public: project.public,
+          collaborative: project.collaborative,
+          shared: project.shared,
+          playlistId: project.playlistId,
+          duration: project.duration,
+          user: {
+            id: user.id,
+            username: user.username,
+            role: user.role,
+            initial: user.initial,
+            color: user.color,
+            image: user.image,
+          },
+        })
+        .from(project)
+        .leftJoin(user, eq(project.userId, user.id))
+        .where(whereClause)
+        .$dynamic();
 
-      if (items.length === 0) {
-        return { items: [], nextCursor };
-      }
-
-      const enrichmentMap = await fetchProjectsEnrichment(
-        items.map((p) => p.id),
-      );
-      const enriched = items.map((p) => {
-        const e = enrichmentMap.get(p.id);
-        return {
-          ...p,
-          user: e?.user ?? null,
-          members: e?.members ?? [],
-          playlist: e?.playlist ?? null,
-          _count: e?._count ?? { annotations: 0, members: 0 },
-        };
+      const rows = await withPagination({
+        query: baseQuery,
+        orderBy: [desc(project.publishedAt)],
+        pageSize: input.pageSize,
+        page: input.page,
       });
 
       return {
-        items: enriched.reverse(),
-        nextCursor,
+        items: rows,
+        total: total?.count ?? 0,
       };
     }),
 
   publicProjects: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
+        pageSize: z.number().min(1).max(100).default(50),
+        page: z.number().min(1).default(1),
         userId: z.string(),
       }),
     )
     .query(async ({ input }) => {
-      const limit = (input.limit ?? 50) + 1;
-      const cursor = input.cursor;
-
-      const baseWhere = and(
+      const whereClause = and(
         eq(project.userId, input.userId),
         eq(project.public, true),
       );
-
-      let cursorWhere = baseWhere;
-      if (cursor) {
-        const [cursorRow] = await db
-          .select({ publishedAt: project.publishedAt, id: project.id })
-          .from(project)
-          .where(eq(project.id, cursor))
-          .limit(1);
-        if (cursorRow) {
-          cursorWhere = and(
-            baseWhere,
-            or(
-              lt(project.publishedAt, cursorRow.publishedAt),
-              and(
-                eq(project.publishedAt, cursorRow.publishedAt),
-                lt(project.id, cursor),
-              ),
-            ),
-          )!;
-        }
-      }
-
-      const rows = await db
-        .select()
+      const [total] = await db
+        .select({ count: count(project.id) })
         .from(project)
-        .where(cursorWhere)
-        .orderBy(desc(project.publishedAt))
-        .limit(limit);
+        .where(whereClause);
 
-      const hasMore = rows.length === limit;
-      const items = hasMore ? rows.slice(0, -1) : rows;
-      const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
+      const baseQuery = db
+        .select({
+          id: project.id,
+          title: project.title,
+          thumbnailURL: project.thumbnailURL,
+          publishedAt: project.publishedAt,
+          userId: project.userId,
+          public: project.public,
+          collaborative: project.collaborative,
+          shared: project.shared,
+          playlistId: project.playlistId,
+          duration: project.duration,
+          user: {
+            id: user.id,
+            username: user.username,
+            role: user.role,
+            initial: user.initial,
+            color: user.color,
+            image: user.image,
+          },
+        })
+        .from(project)
+        .leftJoin(user, eq(project.userId, user.id))
+        .where(whereClause)
+        .$dynamic();
 
-      if (items.length === 0) {
-        return { items: [], nextCursor };
-      }
-
-      const enrichmentMap = await fetchProjectsEnrichment(
-        items.map((p) => p.id),
-      );
-      const enriched = items.map((p) => {
-        const e = enrichmentMap.get(p.id);
-        return {
-          ...p,
-          user: e?.user ?? null,
-          members: e?.members ?? [],
-          playlist: e?.playlist ?? null,
-          _count: e?._count ?? { annotations: 0, members: 0 },
-        };
+      const rows = await withPagination({
+        query: baseQuery,
+        orderBy: [desc(project.publishedAt)],
+        pageSize: input.pageSize,
+        page: input.page,
       });
 
       return {
-        items: enriched.reverse(),
-        nextCursor,
+        items: rows,
+        total: total?.count ?? 0,
       };
     }),
 

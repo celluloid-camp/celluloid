@@ -55,7 +55,11 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
                 {annotation.user.initial}
               </Avatar>
               <Stack>
-                <Typography component="span" color="white" variant="body2">
+                <Typography
+                  component="span"
+                  className="text-white"
+                  variant="body2"
+                >
                   {annotation.user.username}
                 </Typography>
               </Stack>
@@ -160,7 +164,7 @@ export function AnnotationOverlayHints({ projectId }: { projectId: string }) {
           sx={{ backgroundColor: "black" }}
         >
           <Box>
-            <Typography align="left" variant="h5" color="white">
+            <Typography align="left" variant="h5" className="text-white">
               {t("project.annotation.label", {
                 count: annotations.length,
               })}

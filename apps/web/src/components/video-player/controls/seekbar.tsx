@@ -143,7 +143,11 @@ export const Seekbar = () => {
               pointerEvents: "none",
             }}
           >
-            <Typography variant="caption" color="white" component="span">
+            <Typography
+              variant="caption"
+              className="text-white"
+              component="span"
+            >
               {formatTime(hoverTime, max)}
             </Typography>
           </Box>

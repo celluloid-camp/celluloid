@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Box, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import {
@@ -5,11 +6,11 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { TRPCClientError } from "@trpc/client";
-import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import * as Yup from "yup";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { useTRPC } from "@/lib/trpc/client";
 import SettingsTabPanel from "./settings-tab-panel";
 import UploadAvatar from "./upload-avatar";
@@ -29,61 +30,80 @@ export default function EditProfileTabForm({
 
   const { data: user } = useSuspenseQuery(api.user.me.queryOptions());
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required(),
-    firstname: Yup.string().nullable(),
-    lastname: Yup.string().nullable(),
-    bio: Yup.string().nullable(),
-    avatarStorageId: Yup.string().nullable(),
+  const editProfileSchema = z.object({
+    username: z.string().min(1, t("profile.update.username")),
+    firstname: z.string().nullable(),
+    lastname: z.string().nullable(),
+    bio: z.string().nullable(),
+    avatarStorageId: z.string().nullable(),
   });
 
-  const formik = useFormik({
-    initialValues: {
+  type EditProfileFormValues = z.infer<typeof editProfileSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm<EditProfileFormValues>({
+    resolver: zodResolver(editProfileSchema),
+    defaultValues: {
       username: user?.username ?? "",
       firstname: user?.firstname ?? "",
       lastname: user?.lastname ?? "",
       bio: user?.bio ?? "",
-      avatarStorageId: user?.avatar?.id ?? null,
-      error: null,
+      avatarStorageId: user?.avatarStorageId ?? null,
     },
-    validateOnMount: false,
-    validationSchema: validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      try {
-        await mutation.mutateAsync({
-          username: values.username,
-          firstname: values.firstname,
-          lastname: values.lastname,
-          bio: values.bio,
-          avatarStorageId: values.avatarStorageId,
-        });
-
-        queryClient.invalidateQueries(api.user.me.queryFilter());
-        enqueueSnackbar(t("profile.update.success"), {
-          variant: "success",
-          key: "user.update.success",
-        });
-      } catch (e) {
-        if (e as TRPCClientError) {
-          formik.setFieldError(
-            "error",
-            t("profile.update.username-already-used"),
-          );
-        } else {
-          formik.setFieldError("error", (e as Error).message);
-        }
-      }
-    },
+    mode: "onBlur",
   });
+
+  useEffect(() => {
+    reset({
+      username: user?.username ?? "",
+      firstname: user?.firstname ?? "",
+      lastname: user?.lastname ?? "",
+      bio: user?.bio ?? "",
+      avatarStorageId: user?.avatarStorageId ?? null,
+    });
+  }, [user, reset]);
+
+  const onSubmit = async (values: EditProfileFormValues) => {
+    clearErrors("root.serverError");
+    try {
+      await mutation.mutateAsync({
+        username: values.username,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        bio: values.bio,
+        avatarStorageId: values.avatarStorageId,
+      });
+
+      queryClient.invalidateQueries(api.user.me.queryFilter());
+      enqueueSnackbar(t("profile.update.success"), {
+        variant: "success",
+        key: "user.update.success",
+      });
+    } catch (e) {
+      setError("root.serverError", {
+        type: "server",
+        message:
+          e instanceof Error
+            ? e.message
+            : t("profile.update.username-already-used"),
+      });
+    }
+  };
   return (
     <SettingsTabPanel value={value} index={index}>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h5">{t("profile.update.title")}</Typography>
-        {formik.errors.error ? (
+        {errors.root?.serverError?.message ? (
           <Alert severity="error" sx={{ borderRadius: 0, mt: 0 }}>
-            {formik.errors.error}
+            {errors.root.serverError.message}
           </Alert>
         ) : null}
         <Box
@@ -98,12 +118,15 @@ export default function EditProfileTabForm({
           }}
         >
           <UploadAvatar
-            storageId={formik.values.avatarStorageId ?? null}
+            storageId={watch("avatarStorageId") ?? null}
             color={user?.color ?? ""}
             initial={user?.initial ?? ""}
-            url={user?.avatar?.publicUrl ?? ""}
+            url={user?.image ?? ""}
             onChange={(id) => {
-              formik.setFieldValue("avatarStorageId", id);
+              setValue("avatarStorageId", id, {
+                shouldDirty: true,
+                shouldValidate: true,
+              });
             }}
           />
           <TextField
@@ -116,17 +139,16 @@ export default function EditProfileTabForm({
           />
           <TextField
             id="username"
-            name="username"
-            value={formik.values.username}
+            {...register("username")}
             placeholder={t("profile.update.username")}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            inputProps={{
-              "data-testid": "username",
+            disabled={isSubmitting}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "username",
+              },
             }}
-            onBlur={formik.handleBlur}
-            error={formik.touched.username && Boolean(formik.errors.username)}
-            helperText={formik.touched.username && formik.errors.username}
+            error={Boolean(errors.username)}
+            helperText={errors.username?.message}
             label={t("profile.update.username")}
             variant="outlined"
             fullWidth
@@ -134,17 +156,16 @@ export default function EditProfileTabForm({
           />
           <TextField
             id="firstname"
-            name="firstname"
-            value={formik.values.firstname}
+            {...register("firstname")}
             placeholder={t("profile.update.firstname")}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            inputProps={{
-              "data-testid": "firstname",
+            disabled={isSubmitting}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "firstname",
+              },
             }}
-            onBlur={formik.handleBlur}
-            error={formik.touched.firstname && Boolean(formik.errors.firstname)}
-            helperText={formik.touched.firstname && formik.errors.firstname}
+            error={Boolean(errors.firstname)}
+            helperText={errors.firstname?.message}
             label={t("profile.update.firstname")}
             variant="outlined"
             fullWidth
@@ -152,17 +173,16 @@ export default function EditProfileTabForm({
           />
           <TextField
             id="lastname"
-            name="lastname"
-            value={formik.values.lastname}
+            {...register("lastname")}
             placeholder={t("profile.update.lastname")}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            inputProps={{
-              "data-testid": "lastname",
+            disabled={isSubmitting}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "lastname",
+              },
             }}
-            onBlur={formik.handleBlur}
-            error={formik.touched.lastname && Boolean(formik.errors.lastname)}
-            helperText={formik.touched.lastname && formik.errors.lastname}
+            error={Boolean(errors.lastname)}
+            helperText={errors.lastname?.message}
             label={t("profile.update.lastname")}
             variant="outlined"
             fullWidth
@@ -170,17 +190,16 @@ export default function EditProfileTabForm({
           />
           <TextField
             id="bio"
-            name="bio"
-            value={formik.values.bio}
+            {...register("bio")}
             placeholder={t("profile.update.bio")}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            inputProps={{
-              "data-testid": "bio",
+            disabled={isSubmitting}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "bio",
+              },
             }}
-            onBlur={formik.handleBlur}
-            error={formik.touched.bio && Boolean(formik.errors.bio)}
-            helperText={formik.touched.bio && formik.errors.bio}
+            error={Boolean(errors.bio)}
+            helperText={errors.bio?.message}
             label={t("profile.update.bio")}
             fullWidth
             multiline

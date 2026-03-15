@@ -1,12 +1,12 @@
-import { Alert, Box, TextField, Typography } from "@mui/material";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Alert, Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { PasswordInput } from "@/components/common/password-input";
 import { changePassword } from "@/lib/auth-client";
-import { isTRPCClientError, trpc } from "@/lib/trpc/client";
 import SettingsTabPanel from "./settings-tab-panel";
 
 export default function SecurityTabForm({
@@ -19,66 +19,86 @@ export default function SecurityTabForm({
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
 
-  const validationSchema = Yup.object().shape({
-    oldPassword: Yup.string()
-      .required(t("profile.security.password-required"))
-      .label(t("profile.security.old-password.label")),
-    newPassword: Yup.string()
-      .min(8, t("profile.security.password-min-length"))
-      .required(t("profile.security.password-required"))
-      .label(t("profile.security.new-password.label")),
-    passwordConfirmation: Yup.string()
-      .oneOf([Yup.ref("newPassword")], t("password.unmatch"))
-      .required(t("profile.security.password-required"))
-      .label(t("profile.security.confirmation-password.label")),
-  });
+  const securitySchema = z
+    .object({
+      oldPassword: z.string().min(1, t("profile.security.password-required")),
+      newPassword: z
+        .string()
+        .min(8, t("profile.security.password-min-length"))
+        .min(1, t("profile.security.password-required")),
+      passwordConfirmation: z
+        .string()
+        .min(1, t("profile.security.password-required")),
+    })
+    .refine((data) => data.passwordConfirmation === data.newPassword, {
+      path: ["passwordConfirmation"],
+      message: t("password.unmatch"),
+    });
 
-  const formik = useFormik({
-    initialValues: {
+  type SecurityFormValues = z.infer<typeof securitySchema>;
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<SecurityFormValues>({
+    resolver: zodResolver(securitySchema),
+    defaultValues: {
       oldPassword: "",
       newPassword: "",
       passwordConfirmation: "",
-      error: null,
     },
-    validateOnMount: false,
-    validationSchema: validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      try {
-        const { error } = await changePassword({
-          newPassword: values.newPassword,
-          currentPassword: values.oldPassword,
-        });
-
-        if (error && error.code === "INVALID_PASSWORD") {
-          formik.setFieldError(
-            "oldPassword",
-            t("profile.security.password-incorrect"),
-          );
-          return;
-        }
-        enqueueSnackbar(t("profile.security.change-password.success"), {
-          variant: "success",
-          key: "user.update.password.success",
-        });
-        formik.resetForm();
-      } catch (e) {
-        console.error(e);
-      }
-    },
+    mode: "onBlur",
   });
+
+  const onSubmit = async (values: SecurityFormValues) => {
+    try {
+      const { error } = await changePassword({
+        newPassword: values.newPassword,
+        currentPassword: values.oldPassword,
+      });
+
+      if (error && error.code === "INVALID_PASSWORD") {
+        setError("oldPassword", {
+          type: "server",
+          message: t("profile.security.password-incorrect"),
+        });
+        return;
+      }
+
+      if (error) {
+        setError("root.serverError", {
+          type: "server",
+          message: error.message ?? t("errors.UNKNOWN"),
+        });
+        return;
+      }
+
+      enqueueSnackbar(t("profile.security.change-password.success"), {
+        variant: "success",
+        key: "user.update.password.success",
+      });
+      reset();
+    } catch (e) {
+      setError("root.serverError", {
+        type: "server",
+        message: e instanceof Error ? e.message : t("errors.UNKNOWN"),
+      });
+    }
+  };
 
   return (
     <SettingsTabPanel value={value} index={index}>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h5">
           {t("profile.security.change-password.title")}
         </Typography>
 
-        {formik.errors.error ? (
+        {errors.root?.serverError?.message ? (
           <Alert severity="error" sx={{ borderRadius: 0, mt: 0 }}>
-            {formik.errors.error}
+            {errors.root.serverError.message}
           </Alert>
         ) : null}
 
@@ -98,16 +118,11 @@ export default function SecurityTabForm({
             fullWidth
             margin="normal"
             id="oldPassword"
-            name="oldPassword"
-            value={formik.values.oldPassword}
+            {...register("oldPassword")}
             placeholder={t("profile.security.old-password.label")}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.oldPassword && Boolean(formik.errors.oldPassword)
-            }
-            helperText={formik.touched.oldPassword && formik.errors.oldPassword}
+            disabled={isSubmitting}
+            error={Boolean(errors.oldPassword)}
+            helperText={errors.oldPassword?.message}
             label={t("profile.security.old-password.label")}
           />
           <PasswordInput
@@ -115,16 +130,11 @@ export default function SecurityTabForm({
             fullWidth
             margin="normal"
             id="newPassword"
-            name="newPassword"
-            value={formik.values.newPassword}
+            {...register("newPassword")}
             placeholder={t("profile.security.new-password.label")}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.newPassword && Boolean(formik.errors.newPassword)
-            }
-            helperText={formik.touched.newPassword && formik.errors.newPassword}
+            disabled={isSubmitting}
+            error={Boolean(errors.newPassword)}
+            helperText={errors.newPassword?.message}
             label={t("profile.security.new-password.label")}
           />
           <PasswordInput
@@ -132,20 +142,11 @@ export default function SecurityTabForm({
             fullWidth
             margin="normal"
             id="passwordConfirmation"
-            name="passwordConfirmation"
-            value={formik.values.passwordConfirmation}
+            {...register("passwordConfirmation")}
             placeholder={t("profile.security.confirmation-password.label")}
-            onChange={formik.handleChange}
-            disabled={formik.isSubmitting}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.passwordConfirmation &&
-              Boolean(formik.errors.passwordConfirmation)
-            }
-            helperText={
-              formik.touched.passwordConfirmation &&
-              formik.errors.passwordConfirmation
-            }
+            disabled={isSubmitting}
+            error={Boolean(errors.passwordConfirmation)}
+            helperText={errors.passwordConfirmation?.message}
             label={t("profile.security.confirmation-password.label")}
           />
         </Box>
@@ -155,7 +156,7 @@ export default function SecurityTabForm({
           size="large"
           type="submit"
           data-testid="submit"
-          loading={formik.isSubmitting}
+          loading={isSubmitting}
         >
           {t("profile.security.change-password.button")}
         </Button>

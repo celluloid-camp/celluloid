@@ -1,14 +1,12 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
-  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
   FormLabel,
   Paper,
-  Radio,
-  RadioGroup,
   Skeleton,
   Switch,
   TextField,
@@ -16,12 +14,12 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
-import * as Yup from "yup";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { BackButton } from "@/components/common/back-button";
 import { useTRPC } from "@/lib/trpc/client";
 import { ProjectAnnotations } from "../project-annotations";
@@ -58,39 +56,61 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
     }),
   );
 
-  const validationSchema = Yup.object().shape({
-    title: Yup.string().required(),
-    description: Yup.string().required(),
-    public: Yup.boolean(),
-    shared: Yup.boolean(),
-    collaborative: Yup.boolean(),
+  const editProjectSchema = z.object({
+    title: z.string().min(1, t("admin.project.label.title")),
+    description: z.string().min(1, t("admin.project.label.description")),
+    public: z.boolean(),
+    shared: z.boolean(),
+    collaborative: z.boolean(),
   });
 
-  const formik = useFormik({
-    initialValues: {
+  type EditProjectFormValues = z.infer<typeof editProjectSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { errors, isSubmitting, isDirty },
+  } = useForm<EditProjectFormValues>({
+    resolver: zodResolver(editProjectSchema),
+    defaultValues: {
       title: project?.title ?? "",
       description: project?.description ?? "",
       public: project?.public ?? false,
       shared: project?.shared ?? false,
       collaborative: project?.collaborative ?? false,
     },
-    validationSchema,
-    enableReinitialize: true,
-    onSubmit: async (values) => {
-      try {
-        await mutation.mutateAsync({
-          projectId,
-          title: values.title,
-          description: values.description,
-          public: values.public,
-          shared: values.shared,
-          collaborative: values.collaborative,
-        });
-      } catch (error) {
-        console.error("Error updating project:", error);
-      }
-    },
+    mode: "onBlur",
   });
+
+  useEffect(() => {
+    if (project) {
+      reset({
+        title: project.title,
+        description: project.description,
+        public: project.public,
+        shared: project.shared,
+        collaborative: project.collaborative,
+      });
+    }
+  }, [project, reset]);
+
+  const onSubmit = async (values: EditProjectFormValues) => {
+    try {
+      await mutation.mutateAsync({
+        projectId,
+        title: values.title,
+        description: values.description,
+        public: values.public,
+        shared: values.shared,
+        collaborative: values.collaborative,
+      });
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  };
 
   if (isLoading) {
     return <ProjectSkeleton />;
@@ -116,7 +136,7 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
         <Typography variant="h5">{t("admin.project.title")}</Typography>
       </Box>
 
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box
           sx={{
             display: "flex",
@@ -128,32 +148,24 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
         >
           <TextField
             id="title"
-            name="title"
             label={t("admin.project.label.title")}
             fullWidth
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.title && Boolean(formik.errors.title)}
-            helperText={formik.touched.title && formik.errors.title}
-            disabled={formik.isSubmitting}
+            {...register("title")}
+            error={Boolean(errors.title)}
+            helperText={errors.title?.message}
+            disabled={isSubmitting}
           />
 
           <TextField
             id="description"
-            name="description"
             label={t("admin.project.label.description")}
             fullWidth
             multiline
             rows={4}
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
-            disabled={formik.isSubmitting}
+            {...register("description")}
+            error={Boolean(errors.description)}
+            helperText={errors.description?.message}
+            disabled={isSubmitting}
           />
 
           <Box
@@ -170,15 +182,17 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={formik.values.public}
+                    checked={watch("public")}
                     onChange={(e) => {
-                      formik.setFieldValue("public", e.target.checked);
+                      setValue("public", e.target.checked, {
+                        shouldDirty: true,
+                      });
                     }}
                     name="public"
                   />
                 }
                 label={
-                  formik.values.public
+                  watch("public")
                     ? t("admin.project.setting.label.yes")
                     : t("admin.project.setting.label.no")
                 }
@@ -192,15 +206,17 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={formik.values.shared}
+                    checked={watch("shared")}
                     onChange={(e) => {
-                      formik.setFieldValue("shared", e.target.checked);
+                      setValue("shared", e.target.checked, {
+                        shouldDirty: true,
+                      });
                     }}
                     name="shared"
                   />
                 }
                 label={
-                  formik.values.shared
+                  watch("shared")
                     ? t("admin.project.setting.label.yes")
                     : t("admin.project.setting.label.no")
                 }
@@ -214,15 +230,17 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={formik.values.collaborative}
+                    checked={watch("collaborative")}
                     onChange={(e) => {
-                      formik.setFieldValue("collaborative", e.target.checked);
+                      setValue("collaborative", e.target.checked, {
+                        shouldDirty: true,
+                      });
                     }}
                     name="collaborative"
                   />
                 }
                 label={
-                  formik.values.collaborative
+                  watch("collaborative")
                     ? t("admin.project.setting.label.yes")
                     : t("admin.project.setting.label.no")
                 }
@@ -267,8 +285,8 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
             <Button
               variant="contained"
               type="submit"
-              loading={formik.isSubmitting}
-              disabled={!formik.dirty}
+              loading={isSubmitting}
+              disabled={!isDirty}
             >
               {t("profile.update.submit")}
             </Button>

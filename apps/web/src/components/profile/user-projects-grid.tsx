@@ -10,7 +10,6 @@ import Grid from "@mui/material/Grid";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { useEffect, useMemo, useState } from "react";
 import { ProjectThumbnail } from "@/components/common/project-thumbnail";
 import { useTRPC } from "@/lib/trpc/client";
 
@@ -20,15 +19,6 @@ export const UserProjectsGrid: React.FC = () => {
   const t = useTranslations();
   const api = useTRPC();
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
-  const [pageCursors, setPageCursors] = useState<Map<number, string>>(
-    new Map(),
-  );
-
-  // Get cursor for current page (page 1 has no cursor)
-  const cursor = useMemo(() => {
-    if (page === 1) return undefined;
-    return pageCursors.get(page) ?? undefined;
-  }, [page, pageCursors]);
 
   const {
     data: projectsData,
@@ -36,56 +26,23 @@ export const UserProjectsGrid: React.FC = () => {
     isFetching: projectsFetching,
   } = useQuery(
     api.user.projects.queryOptions({
-      limit: ITEMS_PER_PAGE,
-      cursor,
+      pageSize: ITEMS_PER_PAGE,
+      page,
     }),
   );
-
-  // Which page does the current data represent? (cursor undefined => page 1)
-  const dataPage = useMemo(() => {
-    if (cursor === undefined) return 1;
-    const entry = Array.from(pageCursors.entries()).find(
-      ([, c]) => c === cursor,
-    );
-    return entry?.[0] ?? 1;
-  }, [cursor, pageCursors]);
-
-  // Bootstrap: when landing on ?page=N, we may need to fetch page 1, then 2, … to
-  // collect cursors. Each response’s nextCursor is the cursor for (dataPage + 1).
-  useEffect(() => {
-    if (!projectsData?.nextCursor || dataPage >= page) return;
-    const nextPage = dataPage + 1;
-    setPageCursors((prev) => {
-      if (prev.has(nextPage)) return prev;
-      const next = new Map(prev);
-      next.set(nextPage, projectsData.nextCursor!);
-      return next;
-    });
-  }, [dataPage, page, projectsData?.nextCursor]);
 
   // Track next cursor for the next page when user clicks forward
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    if (projectsData?.nextCursor && newPage > page) {
-      // Store the cursor for the next page
-      setPageCursors((prev) => {
-        const newMap = new Map(prev);
-        newMap.set(newPage, projectsData.nextCursor!);
-        return newMap;
-      });
-    }
     setPage(newPage);
   };
-
-  // Calculate total pages based on whether we have a next cursor
-  // Since we're using cursor-based pagination, we can't know the exact total
-  // We'll show pages based on whether there's a next page available
-  const hasNextPage = !!projectsData?.nextCursor;
-  const totalPages = hasNextPage ? page + 1 : page;
-
-  const isLoading = projectsFetching || !projectsData || dataPage !== page;
+  const totalPages = Math.max(
+    1,
+    Math.ceil((projectsData?.total ?? 0) / ITEMS_PER_PAGE),
+  );
+  const isLoading = projectsFetching || !projectsData;
 
   if (isLoading) {
     return (

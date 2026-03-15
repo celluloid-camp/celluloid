@@ -92,7 +92,14 @@
       "subtitle": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
       "title": "Comment utiliser Celluloid ?"
     },
-    "member": "Projets rejoints"
+    "member": "Projets rejoints",
+    "explorer": "Explorer",
+    "collaboration": "Collaboration",
+    "sortBy": {
+      "recent_added": "Ajoutés récemment",
+      "publication_date": "Date de publication",
+      "name": "Nom"
+    }
   },
   "menu": {
     "about": "à propos",

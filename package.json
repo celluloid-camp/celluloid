@@ -4,7 +4,7 @@
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "devDependencies": {
-    "@biomejs/biome": "^2.4.2",
+    "@biomejs/biome": "^2.4.6",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@playwright/test": "^1.52.0",
@@ -12,9 +12,9 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.1",
     "conventional-changelog-conventionalcommits": "9.1.0",
-    "lefthook": "^2.1.1",
+    "lefthook": "^2.1.4",
     "release-it": "^19.0.5",
-    "turbo": "^2.8.9",
+    "turbo": "^2.8.16",
     "typescript": "^5.9.3"
   },
   "catalog": {

@@ -2,6 +2,7 @@
 import { useParentSize } from "@cutting/use-get-parent-size";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
+import TheatersIcon from "@mui/icons-material/Theaters";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Badge, Box, Paper, Tab } from "@mui/material";
 import { grey } from "@mui/material/colors";
@@ -66,21 +67,22 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             sx={{ height: TABLIST_HEIGHT, px: 2 }}
           >
             <Tab
-              icon={
-                <Badge
-                  badgeContent={annotationCount}
-                  color="secondary"
-                  showZero={true}
-                >
-                  <SpeakerNotesIcon />
-                </Badge>
-              }
+              icon={<SpeakerNotesIcon />}
               iconPosition="start"
-              label={t("project.annotation.title")}
+              label={
+                <Box className="flex items-center gap-4">
+                  {t("project.annotation.title")}
+                  <Badge
+                    badgeContent={annotationCount}
+                    color="secondary"
+                    showZero={true}
+                  />
+                </Box>
+              }
               value="1"
             />
             <Tab
-              icon={<BookmarksIcon />}
+              icon={<TheatersIcon />}
               iconPosition="start"
               label={t("project.scenes.title")}
               value="2"
