@@ -39,6 +39,6 @@ ALTER TABLE "VideoScenes" ADD CONSTRAINT "VideoScenes_spriteStorageId_fkey" FORE
 CREATE INDEX "workflow_waits_run_id_index" ON "workflow"."workflow_waits" USING btree ("run_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "VideoScenes_spriteStorageId_key" ON "VideoScenes" USING btree ("spriteStorageId" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "videoScenes_projectid_unique" ON "VideoScenes" USING btree ("projectId" uuid_ops);--> statement-breakpoint
-ALTER TABLE "Annotation" DROP COLUMN "orignalURL";--> statement-breakpoint
+ALTER TABLE "Annotation" DROP COLUMN "orignalUrl";--> statement-breakpoint
 ALTER TABLE "ProjectTranscript" DROP COLUMN "entries";--> statement-breakpoint
 ALTER TABLE "VideoAnalysis" DROP COLUMN "processing";

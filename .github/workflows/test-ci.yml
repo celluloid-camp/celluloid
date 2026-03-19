@@ -44,6 +44,10 @@ jobs:
       - name: Start services with Docker Compose (wait for healthchecks)
         run: docker compose -f compose.ci.yml up -d --wait
 
+      - name: Show container logs on failure
+        if: failure()
+        run: docker compose -f compose.ci.yml logs
+
       - name: Run Playwright tests
         run: bunx playwright test
 
