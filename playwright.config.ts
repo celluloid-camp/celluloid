@@ -2,7 +2,6 @@
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-import "dotenv/config";
 
 import { defineConfig, devices } from "@playwright/test";
 
@@ -10,7 +9,7 @@ import { defineConfig, devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: "tests",
+  testDir: "e2e",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -20,14 +19,24 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: process.env.CI
+    ? [
+        ["github"],
+        ["junit", { outputFile: "test-results/junit.xml" }],
+        ["html", { outputFolder: "playwright-report" }],
+      ]
+    : "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    /* Screenshot on failure */
+    screenshot: "only-on-failure",
+    /* Video on failure */
+    video: "retain-on-failure",
   },
 
   /* Configure projects for major browsers */
@@ -36,10 +45,10 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
     //{
     //  name: 'webkit',
     //  use: { ...devices['Desktop Safari'] },
@@ -64,16 +73,5 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ],
-
-  /* Run your local dev server before starting the tests */
-  webServer: [
-    {
-      command: "pnpm web start",
-      url: "http://localhost:3000",
-      reuseExistingServer: !process.env.CI,
-      stdout: "ignore",
-      stderr: "pipe",
-    },
   ],
 });

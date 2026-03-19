@@ -23,14 +23,13 @@ import dayjs from "@/utils/dayjs";
 
 interface Props {
   project: ProjectById;
-  user?: User;
 }
 
-export function ProjectSummary({ project, user }: Props) {
+export function ProjectHeader({ project }: Props) {
   const t = useTranslations();
 
   return (
-    <Box sx={{ padding: 0 }}>
+    <Box sx={{ paddingBottom: 2 }}>
       {project?.playlist ? (
         <Typography
           align="justify"
@@ -42,23 +41,30 @@ export function ProjectSummary({ project, user }: Props) {
         </Typography>
       ) : null}
 
-      <Typography align="left" variant="h3">
+      <Typography align="left" variant="h4">
         {project.title}
       </Typography>
 
-      <Box display="flex" alignItems={"center"}>
+      <Box
+        display="flex"
+        sx={{
+          mt: 1,
+          alignItems: { xs: "flex-start", sm: "center" },
+          gap: 1,
+        }}
+      >
         <Avatar
           sx={{
             background: project.user.color,
-            borderWidth: 2,
+            borderWidth: 1,
             borderColor: project.user.color,
             borderStyle: "solid",
           }}
-          src={project.user.avatar?.publicUrl}
+          src={project.user.image ?? undefined}
         >
           {project.user.initial}
         </Avatar>
-        <Box display="flex" flexDirection={"column"} sx={{ marginLeft: 1 }}>
+        <Box display="flex" flexDirection={"column"} sx={{ ml: 0 }}>
           <Typography>{project.user.username}</Typography>
           <Typography variant="caption">
             {dayjs(project.publishedAt).format("DD/MM/YYYY")}
@@ -66,7 +72,11 @@ export function ProjectSummary({ project, user }: Props) {
         </Box>
       </Box>
 
-      <Stack direction={"row"} spacing={1} sx={{ my: 2, minHeight: 25 }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={1}
+        sx={{ flexWrap: "wrap", pt: 1 }}
+      >
         {project.public && (
           <Chip
             label={t("project.public")}
@@ -82,17 +92,25 @@ export function ProjectSummary({ project, user }: Props) {
             icon={<GroupsIcon />}
           />
         )}
-        {project.keywords.map((k) => (
+        {project.keywords?.map((k) => (
           <Chip key={k} label={k} size="small" />
         ))}
       </Stack>
+    </Box>
+  );
+}
 
-      <Card sx={{ my: 2 }}>
+export function ProjectDescription({ project }: Props) {
+  const t = useTranslations();
+
+  return (
+    <Box sx={{ padding: 0 }}>
+      <Card sx={{ maxHeight: 300 }}>
         <CardHeader
           title={t("project.description")}
           sx={{ p: 2, borderBottom: `1px solid ${colors.grey[300]}` }}
           action={
-            user && user.id === project.user.id ? (
+            project.editable ? (
               <Link href={`/project/${project.id}/edit`}>
                 <Button variant="text" size="small" startIcon={<EditIcon />}>
                   {t("project.edit.button")}
@@ -101,17 +119,14 @@ export function ProjectSummary({ project, user }: Props) {
             ) : null
           }
         />
-        <CardContent>
-          <Typography variant="caption">{project.description}</Typography>
-          <Typography
-            align="left"
-            gutterBottom={true}
-            variant="body2"
-            fontWeight={"bold"}
-          >
-            {t("project.URL_title")}
-          </Typography>
-
+        <CardContent
+          sx={{
+            py: 2,
+            maxHeight: 200,
+            overflowY: "auto",
+          }}
+        >
+          <Typography>{project.description}</Typography>
           <Typography align="left" gutterBottom={true} variant="body2">
             <a
               href={`https://${project.host}/w/${project.videoId}`}

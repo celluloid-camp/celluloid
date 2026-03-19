@@ -1,21 +1,23 @@
 "use client";
 import { Box, List } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import type * as React from "react";
 import type { User } from "@/lib/auth-client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
+import { useAnnotations } from "@/stores/annotations";
 import { AnnotationItem } from "./annotation-item";
 import { EmptyAnnotation } from "./empty";
 import { AnnotationForm } from "./form";
 
 interface AnnotationPanelProps {
   project: ProjectById;
-  annotations: AnnotationByProjectId[];
   user?: User;
 }
 
 export const AnnotationList: React.FC<
   Omit<AnnotationPanelProps, "annotationCount" | "onShowHintsClick">
-> = ({ project, annotations = [], user }) => {
+> = ({ project, user }) => {
+  const { currentAnnotations } = useAnnotations(project.id);
   return (
     <Box
       sx={{
@@ -35,7 +37,7 @@ export const AnnotationList: React.FC<
           "& ul": { padding: 0 },
         }}
       >
-        {annotations.map((annotation: AnnotationByProjectId) => (
+        {currentAnnotations.map((annotation: AnnotationByProjectId) => (
           <AnnotationItem
             annotation={annotation}
             key={annotation.id}
@@ -44,7 +46,7 @@ export const AnnotationList: React.FC<
           />
         ))}
 
-        {annotations.length === 0 && <EmptyAnnotation />}
+        {currentAnnotations.length === 0 && <EmptyAnnotation />}
       </List>
 
       <Box display={"flex"} flexDirection={"column"}>

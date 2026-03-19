@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Dialog,
@@ -127,7 +126,7 @@ export const AddVideoToPlaylistDialog: React.FC<
           <Button onClick={onClose} color="secondary">
             {t("project.submit-add-video-playlist")}
           </Button>
-          <LoadingButton
+          <Button
             variant="contained"
             size="large"
             color="primary"
@@ -136,7 +135,7 @@ export const AddVideoToPlaylistDialog: React.FC<
             disabled={!isValid}
           >
             {t("project.cancel-add-video")}
-          </LoadingButton>
+          </Button>
         </DialogActions>
       </form>
     </Dialog>

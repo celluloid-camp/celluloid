@@ -1,15 +1,14 @@
-import {
-  Skeleton,
-  Timeline,
-  TimelineConnector,
-  TimelineContent,
-  TimelineDot,
-  TimelineItem,
-  TimelineOppositeContent,
-  TimelineSeparator,
+import Timeline from "@mui/lab/Timeline";
+import TimelineConnector from "@mui/lab/TimelineConnector";
+import TimelineContent from "@mui/lab/TimelineContent";
+import TimelineDot from "@mui/lab/TimelineDot";
+import TimelineItem from "@mui/lab/TimelineItem";
+import TimelineOppositeContent, {
   timelineOppositeContentClasses,
-} from "@mui/lab";
-import { Stack } from "@mui/material";
+} from "@mui/lab/TimelineOppositeContent";
+import TimelineSeparator from "@mui/lab/TimelineSeparator";
+import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
 
 export function ChapterListSkeleton() {
   return (

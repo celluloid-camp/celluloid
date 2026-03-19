@@ -1,17 +1,10 @@
+import { ShapeType } from "@celluloid/db/schema/types";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
 import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
 import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
 import { Box, IconButton, SvgIcon, Tooltip } from "@mui/material";
-
-export type ShapeType =
-  | string
-  | "rect"
-  | "circle"
-  | "polygon"
-  | "ellipse"
-  | "point";
 
 interface ToolboxProps {
   shapeType: ShapeType;

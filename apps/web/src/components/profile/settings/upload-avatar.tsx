@@ -1,11 +1,13 @@
 import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type React from "react";
 import { useState } from "react";
 import { Avatar } from "@/components/common/avatar";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
+import { trpcClient } from "@/lib/trpc/provider";
 
 const Input = styled("input")({
   display: "none",
@@ -26,7 +28,13 @@ export default function UploadAvatar({
   onChange,
 }: UploadAvatarProps) {
   const [avatar, setAvatar] = useState<string | undefined>(url ?? "");
-  const utils = trpc.useUtils();
+
+  const api = useTRPC();
+  const uploadMutation = useMutation(api.storage.add.mutationOptions());
+  const presignedUrlMutation = useMutation(
+    api.storage.presignedUrl.mutationOptions(),
+  );
+  const deleteMutation = useMutation(api.storage.delete.mutationOptions());
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
   const handleAvatarChange = async (
@@ -41,16 +49,15 @@ export default function UploadAvatar({
         };
         reader.readAsDataURL(file);
 
-        const { uploadUrl, path } =
-          await utils.client.storage.presignedUrl.mutate({
-            name: file.name,
-          });
+        const { uploadUrl, path } = await presignedUrlMutation.mutateAsync({
+          name: file.name,
+        });
 
         await fetch(uploadUrl, {
           method: "PUT",
           body: file,
         });
-        const { id, publicUrl } = await utils.client.storage.add.mutate({
+        const { id, publicUrl } = await uploadMutation.mutateAsync({
           path: path,
         });
 
@@ -66,7 +73,7 @@ export default function UploadAvatar({
   const handleDelete = async () => {
     if (storageId) {
       try {
-        await utils.client.storage.delete.mutate({
+        await deleteMutation.mutateAsync({
           storageId: storageId,
         });
 
@@ -91,12 +98,10 @@ export default function UploadAvatar({
         alt="User Avatar"
         sx={{
           background: color,
-          width: 100,
-          height: 100,
-          borderWidth: 2,
           borderColor: color,
           borderStyle: "solid",
         }}
+        className="w-20 h-20 border-2 border-color-color text-2xl"
         src={avatar}
       >
         {initial}

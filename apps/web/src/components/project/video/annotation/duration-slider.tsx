@@ -357,7 +357,7 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
             <ArrowRightIcon />
           </IconButton>
         </Stack>
-        <Grid item xs>
+        <Grid size="grow">
           <Slider
             value={value}
             onChange={handleChange}

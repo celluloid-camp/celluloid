@@ -1,6 +1,5 @@
 // ObjectTimeline.js
 
-import type { DetectionResultsModel } from "@celluloid/vision";
 import { Box } from "@mui/material";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import React, { useMemo } from "react";
@@ -16,13 +15,23 @@ import {
   YAxis,
 } from "recharts";
 import { getSpriteThumbnail } from "@/lib/sprite";
+import { VisionByProjectId } from "@/lib/trpc/types";
 import { formatDuration } from "@/utils/duration";
 
-export function VisionChart({ analysis }: { analysis: DetectionResultsModel }) {
-  const spriteUrl = analysis.metadata.sprite.path;
+export function VisionChart({
+  data,
+}: {
+  data: NonNullable<VisionByProjectId>;
+}) {
+  const spriteUrl = data.spriteURL;
+  const analysis = data.data;
+
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
   // Pre-process data once to be more efficient for the timeline
-  const objectsByTime = useMemo(() => {
+  const chartData = useMemo(() => {
+    if (!analysis) {
+      return null;
+    }
     const objects: Record<string, any> = {};
     analysis.frames.forEach((frame) => {
       frame.objects.forEach((obj) => {
@@ -48,26 +57,27 @@ export function VisionChart({ analysis }: { analysis: DetectionResultsModel }) {
         });
       });
     });
-    return Object.values(objects).sort((a, b) =>
-      a.id.localeCompare(b.id, undefined, { numeric: true }),
-    );
+    return Object.values(objects)
+      .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+      .map((obj) => ({
+        task: obj.id,
+        duration: [obj.startTime, obj.endTime],
+        sprite: obj.sprite,
+        className: obj.class_name,
+        fill: "#8884d8",
+      }));
   }, [analysis]);
 
-  // Format data for Recharts Gantt chart
-  const chartData = objectsByTime.map((obj) => ({
-    task: obj.id,
-    duration: [obj.startTime, obj.endTime],
-    sprite: obj.sprite,
-    className: obj.class_name,
-    fill: "#8884d8",
-  }));
-
+  if (!analysis || !chartData) {
+    return null;
+  }
   const duration =
     analysis.metadata.video.frame_count / analysis.metadata.video.fps;
 
   return (
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer>
+        Frame: {analysis.frames.length}
         <BarChart data={chartData} layout="vertical">
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis

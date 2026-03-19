@@ -29,15 +29,24 @@ export const Footer: React.FC<FooterProps> = (props) => {
     >
       <Container sx={{ padding: { xs: 5, lg: 5 } }} maxWidth="lg">
         <Grid container spacing={4}>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
             <Stack>
-              <Link href="/terms-and-conditions" color="white" variant="body2">
+              <Link
+                href="/terms-and-conditions"
+                className="text-white"
+                variant="body2"
+              >
                 {t("footer.termsAndConditions")}
               </Link>
-              <Link href="/legal-notice" color="white" variant="body2">
+              <Link href="/legal-notice" className="text-white" variant="body2">
                 {t("footer.legalNotice")}
               </Link>
-              <Link href="/api-doc" color="white" variant="body2">
+              <Link href="/api-doc" className="text-white" variant="body2">
                 API
               </Link>
               <Stack direction={"row"} marginTop={2} spacing={1}>
@@ -71,7 +80,12 @@ export const Footer: React.FC<FooterProps> = (props) => {
               </Stack>
             </Stack>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
             <Box
               sx={{
                 flexDirection: "column",
@@ -85,23 +99,23 @@ export const Footer: React.FC<FooterProps> = (props) => {
               <Typography
                 variant="body2"
                 gutterBottom={true}
-                color="white"
+                className="text-white"
                 textAlign={{ lg: "left", sm: "center" }}
               >
                 {t.rich("footer.copyright", {
-                  link: (chunks) => (
+                  link: (chunks: string) => (
                     <Link
                       href="https://creativecommons.org/licenses/by-nc/2.0/fr/"
                       target="_blank"
                       rel="noreferrer"
-                      sx={{ color: "white" }}
+                      className="text-white"
                     >
                       {chunks}
                     </Link>
                   ),
                 })}
               </Typography>
-              <Typography variant="body2" color="white">
+              <Typography variant="body2" className="text-white">
                 {env.NEXT_PUBLIC_VERSION} - {env.NEXT_PUBLIC_STAGE}
               </Typography>
             </Box>

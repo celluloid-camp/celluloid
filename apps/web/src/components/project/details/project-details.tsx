@@ -1,77 +1,57 @@
 import { Box, Container, Grid, Paper, Skeleton } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useFeatureFlagEnabled } from "posthog-js/react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { env } from "@/env";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById } from "@/lib/trpc/types";
-import { projectFallbackRender } from "./error-fallback";
+import { useTRPC } from "@/lib/trpc/client";
 import { ProjectNotes } from "./project-notes";
 import {
   ProjectTranscript,
   TranscriptErrorFallback,
 } from "./project-transcript";
-import { ProjectSummary } from "./summary";
-import { ProjectVision } from "./vision";
-
-const SideBar = dynamic(() => import("./sidebar").then((mod) => mod.SideBar), {
-  ssr: false,
-  loading: () => (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-      }}
-    >
-      <Skeleton
-        variant="rectangular"
-        sx={{
-          borderRadius: 2,
-          width: "100%",
-          height: 200,
-          paddingY: 2,
-        }}
-      />
-      <Skeleton
-        variant="rectangular"
-        sx={{
-          borderRadius: 2,
-          width: "100%",
-          height: 100,
-          paddingY: 2,
-        }}
-      />
-    </Box>
-  ),
-});
+import { SideBar } from "./sidebar";
+import { ProjectDescription, ProjectHeader } from "./summary";
+import { ProjectVision, ProjectVisionFallback } from "./vision";
 
 export function ProjectDetails({ projectId }: { projectId: string }) {
   const { data: session } = useSession();
-  const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
+  const api = useTRPC();
+  const { data: project } = useSuspenseQuery(
+    api.project.byId.queryOptions({ id: projectId }),
+  );
   return (
     <Box
       sx={{
         backgroundColor: "brand.orange",
         minHeight: "100vh",
-        paddingY: 3,
+        paddingY: 2,
       }}
     >
       <Container maxWidth="lg">
         <Paper
           sx={{
             paddingY: 2,
-            paddingX: 4,
+            paddingX: 2,
             margin: 0,
             backgroundColor: "brand.green",
             minHeight: "100vh",
+            shadow: 0,
           }}
         >
-          <Grid container direction="row" alignItems="flex-start" spacing={4}>
-            <Grid item xs={12} md={8} lg={8}>
-              <ProjectSummary project={project} user={session?.user} />
+          <ProjectHeader project={project} />
+          <Grid container direction="row" alignItems="flex-start" spacing={2}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 8,
+                lg: 8,
+              }}
+            >
+              <ProjectDescription project={project} />
+
               {session ? (
                 <ErrorBoundary FallbackComponent={() => <Box>Failed</Box>}>
                   <Suspense
@@ -98,13 +78,30 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
                   }
                 >
                   <ProjectTranscript project={project} user={session?.user} />
-                  {env.NEXT_PUBLIC_STAGE === "staging" && (
-                    <ProjectVision project={project} user={session?.user} />
-                  )}
+                </Suspense>
+              </ErrorBoundary>
+
+              <ErrorBoundary FallbackComponent={ProjectVisionFallback}>
+                <Suspense
+                  fallback={
+                    <Skeleton
+                      variant="rectangular"
+                      height={300}
+                      sx={{ borderRadius: 2, my: 2 }}
+                    />
+                  }
+                >
+                  <ProjectVision project={project} user={session?.user} />
                 </Suspense>
               </ErrorBoundary>
             </Grid>
-            <Grid item xs={12} md={4} lg={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+                lg: 4,
+              }}
+            >
               <SideBar project={project} />
             </Grid>
           </Grid>

@@ -1,4 +1,4 @@
-import type { PeerTubeVideo, Playlist } from "@celluloid/types";
+import type { PeerTubeVideo, Playlist } from "@celluloid/peertube";
 // import * as queryString from "query-string";
 import { last } from "ramda";
 

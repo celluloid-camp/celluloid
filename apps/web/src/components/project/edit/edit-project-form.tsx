@@ -1,7 +1,7 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   FormControlLabel,
@@ -11,39 +11,50 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { useFormik } from "formik";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
 import { useHumanizeError } from "@/i18n/errors";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 
 export function EditProjectForm({ projectId }: { projectId: string }) {
   const t = useTranslations();
   const confirm = useConfirm();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const humanizeError = useHumanizeError();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
+  const { data: project } = useSuspenseQuery(
+    api.project.byId.queryOptions({ id: projectId }),
+  );
 
-  const deleteMutation = trpc.project.delete.useMutation({
-    onSuccess: () => {
-      utils.project.list.invalidate();
-      router.push("/");
-    },
-    onError: (e) => {
-      enqueueSnackbar(t("project.delete.error"), {
-        variant: "error",
-        key: "project.delete.error",
-      });
-    },
-  });
+  const deleteMutation = useMutation(
+    api.project.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(api.project.list.queryFilter());
+        router.push("/");
+      },
+      onError: (e) => {
+        enqueueSnackbar(t("project.delete.error"), {
+          variant: "error",
+          key: "project.delete.error",
+        });
+      },
+    }),
+  );
   const handleDelete = () => {
     deleteMutation.mutate({
       projectId: project.id,
@@ -67,67 +78,78 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
     });
   };
 
-  const mutation = trpc.project.update.useMutation({
-    onSuccess: () => {
-      utils.project.byId.invalidate({ id: project.id });
-      enqueueSnackbar(t("project.edit.success"), {
-        variant: "success",
-        key: "project.edit.success",
-      });
-    },
-    onError: (e) => {
-      enqueueSnackbar(t("project.edit.error"), {
-        variant: "error",
-        key: "project.edit.error",
-      });
-    },
-  });
+  const mutation = useMutation(
+    api.project.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("project.edit.success"), {
+          variant: "success",
+          key: "project.edit.success",
+        });
+      },
+      onError: (e) => {
+        enqueueSnackbar(t("project.edit.error"), {
+          variant: "error",
+          key: "project.edit.error",
+        });
+      },
+    }),
+  );
 
-  const validationSchema = Yup.object().shape({
-    title: Yup.string()
-      .min(5, "Le titre doit comporter au moins 5 caractères.")
-      .required("Le titre est requis."),
-    description: Yup.string().required("La description est requise."),
-    keywords: Yup.array().of(Yup.string()),
-    public: Yup.bool(),
-    collaborative: Yup.bool(),
+  const editProjectSchema = z.object({
+    title: z.string().min(5, "Le titre doit comporter au moins 5 caractères."),
+    description: z.string().min(1, "La description est requise."),
+    keywords: z.array(z.string()).optional(),
+    public: z.boolean(),
+    collaborative: z.boolean(),
+    shared: z.boolean(),
   });
+  type EditProjectFormValues = z.infer<typeof editProjectSchema>;
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+    setValue,
+    watch,
+    reset,
+  } = useForm<EditProjectFormValues>({
+    resolver: zodResolver(editProjectSchema),
+    defaultValues: {
       title: project.title,
       description: project.description,
       public: project.public,
       collaborative: project.collaborative,
       shared: project.shared,
-      keywords: project.keywords,
-      error: null,
-    },
-    validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      try {
-        await mutation.mutateAsync({
-          projectId: project.id,
-          title: values.title,
-          description: values.description,
-          public: values.public,
-          collaborative: values.collaborative,
-          shared: values.shared,
-          keywords: values.keywords,
-        });
-        formik.resetForm();
-        router.back();
-      } catch (e) {
-        formik.setFieldError("title", humanizeError("ERR_UNKOWN"));
-      }
+      keywords: project.keywords ?? [],
     },
   });
+
+  const onSubmit = async (values: EditProjectFormValues) => {
+    try {
+      await mutation.mutateAsync({
+        projectId: project.id,
+        title: values.title,
+        description: values.description,
+        public: values.public,
+        collaborative: values.collaborative,
+        shared: values.shared,
+        keywords: values.keywords,
+      });
+      reset(values);
+      router.back();
+    } catch (e) {
+      setError("title", { message: humanizeError("ERR_UNKOWN") });
+    }
+  };
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Box padding={2} sx={{ flexGrow: 1 }}>
         <TextField
           id="title"
-          name="title"
           label={t("project.title")}
           fullWidth
           autoFocus
@@ -137,16 +159,13 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
           inputProps={{
             "data-testid": "title",
           }}
-          value={formik.values.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.title && Boolean(formik.errors.title)}
-          helperText={formik.touched.title && formik.errors.title}
-          disabled={formik.isSubmitting}
+          {...register("title")}
+          error={Boolean(errors.title)}
+          helperText={errors.title?.message}
+          disabled={isSubmitting || mutation.isPending}
         />
         <TextField
           id="description"
-          name="description"
           label={t("project.description")}
           multiline
           rows={3}
@@ -157,24 +176,20 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
           }}
           spellCheck={false}
           margin="normal"
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={
-            formik.touched.description && Boolean(formik.errors.description)
-          }
-          helperText={formik.touched.description && formik.errors.description}
-          disabled={formik.isSubmitting}
+          {...register("description")}
+          error={Boolean(errors.description)}
+          helperText={errors.description?.message}
+          disabled={isSubmitting || mutation.isPending}
         />
         <AutoCompleteTags
           id="keywords"
           options={[""]}
           onChange={(_event, newValue) => {
-            formik.setFieldValue("keywords", newValue);
+            setValue("keywords", newValue, { shouldValidate: true });
           }}
-          disabled={formik.isSubmitting}
-          value={formik.values.keywords}
-          textFieldProps={{
+          disabled={isSubmitting || mutation.isPending}
+          value={watch("keywords") ?? []}
+          textfieldprops={{
             margin: "normal",
             inputProps: {
               "data-testid": "keywords",
@@ -200,11 +215,11 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
               sx={{ fontSize: 10 }}
               control={
                 <Switch
-                  checked={formik.values.public}
+                  checked={watch("public")}
                   size="small"
                   data-testid="collaborative-switch"
                   onChange={(_, value) => {
-                    formik.setFieldValue("public", value);
+                    setValue("public", value, { shouldValidate: true });
                   }}
                 />
               }
@@ -218,11 +233,11 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
               sx={{ fontSize: 10 }}
               control={
                 <Switch
-                  checked={formik.values.collaborative}
+                  checked={watch("collaborative")}
                   size="small"
                   data-testid="collaborative-switch"
                   onChange={(_, value) => {
-                    formik.setFieldValue("collaborative", value);
+                    setValue("collaborative", value, { shouldValidate: true });
                   }}
                 />
               }
@@ -236,11 +251,11 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
               sx={{ fontSize: 10 }}
               control={
                 <Switch
-                  checked={formik.values.shared}
+                  checked={watch("shared")}
                   size="small"
                   data-testid="shared-switch"
                   onChange={(_, value) => {
-                    formik.setFieldValue("shared", value);
+                    setValue("shared", value, { shouldValidate: true });
                   }}
                 />
               }
@@ -251,23 +266,22 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
         </Box>
 
         <Grid container spacing={2} sx={{ mt: 2 }}>
-          <Grid item xs={4}>
+          <Grid size={4}>
             {project.deletable && (
-              <LoadingButton
+              <Button
                 variant="outlined"
                 color="error"
                 size="medium"
-                disabled={mutation.isPending}
                 onClick={confirmDelete}
                 startIcon={<DeleteIcon />}
               >
                 {t("project.edit.delete.button")}
-              </LoadingButton>
+              </Button>
             )}
           </Grid>
 
-          <Grid item xs={8} display={"flex"} justifyContent={"flex-end"}>
-            <LoadingButton
+          <Grid display={"flex"} justifyContent={"flex-end"} size={8}>
+            <Button
               variant="contained"
               size="medium"
               data-testid="submit"
@@ -275,10 +289,9 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
               type="submit"
               loading={mutation.isPending}
               startIcon={<EditIcon />}
-              disabled={mutation.isPending}
             >
               {t("project.edit.submit.button")}
-            </LoadingButton>
+            </Button>
           </Grid>
         </Grid>
       </Box>

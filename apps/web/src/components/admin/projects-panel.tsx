@@ -20,19 +20,21 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { SearchFilter } from "./search-filter";
 import { ProjectTableSkeleton } from "./skeleton";
 
 export default function ProjectsPanel() {
   const t = useTranslations();
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
   const confirm = useConfirm();
   const { enqueueSnackbar } = useSnackbar();
@@ -43,27 +45,31 @@ export default function ProjectsPanel() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const { data, isLoading } = trpc.admin.listProjects.useQuery({
-    limit: rowsPerPage,
-    skip: page * rowsPerPage,
-    searchTerm,
-  });
+  const { data, isLoading } = useQuery(
+    api.admin.listProjects.queryOptions({
+      limit: rowsPerPage,
+      skip: page * rowsPerPage,
+      searchTerm,
+    }),
+  );
 
-  const deleteProject = trpc.admin.deleteUserProject.useMutation({
-    onSuccess: () => {
-      enqueueSnackbar(t("admin.project.delete.success"), {
-        variant: "success",
-        key: "admin.project.delete.success",
-      });
-      utils.admin.listProjects.invalidate();
-    },
-    onError: () => {
-      enqueueSnackbar(t("admin.project.delete.error"), {
-        variant: "error",
-        key: "admin.project.delete.error",
-      });
-    },
-  });
+  const deleteProject = useMutation(
+    api.admin.deleteUserProject.mutationOptions({
+      onSuccess: () => {
+        enqueueSnackbar(t("admin.project.delete.success"), {
+          variant: "success",
+          key: "admin.project.delete.success",
+        });
+        queryClient.invalidateQueries(api.admin.listProjects.pathFilter());
+      },
+      onError: () => {
+        enqueueSnackbar(t("admin.project.delete.error"), {
+          variant: "error",
+          key: "admin.project.delete.error",
+        });
+      },
+    }),
+  );
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,

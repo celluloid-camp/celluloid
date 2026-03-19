@@ -1,4 +1,5 @@
-import { Box, Grid, Link, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type * as React from "react";
@@ -30,8 +31,8 @@ export default function About() {
       </Typography>
       <Typography variant="subtitle1" gutterBottom={true}>
         {t.rich("about.intro", {
-          celluloid: (chunks) => <b>{chunks}</b>,
-          consortium: (chunks) => (
+          celluloid: (chunks: string) => <b>{chunks}</b>,
+          consortium: (chunks: string) => (
             <Link
               href="https://www.huma-num.fr/les-consortiums-hn/"
               target="_blank"
@@ -47,7 +48,7 @@ export default function About() {
       </Typography>
       <Typography variant="subtitle1" gutterBottom={true} pt={1}>
         {t.rich("about.opensource.prefix", {
-          canevas: (chunks) => (
+          canevas: (chunks: string) => (
             <Link
               href="https://canevas.hypotheses.org/a-propos"
               target="_blank"
@@ -56,7 +57,7 @@ export default function About() {
               {chunks}
             </Link>
           ),
-          mshpn: (chunks) => (
+          mshpn: (chunks: string) => (
             <Link
               href="https://www.mshparisnord.fr/programmes/consortium-humanum-cannevas/"
               target="_blank"
@@ -69,7 +70,7 @@ export default function About() {
       </Typography>
 
       {t.rich("about.opensource.github", {
-        github: (chunks) => (
+        github: (chunks: string) => (
           <Link
             href="https://github.com/celluloid-camp/"
             target="_blank"
@@ -86,8 +87,8 @@ export default function About() {
           textAlign: "center",
         }}
       >
-        <Grid container spacing={2} bgcolor={"white"}>
-          <Grid item>
+        <Grid container spacing={2} sx={{ bgcolor: "white" }}>
+          <Grid size="auto">
             <a href="https://www.icp.fr/" target="_blank" rel="noreferrer">
               <Image
                 src={logoIcp}
@@ -96,7 +97,7 @@ export default function About() {
               />
             </a>
           </Grid>
-          <Grid item={true}>
+          <Grid size="auto">
             <a
               href="https://fondation-st-matthieu.org/"
               target="_blank"
@@ -105,7 +106,7 @@ export default function About() {
               <Image src={logoFsm} height={60} alt="Fondation Saint-Matthieu" />
             </a>
           </Grid>
-          <Grid item={true}>
+          <Grid size="auto">
             <a
               href="https://www.lapaillasse.org/"
               target="_blank"
@@ -114,7 +115,7 @@ export default function About() {
               <Image src={logoLp} height={60} alt="La Paillasse" />
             </a>
           </Grid>
-          <Grid item={true}>
+          <Grid size="auto">
             <Box width={40}>
               <a
                 href="https://canevas.hypotheses.org/"
@@ -125,13 +126,12 @@ export default function About() {
               </a>
             </Box>
           </Grid>
-          <Grid item={true}>
+          <Grid size="auto">
             <a href="https://www.huma-num.fr/" target="_blank" rel="noreferrer">
               <Image src={logoHN} height={60} alt="Le site de Huma-num" />
             </a>
           </Grid>
-
-          <Grid item={true}>
+          <Grid size="auto">
             <a
               href="https://www.mshparisnord.fr/programmes/consortium-humanum-cannevas/"
               target="_blank"

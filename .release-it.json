@@ -15,9 +15,9 @@
     }
   },
   "plugins": {
-    "release-it-pnpm": {
-      "publish": false,
-      "inFile": "CHANGELOG.md"
+    "@release-it/conventional-changelog": {
+      "preset": "conventionalcommits",
+      "infile": "CHANGELOG.md"
     }
   },
   "npm": {

@@ -1,0 +1,23 @@
+{
+  "name": "@celluloid/ai",
+  "version": "3.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "devDependencies": {
+    "@celluloid/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.1.12",
+    "@celluloid/utils": "workspace:*",
+    "@langchain/mistralai": "^1.0.2",
+    "@langchain/textsplitters": "^1.0.1",
+    "@mistralai/mistralai": "^1.11.0",
+    "@t3-oss/env-nextjs": "catalog:",
+    "zod": "catalog:"
+  }
+}

@@ -13,11 +13,10 @@ import {
   styled,
   Typography,
 } from "@mui/material";
-import Image from "mui-image";
 import { useRouter } from "next/navigation";
-import type * as React from "react";
 
 import { Avatar } from "@/components/common/avatar";
+import { Image } from "@/components/common/image";
 import type { ProjectListItem } from "@/lib/trpc/types";
 import dayjs from "@/utils/dayjs";
 import { formatDuration } from "@/utils/duration";
@@ -27,7 +26,7 @@ interface Props {
   project: ProjectListItem;
 }
 
-const ProjectThumbnail: React.FC<Props> = ({ project }) => {
+export function ProjectThumbnail({ project }: Props) {
   const router = useRouter();
 
   const handleClick = () => {
@@ -35,6 +34,8 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
   };
 
   return (
+    // </Fade>
+    // </ThemeProvider>
     <Card
       elevation={0}
       sx={{
@@ -47,7 +48,7 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
         onClick={handleClick}
         sx={{
           borderRadius: 2,
-          border: "1px solid #000000",
+          border: 0,
           overflow: "hidden",
           position: "relative",
         }}
@@ -82,13 +83,15 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
         <Box
           sx={{
             overflow: "hidden",
+            position: "relative",
+            height: 200,
             minHeight: 200,
-            borderRadius: 2, // optional
+            border: 0,
+            borderRadius: 2,
+            backgroundColor: "black",
             "& img": {
               transition:
                 "transform 1.5s cubic-bezier(0.22, 1, 0.36, 1) !important",
-              width: "100%",
-              height: "auto",
               display: "block",
             },
             "&:hover img": {
@@ -96,18 +99,9 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
             },
           }}
         >
-          <Image
-            src={project.thumbnailURL}
-            duration={500}
-            showLoading={<CircularProgress />}
-            bgColor="#000000"
-            wrapperStyle={{
-              height: 200,
-            }}
-          />
+          <Image src={project.thumbnailURL} alt={project.title} />
         </Box>
       </Box>
-
       <Box
         display="flex"
         alignItems={"flex-start"}
@@ -116,34 +110,34 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
       >
         <Avatar
           sx={{
-            backgroundColor: project.user.color,
+            backgroundColor: project.user?.color,
             borderWidth: 2,
-            borderColor: project.user.color,
+            borderColor: project.user?.color,
             borderStyle: "solid",
             width: 36,
             height: 36,
             textDecoration: "none",
           }}
-          src={project.user.avatar?.publicUrl}
+          src={project.user?.image ?? undefined}
           onClick={() => {
-            router.push(`/user/${project.user.id}`);
+            router.push(`/user/${project.userId}`);
           }}
         >
-          {project.user.initial}
+          {project.user?.initial}
         </Avatar>
         <Stack spacing={0}>
           <Typography fontWeight={"bold"} noWrap>
             {project.title}
           </Typography>
           <Box display="flex" alignItems={"center"} gap={1}>
-            <Typography variant="body2">{project.user.username}</Typography>
+            <Typography variant="body2">{project.user?.username}</Typography>
             <Typography variant="caption" color={"grey.700"}>
               {dayjs(project.publishedAt).fromNow(true)}
             </Typography>
           </Box>
         </Stack>
 
-        <Box
+        {/* <Box
           display={"flex"}
           justifyContent={"flex-end"}
           alignItems={"flex-end"}
@@ -168,12 +162,8 @@ const ProjectThumbnail: React.FC<Props> = ({ project }) => {
               sx={{ px: 0.5 }}
             />
           </Stack>
-        </Box>
+        </Box> */}
       </Box>
     </Card>
-    // </Fade>
-    // </ThemeProvider>
   );
-};
-
-export default ProjectThumbnail;
+}

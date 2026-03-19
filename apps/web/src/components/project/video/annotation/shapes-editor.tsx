@@ -1,5 +1,6 @@
 "use client";
 
+import { ShapeType } from "@celluloid/db/schema/types";
 import { Box } from "@mui/material";
 import { KonvaEventObject } from "konva/lib/Node";
 import React, {
@@ -19,7 +20,7 @@ import {
   Transformer,
 } from "react-konva";
 import { useShapesStore } from "./shapes-store";
-import { ShapeType, Toolbox } from "./toolbox";
+import { Toolbox } from "./toolbox";
 import { Shape } from "./types";
 
 export function ShapesEditor() {

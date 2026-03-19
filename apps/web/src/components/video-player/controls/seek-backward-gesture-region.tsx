@@ -15,7 +15,7 @@ export const SeekBackwardGestureRegion = ({ sx }: Pick<BoxProps, "sx">) => {
     <Box
       component="div"
       sx={{ flex: 1, minWidth: 0, ...sx }}
-      onClick={() => {
+      onDoubleClick={() => {
         const type = MediaActionTypes.MEDIA_SEEK_REQUEST;
         const detail = mediaCurrentTime - 30;
         dispatch({ type, detail });

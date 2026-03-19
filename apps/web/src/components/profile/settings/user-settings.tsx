@@ -24,8 +24,8 @@ export function UserSettings() {
 
   return (
     <Container>
-      <Paper sx={{ width: "100%", minHeight: "80vh", mb: 10 }}>
-        <Typography variant="h3" sx={{ px: 3, pt: 3, pb: 2 }}>
+      <Paper className="w-full min-h-[80vh] mb-10">
+        <Typography variant="h3" className="font-serif px-6 pt-6 pb-2">
           {t("settings.title")}
         </Typography>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -13,18 +14,19 @@ import {
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import * as React from "react";
 import { useState } from "react";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import { TransparentInput } from "@/components/common/transparent-input";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type {
   AnnotationByProjectId,
   AnnotationCommentByProjectId,
@@ -49,59 +51,61 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   const [edition, setEdition] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
-  const editMutation = trpc.comment.edit.useMutation({
-    onSuccess: () => {
-      utils.annotation.byProjectId.invalidate({ id: project.id });
-      enqueueSnackbar(t("comment.update.success"), {
-        variant: "success",
-      });
-    },
-    onError: () => {
-      enqueueSnackbar(t("comment.update.error"), {
-        variant: "error",
-      });
-    },
+  const editMutation = useMutation(
+    api.comment.edit.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("comment.update.success"), {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar(t("comment.update.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
+
+  const deleteMutation = useMutation(
+    api.comment.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("comment.delete.success"), {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar(t("comment.delete.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
+
+  const commentSchema = z.object({
+    comment: z.string().min(2, t("project.video.annotation.comment.minLength")),
   });
+  type CommentFormValues = z.infer<typeof commentSchema>;
 
-  const deleteMutation = trpc.comment.delete.useMutation({
-    onSuccess: () => {
-      utils.annotation.byProjectId.invalidate({ id: project.id });
-      enqueueSnackbar(t("comment.delete.success"), {
-        variant: "success",
-      });
-    },
-    onError: () => {
-      enqueueSnackbar(t("comment.delete.error"), {
-        variant: "error",
-      });
-    },
-  });
-
-  const validationSchema = Yup.object().shape({
-    comment: Yup.string()
-      .min(2, t("project.video.annotation.comment.minLength"))
-      .required(t("project.video.annotation.comment.required")),
-  });
-
-  const formik = useFormik({
-    initialValues: {
+  const {
+    handleSubmit,
+    formState: { isSubmitting, isValid },
+    setValue,
+    watch,
+    reset,
+  } = useForm<CommentFormValues>({
+    resolver: zodResolver(commentSchema),
+    mode: "onChange",
+    defaultValues: {
       comment: comment.text || "",
-    },
-    validateOnMount: false,
-    validationSchema: validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      await editMutation.mutateAsync({
-        id: comment.id,
-        annotationId: annotation.id,
-        projectId: project.id,
-        comment: values.comment,
-      });
-      formik.resetForm();
-      setEdition(false);
     },
   });
 
@@ -112,10 +116,23 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   };
 
   const handleEdit = () => {
+    reset({ comment: comment.text || "" });
     setEdition(true);
   };
 
   const handleClose = () => {
+    reset({ comment: comment.text || "" });
+    setEdition(false);
+  };
+
+  const onSubmit = async (values: CommentFormValues) => {
+    await editMutation.mutateAsync({
+      id: comment.id,
+      annotationId: annotation.id,
+      projectId: project.id,
+      comment: values.comment,
+    });
+    reset(values);
     setEdition(false);
   };
   return (
@@ -134,7 +151,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
             borderColor: comment.user.color,
             borderStyle: "solid",
           }}
-          src={comment.user.avatar?.publicUrl}
+          src={comment.user.image ?? undefined}
         >
           {comment.user.initial}
         </Avatar>
@@ -142,7 +159,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       <ListItemText
         primary={
           <React.Fragment>
-            <Typography component="span" color="white" variant="body2">
+            <Typography component="span" className="text-white" variant="body2">
               {comment.user.username}
             </Typography>
             <Typography
@@ -158,7 +175,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         }
         secondary={
           <React.Fragment>
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               {!edition ? (
                 <MultiLineTypography
                   variant="body2"
@@ -170,9 +187,12 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                   <TransparentInput
                     id="comment"
                     name="comment"
-                    value={formik.values.comment}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    value={watch("comment")}
+                    onChange={(event) =>
+                      setValue("comment", event.target.value, {
+                        shouldValidate: true,
+                      })
+                    }
                     error={undefined}
                     unpadded={true}
                     inputProps={{
@@ -203,7 +223,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                       size="small"
                       variant="contained"
                       type="submit"
-                      disabled={!formik.isValid || formik.isSubmitting}
+                      disabled={!isValid || isSubmitting}
                       disableElevation
                       sx={{
                         borderRadius: 10,

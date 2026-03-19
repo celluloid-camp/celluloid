@@ -1,12 +1,12 @@
 "use client";
 import { Box, Container, Skeleton, Stack, Typography } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import { Suspense } from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { UserProjectGrid } from "@/components/profile/user-project-grid";
 import { useLocaleRole } from "@/i18n/roles";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 
 function ProfileSkeleton() {
   return (
@@ -22,7 +22,8 @@ function ProfileSkeleton() {
 
 function ProfileContent() {
   const localeRole = useLocaleRole();
-  const [data] = trpc.user.me.useSuspenseQuery();
+  const api = useTRPC();
+  const { data } = useSuspenseQuery(api.user.me.queryOptions());
 
   if (!data) return null;
   return (

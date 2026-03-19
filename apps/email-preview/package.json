@@ -1,0 +1,25 @@
+{
+  "name": "email-preview",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "-build": "email build --dir ../../packages/emails/templates",
+    "dev": "email dev --port 3003 --dir ../../packages/emails/templates",
+    "export": "email export --dir ../../packages/emails/templates",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
+  },
+  "dependencies": {
+    "@react-email/preview-server": "5.0.8",
+    "@react-email/components": "1.0.1",
+    "@celluloid/emails": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-email": "5.0.8"
+  },
+  "devDependencies": {
+    "@celluloid/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -16,4 +16,5 @@ export const keys = () =>
         process.env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID,
       KNOCK_SECRET_API_KEY: process.env.KNOCK_SECRET_API_KEY,
     },
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   });

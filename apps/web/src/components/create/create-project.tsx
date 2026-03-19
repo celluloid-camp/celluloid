@@ -64,16 +64,8 @@ export const CreateProjectPage: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        paddingX: { md: 20, lg: 40 },
-        paddingTop: 1,
-        paddingBottom: 5,
-        backgroundColor: "brand.orange",
-        minHeight: "100vh",
-      }}
-    >
-      <Paper sx={{ padding: 5 }}>
+    <Box className="px-10 pt-10 pb-5 bg-brand-orange min-h-screen">
+      <Paper className="p-10 max-w-5xl mx-auto">
         <StyledTitle gutterBottom={true} variant="h4" sx={{ marginTop: 1 }}>
           {t("project.createTitle")}
         </StyledTitle>

@@ -12,10 +12,15 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import Link from "next/link";
 import { useSnackbar } from "notistack";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { DetectionOverlay } from "./detection-overlay";
 import { VisionStudioObjectsTab } from "./object-tab";
 import { Timeline } from "./timeline";
@@ -28,9 +33,12 @@ function getVideoHeight(metadata: { width: number; height: number }) {
 }
 
 export function VisionStudio({ projectId }: { projectId: string }) {
-  const [analysis] = trpc.vision.byProjectId.useSuspenseQuery({
-    projectId: projectId,
-  });
+  const api = useTRPC();
+  const { data: analysis } = useSuspenseQuery(
+    api.vision.byProjectId.queryOptions({
+      projectId: projectId,
+    }),
+  );
   if (!analysis || !analysis.processing) {
     return null;
   }
@@ -51,24 +59,31 @@ function VisionStudioWrapper({
   analysis: DetectionResultsModel;
   sprite: string | undefined;
 }) {
-  const trpcUtils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
-  const [project] = trpc.project.byId.useSuspenseQuery({
-    id: projectId,
-  });
+  const { data: project } = useSuspenseQuery(
+    api.project.byId.queryOptions({
+      id: projectId,
+    }),
+  );
 
-  const editAnalysis = trpc.vision.updateAnalysis.useMutation({
-    onSuccess: () => {
-      enqueueSnackbar("Analysis updated", {
-        variant: "success",
-      });
-    },
-    onSettled: () => {
-      trpcUtils.vision.byProjectId.invalidate({
-        projectId,
-      });
-    },
-  });
+  const editAnalysis = useMutation(
+    api.vision.updateAnalysis.mutationOptions({
+      onSuccess: () => {
+        enqueueSnackbar("Analysis updated", {
+          variant: "success",
+        });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          api.vision.byProjectId.queryFilter({
+            projectId,
+          }),
+        );
+      },
+    }),
+  );
   // --- Timeline/Objects Tabs State ---
   const [tab, setTab] = React.useState(0);
   const [isPlaying, setIsPlaying] = useState(false);

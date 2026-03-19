@@ -2,6 +2,7 @@ import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { IconButton, Tooltip } from "@mui/material";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import {
   MediaActionTypes,
   useMediaDispatch,
@@ -34,6 +35,8 @@ export const MuteButton = () => {
   const IconComponent =
     VolumeIconComponentMap[mediaVolumeLevel ?? "DEFAULT"] ??
     VolumeIconComponentMap.DEFAULT;
+  const [, setMuted] = useLocalStorage("muted", false);
+
   return (
     <Tooltip title={label} placement="top">
       <IconButton
@@ -43,6 +46,7 @@ export const MuteButton = () => {
           const type = mediaPseudoMuted
             ? MediaActionTypes.MEDIA_UNMUTE_REQUEST
             : MediaActionTypes.MEDIA_MUTE_REQUEST;
+          setMuted(!mediaPseudoMuted);
           dispatch({ type });
         }}
       >

@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoadingButton } from "@mui/lab";
 import { Alert, DialogActions, DialogContent, Divider } from "@mui/material";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -18,7 +18,7 @@ export function SignupForm() {
   const signupSchema = z
     .object({
       username: z.string().min(3, t("signup.username.length-min")),
-      email: z.string().email(),
+      email: z.email(t("signup.email.required")),
       password: z.string().min(8, t("signup.password.length-min")),
       passwordConfirmation: z.string(),
     })
@@ -147,17 +147,16 @@ export function SignupForm() {
         </DialogContent>
         <Divider />
         <DialogActions sx={{ marginY: 1, marginX: 2 }}>
-          <LoadingButton
+          <Button
             variant="contained"
             color="primary"
             size="large"
             type="submit"
             data-testid="submit"
             loading={isSubmitting}
-            disabled={isSubmitting}
           >
             {t("signup.button.submit")}
-          </LoadingButton>
+          </Button>
         </DialogActions>
       </form>
     </>
