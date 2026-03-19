@@ -41,24 +41,8 @@ jobs:
       - name: Install Playwright test dependency
         run: bun install @playwright/test
 
-      - name: Start services with Docker Compose
-        run: docker compose -f compose.ci.yml up -d
-
-      - name: Wait for web service to be healthy
-        run: |
-          echo "Waiting for web service to be healthy..."
-          for i in $(seq 1 30); do
-            if curl -sf http://localhost:3000/api/health; then
-              echo "Web service is healthy!"
-              break
-            fi
-            if [ "$i" -eq 30 ]; then
-              echo "Web service failed to become healthy after 150 seconds"
-              exit 1
-            fi
-            echo "Attempt $i/30: Not healthy yet, waiting 5s..."
-            sleep 5
-          done
+      - name: Start services with Docker Compose (wait for healthchecks)
+        run: docker compose -f compose.ci.yml up -d --wait
 
       - name: Show container logs on failure
         if: failure()
