@@ -38,12 +38,6 @@ jobs:
       - name: Install Playwright Browsers
         run: bunx playwright install --with-deps chromium firefox
 
-      - name: Show Docker status
-        run: |
-          docker ps
-          docker compose -f docker-compose.ci.yml ps
-          docker compose -f docker-compose.ci.yml logs web
-
       - name: Install Playwright test dependency
         run: bun install @playwright/test
 
