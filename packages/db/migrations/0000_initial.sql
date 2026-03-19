@@ -250,7 +250,7 @@ CREATE UNIQUE INDEX "ProjectQueueJob_id_key" ON "ProjectQueueJob" USING btree ("
 CREATE UNIQUE INDEX "ProjectTranscript_projectId_key" ON "ProjectTranscript" USING btree ("projectId" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "ProjectTranscript_projectId_language_key" ON "ProjectTranscript" USING btree ("projectId" uuid_ops,"language" text_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "queue_jobs_key_runAt_key" ON "queue_jobs" USING btree ("key" text_ops,"runAt" timestamp_ops);--> statement-breakpoint
-CREATE INDEX "queue_jobs_queue_priority_runAt_finishedAt_idx" ON "queue_jobs" USING btree ("queue" text_ops,"priority" text_ops,"runAt" int4_ops,"finishedAt" timestamp_ops);--> statement-breakpoint
+CREATE INDEX "queue_jobs_queue_priority_runAt_finishedAt_idx" ON "queue_jobs" USING btree ("queue" text_ops,"priority" int4_ops,"runAt" timestamp_ops,"finishedAt" timestamp_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "session_token_key" ON "session" USING btree ("token" text_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "User_avatarStorageId_key" ON "User" USING btree ("avatarStorageId" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "user_email_unique" ON "User" USING btree ("email" text_ops);--> statement-breakpoint
