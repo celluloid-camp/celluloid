@@ -26,8 +26,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
 
-# Copy all package sources to ensure workspace dependencies are resolved
-COPY --from=deps /app/packages ./packages
+# Copy only the db package sources (including migrations and migrate.ts)
+COPY --from=deps /app/packages/db ./packages/db
 
 WORKDIR /app/packages/db
 
