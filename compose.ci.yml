@@ -54,6 +54,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
+      STORAGE_URL: http://minio:9000
     restart: "no"
 
   web:
