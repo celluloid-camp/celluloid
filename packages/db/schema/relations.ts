@@ -13,6 +13,7 @@ import {
   user,
   userToProject,
   videoAnalysis,
+  videoScenes,
 } from "./schema";
 
 export const userRelations = relations(user, ({ one, many }) => ({
@@ -86,6 +87,10 @@ export const projectRelations = relations(project, ({ one, many }) => ({
   projectNotes: many(projectNote),
   projectTranscripts: many(projectTranscript),
   videoAnalyses: many(videoAnalysis),
+  videoScenes: one(videoScenes, {
+    fields: [project.id],
+    references: [videoScenes.projectId],
+  }),
 }));
 
 export const playlistRelations = relations(playlist, ({ one, many }) => ({
@@ -153,6 +158,17 @@ export const videoAnalysisRelations = relations(videoAnalysis, ({ one }) => ({
   }),
   storage: one(storage, {
     fields: [videoAnalysis.spriteStorageId],
+    references: [storage.id],
+  }),
+}));
+
+export const videoScenesRelations = relations(videoScenes, ({ one }) => ({
+  project: one(project, {
+    fields: [videoScenes.projectId],
+    references: [project.id],
+  }),
+  storage: one(storage, {
+    fields: [videoScenes.spriteStorageId],
     references: [storage.id],
   }),
 }));

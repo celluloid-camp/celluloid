@@ -50,10 +50,3 @@ services:
       - "6379:6379"
     volumes:
       - ./.data/redis:/data
-
-  spotlight:
-    pull_policy: always
-    container_name: spotlight
-    ports:
-      - 8969:8969/tcp
-    image: ghcr.io/getsentry/spotlight:latest

@@ -348,7 +348,7 @@
       "empty": "Video analysis not available.",
       "failed": "Failed to analyse the video.",
       "analyse": {
-        "in-progress": "Video analysis in progress..."
+        "in-progress": "Video analysis in progress, an email will be sent to you when the analysis is complete."
       },
       "title": "Video Analysis"
     },

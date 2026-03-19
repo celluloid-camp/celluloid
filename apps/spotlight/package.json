@@ -1,0 +1,8 @@
+{
+  "name": "spotlight",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev--2": "bunx @spotlightjs/spotlight"
+  }
+}

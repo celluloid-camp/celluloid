@@ -12,7 +12,7 @@ import { useMemo, useRef, useState } from "react";
 import type { User } from "@/lib/auth-client";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
 import { AnnotationList } from "./annotation/annotation-list";
-import { ChaptersPanel } from "./chapters/panel";
+import { ScenesPanel } from "./chapters/panel";
 
 const TABLIST_HEIGHT = 60;
 interface VideoPanelProps {
@@ -111,7 +111,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
           }}
         >
           <Box display="flex" flexDirection={"column"} height={availableHeight}>
-            <ChaptersPanel project={props.project} user={props.user} />
+            <ScenesPanel project={props.project} user={props.user} />
           </Box>
         </TabPanel>
       </TabContext>

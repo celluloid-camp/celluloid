@@ -1,5 +1,6 @@
 "use client";
 
+import AutoModeIcon from "@mui/icons-material/AutoMode";
 import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
 import {
   Box,
@@ -69,9 +70,7 @@ export function ProjectVision({ project, user }: Props) {
   }
 
   const canGenerateVision =
-    (user?.role === "ADMIN" || user?.id === project.userId) &&
-    !data &&
-    project.analysisProcessingStatus === "in_progress";
+    project.editable && (!data || data.status === "failed");
 
   const canViewStudio =
     user?.role === "ADMIN" ||
@@ -106,7 +105,7 @@ export function ProjectVision({ project, user }: Props) {
         {data?.status === "processing" ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
-            <Typography variant="body2">
+            <Typography variant="body1">
               {t("project.vision.analyse.in-progress")}
             </Typography>
           </Box>
@@ -128,7 +127,8 @@ export function ProjectVision({ project, user }: Props) {
       >
         {canGenerateVision && (
           <Button
-            variant="contained"
+            variant="outlined"
+            startIcon={<AutoModeIcon />}
             loading={mutation.isPending}
             color="primary"
             onClick={async () => {
@@ -140,10 +140,17 @@ export function ProjectVision({ project, user }: Props) {
             {t("project.vision.button.analyse")}
           </Button>
         )}
-
-        {/* <Button onClick={() => manualCheck.mutate({ projectId: project.id })}>
-          Check
-        </Button> */}
+        {data?.status === "processing" && (
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              manualCheck.mutate({ projectId: project.id });
+            }}
+          >
+            Check manually
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

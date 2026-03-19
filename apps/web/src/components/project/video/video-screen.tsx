@@ -1,7 +1,5 @@
 "use client";
-import { AnnotationShape } from "@celluloid/db";
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { Box, CircularProgress, Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
 import {
   MediaActionTypes,
@@ -10,18 +8,13 @@ import {
   useMediaSelector,
 } from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
-import React, { Suspense, useEffect, useMemo } from "react";
+import React, { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSession } from "@/lib/auth-client";
-import { useTRPC } from "@/lib/trpc/client";
-import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
+import type { ProjectById } from "@/lib/trpc/types";
 import { useAnnotations } from "@/stores/annotations";
-import { AnnotationOverlayHints } from "./annotation/overlay-hints";
 import { ShapesEditor } from "./annotation/shapes-editor";
-import {
-  AnnotationShapeWithMetadata,
-  ShapesViewer,
-} from "./annotation/shapes-viewer";
+import { ShapesViewer } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
 import { VideoPanel } from "./video-panel";
 import { VideoVision } from "./video-vision";
@@ -136,27 +129,7 @@ export function ProjectVideoScreen({ project }: Props) {
           </ErrorBoundary>
         </Suspense>
 
-        <Suspense
-          fallback={
-            <Box
-              sx={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                pointerEvents: "none",
-              }}
-            >
-              <CircularProgress color="primary" />
-            </Box>
-          }
-        >
-          <VideoPlayer
-            url={`https://${project.host}/w/${project.videoId}`}
-            projectId={project.id}
-          />
-        </Suspense>
+        <VideoPlayer project={project} />
       </Grid>
       <Grid
         sx={{

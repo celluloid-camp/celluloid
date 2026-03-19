@@ -1,42 +1,46 @@
 import { db, eq, project } from "@celluloid/db";
 import { PeerTubeVideo } from "@celluloid/peertube";
+import { fetchPeerTubeVideoDownloadInfo } from "@celluloid/peertube/video";
 import { FatalError } from "workflow";
 
-export async function getMetadata(projectId: string) {
+export async function getProjectDownloadInfo(projectId: string) {
   "use step";
 
   const foundProject = await db.query.project.findFirst({
     where: eq(project.id, projectId),
     columns: {
-      metadata: true,
+      host: true,
+      videoId: true,
     },
   });
 
-  const metadata = foundProject?.metadata as unknown as PeerTubeVideo;
+  if (!foundProject?.host || !foundProject?.videoId) {
+    throw new FatalError("No video host or videoId found. Skipping retries.");
+  }
 
-  if (!metadata) {
+  const normalizedHost = /^https?:\/\//i.test(foundProject.host)
+    ? foundProject.host
+    : `https://${foundProject.host}`;
+
+  const info = await fetchPeerTubeVideoDownloadInfo({
+    baseUrl: normalizedHost,
+    videoId: foundProject.videoId,
+  });
+
+  if (
+    (info?.streamingPlaylists?.length ?? 0) === 0 ||
+    !info.streamingPlaylists?.[0]?.files
+  ) {
     throw new FatalError("Project not found. Skipping retries.");
   }
-  const videoUrl = getVideoUrl(metadata);
+  const videoUrl = info.streamingPlaylists[0].files
+    .filter((file) => file.hasVideo === true && Boolean(file.fileDownloadUrl))
+    .sort((a, b) => (a.size ?? 0) - (b.size ?? 0)) // Sort files by size in ascending order
+    .find((file) => file.fileDownloadUrl)?.fileDownloadUrl;
+
   if (!videoUrl) {
     throw new FatalError("No video URL found. Skipping retries.");
   }
 
-  return { videoUrl, duration: metadata.duration };
-}
-
-function getVideoUrl(metadata: PeerTubeVideo) {
-  // if (metadata.files.length > 0) {
-  //   const sortedFiles = metadata.files.sort((a, b) => a.size - b.size);
-  //   return sortedFiles[0].fileDownloadUrl;
-  // }
-  if (
-    metadata.streamingPlaylists.length > 0 &&
-    metadata.streamingPlaylists[0]?.files.length > 0
-  ) {
-    return metadata.streamingPlaylists[0]?.files
-      .sort((a, b) => a.size - b.size) // Sort files by size in ascending order
-      .find((file) => file.fileDownloadUrl)?.fileDownloadUrl; // Find the first file with a download URL
-  }
-  return null;
+  return { videoUrl, duration: info.duration ?? 0 };
 }

@@ -1,7 +1,7 @@
 import { db, eq, project } from "@celluloid/db";
 import { sleep } from "workflow";
 import { detectScenes } from "./steps/detect-scenes";
-import { getMetadata } from "./steps/get-metadata";
+import { getProjectDownloadInfo } from "./steps/get-metadata";
 import { updateProjectScenes } from "./steps/update-project-scenes";
 import { uploadThumbnails } from "./steps/upload-thumbnails";
 
@@ -11,15 +11,15 @@ export async function processScenesWorkflow(projectId: string) {
   await updateProjectStatus(projectId, "in_progress");
 
   try {
-    const metadata = await getMetadata(projectId);
+    const downloadInfo = await getProjectDownloadInfo(projectId);
 
     const result = await Promise.race([
       detectScenes({
         projectId,
-        videoUrl: metadata.videoUrl,
-        duration: metadata.duration,
+        videoUrl: downloadInfo.videoUrl,
+        duration: downloadInfo.duration,
       }),
-      sleep("30s").then(() => "timeout" as const),
+      sleep("1min").then(() => "timeout" as const),
     ]);
 
     if (result === "timeout") {

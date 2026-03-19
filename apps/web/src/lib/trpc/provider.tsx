@@ -36,18 +36,6 @@ function getUrl() {
   })();
   return `${base}/api/trpc`;
 }
-export const trpcClient = createTRPCClient<AppRouter>({
-  links: [
-    httpBatchLink({
-      url: getUrl(),
-      transformer: SuperJSON,
-      // You can pass any HTTP headers you wish here
-      async headers() {
-        return {};
-      },
-    }),
-  ],
-});
 
 const persister =
   typeof window !== "undefined"
@@ -58,6 +46,19 @@ const persister =
 
 export function TRPCProvider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
+
+  const trpcClient = createTRPCClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: getUrl(),
+        transformer: SuperJSON,
+        // You can pass any HTTP headers you wish here
+        async headers() {
+          return {};
+        },
+      }),
+    ],
+  });
 
   if (!persister) {
     return (

@@ -1,5 +1,8 @@
 import { PeerTubeVideo } from "@celluloid/peertube";
-import type { DetectionResultsModel } from "@celluloid/vision-api/types";
+import type {
+  DetectionResultsModel,
+  SceneDetectResultsModel,
+} from "@celluloid/vision-api/types";
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -310,6 +313,7 @@ export const chapter = pgTable(
     title: text(),
     description: text(),
     thumbnailStorageId: uuid(),
+    spriteURL: text("sprite_url"),
     createdAt: timestamp({ precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -476,7 +480,6 @@ export const projectTranscript = pgTable(
       mode: "string",
     }).notNull(),
     language: text().notNull(),
-    entries: jsonb().notNull(),
   },
   (table) => [
     uniqueIndex("ProjectTranscript_projectId_key").using(
@@ -522,6 +525,7 @@ export const videoAnalysis = pgTable(
     errorCode: text("error_code").$type<VideoAnalysisErrorCode>(),
     errorMessage: text("error_message"),
     visionJobId: text(),
+    runId: text("run_id"),
   },
   (table) => [
     uniqueIndex("VideoAnalysis_spriteStorageId_key").using(
@@ -543,6 +547,63 @@ export const videoAnalysis = pgTable(
       columns: [table.spriteStorageId],
       foreignColumns: [storage.id],
       name: "VideoAnalysis_spriteStorageId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("set null"),
+  ],
+);
+
+export type VideoScenesStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed";
+
+export type VideoScenesErrorCode = "timeout" | "internal_error";
+
+export const videoScenes = pgTable(
+  "VideoScenes",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    projectId: uuid().notNull(),
+    spriteStorageId: uuid(),
+    createdAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp({
+      precision: 6,
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    data: json().$type<SceneDetectResultsModel>(),
+    spriteURL: text("sprite_url"),
+    metadata: json().default({}),
+    status: text().$type<VideoAnalysisStatus>().default("pending").notNull(),
+    errorCode: text("error_code").$type<VideoAnalysisErrorCode>(),
+    errorMessage: text("error_message"),
+    visionJobId: text(),
+    runId: text("run_id"),
+  },
+  (table) => [
+    uniqueIndex("VideoScenes_spriteStorageId_key").using(
+      "btree",
+      table.spriteStorageId.asc().nullsLast().op("uuid_ops"),
+    ),
+    uniqueIndex("videoScenes_projectid_unique").using(
+      "btree",
+      table.projectId.asc().nullsLast().op("uuid_ops"),
+    ),
+    foreignKey({
+      columns: [table.projectId],
+      foreignColumns: [project.id],
+      name: "VideoScenes_projectId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("cascade"),
+    foreignKey({
+      columns: [table.spriteStorageId],
+      foreignColumns: [storage.id],
+      name: "VideoScenes_spriteStorageId_fkey",
     })
       .onUpdate("cascade")
       .onDelete("set null"),

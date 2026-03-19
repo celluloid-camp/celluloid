@@ -4,7 +4,7 @@
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "devDependencies": {
-    "@biomejs/biome": "^2.4.6",
+    "@biomejs/biome": "^2.4.8",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@playwright/test": "^1.52.0",
@@ -14,13 +14,12 @@
     "conventional-changelog-conventionalcommits": "9.1.0",
     "lefthook": "^2.1.4",
     "release-it": "^19.0.5",
-    "turbo": "^2.8.16",
+    "turbo": "^2.8.19",
     "typescript": "^5.9.3"
   },
   "catalog": {
-    "@celluloid/vision-api": "1.1.2",
     "@t3-oss/env-nextjs": "^0.13.8",
-    "@trpc/server": "^11.10.0",
+    "@trpc/server": "^11.13.4",
     "@types/node": "^25.3.5",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
@@ -30,16 +29,18 @@
     "dotenv-cli": "^11.0.0",
     "lodash": "^4.17.23",
     "notistack": "^3.0.2",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "server-only": "^0.0.1",
     "superjson": "^2.2.6",
     "typescript": "^5.9.3",
-    "workflow": "4.2.0-beta.67",
+    "workflow": "4.2.0-beta.71",
     "zod": "^4.3.6",
     "drizzle-orm": "^0.45.1",
     "pino": "^10.3.1",
-    "drizzle-kit": "^0.31.9"
+    "drizzle-kit": "^0.31.9",
+    "@workflow/world-postgres": "4.1.0-beta.46",
+    "@celluloid/vision-api": "^1.5.0"
   },
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
   "engines": {
@@ -68,7 +69,9 @@
     "auth": "bun run --filter auth",
     "db": "bun run --filter @celluloid/db",
     "docker:build": "docker buildx build -f apps/web/Dockerfile -t celluloid-web .",
+    "docker:build:db-migrate": "docker buildx build -f packages/db/Dockerfile -t celluloid-db-migrate .",
     "docker:run": "docker run -it --rm --env-file ./apps/web/.env -p 3000:3000 celluloid-web",
+    "docker:run:db-migrate": "docker run -it --rm --env-file ./apps/web/.env celluloid-db-migrate",
     "release": "bun run release-it"
   },
   "trustedDependencies": [
@@ -87,6 +90,6 @@
     "packages/*"
   ],
   "dependencies": {
-    "@workflow/world-postgres": "^4.1.0-beta.34"
+    "@workflow/world-postgres": "catalog:"
   }
 }

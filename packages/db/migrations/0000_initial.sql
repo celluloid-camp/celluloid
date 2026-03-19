@@ -94,7 +94,7 @@ CREATE TABLE "Project" (
 	"playlistId" uuid,
 	"duration" double precision DEFAULT 0 NOT NULL,
 	"metadata" json DEFAULT '{}'::json,
-	"thumbnailUrl" text DEFAULT '' NOT NULL,
+	"thumbnailURL" text DEFAULT '' NOT NULL,
 	"shareCode" text,
 	"keywords" text[],
 	"fileDownloadUrl" text

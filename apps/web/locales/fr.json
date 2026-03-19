@@ -345,7 +345,7 @@
       },
       "empty": "Analyse vidéo non disponible.",
       "analyse": {
-        "in-progress": "Analyse vidéo en cours..."
+        "in-progress": "Analyse vidéo en cours, un email vous serez envoyé quand l'analyse est terminé"
       },
       "title": "Analyse vidéo"
     },

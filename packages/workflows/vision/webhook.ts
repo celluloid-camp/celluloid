@@ -6,6 +6,7 @@ export const VisionWebhookSchema = z.object({
   external_id: z.string(),
   status: z.string(),
   timestamp: z.string(),
+  job_type: z.enum(["scene_detect", "object_detect"]),
 });
 
 export type VisionWebhook = z.infer<typeof VisionWebhookSchema>;
@@ -14,9 +15,10 @@ export async function handleVisionWebhook(request: Request) {
   const body = await request.json();
   const { success, data, error } = VisionWebhookSchema.safeParse(body);
   if (success) {
+    console.log("Received webhook", data);
+    console.log(`vision:${data.job_type}:${data.external_id}`);
     try {
-      // Reconstruct the token using the channel ID
-      await resumeHook(`vision_results:${data.external_id}`, data);
+      await resumeHook(data.job_id, data);
     } catch (error) {
       console.error("Failed to resume hook", error);
     }

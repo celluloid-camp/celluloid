@@ -50,6 +50,7 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
                   borderColor: annotation.user.color,
                   borderStyle: "solid",
                 }}
+                className="text-sm"
                 src={annotation.user.image ?? undefined}
               >
                 {annotation.user.initial}
@@ -84,14 +85,14 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
         minWidth: 10,
         margin: 0,
         padding: 0,
-        borderRadius: 2,
+        borderRadius: 4,
         backgroundColor: "white",
         transition: "all 0.2s ease",
         "&:hover": {
           filter: "brightness(85%)",
         },
         color: "white",
-        top: index * 24,
+        top: index * 20,
         left: leftPosition,
         width: width,
         border: `2px solid ${annotation.user.color}`,
@@ -104,20 +105,18 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
   </HtmlTooltip>
 );
 
-export function AnnotationOverlayHints({ projectId }: { projectId: string }) {
-  const { annotations } = useAnnotations(projectId);
+export function AnnotationOverlayHints({ project }: { project: ProjectById }) {
+  const { annotations } = useAnnotations(project.id);
   const t = useTranslations();
   const dispatch = useMediaDispatch();
-
-  const mediaDuration = useMediaSelector((state) => state.mediaDuration) ?? 0;
 
   const [showHints, setHintsVisible] = useAnnotationHintsVisible();
 
   const getHintStartPosition = (annotation: AnnotationByProjectId) =>
-    `${(annotation.startTime * 100) / mediaDuration}%`;
+    `${(annotation.startTime * 100) / project.duration}%`;
 
   const getHintWidth = (annotation: AnnotationByProjectId) =>
-    `${((annotation.stopTime - annotation.startTime) * 100) / mediaDuration}%`;
+    `${((annotation.stopTime - annotation.startTime) * 100) / project.duration}%`;
 
   const handleClose: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -147,58 +146,46 @@ export function AnnotationOverlayHints({ projectId }: { projectId: string }) {
           position: "absolute",
           left: 0,
           top: 0,
+          bottom: 60,
           margin: 0,
-          height: "100%",
+          height: "calc(100% - 60px)",
           width: "100%",
           backgroundColor: "rgba(0, 0, 0, 0.6)",
           overflow: "hidden",
           zIndex: 1000,
         }}
       >
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          paddingX={2}
-          paddingY={2}
-          justifyContent={"space-between"}
-          sx={{ backgroundColor: "black" }}
-        >
-          <Box>
-            <Typography align="left" variant="h5" className="text-white">
+        <div className="flex flex-row justify-between px-6 pt-4">
+          <div>
+            <p className="text-white text-lg font-bold">
               {t("project.annotation.label", {
                 count: annotations.length,
               })}
-            </Typography>
-          </Box>
+            </p>
+          </div>
 
-          <Box>
-            <IconButton onClick={handleClose} sx={{ color: "white" }}>
+          <div>
+            <IconButton onClick={handleClose} className="text-white">
               <CancelIcon />
             </IconButton>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            position: "relative",
-            height: "100%",
-            width: "100%",
-            overflowY: "auto",
-            overflowX: "hidden",
-          }}
-        >
-          {annotations.map((annotation, index) => {
-            return (
-              <AnnotationHintsItem
-                key={annotation.id}
-                leftPosition={getHintStartPosition(annotation)}
-                width={getHintWidth(annotation)}
-                index={index}
-                annotation={annotation}
-                onClick={() => handleClick(annotation)}
-              />
-            );
-          })}
-        </Box>
+          </div>
+        </div>
+        <div className="h-full w-full overflow-x-hidden overflow-y-auto px-6">
+          <div className="relative h-full w-full">
+            {annotations.map((annotation, index) => {
+              return (
+                <AnnotationHintsItem
+                  key={annotation.id}
+                  leftPosition={getHintStartPosition(annotation)}
+                  width={getHintWidth(annotation)}
+                  index={index}
+                  annotation={annotation}
+                  onClick={() => handleClick(annotation)}
+                />
+              );
+            })}
+          </div>
+        </div>
       </Box>
     </Fade>
   );

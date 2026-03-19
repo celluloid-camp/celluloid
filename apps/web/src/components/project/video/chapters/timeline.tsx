@@ -16,7 +16,6 @@ import {
   MediaActionTypes,
   useMediaDispatch,
 } from "media-chrome/react/media-store";
-import Image from "mui-image";
 import type * as React from "react";
 import { useState } from "react";
 import type { User } from "@/lib/auth-client";
@@ -25,6 +24,7 @@ import type { ChapterByProjectId, ProjectById } from "@/lib/trpc/types";
 import { formatDuration } from "@/utils/duration";
 import { EditChapterDialog } from "./edit-dialog";
 import { EmptyChapters } from "./empty";
+import { ImageSprite } from "./image-sprite";
 import { ChapterItem } from "./list-item";
 
 export function ChapterTimeline({
@@ -94,16 +94,11 @@ export function ChapterTimeline({
         {chapters.map((chapter: ChapterByProjectId, index: number) => (
           <TimelineItem key={chapter.id} sx={{ minHeight: 120 }}>
             <TimelineOppositeContent onClick={() => handleClick(chapter)}>
-              <Image
-                fit="cover"
+              <ImageSprite
+                src={chapter.spriteURL ?? ""}
                 width={120}
                 height={80}
-                style={{
-                  borderRadius: 10,
-                  overflow: "hidden",
-                  cursor: "pointer",
-                }}
-                src={chapter.thumbnailURL ?? "/placeholder.svg"}
+                className="cursor-pointer rounded-[10px]"
               />
               <Stack direction="row" spacing={1}>
                 <Typography

@@ -1,6 +1,6 @@
 {
-  "id": "b8585f23-1811-4787-a928-f1995d6aca51",
-  "prevId": "688ace79-ec3c-4711-885c-8d484c533132",
+  "id": "a585f95e-4065-4511-bb13-ea0e9cd062cf",
+  "prevId": "eda84e29-530e-4318-bf3f-cad8b80a9284",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -161,6 +161,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "is_webhook": {
+          "name": "is_webhook",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
         }
       },
       "indexes": {
@@ -580,6 +587,86 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "workflow.workflow_waits": {
+      "name": "workflow_waits",
+      "schema": "workflow",
+      "columns": {
+        "wait_id": {
+          "name": "wait_id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "run_id": {
+          "name": "run_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "wait_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resume_at": {
+          "name": "resume_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "spec_version": {
+          "name": "spec_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "workflow_waits_run_id_index": {
+          "name": "workflow_waits_run_id_index",
+          "columns": [
+            {
+              "expression": "run_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.account": {
       "name": "account",
       "schema": "",
@@ -844,6 +931,12 @@
         "thumbnailStorageId": {
           "name": "thumbnailStorageId",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sprite_url": {
+          "name": "sprite_url",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -1589,12 +1682,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "entries": {
-          "name": "entries",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
         }
       },
       "indexes": {
@@ -2173,6 +2260,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "run_id": {
+          "name": "run_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -2242,6 +2335,161 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.VideoScenes": {
+      "name": "VideoScenes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "spriteStorageId": {
+          "name": "spriteStorageId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sprite_url": {
+          "name": "sprite_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::json"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "error_code": {
+          "name": "error_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "error_message": {
+          "name": "error_message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "visionJobId": {
+          "name": "visionJobId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "run_id": {
+          "name": "run_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "VideoScenes_spriteStorageId_key": {
+          "name": "VideoScenes_spriteStorageId_key",
+          "columns": [
+            {
+              "expression": "spriteStorageId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "uuid_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "videoScenes_projectid_unique": {
+          "name": "videoScenes_projectid_unique",
+          "columns": [
+            {
+              "expression": "projectId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "uuid_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "VideoScenes_projectId_fkey": {
+          "name": "VideoScenes_projectId_fkey",
+          "tableFrom": "VideoScenes",
+          "tableTo": "Project",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "VideoScenes_spriteStorageId_fkey": {
+          "name": "VideoScenes_spriteStorageId_fkey",
+          "tableFrom": "VideoScenes",
+          "tableTo": "Storage",
+          "columnsFrom": [
+            "spriteStorageId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -2254,6 +2502,14 @@
         "completed",
         "failed",
         "cancelled"
+      ]
+    },
+    "public.wait_status": {
+      "name": "wait_status",
+      "schema": "public",
+      "values": [
+        "waiting",
+        "completed"
       ]
     },
     "public.status": {

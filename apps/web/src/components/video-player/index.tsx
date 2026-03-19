@@ -10,6 +10,7 @@ import {
 } from "media-chrome/react/media-store";
 import ReactPlayer from "react-player";
 import type { PlayerEntry } from "react-player/players";
+import { ProjectById } from "@/lib/trpc/types";
 import { AnnotationOverlayHints } from "../project/video/annotation/overlay-hints";
 import { ControlsContainer } from "./controls/controls-container";
 import { LoadingBackdrop } from "./controls/loading-backdrop";
@@ -28,13 +29,7 @@ const peertubePlayerEntry: PlayerEntry = {
 // Register the custom PeerTube player
 ReactPlayer.addCustomPlayer?.(peertubePlayerEntry);
 
-export default function VideoPlayer({
-  url,
-  projectId,
-}: {
-  url: string;
-  projectId: string;
-}) {
+export default function VideoPlayer({ project }: { project: ProjectById }) {
   const mediaRefCallback = useMediaRef();
   const dispatch = useMediaDispatch();
   const mediaPaused = useMediaSelector(
@@ -93,7 +88,7 @@ export default function VideoPlayer({
         <ReactPlayer
           ref={mediaRefCallback}
           slot="media"
-          src={url}
+          src={`https://${project.host}/w/${project.videoId}`}
           height="100%"
           width="100%"
           muted={muted}
@@ -105,7 +100,7 @@ export default function VideoPlayer({
           }}
         />
         <LoadingBackdrop />
-        <AnnotationOverlayHints projectId={projectId} />
+        <AnnotationOverlayHints project={project} />
         <ControlsContainer />
       </Box>
     </ThemeProvider>

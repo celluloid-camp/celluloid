@@ -5,7 +5,6 @@ export async function updateProjectTranscript(
   projectId: string,
   transcript: string,
   language: string,
-  entries: Caption,
 ) {
   "use step";
 
@@ -13,7 +12,6 @@ export async function updateProjectTranscript(
     projectId,
     content: transcript,
     language: language,
-    entries: JSON.stringify(entries),
     updatedAt: new Date().toISOString(),
   });
 

@@ -100,15 +100,10 @@ export function ProjectTranscript({ project, user }: Props) {
     return null;
   }
 
-  const canEdit =
-    user &&
-    (user.role === "admin" || user.id === project.userId) &&
-    data?.content;
+  const canEdit = project.editable && data?.content;
 
-  const canGenerateTranscript =
-    (user?.role === "admin" || user?.id === project.userId) &&
-    !data?.content &&
-    project.transcriptProcessingStatus === "in_progress";
+  const canGenerate =
+    project.editable && project.transcriptProcessingStatus !== "in_progress";
 
   const downloadTranscript = (content: string) => {
     const blob = new Blob([content], { type: "text/plain" });
@@ -199,33 +194,24 @@ export function ProjectTranscript({ project, user }: Props) {
           gap: 1,
         }}
       >
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{ justifyContent: "space-between", width: "100%" }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Typography variant="caption" color="text.secondary">
-              {t("project.note.update_at")}{" "}
-              {data?.updatedAt
-                ? dayjs(data.updatedAt).fromNow()
-                : data?.createdAt
-                  ? dayjs(data.createdAt).fromNow()
-                  : ""}
-            </Typography>
-          </Box>
+        <div className="flex w-full justify-between gap-1 px-2">
+          {data?.content && (
+            <Box className="flex justify-start items-center mt-2">
+              <Typography variant="caption" color="text.secondary">
+                {t("project.note.update_at")}{" "}
+                {data?.updatedAt
+                  ? dayjs(data.updatedAt).fromNow()
+                  : data?.createdAt
+                    ? dayjs(data.createdAt).fromNow()
+                    : ""}
+              </Typography>
+            </Box>
+          )}
 
           <Stack direction="row" spacing={1}>
             {canEdit && hasUnsavedChanges && (
               <Button
-                variant="contained"
+                variant="outlined"
                 loading={updateMutation.isPending}
                 color="primary"
                 startIcon={<SaveIcon />}
@@ -234,11 +220,10 @@ export function ProjectTranscript({ project, user }: Props) {
                 {t("project.transcript.button.save")}
               </Button>
             )}
-            {canGenerateTranscript && (
+            {canGenerate && (
               <Button
-                variant="contained"
                 loading={generateMutation.isPending}
-                color="primary"
+                sx={{ color: colors.grey[800] }}
                 onClick={async () => {
                   generateMutation.mutate({
                     projectId: project.id,
@@ -248,14 +233,14 @@ export function ProjectTranscript({ project, user }: Props) {
                 {t("project.transcript.button.generate")}
               </Button>
             )}
+            {data?.content ? (
+              <Button onClick={handleDownload} sx={{ color: colors.grey[800] }}>
+                <DownloadIcon className="size-5 mr-1" />
+                {t("project.transcript.button.download")}
+              </Button>
+            ) : null}
           </Stack>
-          {data?.content ? (
-            <Button onClick={handleDownload} sx={{ color: colors.grey[800] }}>
-              <DownloadIcon />
-              {t("project.transcript.button.download")}
-            </Button>
-          ) : null}
-        </Stack>
+        </div>
       </CardActions>
     </Card>
   );
@@ -275,6 +260,7 @@ const TiptapTranscript = forwardRef<
       TiptapMarkdown,
     ],
     content: content || "",
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class:
@@ -293,7 +279,7 @@ const TiptapTranscript = forwardRef<
       const currentMarkdown = editor.storage.markdown.getMarkdown();
       // Only update if content actually changed to avoid infinite loops
       if (currentMarkdown !== content) {
-        // Use setContent with markdown - the markdown extension will parse it
+        // Use setCont ent with markdown - the markdown extension will parse it
         editor.commands.setContent(content, false, {
           preserveWhitespace: "full",
         });

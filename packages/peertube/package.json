@@ -2,6 +2,7 @@
   "name": "@celluloid/peertube",
   "version": "3.5.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -11,6 +12,8 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@plussub/srt-vtt-parser": "^2.0.5"
+    "@celluloid/peertube-api": "^1.4.1",
+    "@plussub/srt-vtt-parser": "^2.0.5",
+    "media-captions": "^0.0.18"
   }
 }

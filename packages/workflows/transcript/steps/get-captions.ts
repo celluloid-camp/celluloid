@@ -1,5 +1,8 @@
 import { db, eq, project } from "@celluloid/db";
-import { getPeerTubeCaptions } from "@celluloid/peertube/client";
+import {
+  fetchPeerTubeCaptionList,
+  parsePeerTubeVideoCaptions,
+} from "@celluloid/peertube/caption";
 import { FatalError } from "workflow";
 
 export async function getProjectCaptions(projectId: string) {
@@ -18,13 +21,22 @@ export async function getProjectCaptions(projectId: string) {
     throw new FatalError("Project not found. Skipping retries.");
   }
 
-  const captions = await getPeerTubeCaptions({
-    videoId: foundProject.videoId,
-    host: foundProject.host,
-  });
-  const frenchCaption = captions.find((caption) => caption.language === "fr");
-  if (!frenchCaption) {
-    throw new FatalError("No French caption found. Skipping retries.");
+  const normalizedHost = /^https?:\/\//i.test(foundProject.host)
+    ? foundProject.host
+    : `https://${foundProject.host}`;
+
+  const captions = await fetchPeerTubeCaptionList(
+    normalizedHost,
+    foundProject.videoId,
+  );
+  if (captions.length === 0) {
+    throw new FatalError("No captions found. Skipping retries.");
   }
-  return frenchCaption;
+
+  const parsedCaption = await parsePeerTubeVideoCaptions(
+    normalizedHost,
+    captions[0].captionData,
+  );
+
+  return parsedCaption;
 }

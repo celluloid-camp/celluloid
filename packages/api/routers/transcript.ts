@@ -1,6 +1,8 @@
 import { db, project, projectTranscript } from "@celluloid/db";
+import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
 import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
+import { start } from "workflow/api";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
@@ -25,13 +27,43 @@ export const transcriptRouter = router({
       return transcript ?? null;
     }),
 
-  generate: publicProcedure
+  generate: protectedProcedure
     .input(
       z.object({
         projectId: z.string(),
       }),
     )
-    .mutation(async () => {
+    .mutation(async ({ input, ctx }) => {
+      const [proj] = await db
+        .select({ id: project.id, userId: project.userId })
+        .from(project)
+        .where(eq(project.id, input.projectId))
+        .limit(1);
+
+      if (!proj) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      if (proj.userId !== ctx.user.id && ctx.user.role !== "admin") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to update this transcript",
+        });
+      }
+
+      const transcriptRun = await start(videoTranscriptWorkflow, [proj.id]);
+
+      await db
+        .update(project)
+        .set({
+          transcriptProcessingStatus: "not_started",
+          transcriptProcessingRunId: transcriptRun.runId,
+        })
+        .where(eq(project.id, proj.id));
+
       return null;
     }),
 
@@ -43,13 +75,6 @@ export const transcriptRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user?.id) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You must be logged in to update transcript",
-        });
-      }
-
       const [proj] = await db
         .select({ userId: project.userId })
         .from(project)

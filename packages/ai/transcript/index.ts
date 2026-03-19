@@ -1,4 +1,3 @@
-import logger from "@celluloid/utils/lib/logger";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { ChatMistralAI } from "@langchain/mistralai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
@@ -13,17 +12,17 @@ ${captionText}`;
 
 export const transcribeCaptions = async (
   captions: {
-    from: number;
-    to: number;
+    startTime: number;
+    endTime: number;
     text: string;
   }[],
 ) => {
   const env = keys();
-  logger.debug("Converting captions to transcript");
+  console.debug("Converting captions to transcript");
 
   // Convert captions to text format
   const captionText = captions
-    .map((entry) => `${entry.from} --> ${entry.to}: ${entry.text}`)
+    .map((entry) => `${entry.startTime} --> ${entry.endTime}: ${entry.text}`)
     .join("\n");
 
   // Initialize text splitter with chunk size and overlap
@@ -39,7 +38,7 @@ export const transcribeCaptions = async (
   // Split the caption text into manageable chunks
   const chunks = await textSplitter.splitText(captionText);
 
-  logger.debug(`Split captions into ${chunks.length} chunks`);
+  console.debug(`Split captions into ${chunks.length} chunks`);
 
   // Helper function to process a single chunk with error handling
   const processChunk = async (
@@ -47,7 +46,7 @@ export const transcribeCaptions = async (
     chunkIndex: number,
     totalChunks: number,
   ): Promise<string> => {
-    logger.debug(
+    console.debug(
       `Processing chunk ${chunkIndex + 1}/${totalChunks} (length: ${chunk.length} chars)`,
     );
 
@@ -57,7 +56,9 @@ export const transcribeCaptions = async (
         new HumanMessage(USER_PROMPT_TEMPLATE(chunk)),
       ];
 
-      logger.debug(`Invoking model for chunk ${chunkIndex + 1}/${totalChunks}`);
+      console.debug(
+        `Invoking model for chunk ${chunkIndex + 1}/${totalChunks}`,
+      );
       // const response = await withTimeout(
       //   model.invoke(messages),
       //   60000, // 1 minute timeout per request
@@ -83,12 +84,12 @@ export const transcribeCaptions = async (
           ? response.content
           : String(response.content);
 
-      logger.debug(
+      console.debug(
         `Completed chunk ${chunkIndex + 1}/${totalChunks} (output length: ${processedText.length} chars)`,
       );
       return processedText;
     } catch (error) {
-      logger.error(
+      console.error(
         `Error processing chunk ${chunkIndex + 1}/${totalChunks}:`,
         error,
       );
@@ -115,6 +116,6 @@ export const transcribeCaptions = async (
   // Join with double newlines to create natural paragraph breaks
   const finalTranscript = processedChunks.join("\n\n").trim();
 
-  logger.debug("Successfully converted captions to transcript");
+  console.debug("Successfully converted captions to transcript");
   return finalTranscript;
 };

@@ -68,6 +68,7 @@ export function ProjectGrid() {
         : "recent_added",
     serialize: (value) => value,
   });
+  const [hydrated, setHydrated] = useState(false);
 
   const debouncedSearch = useDebouncedCallback(
     (value: string) => {
@@ -83,7 +84,8 @@ export function ProjectGrid() {
 
   const { data: session } = useSession();
   const isLoggedIn = Boolean(session?.user);
-  const effectiveScope: ProjectScope = isLoggedIn ? scope : "explorer";
+  const showAuthTabs = hydrated && isLoggedIn;
+  const effectiveScope: ProjectScope = showAuthTabs ? scope : "explorer";
 
   const { data, isFetching, isLoading, error, refetch } = useQuery(
     api.project.list.queryOptions({
@@ -96,6 +98,10 @@ export function ProjectGrid() {
   );
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
     if (session && !isFetching) {
       refetch();
     }
@@ -104,7 +110,7 @@ export function ProjectGrid() {
   const items = data?.items ?? [];
   const total = data?.total ?? 0;
   const showResultsSkeleton =
-    (isLoading && !data) || (isFetching && searchTerm != null);
+    !hydrated || (isLoading && !data) || (isFetching && searchTerm != null);
   const noProjects = !showResultsSkeleton && items.length === 0;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,14 +190,14 @@ export function ProjectGrid() {
                 label={t("home.explorer")}
                 className="text-2xl font-bold mb-4 font-serif my-2 text-black"
               />
-              {isLoggedIn ? (
+              {showAuthTabs ? (
                 <Tab
                   value="my"
                   label={t("home.myProjects")}
                   className="text-2xl font-bold mb-4 font-serif my-2 text-black "
                 />
               ) : null}
-              {isLoggedIn ? (
+              {showAuthTabs ? (
                 <Tab
                   value="collaboration"
                   label={t("home.collaboration")}

@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type React from "react";
@@ -28,8 +28,13 @@ export default function UploadAvatar({
   onChange,
 }: UploadAvatarProps) {
   const [avatar, setAvatar] = useState<string | undefined>(url ?? "");
+
   const api = useTRPC();
-  const queryClient = useQueryClient();
+  const uploadMutation = useMutation(api.storage.add.mutationOptions());
+  const presignedUrlMutation = useMutation(
+    api.storage.presignedUrl.mutationOptions(),
+  );
+  const deleteMutation = useMutation(api.storage.delete.mutationOptions());
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
   const handleAvatarChange = async (
@@ -44,16 +49,15 @@ export default function UploadAvatar({
         };
         reader.readAsDataURL(file);
 
-        const { uploadUrl, path } =
-          await trpcClient.storage.presignedUrl.mutate({
-            name: file.name,
-          });
+        const { uploadUrl, path } = await presignedUrlMutation.mutateAsync({
+          name: file.name,
+        });
 
         await fetch(uploadUrl, {
           method: "PUT",
           body: file,
         });
-        const { id, publicUrl } = await trpcClient.storage.add.mutate({
+        const { id, publicUrl } = await uploadMutation.mutateAsync({
           path: path,
         });
 
@@ -69,7 +73,7 @@ export default function UploadAvatar({
   const handleDelete = async () => {
     if (storageId) {
       try {
-        await trpcClient.storage.delete.mutate({
+        await deleteMutation.mutateAsync({
           storageId: storageId,
         });
 

@@ -232,6 +232,7 @@ const TiptapNotes = forwardRef<
       // }),
     ],
     content: content,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onUpdate(editor.getJSON() as unknown as JSON);
     },

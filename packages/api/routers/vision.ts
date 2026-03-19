@@ -1,6 +1,8 @@
-import { db, videoAnalysis } from "@celluloid/db";
+import { db, project, videoAnalysis } from "@celluloid/db";
+import { visionAnalysisWorkflow } from "@celluloid/workflows/vision";
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
+import { resumeHook, start } from "workflow/api";
 import { z } from "zod";
 import { keys } from "../keys";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
@@ -45,20 +47,11 @@ export const visionRouter = router({
       }
 
       const storage = analysis.storage;
-      const sprite =
-        storage != null
-          ? {
-              id: storage.id,
-              path: storage.path,
-              publicUrl: getSpritePublicUrl(storage),
-            }
-          : null;
-
       return {
         status: analysis.status,
         visionJobId: analysis.visionJobId,
         data: analysis.data,
-        spriteURL: analysis.spriteURL,
+        spriteURL: getSpritePublicUrl(storage),
       };
     }),
 
@@ -68,7 +61,39 @@ export const visionRouter = router({
         projectId: z.string(),
       }),
     )
-    .mutation(async () => {
+    .mutation(async ({ input }) => {
+      const [proj] = await db
+        .select({ id: project.id })
+        .from(project)
+        .where(eq(project.id, input.projectId))
+        .limit(1);
+
+      if (!proj) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const visionRun = await start(visionAnalysisWorkflow, [proj.id]);
+
+      await db
+        .insert(videoAnalysis)
+        .values({
+          projectId: proj.id,
+          runId: visionRun.runId,
+          status: "pending",
+          updatedAt: sql`CURRENT_TIMESTAMP`,
+        })
+        .onConflictDoUpdate({
+          target: videoAnalysis.projectId,
+          set: {
+            status: "pending",
+            runId: visionRun.runId,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          },
+        });
+
       return null;
     }),
 
@@ -78,7 +103,24 @@ export const visionRouter = router({
         projectId: z.string(),
       }),
     )
-    .mutation(async () => {
+    .mutation(async ({ input }) => {
+      const [analysis] = await db
+        .select()
+        .from(videoAnalysis)
+        .where(eq(videoAnalysis.projectId, input.projectId))
+        .limit(1);
+
+      if (!analysis || !analysis.visionJobId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Video analysis not found",
+        });
+      }
+
+      await resumeHook(analysis.visionJobId, {
+        job_id: analysis.visionJobId,
+      });
+
       return null;
     }),
 
@@ -93,7 +135,8 @@ export const visionRouter = router({
       const [updated] = await db
         .update(videoAnalysis)
         .set({
-          processing: input.analysis as unknown as Record<string, unknown>,
+          data: input.analysis as any,
+          updatedAt: sql`CURRENT_TIMESTAMP`,
         })
         .where(eq(videoAnalysis.projectId, input.projectId))
         .returning();

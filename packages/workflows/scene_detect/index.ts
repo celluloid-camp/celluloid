@@ -1,14 +1,13 @@
 import {
+  chapter,
   db,
   eq,
   project,
   storage,
-  VideoAnalysisErrorCode,
-  VideoAnalysisStatus,
-  videoAnalysis,
+  VideoScenesErrorCode,
+  VideoScenesStatus,
+  videoScenes,
 } from "@celluloid/db";
-import { sendProjectAnalysisCompletedEmail } from "@celluloid/emails";
-import { PeerTubeVideo } from "@celluloid/peertube";
 import { fetchPeerTubeVideoDownloadInfo } from "@celluloid/peertube/video";
 import {
   getBucketName,
@@ -17,27 +16,39 @@ import {
 } from "@celluloid/storage/client";
 import { createJob, getJobResults } from "@celluloid/vision-api";
 import { createClient } from "@celluloid/vision-api/client";
-import { DetectionResultsModel } from "@celluloid/vision-api/types";
+import { SceneDetectResultsModel } from "@celluloid/vision-api/types";
 import { createHook, FatalError, sleep } from "workflow";
 import { keys } from "../keys";
-import { VisionWebhook } from "./webhook";
+import { VisionWebhook } from "../vision/webhook";
 
-export async function visionAnalysisWorkflow(projectId: string) {
+export async function sceneDetectWorkflow(projectId: string) {
   "use workflow";
 
   const info = await getProjectInfo(projectId);
 
   if (!info) {
+    await updateSceneDetectStatus({
+      projectId,
+      status: "failed",
+      errorCode: "internal_error",
+      errorMessage: `Video file not found for project ${projectId}`,
+    });
     throw new FatalError("Video URL not found");
   }
 
   try {
-    const visionRun = await startVisionAnalysis({
+    const visionRun = await startSceneDetect({
       projectId,
       videoFileUrl: info.videoUrl,
     });
+
     const hook = createHook<VisionWebhook>({
       token: visionRun.job_id,
+    });
+
+    await updateSceneDetectStatus({
+      projectId,
+      status: "processing",
     });
 
     const result = await Promise.race([
@@ -46,20 +57,16 @@ export async function visionAnalysisWorkflow(projectId: string) {
     ]);
 
     if (result === "timeout") {
-      await updateVisionAnalysisStatus({
-        projectId,
-        status: "failed",
-        errorCode: "timeout",
+      throw new Error("Processing timed out after 20 minutes", {
+        cause: "timeout",
       });
-      throw new FatalError("Processing timed out after 20 minutes");
     }
 
     if (result.job_id) {
-      await fetchVisionAnalysis({ projectId, visionJobId: result.job_id });
-      await sendProjectNotificationEmail({ projectId });
+      await fetchSceneDetectResults({ projectId, visionJobId: result.job_id });
     }
   } catch (error) {
-    await updateVisionAnalysisStatus({
+    await updateSceneDetectStatus({
       projectId,
       status: "failed",
       errorCode: "internal_error",
@@ -113,7 +120,7 @@ async function getProjectInfo(projectId: string) {
   return { videoUrl, duration: info.duration ?? 0 };
 }
 
-async function startVisionAnalysis({
+async function startSceneDetect({
   projectId,
   videoFileUrl,
 }: {
@@ -133,28 +140,23 @@ async function startVisionAnalysis({
       "x-api-key": env.VISION_API_KEY,
     },
     body: {
-      job_type: "object_detect",
+      job_type: "scene_detect",
       external_id: projectId,
       video_url: videoFileUrl,
       // callback_url: `${env.BASE_URL}/api/vision/webhook`,
-      callback_url: `https://aad7-196-217-77-146.ngrok-free.app/api/vision/webhook`,
+      callback_url: `https://3f5c-41-251-106-223.ngrok-free.app/api/vision/webhook`,
     },
   });
 
   if (!analysisResponse) {
-    await updateVisionAnalysisStatus({
-      projectId,
-      status: "failed",
-      errorCode: "internal_error",
-      errorMessage: response.statusText,
-    });
-    throw new FatalError(
-      "Failed to start vision analysis, caused by: " + response.statusText,
+    throw new Error(
+      "Failed to start scene detect, caused by: " + response.statusText,
+      { cause: response.status },
     );
   }
 
   await db
-    .insert(videoAnalysis)
+    .insert(videoScenes)
     .values({
       projectId,
       status: "processing",
@@ -162,7 +164,7 @@ async function startVisionAnalysis({
       updatedAt: new Date().toISOString(),
     })
     .onConflictDoUpdate({
-      target: videoAnalysis.projectId,
+      target: videoScenes.projectId,
       set: {
         status: "processing",
         visionJobId: analysisResponse.job_id,
@@ -173,7 +175,7 @@ async function startVisionAnalysis({
   return analysisResponse;
 }
 
-async function fetchVisionAnalysis({
+async function fetchSceneDetectResults({
   projectId,
   visionJobId,
 }: {
@@ -200,26 +202,21 @@ async function fetchVisionAnalysis({
     throw new FatalError("Failed to fetch vision analysis");
   }
 
-  const analysis = analysisResponse.data as DetectionResultsModel;
+  const sceneDetectResults = analysisResponse.data as SceneDetectResultsModel;
 
-  if (!analysis) {
+  if (!sceneDetectResults) {
     throw new FatalError("Failed to fetch vision analysis");
   }
-  await db
-    .update(videoAnalysis)
-    .set({
-      status: "completed",
-      data: analysis,
-    })
-    .where(eq(videoAnalysis.projectId, projectId))
-    .returning();
 
   try {
-    const s3ObjectName = `${projectId}/analysis/sprite.png`;
+    if (!sceneDetectResults.sprite_url) {
+      throw new FatalError("Sprite URL not found");
+    }
+    const s3ObjectName = `${projectId}/scene_detect/sprite.png`;
 
     const spriteURL = await uploadImageUrl(
       s3ObjectName,
-      analysis.metadata.sprite.url,
+      sceneDetectResults.sprite_url,
     );
 
     const [spriteStorage] = await db
@@ -230,76 +227,52 @@ async function fetchVisionAnalysis({
       })
       .returning();
 
+    await db.insert(chapter).values(
+      sceneDetectResults.scenes.map((scene) => ({
+        projectId,
+        startTime: scene.start_seconds,
+        endTime: scene.end_seconds ?? 0,
+        spriteURL: `${spriteURL}${scene.sprite_fragment}`,
+        updatedAt: new Date().toISOString(),
+      })),
+    );
+
     await db
-      .update(videoAnalysis)
+      .update(videoScenes)
       .set({
         status: "completed",
         spriteStorageId: spriteStorage.id,
         spriteURL: spriteURL,
       })
-      .where(eq(videoAnalysis.projectId, projectId))
-      .returning();
+      .where(eq(videoScenes.projectId, projectId));
   } catch (error) {
-    console.error("Error uploading sprite image", error);
+    console.error("Error fetching scene detect results", error);
+    throw new FatalError("Failed to fetch scene detect results");
   }
-  return analysisResponse;
 }
 
-async function sendProjectNotificationEmail({
-  projectId,
-}: {
-  projectId: string;
-}) {
-  "use step";
-
-  const proj = await db.query.project.findFirst({
-    where: eq(project.id, projectId),
-    columns: {
-      id: true,
-      userId: true,
-      title: true,
-    },
-    with: {
-      user: {
-        columns: {
-          email: true,
-        },
-      },
-    },
-  });
-
-  if (!proj || !proj.user?.email) {
-    // skip if project not found
-    return;
-  }
-
-  await sendProjectAnalysisCompletedEmail({
-    projectId: proj.id,
-    projectTitle: proj.title,
-    email: proj.user.email,
-  });
-}
-
-async function updateVisionAnalysisStatus({
+async function updateSceneDetectStatus({
   projectId,
   status,
   errorCode,
   errorMessage,
 }: {
   projectId: string;
-  status: VideoAnalysisStatus;
-  errorCode?: VideoAnalysisErrorCode;
+  status: VideoScenesStatus;
+  errorCode?: VideoScenesErrorCode;
   errorMessage?: string;
 }) {
   "use step";
 
-  await db
-    .update(videoAnalysis)
-    .set({
-      status,
-      updatedAt: new Date().toISOString(),
-      errorCode: errorCode,
-      errorMessage: errorMessage,
-    })
-    .where(eq(videoAnalysis.projectId, projectId));
+  const data = {
+    projectId,
+    status,
+    updatedAt: new Date().toISOString(),
+    errorCode,
+    errorMessage,
+  };
+  await db.insert(videoScenes).values(data).onConflictDoUpdate({
+    target: videoScenes.projectId,
+    set: data,
+  });
 }

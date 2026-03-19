@@ -15,7 +15,7 @@ export function CreateChaptersJob({
   canGenerate: boolean;
 }) {
   const api = useTRPC();
-  const mutation = useMutation(api.chapter.generateChapters.mutationOptions());
+  const mutation = useMutation(api.chapter.generate.mutationOptions());
   const { enqueueSnackbar } = useSnackbar();
   const t = useTranslations();
   const queryClient = useQueryClient();

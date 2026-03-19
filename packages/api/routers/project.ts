@@ -5,6 +5,7 @@ import {
   project,
   user,
   userToProject,
+  videoAnalysis,
 } from "@celluloid/db";
 import { getDbErrorMessage, withPagination } from "@celluloid/db/utils";
 import { generateUniqueShareName } from "@celluloid/utils";
@@ -12,8 +13,18 @@ import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
 import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
 import { visionAnalysisWorkflow } from "@celluloid/workflows/vision";
 import { TRPCError } from "@trpc/server";
-import { and, asc, count, desc, eq, ilike, inArray, ne } from "drizzle-orm";
-import { start } from "workflow/api";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  ne,
+  sql,
+} from "drizzle-orm";
+import { getRun, start } from "workflow/api";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
@@ -151,8 +162,6 @@ export const projectRouter = router({
           playlistId: true,
           duration: true,
           thumbnailURL: true,
-          scenesProcessingRunId: true,
-          scenesProcessingStatus: true,
           transcriptProcessingRunId: true,
           transcriptProcessingStatus: true,
           keywords: true,
@@ -179,6 +188,11 @@ export const projectRouter = router({
               id: true,
               title: true,
               description: true,
+            },
+          },
+          videoScenes: {
+            columns: {
+              status: true,
             },
           },
         },
@@ -216,6 +230,63 @@ export const projectRouter = router({
             ) &&
               proj.collaborative)),
       };
+
+      // if (
+      //   result.transcriptProcessingStatus === "in_progress" &&
+      //   result.transcriptProcessingRunId === null
+      // ) {
+      //   const [updated] = await db
+      //     .update(project)
+      //     .set({
+      //       transcriptProcessingStatus: "failed",
+      //       transcriptProcessingRunId: null,
+      //     })
+      //     .where(eq(project.id, result.id))
+      //     .returning();
+      //   return {
+      //     ...result,
+      //     transcriptProcessingStatus: updated?.transcriptProcessingStatus,
+      //   };
+      // }
+
+      // if (
+      //   result.transcriptProcessingRunId &&
+      //   result.transcriptProcessingStatus === "in_progress"
+      // ) {
+      //   const run = getRun(result.transcriptProcessingRunId);
+      //   const exists = await run.exists;
+      //   const status = await run.status;
+      //   if (!exists || status === "failed") {
+      //     const [updated] = await db
+      //       .update(project)
+      //       .set({
+      //         transcriptProcessingStatus: "failed",
+      //         transcriptProcessingRunId: null,
+      //       })
+      //       .where(eq(project.id, result.id))
+      //       .returning();
+      //     return {
+      //       ...result,
+      //       transcriptProcessingRunId: null,
+      //       transcriptProcessingStatus: updated?.transcriptProcessingStatus,
+      //     };
+      //   }
+      //   if (status === "completed") {
+      //     const [updated] = await db
+      //       .update(project)
+      //       .set({
+      //         transcriptProcessingStatus: "completed",
+      //         transcriptProcessingRunId: null,
+      //       })
+      //       .where(eq(project.id, result.id))
+      //       .returning();
+      //     return {
+      //       ...result,
+      //       transcriptProcessingRunId: null,
+      //       transcriptProcessingStatus: updated?.transcriptProcessingStatus,
+      //     };
+      //   }
+      // }
 
       return result;
     }),
@@ -305,14 +376,12 @@ export const projectRouter = router({
         })
         .where(eq(project.id, created.id));
 
-      // await db
-      // .insert(videoAnalysis)
-      // .values({
-      //   projectId:created.id,
-      //   status: "processing",
-      //   visionJobId: analysisResponse.job_id,
-      //   updatedAt: new Date().toISOString(),
-      // }).where(eq(videoAnalysis.projectId, created.id));
+      await db.insert(videoAnalysis).values({
+        projectId: created.id,
+        status: "processing",
+        runId: visionRun.runId,
+        updatedAt: sql`CURRENT_TIMESTAMP`,
+      });
 
       return { id: created.id };
     }),

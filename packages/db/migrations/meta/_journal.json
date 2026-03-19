@@ -19,22 +19,15 @@
     {
       "idx": 2,
       "version": "7",
-      "when": 1771862847688,
-      "tag": "0002_amusing_doctor_doom",
+      "when": 1773847261619,
+      "tag": "0002_colossal_steel_serpent",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1772980319210,
-      "tag": "0003_kind_lifeguard",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1773152852000,
-      "tag": "0004_fat_invisible_woman",
+      "when": 1773854680040,
+      "tag": "0003_sour_red_hulk",
       "breakpoints": true
     }
   ]

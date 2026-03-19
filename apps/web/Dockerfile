@@ -41,7 +41,6 @@ RUN bun run build
 # Production runtime stage
 FROM oven/bun:1.3.8-alpine AS runner
 
-RUN apk add --no-cache libc6-compat vips curl ffmpeg
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -53,14 +52,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
-COPY --from=builder --chown=nextjs:nodejs /app/packages/db/dist/migrate ./migrate
-COPY --chown=nextjs:nodejs /packages/db/migrations ./migrations
 
+## workaround for error: Cannot find module '@workflow/world-postgres' from ''
 RUN bun install @workflow/world-postgres
 
-# Copy and set up startup script
-COPY --chown=nextjs:nodejs apps/web/start.sh /app/start.sh
-
+# # Copy and set up startup script
+# COPY --chown=nextjs:nodejs apps/web/start.sh /app/start.sh
 
 USER nextjs
 
@@ -69,5 +66,4 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 
-CMD ["/app/start.sh"]
-# CMD ["sleep", "infinity"]
+CMD ["bun", "--bun", "/app/apps/web/server.js"]

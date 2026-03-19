@@ -7,14 +7,12 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "build": "bun generate && bun bundle",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "push": "drizzle-kit push",
     "migrate": "bun --env-file ../../apps/web/.env migrate.ts",
     "studio": "drizzle-kit studio",
     "generate": "drizzle-kit generate",
-    "bundle": "bun build --bytecode --minify --sourcemap --target=bun --compile ./migrate.ts --outfile=./dist/migrate",
     "drop": "drizzle-kit drop",
     "seed": "bun run seed.ts"
   },
@@ -31,9 +29,10 @@
   },
   "dependencies": {
     "@celluloid/peertube": "workspace:*",
-    "@celluloid/vision-api": "^1.3.0",
+    "@celluloid/vision-api": "catalog:",
     "@t3-oss/env-nextjs": "catalog:",
     "drizzle-orm": "catalog:",
+    "@workflow/world-postgres": "catalog:",
     "pg": "^8.18.0",
     "randomcolor": "^0.6.2",
     "zod": "catalog:"

@@ -6,29 +6,24 @@ import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
 import { useTRPC } from "@/lib/trpc/client";
+import { ProjectById } from "@/lib/trpc/types";
 
-export function ScenesProcessingFailed({
-  projectId,
-  canGenerate,
-}: {
-  projectId: string;
-  canGenerate: boolean;
-}) {
+export function ScenesProcessingFailed({ project }: { project: ProjectById }) {
   const api = useTRPC();
-  const mutation = useMutation(api.chapter.generateChapters.mutationOptions());
+  const mutation = useMutation(api.chapter.generate.mutationOptions());
   const { enqueueSnackbar } = useSnackbar();
   const t = useTranslations();
   const queryClient = useQueryClient();
 
   const handleGenerate = async () => {
-    await mutation.mutateAsync({ projectId: projectId });
+    await mutation.mutateAsync({ projectId: project.id });
 
     enqueueSnackbar(t("confirm.generation.sent"), {
       variant: "success",
     });
 
     queryClient.invalidateQueries(
-      api.project.byId.queryFilter({ id: projectId }),
+      api.project.byId.queryFilter({ id: project.id }),
     );
   };
   return (
@@ -52,7 +47,7 @@ export function ScenesProcessingFailed({
         <Typography variant="body2" color="gray" textAlign={"center"}>
           {t("project.chapters.failed")}
         </Typography>
-        {canGenerate ? (
+        {project.editable ? (
           <Button variant="outlined" color="primary" onClick={handleGenerate}>
             {t("project.chapters.retry")}{" "}
           </Button>

@@ -1,11 +1,10 @@
 import { Button, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { saveAs } from "file-saver";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
 import { useTRPC } from "@/lib/trpc/client";
-import { trpcClient } from "@/lib/trpc/provider";
 import type { ProjectById } from "@/lib/trpc/types";
 
 interface Props {
@@ -22,9 +21,10 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
       id: project.id,
     }),
   );
+  const exportMutation = useMutation(api.annotation.export.mutationOptions());
 
   const handleExport = async (format: "csv" | "xml" | "srt") => {
-    const data = await trpcClient.annotation.export.mutate({
+    const data = await exportMutation.mutateAsync({
       projectId: project.id,
       format,
     });

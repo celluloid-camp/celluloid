@@ -12,14 +12,14 @@ export default async function ProjectPage({
 }) {
   const { id } = await params;
 
-  // void prefetch(trpc.project.byId.queryOptions({ id }));
+  void prefetch(trpc.project.byId.queryOptions({ id }));
   return (
-    // <HydrateClient>
-    // </HydrateClient>
-    <ErrorBoundary fallbackRender={projectFallbackRender}>
-      <Suspense fallback={<ProjectSkeleton />}>
-        <ProjectMainScreen projectId={id} />
-      </Suspense>
-    </ErrorBoundary>
+    <HydrateClient>
+      <ErrorBoundary fallbackRender={projectFallbackRender}>
+        <Suspense fallback={<ProjectSkeleton />}>
+          <ProjectMainScreen projectId={id} />
+        </Suspense>
+      </ErrorBoundary>
+    </HydrateClient>
   );
 }

@@ -88,3 +88,19 @@ jobs:
             NEXT_PUBLIC_POSTHOG_KEY=${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_POSTHOG_KEY || '' }}
             NEXT_PUBLIC_KNOCK_API_KEY=${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_API_KEY || '' }}
             NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID=${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID || '' }}
+
+      - name: Build and push db migrate container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/db/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/celluloid-db-migrate:${{ steps.extract.outputs.version }}
+            ghcr.io/${{ github.repository }}/celluloid-db-migrate:${{ steps.extract.outputs.revision }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ steps.extract.outputs.version }}
+            COMMIT_SHA=${{ steps.extract.outputs.revision }}
+            BUILD_TIME=${{ github.event.head_commit.timestamp || github.run_started_at }}

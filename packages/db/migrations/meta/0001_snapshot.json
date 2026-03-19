@@ -747,8 +747,8 @@
           "notNull": false,
           "default": "'{}'::jsonb"
         },
-        "orignalUrl": {
-          "name": "orignalUrl",
+        "orignalURL": {
+          "name": "orignalURL",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -1309,8 +1309,8 @@
           "notNull": false,
           "default": "'{}'::json"
         },
-        "thumbnailUrl": {
-          "name": "thumbnailUrl",
+        "thumbnailURL": {
+          "name": "thumbnailURL",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

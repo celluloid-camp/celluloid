@@ -1,6 +1,12 @@
 import { EventEmitter } from "node:events";
-import { chapter, db, project } from "@celluloid/db";
-import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
+import {
+  chapter,
+  db,
+  project,
+  videoAnalysis,
+  videoScenes,
+} from "@celluloid/db";
+import { sceneDetectWorkflow } from "@celluloid/workflows/scene_detect";
 import { TRPCError } from "@trpc/server";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { start } from "workflow/api";
@@ -51,7 +57,7 @@ export const chapterRouter = router({
         lastEditedBy: c.user?.username ?? null,
       }));
     }),
-  generateChapters: protectedProcedure
+  generate: protectedProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -72,24 +78,47 @@ export const chapterRouter = router({
                 eq(project.id, input.projectId),
                 eq(project.userId, ctx.user.id),
               ),
+        with: {
+          videoScenes: {
+            columns: {
+              id: true,
+              status: true,
+            },
+          },
+        },
       });
 
       if (!record) {
         throw new Error("Project not found");
       }
 
-      if (record.scenesProcessingStatus === "in_progress") {
+      if (
+        record.videoScenes &&
+        ["pending", "processing"].includes(record.videoScenes.status)
+      ) {
         throw new Error("Scenes processing is already in progress");
       }
 
-      const run = await start(processScenesWorkflow, [record.id]);
+      const run = await start(sceneDetectWorkflow, [record.id]);
+
+      // delete existing chapters
+      await db.delete(chapter).where(eq(chapter.projectId, record.id));
+
       await db
-        .update(project)
-        .set({
-          scenesProcessingRunId: run.runId,
-          scenesProcessingStatus: "in_progress",
+        .insert(videoScenes)
+        .values({
+          projectId: record.id,
+          status: "pending",
+          updatedAt: sql`CURRENT_TIMESTAMP`,
         })
-        .where(eq(project.id, record.id));
+        .onConflictDoUpdate({
+          target: videoScenes.id,
+          set: {
+            status: "pending",
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          },
+        });
+
       return record;
     }),
   create: protectedProcedure

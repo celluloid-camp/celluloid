@@ -52,6 +52,9 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const api = useTRPC();
   const queryClient = useQueryClient();
   const resetMutation = useMutation(api.chapter.reset.mutationOptions());
+  const regenerateMutation = useMutation(
+    api.chapter.generate.mutationOptions(),
+  );
 
   const anchorRef = useRef<HTMLDivElement>(null);
 
@@ -108,6 +111,42 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
             projectId: props.project.id,
           }),
         );
+      }
+    });
+  };
+
+  const handleRegenerate = () => {
+    confirm({
+      title: "Regenerate chapters",
+      description: "Are you sure you want to regenerate the chapters?",
+      confirmationText: "Regenerate",
+      cancellationText: "Cancel",
+      confirmationButtonProps: {
+        variant: "contained",
+        color: "primary",
+      },
+      contentProps: {
+        sx: {
+          color: "white",
+          backgroundColor: "background.dark",
+        },
+      },
+      titleProps: {
+        sx: {
+          color: "white",
+          backgroundColor: "background.dark",
+        },
+      },
+      dialogActionsProps: {
+        sx: {
+          backgroundColor: "background.dark",
+        },
+      },
+    }).then(async (value) => {
+      if (value.confirmed) {
+        await regenerateMutation.mutateAsync({
+          projectId: props.project.id,
+        });
       }
     });
   };
@@ -181,7 +220,10 @@ export const ChapterForm: React.FC<ChapterFormProps> = (props) => {
                       {t("chapters.form.button.reset")}
                     </ListItemText>
                   </MenuItem>
-                  <MenuItem onClick={handleReset}>
+                  <MenuItem
+                    onClick={handleRegenerate}
+                    disabled={regenerateMutation.isPending}
+                  >
                     <ListItemIcon>
                       <LoopIcon fontSize="small" />
                     </ListItemIcon>

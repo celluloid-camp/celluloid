@@ -1,5 +1,5 @@
 import { db, eq, project } from "@celluloid/db";
-import { sleep } from "workflow";
+import { FatalError, sleep } from "workflow";
 import { generateTranscript } from "./steps/generate-transcript";
 import { getProjectCaptions } from "./steps/get-captions";
 import { updateProjectTranscript } from "./steps/update-project-transcript";
@@ -14,20 +14,15 @@ export async function videoTranscriptWorkflow(projectId: string) {
 
     const result = await Promise.race([
       generateTranscript(captions),
-      sleep("5min").then(() => "timeout" as const),
+      sleep("15min").then(() => "timeout" as const),
     ]);
 
     if (result === "timeout") {
-      throw new Error("Processing timed out after 30 seconds");
+      throw new FatalError("Processing timed out after 15 minutes");
     }
 
     const transcript = result;
-    await updateProjectTranscript(
-      projectId,
-      transcript,
-      captions.language,
-      captions,
-    );
+    await updateProjectTranscript(projectId, transcript, "fr");
 
     await updateProjectStatus(projectId, "completed");
   } catch (error) {
@@ -46,7 +41,6 @@ async function updateProjectStatus(
     .update(project)
     .set({
       transcriptProcessingStatus: status,
-      // transcriptProcessingRunId: null,
     })
     .where(eq(project.id, projectId));
 }

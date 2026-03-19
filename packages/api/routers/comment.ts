@@ -38,7 +38,7 @@ export const commentRouter = router({
         await getNotificationsClient().workflows.trigger("new-annotation", {
           recipients: [
             {
-              id: ctx.user?.id,
+              id: proj?.userId,
             },
           ],
           data: {

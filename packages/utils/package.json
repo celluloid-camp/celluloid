@@ -12,8 +12,6 @@
   },
   "dependencies": {
     "@types/redis": "^4.0.11",
-    "pino": "catalog:",
-    "pino-pretty": "^13.1.2",
     "redis": "^4.6.10",
     "unique-slug": "^4.0.0",
     "zod": "catalog:"

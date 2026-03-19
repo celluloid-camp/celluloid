@@ -18,8 +18,8 @@ type ChaptersPanelProps = {
   user?: User;
 };
 
-export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
-  if (project.scenesProcessingStatus === "not_started") {
+export function ScenesPanel({ project, user }: ChaptersPanelProps) {
+  if (project.videoScenes === null) {
     return (
       <CreateChaptersJob
         projectId={project.id}
@@ -28,16 +28,11 @@ export function ChaptersPanel({ project, user }: ChaptersPanelProps) {
     );
   }
 
-  if (project.scenesProcessingStatus === "in_progress") {
+  if (["pending", "processing"].includes(project.videoScenes.status)) {
     return <ChaptersJobInProgress />;
   }
-  if (project.scenesProcessingStatus === "failed") {
-    return (
-      <ScenesProcessingFailed
-        projectId={project.id}
-        canGenerate={project.userId === user?.id || user?.role === "admin"}
-      />
-    );
+  if (project.videoScenes.status === "failed") {
+    return <ScenesProcessingFailed project={project} />;
   }
 
   return (
@@ -62,7 +57,7 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
   return (
     <Stack height="100%">
       <ChapterTimeline project={project} chapters={chapters} />
-      {user?.id === project.userId || user?.role === "admin" ? (
+      {project.editable ? (
         <ChapterForm project={project} user={user} chapters={chapters} />
       ) : null}
     </Stack>
