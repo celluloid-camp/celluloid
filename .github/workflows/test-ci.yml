@@ -46,11 +46,31 @@ jobs:
           cache-to: type=gha,mode=max
           push: false
 
+      - name: Build db migrate image with cache
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/db/Dockerfile
+          tags: celluloid-db-migrate:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: false
+
       - name: Install Playwright Browsers
         run: bunx playwright install --with-deps chromium firefox
 
       - name: Start services with Docker Compose
         run: docker compose -f docker-compose.ci.yml up -d
+
+      - name: Run database migrations
+        run: |
+          # Find the default docker-compose network
+          NETWORK=$(docker network ls --format '{{.Name}}' | grep '_default$' | head -n1)
+          echo "Using network: $NETWORK"
+          docker run --rm \
+            --network "$NETWORK" \
+            -e DATABASE_URL=postgres://postgres:root@postgres:5432/celluloid \
+            celluloid-db-migrate:latest
 
       - name: Show Docker status
         run: |
