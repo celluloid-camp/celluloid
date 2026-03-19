@@ -25,7 +25,7 @@ CREATE TABLE "Annotation" (
 	"projectId" uuid NOT NULL,
 	"createdAt" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP,
 	"extra" jsonb DEFAULT '{}'::jsonb,
-	"orignalUrl" text
+	"orignalURL" text
 );
 --> statement-breakpoint
 CREATE TABLE "Chapter" (
