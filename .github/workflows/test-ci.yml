@@ -35,42 +35,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build web image with cache
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./apps/web/Dockerfile
-          target: runner
-          tags: celluloid-web:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          push: false
-
-      - name: Build db migrate image with cache
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./packages/db/Dockerfile
-          tags: celluloid-db-migrate:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          push: false
-
       - name: Install Playwright Browsers
         run: bunx playwright install --with-deps chromium firefox
-
-      - name: Start services with Docker Compose
-        run: docker compose -f docker-compose.ci.yml up -d
-
-      - name: Run database migrations
-        run: |
-          # Find the default docker-compose network
-          NETWORK=$(docker network ls --format '{{.Name}}' | grep '_default$' | head -n1)
-          echo "Using network: $NETWORK"
-          docker run --rm \
-            --network "$NETWORK" \
-            -e DATABASE_URL=postgres://postgres:root@postgres:5432/celluloid \
-            celluloid-db-migrate:latest
 
       - name: Show Docker status
         run: |
@@ -81,24 +47,8 @@ jobs:
       - name: Install Playwright test dependency
         run: bun install @playwright/test
 
-      - name: Wait for web container to be healthy
-        run: |
-          MAX_RETRIES=10
-          SLEEP_SECONDS=5
-          COUNT=0
-          until curl -fsS http://localhost:3000/api/health; do
-            COUNT=$((COUNT + 1))
-            if [ "$COUNT" -ge "$MAX_RETRIES" ]; then
-              echo "Web healthcheck failed after ${MAX_RETRIES} attempts."
-              echo "---- docker compose ps ----"
-              docker compose -f docker-compose.ci.yml ps || true
-              echo "---- web container logs ----"
-              docker compose -f docker-compose.ci.yml logs web || true
-              exit 1
-            fi
-            echo "Waiting for web (http://localhost:3000/api/health) to be healthy... (attempt ${COUNT}/${MAX_RETRIES})"
-            sleep "$SLEEP_SECONDS"
-          done
+      - name: Start services with Docker Compose (wait for healthchecks)
+        run: docker compose -f compose.ci.yml up -d --wait
 
       - name: Run Playwright tests
         run: bunx playwright test
@@ -106,7 +56,7 @@ jobs:
       - name: Stop services
         if: always()
         run: |
-          docker compose -f docker-compose.ci.yml down -v
+          docker compose -f compose.ci.yml down -v
 
       - uses: actions/upload-artifact@v4
         if: always()

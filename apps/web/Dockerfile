@@ -41,8 +41,9 @@ RUN bun run build
 # Production runtime stage
 FROM oven/bun:1.3.8-alpine AS runner
 
-
-RUN addgroup --system --gid 1001 nodejs && \
+# Install curl for healthchecks and create non-root user
+RUN apk add --no-cache curl && \
+    addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 WORKDIR /app
