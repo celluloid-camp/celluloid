@@ -2,10 +2,10 @@ import { Box } from "@mui/material";
 
 import { HomePageHero } from "@/components/home/hero";
 import { HomePageProjects } from "@/components/home/projects";
-import { HydrateClient, trpc } from "@/lib/trpc/server";
+import { HydrateClient, prefetch, trpc } from "@/lib/trpc/server";
 
 export default function HomePage() {
-  void trpc.project.list.prefetch({ term: "" });
+  // void prefetch(trpc.project.list.queryOptions({ term: "" }));
   return (
     <Box>
       <HomePageHero />

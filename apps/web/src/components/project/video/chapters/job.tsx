@@ -1,10 +1,11 @@
 import InfoIcon from "@mui/icons-material/Info";
 import { Button, Grow, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 
 export function CreateChaptersJob({
   projectId,
@@ -13,10 +14,11 @@ export function CreateChaptersJob({
   projectId: string;
   canGenerate: boolean;
 }) {
-  const mutation = trpc.chapter.generateChapters.useMutation();
+  const api = useTRPC();
+  const mutation = useMutation(api.chapter.generate.mutationOptions());
   const { enqueueSnackbar } = useSnackbar();
   const t = useTranslations();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
 
   const handleGenerate = async () => {
     await mutation.mutateAsync({ projectId: projectId });
@@ -25,7 +27,9 @@ export function CreateChaptersJob({
       variant: "success",
     });
 
-    utils.project.byId.invalidate({ id: projectId });
+    queryClient.invalidateQueries(
+      api.project.byId.queryFilter({ id: projectId }),
+    );
   };
   return (
     <Grow in={true}>

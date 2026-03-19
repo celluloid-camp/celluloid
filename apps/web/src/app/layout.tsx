@@ -6,7 +6,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { AppProviders } from "@/components/providers";
 
-import "@celluloid/prisma/types";
 export const dynamic = "force-dynamic";
 
 const abril_fatfaceregular = localFont({
@@ -47,7 +46,7 @@ export default async function RootLayout({
     >
       <body>
         <NextIntlClientProvider>
-          <AppRouterCacheProvider options={{ key: "css" }}>
+          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <AppProviders>{children}</AppProviders>
           </AppRouterCacheProvider>
         </NextIntlClientProvider>

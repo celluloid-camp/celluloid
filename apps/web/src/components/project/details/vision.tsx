@@ -1,7 +1,7 @@
 "use client";
 
+import AutoModeIcon from "@mui/icons-material/AutoMode";
 import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -13,12 +13,17 @@ import {
   colors,
   Typography,
 } from "@mui/material";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import type { FallbackProps } from "react-error-boundary";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 import { VisionChart } from "./vision-chart";
 
@@ -29,44 +34,43 @@ interface Props {
 export function ProjectVision({ project, user }: Props) {
   const t = useTranslations();
 
-  const utils = trpc.useUtils();
-  const [data] = trpc.vision.byProjectId.useSuspenseQuery({
-    projectId: project.id,
-  });
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const { data } = useSuspenseQuery(
+    api.vision.byProjectId.queryOptions({
+      projectId: project.id,
+    }),
+  );
 
-  const mutation = trpc.vision.generate.useMutation({
-    onSettled: () => {
-      utils.project.byId.invalidate({ id: project.id });
-    },
-  });
+  const mutation = useMutation(
+    api.vision.generate.mutationOptions({
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+      },
+    }),
+  );
 
-  const manualCheck = trpc.vision.check.useMutation({
-    onSuccess: (data) => {
-      console.log("data", data);
-    },
-    onSettled: () => {
-      utils.project.byId.invalidate({ id: project.id });
-    },
-  });
-
-  const { visionJob, isVisionInProgress } = useMemo(() => {
-    const visionJob = project.jobs.find((job) => job.type === "vision");
-    return {
-      visionJob,
-      isVisionInProgress: visionJob
-        ? visionJob.queueJob?.progress !== 100
-        : false,
-    };
-  }, [project.jobs]);
+  const manualCheck = useMutation(
+    api.vision.check.mutationOptions({
+      onSuccess: (data) => {
+        console.log("data", data);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+      },
+    }),
+  );
 
   if (!data && !user) {
     return null;
   }
 
   const canGenerateVision =
-    (user?.role === "ADMIN" || user?.id === project.userId) &&
-    !data &&
-    !isVisionInProgress;
+    project.editable && (!data || data.status === "failed");
 
   const canViewStudio =
     user?.role === "ADMIN" ||
@@ -98,16 +102,16 @@ export function ProjectVision({ project, user }: Props) {
         }
       />
       <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
-        {isVisionInProgress ? (
+        {data?.status === "processing" ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
-            <Typography variant="body2">
+            <Typography variant="body1">
               {t("project.vision.analyse.in-progress")}
             </Typography>
           </Box>
-        ) : data?.status === "completed" ? (
+        ) : data?.status === "completed" && data.data ? (
           <Box>
-            <VisionChart analysis={data?.processing} />
+            <VisionChart data={data} />
           </Box>
         ) : (
           <Typography variant="body2">{t("project.vision.empty")}</Typography>
@@ -122,11 +126,11 @@ export function ProjectVision({ project, user }: Props) {
         }}
       >
         {canGenerateVision && (
-          <LoadingButton
-            variant="contained"
+          <Button
+            variant="outlined"
+            startIcon={<AutoModeIcon />}
             loading={mutation.isPending}
             color="primary"
-            disabled={mutation.isPending}
             onClick={async () => {
               mutation.mutate({
                 projectId: project.id,
@@ -134,12 +138,19 @@ export function ProjectVision({ project, user }: Props) {
             }}
           >
             {t("project.vision.button.analyse")}
-          </LoadingButton>
+          </Button>
         )}
-
-        {/* <Button onClick={() => manualCheck.mutate({ projectId: project.id })}>
-          Check
-        </Button> */}
+        {data?.status === "processing" && (
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              manualCheck.mutate({ projectId: project.id });
+            }}
+          >
+            Check manually
+          </Button>
+        )}
       </CardActions>
     </Card>
   );
@@ -164,7 +175,9 @@ export function ProjectVisionFallback({
       />
       <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
         Failed to analyze video
-        {process.env.NODE_ENV === "development" && <pre>{error.message}</pre>}
+        {process.env.NODE_ENV === "development" && (
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+        )}
         <Button onClick={resetErrorBoundary}>Try again</Button>
       </CardContent>
     </Card>

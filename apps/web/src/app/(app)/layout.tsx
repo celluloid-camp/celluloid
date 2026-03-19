@@ -1,5 +1,11 @@
 import { auth } from "@celluloid/auth";
+import { prefetchSession } from "@daveyplate/better-auth-tanstack/server";
 import { Box } from "@mui/material";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { headers } from "next/headers";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
@@ -12,27 +18,25 @@ export default async function Layout({
   modal: React.ReactNode;
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-    query: {
-      disableCookieCache: true,
-    },
-  });
+  const queryClient = new QueryClient();
+
   return (
-    <NotificationsProvider userId={session?.user?.id}>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {modal}
-        <Header />
-        <Box sx={{ flexGrow: 1, pt: 8 }}>{children}</Box>
-        <Footer />
-      </Box>
-    </NotificationsProvider>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NotificationsProvider>
+        <Box
+          sx={{
+            minHeight: "100vh",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {modal}
+          <Header />
+          <Box sx={{ flexGrow: 1, pt: 6 }}>{children}</Box>
+          <Footer />
+        </Box>
+      </NotificationsProvider>
+    </HydrationBoundary>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
-import { AnnotationShape } from "@celluloid/prisma";
-import { Grid } from "@mui/material";
+import { Box, CircularProgress, Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
 import {
   MediaActionTypes,
@@ -9,16 +8,13 @@ import {
   useMediaSelector,
 } from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo } from "react";
+import React, { Suspense, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
-import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-import { AnnotationOverlayHints } from "./annotation/overlay-hints";
+import type { ProjectById } from "@/lib/trpc/types";
+import { useAnnotations } from "@/stores/annotations";
 import { ShapesEditor } from "./annotation/shapes-editor";
-import {
-  AnnotationShapeWithMetadata,
-  ShapesViewer,
-} from "./annotation/shapes-viewer";
+import { ShapesViewer } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
 import { VideoPanel } from "./video-panel";
 import { VideoVision } from "./video-vision";
@@ -27,6 +23,9 @@ const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
   { ssr: false },
 );
+
+/** Tolerance in seconds when matching annotation startTime to media time (player updates at discrete intervals). */
+const PAUSE_AT_ANNOTATION_TOLERANCE_SEC = 0.2;
 
 interface Props {
   project: ProjectById;
@@ -40,11 +39,10 @@ export function ProjectVideoScreen({ project }: Props) {
   const [ref, { width, height }] = useMeasure();
 
   const { data: session } = useSession();
-  const utils = trpc.useUtils();
 
-  const [annotations] = trpc.annotation.byProjectId.useSuspenseQuery({
-    id: project.id,
-  });
+  const { currentAnnotations, shapeAnnotations, annotations } = useAnnotations(
+    project.id,
+  );
 
   const { contextualEditorVisible, formVisible, showHints } =
     useAnnotationEditorState();
@@ -61,76 +59,29 @@ export function ProjectVideoScreen({ project }: Props) {
   //   },
   // });
 
-  const visibleAnnotations = useMemo(
-    () =>
-      mediaCurrentTime && annotations
-        ? annotations.filter(
-            (annotation) =>
-              mediaCurrentTime >= annotation.startTime &&
-              mediaCurrentTime <= annotation.stopTime,
-          )
-        : [],
-    [annotations, mediaCurrentTime],
-  );
-
-  const shapeAnnotations = useMemo<AnnotationShapeWithMetadata[]>(
-    () =>
-      visibleAnnotations
-        .filter(
-          (annotation) =>
-            annotation.extra !== null && annotation.extra !== undefined,
-        )
-        .map((annotation) => {
-          const extra = annotation.extra as AnnotationShape;
-          return {
-            ...annotation.extra,
-            id: extra.id ?? annotation.id,
-            type: extra.type ?? "point",
-            x: extra.relativeX ?? extra.x,
-            y: extra.relativeY ?? extra.y,
-            pause: annotation.pause,
-            startTime: annotation.startTime,
-            metadata: {
-              color: annotation.user.color,
-              initial: annotation.user.initial,
-              username: annotation.user.username,
-              avatar: annotation.user.avatar?.publicUrl,
-              text: annotation.text,
-            },
-          };
-        }),
-    [visibleAnnotations],
-  );
-
   useEffect(() => {
     if (!mediaCurrentTime) return;
-    const paused = visibleAnnotations.filter(
+    const paused = currentAnnotations.filter(
       (annotation) =>
         annotation.pause &&
-        annotation.startTime === Math.floor(mediaCurrentTime),
+        Math.abs(mediaCurrentTime - annotation.startTime) <=
+          PAUSE_AT_ANNOTATION_TOLERANCE_SEC,
     );
 
     if (paused.length > 0) {
       dispatch({
         type: MediaActionTypes.MEDIA_SEEK_REQUEST,
-        detail: mediaCurrentTime + 1,
+        detail: mediaCurrentTime,
       });
       dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
-  }, [visibleAnnotations, mediaCurrentTime]);
+  }, [currentAnnotations, mediaCurrentTime]);
 
   useEffect(() => {
     if (formVisible) {
       dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
   }, [formVisible]);
-
-  const handleAnnotionHintClick = (annotation: AnnotationByProjectId) => {
-    dispatch({
-      type: MediaActionTypes.MEDIA_SEEK_REQUEST,
-      detail: annotation.startTime,
-    });
-  };
 
   return (
     <Grid
@@ -144,7 +95,7 @@ export function ProjectVideoScreen({ project }: Props) {
         maxHeight: "60vh",
       }}
     >
-      <Grid item xs={8} ref={ref} sx={{ position: "relative" }}>
+      <Grid ref={ref} sx={{ position: "relative" }} size={8}>
         {contextualEditorVisible ? <ShapesEditor /> : null}
         {!formVisible && !showHints && shapeAnnotations.length > 0 ? (
           <ShapesViewer
@@ -153,31 +104,46 @@ export function ProjectVideoScreen({ project }: Props) {
             height={height ?? 0}
           />
         ) : null}
-        {showHints ? (
-          <AnnotationOverlayHints
-            project={project}
-            annotations={annotations}
-            onClick={handleAnnotionHintClick}
-          />
-        ) : null}
-        <VideoVision projectId={project.id} />
+        <Suspense>
+          <ErrorBoundary
+            FallbackComponent={({ error }) =>
+              process.env.NODE_ENV === "development" ? (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    inset: 0,
+                    display: "flex",
+                    pointerEvents: "none",
+                    color: "white",
+                    zIndex: 1000,
+                  }}
+                >
+                  Failed to load vision
+                </Box>
+              ) : null
+            }
+          >
+            <VideoVision projectId={project.id} />
+          </ErrorBoundary>
+        </Suspense>
 
-        <VideoPlayer url={`https://${project.host}/w/${project.videoId}`} />
+        <VideoPlayer project={project} />
       </Grid>
       <Grid
-        item
-        xs={4}
         sx={{
           height: "100%",
           position: "relative",
           paddingY: 2,
           paddingX: 2,
         }}
+        size={4}
       >
         <VideoPanel
           project={project}
-          annotations={visibleAnnotations}
-          annotationCount={annotations.length}
+          annotations={currentAnnotations}
+          annotationCount={annotations?.length ?? 0}
           user={session?.user}
         />
       </Grid>

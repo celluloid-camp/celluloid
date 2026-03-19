@@ -55,7 +55,11 @@ export function ShapeTooltip({ data, x, y }: ShapeTooltipProps) {
               {data.metadata.initial}
             </Avatar>
             <Stack>
-              <Typography component="span" color="white" variant="body2">
+              <Typography
+                component="span"
+                className="text-white"
+                variant="body2"
+              >
                 {data.metadata.username}
               </Typography>
             </Stack>

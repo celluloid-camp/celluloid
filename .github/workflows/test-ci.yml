@@ -18,87 +18,60 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
-    services:
-      redis:
-        image: redis
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: celluloid
-        ports:
-          - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Cache turbo build setup
+      - name: Cache Bun
         uses: actions/cache@v4
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-turbo-
+            ${{ runner.os }}-bun-
 
-      - run: pnpm install
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps chromium firefox
+        run: bunx playwright install --with-deps chromium firefox
 
-      - name: Build apps
-        run: |
-          cp .env.ci .env
-          pnpm build
+      - name: Install Playwright test dependency
+        run: bun install @playwright/test
 
-      - name: Build packages
-        run: pnpm prisma migrate deploy
+      - name: Start services with Docker Compose (wait for healthchecks)
+        run: docker compose -f compose.ci.yml up -d --wait
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker compose -f compose.ci.yml logs
 
       - name: Run Playwright tests
-        run: pnpm test
+        run: bunx playwright test
+
+      - name: Stop services
+        if: always()
+        run: |
+          docker compose -f compose.ci.yml down -v
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+          path: test-results/
+          retention-days: 5
 
-      - name: Publish HTML report to gh-pages
-        if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3.9.3
+      - name: Comment PR with test results
+        uses: dorny/test-reporter@v1
+        if: always() && github.event_name == 'pull_request'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: playwright-report/
-          # destination_dir: playwright-report/
-          keep_files: false
-          user_name: "github-actions[bot]"
-          user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: ${{ github.event.head_commit.message }}
+          name: Playwright E2E Tests
+          path: test-results/junit.xml
+          reporter: java-junit
+          list-suites: all
+          list-tests: all
+          max-annotations: 50
+          fail-on-error: true
+          only-summary: false

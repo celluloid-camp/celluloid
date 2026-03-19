@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: false
+  commands:
+    format:
+      run: bun run format
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    validate:
+      run: bunx commitlint --edit {1}
+      stage_fixed: false

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { UserDetails } from "@/components/admin/details/user";
-import { trpc } from "@/lib/trpc/server";
+import { caller } from "@/lib/trpc/server";
 import UserPageLoading from "./loading";
 
 export default async function UserPage({
@@ -9,7 +9,7 @@ export default async function UserPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const user = await trpc.admin.getUserById({
+  const user = await caller.admin.getUserById({
     id,
   });
   return (

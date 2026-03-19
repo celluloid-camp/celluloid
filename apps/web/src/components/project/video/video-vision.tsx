@@ -1,16 +1,20 @@
 "use client";
 
 import { Box, Button, colors } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMediaSelector } from "media-chrome/react/media-store";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { formatDuration } from "@/utils/duration";
 import { DetectionOverlay } from "../studio/detection-overlay";
 
 export function VideoVision({ projectId }: { projectId: string }) {
+  const api = useTRPC();
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
-  const [analysis] = trpc.vision.byProjectId.useSuspenseQuery({
-    projectId,
-  });
+  const { data: analysis } = useSuspenseQuery(
+    api.vision.byProjectId.queryOptions({
+      projectId,
+    }),
+  );
   if (
     !analysis ||
     !mediaCurrentTime ||

@@ -1,7 +1,8 @@
 "use client";
 
-import { LoadingButton } from "@mui/lab";
 import { Box, Grid, Switch, TextField, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,7 +12,7 @@ import * as Yup from "yup";
 import { AutoCompleteTags } from "@/components/common/auto-complete-tags";
 import { ERR_ALREADY_EXISTING_PROJECT, useHumanizeError } from "@/i18n/errors";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { PeerTubeVideoDataResult } from "@/services/peertube";
 
 export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
@@ -21,8 +22,10 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
   const humanizeError = useHumanizeError();
   const { data: session } = useSession();
 
-  const playlistMutation = trpc.playlist.add.useMutation();
-  const projectMutation = trpc.project.add.useMutation();
+  const api = useTRPC();
+
+  const playlistMutation = useMutation(api.playlist.add.mutationOptions());
+  const projectMutation = useMutation(api.project.add.mutationOptions());
 
   // const [initialValue, setInitialValue] = useProjectInputIntialState();
   // const resetSavedValue = userResetProjectInputIntialState;
@@ -47,8 +50,8 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
 
   const formik = useFormik({
     initialValues: {
-      title: "",
-      description: "",
+      title: data.videos[0].name,
+      description: data.videos[0].description || data.videos[0].name,
       keywords: [],
       public: false,
       collaborative: false,
@@ -57,7 +60,6 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("values", values);
       if (!session) {
         router.push("/login");
       } else {
@@ -170,7 +172,6 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         helperText={formik.touched.description && formik.errors.description}
         disabled={formik.isSubmitting}
       />
-
       <AutoCompleteTags
         id="keywords"
         options={[""]}
@@ -188,7 +189,6 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         }}
         limitTags={10}
       />
-
       <Typography
         variant="h6"
         sx={{
@@ -199,7 +199,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         {t("project.visibilitySection")}
       </Typography>
       <Grid container={true} direction="row" alignItems="flex-start">
-        <Grid item={true} xs={2}>
+        <Grid size={2}>
           <Typography
             variant="subtitle1"
             align="right"
@@ -210,7 +210,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
             {t("project.public")}
           </Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid size={2}>
           <Switch
             data-testid="public-switch"
             checked={formik.values.public}
@@ -219,7 +219,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
             }}
           />
         </Grid>
-        <Grid item xs={8}>
+        <Grid size={8}>
           <Typography
             gutterBottom
             variant="body2"
@@ -231,9 +231,8 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
           </Typography>
         </Grid>
       </Grid>
-
       <Grid container direction="row">
-        <Grid item xs={2}>
+        <Grid size={2}>
           <Typography
             variant="subtitle1"
             align="right"
@@ -244,7 +243,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
             {t("project.collaborative")}
           </Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid size={2}>
           <Switch
             checked={formik.values.collaborative}
             data-testid="collaborative-switch"
@@ -253,7 +252,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
             }}
           />
         </Grid>
-        <Grid item xs={8}>
+        <Grid size={8}>
           <Typography
             variant="body2"
             gutterBottom
@@ -265,9 +264,8 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
           </Typography>
         </Grid>
       </Grid>
-
       <Grid container direction="row">
-        <Grid item xs={2}>
+        <Grid size={2}>
           <Typography
             variant="subtitle1"
             align="right"
@@ -278,7 +276,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
             {t("project.shared")}
           </Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid size={2}>
           <Switch
             checked={formik.values.shared}
             data-testid="shared-switch"
@@ -287,7 +285,7 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
             }}
           />
         </Grid>
-        <Grid item xs={8}>
+        <Grid size={8}>
           <Typography
             variant="body2"
             gutterBottom
@@ -299,19 +297,17 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
           </Typography>
         </Grid>
       </Grid>
-
       <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
-        <LoadingButton
+        <Button
           variant="contained"
           data-testid="submit"
           size="large"
           color="primary"
           type="submit"
           loading={formik.isSubmitting}
-          disabled={formik.isSubmitting}
         >
           {t("project.createAction")}
-        </LoadingButton>
+        </Button>
       </Box>
     </form>
   );

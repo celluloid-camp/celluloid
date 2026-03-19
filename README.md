@@ -42,9 +42,9 @@ Celluloid is designed to run on a Linux server. Proficiency with the command-lin
 
 - Install the latest version of [Git](https://git-scm.com/).
 - Install the latest version of [Node.js](https://nodejs.org/en/).
-- Install the latest version of [Pnpm](https://pnpm.io/) and use it instead of NPM. 
+- Install the latest version of [Bun](https://bun.sh/).
 
-The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html), so Pnpm is required to leverage [pnpm workspace](https://pnpm.io/workspaces).
+The project is organized as a [monorepo](https://blog.scottlogic.com/2018/02/23/javascript-monorepos.html) using Bun workspaces.
 
 
 # Deploy in production
@@ -65,7 +65,7 @@ Open your terminal and execute the following commands:
 ```bash
 git clone https://github.com/celluloid-camp/celluloid.git
 cd celluloid/
-pnpm
+bun install
 ```
 
 ### Configuration
@@ -101,7 +101,7 @@ For development purposes, you can use the provided Docker Compose [docker-compos
 At the root of your repository, run the projet in development mode:
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 This will initiate an interactive build and open the app in a browser window while continuously monitoring source files for modifications.
@@ -112,8 +112,8 @@ If everything worked without errors, you should be all set. Otherwise, please re
 Build and start the application:
 
 ```bash
-pnpm build
-pnpm start
+bun run build
+bun run start
 ```
 
 You can access your app at http://localhost:3000.

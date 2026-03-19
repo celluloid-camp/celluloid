@@ -1,6 +1,8 @@
+"use client";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import SortIcon from "@mui/icons-material/Sort";
 import {
   Box,
   CircularProgress,
@@ -9,24 +11,29 @@ import {
   Fade,
   IconButton,
   InputBase,
+  MenuItem,
   Pagination,
   Paper,
+  Select,
+  type SelectChangeEvent,
   Skeleton,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { debounce } from "lodash";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
+import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import * as R from "ramda";
+import { parseAsInteger, useQueryState } from "nuqs";
 import type * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import ProjectThumbnail from "@/components/common/project-thumbnail";
+import { useEffect, useRef, useState } from "react";
+import { ProjectThumbnail } from "@/components/common/project-thumbnail";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectListItem } from "@/lib/trpc/types";
-import { StyledTitle } from "../common/typography";
 
 // const ProjectTitle = dynamic(() => import("./project-title"), {
 //   ssr: false,
@@ -36,93 +43,75 @@ import { StyledTitle } from "../common/typography";
 const ITEMS_PER_PAGE = 12;
 
 export function ProjectGrid() {
+  type ProjectScope = "explorer" | "my" | "collaboration";
+  type ProjectSort = "recent_added" | "publication_date" | "name";
   const searchInputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations();
-  const [mounted, setMounted] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageCursors, setPageCursors] = useState<Map<number, string>>(
-    new Map(),
+  const api = useTRPC();
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+  const [searchTerm, setSearchTerm] = useQueryState("q");
+  const [scope, setScope] = useQueryState<ProjectScope>("scope", {
+    defaultValue: "explorer",
+    parse: (value) =>
+      value === "explorer" || value === "my" || value === "collaboration"
+        ? value
+        : "explorer",
+    serialize: (value) => value,
+  });
+  const [sortBy, setSortBy] = useQueryState<ProjectSort>("sort", {
+    defaultValue: "recent_added",
+    parse: (value) =>
+      value === "recent_added" ||
+      value === "publication_date" ||
+      value === "name"
+        ? value
+        : "recent_added",
+    serialize: (value) => value,
+  });
+  const [hydrated, setHydrated] = useState(false);
+
+  const debouncedSearch = useDebouncedCallback(
+    (value: string) => {
+      setPage(1);
+      if (value.length >= 3) {
+        setSearchTerm(value);
+      } else if (value.length === 0) {
+        setSearchTerm(null);
+      }
+    },
+    { wait: 1000 },
   );
-  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Debounce the search function
-  const debouncedSearch = debounce((value: string) => {
-    // Reset pagination when search changes
-    setPage(1);
-    setPageCursors(new Map());
-
-    if (value.length >= 3) {
-      setSearchTerm(value);
-    } else if (value.length === 0) {
-      setSearchTerm(undefined);
-    }
-  }, 1000);
 
   const { data: session } = useSession();
+  const isLoggedIn = Boolean(session?.user);
+  const showAuthTabs = hydrated && isLoggedIn;
+  const effectiveScope: ProjectScope = showAuthTabs ? scope : "explorer";
 
-  // Get cursor for current page (page 1 has no cursor)
-  const cursor = useMemo(() => {
-    if (page === 1) return undefined;
-    return pageCursors.get(page) ?? undefined;
-  }, [page, pageCursors]);
-
-  const [data, fetch] = trpc.project.list.useSuspenseQuery({
-    term: searchTerm,
-    limit: ITEMS_PER_PAGE,
-    cursor,
-  });
-
-  // Reset pagination when search term changes externally
-  useEffect(() => {
-    setPage(1);
-    setPageCursors(new Map());
-  }, [searchTerm]);
+  const { data, isFetching, isLoading, error, refetch } = useQuery(
+    api.project.list.queryOptions({
+      term: searchTerm ?? undefined,
+      pageSize: ITEMS_PER_PAGE,
+      page: page,
+      scope: effectiveScope,
+      sortBy,
+    }),
+  );
 
   useEffect(() => {
-    if (session && !fetch.isFetching) {
-      fetch.refetch();
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (session && !isFetching) {
+      refetch();
     }
   }, [session]);
 
-  const ownProjects = useMemo(
-    () =>
-      data.items
-        .filter(
-          (project: ProjectListItem) =>
-            session?.user && project.userId === session?.user?.id,
-        )
-        .sort(
-          (a: ProjectListItem, b: ProjectListItem) =>
-            new Date(b.publishedAt).getTime() -
-            new Date(a.publishedAt).getTime(),
-        ),
-    [session?.user, data],
-  );
-
-  const joinedProjects = useMemo(
-    () =>
-      data.items
-        .filter((project: ProjectListItem) =>
-          project.members.some((member) => member.userId === session?.user?.id),
-        )
-        .sort(
-          (a: ProjectListItem, b: ProjectListItem) =>
-            new Date(b.publishedAt).getTime() -
-            new Date(a.publishedAt).getTime(),
-        ),
-    [session?.user, data],
-  );
-
-  const publicProjects = R.difference(data.items, [
-    ...ownProjects,
-    ...joinedProjects,
-  ]);
-
-  const noProjects = data.items.length === 0;
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const showResultsSkeleton =
+    !hydrated || (isLoading && !data) || (isFetching && searchTerm != null);
+  const noProjects = !showResultsSkeleton && items.length === 0;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -130,9 +119,8 @@ export function ProjectGrid() {
   };
 
   const handleResetSearch = () => {
-    setSearchTerm(undefined);
+    setSearchTerm(null);
     setPage(1);
-    setPageCursors(new Map());
     if (searchInputRef.current) {
       searchInputRef.current.value = "";
     }
@@ -143,29 +131,23 @@ export function ProjectGrid() {
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    if (data?.nextCursor && newPage > page) {
-      // Store the cursor for the next page
-      setPageCursors((prev) => {
-        const newMap = new Map(prev);
-        newMap.set(newPage, data.nextCursor!);
-        return newMap;
-      });
-    } else if (newPage < page) {
-      // If navigating back, remove the cursor for the current page
-      setPageCursors((prev) => {
-        const newMap = new Map(prev);
-        newMap.delete(page);
-        return newMap;
-      });
-    }
     setPage(newPage);
   };
 
-  // Calculate total pages based on whether we have a next cursor
-  const hasNextPage = !!data?.nextCursor;
-  const totalPages = hasNextPage ? page + 1 : page;
+  const handleScopeChange = (
+    _event: React.SyntheticEvent,
+    newScope: ProjectScope,
+  ) => {
+    setScope(newScope);
+    setPage(1);
+  };
 
-  if (fetch.error) {
+  const handleSortChange = (event: SelectChangeEvent<ProjectSort>) => {
+    setSortBy(event.target.value as ProjectSort);
+    setPage(1);
+  };
+
+  if (error) {
     return (
       <Box sx={{ p: 5, minHeight: "100vh" }}>
         <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
@@ -182,106 +164,109 @@ export function ProjectGrid() {
       }}
     >
       <Container maxWidth="lg">
-        <Paper
-          sx={{
-            p: "2px 4px",
-            display: "flex",
-            borderRadius: 5,
-            alignItems: "center",
-            width: "100%",
-            height: 50,
-          }}
-        >
-          {fetch.isFetching ? (
-            <CircularProgress sx={{ p: "10px", ml: 1 }} size={20} />
-          ) : (
-            <IconButton sx={{ p: "10px", ml: 1 }} aria-label="menu">
-              <SearchIcon />
-            </IconButton>
-          )}
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            inputRef={searchInputRef}
-            onChange={handleSearchChange}
-            placeholder={t("search.placeholder")}
-          />
-          {searchTerm ? (
-            <IconButton onClick={handleResetSearch}>
-              <ClearIcon />
-            </IconButton>
-          ) : null}
-        </Paper>
-
         <Box
           sx={{
             ph: 2,
           }}
         >
-          {ownProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle
+          <Box
+            sx={{
+              my: 3,
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              alignItems: { xs: "stretch", md: "center" },
+              gap: 2,
+            }}
+          >
+            <Tabs
+              value={effectiveScope}
+              onChange={handleScopeChange}
+              textColor="primary"
+              indicatorColor="primary"
+              sx={{ flex: 1, minHeight: 50 }}
+            >
+              <Tab
+                value="explorer"
+                label={t("home.explorer")}
+                className="text-2xl font-bold mb-4 font-serif my-2 text-black"
+              />
+              {showAuthTabs ? (
+                <Tab
+                  value="my"
+                  label={t("home.myProjects")}
+                  className="text-2xl font-bold mb-4 font-serif my-2 text-black "
+                />
+              ) : null}
+              {showAuthTabs ? (
+                <Tab
+                  value="collaboration"
+                  label={t("home.collaboration")}
+                  className="text-2xl font-bold mb-4 font-serif my-2 text-black "
+                />
+              ) : null}
+            </Tabs>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 1,
+                width: { xs: "100%", md: "auto" },
+              }}
+            >
+              <Paper className="flex h-[50px] w-full shrink-0 items-center rounded-full px-1 py-[2px] sm:w-[260px] shadow-none">
+                <SearchIcon className="ml-1 size-10 p-2 text-black/50" />
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                <InputBase
+                  key={searchTerm ?? "empty"}
+                  sx={{ ml: 1, flex: 1 }}
+                  inputRef={searchInputRef}
+                  defaultValue={searchTerm ?? ""}
+                  onChange={handleSearchChange}
+                  placeholder={t("search.placeholder")}
+                />
+                {searchTerm ? (
+                  <IconButton onClick={handleResetSearch}>
+                    <ClearIcon />
+                  </IconButton>
+                ) : null}
+              </Paper>
+              <Paper className="flex h-[50px] w-full shrink-0 items-center rounded-full px-1 py-[2px] sm:w-[220px] shadow-none">
+                <SortIcon className="ml-1 size-10 p-2 text-black/50" />
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                <Select
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  variant="standard"
+                  disableUnderline
                   sx={{
-                    marginBottom: 2,
+                    flex: 1,
+                    ml: 1,
+                    "& .MuiSelect-select": {
+                      py: 0.75,
+                    },
                   }}
-                  variant="h4"
                 >
-                  {t("home.myProjects")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {ownProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={true} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
-
-          {joinedProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle
-                  sx={{
-                    marginBottom: 2,
-                  }}
-                  variant="h4"
-                >
-                  {t("home.member")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {joinedProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={true} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
-
-          {publicProjects.length > 0 && (
-            <>
-              <Fade in={true} appear={true}>
-                <StyledTitle
-                  sx={{
-                    marginBottom: 2,
-                  }}
-                  variant="h4"
-                >
-                  {t("home.publicProjects")}
-                </StyledTitle>
-              </Fade>
-              <Grid container={true} spacing={5} direction="row">
-                {publicProjects.map((project: ProjectListItem) => (
-                  <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
-                    <ProjectThumbnail showPublic={false} project={project} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
+                  <MenuItem value="recent_added">
+                    {t("home.sortBy.recent_added")}
+                  </MenuItem>
+                  <MenuItem value="publication_date">
+                    {t("home.sortBy.publication_date")}
+                  </MenuItem>
+                  <MenuItem value="name">{t("home.sortBy.name")}</MenuItem>
+                </Select>
+              </Paper>
+            </Box>
+          </Box>
+          {showResultsSkeleton ? (
+            <ProjectGridContentSkeleton />
+          ) : (
+            <Grid container spacing={5}>
+              {items.map((project: ProjectListItem) => (
+                <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={project.id}>
+                  <ProjectThumbnail showPublic={true} project={project} />
+                </Grid>
+              ))}
+            </Grid>
           )}
 
           {noProjects && (
@@ -311,7 +296,7 @@ export function ProjectGrid() {
           )}
 
           {/* Pagination */}
-          {!noProjects && data.items.length > 0 && (
+          {!noProjects && items.length > 0 && (
             <Box
               sx={{
                 display: "flex",
@@ -322,7 +307,7 @@ export function ProjectGrid() {
               }}
             >
               <Pagination
-                count={totalPages}
+                count={Math.ceil(total / ITEMS_PER_PAGE)}
                 page={page}
                 onChange={handlePageChange}
                 color="primary"
@@ -335,5 +320,39 @@ export function ProjectGrid() {
         </Box>
       </Container>
     </Box>
+  );
+}
+
+function ProjectGridContentSkeleton() {
+  return (
+    <Grid container spacing={5}>
+      {[1, 2, 3, 4, 5, 6].map((item) => (
+        <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={item}>
+          <Skeleton
+            variant="rectangular"
+            sx={{
+              width: "100%",
+              height: 200,
+              borderRadius: 2,
+            }}
+          />
+          <Skeleton
+            variant="text"
+            sx={{
+              width: "80%",
+              height: 24,
+              mt: 1,
+            }}
+          />
+          <Skeleton
+            variant="text"
+            sx={{
+              width: "60%",
+              height: 20,
+            }}
+          />
+        </Grid>
+      ))}
+    </Grid>
   );
 }

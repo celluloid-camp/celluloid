@@ -15,7 +15,7 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./*"],
-      "@repo/*": ["../../packages/*"]
+      "@celluloid/*": ["../../packages/*"]
     }
   },
   "exclude": ["node_modules"]

@@ -1,7 +1,8 @@
 "use client";
 
-import type { AnnotationShape } from "@celluloid/prisma";
+import type { AnnotationShape } from "@celluloid/db";
 import { Box } from "@mui/material";
+import { KonvaEventObject } from "konva/lib/Node";
 import {
   MediaActionTypes,
   useMediaDispatch,
@@ -9,6 +10,7 @@ import {
 } from "media-chrome/react/media-store";
 import React, { useMemo, useRef, useState } from "react";
 import { Circle, Ellipse, Layer, Line, Rect, Stage } from "react-konva";
+import { AnnotationsByProjectId } from "@/lib/trpc/types";
 import { ShapeTooltip } from "./shape-tooltip";
 import { DEFAULT_DIMENSIONS, SHAPE_STYLES, SHAPE_TYPES } from "./shapes-config";
 
@@ -54,7 +56,7 @@ export function ShapesViewer({
 
   const [tooltip, setTooltip] = useState<TooltipState>(null);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: KonvaEventObject<MouseEvent>) => {
     const stage = stageRef.current.getStage();
     if (!stage) return;
 

@@ -12,21 +12,29 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import Image from "mui-image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import EditPlaylistDialog from "@/components/profile/edit-playlist-dialog";
-import { useSession } from "@/lib/auth-client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 
 export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
   const router = useRouter();
   const t = useTranslations();
-  const { data: session } = useSession();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
   const currentProjectRef = useRef<HTMLLIElement>(null);
+
+  const api = useTRPC();
+  const { data: playlist } = useQuery(
+    api.project.playlist.queryOptions(
+      { playlistId: project.playlistId ?? "" },
+      { enabled: !!project.playlistId },
+    ),
+  );
 
   const handleClick = (id: string) => {
     router.push(`/project/${id}`);
@@ -50,15 +58,9 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [project.id, project.playlist?.projects]);
+  }, [project.id, playlist?.projects]);
 
-  if (!project.playlist) return null;
-
-  // Check if user can edit (playlist owner or admin)
-  const canEdit =
-    session?.user &&
-    (project.playlist.userId === session.user.id ||
-      session.user.role === "admin");
+  if (!project.playlistId || !playlist) return null;
 
   return (
     <>
@@ -75,7 +77,7 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
             <Typography variant="h6" gutterBottom sx={{ mb: 0 }}>
               {t("project.playlist")}
             </Typography>
-            {canEdit && (
+            {playlist?.canEdit && (
               <IconButton
                 size="small"
                 onClick={handleEditClick}
@@ -104,7 +106,7 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
               "& ul": { padding: 0 },
             }}
           >
-            {project.playlist.projects?.map((p) => (
+            {playlist.projects?.map((p) => (
               <ListItem
                 key={p.id}
                 ref={project.id === p.id ? currentProjectRef : null}
@@ -153,11 +155,11 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
           </List>
         </CardContent>
       </Card>
-      {canEdit && (
+      {playlist?.canEdit && (
         <EditPlaylistDialog
           open={editDialogOpen}
           onClose={() => setEditDialogOpen(false)}
-          playlistId={project.playlist.id}
+          playlistId={playlist.id}
         />
       )}
     </>

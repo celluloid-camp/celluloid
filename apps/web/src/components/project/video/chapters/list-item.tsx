@@ -1,4 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Grow,
@@ -8,62 +9,35 @@ import {
   Paper,
   Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { useState } from "react";
-import { EditableText } from "@/components/common/editable-text";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
 import type { ChapterByProjectId, ProjectById, UserMe } from "@/lib/trpc/types";
 
 interface ChapterItemProps {
-  project: ProjectById;
+  canEdit: boolean;
   chapter: ChapterByProjectId;
-  user?: User;
   index: number;
+  onEditChapter?: (chapter: ChapterByProjectId) => void;
+  onDeleteChapter?: (chapter: ChapterByProjectId) => void;
 }
 
 export const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
-  project,
-  user,
+  canEdit,
   index,
+  onEditChapter,
+  onDeleteChapter,
 }) => {
   const t = useTranslations();
   const [hovering, setHovering] = useState(false);
 
   const confirm = useConfirm();
-  const utils = trpc.useUtils();
-
-  const editMutation = trpc.chapter.edit.useMutation({
-    onSuccess: () => {
-      utils.chapter.byProjectId.invalidate({ projectId: project.id });
-    },
-  });
-
-  const deleteMutation = trpc.chapter.delete.useMutation({
-    onSuccess: () => {
-      utils.chapter.byProjectId.invalidate({ projectId: project.id });
-    },
-  });
-
-  const handleEdit = async (field: "title" | "description", value: string) => {
-    try {
-      await editMutation.mutateAsync({
-        chapterId: chapter.id,
-        [field]: value,
-        projectId: project.id,
-      });
-    } catch (error) {
-      // Revert optimistic update on error
-      utils.chapter.byProjectId.invalidate({ projectId: project.id });
-    }
-  };
-
-  const canEdit = project.user.id === user?.id || user?.role === "admin";
 
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -95,15 +69,7 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
       },
     }).then(async (value) => {
       if (value.confirmed) {
-        utils.chapter.byProjectId.setData(
-          { projectId: project.id },
-          (oldData) => oldData?.filter((c) => c.id !== chapter.id),
-        );
-
-        await deleteMutation.mutateAsync({
-          chapterId: chapter.id,
-        });
-        utils.chapter.byProjectId.invalidate({ projectId: project.id });
+        onDeleteChapter?.(chapter);
       }
     });
   };
@@ -133,41 +99,30 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
         >
           <ListItemText
             primary={
-              <React.Fragment>
-                <EditableText
-                  textProps={{
-                    color: chapter.title ? "white" : "gray",
-                    variant: "body2",
-                  }}
-                  disabled={!canEdit}
-                  value={chapter.title}
-                  placeholder={t("project.chapters.item.placeholder.title")}
-                  onSave={(e) => handleEdit("title", e)}
-                  textFieldProps={{
-                    sx: { color: "white" },
-                  }}
-                />
-              </React.Fragment>
+              <Typography
+                variant="body2"
+                color={chapter.title ? "white" : grey[700]}
+              >
+                {chapter.title || t("project.chapters.item.placeholder.title")}
+              </Typography>
             }
             secondary={
-              <React.Fragment>
-                <EditableText
-                  textProps={{
-                    color: chapter.title ? "white" : "gray",
-                    variant: "body2",
+              chapter.description ? (
+                <Typography
+                  variant="body2"
+                  color={chapter.description ? "white" : "gray"}
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "normal",
                   }}
-                  disabled={!canEdit}
-                  value={chapter.description}
-                  onSave={(e) => handleEdit("description", e)}
-                  textFieldProps={{
-                    multiline: true,
-                    sx: { color: "white" },
-                  }}
-                  placeholder={t(
-                    "project.chapters.item.placeholder.description",
-                  )}
-                />
-              </React.Fragment>
+                >
+                  {chapter.description}
+                </Typography>
+              ) : null
             }
           />
           <Box
@@ -183,6 +138,17 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
                 <Tooltip title="Supprimer" arrow>
                   <IconButton onClick={handleDelete}>
                     <DeleteIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Edit" arrow>
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onEditChapter?.(chapter);
+                    }}
+                  >
+                    <EditIcon sx={{ fontSize: 18 }} />
                   </IconButton>
                 </Tooltip>
               </Stack>

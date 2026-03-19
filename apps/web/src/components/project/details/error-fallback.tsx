@@ -2,13 +2,22 @@
 
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { notFound } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { FallbackProps } from "react-error-boundary";
+
+function isNotFoundError(error: unknown): boolean {
+  const code = (error as { data?: { code?: string } })?.data?.code;
+  return code === "NOT_FOUND";
+}
 
 export const projectFallbackRender = ({
   error,
   resetErrorBoundary,
 }: FallbackProps) => {
+  if (isNotFoundError(error)) {
+    notFound();
+  }
   return (
     <Box display="flex" flexDirection="column">
       <Grid
@@ -21,7 +30,7 @@ export const projectFallbackRender = ({
           paddingX: 2,
         }}
       >
-        <Grid item xs={8} sx={{ position: "relative" }}>
+        <Grid sx={{ position: "relative" }} size={8}>
           <Box
             display="flex"
             alignContent="center"
@@ -41,14 +50,13 @@ export const projectFallbackRender = ({
           </Box>
         </Grid>
         <Grid
-          item
-          xs={4}
           sx={{
             height: "100%",
             position: "relative",
             paddingY: 2,
             paddingX: 2,
           }}
+          size={4}
         >
           <Box
             sx={{
@@ -61,7 +69,6 @@ export const projectFallbackRender = ({
           />
         </Grid>
       </Grid>
-
       <Box sx={{ minHeight: "60vh" }}>
         <Box
           sx={{
@@ -86,7 +93,13 @@ export const projectFallbackRender = ({
                 alignItems="flex-start"
                 spacing={4}
               >
-                <Grid item xs={12} md={8} lg={8}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 8,
+                    lg: 8,
+                  }}
+                >
                   <Box sx={{ p: 2 }}>
                     <Typography variant="h5" color="error" sx={{ mb: 2 }}>
                       Project Details Unavailable
@@ -97,7 +110,13 @@ export const projectFallbackRender = ({
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 4,
+                    lg: 4,
+                  }}
+                >
                   <Box gap={4} display="flex" flexDirection="column" />
                 </Grid>
               </Grid>

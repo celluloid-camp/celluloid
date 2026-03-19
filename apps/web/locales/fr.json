@@ -32,7 +32,13 @@
       "send": "Modifier"
     },
     "form": {
-      "add-annotation": "Ajouter une annotation"
+      "add-annotation": "Ajouter une annotation",
+      "pause": {
+        "tooltip": "Pause automatique à l'affichage de l'annotation"
+      },
+      "context": {
+        "tooltip": "Placer un repère visuel"
+      }
     },
     "hintLabel": "{count} annotation",
     "hintLabel_many": "{{count}} annotations",
@@ -86,7 +92,14 @@
       "subtitle": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
       "title": "Comment utiliser Celluloid ?"
     },
-    "member": "Projets rejoints"
+    "member": "Projets rejoints",
+    "explorer": "Explorer",
+    "collaboration": "Collaboration",
+    "sortBy": {
+      "recent_added": "Ajoutés récemment",
+      "publication_date": "Date de publication",
+      "name": "Nom"
+    }
   },
   "menu": {
     "about": "à propos",
@@ -111,7 +124,8 @@
         "empty": "Vous n'avez aucun projet"
       },
       "playlist": {
-        "empty": "Vous n'avez aucune playlist"
+        "empty": "Vous n'avez aucune playlist",
+        "emptyDescription": "Créez une playlist pour regrouper vos projets et les partager."
       }
     },
     "role": {
@@ -221,7 +235,7 @@
     },
     "export": {
       "success": "Projet exporté avec succès",
-      "title": "Exporter"
+      "title": "Exporter les annotations"
     },
     "keywords": "Mots clés",
     "members": "{ count } participant",
@@ -271,22 +285,24 @@
     "videoUrlHelper": "Lien vers la vidéo originale",
     "visibilitySection": "Partage",
     "chapters": {
-      "title": "Chapitres",
-      "empty": "Cette vidéo n'a pas de chapitres",
-      "in-progress": "Génération des chapitres en cours",
-      "not-found": "Aucun chapitre trouvé pour cette vidéo.",
+      "title": "Plans",
+      "empty": "Cette vidéo n'a pas de plans",
+      "in-progress": "Génération des plans en cours",
+      "not-found": "Aucun plan trouvé pour cette vidéo.",
       "button": {
-        "generate": "Générer les chapitres"
+        "generate": "Générer les plans"
       },
       "item": {
         "placeholder": {
-          "title": "Titre du chapitre",
-          "description": "Description du chapitre"
+          "title": "Titre du plan",
+          "description": "Description du plan"
         }
       },
       "inProgress": {
-        "description": "La génération des chapitres est en cours..."
-      }
+        "description": "La génération des plans est en cours..."
+      },
+      "failed": "Échec du traitement des scènes",
+      "retry": "Réessayer la génération"
     },
     "note": {
       "title": "Notes",
@@ -329,15 +345,18 @@
       },
       "empty": "Analyse vidéo non disponible.",
       "analyse": {
-        "in-progress": "Analyse vidéo en cours..."
+        "in-progress": "Analyse vidéo en cours, un email vous serez envoyé quand l'analyse est terminé"
       },
       "title": "Analyse vidéo"
+    },
+    "scenes": {
+      "title": "Plans"
     }
   },
   "chapter": {
     "confirm-delete": {
-      "title": "Supprimer le chapitre",
-      "description": "Etes-vous sûr de vouloir supprimer le chapitre ?"
+      "title": "Supprimer le plan",
+      "description": "Etes-vous sûr de vouloir supprimer le plan ?"
     },
     "form": {
       "button": {
@@ -350,19 +369,28 @@
     "form": {
       "reset": {
         "confirm": {
-          "title": "Réinitialiser tous les chapitres",
-          "description": "Etes-vous sûr de vouloir réinitialiser tous les chapitres ?"
+          "title": "Supprimer le découpage automatique",
+          "description": "Etes-vous sûr de vouloir réinitialiser tous les plans ?"
         }
       },
       "button": {
-        "add": " Ajouter un chapitre",
-        "reset": "Réinitialiser les chapitres"
+        "add": " Ajouter un plan",
+        "reset": "Supprimer le découpage automatique",
+        "regenerate": "Regénérer les plans"
       },
       "title": {
-        "placeholder": "Titre du chapitre"
+        "placeholder": "Titre du plan",
+        "label": "Titre"
       },
       "description": {
-        "placeholder": "Description du chapitre"
+        "placeholder": "Description du plan",
+        "label": "Description"
+      },
+      "timeRange": {
+        "label": "Plage horaire"
+      },
+      "edit": {
+        "title": "Modifier le plan"
       }
     }
   },
@@ -426,7 +454,7 @@
       "resend": "Renvoyer le code"
     },
     "generation": {
-      "sent": "La génération des chapitres a commencé"
+      "sent": "La génération des plans a commencé"
     },
     "resend": {
       "success": "Code de vérification renvoyé."
@@ -514,7 +542,8 @@
     },
     "email": {
       "label": "Adresse email",
-      "placeholder": "Adresse email"
+      "placeholder": "Adresse email",
+      "required": "Saisissez votre adresse e-mail"
     },
     "password": {
       "label": "Mot de passe",
@@ -704,7 +733,10 @@
     "cancel": "Annuler",
     "table": {
       "rowsPerPage": "Lignes par page"
-    }
+    },
+    "save": "Enregistrer les modifications",
+    "verified": "Vérifié",
+    "unverified": "Non vérifié"
   },
   "profil": {
     "update": {
@@ -718,6 +750,7 @@
     "table": {
       "username": "Nom d'utilisateur",
       "email": "E-mail",
+      "emailVerified": "E-mail vérifié",
       "role": "Rôle",
       "createAt": "Date de création"
     }

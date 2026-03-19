@@ -49,7 +49,7 @@ const VideoSnap: React.FC<{
   onDelete: () => void;
 }> = ({ video, onDelete }) => {
   return (
-    <Grid item sx={{ borderRadius: 1, overflow: "hidden", m: 0, p: 0 }}>
+    <Grid sx={{ borderRadius: 1, overflow: "hidden", m: 0, p: 0 }}>
       <Box sx={{ position: "absolute", zIndex: 1 }} width={THUMBNAIL_WIDTH}>
         <Box display={"flex"} justifyContent="flex-end">
           <IconButton

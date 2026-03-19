@@ -1,6 +1,6 @@
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { Grid, IconButton, Stack, styled } from "@mui/material";
+import { Grid, IconButton, Stack, SxProps, styled, Theme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import Slider, { type SliderValueLabelProps } from "@mui/material/Slider";
 import Tooltip, {
@@ -16,6 +16,7 @@ type DurationSliderProps = {
   startTime: number;
   stopTime: number;
   onChange: (start: number, stop: number) => void;
+  sx?: SxProps<Theme>;
 };
 
 const minDistance = 5;
@@ -49,6 +50,7 @@ export const ChapterTimestampSlider: React.FC<DurationSliderProps> = ({
   startTime = 60,
   stopTime = 1000,
   onChange,
+  sx,
 }) => {
   const [value, setValue] = React.useState<number[]>([startTime, stopTime]);
 
@@ -76,7 +78,7 @@ export const ChapterTimestampSlider: React.FC<DurationSliderProps> = ({
   };
 
   return (
-    <Grid container spacing={2} alignItems="center">
+    <Grid container spacing={2} alignItems="center" sx={sx}>
       <Stack direction={"row"}>
         <IconButton
           size="small"
@@ -95,8 +97,7 @@ export const ChapterTimestampSlider: React.FC<DurationSliderProps> = ({
           <ArrowRightIcon />
         </IconButton>
       </Stack>
-
-      <Grid item xs>
+      <Grid size="grow">
         <Slider
           getAriaLabel={() => "Annotation slider"}
           value={value}

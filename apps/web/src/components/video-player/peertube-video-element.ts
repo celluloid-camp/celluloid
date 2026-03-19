@@ -570,7 +570,6 @@ class PeerTubeVideoElement extends HTMLElement {
     this.#seeking = true;
     this.dispatchEvent(new Event("seeking"));
 
-    console.log("set currentTime", val);
     this.loadComplete.then(() => {
       if (!this.#canUseApi()) {
         this.#seeking = false;
@@ -615,6 +614,7 @@ class PeerTubeVideoElement extends HTMLElement {
   }
 
   set muted(val: boolean) {
+    if (val == undefined) return;
     if (this.muted === val) return;
     this.#muted = val;
     this.loadComplete.then(() => {

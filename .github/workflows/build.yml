@@ -61,19 +61,46 @@ jobs:
           STAGE="${{ (contains(github.ref_name, '-alpha') || contains(github.event.release.tag_name, '-alpha') || github.ref_name == 'staging') && 'staging' || 'production' }}"
           echo "value=$STAGE" >> $GITHUB_OUTPUT
 
-      - name: Build containers
-        uses: docker/bake-action@v5
-        env:
-          NEXT_PUBLIC_POSTHOG_KEY: ${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_POSTHOG_KEY || '' }}
-          NEXT_PUBLIC_KNOCK_API_KEY: ${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_API_KEY || '' }}
-          NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: ${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID || '' }}
-          STAGE: ${{ steps.stage.outputs.value }}
+      - name: Extract version and revision
+        id: extract
+        run: |
+          META_JSON='${{ steps.meta.outputs.json }}'
+          VERSION=$(echo "$META_JSON" | jq -r '.labels["org.opencontainers.image.version"] // "dev"')
+          REVISION=$(echo "$META_JSON" | jq -r '.labels["org.opencontainers.image.revision"] // "dev"')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "revision=$REVISION" >> $GITHUB_OUTPUT
+
+      - name: Build and push web container
+        uses: docker/build-push-action@v5
         with:
-          files: |
-            ./docker-bake.hcl
-            cwd://${{ steps.meta.outputs.bake-file }}
+          context: .
+          file: ./apps/web/Dockerfile
           push: true
-          targets: web,worker
-          set: |
-            *.args.VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-            *.args.REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ steps.extract.outputs.version }}
+            COMMIT_SHA=${{ steps.extract.outputs.revision }}
+            BUILD_TIME=${{ github.event.head_commit.timestamp || github.run_started_at }}
+            NEXT_PUBLIC_STAGE=${{ steps.stage.outputs.value }}
+            NEXT_PUBLIC_POSTHOG_KEY=${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_POSTHOG_KEY || '' }}
+            NEXT_PUBLIC_KNOCK_API_KEY=${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_API_KEY || '' }}
+            NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID=${{ steps.stage.outputs.value == 'production' && env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID || '' }}
+
+      - name: Build and push db migrate container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/db/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/celluloid-db-migrate:${{ steps.extract.outputs.version }}
+            ghcr.io/${{ github.repository }}/celluloid-db-migrate:${{ steps.extract.outputs.revision }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ steps.extract.outputs.version }}
+            COMMIT_SHA=${{ steps.extract.outputs.revision }}
+            BUILD_TIME=${{ github.event.head_commit.timestamp || github.run_started_at }}

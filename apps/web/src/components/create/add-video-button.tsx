@@ -6,7 +6,7 @@ import { THUMBNAIL_WIDTH } from "./constants";
 export function AddVideoButton({ onClick }: { onClick: () => void }) {
   const t = useTranslations();
   return (
-    <Grid item xs={6}>
+    <Grid size={6}>
       <Stack
         sx={{
           borderColor: "neutral.300",

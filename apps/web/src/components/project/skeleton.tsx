@@ -22,7 +22,7 @@ export const ProjectSkeleton = () => {
           paddingX: 2,
         }}
       >
-        <Grid item xs={8} sx={{ position: "relative" }}>
+        <Grid sx={{ position: "relative" }} size={8}>
           <Box
             display={"flex"}
             alignContent={"center"}
@@ -38,14 +38,13 @@ export const ProjectSkeleton = () => {
           </Box>
         </Grid>
         <Grid
-          item
-          xs={4}
           sx={{
             height: "100%",
             position: "relative",
             paddingY: 2,
             paddingX: 2,
           }}
+          size={4}
         >
           <Box
             sx={{
@@ -85,7 +84,6 @@ export const ProjectSkeleton = () => {
           </Box>
         </Grid>
       </Grid>
-
       <Box sx={{ minHeight: "60vh" }}>
         <Box
           sx={{
@@ -110,7 +108,13 @@ export const ProjectSkeleton = () => {
                 alignItems="flex-start"
                 spacing={4}
               >
-                <Grid item xs={12} md={8} lg={8}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 8,
+                    lg: 8,
+                  }}
+                >
                   <Box sx={{ p: 2 }}>
                     <Skeleton
                       variant="text"
@@ -127,7 +131,13 @@ export const ProjectSkeleton = () => {
                     <Skeleton variant="text" width="80%" height={24} />
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 4,
+                    lg: 4,
+                  }}
+                >
                   <Box gap={4} display={"flex"} flexDirection={"column"}>
                     <Skeleton
                       variant="rectangular"

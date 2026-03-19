@@ -22,6 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
@@ -30,7 +31,7 @@ import { useState } from "react";
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type {
   AnnotationByProjectId,
   AnnotationCommentByProjectId,
@@ -62,26 +63,31 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const confirm = useConfirm();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
   const handleEdit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
     setEditedAnnotation(annotation);
   };
 
-  const mutation = trpc.annotation.delete.useMutation({
-    onSuccess: () => {
-      utils.annotation.byProjectId.invalidate({ id: project.id });
-      enqueueSnackbar(t("annotation.delete.success"), {
-        variant: "success",
-      });
-    },
-    onError: () => {
-      enqueueSnackbar(t("annotation.delete.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const mutation = useMutation(
+    api.annotation.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
+        enqueueSnackbar(t("annotation.delete.success"), {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar(t("annotation.delete.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
   const isContextual =
     annotation.extra &&
@@ -121,14 +127,18 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
       },
     }).then(async (value) => {
       if (value.confirmed) {
-        utils.annotation.byProjectId.setData({ id: project.id }, (oldData) =>
-          oldData?.filter((c) => c.id !== annotation.id),
-        );
+        // queryClient.setQueryData(
+        //   api.annotation.byProjectId.queryFilter({ id: project.id }),
+        //   (oldData: AnnotationByProjectId []) =>
+        //     oldData?.filter((c) => c.id !== annotation.id),
+        // );
 
         await mutation.mutateAsync({
           annotationId: annotation.id,
         });
-        utils.annotation.byProjectId.invalidate({ id: project.id });
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryFilter({ id: project.id }),
+        );
       }
     });
   };
@@ -168,28 +178,41 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                 borderColor: annotation.user.color,
                 borderStyle: "solid",
               }}
-              src={annotation.user.avatar?.publicUrl}
+              src={annotation.user.image ?? undefined}
             >
               {annotation.user.initial}
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primaryTypographyProps={{
-              color: "white",
-              fontWeight: "medium",
-              variant: "body1",
+            slotProps={{
+              primary: {
+                color: "white",
+                fontWeight: "medium",
+                variant: "body1",
+                margin: 0,
+              },
+              secondary: {
+                margin: 0,
+              },
             }}
             primary={
               <React.Fragment>
-                <Typography component="span" color="white" variant="body2">
+                <Typography
+                  component="span"
+                  className="text-white"
+                  variant="body2"
+                >
                   {annotation.user.username}
                 </Typography>{" "}
-                <Typography fontWeight="medium" variant="caption" color="gray">
+                <Typography
+                  fontWeight="medium"
+                  variant="caption"
+                  className="text-gray-500"
+                >
                   {"-"} {dayjs(annotation.createdAt).fromNow()}
                 </Typography>
               </React.Fragment>
             }
-            secondaryTypographyProps={{ paddingRight: 1 }}
             secondary={
               <React.Fragment>
                 <MultiLineTypography
@@ -212,13 +235,13 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
               <Stack direction={"row"}>
                 <Tooltip title={t("comment.tooltip.title.update")} arrow>
                   <IconButton onClick={handleEdit}>
-                    <EditIcon sx={{ fontSize: 18 }} />
+                    <EditIcon className="text-white/50 size-5" />
                   </IconButton>
                 </Tooltip>
                 <Divider orientation="vertical" flexItem light />
                 <Tooltip title={t("comment.tooltip.title.delete")} arrow>
                   <IconButton onClick={handleDelete}>
-                    <DeleteIcon sx={{ fontSize: 18 }} />
+                    <DeleteIcon className="text-white/50 size-5" />
                   </IconButton>
                 </Tooltip>
               </Stack>
@@ -231,8 +254,9 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                   color="gray"
                 >
                   {formatDuration(annotation.startTime)}
-                  {" → "}
-                  {formatDuration(annotation.stopTime)}
+                  {!isContextual
+                    ? ` → ${formatDuration(annotation.stopTime)}`
+                    : null}
                 </Typography>
 
                 <Stack direction={"row"} spacing={1} alignItems={"center"}>
