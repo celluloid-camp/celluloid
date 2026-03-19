@@ -41,6 +41,10 @@ async function waitForPostgres(
     const client = await waitForPostgres(process.env.DATABASE_URL || "");
     console.log("Database connected successfully");
 
+    // The schema uses `gen_random_uuid()`, which requires the `pgcrypto` extension.
+    // In fresh environments (like CI containers), it may not be installed yet.
+    await client.query("CREATE EXTENSION IF NOT EXISTS pgcrypto");
+
     const currentDir = dirname(fileURLToPath(import.meta.url));
     const migrationsFolder = resolve(currentDir, "migrations");
     console.log(`Running migrations from: ${migrationsFolder}`);
