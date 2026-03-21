@@ -42,7 +42,7 @@ export async function sceneDetectWorkflow(projectId: string) {
       videoFileUrl: info.videoUrl,
     });
 
-    const hook = createHook<VisionWebhook>({
+    using hook = createHook<VisionWebhook>({
       token: visionRun.job_id,
     });
 
@@ -143,8 +143,8 @@ async function startSceneDetect({
       job_type: "scene_detect",
       external_id: projectId,
       video_url: videoFileUrl,
-      // callback_url: `${env.BASE_URL}/api/vision/webhook`,
-      callback_url: `https://3f5c-41-251-106-223.ngrok-free.app/api/vision/webhook`,
+      callback_url: `${env.BASE_URL}/api/vision/webhook`,
+      // callback_url: `https://125e-41-251-23-105.ngrok-free.app/api/vision/webhook`,
     },
   });
 
@@ -199,6 +199,7 @@ async function fetchSceneDetectResults({
   });
 
   if (response.status !== 200 || !analysisResponse) {
+    console.error("Failed to fetch scene detect results", response.statusText);
     throw new FatalError("Failed to fetch vision analysis");
   }
 

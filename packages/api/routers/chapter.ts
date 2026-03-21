@@ -112,7 +112,8 @@ export const chapterRouter = router({
           updatedAt: sql`CURRENT_TIMESTAMP`,
         })
         .onConflictDoUpdate({
-          target: videoScenes.id,
+          // VideoScenes is unique per projectId, so we upsert based on that.
+          target: videoScenes.projectId,
           set: {
             status: "pending",
             updatedAt: sql`CURRENT_TIMESTAMP`,

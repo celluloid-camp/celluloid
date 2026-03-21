@@ -36,7 +36,7 @@ export async function visionAnalysisWorkflow(projectId: string) {
       projectId,
       videoFileUrl: info.videoUrl,
     });
-    const hook = createHook<VisionWebhook>({
+    using hook = createHook<VisionWebhook>({
       token: visionRun.job_id,
     });
 
@@ -136,8 +136,8 @@ async function startVisionAnalysis({
       job_type: "object_detect",
       external_id: projectId,
       video_url: videoFileUrl,
-      // callback_url: `${env.BASE_URL}/api/vision/webhook`,
-      callback_url: `https://aad7-196-217-77-146.ngrok-free.app/api/vision/webhook`,
+      callback_url: `${env.BASE_URL}/api/vision/webhook`,
+      // callback_url: `https://125e-41-251-23-105.ngrok-free.app/api/vision/webhook`,
     },
   });
 

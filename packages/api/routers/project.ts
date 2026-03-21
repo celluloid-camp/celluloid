@@ -6,10 +6,11 @@ import {
   user,
   userToProject,
   videoAnalysis,
+  videoScenes,
 } from "@celluloid/db";
 import { getDbErrorMessage, withPagination } from "@celluloid/db/utils";
 import { generateUniqueShareName } from "@celluloid/utils";
-import { processScenesWorkflow } from "@celluloid/workflows/scenes-processing";
+import { sceneDetectWorkflow } from "@celluloid/workflows/scene_detect";
 import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
 import { visionAnalysisWorkflow } from "@celluloid/workflows/vision";
 import { TRPCError } from "@trpc/server";
@@ -363,22 +364,27 @@ export const projectRouter = router({
         });
       }
 
-      const scenesRun = await start(processScenesWorkflow, [created.id]);
+      const scenesRun = await start(sceneDetectWorkflow, [created.id]);
       const transcriptRun = await start(videoTranscriptWorkflow, [created.id]);
       const visionRun = await start(visionAnalysisWorkflow, [created.id]);
       await db
         .update(project)
         .set({
-          scenesProcessingRunId: scenesRun.runId,
-          scenesProcessingStatus: "not_started",
           transcriptProcessingRunId: transcriptRun.runId,
           transcriptProcessingStatus: "not_started",
         })
         .where(eq(project.id, created.id));
 
+      await db.insert(videoScenes).values({
+        projectId: created.id,
+        runId: scenesRun.runId,
+        status: "pending",
+        updatedAt: sql`CURRENT_TIMESTAMP`,
+      });
+
       await db.insert(videoAnalysis).values({
         projectId: created.id,
-        status: "processing",
+        status: "pending",
         runId: visionRun.runId,
         updatedAt: sql`CURRENT_TIMESTAMP`,
       });

@@ -12,17 +12,22 @@ export async function videoTranscriptWorkflow(projectId: string) {
 
     const captions = await getProjectCaptions(projectId);
 
-    const result = await Promise.race([
-      generateTranscript(captions),
-      sleep("15min").then(() => "timeout" as const),
-    ]);
+    {
+      // Dispose the timeout timer if transcript generation finishes first.
+      using timeout = sleep("15min");
 
-    if (result === "timeout") {
-      throw new FatalError("Processing timed out after 15 minutes");
+      const result = await Promise.race([
+        generateTranscript(captions),
+        timeout.then(() => "timeout" as const),
+      ]);
+
+      if (result === "timeout") {
+        throw new FatalError("Processing timed out after 15 minutes");
+      }
+
+      const transcript = result;
+      await updateProjectTranscript(projectId, transcript, "fr");
     }
-
-    const transcript = result;
-    await updateProjectTranscript(projectId, transcript, "fr");
 
     await updateProjectStatus(projectId, "completed");
   } catch (error) {
