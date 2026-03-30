@@ -18,13 +18,13 @@ import {
 } from "media-chrome/react/media-store";
 import type * as React from "react";
 import { useState } from "react";
+import { ImageSprite } from "@/components/common/image-sprite";
 import type { User } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
 import type { ChapterByProjectId, ProjectById } from "@/lib/trpc/types";
 import { formatDuration } from "@/utils/duration";
 import { EditChapterDialog } from "./edit-dialog";
 import { EmptyChapters } from "./empty";
-import { ImageSprite } from "./image-sprite";
 import { ChapterItem } from "./list-item";
 
 export function ChapterTimeline({
@@ -90,6 +90,7 @@ export function ChapterTimeline({
             flex: 0,
           },
         }}
+        className="no-scrollbar"
       >
         {chapters.map((chapter: ChapterByProjectId, index: number) => (
           <TimelineItem key={chapter.id} sx={{ minHeight: 120 }}>

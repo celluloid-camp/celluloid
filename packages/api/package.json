@@ -10,6 +10,7 @@
     "@celluloid/auth": "workspace:*",
     "@celluloid/db": "workspace:*",
     "@celluloid/notifications": "workspace:*",
+    "@celluloid/peertube": "workspace:*",
     "@celluloid/storage": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@celluloid/workflows": "workspace:*",

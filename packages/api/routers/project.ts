@@ -9,6 +9,7 @@ import {
   videoScenes,
 } from "@celluloid/db";
 import { getDbErrorMessage, withPagination } from "@celluloid/db/utils";
+import { fetchPeerTubeVideoDetails } from "@celluloid/peertube";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { sceneDetectWorkflow } from "@celluloid/workflows/scene_detect";
 import { videoTranscriptWorkflow } from "@celluloid/workflows/transcript";
@@ -454,6 +455,97 @@ export const projectRouter = router({
         })
         .where(eq(project.id, input.projectId))
         .returning();
+
+      return updated;
+    }),
+
+  sync: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== "admin" && ctx.user.role !== "teacher") {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to sync this project",
+        });
+      }
+
+      const whereProject =
+        ctx.user.role === "admin"
+          ? eq(project.id, input.projectId)
+          : and(
+              eq(project.id, input.projectId),
+              eq(project.userId, ctx.user.id),
+            );
+
+      const [proj] = await db
+        .select()
+        .from(project)
+        .where(whereProject)
+        .limit(1);
+
+      if (!proj) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      if (!proj.host?.trim() || !proj.videoId?.trim()) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Project is missing PeerTube host or video id",
+        });
+      }
+
+      const baseUrl = /^https?:\/\//i.test(proj.host)
+        ? proj.host
+        : `https://${proj.host}`;
+
+      let thumbnail: string;
+      try {
+        const details = await fetchPeerTubeVideoDetails({
+          baseUrl,
+          videoId: proj.videoId,
+        });
+        thumbnail = details.thumbnail ?? "";
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          (error as { code?: string }).code === "video_requires_password"
+        ) {
+          throw new TRPCError({
+            code: "PRECONDITION_FAILED",
+            message: "video_requires_password",
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            error instanceof Error
+              ? error.message
+              : "Failed to sync thumbnail from PeerTube",
+        });
+      }
+
+      const [updated] = await db
+        .update(project)
+        .set({ thumbnailURL: thumbnail })
+        .where(eq(project.id, input.projectId))
+        .returning({
+          id: project.id,
+          thumbnailURL: project.thumbnailURL,
+        });
+
+      if (!updated) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update project thumbnail",
+        });
+      }
 
       return updated;
     }),

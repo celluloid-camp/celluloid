@@ -1,41 +1,25 @@
 "use client";
 
-import { Box, Button, colors } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import { useTRPC } from "@/lib/trpc/client";
-import { formatDuration } from "@/utils/duration";
 import { DetectionOverlay } from "../studio/detection-overlay";
 
 export function VideoVision({ projectId }: { projectId: string }) {
   const api = useTRPC();
-  const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
   const { data: analysis } = useSuspenseQuery(
     api.vision.byProjectId.queryOptions({
       projectId,
     }),
   );
-  if (
-    !analysis ||
-    !mediaCurrentTime ||
-    !analysis.processing ||
-    !analysis.processing.metadata
-  ) {
+  if (!analysis || !analysis.data) {
     return null;
   }
   return (
-    <>
-      {/* <Box sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
-        <Button variant="contained" size="small">
-          Detection
-        </Button>
-      </Box> */}
-      <DetectionOverlay
-        analysis={analysis.processing}
-        currentTime={mediaCurrentTime}
-        videoWidth={analysis.processing.metadata.video.width}
-        videoHeight={analysis.processing.metadata.video.height}
-      />
-    </>
+    <DetectionOverlay
+      analysis={analysis.data}
+      videoWidth={analysis.data.metadata.video.width}
+      videoHeight={analysis.data.metadata.video.height}
+    />
   );
 }

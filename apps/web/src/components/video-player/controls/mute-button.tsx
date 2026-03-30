@@ -8,6 +8,7 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
+import { useTranslations } from "next-intl";
 
 const VolumeLevel = {
   HIGH: "high",
@@ -28,10 +29,11 @@ const VolumeIconComponentMap: Record<
 };
 
 export const MuteButton = () => {
+  const t = useTranslations("project.video.controls");
   const dispatch = useMediaDispatch();
   const mediaVolumeLevel = useMediaSelector((state) => state.mediaVolumeLevel);
   const mediaPseudoMuted = mediaVolumeLevel === VolumeLevel.OFF;
-  const label = mediaPseudoMuted ? "Unmute" : "Mute";
+  const label = mediaPseudoMuted ? t("mute.unmute") : t("mute.mute");
   const IconComponent =
     VolumeIconComponentMap[mediaVolumeLevel ?? "DEFAULT"] ??
     VolumeIconComponentMap.DEFAULT;

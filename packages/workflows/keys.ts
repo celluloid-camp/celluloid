@@ -4,7 +4,7 @@ import { z } from "zod";
 export const keys = () =>
   createEnv({
     server: {
-      BASE_URL: z.string(),
+      VISION_CALLBACK_URL: z.url(),
       VISION_API_URL: z.string().default("https://vision.celluloid.me"),
       VISION_API_KEY: z.string().default("test"),
     },

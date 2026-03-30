@@ -4,14 +4,15 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
-
-const label = "Volume";
+import { useTranslations } from "next-intl";
 
 export const VolumeSlider = ({
   orientation = "horizontal",
 }: {
   orientation?: "horizontal" | "vertical";
 } = {}) => {
+  const t = useTranslations("project.video.controls");
+  const label = t("volume");
   const dispatch = useMediaDispatch();
   const mediaVolume = useMediaSelector((state) => state.mediaVolume ?? 0.5);
   const mediaMuted = useMediaSelector((state) => state.mediaMuted);

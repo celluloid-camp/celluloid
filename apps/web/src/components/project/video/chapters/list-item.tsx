@@ -137,7 +137,7 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
               <Stack direction={"row"}>
                 <Tooltip title="Supprimer" arrow>
                   <IconButton onClick={handleDelete}>
-                    <DeleteIcon sx={{ fontSize: 18 }} />
+                    <DeleteIcon className="text-white/50 size-4" />
                   </IconButton>
                 </Tooltip>
 
@@ -148,7 +148,7 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
                       onEditChapter?.(chapter);
                     }}
                   >
-                    <EditIcon sx={{ fontSize: 18 }} />
+                    <EditIcon className="text-white/50 size-4" />
                   </IconButton>
                 </Tooltip>
               </Stack>

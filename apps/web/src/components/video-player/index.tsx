@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, ThemeProvider } from "@mui/material";
+import { Box, Button, ThemeProvider } from "@mui/material";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import {
   MediaActionTypes,
@@ -11,7 +11,9 @@ import {
 import ReactPlayer from "react-player";
 import type { PlayerEntry } from "react-player/players";
 import { ProjectById } from "@/lib/trpc/types";
+import { peerTubeWatchUrl } from "@/utils/peertube-url";
 import { AnnotationOverlayHints } from "../project/video/annotation/overlay-hints";
+import { useShownDetectionOverlayState } from "../project/video/annotation/useAnnotationEditor";
 import { ControlsContainer } from "./controls/controls-container";
 import { LoadingBackdrop } from "./controls/loading-backdrop";
 import { canPlay } from "./peertube-video-element";
@@ -88,7 +90,7 @@ export default function VideoPlayer({ project }: { project: ProjectById }) {
         <ReactPlayer
           ref={mediaRefCallback}
           slot="media"
-          src={`https://${project.host}/w/${project.videoId}`}
+          src={peerTubeWatchUrl(project.host, project.videoId)}
           height="100%"
           width="100%"
           muted={muted}

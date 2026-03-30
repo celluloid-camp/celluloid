@@ -231,7 +231,12 @@
       },
       "dialog": {
         "title": "Modifier le projet"
-      }
+      },
+      "thumbnailLoadError": "Aperçu indisponible",
+      "syncThumbnail": "Synchroniser la miniature",
+      "syncThumbnailSuccess": "Miniature mise à jour depuis PeerTube",
+      "syncThumbnailError": "Impossible de mettre à jour la miniature depuis PeerTube",
+      "syncThumbnailPassword": "Cette vidéo est protégée par un mot de passe sur PeerTube"
     },
     "export": {
       "success": "Projet exporté avec succès",
@@ -336,6 +341,45 @@
         "comment": {
           "minLength": "Comment doit comporter minimum 2 character",
           "required": "Commentaire est obligatoire"
+        }
+      },
+      "controls": {
+        "fullscreen": {
+          "enter": "Plein écran",
+          "exit": "Quitter le plein écran"
+        },
+        "play": {
+          "play": "Lecture",
+          "pause": "Pause"
+        },
+        "mute": {
+          "mute": "Couper le son",
+          "unmute": "Réactiver le son"
+        },
+        "seekBackward": "Reculer de 30 s",
+        "seekForward": "Avancer de 30 s",
+        "audioMenu": {
+          "open": "Choisir la piste audio",
+          "close": "Fermer le menu des pistes audio"
+        },
+        "captionsMenu": {
+          "open": "Choisir les sous-titres",
+          "close": "Fermer le menu des sous-titres",
+          "none": "Aucun"
+        },
+        "volume": "Volume",
+        "seek": "Position dans la vidéo",
+        "playbackRate": "Vitesse de lecture",
+        "detectionOverlay": {
+          "show": "Afficher la superposition de détection",
+          "hide": "Masquer la superposition de détection"
+        },
+        "annotationHints": {
+          "show": "Afficher les annotations",
+          "hide": "Masquer les annotations"
+        },
+        "captionsButton": {
+          "label": "Sous-titres / sous-titres pour sourds et malentendants"
         }
       }
     },

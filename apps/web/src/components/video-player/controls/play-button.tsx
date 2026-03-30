@@ -8,14 +8,16 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
+import { useTranslations } from "next-intl";
 
 export const PlayButton = () => {
+  const t = useTranslations("project.video.controls");
   const dispatch = useMediaDispatch();
   const mediaPaused = useMediaSelector(
     (state) => typeof state.mediaPaused !== "boolean" || state.mediaPaused,
   );
   const IconComponent = mediaPaused ? PlayArrowIcon : PauseIcon;
-  const label = mediaPaused ? "Play" : "Pause";
+  const label = mediaPaused ? t("play.play") : t("play.pause");
   return (
     <Tooltip title={label} placement="top">
       <IconButton

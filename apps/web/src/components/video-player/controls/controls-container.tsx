@@ -11,6 +11,7 @@ import { DurationDisplay } from "./duration-display";
 import { FullscreenButton } from "./fullscreen-button";
 import { LoadingBackdrop } from "./loading-backdrop";
 import { MuteButton } from "./mute-button";
+import { ObjectDetectionButton } from "./object-detection-button";
 import { PlayButton } from "./play-button";
 import { PlaybackRateMenuButton } from "./playback-rate-menu-button";
 import { SeekBackwardButton } from "./seek-backward-button";
@@ -89,6 +90,7 @@ export const ControlsContainer = () => {
               <PlaybackRateMenuButton />
               <CaptionsMenuButton />
               <AnnotationsButton />
+              <ObjectDetectionButton />
               <FullscreenButton />
             </Stack>
           </Stack>

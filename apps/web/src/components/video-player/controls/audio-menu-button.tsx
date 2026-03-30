@@ -6,10 +6,12 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useState } from "react";
 
 export const AudioMenuButton = () => {
+  const t = useTranslations("project.video.controls");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,7 +29,7 @@ export const AudioMenuButton = () => {
     (state) => state.mediaAudioTrackEnabled,
   );
 
-  const label = open ? "close audio tracks menu" : "select audio track";
+  const label = open ? t("audioMenu.close") : t("audioMenu.open");
 
   return (
     <>

@@ -1,6 +1,6 @@
 // ObjectTimeline.js
+"use client";
 
-import { Box } from "@mui/material";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import React, { useMemo } from "react";
 import {
@@ -14,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { ImageSprite } from "@/components/common/image-sprite";
 import { getSpriteThumbnail } from "@/lib/sprite";
 import { VisionByProjectId } from "@/lib/trpc/types";
 import { formatDuration } from "@/utils/duration";
@@ -23,7 +24,7 @@ export function VisionChart({
 }: {
   data: NonNullable<VisionByProjectId>;
 }) {
-  const spriteUrl = data.spriteURL;
+  const spriteUrl = data.spriteURL ?? "";
   const analysis = data.data;
 
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
@@ -44,6 +45,7 @@ export function VisionChart({
             startFrame: frame.frame_idx,
             endFrame: frame.frame_idx,
             detections: [],
+            bbox: obj.bbox,
             sprite: getSpriteThumbnail(spriteUrl, obj.thumbnail), // sprite from the first object
           };
         }
@@ -57,16 +59,35 @@ export function VisionChart({
         });
       });
     });
+    const vw = analysis.metadata.video.width;
+    const vh = analysis.metadata.video.height;
+
     return Object.values(objects)
       .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
-      .map((obj) => ({
-        task: obj.id,
-        duration: [obj.startTime, obj.endTime],
-        sprite: obj.sprite,
-        className: obj.class_name,
-        fill: "#8884d8",
-      }));
-  }, [analysis]);
+      .map((obj) => {
+        const b = obj.bbox as
+          | { x: number; y: number; width: number; height: number }
+          | undefined;
+        const bboxNorm =
+          b && vw > 0 && vh > 0
+            ? {
+                x: b.x / vw,
+                y: b.y / vh,
+                width: b.width / vw,
+                height: b.height / vh,
+              }
+            : undefined;
+
+        return {
+          task: obj.id,
+          duration: [obj.startTime, obj.endTime],
+          sprite: obj.sprite,
+          className: obj.class_name,
+          bbox: bboxNorm,
+          fill: "#8884d8",
+        };
+      });
+  }, [analysis, spriteUrl]);
 
   if (!analysis || !chartData) {
     return null;
@@ -74,10 +95,43 @@ export function VisionChart({
   const duration =
     analysis.metadata.video.frame_count / analysis.metadata.video.fps;
 
+  const CustomTooltip = ({
+    active,
+    payload,
+  }: {
+    active: boolean;
+    payload: any;
+  }) => {
+    const isVisible = active && payload && payload.length;
+    const row = isVisible ? payload[0].payload : null;
+    /** 16:9 preview */
+    const previewW = 240;
+    const previewH = 135;
+
+    return (
+      <div
+        className="custom-tooltip"
+        style={{ visibility: isVisible ? "visible" : "hidden" }}
+      >
+        {isVisible && row ? (
+          <div className="aspect-video w-[240px] max-w-full overflow-hidden rounded-sm bg-black/5">
+            <ImageSprite
+              src={row.sprite}
+              width={previewW}
+              height={previewH}
+              alt="Sprite preview"
+              className="overflow-hidden rounded-sm"
+              bbox={row.bbox}
+            />
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
   return (
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer>
-        Frame: {analysis.frames.length}
         <BarChart data={chartData} layout="vertical">
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -99,33 +153,3 @@ export function VisionChart({
     </div>
   );
 }
-
-const CustomTooltip = ({
-  active,
-  payload,
-}: {
-  active: boolean;
-  payload: any;
-}) => {
-  const isVisible = active && payload && payload.length;
-  return (
-    <div
-      className="custom-tooltip"
-      style={{ visibility: isVisible ? "visible" : "hidden" }}
-    >
-      {isVisible && (
-        <Box
-          component="img"
-          src={payload[0].payload.sprite}
-          sx={{
-            width: 60,
-            height: 60,
-            objectFit: "cover",
-            borderRadius: 1,
-            overflow: "hidden",
-          }}
-        />
-      )}
-    </div>
-  );
-};

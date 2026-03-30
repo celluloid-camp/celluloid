@@ -70,7 +70,7 @@ export function ProjectVision({ project, user }: Props) {
   }
 
   const canGenerateVision =
-    project.editable && (!data || data.status === "failed");
+    project.editable || (data && data.status === "failed");
 
   const canViewStudio =
     user?.role === "ADMIN" ||
@@ -102,7 +102,7 @@ export function ProjectVision({ project, user }: Props) {
         }
       />
       <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
-        {data?.status === "processing" ? (
+        {["processing", "pending"].includes(data?.status ?? "") ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
             <Typography variant="body1">
@@ -125,32 +125,34 @@ export function ProjectVision({ project, user }: Props) {
           justifyContent: "space-between",
         }}
       >
-        {canGenerateVision && (
-          <Button
-            variant="outlined"
-            startIcon={<AutoModeIcon />}
-            loading={mutation.isPending}
-            color="primary"
-            onClick={async () => {
-              mutation.mutate({
-                projectId: project.id,
-              });
-            }}
-          >
-            {t("project.vision.button.analyse")}
-          </Button>
-        )}
-        {data?.status === "processing" && (
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              manualCheck.mutate({ projectId: project.id });
-            }}
-          >
-            Check manually
-          </Button>
-        )}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          {canGenerateVision && (
+            <Button
+              variant="outlined"
+              startIcon={<AutoModeIcon />}
+              loading={mutation.isPending}
+              color="primary"
+              onClick={async () => {
+                mutation.mutate({
+                  projectId: project.id,
+                });
+              }}
+            >
+              {t("project.vision.button.analyse")}
+            </Button>
+          )}
+          {data?.status === "processing" && project.editable && (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                manualCheck.mutate({ projectId: project.id });
+              }}
+            >
+              Check manually
+            </Button>
+          )}
+        </Box>
       </CardActions>
     </Card>
   );

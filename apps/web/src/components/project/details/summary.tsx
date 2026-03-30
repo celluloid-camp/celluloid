@@ -20,6 +20,7 @@ import { Avatar } from "@/components/common/avatar";
 import type { User } from "@/lib/auth-client";
 import type { ProjectById } from "@/lib/trpc/types";
 import dayjs from "@/utils/dayjs";
+import { peerTubeWatchUrl } from "@/utils/peertube-url";
 
 interface Props {
   project: ProjectById;
@@ -129,7 +130,7 @@ export function ProjectDescription({ project }: Props) {
           <Typography>{project.description}</Typography>
           <Typography align="left" gutterBottom={true} variant="body2">
             <a
-              href={`https://${project.host}/w/${project.videoId}`}
+              href={peerTubeWatchUrl(project.host, project.videoId)}
               target="_blank"
               rel="noreferrer"
             >
