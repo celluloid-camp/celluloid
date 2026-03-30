@@ -16,8 +16,8 @@ import { useAnnotations } from "@/stores/annotations";
 import { ShapesEditor } from "./annotation/shapes-editor";
 import { ShapesViewer } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
+import { VideoObjectDetection } from "./video-detection";
 import { VideoPanel } from "./video-panel";
-import { VideoVision } from "./video-vision";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -104,30 +104,7 @@ export function ProjectVideoScreen({ project }: Props) {
             height={height ?? 0}
           />
         ) : null}
-        <Suspense>
-          <ErrorBoundary
-            FallbackComponent={({ error }) =>
-              process.env.NODE_ENV === "development" ? (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    inset: 0,
-                    display: "flex",
-                    pointerEvents: "none",
-                    color: "white",
-                    zIndex: 1000,
-                  }}
-                >
-                  Failed to load vision
-                </Box>
-              ) : null
-            }
-          >
-            <VideoVision projectId={project.id} />
-          </ErrorBoundary>
-        </Suspense>
+        <VideoObjectDetection projectId={project.id} />
 
         <VideoPlayer project={project} />
       </Grid>
