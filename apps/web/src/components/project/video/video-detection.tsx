@@ -1,18 +1,20 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import { useTRPC } from "@/lib/trpc/client";
 import { DetectionOverlay } from "../studio/detection-overlay";
+import { useShownDetectionOverlayState } from "./annotation/useAnnotationEditor";
 
-export function VideoVision({ projectId }: { projectId: string }) {
+export function VideoObjectDetection({ projectId }: { projectId: string }) {
   const api = useTRPC();
-  const { data: analysis } = useSuspenseQuery(
+  const [shownDetectionOverlay] = useShownDetectionOverlayState();
+  const { data: analysis } = useQuery(
     api.vision.byProjectId.queryOptions({
       projectId,
     }),
   );
-  if (!analysis || !analysis.data) {
+  if (!analysis || !analysis.data || !shownDetectionOverlay) {
     return null;
   }
   return (

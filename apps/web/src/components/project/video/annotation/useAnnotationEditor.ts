@@ -19,7 +19,7 @@ type AnnotationEditorState = {
 };
 const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
   showHints: false,
-  shownDetectionOverlay: true,
+  shownDetectionOverlay: false,
   playerIsReady: false,
   contextualEditorVisible: false,
   formVisible: false,
