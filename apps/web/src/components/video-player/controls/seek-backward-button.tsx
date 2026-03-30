@@ -5,10 +5,11 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
-
-const label = "Seek backward";
+import { useTranslations } from "next-intl";
 
 export const SeekBackwardButton = () => {
+  const t = useTranslations("project.video.controls");
+  const label = t("seekBackward");
   const dispatch = useMediaDispatch();
   const mediaCurrentTime = useMediaSelector(
     (state) => state.mediaCurrentTime ?? 0,

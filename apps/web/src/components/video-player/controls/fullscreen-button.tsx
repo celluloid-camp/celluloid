@@ -6,14 +6,18 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
+import { useTranslations } from "next-intl";
 
 export const FullscreenButton = () => {
+  const t = useTranslations("project.video.controls");
   const dispatch = useMediaDispatch();
   const mediaIsFullscreen = useMediaSelector(
     (state) => state.mediaIsFullscreen,
   );
   const IconComponent = mediaIsFullscreen ? FullscreenExitIcon : FullscreenIcon;
-  const label = mediaIsFullscreen ? "Exit full screen" : "Full screen";
+  const label = mediaIsFullscreen
+    ? t("fullscreen.exit")
+    : t("fullscreen.enter");
   return (
     <Tooltip title={label} placement="top">
       <IconButton

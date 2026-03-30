@@ -7,6 +7,7 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
+import { useTranslations } from "next-intl";
 import { useCallback, useRef, useState } from "react";
 
 const { formatTime } = timeUtils;
@@ -15,6 +16,7 @@ const TRACK_HEIGHT = 2;
 const TRACK_HEIGHT_HOVER = 5;
 
 export const Seekbar = () => {
+  const t = useTranslations("project.video.controls");
   const dispatch = useMediaDispatch();
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
   const [min = 0, max = 0] =
@@ -83,7 +85,7 @@ export const Seekbar = () => {
   return (
     <Box
       role="slider"
-      aria-label="Seek"
+      aria-label={t("seek")}
       aria-valuemin={min}
       aria-valuemax={max}
       aria-valuenow={mediaCurrentTime ?? 0}

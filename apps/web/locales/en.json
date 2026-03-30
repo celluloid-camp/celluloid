@@ -233,7 +233,12 @@
       },
       "dialog": {
         "title": "Edit Project"
-      }
+      },
+      "thumbnailLoadError": "Preview unavailable",
+      "syncThumbnail": "Sync thumbnail",
+      "syncThumbnailSuccess": "Thumbnail updated from PeerTube",
+      "syncThumbnailError": "Could not refresh thumbnail from PeerTube",
+      "syncThumbnailPassword": "This video is password-protected on PeerTube"
     },
     "export": {
       "success": "Project exported successfully",
@@ -338,6 +343,45 @@
         "comment": {
           "minLength": "Comment doit comporter minimum 2 character",
           "required": "Comment is required"
+        }
+      },
+      "controls": {
+        "fullscreen": {
+          "enter": "Full screen",
+          "exit": "Exit full screen"
+        },
+        "play": {
+          "play": "Play",
+          "pause": "Pause"
+        },
+        "mute": {
+          "mute": "Mute",
+          "unmute": "Unmute"
+        },
+        "seekBackward": "Seek backward",
+        "seekForward": "Seek forward",
+        "audioMenu": {
+          "open": "Select audio track",
+          "close": "Close audio tracks menu"
+        },
+        "captionsMenu": {
+          "open": "Select subtitles",
+          "close": "Close subtitles menu",
+          "none": "None"
+        },
+        "volume": "Volume",
+        "seek": "Seek",
+        "playbackRate": "Playback speed",
+        "detectionOverlay": {
+          "show": "Show detection overlay",
+          "hide": "Hide detection overlay"
+        },
+        "annotationHints": {
+          "show": "Show annotations",
+          "hide": "Hide annotations"
+        },
+        "captionsButton": {
+          "label": "Subtitles/closed captions"
         }
       }
     },

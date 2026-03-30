@@ -7,10 +7,12 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useState } from "react";
 
 export const CaptionsMenuButton = () => {
+  const t = useTranslations("project.video.controls");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -32,7 +34,7 @@ export const CaptionsMenuButton = () => {
   const IconComponent = subtitlesOff
     ? ClosedCaptionDisabledIcon
     : ClosedCaptionIcon;
-  const label = open ? "close subtitles menu" : "select subtitles";
+  const label = open ? t("captionsMenu.close") : t("captionsMenu.open");
 
   return (
     <>
@@ -65,7 +67,7 @@ export const CaptionsMenuButton = () => {
           }}
         >
           {subtitlesOff && <CheckIcon sx={{ mr: 1 }} />}
-          None
+          {t("captionsMenu.none")}
         </MenuItem>
         {mediaSubtitlesList.map((subtitleTrack) => {
           const selected = mediaSubtitlesShowing.some(

@@ -7,6 +7,7 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useState } from "react";
 
@@ -18,6 +19,7 @@ export const PlaybackRateMenuButton = ({
 }: {
   rates?: number[];
 }) => {
+  const t = useTranslations("project.video.controls");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -35,6 +37,7 @@ export const PlaybackRateMenuButton = ({
   return (
     <>
       <Button
+        aria-label={t("playbackRate")}
         aria-controls={open ? "playback-rate-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}

@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Client } from "pg";
+import { fixOldScenes } from "./patches/fix-old-scenes";
 import { fixUserAttributes } from "./patches/fix-user-attributes";
 
 async function waitForPostgres(
@@ -53,6 +54,7 @@ async function waitForPostgres(
     await migrate(db, { migrationsFolder });
 
     await fixUserAttributes();
+    await fixOldScenes();
 
     console.log("Migrations completed successfully");
     await client.end();

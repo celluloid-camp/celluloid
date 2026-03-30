@@ -105,6 +105,10 @@ export function ProjectTranscript({ project, user }: Props) {
   const canGenerate =
     project.editable && project.transcriptProcessingStatus !== "in_progress";
 
+  const isGenerating = ["in_progress", "pending"].includes(
+    project.transcriptProcessingStatus,
+  );
+
   const downloadTranscript = (content: string) => {
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -162,7 +166,7 @@ export function ProjectTranscript({ project, user }: Props) {
         }
       />
       <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
-        {project.transcriptProcessingStatus === "in_progress" ? (
+        {isGenerating ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
             <Typography variant="body2">
@@ -222,7 +226,7 @@ export function ProjectTranscript({ project, user }: Props) {
             )}
             {canGenerate && (
               <Button
-                loading={generateMutation.isPending}
+                loading={generateMutation.isPending || isGenerating}
                 sx={{ color: colors.grey[800] }}
                 onClick={async () => {
                   generateMutation.mutate({

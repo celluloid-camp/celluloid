@@ -2,15 +2,17 @@
 
 import { Skeleton } from "@mui/material";
 import NextImage from "next/image";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 interface ImageProps {
   src?: string | null;
   alt: string;
   sizes?: string;
+  /** Shown when the image fails to load or `src` is missing (replaces the default skeleton). */
+  errorPlaceholder?: ReactNode;
 }
 
-export function Image({ src, alt, sizes }: ImageProps) {
+export function Image({ src, alt, sizes, errorPlaceholder }: ImageProps) {
   const [isLoading, setIsLoading] = useState(Boolean(src));
   const [hasError, setHasError] = useState(!src);
 
@@ -20,6 +22,13 @@ export function Image({ src, alt, sizes }: ImageProps) {
   }, [src]);
 
   if (hasError) {
+    if (errorPlaceholder != null) {
+      return (
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[inherit]">
+          {errorPlaceholder}
+        </div>
+      );
+    }
     return (
       <Skeleton
         variant="rectangular"

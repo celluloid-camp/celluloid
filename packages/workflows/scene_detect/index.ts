@@ -19,7 +19,7 @@ import { createClient } from "@celluloid/vision-api/client";
 import { SceneDetectResultsModel } from "@celluloid/vision-api/types";
 import { createHook, FatalError, sleep } from "workflow";
 import { keys } from "../keys";
-import { VisionWebhook } from "../vision/webhook";
+import type { VisionWebhook } from "../vision/webhook";
 
 export async function sceneDetectWorkflow(projectId: string) {
   "use workflow";
@@ -42,7 +42,8 @@ export async function sceneDetectWorkflow(projectId: string) {
       videoFileUrl: info.videoUrl,
     });
 
-    using hook = createHook<VisionWebhook>({
+    console.log("Creating hook with token for scene detect", visionRun.job_id);
+    const hook = createHook<VisionWebhook>({
       token: visionRun.job_id,
     });
 
@@ -143,8 +144,10 @@ async function startSceneDetect({
       job_type: "scene_detect",
       external_id: projectId,
       video_url: videoFileUrl,
-      callback_url: `${env.BASE_URL}/api/vision/webhook`,
-      // callback_url: `https://125e-41-251-23-105.ngrok-free.app/api/vision/webhook`,
+      callback_url: env.VISION_CALLBACK_URL,
+      params: {
+        threshold: 30,
+      },
     },
   });
 
@@ -199,7 +202,11 @@ async function fetchSceneDetectResults({
   });
 
   if (response.status !== 200 || !analysisResponse) {
-    console.error("Failed to fetch scene detect results", response.statusText);
+    console.error(
+      "Failed to fetch scene detect results",
+      response.status,
+      response.statusText,
+    );
     throw new FatalError("Failed to fetch vision analysis");
   }
 
@@ -210,39 +217,42 @@ async function fetchSceneDetectResults({
   }
 
   try {
-    if (!sceneDetectResults.sprite_url) {
-      throw new FatalError("Sprite URL not found");
+    let spriteURL: string | null = null;
+    let spriteStorageId: string | null = null;
+    if (sceneDetectResults.total_scenes > 0) {
+      if (!sceneDetectResults.sprite_url) {
+        throw new FatalError("Sprite URL not found");
+      }
+      const s3ObjectName = `${projectId}/scene_detect/sprite.png`;
+
+      spriteURL = await uploadImageUrl(
+        s3ObjectName,
+        sceneDetectResults.sprite_url,
+      );
+
+      [{ id: spriteStorageId }] = await db
+        .insert(storage)
+        .values({
+          bucket: getBucketName(),
+          path: s3ObjectName,
+        })
+        .returning();
+
+      await db.insert(chapter).values(
+        sceneDetectResults.scenes.map((scene) => ({
+          projectId,
+          startTime: scene.start_seconds,
+          endTime: scene.end_seconds ?? 0,
+          spriteURL: `${spriteURL}${scene.sprite_fragment}`,
+          updatedAt: new Date().toISOString(),
+        })),
+      );
     }
-    const s3ObjectName = `${projectId}/scene_detect/sprite.png`;
-
-    const spriteURL = await uploadImageUrl(
-      s3ObjectName,
-      sceneDetectResults.sprite_url,
-    );
-
-    const [spriteStorage] = await db
-      .insert(storage)
-      .values({
-        bucket: getBucketName(),
-        path: s3ObjectName,
-      })
-      .returning();
-
-    await db.insert(chapter).values(
-      sceneDetectResults.scenes.map((scene) => ({
-        projectId,
-        startTime: scene.start_seconds,
-        endTime: scene.end_seconds ?? 0,
-        spriteURL: `${spriteURL}${scene.sprite_fragment}`,
-        updatedAt: new Date().toISOString(),
-      })),
-    );
-
     await db
       .update(videoScenes)
       .set({
         status: "completed",
-        spriteStorageId: spriteStorage.id,
+        spriteStorageId: spriteStorageId,
         spriteURL: spriteURL,
       })
       .where(eq(videoScenes.projectId, projectId));

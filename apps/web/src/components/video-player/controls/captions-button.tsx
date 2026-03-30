@@ -6,14 +6,16 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
-
-const label = "Subtitles/closed captions";
+import { useTranslations } from "next-intl";
 
 export const CaptionsButton = () => {
+  const t = useTranslations("project.video.controls");
   const dispatch = useMediaDispatch();
   const showingSubtitles = useMediaSelector(
     (state) => !!state.mediaSubtitlesShowing?.length,
   );
+
+  const label = t("captionsButton.label");
   const IconComponent = showingSubtitles
     ? ClosedCaptionIcon
     : ClosedCaptionDisabledIcon;
