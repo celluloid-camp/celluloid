@@ -112,11 +112,24 @@ export function AnnotationOverlayHints({ project }: { project: ProjectById }) {
 
   const [showHints, setHintsVisible] = useAnnotationHintsVisible();
 
-  const getHintStartPosition = (annotation: AnnotationByProjectId) =>
-    `${(annotation.startTime * 100) / project.duration}%`;
+  const isContextualAnnotation = (annotation: AnnotationByProjectId) =>
+    annotation.extra !== null && annotation.extra !== undefined;
 
-  const getHintWidth = (annotation: AnnotationByProjectId) =>
-    `${((annotation.stopTime - annotation.startTime) * 100) / project.duration}%`;
+  const getHintStartPosition = (annotation: AnnotationByProjectId) => {
+    const position = `${(annotation.startTime * 100) / project.duration}%`;
+    // Contextual annotations are rendered as dots, centered on their timestamp.
+    if (isContextualAnnotation(annotation)) {
+      return `calc(${position} - 5px)`;
+    }
+    return position;
+  };
+
+  const getHintWidth = (annotation: AnnotationByProjectId) => {
+    if (isContextualAnnotation(annotation)) {
+      return "10px";
+    }
+    return `${((annotation.stopTime - annotation.startTime) * 100) / project.duration}%`;
+  };
 
   const handleClose: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
