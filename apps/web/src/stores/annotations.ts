@@ -1,14 +1,8 @@
 import { AnnotationShape } from "@celluloid/db/schema/types";
 import { useQuery } from "@tanstack/react-query";
-import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
-import {
-  MediaActionTypes,
-  useMediaDispatch,
-  useMediaFullscreenRef,
-  useMediaSelector,
-} from "media-chrome/react/media-store";
-import { useMemo } from "react";
+import { useMediaSelector } from "media-chrome/react/media-store";
+import { useEffect, useMemo, useState } from "react";
 import { AnnotationShapeWithMetadata } from "@/components/project/video/annotation/shapes-viewer";
 import { useTRPC } from "@/lib/trpc/client";
 import type { AnnotationByProjectIdWithExtra } from "@/lib/trpc/types";
@@ -17,8 +11,55 @@ const annotationsAtom = atomWithQuery(() => ({
   queryKey: ["todos"],
 }));
 
-export function useAnnotations(projectId: string) {
+/**
+ * Smooth playback time between sparse `mediaCurrentTime` updates: while playing,
+ * advance with rAF × playback rate; when paused, follow the store; on seek the
+ * effect restarts from `mediaCurrentTime`.
+ */
+function useAccurateMediaCurrentTime(): number {
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
+  const mediaPaused = useMediaSelector((state) => state.mediaPaused);
+  const playbackRate = useMediaSelector(
+    (state) => state.mediaPlaybackRate ?? 1,
+  );
+
+  const isPaused = typeof mediaPaused !== "boolean" || mediaPaused === true;
+
+  const clock = mediaCurrentTime ?? 0;
+  const [smoothTime, setSmoothTime] = useState(clock);
+
+  useEffect(() => {
+    if (isPaused) {
+      setSmoothTime(clock);
+    }
+  }, [isPaused, clock]);
+
+  useEffect(() => {
+    if (isPaused) {
+      return;
+    }
+
+    setSmoothTime(clock);
+    let rafId = 0;
+    let last = performance.now();
+
+    const tick = () => {
+      const now = performance.now();
+      const dt = (now - last) / 1000;
+      last = now;
+      setSmoothTime((t) => t + dt * playbackRate);
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [isPaused, playbackRate, clock]);
+
+  return smoothTime;
+}
+
+export function useAnnotations(projectId: string) {
+  const mediaCurrentTime = useAccurateMediaCurrentTime();
 
   const api = useTRPC();
   const { data: annotations = [], isLoading } = useQuery({
@@ -30,7 +71,7 @@ export function useAnnotations(projectId: string) {
 
   const currentAnnotations = useMemo(
     () =>
-      mediaCurrentTime && annotations
+      annotations.length > 0
         ? annotations.filter((annotation) => {
             const inRange =
               mediaCurrentTime >= annotation.startTime &&
