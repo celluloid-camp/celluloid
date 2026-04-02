@@ -5,14 +5,16 @@ import {
   MediaActionTypes,
   useMediaDispatch,
   useMediaFullscreenRef,
-  useMediaSelector,
 } from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSession } from "@/lib/auth-client";
 import type { ProjectById } from "@/lib/trpc/types";
-import { useAnnotations } from "@/stores/annotations";
+import {
+  useAccurateMediaCurrentTime,
+  useAnnotations,
+} from "@/stores/annotations";
 import { ShapesEditor } from "./annotation/shapes-editor";
 import { ShapesViewer } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
@@ -24,15 +26,12 @@ const VideoPlayer = dynamic(
   { ssr: false },
 );
 
-/** Tolerance in seconds when matching annotation startTime to media time (player updates at discrete intervals). */
-const PAUSE_AT_ANNOTATION_TOLERANCE_SEC = 0.2;
-
 interface Props {
   project: ProjectById;
 }
 
 export function ProjectVideoScreen({ project }: Props) {
-  const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
+  const mediaCurrentTime = useAccurateMediaCurrentTime();
   const dispatch = useMediaDispatch();
   const fullscreenRefCallback = useMediaFullscreenRef();
 
@@ -59,14 +58,34 @@ export function ProjectVideoScreen({ project }: Props) {
   //   },
   // });
 
+  const prevMediaTimeRef = useRef<number | null>(null);
+
   useEffect(() => {
-    if (!mediaCurrentTime) return;
-    const paused = currentAnnotations.filter(
-      (annotation) =>
-        annotation.pause &&
-        Math.abs(mediaCurrentTime - annotation.startTime) <=
-          PAUSE_AT_ANNOTATION_TOLERANCE_SEC,
-    );
+    const t = mediaCurrentTime;
+    const prev = prevMediaTimeRef.current;
+    prevMediaTimeRef.current = t;
+
+    if (prev === null) {
+      return;
+    }
+
+    const dt = t - prev;
+
+    const paused = currentAnnotations.filter((annotation) => {
+      if (!annotation.pause) {
+        return false;
+      }
+      const start = annotation.startTime;
+
+      // Normal playback: we crossed startTime this tick (exact ms match was too strict).
+      const crossedForward = dt > 0 && dt <= 2 && prev < start && t >= start;
+
+      // Large seek/scrub: we jumped across the boundary; land just after start.
+      const landedAfterSeek =
+        Math.abs(dt) > 2 && t >= start && t < start + 0.25;
+
+      return crossedForward || landedAfterSeek;
+    });
 
     if (paused.length > 0) {
       dispatch({
@@ -75,7 +94,7 @@ export function ProjectVideoScreen({ project }: Props) {
       });
       dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
-  }, [currentAnnotations, mediaCurrentTime]);
+  }, [currentAnnotations, mediaCurrentTime, dispatch]);
 
   useEffect(() => {
     if (formVisible) {

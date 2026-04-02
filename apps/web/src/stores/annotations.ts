@@ -16,7 +16,7 @@ const annotationsAtom = atomWithQuery(() => ({
  * advance with rAF × playback rate; when paused, follow the store; on seek the
  * effect restarts from `mediaCurrentTime`.
  */
-function useAccurateMediaCurrentTime(): number {
+export function useAccurateMediaCurrentTime(): number {
   const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
   const mediaPaused = useMediaSelector((state) => state.mediaPaused);
   const playbackRate = useMediaSelector(
