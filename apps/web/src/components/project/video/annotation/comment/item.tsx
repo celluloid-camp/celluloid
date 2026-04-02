@@ -252,13 +252,17 @@ export const CommentItem: React.FC<CommentItemProps> = ({
           <Stack direction={"row"}>
             <Tooltip title={t("comment.tooltip.title.update")} arrow>
               <IconButton onClick={handleEdit}>
-                <EditIcon sx={{ fontSize: 18 }} />
+                <EditIcon className="text-white/50 size-5" />
               </IconButton>
             </Tooltip>
-            <Divider orientation="vertical" flexItem />
+            <Divider
+              orientation="vertical"
+              flexItem
+              className="border-white/10"
+            />
             <Tooltip title={t("comment.tooltip.title.delete")} arrow>
               <IconButton onClick={handleDelete}>
-                <DeleteIcon sx={{ fontSize: 18 }} />
+                <DeleteIcon className="text-white/50 size-5" />
               </IconButton>
             </Tooltip>
           </Stack>

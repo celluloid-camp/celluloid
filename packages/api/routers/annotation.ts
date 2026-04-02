@@ -189,14 +189,18 @@ export const annotationRouter = router({
         record.project.userId === ctx.user.id
       ) {
         // Perform the update
-        const updatedAnnotation = await db.update(annotation).set({
-          text: input.text ?? record.text,
-          startTime: input.startTime ?? record.startTime,
-          stopTime: input.stopTime ?? record.stopTime,
-          pause: input.pause ?? record.pause,
-          projectId: input.projectId ?? record.projectId,
-          extra: input.extra ?? record.extra,
-        });
+        const updatedAnnotation = await db
+          .update(annotation)
+          .set({
+            text: input.text ?? record.text,
+            startTime: input.startTime ?? record.startTime,
+            stopTime: input.stopTime ?? record.stopTime,
+            pause: input.pause ?? record.pause,
+            projectId: input.projectId ?? record.projectId,
+            extra: input.extra ?? record.extra,
+          })
+          .where(eq(annotation.id, input.annotationId))
+          .returning();
 
         ee.emit("change", updatedAnnotation);
         return updatedAnnotation;

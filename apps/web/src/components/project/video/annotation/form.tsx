@@ -157,6 +157,7 @@ export const AnnotationFormContent: React.FC<
 
     const pause = contextEditorVisible ? true : values.pause;
 
+    console.log("editedAnnotation", editedAnnotation);
     if (editedAnnotation) {
       const changedAnnotation = await editMutation.mutateAsync({
         annotationId: editedAnnotation.id,
