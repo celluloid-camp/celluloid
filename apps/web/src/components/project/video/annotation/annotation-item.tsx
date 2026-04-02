@@ -238,7 +238,11 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                     <EditIcon className="text-white/50 size-5" />
                   </IconButton>
                 </Tooltip>
-                <Divider orientation="vertical" flexItem light />
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  className="border-white/10"
+                />
                 <Tooltip title={t("comment.tooltip.title.delete")} arrow>
                   <IconButton onClick={handleDelete}>
                     <DeleteIcon className="text-white/50 size-5" />
