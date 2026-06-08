@@ -271,17 +271,19 @@ export function ProjectGrid() {
 
           {noProjects && (
             <Box
-              display={"flex"}
-              alignContent={"center"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              sx={{ minHeight: 200 }}
+              sx={{
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: 200,
+              }}
             >
               <Stack
-                alignContent={"center"}
-                justifyContent={"center"}
-                alignItems={"center"}
                 sx={{
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
                   py: 4,
                 }}
               >

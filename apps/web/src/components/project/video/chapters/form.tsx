@@ -316,10 +316,12 @@ export const ChapterFormContent: React.FC<
       onClose={handleClose}
       fullWidth
       maxWidth="sm"
-      PaperProps={{
-        sx: {
-          backgroundColor: "background.dark",
-          color: "white",
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundColor: "background.dark",
+            color: "white",
+          },
         },
       }}
     >

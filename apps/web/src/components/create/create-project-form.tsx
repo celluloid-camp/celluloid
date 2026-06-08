@@ -142,15 +142,17 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         autoComplete="none"
         spellCheck={false}
         margin="normal"
-        inputProps={{
-          "data-testid": "title",
-        }}
         value={formik.values.title}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         error={formik.touched.title && Boolean(formik.errors.title)}
         helperText={formik.touched.title && formik.errors.title}
         disabled={formik.isSubmitting}
+        slotProps={{
+          htmlInput: {
+            "data-testid": "title",
+          },
+        }}
       />
       <TextField
         id="description"
@@ -160,9 +162,6 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         rows={3}
         fullWidth
         autoComplete="none"
-        inputProps={{
-          "data-testid": "description",
-        }}
         spellCheck={false}
         margin="normal"
         value={formik.values.description}
@@ -171,6 +170,11 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         error={formik.touched.description && Boolean(formik.errors.description)}
         helperText={formik.touched.description && formik.errors.description}
         disabled={formik.isSubmitting}
+        slotProps={{
+          htmlInput: {
+            "data-testid": "description",
+          },
+        }}
       />
       <AutoCompleteTags
         id="keywords"
@@ -182,8 +186,10 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
         value={formik.values.keywords}
         textfieldprops={{
           margin: "normal",
-          inputProps: {
-            "data-testid": "keywords",
+          slotProps: {
+            htmlInput: {
+              "data-testid": "keywords",
+            },
           },
           label: t("project.keywords"),
         }}
@@ -198,7 +204,13 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
       >
         {t("project.visibilitySection")}
       </Typography>
-      <Grid container={true} direction="row" alignItems="flex-start">
+      <Grid
+        container={true}
+        direction="row"
+        sx={{
+          alignItems: "flex-start",
+        }}
+      >
         <Grid size={2}>
           <Typography
             variant="subtitle1"
@@ -297,7 +309,14 @@ export function CreateProjectForm({ data }: { data: PeerTubeVideoDataResult }) {
           </Typography>
         </Grid>
       </Grid>
-      <Box display={"flex"} justifyContent={"flex-end"} flex={1} mt={2}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          flex: 1,
+          mt: 2,
+        }}
+      >
         <Button
           variant="contained"
           data-testid="submit"

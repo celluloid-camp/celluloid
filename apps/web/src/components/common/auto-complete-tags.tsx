@@ -1,4 +1,3 @@
-import type { AutocompleteGetTagProps } from "@mui/base/useAutocomplete";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Autocomplete,
@@ -7,8 +6,9 @@ import {
   TextField,
   type TextFieldProps,
 } from "@mui/material";
+import type { AutocompleteGetItemProps } from "@mui/material/useAutocomplete";
 
-interface TagProps extends ReturnType<AutocompleteGetTagProps> {
+interface TagProps extends ReturnType<AutocompleteGetItemProps<true>> {
   label: string;
 }
 
@@ -60,7 +60,7 @@ const StyledTag = styled(Tag)<TagProps>(
 
 type AutoCompleteTagsProps<T> = Omit<
   AutocompleteProps<T, true, false, true, typeof StyledTag>,
-  "renderTags" | "renderInput"
+  "renderValue" | "renderInput"
 > & {
   textfieldprops?: TextFieldProps;
 };
@@ -74,9 +74,9 @@ export function AutoCompleteTags({
       {...props}
       multiple
       freeSolo
-      renderTags={(value: readonly string[], getTagProps) =>
+      renderValue={(value: readonly string[], getItemProps) =>
         value.map((option: string, index: number) => (
-          <StyledTag label={option} {...getTagProps({ index })} />
+          <StyledTag label={option} {...getItemProps({ index })} />
         ))
       }
       renderInput={(params) => <TextField {...textfieldprops} {...params} />}

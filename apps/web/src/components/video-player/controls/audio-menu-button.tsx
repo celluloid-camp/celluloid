@@ -50,7 +50,7 @@ export const AudioMenuButton = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ "aria-labelledby": "audio-button" }}
+        slotProps={{ list: { "aria-labelledby": "audio-button" } }}
       >
         {mediaAudioTrackList.map((audioTrack) => {
           const selected = audioTrack.id === mediaAudioTrackEnabled;

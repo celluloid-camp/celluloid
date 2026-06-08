@@ -8,14 +8,20 @@ export function EmptyChapters() {
     <Grow in={true}>
       <Stack
         spacing={1}
-        alignContent={"center"}
-        alignItems={"center"}
         sx={{
+          alignContent: "center",
+          alignItems: "center",
           m: 2,
         }}
       >
         <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-        <Typography variant="body2" color="gray" textAlign={"center"}>
+        <Typography
+          variant="body2"
+          color="gray"
+          sx={{
+            textAlign: "center",
+          }}
+        >
           {t("project.chapters.empty")}
         </Typography>
       </Stack>

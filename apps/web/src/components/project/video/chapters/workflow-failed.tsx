@@ -30,9 +30,9 @@ export function ScenesProcessingFailed({ project }: { project: ProjectById }) {
     <Grow in={true}>
       <Stack
         spacing={1}
-        alignContent={"center"}
-        alignItems={"center"}
         sx={{
+          alignContent: "center",
+          alignItems: "center",
           paddingY: 5,
           paddingX: 5,
           borderRadius: 1,
@@ -44,7 +44,13 @@ export function ScenesProcessingFailed({ project }: { project: ProjectById }) {
         }}
       >
         <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-        <Typography variant="body2" color="gray" textAlign={"center"}>
+        <Typography
+          variant="body2"
+          color="gray"
+          sx={{
+            textAlign: "center",
+          }}
+        >
           {t("project.chapters.failed")}
         </Typography>
         {project.editable ? (

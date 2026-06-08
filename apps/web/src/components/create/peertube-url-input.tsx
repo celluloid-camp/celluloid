@@ -110,32 +110,35 @@ export function PeerTubeUrlInput({
         error={Boolean(errors.url)}
         helperText={errors.url?.message}
         sx={{ borderRadius: 20 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <LinkIcon />
-            </InputAdornment>
-          ),
-          endAdornment:
-            isSubmitted && isValid ? (
-              <InputAdornment position="end">
-                <IconButton onClick={handleReset} edge="end">
-                  <ClearIcon />
-                </IconButton>
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <LinkIcon />
               </InputAdornment>
-            ) : (
-              <IconButton
-                data-testid="submit-url"
-                onClick={handleSubmit(onSubmit)}
-                color="primary"
-                edge="end"
-              >
-                <KeyboardReturnIcon />
-              </IconButton>
             ),
-        }}
-        inputProps={{
-          "data-testid": "url",
+            endAdornment:
+              isSubmitted && isValid ? (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleReset} edge="end">
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              ) : (
+                <IconButton
+                  data-testid="submit-url"
+                  onClick={handleSubmit(onSubmit)}
+                  color="primary"
+                  edge="end"
+                >
+                  <KeyboardReturnIcon />
+                </IconButton>
+              ),
+          },
+
+          htmlInput: {
+            "data-testid": "url",
+          },
         }}
       />
     </form>

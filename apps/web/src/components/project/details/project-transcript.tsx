@@ -155,9 +155,11 @@ export function ProjectTranscript({ project, user }: Props) {
         title={
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ width: "100%" }}
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
           >
             <Typography variant="h6">
               {t("project.transcript.title")}
@@ -187,7 +189,6 @@ export function ProjectTranscript({ project, user }: Props) {
           </Typography>
         )}
       </CardContent>
-
       <CardActions
         sx={{
           flexDirection: "row",
@@ -201,7 +202,12 @@ export function ProjectTranscript({ project, user }: Props) {
         <div className="flex w-full justify-between gap-1 px-2">
           {data?.content && (
             <Box className="flex justify-start items-center mt-2">
-              <Typography variant="caption" color="text.secondary">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {t("project.note.update_at")}{" "}
                 {data?.updatedAt
                   ? dayjs(data.updatedAt).fromNow()

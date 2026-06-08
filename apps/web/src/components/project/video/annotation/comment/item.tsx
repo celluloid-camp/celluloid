@@ -163,11 +163,13 @@ export const CommentItem: React.FC<CommentItemProps> = ({
               {comment.user.username}
             </Typography>
             <Typography
-              sx={{ display: "inline" }}
               component="span"
-              fontWeight="medium"
               variant="caption"
               color="gray"
+              sx={{
+                fontWeight: "medium",
+                display: "inline",
+              }}
             >
               {"-"} {dayjs(comment.createdAt).fromNow()}
             </Typography>
@@ -204,9 +206,11 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                     placeholder={t("annotation.commentPlaceholder") || ""}
                   />
                   <Box
-                    display={"flex"}
-                    justifyContent={"flex-end"}
-                    sx={{ pt: 1 }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      pt: 1,
+                    }}
                   >
                     <Button
                       size="small"
@@ -243,7 +247,13 @@ export const CommentItem: React.FC<CommentItemProps> = ({
           </React.Fragment>
         }
       />
-      <Box display="flex" flexDirection="column" alignItems="flex-end">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+        }}
+      >
         {hovering &&
         !edition &&
         comment.user.id === user?.id &&

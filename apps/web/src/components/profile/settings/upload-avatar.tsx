@@ -93,7 +93,13 @@ export default function UploadAvatar({
   };
 
   return (
-    <Stack direction="row" alignItems="center" spacing={2}>
+    <Stack
+      direction="row"
+      spacing={2}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <Avatar
         alt="User Avatar"
         sx={{
@@ -106,7 +112,6 @@ export default function UploadAvatar({
       >
         {initial}
       </Avatar>
-
       <Button color="primary" component="label" variant="outlined" size="small">
         {t("profile.update.upload-avatar")}
         <Input

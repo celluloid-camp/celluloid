@@ -318,8 +318,19 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
     );
 
     return (
-      <Grid container alignItems="center" spacing={1}>
-        <Stack direction={"row"} alignItems="center">
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          alignItems: "center",
+        }}
+      >
+        <Stack
+          direction={"row"}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <IconButton
             size="small"
             color="secondary"
@@ -334,17 +345,19 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
             onChange={handleStartInputChange}
             onBlur={handleStartInputBlur}
             size="small"
-            inputProps={{
-              pattern: "([0-9]{1,2}:)?[0-9]{1,2}:[0-9]{2}",
-              placeholder: "00:00",
-              style: { textAlign: "center" },
-            }}
             sx={{
               width: "60px",
               "& .MuiInputBase-input": {
                 padding: "4px 8px",
                 fontSize: "0.8rem",
                 color: "white",
+              },
+            }}
+            slotProps={{
+              htmlInput: {
+                pattern: "([0-9]{1,2}:)?[0-9]{1,2}:[0-9]{2}",
+                placeholder: "00:00",
+                style: { textAlign: "center" },
               },
             }}
           />
@@ -374,7 +387,13 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
           />
         </Grid>
         {!mono && (
-          <Stack direction={"row"} alignItems="center" sx={{ ml: 2 }}>
+          <Stack
+            direction={"row"}
+            sx={{
+              alignItems: "center",
+              ml: 2,
+            }}
+          >
             <IconButton
               size="small"
               color="secondary"
@@ -389,17 +408,19 @@ export const DurationSlider: React.FC<DurationSliderProps> = React.memo(
               onChange={handleStopInputChange}
               onBlur={handleStopInputBlur}
               size="small"
-              inputProps={{
-                pattern: "([0-9]{1,2}:)?[0-9]{1,2}:[0-9]{2}",
-                placeholder: "00:00",
-                style: { textAlign: "center" },
-              }}
               sx={{
                 width: "60px",
                 "& .MuiInputBase-input": {
                   padding: "4px 8px",
                   fontSize: "0.8rem",
                   color: "white",
+                },
+              }}
+              slotProps={{
+                htmlInput: {
+                  pattern: "([0-9]{1,2}:)?[0-9]{1,2}:[0-9]{2}",
+                  placeholder: "00:00",
+                  style: { textAlign: "center" },
                 },
               }}
             />

@@ -44,10 +44,12 @@ export function ChapterTimeline({
   if (chapters.length === 0) {
     return (
       <Box
-        height="100%"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
+        sx={{
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <EmptyChapters />
       </Box>

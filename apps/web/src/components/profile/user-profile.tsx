@@ -10,7 +10,12 @@ import { useTRPC } from "@/lib/trpc/client";
 
 function ProfileSkeleton() {
   return (
-    <Stack alignItems="center" spacing={2}>
+    <Stack
+      spacing={2}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <Skeleton variant="circular" width={100} height={100} />
       <Skeleton variant="text" width={200} height={40} />
       <Skeleton variant="text" width={250} height={24} />
@@ -28,7 +33,11 @@ function ProfileContent() {
   if (!data) return null;
   return (
     <>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Avatar
           sx={{
             background: data.color,
@@ -59,12 +68,15 @@ function ProfileContent() {
           {localeRole(data.role)}
         </Typography>
       </Stack>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Typography variant="body2" color="textPrimary">
           {data.bio}
         </Typography>
       </Stack>
-
       <UserProjectGrid />
     </>
   );

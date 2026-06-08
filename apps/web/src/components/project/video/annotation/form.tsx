@@ -255,9 +255,11 @@ export const AnnotationFormContent: React.FC<
         </Box>
 
         <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
           <Box>
             <Tooltip title={t("annotation.form.context.tooltip")} arrow>

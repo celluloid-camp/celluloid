@@ -25,7 +25,9 @@ export default function About() {
       <Typography
         variant="h2"
         gutterBottom={true}
-        fontFamily={"abril_fatfaceregular"}
+        sx={{
+          fontFamily: "abril_fatfaceregular",
+        }}
       >
         {t("about.title")}
       </Typography>
@@ -46,7 +48,13 @@ export default function About() {
       <Typography variant="subtitle1" gutterBottom={true}>
         {t("about.support")}
       </Typography>
-      <Typography variant="subtitle1" gutterBottom={true} pt={1}>
+      <Typography
+        variant="subtitle1"
+        gutterBottom={true}
+        sx={{
+          pt: 1,
+        }}
+      >
         {t.rich("about.opensource.prefix", {
           canevas: (chunks: string) => (
             <Link
@@ -68,7 +76,6 @@ export default function About() {
           ),
         })}
       </Typography>
-
       {t.rich("about.opensource.github", {
         github: (chunks: string) => (
           <Link
@@ -80,7 +87,6 @@ export default function About() {
           </Link>
         ),
       })}
-
       <div
         style={{
           padding: 48,
@@ -116,7 +122,11 @@ export default function About() {
             </a>
           </Grid>
           <Grid size="auto">
-            <Box width={40}>
+            <Box
+              sx={{
+                width: 40,
+              }}
+            >
               <a
                 href="https://canevas.hypotheses.org/"
                 target="_blank"

@@ -111,7 +111,6 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
         <BackButton href="/admin" ariaLabel="back to users list" />
         <Typography variant="h5">{t("profile.update.title")}</Typography>
       </Box>
-
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper variant="outlined" sx={{ p: 3 }}>
@@ -126,42 +125,72 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("profile.update.username")}
                 </Typography>
                 <Typography variant="body1">{data.username}</Typography>
               </Box>
 
               <Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   Email
                 </Typography>
                 <Typography variant="body1">{data.email}</Typography>
               </Box>
 
               <Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("profile.update.firstname")}
                 </Typography>
                 <Typography variant="body1">{data.firstname || "-"}</Typography>
               </Box>
 
               <Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("profile.update.lastname")}
                 </Typography>
                 <Typography variant="body1">{data.lastname || "-"}</Typography>
               </Box>
 
               <Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   Role
                 </Typography>
                 <Typography variant="body1">{data.role}</Typography>
               </Box>
 
               <Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("users.table.emailVerified")}
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
@@ -179,7 +208,12 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
               </Box>
 
               <Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("users.table.createAt")}
                 </Typography>
                 <Typography variant="body1">
@@ -194,7 +228,6 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
           <UserProjects userId={data.id} />
         </Grid>
       </Grid>
-
       <Dialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
@@ -354,10 +387,14 @@ function UserProjects({ userId }: UserProjectsProps) {
 
   return (
     <Box sx={{ height: "100%" }}>
-      <Typography variant="h6" marginBottom={2}>
+      <Typography
+        variant="h6"
+        sx={{
+          marginBottom: 2,
+        }}
+      >
         {t("admin.projects.title")}
       </Typography>
-
       {isLoading ? (
         <Paper variant="outlined">
           <TableContainer>

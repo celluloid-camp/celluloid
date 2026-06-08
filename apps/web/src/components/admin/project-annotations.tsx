@@ -116,10 +116,15 @@ export function ProjectAnnotations({ projectId }: ProjectAnnotationsProps) {
         borderRadius: 2,
       }}
     >
-      <Typography variant="h5" fontWeight="medium" marginBottom={2}>
+      <Typography
+        variant="h5"
+        sx={{
+          fontWeight: "medium",
+          marginBottom: 2,
+        }}
+      >
         Annotations
       </Typography>
-
       <TableContainer>
         <Table size="small">
           <TableHead>
@@ -160,7 +165,6 @@ export function ProjectAnnotations({ projectId }: ProjectAnnotationsProps) {
           </TableBody>
         </Table>
       </TableContainer>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

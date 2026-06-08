@@ -135,7 +135,13 @@ export function LoginForm() {
             error={!!errors.password}
             helperText={errors.password?.message}
           />
-          <Box display={"flex"} flex={1} justifyContent={"flex-end"}>
+          <Box
+            sx={{
+              display: "flex",
+              flex: 1,
+              justifyContent: "flex-end",
+            }}
+          >
             <Button
               onClick={handlePasswordReset}
               data-testid="forgot-button"
@@ -148,7 +154,13 @@ export function LoginForm() {
         </DialogContent>
         <Divider />
         <DialogActions sx={{ marginY: 1, marginX: 2 }}>
-          <Box display="flex" justifyContent={"space-between"} flex={1}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flex: 1,
+            }}
+          >
             <Box>
               <Button
                 color="primary"

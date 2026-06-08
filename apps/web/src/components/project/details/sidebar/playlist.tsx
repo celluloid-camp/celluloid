@@ -124,9 +124,13 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
                   onClick={() => handleClick(p.id)}
                 >
                   <Stack
-                    sx={[{ backgroundColor: "black" }]}
-                    width={150}
-                    height={100}
+                    sx={[
+                      {
+                        width: 150,
+                        height: 100,
+                      },
+                      { backgroundColor: "black" },
+                    ]}
                   >
                     <Image
                       src={p.thumbnailURL}
@@ -134,7 +138,13 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
                       bgColor="#000000"
                     />
 
-                    <Stack flex={1} marginX={1} paddingBottom={3}>
+                    <Stack
+                      sx={{
+                        flex: 1,
+                        marginX: 1,
+                        paddingBottom: 3,
+                      }}
+                    >
                       <Typography
                         variant="caption"
                         color={"white"}

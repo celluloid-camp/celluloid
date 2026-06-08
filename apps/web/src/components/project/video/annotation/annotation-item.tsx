@@ -187,12 +187,11 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             slotProps={{
               primary: {
                 color: "white",
-                fontWeight: "medium",
                 variant: "body1",
-                margin: 0,
+                sx: { fontWeight: "medium", margin: 0 },
               },
               secondary: {
-                margin: 0,
+                sx: { margin: 0 },
               },
             }}
             primary={
@@ -205,9 +204,11 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                   {annotation.user.username}
                 </Typography>{" "}
                 <Typography
-                  fontWeight="medium"
                   variant="caption"
                   className="text-gray-500"
+                  sx={{
+                    fontWeight: "medium",
+                  }}
                 >
                   {"-"} {dayjs(annotation.createdAt).fromNow()}
                 </Typography>
@@ -224,12 +225,14 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
             }
           />
           <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-end"
-            alignContent={"center"}
-            justifyContent={"center"}
-            sx={{ minWidth: 100 }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              alignContent: "center",
+              justifyContent: "center",
+              minWidth: 100,
+            }}
           >
             {hovering && canEdit ? (
               <Stack direction={"row"}>
@@ -263,7 +266,13 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                     : null}
                 </Typography>
 
-                <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                <Stack
+                  direction={"row"}
+                  spacing={1}
+                  sx={{
+                    alignItems: "center",
+                  }}
+                >
                   {isContextual ? (
                     <FilterTiltShiftIcon
                       sx={{ color: "warning.main", fontSize: 15 }}
@@ -278,7 +287,9 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
                     <Stack
                       direction={"row"}
                       spacing={0.5}
-                      alignItems={"center"}
+                      sx={{
+                        alignItems: "center",
+                      }}
                     >
                       <Typography
                         sx={{ display: "inline" }}
@@ -306,7 +317,12 @@ export const AnnotationItem: React.FC<AnnotationItemProps> = ({
 
         {annotation.comments.length > 0 || project.commentable ? (
           <Collapse in={collapsed} timeout="auto" unmountOnExit>
-            <Divider light textAlign="left" />
+            <Divider
+              textAlign="left"
+              sx={{
+                opacity: "0.6",
+              }}
+            />
             {annotation.comments.map(
               (comment: AnnotationCommentByProjectId) => (
                 <List

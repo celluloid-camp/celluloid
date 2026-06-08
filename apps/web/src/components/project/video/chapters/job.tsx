@@ -35,9 +35,9 @@ export function CreateChaptersJob({
     <Grow in={true}>
       <Stack
         spacing={1}
-        alignContent={"center"}
-        alignItems={"center"}
         sx={{
+          alignContent: "center",
+          alignItems: "center",
           paddingY: 5,
           paddingX: 5,
           borderRadius: 1,
@@ -49,7 +49,13 @@ export function CreateChaptersJob({
         }}
       >
         <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-        <Typography variant="body2" color="gray" textAlign={"center"}>
+        <Typography
+          variant="body2"
+          color="gray"
+          sx={{
+            textAlign: "center",
+          }}
+        >
           {t("project.chapters.not-found")}
         </Typography>
         {canGenerate ? (
