@@ -95,12 +95,14 @@ export const UserPlaylistsGrid: React.FC = () => {
   if (isLoading) {
     return (
       <Box
-        mx={2}
-        my={10}
-        display={"flex"}
-        alignContent={"center"}
-        justifyContent={"center"}
-        alignItems={"center"}
+        sx={{
+          mx: 2,
+          my: 10,
+          display: "flex",
+          alignContent: "center",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <Box>
           <CircularProgress />
@@ -174,13 +176,22 @@ export const UserPlaylistsGrid: React.FC = () => {
             >
               <PlaylistPlayIcon />
             </Box>
-            <Typography variant="h5" fontWeight={600} gutterBottom>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+              }}
+            >
               {t("profile.me.playlist.empty")}
             </Typography>
             <Typography
               variant="body1"
-              color="text.secondary"
-              sx={{ mb: 3, maxWidth: 320 }}
+              sx={{
+                color: "text.secondary",
+                mb: 3,
+                maxWidth: 320,
+              }}
             >
               {t("profile.me.playlist.emptyDescription")}
             </Typography>
@@ -208,7 +219,6 @@ export const UserPlaylistsGrid: React.FC = () => {
           </Typography>
         ) : null}
       </Box>
-
       {playlistsData.items.length > 0 && (
         <Box
           sx={{
@@ -230,7 +240,6 @@ export const UserPlaylistsGrid: React.FC = () => {
           />
         </Box>
       )}
-
       <CreatePlaylistDialog
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}

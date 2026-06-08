@@ -52,7 +52,12 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
         paddingY: 3,
       }}
     >
-      <Typography variant="h6" mb={2}>
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 2,
+        }}
+      >
         {t("project.export.title")}
       </Typography>
       <Stack direction={"row"} spacing={1}>

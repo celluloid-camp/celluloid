@@ -23,9 +23,21 @@ export function HomePageHero() {
       }}
     >
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 3, md: 5 }} alignItems="stretch">
+        <Grid
+          container
+          spacing={{ xs: 3, md: 5 }}
+          sx={{
+            alignItems: "stretch",
+          }}
+        >
           <Grid size={{ xs: 12, md: 8 }} sx={{ display: "flex" }}>
-            <Stack spacing={3} justifyContent="center" sx={{ width: "100%" }}>
+            <Stack
+              spacing={3}
+              sx={{
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
               <Box sx={{ width: { xs: 110, sm: 140 } }}>
                 <LogoSign sx={{ width: "100px", height: "auto" }} />
               </Box>
@@ -33,8 +45,10 @@ export function HomePageHero() {
               <Box>
                 <Typography
                   variant="h4"
-                  fontFamily="abril_fatfaceregular"
                   gutterBottom
+                  sx={{
+                    fontFamily: "abril_fatfaceregular",
+                  }}
                 >
                   {t("title")}
                 </Typography>
@@ -48,7 +62,12 @@ export function HomePageHero() {
 
               <Stack spacing={3}>
                 <Box>
-                  <Typography gutterBottom fontWeight="bold">
+                  <Typography
+                    gutterBottom
+                    sx={{
+                      fontWeight: "bold",
+                    }}
+                  >
                     {t("tutoriel.title")}
                   </Typography>
                   <Typography variant="subtitle1">
@@ -67,7 +86,12 @@ export function HomePageHero() {
                 </Box>
 
                 <Box>
-                  <Typography gutterBottom fontWeight="bold">
+                  <Typography
+                    gutterBottom
+                    sx={{
+                      fontWeight: "bold",
+                    }}
+                  >
                     {t("tutoriel.subtitle")}
                   </Typography>
                   <Typography variant="subtitle1">
@@ -91,7 +115,12 @@ export function HomePageHero() {
           <Grid size={{ xs: 12, md: 4 }}>
             <Stack spacing={2.5} sx={{ height: "100%" }}>
               <Paper className="p-8 w-full rounded-lg">
-                <Stack alignItems="center" spacing={1.5}>
+                <Stack
+                  spacing={1.5}
+                  sx={{
+                    alignItems: "center",
+                  }}
+                >
                   <Box sx={{ width: 120 }}>
                     <TeacherIcon />
                   </Box>
@@ -110,7 +139,12 @@ export function HomePageHero() {
               </Paper>
 
               <Paper className="p-8 w-full">
-                <Stack alignItems="center" spacing={1.5}>
+                <Stack
+                  spacing={1.5}
+                  sx={{
+                    alignItems: "center",
+                  }}
+                >
                   <Box sx={{ width: 120 }}>
                     <StudentsIcon />
                   </Box>

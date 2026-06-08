@@ -48,28 +48,51 @@ export const ControlsContainer = () => {
         },
       }}
     >
-      <Stack direction="column" height="100%" justifyContent="flex-end">
+      <Stack
+        direction="column"
+        sx={{
+          height: "100%",
+          justifyContent: "flex-end",
+        }}
+      >
         <Stack
           direction="row"
-          sx={{ flex: 1, minHeight: 0 }}
-          alignItems="stretch"
+          sx={{
+            alignItems: "stretch",
+            flex: 1,
+            minHeight: 0,
+          }}
         >
           {/* <SeekBackwardGestureRegion /> */}
           <TogglePausedGestureRegion />
           {/* <SeekForwardGestureRegion /> */}
         </Stack>
         <Stack direction="column" spacing={0} sx={{ px: 1, pb: 1 }}>
-          <Stack direction="row" alignItems="center" sx={{ width: "100%" }}>
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             <Seekbar />
           </Stack>
           <Stack
             direction="row"
-            alignItems="center"
-            justifyContent="space-between"
             spacing={0}
-            sx={{ width: "100%" }}
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
           >
-            <Stack direction="row" alignItems="center" spacing={0}>
+            <Stack
+              direction="row"
+              spacing={0}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <PlayButton />
               <SeekBackwardButton />
               <SeekForwardButton />
@@ -84,7 +107,13 @@ export const ControlsContainer = () => {
               </Typography>
               <DurationDisplay remaining={false} />
             </Stack>
-            <Stack direction="row" alignItems="center" spacing={0}>
+            <Stack
+              direction="row"
+              spacing={0}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <MuteButton />
               <VolumeSlider />
               <PlaybackRateMenuButton />

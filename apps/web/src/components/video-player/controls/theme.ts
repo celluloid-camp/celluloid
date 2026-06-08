@@ -13,8 +13,10 @@ const theme = createTheme({
     },
     MuiTooltip: {
       defaultProps: {
-        PopperProps: {
-          container,
+        slotProps: {
+          popper: {
+            container,
+          },
         },
       },
     },

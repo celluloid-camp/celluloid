@@ -65,7 +65,13 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
         }}
       >
         <ListItem>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+            }}
+          >
             <Avatar
               src={project.user.image ?? undefined}
               sx={{
@@ -79,7 +85,11 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
             </Avatar>
             <Stack direction="column" spacing={0}>
               <Typography variant="body2">{project.user.username}</Typography>
-              <Typography fontSize={10}>
+              <Typography
+                sx={{
+                  fontSize: 10,
+                }}
+              >
                 {localeRole(project.user.role ?? null)}
               </Typography>
             </Stack>
@@ -88,7 +98,13 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
 
         {members?.map((member) => (
           <ListItem key={member.id}>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <Avatar
                 sx={{
                   background: member.user?.color,
@@ -102,7 +118,11 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
               </Avatar>
               <Stack direction="column" spacing={0}>
                 <Typography variant="body2">{member.user?.username}</Typography>
-                <Typography fontSize={10}>
+                <Typography
+                  sx={{
+                    fontSize: 10,
+                  }}
+                >
                   {localeRole(member.user?.role ?? null)}
                 </Typography>
               </Stack>

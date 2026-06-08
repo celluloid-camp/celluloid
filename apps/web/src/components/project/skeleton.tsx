@@ -11,7 +11,12 @@ import {
 
 export const ProjectSkeleton = () => {
   return (
-    <Box display={"flex"} flexDirection={"column"}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Grid
         container
         sx={{
@@ -24,11 +29,11 @@ export const ProjectSkeleton = () => {
       >
         <Grid sx={{ position: "relative" }} size={8}>
           <Box
-            display={"flex"}
-            alignContent={"center"}
-            justifyContent={"center"}
-            alignItems={"center"}
             sx={{
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "center",
+              alignItems: "center",
               backgroundColor: "black",
               height: "100%",
               minHeight: "100%",
@@ -105,8 +110,10 @@ export const ProjectSkeleton = () => {
               <Grid
                 container
                 direction="row"
-                alignItems="flex-start"
                 spacing={4}
+                sx={{
+                  alignItems: "flex-start",
+                }}
               >
                 <Grid
                   size={{
@@ -138,7 +145,13 @@ export const ProjectSkeleton = () => {
                     lg: 4,
                   }}
                 >
-                  <Box gap={4} display={"flex"} flexDirection={"column"}>
+                  <Box
+                    sx={{
+                      gap: 4,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     <Skeleton
                       variant="rectangular"
                       sx={{

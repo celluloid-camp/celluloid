@@ -10,7 +10,12 @@ import { UserPublicProjects } from "./projects";
 
 function ProfileSkeleton() {
   return (
-    <Stack alignItems="center" spacing={2}>
+    <Stack
+      spacing={2}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <Skeleton variant="circular" width={100} height={100} />
       <Skeleton variant="text" width={200} height={40} />
       <Skeleton variant="text" width={250} height={24} />
@@ -30,7 +35,11 @@ function PublicProfileContent({ userId }: { userId: string }) {
   if (!data) return null;
   return (
     <>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Avatar
           sx={{
             background: data.color,
@@ -58,12 +67,15 @@ function PublicProfileContent({ userId }: { userId: string }) {
           {localeRole(data.role)}
         </Typography>
       </Stack>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Typography variant="body2" color="textPrimary">
           {data.bio}
         </Typography>
       </Stack>
-
       <UserPublicProjects userId={userId} />
     </>
   );

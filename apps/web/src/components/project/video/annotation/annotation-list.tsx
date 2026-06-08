@@ -48,8 +48,12 @@ export const AnnotationList: React.FC<
 
         {currentAnnotations.length === 0 && <EmptyAnnotation />}
       </List>
-
-      <Box display={"flex"} flexDirection={"column"}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {project.annotable && user ? (
           <AnnotationForm
             duration={project.duration}

@@ -64,7 +64,13 @@ export function ForgotForm() {
         </DialogContent>
         <Divider />
         <DialogActions sx={{ marginY: 1, marginX: 2 }}>
-          <Box display="flex" justifyContent={"flex-end"} flex={1}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flex: 1,
+            }}
+          >
             <Button
               variant="contained"
               size="small"

@@ -78,7 +78,16 @@ export const ChapterTimestampSlider: React.FC<DurationSliderProps> = ({
   };
 
   return (
-    <Grid container spacing={2} alignItems="center" sx={sx}>
+    <Grid
+      container
+      spacing={2}
+      sx={[
+        {
+          alignItems: "center",
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+    >
       <Stack direction={"row"}>
         <IconButton
           size="small"

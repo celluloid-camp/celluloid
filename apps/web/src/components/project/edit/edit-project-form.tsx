@@ -228,13 +228,15 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
             autoComplete="none"
             spellCheck={false}
             margin="normal"
-            inputProps={{
-              "data-testid": "title",
-            }}
             {...register("title")}
             error={Boolean(errors.title)}
             helperText={errors.title?.message}
             disabled={isSubmitting || mutation.isPending}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "title",
+              },
+            }}
           />
           <TextField
             id="description"
@@ -243,15 +245,17 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
             rows={3}
             fullWidth
             autoComplete="none"
-            inputProps={{
-              "data-testid": "description",
-            }}
             spellCheck={false}
             margin="normal"
             {...register("description")}
             error={Boolean(errors.description)}
             helperText={errors.description?.message}
             disabled={isSubmitting || mutation.isPending}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "description",
+              },
+            }}
           />
           <AutoCompleteTags
             id="keywords"
@@ -263,8 +267,10 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
             value={watch("keywords") ?? []}
             textfieldprops={{
               margin: "normal",
-              inputProps: {
-                "data-testid": "keywords",
+              slotProps: {
+                htmlInput: {
+                  "data-testid": "keywords",
+                },
               },
               label: t("project.keywords"),
             }}
@@ -350,7 +356,13 @@ export function EditProjectForm({ projectId }: { projectId: string }) {
               )}
             </Grid>
 
-            <Grid display={"flex"} justifyContent={"flex-end"} size={8}>
+            <Grid
+              size={8}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
               <Button
                 variant="contained"
                 size="medium"

@@ -49,8 +49,18 @@ export const Footer: React.FC<FooterProps> = (props) => {
               <Link href="/api-doc" className="text-white" variant="body2">
                 API
               </Link>
-              <Stack direction={"row"} marginTop={2} spacing={1}>
-                <Box width={24}>
+              <Stack
+                direction={"row"}
+                spacing={1}
+                sx={{
+                  marginTop: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 24,
+                  }}
+                >
                   <a
                     href="https://github.com/celluloid-camp"
                     target="_blank"
@@ -59,7 +69,11 @@ export const Footer: React.FC<FooterProps> = (props) => {
                     <GithubLogo />
                   </a>
                 </Box>
-                <Box width={20}>
+                <Box
+                  sx={{
+                    width: 20,
+                  }}
+                >
                   <a
                     href="https://canevas.hypotheses.org/"
                     target="_blank"
@@ -68,7 +82,11 @@ export const Footer: React.FC<FooterProps> = (props) => {
                     <OpenEditionLogo />
                   </a>
                 </Box>
-                <Box width={24}>
+                <Box
+                  sx={{
+                    width: 24,
+                  }}
+                >
                   <a
                     href="https://huma-num.fr/"
                     target="_blank"
@@ -100,7 +118,9 @@ export const Footer: React.FC<FooterProps> = (props) => {
                 variant="body2"
                 gutterBottom={true}
                 className="text-white"
-                textAlign={{ lg: "left", sm: "center" }}
+                sx={{
+                  textAlign: { lg: "left", sm: "center" },
+                }}
               >
                 {t.rich("footer.copyright", {
                   link: (chunks: string) => (

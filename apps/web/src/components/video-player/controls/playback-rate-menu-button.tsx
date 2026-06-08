@@ -51,7 +51,7 @@ export const PlaybackRateMenuButton = ({
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ "aria-labelledby": "playback-rate-button" }}
+        slotProps={{ list: { "aria-labelledby": "playback-rate-button" } }}
       >
         {rates.map((rate) => {
           const selected = rate === mediaPlaybackRate;

@@ -62,7 +62,6 @@ export const UserProjectGrid: React.FC = () => {
           />
         </Tabs>
       </Box>
-
       {/* My Projects Tab */}
       {value === 0 && (
         <Box
@@ -72,12 +71,14 @@ export const UserProjectGrid: React.FC = () => {
         >
           {projectsFetching || !projectsData ? (
             <Box
-              mx={2}
-              my={10}
-              display={"flex"}
-              alignContent={"center"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              sx={{
+                mx: 2,
+                my: 10,
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Box>
                 <CircularProgress />
@@ -132,7 +133,6 @@ export const UserProjectGrid: React.FC = () => {
           )}
         </Box>
       )}
-
       {/* My Playlists Tab */}
       {value === 1 && (
         <Box
@@ -142,12 +142,14 @@ export const UserProjectGrid: React.FC = () => {
         >
           {playlistsFetching || !playlistsData ? (
             <Box
-              mx={2}
-              my={10}
-              display={"flex"}
-              alignContent={"center"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              sx={{
+                mx: 2,
+                my: 10,
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Box>
                 <CircularProgress />

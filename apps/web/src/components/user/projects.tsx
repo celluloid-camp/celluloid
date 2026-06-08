@@ -50,7 +50,7 @@ export function UserPublicProjects({ userId }: { userId: string }) {
         >
           {data.items?.length > 0 && (
             <>
-              <StyledTitle marginBlock={3} variant="h4">
+              <StyledTitle sx={{ marginBlock: 3 }} variant="h4">
                 Projets publics
               </StyledTitle>
               <Grid container spacing={5}>

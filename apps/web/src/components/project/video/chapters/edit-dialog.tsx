@@ -109,10 +109,12 @@ export function EditChapterDialog({
       onClose={onClose}
       fullWidth
       maxWidth="sm"
-      PaperProps={{
-        sx: {
-          backgroundColor: "background.dark",
-          color: "white",
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundColor: "background.dark",
+            color: "white",
+          },
         },
       }}
     >
@@ -153,12 +155,8 @@ export function EditChapterDialog({
                 label={t("chapters.form.title.label")}
                 fullWidth
                 size="small"
-                inputProps={{ maxLength: 250 }}
                 error={!!errors.title}
                 helperText={errors.title?.message}
-                InputLabelProps={{
-                  sx: { color: grey[400] },
-                }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: grey[800],
@@ -175,6 +173,13 @@ export function EditChapterDialog({
                   },
                 }}
                 {...register("title")}
+                slotProps={{
+                  htmlInput: { maxLength: 250 },
+
+                  inputLabel: {
+                    sx: { color: grey[400] },
+                  },
+                }}
               />
               <TextField
                 label={t("chapters.form.description.label")}
@@ -182,12 +187,8 @@ export function EditChapterDialog({
                 size="small"
                 multiline
                 minRows={3}
-                inputProps={{ maxLength: 250 }}
                 error={!!errors.description}
                 helperText={errors.description?.message}
-                InputLabelProps={{
-                  sx: { color: grey[400] },
-                }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: grey[800],
@@ -204,6 +205,13 @@ export function EditChapterDialog({
                   },
                 }}
                 {...register("description")}
+                slotProps={{
+                  htmlInput: { maxLength: 250 },
+
+                  inputLabel: {
+                    sx: { color: grey[400] },
+                  },
+                }}
               />
             </Stack>
           </Box>

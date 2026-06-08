@@ -67,11 +67,13 @@ export const EditableText: React.FC<EditableTextProps> = ({
 
   return (
     <Box
-      display="flex"
-      alignItems="center"
       ref={ref}
       onMouseEnter={() => !disabled && setHovering(true)}
       onMouseLeave={() => !disabled && setHovering(false)}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+      }}
     >
       {isEditing ? (
         <>

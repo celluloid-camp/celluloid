@@ -25,11 +25,10 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
-    "@mui/icons-material": "^7.3.9",
-    "@mui/lab": "7.0.1-beta.23",
-    "@mui/material": "^7.3.9",
-    "@mui/material-nextjs": "^7.3.9",
-    "@mui/styles": "^6.4.8",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/lab": "9.0.0-beta.2",
+    "@mui/material": "^9.0.0",
+    "@mui/material-nextjs": "^9.0.0",
     "@sentry/nextjs": "^10",
     "@t3-oss/env-nextjs": "catalog:",
     "@tailwindcss/postcss": "^4.1.18",
@@ -119,6 +118,9 @@
   },
   "overrides": {
     "@types/react": "catalog:",
-    "@types/react-dom": "catalog:"
+    "@types/react-dom": "catalog:",
+    "mui-image": {
+      "@mui/material": "^9.0.0"
+    }
   }
 }

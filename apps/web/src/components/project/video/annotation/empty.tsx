@@ -9,16 +9,10 @@ export function EmptyAnnotation() {
     <Grow in={true}>
       <Stack
         spacing={1}
-        alignContent={"center"}
-        alignItems={"center"}
-        sx={{
-          paddingY: 5,
-          paddingX: 5,
-          marginBottom: 1,
-        }}
+        className="content-center items-center px-10 py-10 mb-2"
       >
-        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-        <Typography variant="body2" color="gray" textAlign={"center"}>
+        <InfoIcon className="text-[30px] text-gray-500" />
+        <Typography variant="body2" className="text-center text-gray-500">
           {t("project.annotaions.empty")}
         </Typography>
       </Stack>

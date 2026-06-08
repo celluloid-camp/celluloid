@@ -11,7 +11,12 @@ import React from "react";
 
 export function StudioSkeleton() {
   return (
-    <Box display={"flex"} flexDirection={"column"}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Box
         sx={{
           backgroundColor: "brand.orange",

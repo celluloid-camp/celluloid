@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.10-labs
 
 # Dependencies stage - Full Bun
-FROM oven/bun:1.3.8-alpine AS deps
+FROM oven/bun:1.3.13-alpine AS deps
 
 # Install system dependencies for native modules
 RUN apk add --no-cache libc6-compat python3 make g++ pkgconfig nodejs npm \

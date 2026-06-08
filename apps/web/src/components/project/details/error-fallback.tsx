@@ -1,6 +1,6 @@
 "use client";
 
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import { notFound } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -19,7 +19,12 @@ export const projectFallbackRender = ({
     notFound();
   }
   return (
-    <Box display="flex" flexDirection="column">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Grid
         container
         sx={{
@@ -32,18 +37,18 @@ export const projectFallbackRender = ({
       >
         <Grid sx={{ position: "relative" }} size={8}>
           <Box
-            display="flex"
-            alignContent="center"
-            justifyContent="center"
-            alignItems="center"
-            flexDirection="column"
             sx={{
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
               backgroundColor: "black",
               height: "100%",
               minHeight: "100%",
             }}
           >
-            <ErrorOutlineIcon sx={{ color: "white", fontSize: 60, mb: 2 }} />
+            <ErrorOutlinedIcon sx={{ color: "white", fontSize: 60, mb: 2 }} />
             <Typography variant="h6" sx={{ color: "white" }}>
               Error Loading Project
             </Typography>
@@ -90,8 +95,10 @@ export const projectFallbackRender = ({
               <Grid
                 container
                 direction="row"
-                alignItems="flex-start"
                 spacing={4}
+                sx={{
+                  alignItems: "flex-start",
+                }}
               >
                 <Grid
                   size={{
@@ -117,7 +124,13 @@ export const projectFallbackRender = ({
                     lg: 4,
                   }}
                 >
-                  <Box gap={4} display="flex" flexDirection="column" />
+                  <Box
+                    sx={{
+                      gap: 4,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  />
                 </Grid>
               </Grid>
             </Paper>

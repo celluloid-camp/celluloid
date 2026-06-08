@@ -39,14 +39,14 @@ export function VisionStudio({ projectId }: { projectId: string }) {
       projectId: projectId,
     }),
   );
-  if (!analysis || !analysis.processing) {
+  if (!analysis || analysis.status !== "completed") {
     return null;
   }
   return (
     <VisionStudioWrapper
       projectId={projectId}
-      analysis={analysis.processing}
-      sprite={analysis.sprite?.publicUrl}
+      analysis={analysis.data}
+      sprite={analysis.spriteURL}
     />
   );
 }
@@ -134,7 +134,12 @@ function VisionStudioWrapper({
   };
 
   return (
-    <Box display={"flex"} flexDirection={"column"}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Box
         sx={{
           backgroundColor: "brand.orange",
@@ -153,12 +158,14 @@ function VisionStudioWrapper({
             }}
           >
             <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="flex-start"
-              gap={1}
-              justifyContent="space-between"
-              sx={{ mb: 1 }}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: 1,
+                justifyContent: "space-between",
+                mb: 1,
+              }}
             >
               <Box>
                 <Link href={`/project/${projectId}`}>
@@ -172,6 +179,7 @@ function VisionStudioWrapper({
                 >
                   Studio
                 </Typography>
+                {analysis}
               </Box>
               <Typography align="left" variant="body1">
                 {project.title}
@@ -213,12 +221,12 @@ function VisionStudioWrapper({
                 />
 
                 {/* Overlay */}
-                <DetectionOverlay
+                {/* <DetectionOverlay
                   analysis={initialAnalysis}
                   currentTime={currentTime}
                   videoWidth={actualVideoWidth}
                   videoHeight={actualVideoHeight}
-                />
+                /> */}
               </Box>
             </Box>
 

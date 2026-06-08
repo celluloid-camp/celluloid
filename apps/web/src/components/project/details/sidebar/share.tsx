@@ -75,8 +75,8 @@ export const Share: React.FC<SharePanelProps> = ({ project, user }) => {
           <Typography
             variant="h6"
             gutterBottom={true}
-            textAlign={"center"}
             sx={{
+              textAlign: "center",
               fontFamily: "monospace",
               flex: 1,
             }}

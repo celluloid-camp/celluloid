@@ -66,7 +66,11 @@ export const Header: React.FC<BoxProps> = () => {
     <>
       <AppBar color="default" position="fixed" className="shadow-sm">
         <Toolbar disableGutters className="px-6">
-          <Box flexGrow={1}>
+          <Box
+            sx={{
+              flexGrow: 1,
+            }}
+          >
             <Link href="/">
               <Button sx={{ p: 0 }}>
                 <Box sx={{ display: { xs: "block", md: "none" } }}>
@@ -158,7 +162,6 @@ export const Header: React.FC<BoxProps> = () => {
           </Box>
         </Toolbar>
       </AppBar>
-
       {/* Mobile drawer */}
       <Drawer
         anchor="right"

@@ -55,7 +55,7 @@ export const CaptionsMenuButton = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ "aria-labelledby": "captions-button" }}
+        slotProps={{ list: { "aria-labelledby": "captions-button" } }}
       >
         <MenuItem
           onClick={() => {

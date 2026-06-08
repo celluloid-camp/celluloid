@@ -42,7 +42,14 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
           }}
         >
           <ProjectHeader project={project} />
-          <Grid container direction="row" alignItems="flex-start" spacing={2}>
+          <Grid
+            container
+            direction="row"
+            spacing={2}
+            sx={{
+              alignItems: "flex-start",
+            }}
+          >
             <Grid
               size={{
                 xs: 12,

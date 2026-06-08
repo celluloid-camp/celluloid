@@ -41,14 +41,12 @@ export function ProjectHeader({ project }: Props) {
           {project.playlist.title}
         </Typography>
       ) : null}
-
       <Typography align="left" variant="h4">
         {project.title}
       </Typography>
-
       <Box
-        display="flex"
         sx={{
+          display: "flex",
           mt: 1,
           alignItems: { xs: "flex-start", sm: "center" },
           gap: 1,
@@ -65,14 +63,19 @@ export function ProjectHeader({ project }: Props) {
         >
           {project.user.initial}
         </Avatar>
-        <Box display="flex" flexDirection={"column"} sx={{ ml: 0 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            ml: 0,
+          }}
+        >
           <Typography>{project.user.username}</Typography>
           <Typography variant="caption">
             {dayjs(project.publishedAt).format("DD/MM/YYYY")}
           </Typography>
         </Box>
       </Box>
-
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={1}

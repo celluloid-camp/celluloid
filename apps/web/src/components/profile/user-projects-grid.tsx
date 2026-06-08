@@ -47,12 +47,14 @@ export const UserProjectsGrid: React.FC = () => {
   if (isLoading) {
     return (
       <Box
-        mx={2}
-        my={10}
-        display={"flex"}
-        alignContent={"center"}
-        justifyContent={"center"}
-        alignItems={"center"}
+        sx={{
+          mx: 2,
+          my: 10,
+          display: "flex",
+          alignContent: "center",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <Box>
           <CircularProgress />

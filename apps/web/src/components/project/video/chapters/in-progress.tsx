@@ -12,11 +12,19 @@ export function ChaptersJobInProgress() {
           <Stack
             direction="row"
             spacing={1}
-            alignItems="center"
-            justifyContent="center"
+            sx={{
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             <CircularProgress size={12} color="primary" />
-            <Typography variant="body2" color="gray" textAlign={"center"}>
+            <Typography
+              variant="body2"
+              color="gray"
+              sx={{
+                textAlign: "center",
+              }}
+            >
               {t("project.chapters.in-progress")}
             </Typography>
           </Stack>

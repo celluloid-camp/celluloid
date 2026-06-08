@@ -13,16 +13,21 @@ export function ProjectMainScreen({ projectId }: { projectId: string }) {
     api.project.byId.queryOptions({ id: projectId }),
   );
   return (
-    <Box display={"flex"} flexDirection={"column"}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <MediaProvider>
         <Suspense
           fallback={
             <Box
-              display={"flex"}
-              alignContent={"center"}
-              justifyContent={"center"}
-              alignItems={"center"}
               sx={{
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
                 backgroundColor: "black",
                 height: "60vh",
                 minHeight: "60vh",

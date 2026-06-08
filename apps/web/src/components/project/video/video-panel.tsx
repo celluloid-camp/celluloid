@@ -97,7 +97,13 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             position: "relative",
           }}
         >
-          <Box display="flex" flexDirection={"column"} height={availableHeight}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: availableHeight,
+            }}
+          >
             <AnnotationList user={props.user} {...props} />
           </Box>
         </TabPanel>
@@ -110,7 +116,13 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
             position: "relative",
           }}
         >
-          <Box display="flex" flexDirection={"column"} height={availableHeight}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: availableHeight,
+            }}
+          >
             <ScenesPanel project={props.project} user={props.user} />
           </Box>
         </TabPanel>

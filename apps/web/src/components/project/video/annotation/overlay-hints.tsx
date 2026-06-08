@@ -40,7 +40,13 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
       <React.Fragment>
         <Stack sx={{ py: 1 }} spacing={1}>
           <Box>
-            <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Stack
+              direction={"row"}
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <Avatar
                 sx={{
                   background: annotation.user.color,

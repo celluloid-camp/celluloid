@@ -73,7 +73,7 @@ export function ProjectVision({ project, user }: Props) {
     project.editable || (data && data.status === "failed");
 
   const canViewStudio =
-    user?.role === "ADMIN" ||
+    user?.role === "admin" ||
     (user?.id === project.userId && data && data.status == "completed");
 
   return (

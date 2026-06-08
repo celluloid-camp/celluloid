@@ -126,12 +126,14 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
             }
           />
           <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-end"
-            alignContent={"center"}
-            justifyContent={"center"}
-            sx={{ minWidth: 40 }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              alignContent: "center",
+              justifyContent: "center",
+              minWidth: 40,
+            }}
           >
             {hovering && canEdit ? (
               <Stack direction={"row"}>

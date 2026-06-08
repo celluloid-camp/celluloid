@@ -150,8 +150,10 @@ function TimelinePill({
         disableFocusListener
         disableTouchListener
         arrow
-        PopperProps={{
-          anchorEl: anchorEl,
+        slotProps={{
+          popper: {
+            anchorEl: anchorEl,
+          },
         }}
       >
         <span />
@@ -483,23 +485,24 @@ function Timeline({
                     />
                   ) : (
                     <Typography
-                      fontWeight="bold"
-                      fontSize={14}
-                      sx={{ cursor: "pointer", display: "inline-block" }}
                       onClick={() => handleIdEditStart(index, id)}
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: 14,
+                        cursor: "pointer",
+                        display: "inline-block",
+                      }}
                     >
                       {id}
                     </Typography>
                   )}
                 </Box>
-
                 <MemoizedTimelinePill
                   objs={objs}
                   videoDurationSec={videoDurationSec}
                   sprite={sprite}
                   id={id}
                 />
-
                 {/* <IconButton
                   color="primary"
                   sx={{ ml: 1 }}

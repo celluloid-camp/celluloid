@@ -55,7 +55,11 @@ export function ChaptersPanelContent({ project, user }: ChaptersPanelProps) {
   );
 
   return (
-    <Stack height="100%">
+    <Stack
+      sx={{
+        height: "100%",
+      }}
+    >
       <ChapterTimeline project={project} chapters={chapters} />
       {project.editable ? (
         <ChapterForm project={project} user={user} chapters={chapters} />

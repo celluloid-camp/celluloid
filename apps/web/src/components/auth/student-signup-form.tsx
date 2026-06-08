@@ -132,8 +132,10 @@ export function StudentSignupForm() {
             error={Boolean(errors.shareCode)}
             helperText={errors.shareCode?.message}
             {...register("shareCode")}
-            inputProps={{
-              "data-testid": "shareCode",
+            slotProps={{
+              htmlInput: {
+                "data-testid": "shareCode",
+              },
             }}
           />
 
@@ -148,8 +150,10 @@ export function StudentSignupForm() {
             error={Boolean(errors.username)}
             helperText={errors.username?.message}
             {...register("username")}
-            inputProps={{
-              "data-testid": "username",
+            slotProps={{
+              htmlInput: {
+                "data-testid": "username",
+              },
             }}
           />
 
@@ -164,14 +168,22 @@ export function StudentSignupForm() {
             error={Boolean(errors.password)}
             helperText={errors.password?.message}
             {...register("password")}
-            inputProps={{
-              "data-testid": "password",
+            slotProps={{
+              htmlInput: {
+                "data-testid": "password",
+              },
             }}
           />
         </DialogContent>
         <Divider />
         <DialogActions sx={{ mx: 2, my: 2 }}>
-          <Box display="flex" justifyContent={"space-between"} flex={1}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flex: 1,
+            }}
+          >
             <Box>
               <Button
                 color="primary"

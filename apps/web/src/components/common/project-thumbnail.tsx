@@ -103,10 +103,14 @@ export function ProjectThumbnail({ project }: Props) {
         </Box>
       </Box>
       <Box
-        display="flex"
-        alignItems={"flex-start"}
-        gap={1}
-        sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}
+        sx={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 1,
+          paddingX: 1,
+          paddingTop: 2,
+          paddingBottom: 0,
+        }}
       >
         <Avatar
           sx={{
@@ -126,12 +130,28 @@ export function ProjectThumbnail({ project }: Props) {
           {project.user?.initial}
         </Avatar>
         <Stack spacing={0}>
-          <Typography fontWeight={"bold"} noWrap>
+          <Typography
+            noWrap
+            sx={{
+              fontWeight: "bold",
+            }}
+          >
             {project.title}
           </Typography>
-          <Box display="flex" alignItems={"center"} gap={1}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
             <Typography variant="body2">{project.user?.username}</Typography>
-            <Typography variant="caption" color={"grey.700"}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: "grey.700",
+              }}
+            >
               {dayjs(project.publishedAt).fromNow(true)}
             </Typography>
           </Box>

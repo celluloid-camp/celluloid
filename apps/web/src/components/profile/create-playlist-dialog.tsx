@@ -293,9 +293,9 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                             >
                               <Typography
                                 variant="body2"
-                                fontWeight="bold"
                                 noWrap
                                 sx={{
+                                  fontWeight: "bold",
                                   display: "-webkit-box",
                                   overflow: "hidden",
                                   WebkitBoxOrient: "vertical",
@@ -313,8 +313,10 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                 ) : (
                   <Typography
                     variant="body1"
-                    color="text.secondary"
-                    sx={{ mt: 1 }}
+                    sx={{
+                      color: "text.secondary",
+                      mt: 1,
+                    }}
                   >
                     {t("playlist.edit.projects.empty")}
                   </Typography>
@@ -441,9 +443,9 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                             >
                               <Typography
                                 variant="body2"
-                                fontWeight="bold"
                                 noWrap
                                 sx={{
+                                  fontWeight: "bold",
                                   display: "-webkit-box",
                                   overflow: "hidden",
                                   WebkitBoxOrient: "vertical",
@@ -461,8 +463,10 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                 ) : (
                   <Typography
                     variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 1 }}
+                    sx={{
+                      color: "text.secondary",
+                      mt: 1,
+                    }}
                   >
                     {t("playlist.edit.projects.noAvailable")}
                   </Typography>

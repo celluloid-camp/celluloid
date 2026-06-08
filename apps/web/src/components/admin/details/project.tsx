@@ -135,7 +135,6 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
         <BackButton href="/admin" ariaLabel="back to admin" />
         <Typography variant="h5">{t("admin.project.title")}</Typography>
       </Box>
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box
           sx={{
@@ -258,14 +257,24 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
               }}
             >
               <Box>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("admin.project.label.owner")}
                 </Typography>
                 <Typography>{project.user.username}</Typography>
               </Box>
 
               <Box>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("admin.project.label.date")}
                 </Typography>
                 <Typography>
@@ -274,7 +283,12 @@ export function ProjectDetails({ projectId }: { projectId: string }) {
               </Box>
 
               <Box>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {t("admin.project.label.code")}
                 </Typography>
                 <Typography>{project.shareCode}</Typography>

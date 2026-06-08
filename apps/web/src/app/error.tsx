@@ -31,13 +31,22 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
       }}
     >
       <Header />
-
       <Container maxWidth="sm" sx={{ py: 10 }}>
-        <Stack spacing={3} alignItems="center" textAlign="center">
+        <Stack
+          spacing={3}
+          sx={{
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           <Typography variant="h3" component="h1">
             {t("error.title")}
           </Typography>
-          <Typography color="text.secondary">
+          <Typography
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {t("error.description", {
               default: "An unexpected error occurred. Please try again.",
             })}
