@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.6.0](https://github.com/celluloid-camp/celluloid/compare/v3.5.0...v3.6.0) (2026-06-09)
+
+### Features
+
+* add Material UI custom controls to video player ([18c7668](https://github.com/celluloid-camp/celluloid/commit/18c766842effe214b74ec79c50accc5224b40ac8))
+* add PeerTube integration and enhance video controls ([2327071](https://github.com/celluloid-camp/celluloid/commit/2327071ba7480a93e8dbc53b596c7cb71853937a))
+* add subtitle toggle button to video player ([9b55cbd](https://github.com/celluloid-camp/celluloid/commit/9b55cbd6a2cfd58bcb28c5c1d68181955a2c5b29))
+* create custom PeerTube player for react-player ([e608eab](https://github.com/celluloid-camp/celluloid/commit/e608eab962e56f7bba8790394850b20e4151d979))
+* enhance annotation overlay hints for contextual annotations ([ccc2b40](https://github.com/celluloid-camp/celluloid/commit/ccc2b4096919e9975031cc8196c74bf759c53d58))
+* implement smooth playback time for media current time in annotations ([aca95e3](https://github.com/celluloid-camp/celluloid/commit/aca95e34d581433c6790d310eb28b7dfc7e2ed30))
+* implement video object detection component and integrate it into the video screen ([7b12c6e](https://github.com/celluloid-camp/celluloid/commit/7b12c6eefe562d19e6c4dd4fec2a277ece16d7e3))
+* improve media playback handling with accurate current time and refined pause logic ([ddd5c02](https://github.com/celluloid-camp/celluloid/commit/ddd5c0255ff4fe500476bba9e355586df099e6bf))
+* improve PeerTube player based on BigBlueButton implementation ([b306b13](https://github.com/celluloid-camp/celluloid/commit/b306b13f9ecf5aea865d69af1044842173770fe2))
+* integrate media-chrome for enhanced video player controls and add PeerTube support ([b10948a](https://github.com/celluloid-camp/celluloid/commit/b10948a23adad81482a7ea7227f5e2c3e119b728))
+
+### Bug Fixes
+
+* improve regex pattern and add null checks for SDK loading ([f1153be](https://github.com/celluloid-camp/celluloid/commit/f1153bef1322011cd89d8c3df199fe9947ac221f))
+* update annotation item and comment item ([a7b531b](https://github.com/celluloid-camp/celluloid/commit/a7b531bd59c4df70569dd2111dd44946e3ee15a8))
+* update PeerTube player to use PlayerEntry structure ([29c0b34](https://github.com/celluloid-camp/celluloid/commit/29c0b34171c0becbab87d6e39122c8bf27128556))
+
 ## 3.5.0
 
 ### &nbsp;&nbsp;&nbsp;Features
