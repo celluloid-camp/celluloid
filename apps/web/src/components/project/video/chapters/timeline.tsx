@@ -108,15 +108,14 @@ export function ChapterTimeline({
                   sx={{ display: "inline" }}
                   component="span"
                   variant="caption"
-                  color="gray"
+                  className="text-neutral-400"
                 >
                   #{index + 1}
                 </Typography>
                 <Typography
-                  sx={{ display: "inline", flex: 1 }}
                   component="span"
                   variant="caption"
-                  color="gray"
+                  className="text-neutral-400 inline flex-1"
                 >
                   {formatDuration(chapter.startTime)}
                   {" → "}

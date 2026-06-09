@@ -101,7 +101,7 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
             primary={
               <Typography
                 variant="body2"
-                color={chapter.title ? "white" : grey[700]}
+                className={chapter.title ? "text-white" : "text-neutral-400"}
               >
                 {chapter.title || t("project.chapters.item.placeholder.title")}
               </Typography>
@@ -110,7 +110,9 @@ export const ChapterItem: React.FC<ChapterItemProps> = ({
               chapter.description ? (
                 <Typography
                   variant="body2"
-                  color={chapter.description ? "white" : "gray"}
+                  className={
+                    chapter.description ? "text-white" : "text-neutral-400"
+                  }
                   sx={{
                     display: "-webkit-box",
                     WebkitLineClamp: 3,

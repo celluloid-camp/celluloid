@@ -20,7 +20,7 @@ export function ChaptersJobInProgress() {
             <CircularProgress size={12} color="primary" />
             <Typography
               variant="body2"
-              color="gray"
+              className="text-neutral-400"
               sx={{
                 textAlign: "center",
               }}
