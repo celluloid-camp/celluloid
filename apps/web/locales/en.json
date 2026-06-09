@@ -398,6 +398,30 @@
     },
     "scenes": {
       "title": "Scenes"
+    },
+    "studio": {
+      "title": "Studio",
+      "close": "Close studio",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "merge": "Merge",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Analysis saved",
+      "objects": "Objects",
+      "trackActions": "Actions for {id}",
+      "edit": "Edit",
+      "remove": "Remove",
+      "mergeDialog": {
+        "title": "Merge detections",
+        "description": "Choose the label to keep for the merged detection."
+      },
+      "rename": {
+        "title": "Edit detection label",
+        "label": "Label",
+        "required": "Label is required",
+        "duplicate": "This label is already used"
+      }
     }
   },
   "chapter": {

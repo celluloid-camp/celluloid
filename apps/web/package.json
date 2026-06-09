@@ -51,6 +51,7 @@
     "@trpc/tanstack-react-query": "^11.13.4",
     "@uidotdev/usehooks": "^2.4.1",
     "@workflow/world-postgres": "catalog:",
+    "@xzdarcy/react-timeline-editor": "^1.0.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "better-auth": "catalog:",
     "canvas": "^3.2.1",

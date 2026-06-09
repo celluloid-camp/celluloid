@@ -4,16 +4,17 @@ import { Box, ThemeProvider } from "@mui/material";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useMediaRef } from "media-chrome/react/media-store";
 import ReactPlayer from "react-player";
-import { ProjectById } from "@/lib/trpc/types";
-import { peerTubeWatchUrl } from "@/utils/peertube-url";
-import { AnnotationOverlayHints } from "../project/video/annotation/overlay-hints";
-import { ControlsContainer } from "./controls/controls-container";
-import { LoadingBackdrop } from "./controls/loading-backdrop";
-import "./peertube-setup";
-import theme from "./theme";
-import { useMediaKeyboardShortcuts } from "./use-media-keyboard-shortcuts";
+import { LoadingBackdrop } from "@/components/video-player/controls/loading-backdrop";
+import { StudioControlsContainer } from "@/components/video-player/controls/studio-controls-container";
+import "@/components/video-player/peertube-setup";
+import theme from "@/components/video-player/theme";
+import { useMediaKeyboardShortcuts } from "@/components/video-player/use-media-keyboard-shortcuts";
 
-export default function VideoPlayer({ project }: { project: ProjectById }) {
+type StudioVideoPlayerProps = {
+  src: string;
+};
+
+export function StudioVideoPlayer({ src }: StudioVideoPlayerProps) {
   const mediaRefCallback = useMediaRef();
   const [muted] = useLocalStorage("muted", false);
 
@@ -36,7 +37,7 @@ export default function VideoPlayer({ project }: { project: ProjectById }) {
         <ReactPlayer
           ref={mediaRefCallback}
           slot="media"
-          src={peerTubeWatchUrl(project.host, project.videoId)}
+          src={src}
           height="100%"
           width="100%"
           muted={muted}
@@ -48,8 +49,7 @@ export default function VideoPlayer({ project }: { project: ProjectById }) {
           }}
         />
         <LoadingBackdrop />
-        <AnnotationOverlayHints project={project} />
-        <ControlsContainer />
+        <StudioControlsContainer />
       </Box>
     </ThemeProvider>
   );

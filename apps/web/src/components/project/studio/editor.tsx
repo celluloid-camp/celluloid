@@ -1,275 +1,456 @@
 "use client";
-import type { DetectionResultsModel } from "@celluloid/vision";
-import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import {
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Paper,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import type { DetectionResultsModel } from "@celluloid/vision-api/types";
+import CallMergeIcon from "@mui/icons-material/CallMerge";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { MediaProvider } from "media-chrome/react/media-store";
+import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTRPC } from "@/lib/trpc/client";
+import type { ProjectById } from "@/lib/trpc/types";
+import { peerTubeWatchUrl } from "@/utils/peertube-url";
 import { DetectionOverlay } from "./detection-overlay";
-import { VisionStudioObjectsTab } from "./object-tab";
-import { Timeline } from "./timeline";
+import { MergeDetectionDialog } from "./merge-detection-dialog";
+import { RenameDetectionDialog } from "./rename-detection-dialog";
+import type { DetectionTrack } from "./segments";
+import {
+  applyTimelineChange,
+  buildTracks,
+  mergeTracks,
+  removeTrack,
+  renameTrack,
+} from "./segments";
+import { StudioSkeleton } from "./skeleton";
+import { useUnsavedChangesGuard } from "./use-unsaved-changes-guard";
+import {
+  DEFAULT_TIMELINE_SCALE_INDEX,
+  TIMELINE_SCALE_PRESETS,
+  VisionTimeline,
+} from "./vision-timeline";
 
-const VIDEO_WIDTH = 888;
+const StudioVideoPlayer = dynamic(
+  () => import("./studio-video-player").then((mod) => mod.StudioVideoPlayer),
+  { ssr: false },
+);
 
-// Adapt height to maintain aspect ratio (original: width/height from metadata)
-function getVideoHeight(metadata: { width: number; height: number }) {
-  return Math.round((VIDEO_WIDTH / metadata.width) * metadata.height);
-}
+const STUDIO_BG = "#191b1d";
+/** Matches app layout `pt: 6` below the fixed header. */
+const HEADER_OFFSET = 48;
+
+const toolbarIconButtonSx = {
+  color: "#fff",
+  "&.Mui-disabled": {
+    color: "rgba(255,255,255,0.35)",
+  },
+} as const;
+
+const toolbarOutlinedButtonSx = {
+  color: "#fff",
+  borderColor: "rgba(255,255,255,0.3)",
+  "&.Mui-disabled": {
+    color: "rgba(255,255,255,0.35)",
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+} as const;
 
 export function VisionStudio({ projectId }: { projectId: string }) {
   const api = useTRPC();
-  const { data: analysis } = useSuspenseQuery(
-    api.vision.byProjectId.queryOptions({
-      projectId: projectId,
-    }),
+  const { data: analysis, isPending: isAnalysisPending } = useQuery(
+    api.vision.byProjectId.queryOptions({ projectId }),
   );
-  if (!analysis || analysis.status !== "completed") {
+  const { data: project, isPending: isProjectPending } = useQuery(
+    api.project.byId.queryOptions({ id: projectId }),
+  );
+
+  if (isAnalysisPending || isProjectPending) {
+    return <StudioSkeleton />;
+  }
+
+  if (
+    !analysis ||
+    analysis.status !== "completed" ||
+    !analysis.data ||
+    !project
+  ) {
     return null;
   }
+
   return (
-    <VisionStudioWrapper
+    <VisionStudioInner
       projectId={projectId}
-      analysis={analysis.data}
-      sprite={analysis.spriteURL}
+      project={project}
+      initialAnalysis={analysis.data}
+      sprite={analysis.spriteURL ?? undefined}
     />
   );
 }
-function VisionStudioWrapper({
+
+function VisionStudioInner({
   projectId,
-  analysis: initialAnalysis,
+  project,
+  initialAnalysis,
   sprite,
 }: {
   projectId: string;
-  analysis: DetectionResultsModel;
+  project: ProjectById;
+  initialAnalysis: DetectionResultsModel;
   sprite: string | undefined;
 }) {
   const api = useTRPC();
+  const t = useTranslations();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
-  const { data: project } = useSuspenseQuery(
-    api.project.byId.queryOptions({
-      id: projectId,
-    }),
+
+  const [analysis, setAnalysis] =
+    useState<DetectionResultsModel>(initialAnalysis);
+  const [savedSnapshot, setSavedSnapshot] = useState(() =>
+    JSON.stringify(initialAnalysis),
   );
+  const [mergeMode, setMergeMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [scaleIndex, setScaleIndex] = useState(DEFAULT_TIMELINE_SCALE_INDEX);
+  const [editingTrack, setEditingTrack] = useState<DetectionTrack | null>(null);
+  const [mergeDialogOpen, setMergeDialogOpen] = useState(false);
+
+  const timelineScale = TIMELINE_SCALE_PRESETS[scaleIndex];
 
   const editAnalysis = useMutation(
     api.vision.updateAnalysis.mutationOptions({
-      onSuccess: () => {
-        enqueueSnackbar("Analysis updated", {
-          variant: "success",
-        });
-      },
       onSettled: () => {
         queryClient.invalidateQueries(
-          api.vision.byProjectId.queryFilter({
-            projectId,
-          }),
+          api.vision.byProjectId.queryFilter({ projectId }),
         );
       },
     }),
   );
-  // --- Timeline/Objects Tabs State ---
-  const [tab, setTab] = React.useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentFrame, setCurrentFrame] = useState<number>(0);
 
-  const videoDurationSec =
-    initialAnalysis.metadata.processing.duration_seconds || 1;
-  const actualVideoWidth = initialAnalysis.metadata.video.width;
-  const actualVideoHeight = initialAnalysis.metadata.video.height;
-  const VIDEO_HEIGHT = getVideoHeight(initialAnalysis.metadata.video);
+  const isDirty = useMemo(
+    () => JSON.stringify(analysis) !== savedSnapshot,
+    [analysis, savedSnapshot],
+  );
 
-  // Local analysis state for editing
-  const [analysis, setAnalysis] =
-    useState<DetectionResultsModel>(initialAnalysis);
-  // Keep in sync with prop changes
-  React.useEffect(() => {
-    setAnalysis(initialAnalysis);
-  }, [initialAnalysis]);
+  useUnsavedChangesGuard(isDirty);
 
-  const [currentTime, setCurrentTime] = useState(0);
+  const tracks = useMemo(() => buildTracks(analysis), [analysis]);
+  const duration = useMemo(() => {
+    const fromMeta = analysis.metadata.processing.duration_seconds;
+    if (fromMeta) return fromMeta;
+    return analysis.frames.reduce((max, f) => Math.max(max, f.timestamp), 0);
+  }, [analysis]);
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Handle video play/pause
-  const handleVideoPlay = () => setIsPlaying(true);
-  const handleVideoPause = () => setIsPlaying(false);
-
-  const handleVideoTimeUpdate = useCallback(() => {
-    if (!videoRef.current) return;
-
-    const video = videoRef.current;
-    setCurrentTime(video.currentTime);
-
-    // Find current frame
-    const frameIndex = Math.floor(
-      video.currentTime * initialAnalysis.metadata.video.fps,
+  const toggleRow = (objectId: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(objectId)
+        ? prev.filter((id) => id !== objectId)
+        : [...prev, objectId],
     );
-    setCurrentFrame(frameIndex);
-  }, [initialAnalysis]);
-
-  // Handle analysis change (merge, etc)
-  const handleAnalysisChange = (updated: DetectionResultsModel) => {
-    setAnalysis(updated);
-    editAnalysis.mutate({
-      projectId,
-      analysis: updated,
-    });
   };
+
+  const cancelMerge = () => {
+    setMergeMode(false);
+    setSelectedIds([]);
+  };
+
+  const validateMerge = () => {
+    if (selectedIds.length < 2) return;
+    setMergeDialogOpen(true);
+  };
+
+  const handleConfirmMerge = (targetId: string) => {
+    const merged = mergeTracks(analysis, selectedIds, targetId);
+    setAnalysis(merged);
+    cancelMerge();
+  };
+
+  const handleSave = () => {
+    editAnalysis.mutate(
+      { projectId, analysis },
+      {
+        onSuccess: () => {
+          setSavedSnapshot(JSON.stringify(analysis));
+          enqueueSnackbar(t("project.studio.saved"), { variant: "success" });
+        },
+      },
+    );
+  };
+
+  const tracksToMerge = useMemo(
+    () => tracks.filter((track) => selectedIds.includes(track.objectId)),
+    [tracks, selectedIds],
+  );
+
+  const handleTimelineChange = (
+    editorData: Parameters<typeof applyTimelineChange>[2],
+  ) => {
+    const updated = applyTimelineChange(analysis, tracks, editorData);
+    if (updated === analysis) return;
+    setAnalysis(updated);
+  };
+
+  const handleRenameTrack = (newId: string) => {
+    if (!editingTrack) return;
+    const updated = renameTrack(analysis, editingTrack.objectId, newId);
+    if (updated === analysis) return;
+    setAnalysis(updated);
+  };
+
+  const handleRemoveTrack = (track: DetectionTrack) => {
+    const updated = removeTrack(analysis, track.objectId);
+    if (updated === analysis) return;
+    setAnalysis(updated);
+  };
+
+  const existingTrackIds = useMemo(
+    () => tracks.map((track) => track.objectId),
+    [tracks],
+  );
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+    };
+  }, []);
 
   return (
     <Box
       sx={{
+        position: "fixed",
+        top: HEADER_OFFSET,
+        left: 0,
+        right: 0,
+        bottom: 0,
         display: "flex",
         flexDirection: "column",
+        backgroundColor: STUDIO_BG,
+        overflow: "hidden",
+        zIndex: 1,
       }}
     >
       <Box
         sx={{
-          backgroundColor: "brand.orange",
-          minHeight: "100vh",
-          paddingY: 3,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          px: 2,
+          py: 1,
+          flexShrink: 0,
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        <Container maxWidth="md">
-          <Paper
+        <Box className="flex min-w-0 flex-1 flex-row gap-4 items-center align-middle">
+          <Typography
+            variant="h5"
             sx={{
-              paddingY: 2,
-              paddingX: 4,
-              margin: 0,
-              backgroundColor: "brand.green",
-              minHeight: "100vh",
+              fontFamily: "abril_fatfaceregular",
+              color: "#fff",
+              lineHeight: 1.2,
+            }}
+          >
+            {t("project.studio.title")}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "rgba(255,255,255,0.6)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {project.title}
+          </Typography>
+        </Box>
+        <Link href={`/project/${projectId}`}>
+          <IconButton
+            size="small"
+            sx={{ color: "#fff" }}
+            aria-label={t("project.studio.close")}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Link>
+      </Box>
+
+      <MediaProvider>
+        <Box
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              position: "relative",
+              flex: 1,
+              minHeight: 0,
+              overflow: "hidden",
+              backgroundColor: "black",
+            }}
+          >
+            <StudioVideoPlayer
+              src={peerTubeWatchUrl(project.host, project.videoId)}
+            />
+            <DetectionOverlay
+              analysis={analysis}
+              tracks={tracks}
+              videoWidth={analysis.metadata.video.width}
+              videoHeight={analysis.metadata.video.height}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              flex: 1,
+              minHeight: 0,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
             }}
           >
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
+                alignItems: "center",
                 gap: 1,
-                justifyContent: "space-between",
-                mb: 1,
+                px: 2,
+                py: 0.75,
+                flexShrink: 0,
+                borderTop: "1px solid rgba(255,255,255,0.08)",
+                borderBottom: "1px solid rgba(255,255,255,0.08)",
               }}
             >
-              <Box>
-                <Link href={`/project/${projectId}`}>
-                  <IconButton size="small">
-                    <KeyboardArrowLeftIcon sx={{ color: "black" }} />
-                  </IconButton>
-                </Link>
-                <Typography
-                  variant="h5"
-                  sx={{ fontFamily: "abril_fatfaceregular" }}
-                >
-                  Studio
-                </Typography>
-                {analysis}
-              </Box>
-              <Typography align="left" variant="body1">
-                {project.title}
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                height: VIDEO_HEIGHT,
-                width: VIDEO_WIDTH,
-              }}
-            >
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  position: "relative",
-                  overflow: "hidden",
-                  borderRadius: 2,
-                  backgroundColor: "black",
-                }}
-              >
-                <video
-                  ref={videoRef}
-                  src={initialAnalysis.metadata.video.source}
-                  style={{
-                    width: VIDEO_WIDTH,
-                    height: VIDEO_HEIGHT,
-                    objectFit: "contain",
-                  }}
-                  onTimeUpdate={handleVideoTimeUpdate}
-                  onPlay={handleVideoPlay}
-                  onPause={handleVideoPause}
-                  crossOrigin="anonymous"
-                  autoPlay={false}
-                  muted={true}
-                  loop={false}
-                  controls={true}
-                />
-
-                {/* Overlay */}
-                {/* <DetectionOverlay
-                  analysis={initialAnalysis}
-                  currentTime={currentTime}
-                  videoWidth={actualVideoWidth}
-                  videoHeight={actualVideoHeight}
-                /> */}
-              </Box>
-            </Box>
-
-            {/* --- Tabs and Timeline/Objects UI --- */}
-            <Paper sx={{ padding: 2, marginTop: 2 }}>
-              <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
-                <Tab label="Timeline" />
-                <Tab label={`Detections`} />
-              </Tabs>
-
-              {tab === 0 && (
-                <Timeline
-                  analysis={initialAnalysis}
-                  videoDurationSec={videoDurationSec}
-                  sprite={sprite}
-                  onChange={handleAnalysisChange}
-                />
-              )}
-
-              {tab === 1 && (
-                <VisionStudioObjectsTab
-                  groupedById={(() => {
-                    const map = new Map<string, any[]>();
-                    for (const frame of initialAnalysis.frames) {
-                      for (const obj of frame.objects) {
-                        const objWithFrame = {
-                          ...obj,
-                          frame_idx: frame.frame_idx,
-                          timestamp: frame.timestamp,
-                        };
-                        if (!map.has(obj.id)) map.set(obj.id, []);
-                        map.get(obj.id)!.push(objWithFrame);
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Tooltip title={t("project.studio.zoomIn")}>
+                  <span>
+                    <IconButton
+                      size="small"
+                      disabled={scaleIndex === 0}
+                      onClick={() => setScaleIndex((index) => index - 1)}
+                      sx={toolbarIconButtonSx}
+                      aria-label={t("project.studio.zoomIn")}
+                    >
+                      <ZoomInIcon fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title={t("project.studio.zoomOut")}>
+                  <span>
+                    <IconButton
+                      size="small"
+                      disabled={
+                        scaleIndex === TIMELINE_SCALE_PRESETS.length - 1
                       }
-                    }
-                    return Array.from(map.entries());
-                  })()}
-                  sprite={sprite}
-                />
+                      onClick={() => setScaleIndex((index) => index + 1)}
+                      sx={toolbarIconButtonSx}
+                      aria-label={t("project.studio.zoomOut")}
+                    >
+                      <ZoomOutIcon fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Box>
+
+              {mergeMode ? (
+                <>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    onClick={cancelMerge}
+                    startIcon={<CloseIcon fontSize="small" />}
+                    sx={toolbarOutlinedButtonSx}
+                  >
+                    {t("project.studio.cancel")}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    disabled={selectedIds.length < 2}
+                    onClick={validateMerge}
+                    startIcon={<CallMergeIcon fontSize="small" />}
+                    sx={toolbarOutlinedButtonSx}
+                  >
+                    {t("project.studio.merge")}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  size="small"
+                  onClick={() => setMergeMode(true)}
+                  startIcon={<CallMergeIcon fontSize="small" />}
+                  sx={toolbarOutlinedButtonSx}
+                >
+                  {t("project.studio.merge")}
+                </Button>
               )}
-            </Paper>
-          </Paper>
-        </Container>
-      </Box>
+
+              <Button
+                variant="outlined"
+                color="inherit"
+                size="small"
+                disabled={!isDirty || editAnalysis.isPending}
+                onClick={handleSave}
+                startIcon={<SaveIcon fontSize="small" />}
+                sx={{ ...toolbarOutlinedButtonSx, ml: "auto" }}
+              >
+                {t("project.studio.save")}
+              </Button>
+            </Box>
+
+            <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+              <VisionTimeline
+                tracks={tracks}
+                sprite={sprite}
+                duration={duration}
+                scale={timelineScale}
+                mergeMode={mergeMode}
+                selectedIds={selectedIds}
+                onToggleRow={toggleRow}
+                onEditTrack={setEditingTrack}
+                onRemoveTrack={handleRemoveTrack}
+                onTimelineChange={handleTimelineChange}
+              />
+            </Box>
+          </Box>
+        </Box>
+      </MediaProvider>
+
+      <RenameDetectionDialog
+        open={editingTrack !== null}
+        track={editingTrack}
+        sprite={sprite}
+        existingIds={existingTrackIds}
+        onClose={() => setEditingTrack(null)}
+        onSave={handleRenameTrack}
+      />
+
+      <MergeDetectionDialog
+        open={mergeDialogOpen}
+        tracks={tracksToMerge}
+        sprite={sprite}
+        onClose={() => setMergeDialogOpen(false)}
+        onConfirm={handleConfirmMerge}
+      />
     </Box>
   );
 }

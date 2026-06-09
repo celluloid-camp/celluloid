@@ -3,25 +3,18 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import { useState } from "react";
-import { AnnotationsButton } from "./annotations-button";
-import { CaptionsMenuButton } from "./captions-menu-button";
 import { CurrentTimeDisplay } from "./current-time-display";
 import { DurationDisplay } from "./duration-display";
-import { FullscreenButton } from "./fullscreen-button";
-import { LoadingBackdrop } from "./loading-backdrop";
 import { MuteButton } from "./mute-button";
-import { ObjectDetectionButton } from "./object-detection-button";
 import { PlayButton } from "./play-button";
 import { PlaybackRateMenuButton } from "./playback-rate-menu-button";
 import { SeekBackwardButton } from "./seek-backward-button";
-import { SeekBackwardGestureRegion } from "./seek-backward-gesture-region";
 import { SeekForwardButton } from "./seek-forward-button";
-import { SeekForwardGestureRegion } from "./seek-forward-gesture-region";
 import { Seekbar } from "./seekbar";
 import { TogglePausedGestureRegion } from "./toggle-paused-gesture-region";
 import { VolumeSlider } from "./volume-slider";
 
-export const ControlsContainer = () => {
+export function StudioControlsContainer() {
   const mediaPaused = useMediaSelector(
     (state) => typeof state.mediaPaused !== "boolean" || state.mediaPaused,
   );
@@ -62,9 +55,7 @@ export const ControlsContainer = () => {
             minHeight: 0,
           }}
         >
-          {/* <SeekBackwardGestureRegion /> */}
           <TogglePausedGestureRegion />
-          {/* <SeekForwardGestureRegion /> */}
         </Stack>
         <Stack direction="column" spacing={0} sx={{ px: 1, pb: 1 }}>
           <Stack
@@ -116,14 +107,10 @@ export const ControlsContainer = () => {
               <MuteButton />
               <VolumeSlider />
               <PlaybackRateMenuButton />
-              <CaptionsMenuButton />
-              <AnnotationsButton />
-              <ObjectDetectionButton />
-              <FullscreenButton />
             </Stack>
           </Stack>
         </Stack>
       </Stack>
     </Box>
   );
-};
+}
