@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.2](https://github.com/celluloid-camp/celluloid/compare/v3.6.1...v3.6.2) (2026-06-09)
+
+### Bug Fixes
+
+* update Docker metadata action and improve project component styling ([88e00b1](https://github.com/celluloid-camp/celluloid/commit/88e00b194dccc2ad63de4f3badfa42cfa095fe5f))
+
 ## [3.6.1](https://github.com/celluloid-camp/celluloid/compare/v3.6.0...v3.6.1) (2026-06-09)
 
 ## [3.6.0](https://github.com/celluloid-camp/celluloid/compare/v3.5.0...v3.6.0) (2026-06-09)
