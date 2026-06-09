@@ -1,5 +1,7 @@
 # Changelog
 
+## [3.6.1](https://github.com/celluloid-camp/celluloid/compare/v3.6.0...v3.6.1) (2026-06-09)
+
 ## [3.6.0](https://github.com/celluloid-camp/celluloid/compare/v3.5.0...v3.6.0) (2026-06-09)
 
 ### Features
