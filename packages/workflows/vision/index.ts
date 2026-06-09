@@ -15,7 +15,7 @@ import {
   uploadImageFile,
   uploadImageUrl,
 } from "@celluloid/storage/client";
-import { createJob, getJobResults } from "@celluloid/vision-api";
+import { createJob, getJobResults, healthCheck } from "@celluloid/vision-api";
 import { createClient } from "@celluloid/vision-api/client";
 import { DetectionResultsModel } from "@celluloid/vision-api/types";
 import { createHook, FatalError, sleep } from "workflow";
@@ -131,6 +131,17 @@ async function startVisionAnalysis({
   const client = createClient({
     baseUrl: env.VISION_API_URL,
   });
+
+  const healthCheckResponse = await healthCheck({
+    client,
+    headers: {
+      "x-api-key": env.VISION_API_KEY,
+    },
+  });
+
+  if (healthCheckResponse.response.status !== 200) {
+    throw new FatalError("Vision API is not available");
+  }
 
   const { data: analysisResponse, response } = await createJob({
     client,
