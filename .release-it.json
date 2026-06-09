@@ -1,6 +1,6 @@
 {
   "git": {
-    "commitMessage": "🔖 Release ${version}",
+    "commitMessage": "chore(release): ${version}",
     "commitsPath": ".",
     "push": true,
     "requireCommits": false,
