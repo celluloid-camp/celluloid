@@ -21,6 +21,8 @@ export interface DetectionTrack {
   thumbnail: string;
   count: number;
   segments: DetectionSegment[];
+  /** Normalized 0–1 bbox for the representative thumbnail. */
+  bbox?: { x: number; y: number; width: number; height: number };
 }
 
 function median(values: number[]): number {
@@ -53,11 +55,14 @@ function frameStep(analysis: DetectionResultsModel): number {
 export function buildTracks(analysis: DetectionResultsModel): DetectionTrack[] {
   const step = frameStep(analysis);
   const gapThreshold = Math.max(0.6, step * 3);
+  const videoWidth = analysis.metadata.video.width;
+  const videoHeight = analysis.metadata.video.height;
 
   type Point = {
     timestamp: number;
     className: string;
     thumbnail: string;
+    bbox: DetectionResultsModel["frames"][number]["objects"][number]["bbox"];
   };
   const pointsById = new Map<string, Point[]>();
   const orderedIds: string[] = [];
@@ -72,6 +77,7 @@ export function buildTracks(analysis: DetectionResultsModel): DetectionTrack[] {
         timestamp: frame.timestamp,
         className: obj.class_name,
         thumbnail: obj.thumbnail,
+        bbox: obj.bbox,
       });
     }
   }
@@ -117,34 +123,79 @@ export function buildTracks(analysis: DetectionResultsModel): DetectionTrack[] {
     }
     pushSegment(prev);
 
+    const bbox = points[0].bbox;
+    const bboxNorm =
+      bbox && videoWidth > 0 && videoHeight > 0
+        ? {
+            x: bbox.x / videoWidth,
+            y: bbox.y / videoHeight,
+            width: bbox.width / videoWidth,
+            height: bbox.height / videoHeight,
+          }
+        : undefined;
+
     return {
       objectId,
       className: points[0].className,
       thumbnail: points[0].thumbnail,
       count: points.length,
       segments,
+      bbox: bboxNorm,
     };
   });
 }
 
 /**
- * Merge several object tracks into the first selected id by reassigning the ids
- * of the others and rebuilding the frame list.
+ * Merge object tracks into `targetId` by reassigning the ids of the others.
  */
 export function mergeTracks(
   analysis: DetectionResultsModel,
   ids: string[],
+  targetId: string,
 ): DetectionResultsModel {
-  if (ids.length < 2) return analysis;
-  const [target, ...rest] = ids;
-  const restSet = new Set(rest);
+  if (ids.length < 2 || !ids.includes(targetId)) return analysis;
+  const restSet = new Set(ids.filter((id) => id !== targetId));
 
   const frames = analysis.frames.map((frame) => ({
     ...frame,
     objects: frame.objects.map((obj) =>
-      restSet.has(obj.id) ? { ...obj, id: target } : obj,
+      restSet.has(obj.id) ? { ...obj, id: targetId } : obj,
     ),
   }));
+
+  return { ...analysis, frames };
+}
+
+/** Rename all detections with `oldId` to `newId`. */
+export function renameTrack(
+  analysis: DetectionResultsModel,
+  oldId: string,
+  newId: string,
+): DetectionResultsModel {
+  const trimmed = newId.trim();
+  if (!trimmed || trimmed === oldId) return analysis;
+
+  const frames = analysis.frames.map((frame) => ({
+    ...frame,
+    objects: frame.objects.map((obj) =>
+      obj.id === oldId ? { ...obj, id: trimmed } : obj,
+    ),
+  }));
+
+  return { ...analysis, frames };
+}
+
+/** Remove all detections for the given object id. */
+export function removeTrack(
+  analysis: DetectionResultsModel,
+  objectId: string,
+): DetectionResultsModel {
+  const frames = analysis.frames
+    .map((frame) => ({
+      ...frame,
+      objects: frame.objects.filter((obj) => obj.id !== objectId),
+    }))
+    .filter((frame) => frame.objects.length > 0);
 
   return { ...analysis, frames };
 }

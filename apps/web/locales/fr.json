@@ -3,7 +3,7 @@
     "intro": "Le développement de <celluloid>Celluloid</celluloid> est piloté par Michaël Bourgatte et Laurent Tessier dans le cadre d'un <consortium>Consortium Huma-Num</consortium> pluridisciplinaire réunissant des chercheuses et chercheurs mobilisant des corpus audiovisuels.",
     "opensource": {
       "github": "Celluloid est un projet Open Source en Humanités numériques. L'ensemble du code est accessible librement sur <github>GitHub</github>",
-      "prefix": "La version 2.0, dite 'Alphaville', ainsi que ses développements successifs, sont réalisés dans le cadre du consortium Huma-Num <canevas>CANEVAS</canevas> (hébergé par la <mshpn>Maison des Sciences de l'Homme Paris Nord</mshpn>). Cette version est développée par Younès Benomar."
+      "prefix": "La version 2.0, dite 'Alphaville', ainsi que ses développements successifs, sont réalisés dans le cadre du consortium Huma-Num <canevas>CANEVAS</canevas> et du projet européen Eosc-Oscars <oasis>OASIS</oasis>  (hébergés par la Maison des Sciences Humaines et sociales Paris Nord) Cette version est développée par <younes>Younès Benomar</younes>"
     },
     "support": "La version 1.0 de Celluloid dite 'Pierrot', ainsi que ses développements successifs, ont bénéficié du soutien de l'Institut Catholique de Paris, de la Fondation Saint Matthieu et de l'incubateur La Paillasse. Cette version a été développée par Erwan Queffélec avec la participation de Jean-Frédéric Bruzek, Souleymane Thiam et de Guillaume Aichhorn.",
     "title": "À propos"
@@ -395,6 +395,30 @@
     },
     "scenes": {
       "title": "Plans"
+    },
+    "studio": {
+      "title": "Studio",
+      "close": "Fermer le studio",
+      "zoomIn": "Zoom avant",
+      "zoomOut": "Zoom arrière",
+      "merge": "Fusionner",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saved": "Analyse enregistrée",
+      "objects": "Objets",
+      "trackActions": "Actions pour {id}",
+      "edit": "Modifier",
+      "remove": "Supprimer",
+      "mergeDialog": {
+        "title": "Fusionner les détections",
+        "description": "Choisissez le libellé à conserver pour la détection fusionnée."
+      },
+      "rename": {
+        "title": "Modifier le libellé de la détection",
+        "label": "Libellé",
+        "required": "Le libellé est obligatoire",
+        "duplicate": "Ce libellé est déjà utilisé"
+      }
     }
   },
   "chapter": {

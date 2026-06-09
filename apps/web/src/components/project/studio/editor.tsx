@@ -1,48 +1,84 @@
 "use client";
 import type { DetectionResultsModel } from "@celluloid/vision-api/types";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import CallMergeIcon from "@mui/icons-material/CallMerge";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MediaProvider } from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";
 import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
+import { peerTubeWatchUrl } from "@/utils/peertube-url";
 import { DetectionOverlay } from "./detection-overlay";
-import { applyTimelineChange, buildTracks, mergeTracks } from "./segments";
+import { MergeDetectionDialog } from "./merge-detection-dialog";
+import { RenameDetectionDialog } from "./rename-detection-dialog";
+import type { DetectionTrack } from "./segments";
+import {
+  applyTimelineChange,
+  buildTracks,
+  mergeTracks,
+  removeTrack,
+  renameTrack,
+} from "./segments";
+import { StudioSkeleton } from "./skeleton";
+import { useUnsavedChangesGuard } from "./use-unsaved-changes-guard";
 import {
   DEFAULT_TIMELINE_SCALE_INDEX,
   TIMELINE_SCALE_PRESETS,
   VisionTimeline,
 } from "./vision-timeline";
 
+const StudioVideoPlayer = dynamic(
+  () => import("./studio-video-player").then((mod) => mod.StudioVideoPlayer),
+  { ssr: false },
+);
+
 const STUDIO_BG = "#191b1d";
 /** Matches app layout `pt: 6` below the fixed header. */
 const HEADER_OFFSET = 48;
 
-const VideoPlayer = dynamic(
-  () => import("@/components/video-player").then((mod) => mod.default),
-  { ssr: false },
-);
+const toolbarIconButtonSx = {
+  color: "#fff",
+  "&.Mui-disabled": {
+    color: "rgba(255,255,255,0.35)",
+  },
+} as const;
+
+const toolbarOutlinedButtonSx = {
+  color: "#fff",
+  borderColor: "rgba(255,255,255,0.3)",
+  "&.Mui-disabled": {
+    color: "rgba(255,255,255,0.35)",
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+} as const;
 
 export function VisionStudio({ projectId }: { projectId: string }) {
   const api = useTRPC();
-  const { data: analysis } = useSuspenseQuery(
+  const { data: analysis, isPending: isAnalysisPending } = useQuery(
     api.vision.byProjectId.queryOptions({ projectId }),
   );
-  const { data: project } = useSuspenseQuery(
+  const { data: project, isPending: isProjectPending } = useQuery(
     api.project.byId.queryOptions({ id: projectId }),
   );
 
-  if (!analysis || analysis.status !== "completed" || !analysis.data) {
+  if (isAnalysisPending || isProjectPending) {
+    return <StudioSkeleton />;
+  }
+
+  if (
+    !analysis ||
+    analysis.status !== "completed" ||
+    !analysis.data ||
+    !project
+  ) {
     return null;
   }
 
@@ -68,22 +104,25 @@ function VisionStudioInner({
   sprite: string | undefined;
 }) {
   const api = useTRPC();
+  const t = useTranslations();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
   const [analysis, setAnalysis] =
     useState<DetectionResultsModel>(initialAnalysis);
+  const [savedSnapshot, setSavedSnapshot] = useState(() =>
+    JSON.stringify(initialAnalysis),
+  );
   const [mergeMode, setMergeMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [scaleIndex, setScaleIndex] = useState(DEFAULT_TIMELINE_SCALE_INDEX);
+  const [editingTrack, setEditingTrack] = useState<DetectionTrack | null>(null);
+  const [mergeDialogOpen, setMergeDialogOpen] = useState(false);
 
   const timelineScale = TIMELINE_SCALE_PRESETS[scaleIndex];
 
   const editAnalysis = useMutation(
     api.vision.updateAnalysis.mutationOptions({
-      onSuccess: () => {
-        enqueueSnackbar("Analysis updated", { variant: "success" });
-      },
       onSettled: () => {
         queryClient.invalidateQueries(
           api.vision.byProjectId.queryFilter({ projectId }),
@@ -91,6 +130,13 @@ function VisionStudioInner({
       },
     }),
   );
+
+  const isDirty = useMemo(
+    () => JSON.stringify(analysis) !== savedSnapshot,
+    [analysis, savedSnapshot],
+  );
+
+  useUnsavedChangesGuard(isDirty);
 
   const tracks = useMemo(() => buildTracks(analysis), [analysis]);
   const duration = useMemo(() => {
@@ -114,11 +160,31 @@ function VisionStudioInner({
 
   const validateMerge = () => {
     if (selectedIds.length < 2) return;
-    const merged = mergeTracks(analysis, selectedIds);
+    setMergeDialogOpen(true);
+  };
+
+  const handleConfirmMerge = (targetId: string) => {
+    const merged = mergeTracks(analysis, selectedIds, targetId);
     setAnalysis(merged);
-    editAnalysis.mutate({ projectId, analysis: merged });
     cancelMerge();
   };
+
+  const handleSave = () => {
+    editAnalysis.mutate(
+      { projectId, analysis },
+      {
+        onSuccess: () => {
+          setSavedSnapshot(JSON.stringify(analysis));
+          enqueueSnackbar(t("project.studio.saved"), { variant: "success" });
+        },
+      },
+    );
+  };
+
+  const tracksToMerge = useMemo(
+    () => tracks.filter((track) => selectedIds.includes(track.objectId)),
+    [tracks, selectedIds],
+  );
 
   const handleTimelineChange = (
     editorData: Parameters<typeof applyTimelineChange>[2],
@@ -126,8 +192,25 @@ function VisionStudioInner({
     const updated = applyTimelineChange(analysis, tracks, editorData);
     if (updated === analysis) return;
     setAnalysis(updated);
-    editAnalysis.mutate({ projectId, analysis: updated });
   };
+
+  const handleRenameTrack = (newId: string) => {
+    if (!editingTrack) return;
+    const updated = renameTrack(analysis, editingTrack.objectId, newId);
+    if (updated === analysis) return;
+    setAnalysis(updated);
+  };
+
+  const handleRemoveTrack = (track: DetectionTrack) => {
+    const updated = removeTrack(analysis, track.objectId);
+    if (updated === analysis) return;
+    setAnalysis(updated);
+  };
+
+  const existingTrackIds = useMemo(
+    () => tracks.map((track) => track.objectId),
+    [tracks],
+  );
 
   useEffect(() => {
     const html = document.documentElement;
@@ -168,21 +251,16 @@ function VisionStudioInner({
           borderBottom: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        <Link href={`/project/${projectId}`}>
-          <IconButton size="small" sx={{ color: "#fff" }}>
-            <KeyboardArrowLeftIcon />
-          </IconButton>
-        </Link>
-        <Box sx={{ minWidth: 0 }}>
+        <Box className="flex min-w-0 flex-1 flex-row gap-4 items-center align-middle">
           <Typography
-            variant="h6"
+            variant="h5"
             sx={{
               fontFamily: "abril_fatfaceregular",
               color: "#fff",
               lineHeight: 1.2,
             }}
           >
-            Studio
+            {t("project.studio.title")}
           </Typography>
           <Typography
             variant="body2"
@@ -196,6 +274,15 @@ function VisionStudioInner({
             {project.title}
           </Typography>
         </Box>
+        <Link href={`/project/${projectId}`}>
+          <IconButton
+            size="small"
+            sx={{ color: "#fff" }}
+            aria-label={t("project.studio.close")}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Link>
       </Box>
 
       <MediaProvider>
@@ -217,9 +304,12 @@ function VisionStudioInner({
               backgroundColor: "black",
             }}
           >
-            <VideoPlayer project={project} />
+            <StudioVideoPlayer
+              src={peerTubeWatchUrl(project.host, project.videoId)}
+            />
             <DetectionOverlay
               analysis={analysis}
+              tracks={tracks}
               videoWidth={analysis.metadata.video.width}
               videoHeight={analysis.metadata.video.height}
             />
@@ -238,7 +328,6 @@ function VisionStudioInner({
               sx={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
                 gap: 1,
                 px: 2,
                 py: 0.75,
@@ -248,20 +337,20 @@ function VisionStudioInner({
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <Tooltip title="Zoom in">
+                <Tooltip title={t("project.studio.zoomIn")}>
                   <span>
                     <IconButton
                       size="small"
                       disabled={scaleIndex === 0}
                       onClick={() => setScaleIndex((index) => index - 1)}
-                      sx={{ color: "#fff" }}
-                      aria-label="Zoom in timeline"
+                      sx={toolbarIconButtonSx}
+                      aria-label={t("project.studio.zoomIn")}
                     >
                       <ZoomInIcon fontSize="small" />
                     </IconButton>
                   </span>
                 </Tooltip>
-                <Tooltip title="Zoom out">
+                <Tooltip title={t("project.studio.zoomOut")}>
                   <span>
                     <IconButton
                       size="small"
@@ -269,8 +358,8 @@ function VisionStudioInner({
                         scaleIndex === TIMELINE_SCALE_PRESETS.length - 1
                       }
                       onClick={() => setScaleIndex((index) => index + 1)}
-                      sx={{ color: "#fff" }}
-                      aria-label="Zoom out timeline"
+                      sx={toolbarIconButtonSx}
+                      aria-label={t("project.studio.zoomOut")}
                     >
                       <ZoomOutIcon fontSize="small" />
                     </IconButton>
@@ -278,34 +367,54 @@ function VisionStudioInner({
                 </Tooltip>
               </Box>
 
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                {mergeMode && (
+              {mergeMode ? (
+                <>
                   <Button
-                    variant="contained"
-                    color="success"
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    onClick={cancelMerge}
+                    startIcon={<CloseIcon fontSize="small" />}
+                    sx={toolbarOutlinedButtonSx}
+                  >
+                    {t("project.studio.cancel")}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
                     size="small"
                     disabled={selectedIds.length < 2}
                     onClick={validateMerge}
+                    startIcon={<CallMergeIcon fontSize="small" />}
+                    sx={toolbarOutlinedButtonSx}
                   >
-                    Merge {selectedIds.length} objects
+                    {t("project.studio.merge")}
                   </Button>
-                )}
+                </>
+              ) : (
                 <Button
-                  variant={mergeMode ? "contained" : "outlined"}
-                  color={mergeMode ? "primary" : "inherit"}
+                  variant="outlined"
+                  color="inherit"
                   size="small"
-                  onClick={() =>
-                    mergeMode ? cancelMerge() : setMergeMode(true)
-                  }
-                  sx={
-                    mergeMode
-                      ? undefined
-                      : { color: "#fff", borderColor: "rgba(255,255,255,0.3)" }
-                  }
+                  onClick={() => setMergeMode(true)}
+                  startIcon={<CallMergeIcon fontSize="small" />}
+                  sx={toolbarOutlinedButtonSx}
                 >
-                  {mergeMode ? "Cancel" : "Merge"}
+                  {t("project.studio.merge")}
                 </Button>
-              </Box>
+              )}
+
+              <Button
+                variant="outlined"
+                color="inherit"
+                size="small"
+                disabled={!isDirty || editAnalysis.isPending}
+                onClick={handleSave}
+                startIcon={<SaveIcon fontSize="small" />}
+                sx={{ ...toolbarOutlinedButtonSx, ml: "auto" }}
+              >
+                {t("project.studio.save")}
+              </Button>
             </Box>
 
             <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
@@ -317,12 +426,31 @@ function VisionStudioInner({
                 mergeMode={mergeMode}
                 selectedIds={selectedIds}
                 onToggleRow={toggleRow}
+                onEditTrack={setEditingTrack}
+                onRemoveTrack={handleRemoveTrack}
                 onTimelineChange={handleTimelineChange}
               />
             </Box>
           </Box>
         </Box>
       </MediaProvider>
+
+      <RenameDetectionDialog
+        open={editingTrack !== null}
+        track={editingTrack}
+        sprite={sprite}
+        existingIds={existingTrackIds}
+        onClose={() => setEditingTrack(null)}
+        onSave={handleRenameTrack}
+      />
+
+      <MergeDetectionDialog
+        open={mergeDialogOpen}
+        tracks={tracksToMerge}
+        sprite={sprite}
+        onClose={() => setMergeDialogOpen(false)}
+        onConfirm={handleConfirmMerge}
+      />
     </Box>
   );
 }

@@ -2,7 +2,7 @@ import { Box, Skeleton } from "@mui/material";
 
 const STUDIO_BG = "#191b1d";
 const HEADER_OFFSET = 48;
-const TIMELINE_LEFT_WIDTH = 200;
+const TIMELINE_LEFT_WIDTH = 220;
 const TIMELINE_HEADER_OFFSET = 42;
 const ROW_HEIGHT = 48;
 
@@ -111,7 +111,7 @@ export function StudioSkeleton() {
             sx={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
+              gap: 1,
               px: 2,
               py: 0.75,
               flexShrink: 0,
@@ -137,7 +137,7 @@ export function StudioSkeleton() {
               variant="rectangular"
               width={72}
               height={30}
-              sx={{ ...skeletonSx, borderRadius: 1 }}
+              sx={{ ...skeletonSx, borderRadius: 1, ml: "auto" }}
             />
           </Box>
 

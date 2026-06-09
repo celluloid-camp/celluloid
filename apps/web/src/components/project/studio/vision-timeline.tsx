@@ -1,6 +1,14 @@
 "use client";
 import "@xzdarcy/react-timeline-editor/dist/react-timeline-editor.css";
-import { Box, Checkbox, Typography } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  Box,
+  Checkbox,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import {
   type EditData,
   Timeline,
@@ -11,11 +19,12 @@ import {
   useMediaDispatch,
   useMediaSelector,
 } from "media-chrome/react/media-store";
-import randomColor from "randomcolor";
-import { useEffect, useMemo, useRef } from "react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ImageSprite } from "@/components/common/image-sprite";
 import { getSpriteThumbnail } from "@/lib/sprite";
 import type { DetectionSegment, DetectionTrack } from "./segments";
+import { trackColor } from "./track-color";
 
 const EFFECTS: EditData["effects"] = {
   detection: { id: "detection", name: "detection" },
@@ -24,16 +33,14 @@ const EFFECTS: EditData["effects"] = {
 const ROW_HEIGHT = 48;
 /** time area (32px) + edit area margin-top (10px) from the library stylesheet. */
 const HEADER_OFFSET = 42;
-const LEFT_WIDTH = 200;
+const LEFT_WIDTH = 220;
+const MENU_BG = "#191b1d";
+const MENU_BORDER = "1px solid rgba(255,255,255,0.08)";
 export const TIMELINE_SCALE_PRESETS = [1, 2, 5, 10, 20] as const;
 export const DEFAULT_TIMELINE_SCALE_INDEX = 2;
 const SCALE_WIDTH = 140;
 const SCALE_SPLIT = 5;
 const START_LEFT = 20;
-
-function trackColor(objectId: string) {
-  return randomColor({ seed: objectId, luminosity: "bright" });
-}
 
 function formatTime(seconds: number) {
   const min = Math.floor(seconds / 60)
@@ -85,14 +92,23 @@ function RowHeader({
   mergeMode,
   selected,
   onToggle,
+  onEdit,
+  onRemove,
 }: {
   track: DetectionTrack;
   sprite: string | undefined;
   mergeMode: boolean;
   selected: boolean;
   onToggle: () => void;
+  onEdit: () => void;
+  onRemove: () => void;
 }) {
+  const t = useTranslations();
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const color = trackColor(track.objectId);
+
+  const closeMenu = () => setMenuAnchor(null);
+
   return (
     <Box
       onClick={mergeMode ? onToggle : undefined}
@@ -100,7 +116,7 @@ function RowHeader({
         height: ROW_HEIGHT,
         display: "flex",
         alignItems: "center",
-        gap: 1,
+        gap: 0.5,
         px: 1,
         boxSizing: "border-box",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
@@ -122,25 +138,82 @@ function RowHeader({
         src={getSpriteThumbnail(sprite ?? "", track.thumbnail)}
         width={40}
         height={ROW_HEIGHT - 14}
-        className="rounded-sm"
+        className="rounded-sm shrink-0"
       />
-      <Box sx={{ minWidth: 0 }}>
-        <Typography
-          sx={{
-            color: "#fff",
-            fontSize: 12,
-            fontWeight: 600,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {track.objectId}
-        </Typography>
-        <Typography sx={{ color: "rgba(255,255,255,0.5)", fontSize: 10 }}>
-          {track.count} detections
-        </Typography>
-      </Box>
+      <Typography
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          color: "#fff",
+          fontSize: 12,
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          userSelect: "none",
+        }}
+      >
+        {track.objectId}
+      </Typography>
+      {!mergeMode && (
+        <>
+          <IconButton
+            size="small"
+            aria-label={t("project.studio.trackActions", {
+              id: track.objectId,
+            })}
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuAnchor(e.currentTarget);
+            }}
+            sx={{ color: "rgba(255,255,255,0.6)", flexShrink: 0 }}
+          >
+            <MoreVertIcon fontSize="small" />
+          </IconButton>
+          <Menu
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={closeMenu}
+            slotProps={{
+              paper: {
+                sx: {
+                  bgcolor: MENU_BG,
+                  color: "#fff",
+                  backgroundImage: "none",
+                  border: MENU_BORDER,
+                  minWidth: 120,
+                },
+              },
+            }}
+          >
+            <MenuItem
+              onClick={() => {
+                closeMenu();
+                onEdit();
+              }}
+              sx={{
+                fontSize: 13,
+                "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+              }}
+            >
+              {t("project.studio.edit")}
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                closeMenu();
+                onRemove();
+              }}
+              sx={{
+                fontSize: 13,
+                color: "#f44336",
+                "&:hover": { bgcolor: "rgba(244,67,54,0.12)" },
+              }}
+            >
+              {t("project.studio.remove")}
+            </MenuItem>
+          </Menu>
+        </>
+      )}
     </Box>
   );
 }
@@ -153,6 +226,8 @@ interface VisionTimelineProps {
   mergeMode: boolean;
   selectedIds: string[];
   onToggleRow: (objectId: string) => void;
+  onEditTrack: (track: DetectionTrack) => void;
+  onRemoveTrack: (track: DetectionTrack) => void;
   onTimelineChange: (editorData: EditData["editorData"]) => void;
 }
 
@@ -164,12 +239,17 @@ export function VisionTimeline({
   mergeMode,
   selectedIds,
   onToggleRow,
+  onEditTrack,
+  onRemoveTrack,
   onTimelineChange,
 }: VisionTimelineProps) {
+  const t = useTranslations();
   const timelineState = useRef<TimelineState>(null);
   const leftInnerRef = useRef<HTMLDivElement>(null);
+  const leftPanelRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollLeftRef = useRef(0);
+  const scrollTopRef = useRef(0);
 
   const dispatch = useMediaDispatch();
   const currentTime = useMediaSelector((state) => state.mediaCurrentTime ?? 0);
@@ -221,6 +301,29 @@ export function VisionTimeline({
     }
   }, [currentTime, scale]);
 
+  // Forward wheel events from the objects list to the timeline scroll container.
+  useEffect(() => {
+    const panel = leftPanelRef.current;
+    if (!panel) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const maxScrollTop = Math.max(
+        0,
+        tracks.length * ROW_HEIGHT - panel.clientHeight,
+      );
+      const next = Math.min(
+        maxScrollTop,
+        Math.max(0, scrollTopRef.current + event.deltaY),
+      );
+      scrollTopRef.current = next;
+      timelineState.current?.setScrollTop(next);
+    };
+
+    panel.addEventListener("wheel", handleWheel, { passive: false });
+    return () => panel.removeEventListener("wheel", handleWheel);
+  }, [tracks.length]);
+
   const seek = (time: number) => {
     dispatch({ type: MediaActionTypes.MEDIA_SEEK_REQUEST, detail: time });
   };
@@ -254,9 +357,12 @@ export function VisionTimeline({
             flexShrink: 0,
           }}
         >
-          Objects
+          {t("project.studio.objects")}
         </Box>
-        <Box sx={{ flex: 1, overflow: "hidden", position: "relative" }}>
+        <Box
+          ref={leftPanelRef}
+          sx={{ flex: 1, overflow: "hidden", position: "relative" }}
+        >
           <Box ref={leftInnerRef} sx={{ position: "absolute", inset: 0 }}>
             {tracks.map((track) => (
               <RowHeader
@@ -266,6 +372,8 @@ export function VisionTimeline({
                 mergeMode={mergeMode}
                 selected={selectedSet.has(track.objectId)}
                 onToggle={() => onToggleRow(track.objectId)}
+                onEdit={() => onEditTrack(track)}
+                onRemove={() => onRemoveTrack(track)}
               />
             ))}
           </Box>
@@ -306,6 +414,7 @@ export function VisionTimeline({
           onCursorDrag={(time) => seek(time)}
           onScroll={(params) => {
             scrollLeftRef.current = params.scrollLeft;
+            scrollTopRef.current = params.scrollTop;
             if (leftInnerRef.current) {
               leftInnerRef.current.style.transform = `translateY(${-params.scrollTop}px)`;
             }

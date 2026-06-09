@@ -2,14 +2,15 @@
 import type { DetectionResultsModel } from "@celluloid/vision-api/types";
 import { Box } from "@mui/material";
 import { useMediaSelector } from "media-chrome/react/media-store";
-import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { buildTracks, type DetectionTrack } from "./segments";
+import { trackColor } from "./track-color";
 
 type FrameWithTime = {
   frame: DetectionResultsModel["frames"][number];
   tsSec: number;
 };
 
-/** Infer seconds vs ms from the data range (no fps / duration from metadata). */
 function inferSeconds(timestamps: number[]): {
   toSec: (ts: number) => number;
 } {
@@ -25,10 +26,6 @@ function inferSeconds(timestamps: number[]): {
   };
 }
 
-/**
- * Match window: half the smallest gap between consecutive detection times (capped),
- * with a minimum for playback jitter. No fps — spacing comes from the data.
- */
 function matchEpsilonFromSorted(sortedSec: FrameWithTime[]): number {
   if (sortedSec.length === 0) {
     return 0;
@@ -81,24 +78,46 @@ function getClosestFrame(
   return { frame: best.frame, dist: bestDist };
 }
 
-// Reusable overlay component for bounding boxes and labels
+function activeObjectIdsAtTime(
+  tracks: DetectionTrack[],
+  t: number,
+): Set<string> {
+  const ids = new Set<string>();
+  for (const track of tracks) {
+    for (const segment of track.segments) {
+      if (t >= segment.start && t <= segment.end) {
+        ids.add(track.objectId);
+        break;
+      }
+    }
+  }
+  return ids;
+}
+
 type DetectionOverlayProps = {
   analysis: DetectionResultsModel;
   videoWidth: number;
   videoHeight: number;
+  tracks?: DetectionTrack[];
 };
 
-export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({
+export function DetectionOverlay({
   analysis,
   videoWidth,
   videoHeight,
-}) => {
+  tracks: tracksProp,
+}: DetectionOverlayProps) {
   const currentTime = useMediaSelector((state) => state.mediaCurrentTime);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({
     width: videoWidth,
     height: videoHeight,
   });
+
+  const tracks = useMemo(
+    () => tracksProp ?? buildTracks(analysis),
+    [tracksProp, analysis],
+  );
 
   useLayoutEffect(() => {
     if (!containerRef.current) return;
@@ -151,12 +170,18 @@ export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({
       return [];
     }
 
+    const activeIds = activeObjectIdsAtTime(tracks, t);
+    if (activeIds.size === 0) {
+      return [];
+    }
+
     const closest = getClosestFrame(framesSortedSec, t);
     if (!closest || closest.dist > matchEpsilon) {
       return [];
     }
-    return closest.frame.objects ?? [];
-  }, [t, framesSortedSec, contentEndSec, matchEpsilon]);
+
+    return (closest.frame.objects ?? []).filter((obj) => activeIds.has(obj.id));
+  }, [t, framesSortedSec, contentEndSec, matchEpsilon, tracks]);
 
   const scaleX = containerSize.width / videoWidth;
   const scaleY = containerSize.height / videoHeight;
@@ -174,42 +199,44 @@ export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({
         zIndex: 2,
       }}
     >
-      {objects.map((obj: any) => (
-        <React.Fragment key={String(obj.id)}>
-          {/* Bounding box */}
-          <Box
-            sx={{
-              position: "absolute",
-              left: obj.bbox.x * scaleX,
-              top: obj.bbox.y * scaleY,
-              width: obj.bbox.width * scaleX,
-              height: obj.bbox.height * scaleY,
-              border: "2px solid white",
-              boxSizing: "border-box",
-              pointerEvents: "none",
-              zIndex: 10,
-            }}
-          />
-          {/* Label */}
-          <Box
-            sx={{
-              position: "absolute",
-              left: obj.bbox.x * scaleX,
-              top: obj.bbox.y * scaleY - 18,
-              bgcolor: "white",
-              color: "black",
-              px: 1,
-              py: 0.2,
-              fontSize: 12,
-              pointerEvents: "none",
-              zIndex: 11,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {obj.id}
+      {objects.map((obj) => {
+        const color = trackColor(obj.id);
+        return (
+          <Box key={String(obj.id)}>
+            <Box
+              sx={{
+                position: "absolute",
+                left: obj.bbox.x * scaleX,
+                top: obj.bbox.y * scaleY,
+                width: obj.bbox.width * scaleX,
+                height: obj.bbox.height * scaleY,
+                border: `2px solid ${color}`,
+                bgcolor: `${color}22`,
+                boxSizing: "border-box",
+                pointerEvents: "none",
+                zIndex: 10,
+              }}
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                left: obj.bbox.x * scaleX,
+                top: obj.bbox.y * scaleY - 18,
+                bgcolor: color,
+                color: "#fff",
+                px: 1,
+                py: 0.2,
+                fontSize: 12,
+                pointerEvents: "none",
+                zIndex: 11,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {obj.id}
+            </Box>
           </Box>
-        </React.Fragment>
-      ))}
+        );
+      })}
     </div>
   );
-};
+}
