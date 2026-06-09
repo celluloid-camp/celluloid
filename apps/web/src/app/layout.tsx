@@ -3,10 +3,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 import { AppProviders } from "@/components/providers";
 
-import "@celluloid/prisma/types";
 export const dynamic = "force-dynamic";
 
 const abril_fatfaceregular = localFont({
@@ -40,14 +39,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
+  const messages = await getMessages();
   return (
     <html
       lang={locale}
       className={`${lexend.className} ${abril_fatfaceregular.className}`}
     >
       <body>
-        <NextIntlClientProvider>
-          <AppRouterCacheProvider options={{ key: "css" }}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <AppProviders>{children}</AppProviders>
           </AppRouterCacheProvider>
         </NextIntlClientProvider>

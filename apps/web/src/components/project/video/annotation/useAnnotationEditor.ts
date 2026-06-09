@@ -5,18 +5,21 @@ import type { AnnotationByProjectId } from "@/lib/trpc/types";
 
 type AnnotationEditorState = {
   showHints: boolean;
+  shownDetectionOverlay: boolean;
   playerIsReady: boolean;
   contextualEditorVisible: boolean;
   formVisible: boolean;
   editedAnnotation?: AnnotationByProjectId;
   // Actions
   setHintsVisible: (visible: boolean) => void;
+  setShownDetectionOverlay: (visible: boolean) => void;
   setContextualEditorVisible: (visible: boolean) => void;
   setFormVisible: (visible: boolean) => void;
   setEditedAnnotation: (annotation: AnnotationByProjectId | undefined) => void;
 };
 const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
   showHints: false,
+  shownDetectionOverlay: false,
   playerIsReady: false,
   contextualEditorVisible: false,
   formVisible: false,
@@ -30,6 +33,12 @@ const annotationEditorStore = create<AnnotationEditorState>()((set) => ({
       contextualPosition: undefined,
       contextualEditorVisible: false,
       formVisible: false,
+    })),
+  setShownDetectionOverlay: (visible) =>
+    set((state) => ({
+      ...state,
+      showHints: false,
+      shownDetectionOverlay: visible,
     })),
 
   setContextualEditorVisible: (visible) =>
@@ -79,6 +88,22 @@ export const useContextualEditorVisibleState = () => {
 export const useAnnotationHintsVisible = () => {
   const visible = annotationEditorStore((state) => state.showHints);
   const setVisible = annotationEditorStore((state) => state.setHintsVisible);
+  return [visible, setVisible] as const;
+};
+
+export const useShownDetectionOverlay = () => {
+  const visible = annotationEditorStore((state) => state.shownDetectionOverlay);
+  const setVisible = annotationEditorStore(
+    (state) => state.setShownDetectionOverlay,
+  );
+  return [visible, setVisible] as const;
+};
+
+export const useShownDetectionOverlayState = () => {
+  const visible = annotationEditorStore((state) => state.shownDetectionOverlay);
+  const setVisible = annotationEditorStore(
+    (state) => state.setShownDetectionOverlay,
+  );
   return [visible, setVisible] as const;
 };
 

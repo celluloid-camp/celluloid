@@ -17,7 +17,7 @@ export function makeQueryClient() {
     }),
     defaultOptions: {
       queries: {
-        staleTime: 30 * 1000,
+        gcTime: 1000 * 60 * 60 * 24, // 24 hours
         refetchOnWindowFocus: true,
         retry: 2,
       },

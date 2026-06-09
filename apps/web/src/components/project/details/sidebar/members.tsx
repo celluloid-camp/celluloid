@@ -1,20 +1,13 @@
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import PeopleIcon from "@mui/icons-material/People";
+import { Box, List, ListItem, Paper, Stack, Typography } from "@mui/material";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type * as React from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { useLocaleRole } from "@/i18n/roles";
 import type { User } from "@/lib/auth-client";
-import type { ProjectById, ProjectMembers } from "@/lib/trpc/types";
+import { useTRPC } from "@/lib/trpc/client";
+import type { ProjectById } from "@/lib/trpc/types";
 
 interface SideBarProps {
   project: ProjectById;
@@ -26,17 +19,36 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
 
   const localeRole = useLocaleRole();
 
+  const api = useTRPC();
+  const { data: members } = useSuspenseQuery(
+    api.project.members.queryOptions({ projectId: project.id }),
+  );
+
   return (
     <Paper
       sx={{
-        paddingX: 3,
         marginY: 2,
-        paddingY: 3,
       }}
     >
-      <Typography variant="h6" mb={2}>
-        {t("project.members", { count: String(project._count.members) })}
-      </Typography>
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+          paddingX: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyItems: "center",
+          gap: 1,
+          paddingY: 2,
+        }}
+      >
+        <PeopleIcon />
+        <Typography variant="h6">
+          {t("project.members", {
+            count: members.length == 0 ? 1 : members.length,
+          })}
+        </Typography>
+      </Box>
       <List
         dense={true}
         sx={{
@@ -45,16 +57,23 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
           bgcolor: "neutral.100",
           position: "relative",
           overflow: "auto",
-          borderRadius: 2,
+          borderBottomRightRadius: 4,
+          borderBottomLeftRadius: 4,
           minHeight: 300,
           maxHeight: 300,
           "& ul": { padding: 0 },
         }}
       >
         <ListItem>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+            }}
+          >
             <Avatar
-              src={project.user.avatar?.publicUrl}
+              src={project.user.image ?? undefined}
               sx={{
                 background: project.user.color,
                 borderWidth: 2,
@@ -66,16 +85,26 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
             </Avatar>
             <Stack direction="column" spacing={0}>
               <Typography variant="body2">{project.user.username}</Typography>
-              <Typography fontSize={10}>
+              <Typography
+                sx={{
+                  fontSize: 10,
+                }}
+              >
                 {localeRole(project.user.role ?? null)}
               </Typography>
             </Stack>
           </Stack>
         </ListItem>
 
-        {project.members.map((member: ProjectMembers) => (
+        {members?.map((member) => (
           <ListItem key={member.id}>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <Avatar
                 sx={{
                   background: member.user?.color,
@@ -83,13 +112,17 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
                   borderColor: member.user?.color,
                   borderStyle: "solid",
                 }}
-                src={member.user?.avatar?.publicUrl}
+                src={member.user?.image ?? undefined}
               >
                 {member.user?.initial}
               </Avatar>
               <Stack direction="column" spacing={0}>
                 <Typography variant="body2">{member.user?.username}</Typography>
-                <Typography fontSize={10}>
+                <Typography
+                  sx={{
+                    fontSize: 10,
+                  }}
+                >
                   {localeRole(member.user?.role ?? null)}
                 </Typography>
               </Stack>

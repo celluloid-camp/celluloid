@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     .jpeg()
     .toBuffer();
 
-  return new NextResponse(cropped, {
+  return new NextResponse(Buffer.from(cropped), {
     status: 200,
     headers: {
       "Content-Type": "image/jpeg",

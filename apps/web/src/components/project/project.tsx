@@ -1,36 +1,47 @@
 "use client";
-
 import { Box, CircularProgress } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { MediaProvider } from "media-chrome/react/media-store";
 import { Suspense } from "react";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { ProjectDetails } from "./details/project-details";
 import { ProjectVideoScreen } from "./video/video-screen";
 
 export function ProjectMainScreen({ projectId }: { projectId: string }) {
-  const [project] = trpc.project.byId.useSuspenseQuery({ id: projectId });
+  const api = useTRPC();
+  const { data: project } = useSuspenseQuery(
+    api.project.byId.queryOptions({ id: projectId }),
+  );
   return (
-    <Box display={"flex"} flexDirection={"column"}>
-      <Suspense
-        fallback={
-          <Box
-            display={"flex"}
-            alignContent={"center"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            sx={{
-              backgroundColor: "black",
-              height: "60vh",
-              minHeight: "60vh",
-            }}
-          >
-            <CircularProgress sx={{ color: "white" }} />
-          </Box>
-        }
-      >
-        <ProjectVideoScreen project={project} />
-      </Suspense>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <MediaProvider>
+        <Suspense
+          fallback={
+            <Box
+              sx={{
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "black",
+                height: "60vh",
+                minHeight: "60vh",
+              }}
+            >
+              <CircularProgress sx={{ color: "white" }} />
+            </Box>
+          }
+        >
+          <ProjectVideoScreen project={project} />
+        </Suspense>
 
-      <ProjectDetails projectId={projectId} />
+        <ProjectDetails projectId={projectId} />
+      </MediaProvider>
     </Box>
   );
 }

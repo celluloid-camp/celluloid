@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -11,19 +10,19 @@ import {
   Divider,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { authClient, signIn } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { authClient, signIn, useSession } from "@/lib/auth-client";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
+
 export function LoginForm() {
   const t = useTranslations();
   const router = useRouter();
-  const utils = trpc.useUtils();
+
+  const { refetch } = useSession();
 
   const loginSchema = z.object({
     username: z.string().min(1, t("signin.usernameRequired")),
@@ -71,22 +70,26 @@ export function LoginForm() {
     }
     const { error } = loginResult;
 
-    if (error?.code === "EMAIL_NOT_VERIFIED") {
-      await authClient.emailOtp.sendVerificationOtp({
-        email: values.username,
-        type: "sign-in",
-      });
+    if (error) {
+      if (error.code === "EMAIL_NOT_VERIFIED") {
+        await authClient.emailOtp.sendVerificationOtp({
+          email: values.username,
+          type: "sign-in",
+        });
 
-      router.replace(`/otp?email=${values.username}`);
-      return;
+        router.replace(`/otp?email=${values.username}`);
+        return;
+      }
+      if (
+        error?.code === "INVALID_USERNAME_OR_PASSWORD" ||
+        error?.code === "INVALID_EMAIL_OR_PASSWORD"
+      ) {
+        setError("root", { message: t("signin.error.user-not-found") });
+        return;
+      }
     }
-    if (
-      error?.code === "INVALID_USERNAME_OR_PASSWORD" ||
-      error?.code === "INVALID_EMAIL_OR_PASSWORD"
-    ) {
-      setError("root", { message: t("signin.error.user-not-found") });
-      return;
-    }
+
+    await refetch();
     router.refresh();
     router.back();
   };
@@ -132,7 +135,13 @@ export function LoginForm() {
             error={!!errors.password}
             helperText={errors.password?.message}
           />
-          <Box display={"flex"} flex={1} justifyContent={"flex-end"}>
+          <Box
+            sx={{
+              display: "flex",
+              flex: 1,
+              justifyContent: "flex-end",
+            }}
+          >
             <Button
               onClick={handlePasswordReset}
               data-testid="forgot-button"
@@ -145,7 +154,13 @@ export function LoginForm() {
         </DialogContent>
         <Divider />
         <DialogActions sx={{ marginY: 1, marginX: 2 }}>
-          <Box display="flex" justifyContent={"space-between"} flex={1}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flex: 1,
+            }}
+          >
             <Box>
               <Button
                 color="primary"
@@ -159,18 +174,17 @@ export function LoginForm() {
               </Button>
             </Box>
 
-            <LoadingButton
+            <Button
               variant="contained"
               size="small"
               color="primary"
               type="submit"
               data-testid="submit"
               loading={isSubmitting}
-              disabled={isSubmitting}
               sx={{ textTransform: "uppercase" }}
             >
               {t("signin.loginAction")}
-            </LoadingButton>
+            </Button>
           </Box>
         </DialogActions>
       </form>

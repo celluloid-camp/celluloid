@@ -3,7 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { projectFallbackRender } from "@/components/project/details/error-fallback";
 import { ProjectMainScreen } from "@/components/project/project";
 import { ProjectSkeleton } from "@/components/project/skeleton";
-import { HydrateClient, trpc } from "@/lib/trpc/server";
+import { HydrateClient, prefetch, trpc } from "@/lib/trpc/server";
 
 export default async function ProjectPage({
   params,
@@ -12,8 +12,7 @@ export default async function ProjectPage({
 }) {
   const { id } = await params;
 
-  void trpc.project.byId.prefetch({ id });
-  void trpc.annotation.byProjectId.prefetch({ id });
+  void prefetch(trpc.project.byId.queryOptions({ id }));
   return (
     <HydrateClient>
       <ErrorBoundary fallbackRender={projectFallbackRender}>

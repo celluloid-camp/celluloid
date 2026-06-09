@@ -1,5 +1,15 @@
+"use client";
 import { NotificationsTrigger } from "@celluloid/notifications/components/trigger";
-import { Box, IconButton, Menu, MenuItem, Skeleton } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  ListSubheader,
+  Menu,
+  MenuItem,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,7 +27,7 @@ export const UserMenu = () => {
   React.useEffect(() => {
     setMounted(true);
   }, []);
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending, refetch } = useSession();
   const t = useTranslations();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -32,6 +42,7 @@ export const UserMenu = () => {
 
   const handleLogout = async () => {
     await signOut();
+    await refetch();
     router.replace("/");
   };
 
@@ -49,12 +60,10 @@ export const UserMenu = () => {
               borderWidth: 2,
               borderColor: session.user.color,
               borderStyle: "solid",
-              width: 40,
-              height: 40,
             }}
             src={session.user.image ?? undefined}
           >
-            {session.user.email?.charAt(0)}
+            {session.user.initial}
           </Avatar>
         </IconButton>
       ) : (
@@ -112,7 +121,7 @@ export const UserMenu = () => {
                 display: "block",
                 position: "absolute",
                 top: 0,
-                right: 14,
+                right: 24,
                 width: 10,
                 height: 10,
                 bgcolor: "background.paper",
@@ -123,6 +132,10 @@ export const UserMenu = () => {
           },
         }}
       >
+        <ListSubheader className="mb-1 mt-0 gap-0">
+          <span>{session?.user?.email}</span>
+        </ListSubheader>
+        <Divider />
         {session?.user?.role === "admin" ? (
           <MenuItem
             data-testid="header-admin-button"
@@ -146,6 +159,7 @@ export const UserMenu = () => {
         >
           {t("menu.settings")}
         </MenuItem>
+        <Divider />
         <MenuItem onClick={handleLogout} data-testid="header-logout-button">
           {t("menu.logout")}
         </MenuItem>

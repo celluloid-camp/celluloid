@@ -27,7 +27,11 @@ export const Notifications = () => {
     return null;
   }
   return (
-    <Box marginX={1}>
+    <Box
+      sx={{
+        marginX: 1,
+      }}
+    >
       <NotificationsTrigger />
     </Box>
   );

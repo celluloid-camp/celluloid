@@ -58,10 +58,22 @@ export function VisionStudioObjectsTab({
                   mb: 1,
                 }}
               />
-              <Typography fontWeight="bold" fontSize={14} align="center">
+              <Typography
+                align="center"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: 14,
+                }}
+              >
                 {objectId}
               </Typography>
-              <Typography color="grey.600" fontSize={12} align="center">
+              <Typography
+                align="center"
+                sx={{
+                  color: "grey.600",
+                  fontSize: 12,
+                }}
+              >
                 {objs.length} detected
               </Typography>
             </Box>

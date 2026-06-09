@@ -34,7 +34,13 @@
       "send": "Edit"
     },
     "form": {
-      "add-annotation": "Add annotation"
+      "add-annotation": "Add annotation",
+      "pause": {
+        "tooltip": "Automatically pause when annotation is displayed."
+      },
+      "context": {
+        "tooltip": "Place a visual marker"
+      }
     },
     "hintLabel": "{ count} annotation",
     "hintLabel_many": "{{count}} annotations",
@@ -88,7 +94,14 @@
       "subtitle": "You want to know more or you encounter difficulties?",
       "title": "How to use Celluloid ?"
     },
-    "member": "Joined"
+    "member": "Joined",
+    "explorer": "Explore",
+    "collaboration": "Collaboration",
+    "sortBy": {
+      "recent_added": "Recently added",
+      "publication_date": "Publication date",
+      "name": "Name"
+    }
   },
   "menu": {
     "about": "About",
@@ -113,7 +126,8 @@
         "empty": "You have no projects."
       },
       "playlist": {
-        "empty": "You have no playlists."
+        "empty": "You have no playlists.",
+        "emptyDescription": "Create a playlist to group your projects and share them."
       }
     },
     "role": {
@@ -219,7 +233,12 @@
       },
       "dialog": {
         "title": "Edit Project"
-      }
+      },
+      "thumbnailLoadError": "Preview unavailable",
+      "syncThumbnail": "Sync thumbnail",
+      "syncThumbnailSuccess": "Thumbnail updated from PeerTube",
+      "syncThumbnailError": "Could not refresh thumbnail from PeerTube",
+      "syncThumbnailPassword": "This video is password-protected on PeerTube"
     },
     "export": {
       "success": "Project exported successfully",
@@ -285,7 +304,9 @@
           "title": "Title",
           "description": "Chapter description"
         }
-      }
+      },
+      "failed": "Scenes processing failed",
+      "retry": "Retry generation"
     },
     "note": {
       "title": "Notes",
@@ -323,6 +344,45 @@
           "minLength": "Comment doit comporter minimum 2 character",
           "required": "Comment is required"
         }
+      },
+      "controls": {
+        "fullscreen": {
+          "enter": "Full screen",
+          "exit": "Exit full screen"
+        },
+        "play": {
+          "play": "Play",
+          "pause": "Pause"
+        },
+        "mute": {
+          "mute": "Mute",
+          "unmute": "Unmute"
+        },
+        "seekBackward": "Seek backward",
+        "seekForward": "Seek forward",
+        "audioMenu": {
+          "open": "Select audio track",
+          "close": "Close audio tracks menu"
+        },
+        "captionsMenu": {
+          "open": "Select subtitles",
+          "close": "Close subtitles menu",
+          "none": "None"
+        },
+        "volume": "Volume",
+        "seek": "Seek",
+        "playbackRate": "Playback speed",
+        "detectionOverlay": {
+          "show": "Show detection overlay",
+          "hide": "Hide detection overlay"
+        },
+        "annotationHints": {
+          "show": "Show annotations",
+          "hide": "Hide annotations"
+        },
+        "captionsButton": {
+          "label": "Subtitles/closed captions"
+        }
       }
     },
     "vision": {
@@ -332,9 +392,36 @@
       "empty": "Video analysis not available.",
       "failed": "Failed to analyse the video.",
       "analyse": {
-        "in-progress": "Video analysis in progress..."
+        "in-progress": "Video analysis in progress, an email will be sent to you when the analysis is complete."
       },
       "title": "Video Analysis"
+    },
+    "scenes": {
+      "title": "Scenes"
+    },
+    "studio": {
+      "title": "Studio",
+      "close": "Close studio",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "merge": "Merge",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Analysis saved",
+      "objects": "Objects",
+      "trackActions": "Actions for {id}",
+      "edit": "Edit",
+      "remove": "Remove",
+      "mergeDialog": {
+        "title": "Merge detections",
+        "description": "Choose the label to keep for the merged detection."
+      },
+      "rename": {
+        "title": "Edit detection label",
+        "label": "Label",
+        "required": "Label is required",
+        "duplicate": "This label is already used"
+      }
     }
   },
   "chapter": {
@@ -359,13 +446,22 @@
       },
       "button": {
         "add": " Add Chapter",
-        "reset": "Reset Chapters"
+        "reset": "Reset Chapters",
+        "regenerate": "Regenerate chapters"
       },
       "title": {
-        "placeholder": "Chapter title"
+        "placeholder": "Chapter title",
+        "label": "Title"
       },
       "description": {
-        "placeholder": "Chapter description"
+        "placeholder": "Chapter description",
+        "label": "Description"
+      },
+      "timeRange": {
+        "label": "Time range"
+      },
+      "edit": {
+        "title": "Edit Scene"
       }
     }
   },
@@ -520,7 +616,8 @@
     },
     "email": {
       "label": "Email",
-      "placeholder": "Email"
+      "placeholder": "Email",
+      "required": "Email required"
     },
     "password": {
       "label": "Password",
@@ -714,7 +811,10 @@
     "password-min-length": "Password must be at least 8 characters",
     "table": {
       "rowsPerPage": "Rows per page"
-    }
+    },
+    "save": "Save",
+    "verified": "Verified",
+    "unverified": "Unverified"
   },
   "profil": {
     "update": {
@@ -729,6 +829,7 @@
       "userame": "Username",
       "username": "Username",
       "email": "Email",
+      "emailVerified": "Email Verified",
       "role": "Role",
       "createAt": "Created At"
     }

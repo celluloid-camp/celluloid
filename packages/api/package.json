@@ -1,0 +1,38 @@
+{
+  "name": "@celluloid/api",
+  "version": "3.5.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@celluloid/auth": "workspace:*",
+    "@celluloid/db": "workspace:*",
+    "@celluloid/notifications": "workspace:*",
+    "@celluloid/peertube": "workspace:*",
+    "@celluloid/storage": "workspace:*",
+    "@celluloid/utils": "workspace:*",
+    "@celluloid/workflows": "workspace:*",
+    "@t3-oss/env-nextjs": "catalog:",
+    "@trpc/server": "catalog:",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "js2xmlparser": "^5.0.0",
+    "lodash": "catalog:",
+    "papaparse": "^5.4.1",
+    "superjson": "catalog:",
+    "uuid": "^9.0.1",
+    "workflow": "catalog:",
+    "ws": "^8.18.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@celluloid/typescript-config": "workspace:*",
+    "@types/express": "^5.0.0",
+    "@types/papaparse": "^5.3.10",
+    "@types/uuid": "^9.0.4",
+    "typescript": "catalog:"
+  }
+}

@@ -1,16 +1,21 @@
 "use client";
 import { Box, Container, Skeleton, Stack, Typography } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import { Suspense } from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { useLocaleRole } from "@/i18n/roles";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import { UserPublicProjects } from "./projects";
 
 function ProfileSkeleton() {
   return (
-    <Stack alignItems="center" spacing={2}>
+    <Stack
+      spacing={2}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <Skeleton variant="circular" width={100} height={100} />
       <Skeleton variant="text" width={200} height={40} />
       <Skeleton variant="text" width={250} height={24} />
@@ -22,12 +27,19 @@ function ProfileSkeleton() {
 
 function PublicProfileContent({ userId }: { userId: string }) {
   const localeRole = useLocaleRole();
-  const [data] = trpc.user.publicById.useSuspenseQuery({ id: userId });
+  const api = useTRPC();
+  const { data } = useSuspenseQuery(
+    api.user.publicById.queryOptions({ id: userId }),
+  );
 
   if (!data) return null;
   return (
     <>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Avatar
           sx={{
             background: data.color,
@@ -38,7 +50,7 @@ function PublicProfileContent({ userId }: { userId: string }) {
             borderStyle: "solid",
             fontSize: 30,
           }}
-          src={data.avatar?.publicUrl}
+          src={data.image ?? undefined}
         >
           {data.initial}
         </Avatar>
@@ -55,19 +67,23 @@ function PublicProfileContent({ userId }: { userId: string }) {
           {localeRole(data.role)}
         </Typography>
       </Stack>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Typography variant="body2" color="textPrimary">
           {data.bio}
         </Typography>
       </Stack>
-
       <UserPublicProjects userId={userId} />
     </>
   );
 }
 
 export function PublicUserProfile({ userId }: { userId: string }) {
-  const { data } = trpc.user.byId.useQuery({ id: userId });
+  const api = useTRPC();
+  const { data } = useSuspenseQuery(api.user.byId.queryOptions({ id: userId }));
 
   if (!data) return null;
 

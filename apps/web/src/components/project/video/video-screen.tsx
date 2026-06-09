@@ -1,27 +1,25 @@
 "use client";
-import { AnnotationShape } from "@celluloid/prisma";
-import type ReactPlayer from "@celluloid/react-player";
-import { Grid } from "@mui/material";
+import { Box, CircularProgress, Grid } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+  useMediaFullscreenRef,
+} from "media-chrome/react/media-store";
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo } from "react";
-import {
-  useVideoPlayerProgress,
-  useVideoPlayerState,
-} from "@/components/video-player/store";
-import { useVideoPlayerEvent } from "@/hooks/use-video-player";
+import React, { Suspense, useEffect, useRef } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useSession } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
-import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-import { AnnotationOverlayHints } from "./annotation/overlay-hints";
-import { ShapesEditor } from "./annotation/shapes-editor";
+import type { ProjectById } from "@/lib/trpc/types";
 import {
-  AnnotationShapeWithMetadata,
-  ShapesViewer,
-} from "./annotation/shapes-viewer";
+  useAccurateMediaCurrentTime,
+  useAnnotations,
+} from "@/stores/annotations";
+import { ShapesEditor } from "./annotation/shapes-editor";
+import { ShapesViewer } from "./annotation/shapes-viewer";
 import { useAnnotationEditorState } from "./annotation/useAnnotationEditor";
+import { VideoObjectDetection } from "./video-detection";
 import { VideoPanel } from "./video-panel";
-import { VideoVision } from "./video-vision";
 
 const VideoPlayer = dynamic(
   () => import("../../video-player").then((mod) => mod.default),
@@ -33,28 +31,20 @@ interface Props {
 }
 
 export function ProjectVideoScreen({ project }: Props) {
-  const videoPlayerRef = React.useRef<ReactPlayer>(null);
+  const mediaCurrentTime = useAccurateMediaCurrentTime();
+  const dispatch = useMediaDispatch();
+  const fullscreenRefCallback = useMediaFullscreenRef();
 
-  const videoPlayerState = useVideoPlayerState();
   const [ref, { width, height }] = useMeasure();
 
   const { data: session } = useSession();
-  const utils = trpc.useUtils();
-  const videoProgress = useVideoPlayerProgress();
-  const [playerIsReady, setPlayerIsReady] = React.useState(false);
 
-  const [annotations] = trpc.annotation.byProjectId.useSuspenseQuery({
-    id: project.id,
-  });
+  const { currentAnnotations, shapeAnnotations, annotations } = useAnnotations(
+    project.id,
+  );
 
   const { contextualEditorVisible, formVisible, showHints } =
     useAnnotationEditorState();
-
-  useVideoPlayerEvent((event) => {
-    if (event.state === "READY") {
-      setPlayerIsReady(true);
-    }
-  });
 
   // trpc.annotation.onChange.useSubscription(undefined, {
   //   onData() {
@@ -68,73 +58,55 @@ export function ProjectVideoScreen({ project }: Props) {
   //   },
   // });
 
-  const visibleAnnotations = useMemo(
-    () =>
-      playerIsReady && annotations
-        ? annotations.filter(
-            (annotation) =>
-              videoProgress >= annotation.startTime &&
-              videoProgress <= annotation.stopTime,
-          )
-        : [],
-    [annotations, videoProgress, playerIsReady],
-  );
-
-  const shapeAnnotations = useMemo<AnnotationShapeWithMetadata[]>(
-    () =>
-      visibleAnnotations
-        .filter(
-          (annotation) =>
-            annotation.extra !== null && annotation.extra !== undefined,
-        )
-        .map((annotation) => {
-          const extra = annotation.extra as AnnotationShape;
-          return {
-            ...annotation.extra,
-            id: extra.id ?? annotation.id,
-            type: extra.type ?? "point",
-            x: extra.relativeX ?? extra.x,
-            y: extra.relativeY ?? extra.y,
-            pause: annotation.pause,
-            startTime: annotation.startTime,
-            metadata: {
-              color: annotation.user.color,
-              initial: annotation.user.initial,
-              username: annotation.user.username,
-              avatar: annotation.user.avatar?.publicUrl,
-              text: annotation.text,
-            },
-          };
-        }),
-    [visibleAnnotations],
-  );
+  const prevMediaTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const position = videoPlayerRef.current?.getCurrentTime();
-    const paused = visibleAnnotations.filter(
-      (annotation) =>
-        annotation.pause && annotation.startTime === Math.floor(videoProgress),
-    );
+    const t = mediaCurrentTime;
+    const prev = prevMediaTimeRef.current;
+    prevMediaTimeRef.current = t;
 
-    if (paused.length > 0 && position) {
-      videoPlayerRef.current?.getInternalPlayer().pause();
-      videoPlayerRef.current?.seekTo(position + 1, "seconds");
+    if (prev === null) {
+      return;
     }
-  }, [visibleAnnotations, videoProgress]);
+
+    const dt = t - prev;
+
+    const paused = currentAnnotations.filter((annotation) => {
+      if (!annotation.pause) {
+        return false;
+      }
+      const start = annotation.startTime;
+
+      // Normal playback: we crossed startTime this tick (exact ms match was too strict).
+      const crossedForward = dt > 0 && dt <= 2 && prev < start && t >= start;
+
+      // Large seek/scrub: we jumped across the boundary; land just after start.
+      const landedAfterSeek =
+        Math.abs(dt) > 2 && t >= start && t < start + 0.25;
+
+      return crossedForward || landedAfterSeek;
+    });
+
+    if (paused.length > 0) {
+      dispatch({
+        type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+        detail: mediaCurrentTime,
+      });
+      dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
+    }
+  }, [currentAnnotations, mediaCurrentTime, dispatch]);
 
   useEffect(() => {
-    if (formVisible && videoPlayerRef) {
-      videoPlayerRef.current?.getInternalPlayer().pause();
+    if (formVisible) {
+      dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
     }
   }, [formVisible]);
-
-  const handleAnnotionHintClick = (annotation: AnnotationByProjectId) => {
-    videoPlayerRef.current?.seekTo(annotation.startTime, "seconds");
-  };
 
   return (
     <Grid
       container
+      id="fullscreen"
+      ref={fullscreenRefCallback}
       sx={{
         backgroundColor: "black",
         height: "60vh",
@@ -142,51 +114,32 @@ export function ProjectVideoScreen({ project }: Props) {
         maxHeight: "60vh",
       }}
     >
-      <Grid item xs={8} ref={ref} sx={{ position: "relative" }}>
+      <Grid ref={ref} sx={{ position: "relative" }} size={8}>
         {contextualEditorVisible ? <ShapesEditor /> : null}
         {!formVisible && !showHints && shapeAnnotations.length > 0 ? (
           <ShapesViewer
             shapes={shapeAnnotations}
             width={width ?? 0}
             height={height ?? 0}
-            onClick={() => {
-              if (videoPlayerState === "PAUSED") {
-                videoPlayerRef.current?.getInternalPlayer().play();
-              } else {
-                videoPlayerRef.current?.getInternalPlayer().pause();
-              }
-            }}
           />
         ) : null}
-        {showHints ? (
-          <AnnotationOverlayHints
-            project={project}
-            annotations={annotations}
-            onClick={handleAnnotionHintClick}
-          />
-        ) : null}
-        <VideoVision projectId={project.id} />
-        <VideoPlayer
-          ref={videoPlayerRef}
-          height={"100%"}
-          url={`https://${project.host}/w/${project.videoId}`}
-        />
+        <VideoObjectDetection projectId={project.id} />
+
+        <VideoPlayer project={project} />
       </Grid>
       <Grid
-        item
-        xs={4}
         sx={{
           height: "100%",
           position: "relative",
           paddingY: 2,
           paddingX: 2,
         }}
+        size={4}
       >
         <VideoPanel
           project={project}
-          annotations={visibleAnnotations}
-          annotationCount={annotations.length}
-          playerIsReady={playerIsReady}
+          annotations={currentAnnotations}
+          annotationCount={annotations?.length ?? 0}
           user={session?.user}
         />
       </Grid>

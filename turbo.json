@@ -1,39 +1,43 @@
 {
-  "$schema": "https://turbo.build/schema.json",
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["**/.env", "**/.env.*", "**/.env.*local"],
   "ui": "tui",
+  "envMode": "loose",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "dependsOn": ["^build", "test"],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "dist/migrate",
+        "storybook-static/**",
+        ".react-email/**"
+      ]
     },
-    "lint": {},
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^test"]
+    },
+    "analyze": {
+      "dependsOn": ["^analyze"]
+    },
     "dev": {
-      "dependsOn": ["^dev"],
       "cache": false,
-      "persistent": false
+      "persistent": true
+    },
+    "translate": {
+      "dependsOn": ["^translate"],
+      "cache": false
     },
     "clean": {
       "cache": false
+    },
+    "//#clean": {
+      "cache": false
     }
-  },
-  "globalEnv": [
-    "BASE_URL",
-    "NODE_ENV",
-    "DATABASE_URL",
-    "REDIS_URL",
-    "STORAGE_URL",
-    "STORAGE_BUCKET",
-    "STORAGE_ACCESS_KEY",
-    "STORAGE_SECRET_KEY",
-    "BETTER_AUTH_SECRET",
-    "BETTER_AUTH_URL",
-    "SMTP_HOST",
-    "SMTP_PORT",
-    "SMTP_SECURE",
-    "SMTP_USER",
-    "SMTP_PASSWORD",
-    "SMTP_EMAIL_FROM",
-    "SKIP_ENV_VALIDATIONS"
-  ],
-  "globalPassThroughEnv": ["NODE_ENV", "CI", "npm_lifecycle_event"]
+  }
 }

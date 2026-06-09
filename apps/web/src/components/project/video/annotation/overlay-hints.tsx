@@ -1,19 +1,22 @@
 import CancelIcon from "@mui/icons-material/Clear";
 import { Box, Fade, IconButton, Paper, Stack, Typography } from "@mui/material";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+  useMediaSelector,
+} from "media-chrome/react/media-store";
 import { useTranslations } from "next-intl";
 import React from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { MultiLineTypography } from "@/components/common/multiline-typography";
 import type { AnnotationByProjectId, ProjectById } from "@/lib/trpc/types";
-
+import { useAnnotations } from "@/stores/annotations";
 import { HtmlTooltip } from "./html-tooltip";
 import { useAnnotationHintsVisible } from "./useAnnotationEditor";
 
 interface AnnotationHintsProps {
   project: ProjectById;
   annotations: AnnotationByProjectId[];
-  onClick: (annotation: AnnotationByProjectId) => void;
 }
 
 type AnnotationHintsItemProps = {
@@ -37,7 +40,13 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
       <React.Fragment>
         <Stack sx={{ py: 1 }} spacing={1}>
           <Box>
-            <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Stack
+              direction={"row"}
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <Avatar
                 sx={{
                   background: annotation.user.color,
@@ -47,12 +56,17 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
                   borderColor: annotation.user.color,
                   borderStyle: "solid",
                 }}
-                src={annotation.user.avatar?.publicUrl}
+                className="text-sm"
+                src={annotation.user.image ?? undefined}
               >
                 {annotation.user.initial}
               </Avatar>
               <Stack>
-                <Typography component="span" color="white" variant="body2">
+                <Typography
+                  component="span"
+                  className="text-white"
+                  variant="body2"
+                >
                   {annotation.user.username}
                 </Typography>
               </Stack>
@@ -77,42 +91,51 @@ const AnnotationHintsItem: React.FC<AnnotationHintsItemProps> = ({
         minWidth: 10,
         margin: 0,
         padding: 0,
-        borderRadius: 2,
+        borderRadius: 4,
         backgroundColor: "white",
         transition: "all 0.2s ease",
         "&:hover": {
           filter: "brightness(85%)",
         },
         color: "white",
-        top: index * 24,
+        top: index * 20,
         left: leftPosition,
         width: width,
         border: `2px solid ${annotation.user.color}`,
       }}
       style={{
-        backgroundColor: annotation.user.color,
+        backgroundColor: annotation.user.color ?? undefined,
       }}
       onClick={onClick}
     />
   </HtmlTooltip>
 );
 
-export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
-  project,
-  annotations,
-  onClick,
-}) => {
+export function AnnotationOverlayHints({ project }: { project: ProjectById }) {
+  const { annotations } = useAnnotations(project.id);
   const t = useTranslations();
+  const dispatch = useMediaDispatch();
 
-  const [_, setHintsVisible] = useAnnotationHintsVisible();
+  const [showHints, setHintsVisible] = useAnnotationHintsVisible();
 
-  const getHintStartPosition = (annotation: AnnotationByProjectId) =>
-    `${(annotation.startTime * 100) / project.duration}%`;
+  const isContextualAnnotation = (annotation: AnnotationByProjectId) =>
+    annotation.extra !== null && annotation.extra !== undefined;
 
-  const getHintWidth = (annotation: AnnotationByProjectId) =>
-    `${
-      ((annotation.stopTime - annotation.startTime) * 100) / project.duration
-    }%`;
+  const getHintStartPosition = (annotation: AnnotationByProjectId) => {
+    const position = `${(annotation.startTime * 100) / project.duration}%`;
+    // Contextual annotations are rendered as dots, centered on their timestamp.
+    if (isContextualAnnotation(annotation)) {
+      return `calc(${position} - 5px)`;
+    }
+    return position;
+  };
+
+  const getHintWidth = (annotation: AnnotationByProjectId) => {
+    if (isContextualAnnotation(annotation)) {
+      return "10px";
+    }
+    return `${((annotation.stopTime - annotation.startTime) * 100) / project.duration}%`;
+  };
 
   const handleClose: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -120,10 +143,21 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
   };
 
   const handleClick = (annotation: AnnotationByProjectId) => {
-    onClick(annotation);
+    dispatch({
+      type: MediaActionTypes.MEDIA_SEEK_REQUEST,
+      detail: annotation.startTime,
+    });
+
     setHintsVisible(false);
   };
 
+  if (annotations.length === 0) {
+    return null;
+  }
+
+  if (!showHints) {
+    return null;
+  }
   return (
     <Fade in={true}>
       <Box
@@ -131,58 +165,47 @@ export const AnnotationOverlayHints: React.FC<AnnotationHintsProps> = ({
           position: "absolute",
           left: 0,
           top: 0,
+          bottom: 60,
           margin: 0,
-          height: "100%",
+          height: "calc(100% - 60px)",
           width: "100%",
           backgroundColor: "rgba(0, 0, 0, 0.6)",
           overflow: "hidden",
+          zIndex: 1000,
         }}
       >
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          paddingX={2}
-          paddingY={2}
-          justifyContent={"space-between"}
-          sx={{ backgroundColor: "black" }}
-        >
-          <Box>
-            <Typography align="left" variant="h5" color="white">
+        <div className="flex flex-row justify-between px-6 pt-4">
+          <div>
+            <p className="text-white text-lg font-bold">
               {t("project.annotation.label", {
                 count: annotations.length,
               })}
-            </Typography>
-          </Box>
+            </p>
+          </div>
 
-          <Box>
-            <IconButton onClick={handleClose} sx={{ color: "white" }}>
+          <div>
+            <IconButton onClick={handleClose} className="text-white">
               <CancelIcon />
             </IconButton>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            position: "relative",
-            height: "100%",
-            width: "100%",
-            overflowY: "auto",
-            overflowX: "hidden",
-          }}
-        >
-          {annotations.map((annotation, index) => {
-            return (
-              <AnnotationHintsItem
-                key={annotation.id}
-                leftPosition={getHintStartPosition(annotation)}
-                width={getHintWidth(annotation)}
-                index={index}
-                annotation={annotation}
-                onClick={() => handleClick(annotation)}
-              />
-            );
-          })}
-        </Box>
+          </div>
+        </div>
+        <div className="h-full w-full overflow-x-hidden overflow-y-auto px-6">
+          <div className="relative h-full w-full">
+            {annotations.map((annotation, index) => {
+              return (
+                <AnnotationHintsItem
+                  key={annotation.id}
+                  leftPosition={getHintStartPosition(annotation)}
+                  width={getHintWidth(annotation)}
+                  index={index}
+                  annotation={annotation}
+                  onClick={() => handleClick(annotation)}
+                />
+              );
+            })}
+          </div>
+        </div>
       </Box>
     </Fade>
   );
-};
+}

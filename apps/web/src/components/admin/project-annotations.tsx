@@ -16,13 +16,14 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useConfirm } from "material-ui-confirm";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 
 interface ProjectAnnotationsProps {
@@ -32,32 +33,37 @@ interface ProjectAnnotationsProps {
 export function ProjectAnnotations({ projectId }: ProjectAnnotationsProps) {
   const t = useTranslations();
   const confirm = useConfirm();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedAnnotation, setSelectedAnnotation] = useState<string | null>(
     null,
   );
 
-  const { data: annotations, isLoading } = trpc.annotation.byProjectId.useQuery(
-    {
+  const { data: annotations, isLoading } = useQuery(
+    api.annotation.byProjectId.queryOptions({
       id: projectId,
-    },
+    }),
   );
 
-  const deleteAnnotation = trpc.annotation.delete.useMutation({
-    onSuccess: () => {
-      enqueueSnackbar(t("admin.project.annotations.success"), {
-        variant: "success",
-      });
-      utils.annotation.byProjectId.invalidate({ id: projectId });
-    },
-    onError: () => {
-      enqueueSnackbar(t("admin.project.annotations.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const deleteAnnotation = useMutation(
+    api.annotation.delete.mutationOptions({
+      onSuccess: () => {
+        enqueueSnackbar(t("admin.project.annotations.success"), {
+          variant: "success",
+        });
+        queryClient.invalidateQueries(
+          api.annotation.byProjectId.queryOptions({ id: projectId }),
+        );
+      },
+      onError: () => {
+        enqueueSnackbar(t("admin.project.annotations.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -110,10 +116,15 @@ export function ProjectAnnotations({ projectId }: ProjectAnnotationsProps) {
         borderRadius: 2,
       }}
     >
-      <Typography variant="h5" fontWeight="medium" marginBottom={2}>
+      <Typography
+        variant="h5"
+        sx={{
+          fontWeight: "medium",
+          marginBottom: 2,
+        }}
+      >
         Annotations
       </Typography>
-
       <TableContainer>
         <Table size="small">
           <TableHead>
@@ -130,7 +141,7 @@ export function ProjectAnnotations({ projectId }: ProjectAnnotationsProps) {
                 <TableRow key={annotation.id}>
                   <TableCell>
                     <Link href={`/admin/user/${annotation.user.id}`}>
-                      {annotation.user.username}
+                      {annotation.user?.username}
                     </Link>
                   </TableCell>
                   <TableCell>{annotation.text}</TableCell>
@@ -154,7 +165,6 @@ export function ProjectAnnotations({ projectId }: ProjectAnnotationsProps) {
           </TableBody>
         </Table>
       </TableContainer>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

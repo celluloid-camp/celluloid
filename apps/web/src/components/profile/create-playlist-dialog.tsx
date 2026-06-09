@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -17,6 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "mui-image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -29,7 +29,7 @@ import {
   BootstrapDialog,
   StyledDialogTitle,
 } from "@/components/common/styled-dialog";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 
 interface CreatePlaylistDialogProps {
   open: boolean;
@@ -43,13 +43,13 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
   const t = useTranslations();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const utils = trpc.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
 
   // Fetch user's available projects
-  const { data: userProjectsData } = trpc.user.projects.useQuery(
-    {},
-    { enabled: open },
+  const { data: userProjectsData } = useQuery(
+    api.user.projects.queryOptions({}, { enabled: open }),
   );
 
   const schema = z.object({
@@ -72,22 +72,24 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
     },
   });
 
-  const createMutation = trpc.playlist.create.useMutation({
-    onSuccess: (data) => {
-      utils.user.playlists.invalidate();
-      enqueueSnackbar(t("playlist.create.success"), {
-        variant: "success",
-      });
-      onClose();
-      // Optionally navigate to the new playlist
-      // router.push(`/playlist/${data.id}`);
-    },
-    onError: () => {
-      enqueueSnackbar(t("playlist.create.error"), {
-        variant: "error",
-      });
-    },
-  });
+  const createMutation = useMutation(
+    api.playlist.create.mutationOptions({
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(api.user.playlists.queryFilter());
+        enqueueSnackbar(t("playlist.create.success"), {
+          variant: "success",
+        });
+        onClose();
+        // Optionally navigate to the new playlist
+        // router.push(`/playlist/${data.id}`);
+      },
+      onError: () => {
+        enqueueSnackbar(t("playlist.create.error"), {
+          variant: "error",
+        });
+      },
+    }),
+  );
 
   const onSubmit = (data: FormValues) => {
     createMutation.mutate({
@@ -291,9 +293,9 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                             >
                               <Typography
                                 variant="body2"
-                                fontWeight="bold"
                                 noWrap
                                 sx={{
+                                  fontWeight: "bold",
                                   display: "-webkit-box",
                                   overflow: "hidden",
                                   WebkitBoxOrient: "vertical",
@@ -310,9 +312,11 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                   </Box>
                 ) : (
                   <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 1 }}
+                    variant="body1"
+                    sx={{
+                      color: "text.secondary",
+                      mt: 1,
+                    }}
                   >
                     {t("playlist.edit.projects.empty")}
                   </Typography>
@@ -439,9 +443,9 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                             >
                               <Typography
                                 variant="body2"
-                                fontWeight="bold"
                                 noWrap
                                 sx={{
+                                  fontWeight: "bold",
                                   display: "-webkit-box",
                                   overflow: "hidden",
                                   WebkitBoxOrient: "vertical",
@@ -459,8 +463,10 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
                 ) : (
                   <Typography
                     variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 1 }}
+                    sx={{
+                      color: "text.secondary",
+                      mt: 1,
+                    }}
                   >
                     {t("playlist.edit.projects.noAvailable")}
                   </Typography>
@@ -474,14 +480,13 @@ const CreatePlaylistDialog: React.FC<CreatePlaylistDialogProps> = ({
             <Button onClick={handleClose} disabled={isSubmitting}>
               {t("playlist.edit.cancel")}
             </Button>
-            <LoadingButton
+            <Button
               type="submit"
               variant="contained"
               loading={createMutation.isPending}
-              disabled={isSubmitting}
             >
               {t("playlist.create.submit")}
-            </LoadingButton>
+            </Button>
           </Stack>
         </DialogActions>
       </form>

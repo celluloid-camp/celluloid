@@ -14,6 +14,11 @@ import {
   ToggleButton,
   Typography,
 } from "@mui/material";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import Placeholder from "@tiptap/extension-placeholder";
 import Strike from "@tiptap/extension-strike";
 import {
@@ -34,7 +39,7 @@ import {
 } from "react";
 import { Markdown } from "tiptap-markdown";
 import type { User } from "@/lib/auth-client";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 import dayjs from "@/utils/dayjs";
 
@@ -47,23 +52,31 @@ export function ProjectNotes({ project, user }: Props) {
   const [isSaving, setIsSaving] = useState(false);
   const notesRef = useRef<{ getContentAsText: () => string }>(null);
 
-  const [data] = trpc.note.byProjectId.useSuspenseQuery({
-    projectId: project.id,
-  });
+  const api = useTRPC();
+  const queryClient = useQueryClient();
 
-  const utils = trpc.useUtils();
-  const updateNote = trpc.note.update.useMutation({
-    onSuccess: () => {
-      setTimeout(() => {
-        setIsSaving(false);
-      }, 500);
-    },
-    onSettled: () => {
-      utils.note.byProjectId.invalidate({
-        projectId: project.id,
-      });
-    },
-  });
+  const { data } = useSuspenseQuery(
+    api.note.byProjectId.queryOptions({
+      projectId: project.id,
+    }),
+  );
+
+  const updateNote = useMutation(
+    api.note.update.mutationOptions({
+      onSuccess: () => {
+        setTimeout(() => {
+          setIsSaving(false);
+        }, 500);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(
+          api.note.byProjectId.queryFilter({
+            projectId: project.id,
+          }),
+        );
+      },
+    }),
+  );
 
   // Using useCallback to maintain function reference
   const debouncedUpdate = useCallback(
@@ -134,8 +147,10 @@ export function ProjectNotes({ project, user }: Props) {
       >
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
           <Typography
             variant="h6"
@@ -150,9 +165,20 @@ export function ProjectNotes({ project, user }: Props) {
             {t("project.note.title")}
           </Typography>
           {isSaving ? (
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <CircularProgress size={12} color="primary" />
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {t("project.note.saving")}.
               </Typography>
             </Stack>
@@ -179,7 +205,12 @@ export function ProjectNotes({ project, user }: Props) {
                 alignItems: "center",
               }}
             >
-              <Typography variant="caption" color="text.secondary">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {t("project.note.update_at")} {dayjs(data?.updatedAt).fromNow()}
               </Typography>
               <Button
@@ -219,6 +250,7 @@ const TiptapNotes = forwardRef<
       // }),
     ],
     content: content,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onUpdate(editor.getJSON() as unknown as JSON);
     },

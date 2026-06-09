@@ -1,0 +1,98 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: celluloid
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: "pg_isready -h 127.0.0.1 -U postgres -d celluloid"
+
+  minio:
+    restart: unless-stopped
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: StrongPass2022
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://minio:9000 root StrongPass2022 &&
+      mc mb myminio/celluloid &&
+      mc anonymous set public myminio/celluloid;
+      exit 0; "
+
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  db-migrate:
+    image: celluloid-db-migrate:latest
+    build:
+      context: .
+      dockerfile: ./packages/db/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
+      STORAGE_URL: http://minio:9000
+      BASE_URL: http://web:3000
+    restart: "no"
+
+  web:
+    image: celluloid-web:latest
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
+      createbuckets:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
+      WORKFLOW_TARGET_WORLD: "@workflow/world-postgres"
+      WORKFLOW_POSTGRES_URL: postgres://postgres:root@postgres:5432/celluloid
+      AUTH_SECRET: "0/cB/YzCq87Yp6MmClnzap7vOhDywpQ5Q+yTGCnHnLU="
+      REDIS_URL: redis://redis:6379
+      STORAGE_URL: http://minio:9000
+      STORAGE_BUCKET: celluloid
+      STORAGE_ACCESS_KEY: root
+      STORAGE_SECRET_KEY: StrongPass2022
+      MISTRAL_API_KEY: xxx
+      CI_TEST: "true"
+      BASE_URL: http://localhost:3000

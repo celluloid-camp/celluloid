@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoadingButton } from "@mui/lab";
 import { DialogActions, DialogContent, Divider } from "@mui/material";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -124,15 +124,14 @@ export function RecoverForm({ email }: { email?: string }) {
         </DialogContent>
         <Divider />
         <DialogActions sx={{ marginY: 1, marginX: 2 }}>
-          <LoadingButton
+          <Button
             variant="contained"
             color="primary"
             type="submit"
             loading={isSubmitting}
-            disabled={isSubmitting}
           >
             {t("recover.button.submit")}
-          </LoadingButton>
+          </Button>
         </DialogActions>
       </form>
     </>

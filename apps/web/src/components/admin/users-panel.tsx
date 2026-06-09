@@ -3,6 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
+  Chip,
   IconButton,
   Menu,
   MenuItem,
@@ -155,6 +156,7 @@ export default function UsersPanel() {
                 <TableRow>
                   <TableCell>{t("users.table.username")}</TableCell>
                   <TableCell>{t("users.table.email")}</TableCell>
+                  <TableCell>{t("users.table.emailVerified")}</TableCell>
                   <TableCell>{t("users.table.role")}</TableCell>
                   <TableCell>{t("users.table.createAt")}</TableCell>
                   <TableCell>Actions</TableCell>
@@ -163,7 +165,7 @@ export default function UsersPanel() {
               <TableBody>
                 {usersData?.users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} align="center">
+                    <TableCell colSpan={8} align="center">
                       {t("admin.list.empty")}
                     </TableCell>
                   </TableRow>
@@ -172,6 +174,17 @@ export default function UsersPanel() {
                     <TableRow key={user.id}>
                       <TableCell>{user.username}</TableCell>
                       <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={
+                            user.emailVerified
+                              ? t("common.verified")
+                              : t("common.unverified")
+                          }
+                          color={user.emailVerified ? "success" : "default"}
+                          size="small"
+                        />
+                      </TableCell>
                       <TableCell>{user.role}</TableCell>
                       <TableCell>
                         {new Date(user.createdAt).toLocaleDateString()}

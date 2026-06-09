@@ -25,7 +25,14 @@ export default async function PrivateLayout({
   return (
     <Box sx={{ backgroundColor: "brand.orange" }}>
       <Container maxWidth="lg" sx={{ pt: 4, pb: 4, minHeight: "100vh" }}>
-        <Typography variant="h4" marginBottom={2} component="h1">
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            marginBottom: 2,
+            fontFamily: "abril_fatfaceregular",
+          }}
+        >
           Admin Dashboard
         </Typography>
 
