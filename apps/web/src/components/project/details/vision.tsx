@@ -69,12 +69,9 @@ export function ProjectVision({ project, user }: Props) {
     return null;
   }
 
-  const canGenerateVision =
-    project.editable || (data && data.status === "failed");
+  const canGenerateVision = project.editable && data?.status === "failed";
 
-  const canViewStudio =
-    user?.role === "admin" ||
-    (user?.id === project.userId && data && data.status == "completed");
+  const canViewStudio = project.editable && data?.status === "completed";
 
   return (
     <Card
