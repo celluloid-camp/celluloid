@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   Chip,
@@ -116,7 +117,11 @@ export function ProjectDescription({ project }: Props) {
           action={
             project.editable ? (
               <Link href={`/project/${project.id}/edit`}>
-                <Button variant="text" size="small" startIcon={<EditIcon />}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<EditIcon />}
+                >
                   {t("project.edit.button")}
                 </Button>
               </Link>
@@ -131,16 +136,19 @@ export function ProjectDescription({ project }: Props) {
           }}
         >
           <Typography>{project.description}</Typography>
-          <Typography align="left" gutterBottom={true} variant="body2">
-            <a
-              href={peerTubeWatchUrl(project.host, project.videoId)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t("project.videoUrlHelper")}
-            </a>
-          </Typography>
         </CardContent>
+        <CardActions className="justify-end border-t border-gray-300">
+          <Button
+            component="a"
+            href={peerTubeWatchUrl(project.host, project.videoId)}
+            target="_blank"
+            rel="noreferrer"
+            variant="text"
+            size="small"
+          >
+            {t("project.videoUrlHelper")}
+          </Button>
+        </CardActions>
       </Card>
     </Box>
   );

@@ -387,7 +387,8 @@
     },
     "vision": {
       "button": {
-        "analyse": "Analyze Video"
+        "analyse": "Analyze Video",
+        "editDetections": "Edit detections"
       },
       "empty": "Video analysis not available.",
       "failed": "Failed to analyse the video.",
