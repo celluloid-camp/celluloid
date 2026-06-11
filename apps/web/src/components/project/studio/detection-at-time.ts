@@ -1,4 +1,4 @@
-import type { DetectionResultsModel } from "@celluloid/vision-api/types";
+import type { DetectionResultsModel } from "@celluloid/toolkit-api/types";
 import type { DetectionTrack } from "./segments";
 
 export type Bbox = {

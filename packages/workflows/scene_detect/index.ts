@@ -14,9 +14,9 @@ import {
   uploadImageFile,
   uploadImageUrl,
 } from "@celluloid/storage/client";
-import { createJob, getJobResults } from "@celluloid/vision-api";
-import { createClient } from "@celluloid/vision-api/client";
-import { SceneDetectResultsModel } from "@celluloid/vision-api/types";
+import { createJob, getJobResults } from "@celluloid/toolkit-api";
+import { createClient } from "@celluloid/toolkit-api/client";
+import { SceneDetectResultsModel } from "@celluloid/toolkit-api/types";
 import { createHook, FatalError, sleep } from "workflow";
 import { keys } from "../keys";
 import type { VisionWebhook } from "../vision/webhook";
@@ -42,7 +42,6 @@ export async function sceneDetectWorkflow(projectId: string) {
       videoFileUrl: info.videoUrl,
     });
 
-    console.log("Creating hook with token for scene detect", visionRun.job_id);
     const hook = createHook<VisionWebhook>({
       token: visionRun.job_id,
     });
@@ -57,6 +56,7 @@ export async function sceneDetectWorkflow(projectId: string) {
       sleep("20min").then(() => "timeout" as const),
     ]);
 
+    hook.dispose();
     if (result === "timeout") {
       throw new Error("Processing timed out after 20 minutes", {
         cause: "timeout",
@@ -64,7 +64,7 @@ export async function sceneDetectWorkflow(projectId: string) {
     }
 
     if (result.job_id) {
-      await fetchSceneDetectResults({ projectId, visionJobId: result.job_id });
+      await fetchSceneDetectResults({ projectId, jobId: result.job_id });
     }
   } catch (error) {
     await updateSceneDetectStatus({
@@ -180,10 +180,10 @@ async function startSceneDetect({
 
 async function fetchSceneDetectResults({
   projectId,
-  visionJobId,
+  jobId,
 }: {
   projectId: string;
-  visionJobId: string;
+  jobId: string;
 }) {
   "use step";
   const env = keys();
@@ -197,18 +197,20 @@ async function fetchSceneDetectResults({
       "x-api-key": env.VISION_API_KEY,
     },
     path: {
-      job_id: visionJobId,
+      job_id: jobId,
     },
   });
 
-  if (response.status !== 200 || !analysisResponse) {
+  if (response?.status !== 200 || !analysisResponse) {
     console.error(
       "Failed to fetch scene detect results",
-      response.status,
-      response.statusText,
+      response?.status,
+      response?.statusText,
     );
     throw new FatalError("Failed to fetch vision analysis");
   }
+
+  console.log("[SCENE DETECT] analysisResponse", analysisResponse);
 
   const sceneDetectResults = analysisResponse.data as SceneDetectResultsModel;
 

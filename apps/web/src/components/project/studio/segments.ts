@@ -1,4 +1,4 @@
-import type { DetectionResultsModel } from "@celluloid/vision-api/types";
+import type { DetectionResultsModel } from "@celluloid/toolkit-api/types";
 
 /** A contiguous appearance of a tracked object on the timeline. */
 export interface DetectionSegment {
@@ -181,6 +181,25 @@ export function renameTrack(
       obj.id === oldId ? { ...obj, id: trimmed } : obj,
     ),
   }));
+
+  return { ...analysis, frames };
+}
+
+/** Remove detections belonging to a single timeline segment. */
+export function removeSegment(
+  analysis: DetectionResultsModel,
+  segment: DetectionSegment,
+): DetectionResultsModel {
+  const timestampSet = new Set(segment.timestamps);
+  const frames = analysis.frames
+    .map((frame) => ({
+      ...frame,
+      objects: frame.objects.filter(
+        (obj) =>
+          !(obj.id === segment.objectId && timestampSet.has(frame.timestamp)),
+      ),
+    }))
+    .filter((frame) => frame.objects.length > 0);
 
   return { ...analysis, frames };
 }
