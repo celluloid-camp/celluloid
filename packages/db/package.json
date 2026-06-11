@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@celluloid/peertube": "workspace:*",
-    "@celluloid/vision-api": "catalog:",
+    "@celluloid/toolkit-api": "catalog:",
     "@t3-oss/env-nextjs": "catalog:",
     "drizzle-orm": "catalog:",
     "@workflow/world-postgres": "catalog:",

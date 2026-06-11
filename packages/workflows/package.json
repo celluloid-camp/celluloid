@@ -13,7 +13,7 @@
     "@celluloid/emails": "workspace:*",
     "@celluloid/peertube": "workspace:*",
     "@celluloid/storage": "workspace:*",
-    "@celluloid/vision-api": "catalog:",
+    "@celluloid/toolkit-api": "catalog:",
     "@t3-oss/env-nextjs": "catalog:",
     "date-fns": "catalog:",
     "server-only": "catalog:",

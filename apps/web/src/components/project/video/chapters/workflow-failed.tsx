@@ -43,18 +43,12 @@ export function ScenesProcessingFailed({ project }: { project: ProjectById }) {
           margin: 2,
         }}
       >
-        <InfoIcon sx={{ fontSize: 30, color: "gray" }} />
-        <Typography
-          variant="body2"
-          color="gray"
-          sx={{
-            textAlign: "center",
-          }}
-        >
+        <InfoIcon className="text-neutral-400 size-8" />
+        <Typography variant="body2" className="text-neutral-400 text-center">
           {t("project.chapters.failed")}
         </Typography>
         {project.editable ? (
-          <Button variant="outlined" color="primary" onClick={handleGenerate}>
+          <Button variant="outlined" onClick={handleGenerate}>
             {t("project.chapters.retry")}{" "}
           </Button>
         ) : null}

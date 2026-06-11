@@ -402,11 +402,12 @@
       "close": "Fermer le studio",
       "zoomIn": "Zoom avant",
       "zoomOut": "Zoom arrière",
+      "deleteSelected": "Supprimer le segment sélectionné",
       "merge": "Fusionner",
       "cancel": "Annuler",
       "save": "Enregistrer",
       "saved": "Analyse enregistrée",
-      "objects": "Objets",
+      "objects": "Detections",
       "trackActions": "Actions pour {id}",
       "edit": "Modifier",
       "remove": "Supprimer",
@@ -419,6 +420,10 @@
         "label": "Libellé",
         "required": "Le libellé est obligatoire",
         "duplicate": "Ce libellé est déjà utilisé"
+      },
+      "removeSegment": {
+        "title": "Supprimer le segment de détection",
+        "description": "Supprimer cette apparition de « {id} » de {start} à {end} ? Vous pouvez annuler en n'enregistrant pas."
       }
     }
   },

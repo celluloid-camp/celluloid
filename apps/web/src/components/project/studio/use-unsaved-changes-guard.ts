@@ -21,6 +21,11 @@ const confirmDialogProps = {
       backgroundColor: "background.dark",
     },
   },
+  dialogActionsProps: {
+    sx: {
+      backgroundColor: "background.dark",
+    },
+  },
 } as const;
 
 function isInternalNavigationLink(anchor: HTMLAnchorElement) {

@@ -171,7 +171,7 @@ export function ProjectTranscript({ project, user }: Props) {
         {isGenerating ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
-            <Typography variant="body2">
+            <Typography variant="body1">
               {t("project.transcript.generating")}
             </Typography>
           </Box>

@@ -61,8 +61,8 @@
         "@celluloid/db": "workspace:*",
         "@celluloid/notifications": "workspace:*",
         "@celluloid/peertube": "workspace:*",
+        "@celluloid/toolkit-api": "catalog:",
         "@celluloid/utils": "workspace:*",
-        "@celluloid/vision-api": "catalog:",
         "@celluloid/workflows": "workspace:*",
         "@cutting/use-get-parent-size": "^2.8.0",
         "@daveyplate/better-auth-tanstack": "^1.3.6",
@@ -248,7 +248,7 @@
       "version": "3.5.0",
       "dependencies": {
         "@celluloid/peertube": "workspace:*",
-        "@celluloid/vision-api": "catalog:",
+        "@celluloid/toolkit-api": "catalog:",
         "@t3-oss/env-nextjs": "catalog:",
         "@workflow/world-postgres": "catalog:",
         "drizzle-orm": "catalog:",
@@ -355,7 +355,7 @@
         "@celluloid/emails": "workspace:*",
         "@celluloid/peertube": "workspace:*",
         "@celluloid/storage": "workspace:*",
-        "@celluloid/vision-api": "catalog:",
+        "@celluloid/toolkit-api": "catalog:",
         "@t3-oss/env-nextjs": "catalog:",
         "date-fns": "catalog:",
         "server-only": "catalog:",
@@ -380,7 +380,7 @@
     "@parcel/watcher",
   ],
   "catalog": {
-    "@celluloid/vision-api": "^1.5.0",
+    "@celluloid/toolkit-api": "^1.6.0",
     "@t3-oss/env-nextjs": "^0.13.8",
     "@trpc/server": "^11.13.4",
     "@types/node": "^25.3.5",
@@ -547,11 +547,11 @@
 
     "@celluloid/storage": ["@celluloid/storage@workspace:packages/storage"],
 
+    "@celluloid/toolkit-api": ["@celluloid/toolkit-api@1.6.0", "", {}, "sha512-EB69MA7qYi9ajgZ3gdlzMhJpfpgZu3XQ2Z16sROvANXJEn9DqYoWpjl9faMMPy4dyKcAwS8iWZx1tMEc9r89Hg=="],
+
     "@celluloid/typescript-config": ["@celluloid/typescript-config@workspace:packages/typescript-config"],
 
     "@celluloid/utils": ["@celluloid/utils@workspace:packages/utils"],
-
-    "@celluloid/vision-api": ["@celluloid/vision-api@1.5.0", "", {}, "sha512-e50CJnXXL7+tcUTjMMFoE/L06DVbU9KWyANFjLN+7+v7/KXKJ+hSlghBOSkJNsq72eHKCHVtwSkXbbd5Ek/mzA=="],
 
     "@celluloid/workflows": ["@celluloid/workflows@workspace:packages/workflows"],
 

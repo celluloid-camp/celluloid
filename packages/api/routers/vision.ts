@@ -1,5 +1,8 @@
 import { db, project, videoAnalysis } from "@celluloid/db";
-import { visionAnalysisWorkflow } from "@celluloid/workflows/vision";
+import {
+  checkObjectDetectJobStatus,
+  visionAnalysisWorkflow,
+} from "@celluloid/workflows/vision";
 import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
 import { resumeHook, start } from "workflow/api";
@@ -116,12 +119,17 @@ export const visionRouter = router({
           message: "Video analysis not found",
         });
       }
-
-      await resumeHook(analysis.visionJobId, {
-        job_id: analysis.visionJobId,
+      const jobStatus = await checkObjectDetectJobStatus({
+        jobId: analysis.visionJobId,
       });
-
-      return null;
+      if (jobStatus === "completed") {
+        await resumeHook(analysis.visionJobId, {
+          job_id: analysis.visionJobId,
+        });
+      }
+      return {
+        status: jobStatus,
+      };
     }),
 
   updateAnalysis: protectedProcedure

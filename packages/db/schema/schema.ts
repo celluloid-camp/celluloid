@@ -2,7 +2,7 @@ import { PeerTubeVideo } from "@celluloid/peertube";
 import type {
   DetectionResultsModel,
   SceneDetectResultsModel,
-} from "@celluloid/vision-api/types";
+} from "@celluloid/toolkit-api/types";
 import { sql } from "drizzle-orm";
 import {
   boolean,

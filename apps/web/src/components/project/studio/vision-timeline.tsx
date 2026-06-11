@@ -52,7 +52,13 @@ function formatTime(seconds: number) {
   return `${min}:${sec}`;
 }
 
-function ActionBlock({ segment }: { segment: DetectionSegment }) {
+function ActionBlock({
+  segment,
+  selected,
+}: {
+  segment: DetectionSegment;
+  selected: boolean;
+}) {
   const color = trackColor(segment.objectId);
   return (
     <Box
@@ -65,9 +71,10 @@ function ActionBlock({ segment }: { segment: DetectionSegment }) {
         boxSizing: "border-box",
         overflow: "hidden",
         borderRadius: 1,
-        border: `1px solid ${color}`,
+        border: selected ? "2px solid #fff" : `1px solid ${color}`,
         backgroundColor: `${color}22`,
         userSelect: "none",
+        cursor: "pointer",
       }}
     >
       <Typography
@@ -225,7 +232,9 @@ interface VisionTimelineProps {
   scale: number;
   mergeMode: boolean;
   selectedIds: string[];
+  selectedActionId: string | null;
   onToggleRow: (objectId: string) => void;
+  onSelectAction: (actionId: string | null) => void;
   onEditTrack: (track: DetectionTrack) => void;
   onRemoveTrack: (track: DetectionTrack) => void;
   onTimelineChange: (editorData: EditData["editorData"]) => void;
@@ -238,7 +247,9 @@ export function VisionTimeline({
   scale,
   mergeMode,
   selectedIds,
+  selectedActionId,
   onToggleRow,
+  onSelectAction,
   onEditTrack,
   onRemoveTrack,
   onTimelineChange,
@@ -402,12 +413,34 @@ export function VisionTimeline({
           getActionRender={(action) => {
             const segment = segmentByActionId.get(action.id);
             if (!segment) return null;
-            return <ActionBlock segment={segment} />;
+            return (
+              <ActionBlock
+                segment={segment}
+                selected={!mergeMode && selectedActionId === action.id}
+              />
+            );
           }}
           onChange={(editorData) => {
             onTimelineChange(editorData);
           }}
+          onClickActionOnly={(_, { action }) => {
+            if (mergeMode) return;
+            onSelectAction(action.id);
+          }}
+          onClickRow={(event, { time }) => {
+            if (mergeMode) return;
+            if (
+              (event.target as HTMLElement).closest(".timeline-editor-action")
+            ) {
+              return;
+            }
+            onSelectAction(null);
+            seek(time);
+          }}
           onClickTimeArea={(time) => {
+            if (!mergeMode) {
+              onSelectAction(null);
+            }
             seek(time);
             return true;
           }}

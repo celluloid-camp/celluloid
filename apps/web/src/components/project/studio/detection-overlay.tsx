@@ -1,5 +1,5 @@
 "use client";
-import type { DetectionResultsModel } from "@celluloid/vision-api/types";
+import type { DetectionResultsModel } from "@celluloid/toolkit-api/types";
 import { Box } from "@mui/material";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";

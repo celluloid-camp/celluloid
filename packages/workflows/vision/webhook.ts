@@ -15,15 +15,17 @@ export async function handleVisionWebhook(request: Request) {
   const body = await request.json();
   const { success, data, error } = VisionWebhookSchema.safeParse(body);
   if (success) {
-    console.log("Received webhook", data);
-    console.log(`vision:${data.job_type}:${data.external_id}`);
+    console.log(
+      `[TOOLKIT WEBHOOK] TYPE:${data.job_type}: JOB ID:${data.job_id}`,
+    );
+    console.log("[TOOLKIT WEBHOOK] DATA:", data);
     try {
-      await resumeHook(data.external_id, data);
+      await resumeHook(data.job_id, data);
     } catch (error) {
-      console.error("Failed to resume hook", error);
+      console.error("[TOOLKIT WEBHOOK] Failed to resume hook", error);
     }
   } else {
-    console.error("Failed to parse webhook", error);
+    console.error("[TOOLKIT WEBHOOK] Failed to parse webhook", error);
   }
 
   return Response.json({
