@@ -388,10 +388,12 @@
     "vision": {
       "button": {
         "analyse": "Analyze Video",
-        "editDetections": "Edit detections"
+        "editDetections": "Edit detections",
+        "checkManually": "Check manually"
       },
       "empty": "Video analysis not available.",
       "failed": "Failed to analyse the video.",
+      "try-again": "Try again",
       "analyse": {
         "in-progress": "Video analysis in progress, an email will be sent to you when the analysis is complete."
       },

@@ -20,7 +20,6 @@ import {
 } from "@tanstack/react-query";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
 import type { FallbackProps } from "react-error-boundary";
 import type { User } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
@@ -69,7 +68,8 @@ export function ProjectVision({ project, user }: Props) {
     return null;
   }
 
-  const canGenerateVision = project.editable && data?.status === "failed";
+  const canGenerateVision =
+    project.editable && (data == null || data?.status === "failed");
 
   const canViewStudio = project.editable && data?.status === "completed";
 
@@ -114,21 +114,12 @@ export function ProjectVision({ project, user }: Props) {
           <Typography variant="body2">{t("project.vision.empty")}</Typography>
         )}
       </CardContent>
-
-      <CardActions
-        sx={{
-          flexDirection: "column",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-        }}
-      >
+      <CardActions className="flex flex-row items-center justify-between gap-1 border-t border-gray-300">
         <Box sx={{ display: "flex", gap: 1 }}>
           {canGenerateVision && (
             <Button
-              variant="outlined"
               startIcon={<AutoModeIcon />}
               loading={mutation.isPending}
-              color="primary"
               onClick={async () => {
                 mutation.mutate({
                   projectId: project.id,
@@ -140,13 +131,11 @@ export function ProjectVision({ project, user }: Props) {
           )}
           {data?.status === "processing" && project.editable && (
             <Button
-              variant="outlined"
-              color="primary"
               onClick={() => {
                 manualCheck.mutate({ projectId: project.id });
               }}
             >
-              Check manually
+              {t("project.vision.button.checkManually")}
             </Button>
           )}
         </Box>
@@ -173,11 +162,13 @@ export function ProjectVisionFallback({
         title={t("project.vision.title")}
       />
       <CardContent sx={{ maxHeight: "300px", overflowY: "auto", py: 0 }}>
-        Failed to analyze video
+        {t("project.vision.failed")}
         {process.env.NODE_ENV === "development" && (
           <pre>{JSON.stringify(error, null, 2)}</pre>
         )}
-        <Button onClick={resetErrorBoundary}>Try again</Button>
+        <Button onClick={resetErrorBoundary}>
+          {t("project.vision.try-again")}
+        </Button>
       </CardContent>
     </Card>
   );

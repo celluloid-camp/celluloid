@@ -386,9 +386,12 @@
     "vision": {
       "button": {
         "analyse": "Analyser la vidéo",
-        "editDetections": "Modifier les détections"
+        "editDetections": "Modifier les détections",
+        "checkManually": "Vérifier manuellement"
       },
       "empty": "Analyse vidéo non disponible.",
+      "failed": "Échec de l'analyse vidéo.",
+      "try-again": "Réessayer",
       "analyse": {
         "in-progress": "Analyse vidéo en cours, un email vous serez envoyé quand l'analyse est terminé"
       },
