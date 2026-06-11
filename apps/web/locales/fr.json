@@ -385,7 +385,8 @@
     },
     "vision": {
       "button": {
-        "analyse": "Analyser la vidéo"
+        "analyse": "Analyser la vidéo",
+        "editDetections": "Modifier les détections"
       },
       "empty": "Analyse vidéo non disponible.",
       "analyse": {

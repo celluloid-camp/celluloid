@@ -18,7 +18,7 @@ export async function handleVisionWebhook(request: Request) {
     console.log("Received webhook", data);
     console.log(`vision:${data.job_type}:${data.external_id}`);
     try {
-      await resumeHook(data.job_id, data);
+      await resumeHook(data.external_id, data);
     } catch (error) {
       console.error("Failed to resume hook", error);
     }

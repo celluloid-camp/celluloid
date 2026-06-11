@@ -92,7 +92,7 @@ export function ProjectVision({ project, user }: Props) {
                 size="small"
                 startIcon={<ViewTimelineIcon />}
               >
-                Studio
+                {t("project.vision.button.editDetections")}
               </Button>
             </Link>
           ) : null

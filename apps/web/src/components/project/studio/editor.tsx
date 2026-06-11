@@ -16,7 +16,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 import { peerTubeWatchUrl } from "@/utils/peertube-url";
-import { DetectionOverlay } from "./detection-overlay";
 import { MergeDetectionDialog } from "./merge-detection-dialog";
 import { RenameDetectionDialog } from "./rename-detection-dialog";
 import type { DetectionTrack } from "./segments";
@@ -28,6 +27,7 @@ import {
   renameTrack,
 } from "./segments";
 import { StudioSkeleton } from "./skeleton";
+import { StudioDetectionOverlay } from "./studio-detection-overlay";
 import { useUnsavedChangesGuard } from "./use-unsaved-changes-guard";
 import {
   DEFAULT_TIMELINE_SCALE_INDEX,
@@ -307,7 +307,7 @@ function VisionStudioInner({
             <StudioVideoPlayer
               src={peerTubeWatchUrl(project.host, project.videoId)}
             />
-            <DetectionOverlay
+            <StudioDetectionOverlay
               analysis={analysis}
               tracks={tracks}
               videoWidth={analysis.metadata.video.width}
