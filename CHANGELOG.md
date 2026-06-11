@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.7.0](https://github.com/celluloid-camp/celluloid/compare/v3.6.2...v3.7.0) (2026-06-11)
+
+### Features
+
+* enhance video analysis interface with detection editing and improved overlay components ([b5d2dc3](https://github.com/celluloid-camp/celluloid/commit/b5d2dc3d8a18031357b21262aba5ff9b0deadfb3))
+
 ## [3.6.2](https://github.com/celluloid-camp/celluloid/compare/v3.6.1...v3.6.2) (2026-06-09)
 
 ### Bug Fixes
