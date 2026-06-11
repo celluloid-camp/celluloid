@@ -387,7 +387,8 @@
     },
     "vision": {
       "button": {
-        "analyse": "Analyze Video"
+        "analyse": "Analyze Video",
+        "editDetections": "Edit detections"
       },
       "empty": "Video analysis not available.",
       "failed": "Failed to analyse the video.",
@@ -404,11 +405,12 @@
       "close": "Close studio",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
+      "deleteSelected": "Delete selected segment",
       "merge": "Merge",
       "cancel": "Cancel",
       "save": "Save",
       "saved": "Analysis saved",
-      "objects": "Objects",
+      "objects": "Detections",
       "trackActions": "Actions for {id}",
       "edit": "Edit",
       "remove": "Remove",
@@ -421,6 +423,10 @@
         "label": "Label",
         "required": "Label is required",
         "duplicate": "This label is already used"
+      },
+      "removeSegment": {
+        "title": "Remove detection segment",
+        "description": "Remove this appearance of \"{id}\" from {start} to {end}? You can undo by not saving."
       }
     }
   },

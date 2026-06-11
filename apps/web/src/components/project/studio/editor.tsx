@@ -1,7 +1,8 @@
 "use client";
-import type { DetectionResultsModel } from "@celluloid/vision-api/types";
+import type { DetectionResultsModel } from "@celluloid/toolkit-api/types";
 import CallMergeIcon from "@mui/icons-material/CallMerge";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
@@ -16,18 +17,20 @@ import { useEffect, useMemo, useState } from "react";
 import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 import { peerTubeWatchUrl } from "@/utils/peertube-url";
-import { DetectionOverlay } from "./detection-overlay";
 import { MergeDetectionDialog } from "./merge-detection-dialog";
+import { RemoveDetectionDialog } from "./remove-detection-dialog";
 import { RenameDetectionDialog } from "./rename-detection-dialog";
-import type { DetectionTrack } from "./segments";
+import type { DetectionSegment, DetectionTrack } from "./segments";
 import {
   applyTimelineChange,
   buildTracks,
   mergeTracks,
+  removeSegment,
   removeTrack,
   renameTrack,
 } from "./segments";
 import { StudioSkeleton } from "./skeleton";
+import { StudioDetectionOverlay } from "./studio-detection-overlay";
 import { useUnsavedChangesGuard } from "./use-unsaved-changes-guard";
 import {
   DEFAULT_TIMELINE_SCALE_INDEX,
@@ -115,9 +118,11 @@ function VisionStudioInner({
   );
   const [mergeMode, setMergeMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedActionId, setSelectedActionId] = useState<string | null>(null);
   const [scaleIndex, setScaleIndex] = useState(DEFAULT_TIMELINE_SCALE_INDEX);
   const [editingTrack, setEditingTrack] = useState<DetectionTrack | null>(null);
   const [mergeDialogOpen, setMergeDialogOpen] = useState(false);
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
 
   const timelineScale = TIMELINE_SCALE_PRESETS[scaleIndex];
 
@@ -156,6 +161,7 @@ function VisionStudioInner({
   const cancelMerge = () => {
     setMergeMode(false);
     setSelectedIds([]);
+    setSelectedActionId(null);
   };
 
   const validateMerge = () => {
@@ -207,6 +213,28 @@ function VisionStudioInner({
     setAnalysis(updated);
   };
 
+  const selectedSegment = useMemo((): DetectionSegment | null => {
+    if (!selectedActionId) return null;
+    for (const track of tracks) {
+      for (const segment of track.segments) {
+        if (segment.actionId === selectedActionId) {
+          return segment;
+        }
+      }
+    }
+    return null;
+  }, [tracks, selectedActionId]);
+
+  const handleConfirmRemoveSegment = () => {
+    if (!selectedSegment) return;
+    const updated = removeSegment(analysis, selectedSegment);
+    if (updated !== analysis) {
+      setAnalysis(updated);
+    }
+    setSelectedActionId(null);
+    setRemoveDialogOpen(false);
+  };
+
   const existingTrackIds = useMemo(
     () => tracks.map((track) => track.objectId),
     [tracks],
@@ -224,6 +252,38 @@ function VisionStudioInner({
       body.style.overflow = prevBodyOverflow;
     };
   }, []);
+
+  useEffect(() => {
+    if (!selectedActionId) return;
+    const stillExists = tracks.some((track) =>
+      track.segments.some((segment) => segment.actionId === selectedActionId),
+    );
+    if (!stillExists) {
+      setSelectedActionId(null);
+    }
+  }, [tracks, selectedActionId]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (mergeMode || !selectedActionId || removeDialogOpen) return;
+      if (event.key !== "Delete" && event.key !== "Backspace") return;
+
+      const target = event.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      setRemoveDialogOpen(true);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mergeMode, selectedActionId, removeDialogOpen]);
 
   return (
     <Box
@@ -307,7 +367,7 @@ function VisionStudioInner({
             <StudioVideoPlayer
               src={peerTubeWatchUrl(project.host, project.videoId)}
             />
-            <DetectionOverlay
+            <StudioDetectionOverlay
               analysis={analysis}
               tracks={tracks}
               videoWidth={analysis.metadata.video.width}
@@ -365,6 +425,19 @@ function VisionStudioInner({
                     </IconButton>
                   </span>
                 </Tooltip>
+                <Tooltip title={t("project.studio.deleteSelected")}>
+                  <span>
+                    <IconButton
+                      size="small"
+                      disabled={mergeMode || !selectedActionId}
+                      onClick={() => setRemoveDialogOpen(true)}
+                      sx={toolbarIconButtonSx}
+                      aria-label={t("project.studio.deleteSelected")}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
               </Box>
 
               {mergeMode ? (
@@ -396,7 +469,10 @@ function VisionStudioInner({
                   variant="outlined"
                   color="inherit"
                   size="small"
-                  onClick={() => setMergeMode(true)}
+                  onClick={() => {
+                    setSelectedActionId(null);
+                    setMergeMode(true);
+                  }}
                   startIcon={<CallMergeIcon fontSize="small" />}
                   sx={toolbarOutlinedButtonSx}
                 >
@@ -425,7 +501,9 @@ function VisionStudioInner({
                 scale={timelineScale}
                 mergeMode={mergeMode}
                 selectedIds={selectedIds}
+                selectedActionId={selectedActionId}
                 onToggleRow={toggleRow}
+                onSelectAction={setSelectedActionId}
                 onEditTrack={setEditingTrack}
                 onRemoveTrack={handleRemoveTrack}
                 onTimelineChange={handleTimelineChange}
@@ -450,6 +528,14 @@ function VisionStudioInner({
         sprite={sprite}
         onClose={() => setMergeDialogOpen(false)}
         onConfirm={handleConfirmMerge}
+      />
+
+      <RemoveDetectionDialog
+        open={removeDialogOpen}
+        segment={selectedSegment}
+        sprite={sprite}
+        onClose={() => setRemoveDialogOpen(false)}
+        onConfirm={handleConfirmRemoveSegment}
       />
     </Box>
   );

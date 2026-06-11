@@ -1,6 +1,6 @@
 {
   "name": "celluloid",
-  "version": "3.6.2",
+  "version": "3.7.0",
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "devDependencies": {
@@ -40,7 +40,7 @@
     "pino": "^10.3.1",
     "drizzle-kit": "^0.31.9",
     "@workflow/world-postgres": "4.1.1",
-    "@celluloid/vision-api": "^1.5.0"
+    "@celluloid/toolkit-api": "^1.6.0"
   },
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
   "engines": {

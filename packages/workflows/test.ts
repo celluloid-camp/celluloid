@@ -1,5 +1,5 @@
-import { getJobResults, getJobStatus } from "@celluloid/vision-api";
-import { createClient } from "@celluloid/vision-api/client";
+import { getJobResults, getJobStatus } from "@celluloid/toolkit-api";
+import { createClient } from "@celluloid/toolkit-api/client";
 
 const client = createClient({
   baseUrl: "https://vision.celluloid.me",

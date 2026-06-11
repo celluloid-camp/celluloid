@@ -15,9 +15,14 @@ import {
   uploadImageFile,
   uploadImageUrl,
 } from "@celluloid/storage/client";
-import { createJob, getJobResults, healthCheck } from "@celluloid/vision-api";
-import { createClient } from "@celluloid/vision-api/client";
-import { DetectionResultsModel } from "@celluloid/vision-api/types";
+import {
+  createJob,
+  getJobResults,
+  getJobStatus,
+  healthCheck,
+} from "@celluloid/toolkit-api";
+import { createClient } from "@celluloid/toolkit-api/client";
+import { DetectionResultsModel } from "@celluloid/toolkit-api/types";
 import { createHook, FatalError, sleep } from "workflow";
 import { keys } from "../keys";
 import { VisionWebhook } from "./webhook";
@@ -37,10 +42,6 @@ export async function visionAnalysisWorkflow(projectId: string) {
       videoFileUrl: info.videoUrl,
     });
 
-    console.log(
-      "Creating hook with token for vision analysis",
-      visionRun.job_id,
-    );
     const hook = createHook<VisionWebhook>({
       token: visionRun.job_id,
     });
@@ -49,6 +50,8 @@ export async function visionAnalysisWorkflow(projectId: string) {
       hook,
       sleep("20min").then(() => "timeout" as const),
     ]);
+
+    hook.dispose();
 
     if (result === "timeout") {
       await updateVisionAnalysisStatus({
@@ -139,7 +142,7 @@ async function startVisionAnalysis({
     },
   });
 
-  if (healthCheckResponse.response.status !== 200) {
+  if (healthCheckResponse.response?.status !== 200) {
     throw new FatalError("Vision API is not available");
   }
 
@@ -164,10 +167,10 @@ async function startVisionAnalysis({
       projectId,
       status: "failed",
       errorCode: "internal_error",
-      errorMessage: response.statusText,
+      errorMessage: response?.statusText ?? "Unknown error",
     });
     throw new FatalError(
-      "Failed to start vision analysis, caused by: " + response.statusText,
+      `Failed to start vision analysis, caused by: ${response?.statusText ?? "Unknown error"}`,
     );
   }
 
@@ -214,7 +217,7 @@ async function fetchVisionAnalysis({
     },
   });
 
-  if (response.status !== 200 || !analysisResponse) {
+  if (response?.status !== 200 || !analysisResponse) {
     throw new FatalError("Failed to fetch vision analysis");
   }
 
@@ -320,4 +323,27 @@ async function updateVisionAnalysisStatus({
       errorMessage: errorMessage,
     })
     .where(eq(videoAnalysis.projectId, projectId));
+}
+
+export async function checkObjectDetectJobStatus({ jobId }: { jobId: string }) {
+  const env = keys();
+  const client = createClient({
+    baseUrl: env.VISION_API_URL,
+  });
+
+  const { data: jobStatus, response } = await getJobStatus({
+    client,
+    headers: {
+      "x-api-key": env.VISION_API_KEY,
+    },
+    path: {
+      job_id: jobId,
+    },
+  });
+
+  if (response?.status !== 200 || !jobStatus) {
+    throw new FatalError("Failed to fetch vision analysis");
+  }
+
+  return jobStatus.status;
 }

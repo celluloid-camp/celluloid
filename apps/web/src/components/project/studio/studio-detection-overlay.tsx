@@ -4,33 +4,28 @@ import { Box } from "@mui/material";
 import { useMediaSelector } from "media-chrome/react/media-store";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { buildDetectionIndex, detectionsAtTime } from "./detection-at-time";
-import { buildTracks, type DetectionTrack } from "./segments";
+import type { DetectionTrack } from "./segments";
 import { trackColor } from "./track-color";
 
-type DetectionOverlayProps = {
+type StudioDetectionOverlayProps = {
   analysis: DetectionResultsModel;
+  tracks: DetectionTrack[];
   videoWidth: number;
   videoHeight: number;
-  tracks?: DetectionTrack[];
 };
 
-export function DetectionOverlay({
+export function StudioDetectionOverlay({
   analysis,
+  tracks,
   videoWidth,
   videoHeight,
-  tracks: tracksProp,
-}: DetectionOverlayProps) {
+}: StudioDetectionOverlayProps) {
   const currentTime = useMediaSelector((state) => state.mediaCurrentTime);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({
     width: videoWidth,
     height: videoHeight,
   });
-
-  const tracks = useMemo(
-    () => tracksProp ?? buildTracks(analysis),
-    [tracksProp, analysis],
-  );
 
   useLayoutEffect(() => {
     if (!containerRef.current) return;
@@ -101,6 +96,7 @@ export function DetectionOverlay({
                 width: obj.bbox.width * scaleX,
                 height: obj.bbox.height * scaleY,
                 border: `2px solid ${color}`,
+                bgcolor: `${color}22`,
                 boxSizing: "border-box",
                 pointerEvents: "none",
                 zIndex: 10,
