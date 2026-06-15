@@ -54,7 +54,7 @@
     "@xzdarcy/react-timeline-editor": "^1.0.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "better-auth": "catalog:",
-    "canvas": "^3.2.1",
+    "canvas": "^3.2.3",
     "ce-la-react": "^0.3.2",
     "client-only": "^0.0.1",
     "copy-to-clipboard": "^3.3.3",
