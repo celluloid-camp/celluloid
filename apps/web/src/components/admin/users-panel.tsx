@@ -1,6 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import {
   Box,
   Chip,
@@ -8,7 +9,6 @@ import {
   Menu,
   MenuItem,
   Paper,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -31,6 +31,10 @@ import { UserTableSkeleton } from "./skeleton";
 
 interface UserAdditionalField extends UserWithRole {
   username: string;
+}
+
+function getUserInitials(username: string) {
+  return username.slice(0, 2).toUpperCase();
 }
 
 export default function UsersPanel() {
@@ -133,47 +137,105 @@ export default function UsersPanel() {
     setPage(0);
   };
 
-  return (
-    <Box>
-      <Stack direction="row" spacing={4} sx={{ mb: 3 }}>
-        <Typography variant="h6" sx={{ flex: 2 }}>
-          {t("admin.users.title")}
-        </Typography>
+  const users = usersData?.users ?? [];
 
-        <SearchFilter
-          onFilterChange={setSearchTerm}
-          placeholder={t("admin.users.search.placeholder")}
-        />
-      </Stack>
+  return (
+    <Box className="flex flex-col gap-6">
+      <Box className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <Box>
+          <Box className="flex items-center gap-2">
+            <Typography
+              variant="h6"
+              className="font-semibold tracking-tight text-slate-900"
+            >
+              {t("admin.users.title")}
+            </Typography>
+            {!isLoading && usersData !== undefined && (
+              <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                {usersData.total}
+              </span>
+            )}
+          </Box>
+        </Box>
+
+        <Box className="w-full sm:max-w-sm">
+          <SearchFilter
+            onFilterChange={setSearchTerm}
+            placeholder={t("admin.users.search.placeholder")}
+          />
+        </Box>
+      </Box>
 
       {isLoading ? (
         <UserTableSkeleton />
       ) : (
-        <Paper>
+        <Paper
+          elevation={0}
+          className="overflow-hidden rounded-xl border border-black/5 shadow-sm"
+        >
           <TableContainer>
             <Table>
               <TableHead>
-                <TableRow>
-                  <TableCell>{t("users.table.username")}</TableCell>
-                  <TableCell>{t("users.table.email")}</TableCell>
-                  <TableCell>{t("users.table.emailVerified")}</TableCell>
-                  <TableCell>{t("users.table.role")}</TableCell>
-                  <TableCell>{t("users.table.createAt")}</TableCell>
-                  <TableCell>Actions</TableCell>
+                <TableRow className="bg-slate-50/90">
+                  <TableCell className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                    {t("users.table.username")}
+                  </TableCell>
+                  <TableCell className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                    {t("users.table.email")}
+                  </TableCell>
+                  <TableCell className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                    {t("users.table.emailVerified")}
+                  </TableCell>
+                  <TableCell className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                    {t("users.table.role")}
+                  </TableCell>
+                  <TableCell className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                    {t("users.table.createAt")}
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    className="text-xs font-semibold tracking-wide text-slate-500 uppercase"
+                  >
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {usersData?.users.length === 0 ? (
+                {users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} align="center">
-                      {t("admin.list.empty")}
+                    <TableCell colSpan={6} className="border-none py-16">
+                      <Box className="flex flex-col items-center gap-3 text-center">
+                        <Box className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                          <PeopleAltRoundedIcon />
+                        </Box>
+                        <Typography
+                          variant="body1"
+                          className="font-medium text-slate-700"
+                        >
+                          {t("admin.list.empty")}
+                        </Typography>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 ) : (
-                  usersData?.users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>{user.username}</TableCell>
-                      <TableCell>{user.email}</TableCell>
+                  users.map((user) => (
+                    <TableRow
+                      key={user.id}
+                      className="transition-colors hover:bg-slate-50/70"
+                    >
+                      <TableCell>
+                        <Box className="flex items-center gap-3">
+                          <Box className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                            {getUserInitials(user.username || "?")}
+                          </Box>
+                          <span className="font-medium text-slate-900">
+                            {user.username}
+                          </span>
+                        </Box>
+                      </TableCell>
+                      <TableCell className="text-slate-600">
+                        {user.email}
+                      </TableCell>
                       <TableCell>
                         <Chip
                           label={
@@ -181,18 +243,36 @@ export default function UsersPanel() {
                               ? t("common.verified")
                               : t("common.unverified")
                           }
-                          color={user.emailVerified ? "success" : "default"}
                           size="small"
+                          className={
+                            user.emailVerified
+                              ? "border border-emerald-200 bg-emerald-50 font-medium text-emerald-700"
+                              : "border border-slate-200 bg-slate-100 font-medium text-slate-600"
+                          }
                         />
                       </TableCell>
-                      <TableCell>{user.role}</TableCell>
                       <TableCell>
+                        <span
+                          className={
+                            user.role === "admin"
+                              ? "inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary capitalize"
+                              : "inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 capitalize"
+                          }
+                        >
+                          {user.role}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-slate-600">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </TableCell>
 
-                      <TableCell>
-                        <IconButton onClick={(e) => handleMenuOpen(e, user.id)}>
-                          <MoreVertIcon />
+                      <TableCell align="right">
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleMenuOpen(e, user.id)}
+                          className="text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                        >
+                          <MoreVertIcon fontSize="small" />
                         </IconButton>
                       </TableCell>
                     </TableRow>
@@ -201,17 +281,20 @@ export default function UsersPanel() {
               </TableBody>
             </Table>
           </TableContainer>
-          {usersData?.users && usersData.users.length > 0 && (
-            <TablePagination
-              component="div"
-              count={usersData?.total ?? 0}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              rowsPerPageOptions={[5, 10, 25]}
-              labelRowsPerPage={t("common.table.rowsPerPage")}
-            />
+          {users.length > 0 && (
+            <Box className="border-t border-black/5">
+              <TablePagination
+                component="div"
+                count={usersData?.total ?? 0}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25]}
+                labelRowsPerPage={t("common.table.rowsPerPage")}
+                className="text-slate-600"
+              />
+            </Box>
           )}
         </Paper>
       )}
@@ -220,13 +303,22 @@ export default function UsersPanel() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        slotProps={{
+          paper: {
+            className:
+              "mt-1 min-w-[160px] rounded-xl border border-black/5 shadow-lg",
+          },
+        }}
       >
-        <MenuItem onClick={handleModifyUser}>
-          <EditIcon sx={{ mr: 1 }} />
+        <MenuItem onClick={handleModifyUser} className="gap-2 py-2">
+          <EditIcon fontSize="small" className="text-slate-500" />
           {t("admin.table.actions.modify")}
         </MenuItem>
-        <MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
-          <DeleteIcon sx={{ mr: 1 }} />
+        <MenuItem
+          onClick={handleDeleteUser}
+          className="gap-2 py-2 text-(--color-error)"
+        >
+          <DeleteIcon fontSize="small" />
           {t("admin.table.actions.delete")}
         </MenuItem>
       </Menu>

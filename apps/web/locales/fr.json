@@ -65,7 +65,7 @@
     "LOADING_PROJECTS": "Impossible de charger les projets. Veuillez réessayer ultérieurement ou contacter l'assistance pour obtenir de l'aide."
   },
   "footer": {
-    "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
+    "copyright": "<link>CC BY-NC</link> 2026 Consortium Canevas",
     "legalNotice": "Mention légales",
     "termsAndConditions": "Conditions Générales d'Utilisation"
   },
@@ -708,6 +708,15 @@
       },
       "search": {
         "placeholder": "Rechercher par e-mail"
+      },
+      "verifyEmail": {
+        "action": "Marquer comme vérifié",
+        "success": "E-mail marqué comme vérifié",
+        "error": "Échec de la vérification de l'e-mail. Veuillez réessayer.",
+        "dialog": {
+          "title": "Vérifier l'e-mail",
+          "description": "Marquer manuellement l'e-mail de cet utilisateur comme vérifié ?"
+        }
       }
     },
     "projects": {

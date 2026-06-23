@@ -174,6 +174,31 @@ export const adminRouter = router({
       return true;
     }),
 
+  verifyUserEmail: adminProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const [existing] = await db
+        .select()
+        .from(user)
+        .where(eq(user.id, input.userId))
+        .limit(1);
+      if (!existing) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+      await db
+        .update(user)
+        .set({ emailVerified: true })
+        .where(eq(user.id, input.userId));
+      return true;
+    }),
+
   byId: adminProcedure
     .input(
       z.object({

@@ -70,13 +70,20 @@ export function HomePageHero() {
                   >
                     {t("tutoriel.title")}
                   </Typography>
-                  <Typography variant="subtitle1">
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+                  >
                     {t.rich("tutoriel.description", {
                       peertube: (chunks: string) => (
                         <Link
                           href="https://joinpeertube.org/fr_FR"
                           target="_blank"
                           rel="noreferrer"
+                          sx={{
+                            overflowWrap: "anywhere",
+                            wordBreak: "break-word",
+                          }}
                         >
                           {chunks}
                         </Link>
@@ -94,13 +101,20 @@ export function HomePageHero() {
                   >
                     {t("tutoriel.subtitle")}
                   </Typography>
-                  <Typography variant="subtitle1">
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+                  >
                     {t.rich("tutoriel.link", {
                       tutorial: (chunks: string) => (
                         <Link
                           href="https://video.mshparisnord.fr/w/7r2FxoQdYjun6tYWJfHUCa"
                           target="_blank"
                           rel="noreferrer"
+                          sx={{
+                            overflowWrap: "anywhere",
+                            wordBreak: "break-word",
+                          }}
                         >
                           {chunks}
                         </Link>
