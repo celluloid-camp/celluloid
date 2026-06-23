@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.9.0](https://github.com/celluloid-camp/celluloid/compare/v3.8.0...v3.9.0) (2026-06-23)
+
+### Features
+
+* add email verification functionality and update dependencies ([709feb7](https://github.com/celluloid-camp/celluloid/commit/709feb757b0ccf94ef305b9ed99c6818e93534d3))
+
 ## [3.8.0](https://github.com/celluloid-camp/celluloid/compare/v3.7.0...v3.8.0) (2026-06-11)
 
 ### Features
