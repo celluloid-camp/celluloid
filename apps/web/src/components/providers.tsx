@@ -2,6 +2,7 @@
 import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
 import { ThemeProvider } from "@mui/material/styles";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Agentation } from "agentation";
 import { ConfirmProvider } from "material-ui-confirm";
 import { SnackbarProvider } from "notistack";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -23,6 +24,7 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
           </AuthQueryProvider>
         </NuqsAdapter>
       </TRPCProvider>
+      {process.env.NODE_ENV === "development" && <Agentation />}
     </ThemeProvider>
   );
 };

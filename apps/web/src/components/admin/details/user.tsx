@@ -40,10 +40,35 @@ import { BackButton } from "@/components/common/back-button";
 import { useTRPC } from "@/lib/trpc/client";
 import type { AdminGetUserById } from "@/lib/trpc/types";
 
+function getUserInitials(username: string) {
+  return username.slice(0, 2).toUpperCase();
+}
+
+function DetailField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Box>
+      <Typography
+        variant="caption"
+        className="text-xs font-semibold tracking-wide text-slate-500 uppercase"
+      >
+        {label}
+      </Typography>
+      <Box className="mt-1">{children}</Box>
+    </Box>
+  );
+}
+
 export function UserDetails({ data }: { data: AdminGetUserById }) {
   const t = useTranslations();
   const api = useTRPC();
   const queryClient = useQueryClient();
+  const confirm = useConfirm();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -71,6 +96,26 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
         enqueueSnackbar(t("profile.update.error"), {
           variant: "error",
           key: "profile.update.error",
+        });
+      },
+    }),
+  );
+
+  const verifyEmailMutation = useMutation(
+    api.admin.verifyUserEmail.mutationOptions({
+      onSuccess: () => {
+        enqueueSnackbar(t("admin.users.verifyEmail.success"), {
+          variant: "success",
+          key: "admin.users.verifyEmail.success",
+        });
+        queryClient.invalidateQueries(
+          api.admin.getUserById.queryFilter({ id: data.id }),
+        );
+      },
+      onError: () => {
+        enqueueSnackbar(t("admin.users.verifyEmail.error"), {
+          variant: "error",
+          key: "admin.users.verifyEmail.error",
         });
       },
     }),
@@ -105,121 +150,148 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
     }
   };
 
+  const handleVerifyEmail = async () => {
+    try {
+      const value = await confirm({
+        title: t("admin.users.verifyEmail.dialog.title"),
+        description: t("admin.users.verifyEmail.dialog.description"),
+      });
+
+      if (!value.confirmed) return;
+
+      await verifyEmailMutation.mutateAsync({ userId: data.id });
+    } catch (error) {
+      console.error("Error verifying email:", error);
+    }
+  };
+
   return (
-    <Paper sx={{ width: "100%", p: 4 }}>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 4, gap: 2 }}>
+    <Paper
+      elevation={0}
+      className="w-full overflow-hidden rounded-2xl border border-black/5 bg-white p-4 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.18)] sm:p-6"
+    >
+      <Box className="mb-6 flex items-center gap-3">
         <BackButton href="/admin" ariaLabel="back to users list" />
-        <Typography variant="h5">{t("profile.update.title")}</Typography>
+        <Box>
+          <Typography
+            variant="h5"
+            className="font-semibold tracking-tight text-slate-900"
+          >
+            {data.username}
+          </Typography>
+          <Typography variant="body2" className="text-slate-500">
+            {data.email}
+          </Typography>
+        </Box>
       </Box>
+
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 4 }}>
-          <Paper variant="outlined" sx={{ p: 3 }}>
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
-            >
-              <Typography variant="h6">{t("profile.update.title")}</Typography>
-              <IconButton onClick={() => setEditDialogOpen(true)} size="small">
-                <EditIcon />
+          <Paper
+            elevation={0}
+            className="overflow-hidden rounded-xl border border-black/5"
+          >
+            <Box className="flex items-start justify-between gap-3 border-b border-black/5 bg-slate-50/80 px-4 py-4">
+              <Box className="flex items-center gap-3">
+                <Box className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">
+                  {getUserInitials(data.username || "?")}
+                </Box>
+                <Box>
+                  <Typography
+                    variant="subtitle1"
+                    className="font-semibold text-slate-900"
+                  >
+                    {t("profile.update.title")}
+                  </Typography>
+                  <Typography variant="caption" className="text-slate-500">
+                    {data.role}
+                  </Typography>
+                </Box>
+              </Box>
+              <IconButton
+                onClick={() => setEditDialogOpen(true)}
+                size="small"
+                className="text-slate-400 hover:bg-white hover:text-slate-700"
+              >
+                <EditIcon fontSize="small" />
               </IconButton>
             </Box>
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <Box>
+            <Box className="flex flex-col gap-4 p-4">
+              <DetailField label={t("profile.update.username")}>
                 <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                  }}
+                  variant="body1"
+                  className="font-medium text-slate-900"
                 >
-                  {t("profile.update.username")}
+                  {data.username}
                 </Typography>
-                <Typography variant="body1">{data.username}</Typography>
-              </Box>
+              </DetailField>
 
-              <Box>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                  }}
-                >
-                  Email
+              <DetailField label={t("users.table.email")}>
+                <Typography variant="body1" className="text-slate-700">
+                  {data.email}
                 </Typography>
-                <Typography variant="body1">{data.email}</Typography>
-              </Box>
+              </DetailField>
 
-              <Box>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                  }}
-                >
-                  {t("profile.update.firstname")}
+              <DetailField label={t("profile.update.firstname")}>
+                <Typography variant="body1" className="text-slate-700">
+                  {data.firstname || "-"}
                 </Typography>
-                <Typography variant="body1">{data.firstname || "-"}</Typography>
-              </Box>
+              </DetailField>
 
-              <Box>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                  }}
-                >
-                  {t("profile.update.lastname")}
+              <DetailField label={t("profile.update.lastname")}>
+                <Typography variant="body1" className="text-slate-700">
+                  {data.lastname || "-"}
                 </Typography>
-                <Typography variant="body1">{data.lastname || "-"}</Typography>
-              </Box>
+              </DetailField>
 
-              <Box>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                  }}
+              <DetailField label={t("users.table.role")}>
+                <span
+                  className={
+                    data.role === "admin"
+                      ? "inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary capitalize"
+                      : "inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 capitalize"
+                  }
                 >
-                  Role
-                </Typography>
-                <Typography variant="body1">{data.role}</Typography>
-              </Box>
+                  {data.role}
+                </span>
+              </DetailField>
 
-              <Box>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                  }}
-                >
-                  {t("users.table.emailVerified")}
-                </Typography>
-                <Box sx={{ mt: 0.5 }}>
+              <DetailField label={t("users.table.emailVerified")}>
+                <Box className="flex flex-wrap items-center gap-2">
                   <Chip
                     label={
                       data.emailVerified
                         ? t("common.verified")
                         : t("common.unverified")
                     }
-                    color={data.emailVerified ? "success" : "default"}
                     size="small"
                     icon={data.emailVerified ? <CheckIcon /> : <CloseIcon />}
+                    className={
+                      data.emailVerified
+                        ? "border border-emerald-200 bg-emerald-50 font-medium text-emerald-700"
+                        : "border border-slate-200 bg-slate-100 font-medium text-slate-600"
+                    }
                   />
+                  {!data.emailVerified && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={handleVerifyEmail}
+                      loading={verifyEmailMutation.isPending}
+                      className="normal-case"
+                    >
+                      {t("admin.users.verifyEmail.action")}
+                    </Button>
+                  )}
                 </Box>
-              </Box>
+              </DetailField>
 
-              <Box>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                  }}
-                >
-                  {t("users.table.createAt")}
-                </Typography>
-                <Typography variant="body1">
+              <DetailField label={t("users.table.createAt")}>
+                <Typography variant="body1" className="text-slate-700">
                   {new Date(data.createdAt).toLocaleDateString()}
                 </Typography>
-              </Box>
+              </DetailField>
             </Box>
           </Paper>
         </Grid>
@@ -233,8 +305,15 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
         onClose={() => setEditDialogOpen(false)}
         maxWidth="sm"
         fullWidth
+        slotProps={{
+          paper: {
+            className: "rounded-2xl",
+          },
+        }}
       >
-        <DialogTitle>{t("profile.update.title")}</DialogTitle>
+        <DialogTitle className="font-semibold">
+          {t("profile.update.title")}
+        </DialogTitle>
         <DialogContent>
           <form
             onSubmit={(e) => {
@@ -242,9 +321,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
               handleSubmit(onSubmit)(e);
             }}
           >
-            <Box
-              sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
-            >
+            <Box className="flex flex-col gap-4 pt-1">
               <TextField
                 id="username"
                 label={t("profile.update.username")}
@@ -273,7 +350,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
                 helperText={errors.lastName?.message}
               />
 
-              <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+              <Box className="flex justify-end gap-2">
                 <Button
                   variant="outlined"
                   onClick={() => {

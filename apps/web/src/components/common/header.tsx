@@ -12,8 +12,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Menu,
-  MenuItem,
   Toolbar,
 } from "@mui/material";
 import Link from "next/link";
@@ -33,10 +31,7 @@ export const Header: React.FC<BoxProps> = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileAccountAnchor, setMobileAccountAnchor] =
-    useState<null | HTMLElement>(null);
-
-  const mobileAccountMenuOpen = Boolean(mobileAccountAnchor);
+  const isLoggedIn = Boolean(session?.user);
 
   const toggleMobileMenu = () => {
     setMobileOpen((open) => !open);
@@ -46,19 +41,9 @@ export const Header: React.FC<BoxProps> = () => {
     setMobileOpen(false);
   };
 
-  const handleOpenMobileAccountMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    setMobileAccountAnchor(event.currentTarget);
-  };
-
-  const handleCloseMobileAccountMenu = () => {
-    setMobileAccountAnchor(null);
-  };
-
   const handleMobileLogout = async () => {
     await signOut();
-    handleCloseMobileAccountMenu();
+    closeMobileMenu();
     router.replace("/");
   };
 
@@ -202,9 +187,63 @@ export const Header: React.FC<BoxProps> = () => {
                 <ListItemText primary={t("menu.about")} />
               </ListItemButton>
             </ListItem>
+
+            {!isLoggedIn ? (
+              <>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    href="/signup"
+                    data-testid="mobile-header-signup-button"
+                  >
+                    <ListItemText primary={t("menu.signup")} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    href="/login"
+                    data-testid="mobile-header-login-button"
+                  >
+                    <ListItemText primary={t("menu.login")} />
+                  </ListItemButton>
+                </ListItem>
+              </>
+            ) : null}
           </List>
 
           <Divider sx={{ my: 1 }} />
+
+          {isLoggedIn ? (
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={Link}
+                  href="/profile"
+                  data-testid="mobile-header-profile-button"
+                >
+                  <ListItemText primary={t("menu.profile")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={Link}
+                  href="/settings"
+                  data-testid="mobile-header-settings-button"
+                >
+                  <ListItemText primary={t("menu.settings")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={handleMobileLogout}
+                  data-testid="mobile-header-logout-button"
+                >
+                  <ListItemText primary={t("menu.logout")} />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          ) : null}
 
           <Box
             sx={{
@@ -212,77 +251,9 @@ export const Header: React.FC<BoxProps> = () => {
               py: 1,
               display: "flex",
               alignItems: "center",
-              gap: 1,
             }}
           >
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={handleOpenMobileAccountMenu}
-            >
-              {session?.user
-                ? (session.user.username ?? t("menu.profile"))
-                : t("menu.login")}
-            </Button>
             <LanguageSwitch />
-
-            <Menu
-              anchorEl={mobileAccountAnchor}
-              open={mobileAccountMenuOpen}
-              onClose={handleCloseMobileAccountMenu}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-            >
-              {session?.user
-                ? [
-                    <MenuItem
-                      key="profile"
-                      data-testid="mobile-header-profile-button"
-                      component={Link}
-                      href="/profile"
-                      onClick={handleCloseMobileAccountMenu}
-                    >
-                      {t("menu.profile")}
-                    </MenuItem>,
-                    <MenuItem
-                      key="settings"
-                      data-testid="mobile-header-settings-button"
-                      component={Link}
-                      href="/settings"
-                      onClick={handleCloseMobileAccountMenu}
-                    >
-                      {t("menu.settings")}
-                    </MenuItem>,
-                    <Divider key="divider" />,
-                    <MenuItem
-                      key="logout"
-                      onClick={handleMobileLogout}
-                      data-testid="mobile-header-logout-button"
-                    >
-                      {t("menu.logout")}
-                    </MenuItem>,
-                  ]
-                : [
-                    <MenuItem
-                      key="login"
-                      data-testid="mobile-header-login-button"
-                      component={Link}
-                      href="/login"
-                      onClick={handleCloseMobileAccountMenu}
-                    >
-                      {t("menu.login")}
-                    </MenuItem>,
-                    <MenuItem
-                      key="signup"
-                      data-testid="mobile-header-signup-button"
-                      component={Link}
-                      href="/signup"
-                      onClick={handleCloseMobileAccountMenu}
-                    >
-                      {t("menu.signup")}
-                    </MenuItem>,
-                  ]}
-            </Menu>
           </Box>
         </Box>
       </Drawer>

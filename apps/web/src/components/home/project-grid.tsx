@@ -149,8 +149,10 @@ export function ProjectGrid() {
 
   if (error) {
     return (
-      <Box sx={{ p: 5, minHeight: "100vh" }}>
-        <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
+      <Box sx={{ py: { xs: 2, md: 4 }, minHeight: "100vh" }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, md: 3 } }}>
+          <Typography color="error">{t("errors.LOADING_PROJECTS")}</Typography>
+        </Container>
       </Box>
     );
   }
@@ -158,168 +160,180 @@ export function ProjectGrid() {
   return (
     <Box
       sx={{
-        padding: 5,
+        py: { xs: 2, md: 5 },
         backgroundColor: "brand.orange",
         minHeight: "100vh",
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ px: { xs: 2, md: 3 } }}>
         <Box
           sx={{
-            ph: 2,
+            my: { xs: 2, md: 3 },
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: { xs: "stretch", md: "center" },
+            gap: 2,
           }}
         >
-          <Box
+          <Tabs
+            value={effectiveScope}
+            onChange={handleScopeChange}
+            textColor="primary"
+            indicatorColor="primary"
+            variant="scrollable"
+            scrollButtons={false}
+            allowScrollButtonsMobile
             sx={{
-              my: 3,
-              display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignItems: { xs: "stretch", md: "center" },
-              gap: 2,
+              flex: 1,
+              minHeight: 48,
+              width: "100%",
+              "& .MuiTabs-scroller": {
+                scrollbarWidth: "none",
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              },
+              "& .MuiTabs-flexContainer": {
+                gap: { xs: 1, md: 2 },
+              },
+              "& .MuiTab-root": {
+                minHeight: 48,
+                minWidth: "auto",
+                px: { xs: 0.5, md: 1.5 },
+                fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
+                fontFamily: "var(--font-serif)",
+                fontWeight: 700,
+                color: "black",
+                textTransform: "none",
+                whiteSpace: "nowrap",
+              },
+              "& .MuiTab-root + .MuiTab-root": {
+                ml: 0,
+              },
             }}
           >
-            <Tabs
-              value={effectiveScope}
-              onChange={handleScopeChange}
-              textColor="primary"
-              indicatorColor="primary"
-              sx={{ flex: 1, minHeight: 50 }}
-            >
-              <Tab
-                value="explorer"
-                label={t("home.explorer")}
-                className="text-2xl font-bold mb-4 font-serif my-2 text-black"
+            <Tab value="explorer" label={t("home.explorer")} />
+            {showAuthTabs ? (
+              <Tab value="my" label={t("home.myProjects")} />
+            ) : null}
+            {showAuthTabs ? (
+              <Tab value="collaboration" label={t("home.collaboration")} />
+            ) : null}
+          </Tabs>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              gap: 1,
+              width: { xs: "100%", md: "auto" },
+            }}
+          >
+            <Paper className="flex h-[50px] w-full shrink-0 items-center rounded-full px-1 py-[2px] sm:w-[260px] shadow-none">
+              <SearchIcon className="ml-1 size-10 p-2 text-black/50" />
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+              <InputBase
+                key={searchTerm ?? "empty"}
+                sx={{ ml: 1, flex: 1 }}
+                inputRef={searchInputRef}
+                defaultValue={searchTerm ?? ""}
+                onChange={handleSearchChange}
+                placeholder={t("search.placeholder")}
               />
-              {showAuthTabs ? (
-                <Tab
-                  value="my"
-                  label={t("home.myProjects")}
-                  className="text-2xl font-bold mb-4 font-serif my-2 text-black "
-                />
+              {searchTerm ? (
+                <IconButton onClick={handleResetSearch}>
+                  <ClearIcon />
+                </IconButton>
               ) : null}
-              {showAuthTabs ? (
-                <Tab
-                  value="collaboration"
-                  label={t("home.collaboration")}
-                  className="text-2xl font-bold mb-4 font-serif my-2 text-black "
-                />
-              ) : null}
-            </Tabs>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 1,
-                width: { xs: "100%", md: "auto" },
-              }}
-            >
-              <Paper className="flex h-[50px] w-full shrink-0 items-center rounded-full px-1 py-[2px] sm:w-[260px] shadow-none">
-                <SearchIcon className="ml-1 size-10 p-2 text-black/50" />
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <InputBase
-                  key={searchTerm ?? "empty"}
-                  sx={{ ml: 1, flex: 1 }}
-                  inputRef={searchInputRef}
-                  defaultValue={searchTerm ?? ""}
-                  onChange={handleSearchChange}
-                  placeholder={t("search.placeholder")}
-                />
-                {searchTerm ? (
-                  <IconButton onClick={handleResetSearch}>
-                    <ClearIcon />
-                  </IconButton>
-                ) : null}
-              </Paper>
-              <Paper className="flex h-[50px] w-full shrink-0 items-center rounded-full px-1 py-[2px] sm:w-[220px] shadow-none">
-                <SortIcon className="ml-1 size-10 p-2 text-black/50" />
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <Select
-                  value={sortBy}
-                  onChange={handleSortChange}
-                  variant="standard"
-                  disableUnderline
-                  sx={{
-                    flex: 1,
-                    ml: 1,
-                    "& .MuiSelect-select": {
-                      py: 0.75,
-                    },
-                  }}
-                >
-                  <MenuItem value="recent_added">
-                    {t("home.sortBy.recent_added")}
-                  </MenuItem>
-                  <MenuItem value="publication_date">
-                    {t("home.sortBy.publication_date")}
-                  </MenuItem>
-                  <MenuItem value="name">{t("home.sortBy.name")}</MenuItem>
-                </Select>
-              </Paper>
-            </Box>
+            </Paper>
+            <Paper className="flex h-[50px] w-full shrink-0 items-center rounded-full px-1 py-[2px] sm:w-[220px] shadow-none">
+              <SortIcon className="ml-1 size-10 p-2 text-black/50" />
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+              <Select
+                value={sortBy}
+                onChange={handleSortChange}
+                variant="standard"
+                disableUnderline
+                sx={{
+                  flex: 1,
+                  ml: 1,
+                  "& .MuiSelect-select": {
+                    py: 0.75,
+                  },
+                }}
+              >
+                <MenuItem value="recent_added">
+                  {t("home.sortBy.recent_added")}
+                </MenuItem>
+                <MenuItem value="publication_date">
+                  {t("home.sortBy.publication_date")}
+                </MenuItem>
+                <MenuItem value="name">{t("home.sortBy.name")}</MenuItem>
+              </Select>
+            </Paper>
           </Box>
-          {showResultsSkeleton ? (
-            <ProjectGridContentSkeleton />
-          ) : (
-            <Grid container spacing={5}>
-              {items.map((project: ProjectListItem) => (
-                <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={project.id}>
-                  <ProjectThumbnail showPublic={true} project={project} />
-                </Grid>
-              ))}
-            </Grid>
-          )}
+        </Box>
+        {showResultsSkeleton ? (
+          <ProjectGridContentSkeleton />
+        ) : (
+          <Grid container spacing={{ xs: 2, md: 5 }}>
+            {items.map((project: ProjectListItem) => (
+              <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={project.id}>
+                <ProjectThumbnail showPublic={true} project={project} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
 
-          {noProjects && (
-            <Box
+        {noProjects && (
+          <Box
+            sx={{
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: 200,
+            }}
+          >
+            <Stack
               sx={{
-                display: "flex",
                 alignContent: "center",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: 200,
+                py: { xs: 2, md: 4 },
               }}
             >
-              <Stack
-                sx={{
-                  alignContent: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  py: 4,
-                }}
-              >
-                <SearchOutlinedIcon
-                  sx={{ width: 100, height: 100, color: "grey.800" }}
-                />
-                <Typography variant="h6" align="center">
-                  {t("home.emptySearchResult")}
-                </Typography>
-              </Stack>
-            </Box>
-          )}
-
-          {/* Pagination */}
-          {!noProjects && items.length > 0 && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                pt: 4,
-                pb: 2,
-              }}
-            >
-              <Pagination
-                count={Math.ceil(total / ITEMS_PER_PAGE)}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-                size="large"
-                showFirstButton
-                showLastButton
+              <SearchOutlinedIcon
+                sx={{ width: 100, height: 100, color: "grey.800" }}
               />
-            </Box>
-          )}
-        </Box>
+              <Typography variant="h6" align="center">
+                {t("home.emptySearchResult")}
+              </Typography>
+            </Stack>
+          </Box>
+        )}
+
+        {/* Pagination */}
+        {!noProjects && items.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              pt: { xs: 2, md: 4 },
+              pb: { xs: 1, md: 2 },
+            }}
+          >
+            <Pagination
+              count={Math.ceil(total / ITEMS_PER_PAGE)}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              size="large"
+              showFirstButton
+              showLastButton
+            />
+          </Box>
+        )}
       </Container>
     </Box>
   );
@@ -327,7 +341,7 @@ export function ProjectGrid() {
 
 function ProjectGridContentSkeleton() {
   return (
-    <Grid container spacing={5}>
+    <Grid container spacing={{ xs: 2, md: 5 }}>
       {[1, 2, 3, 4, 5, 6].map((item) => (
         <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={item}>
           <Skeleton

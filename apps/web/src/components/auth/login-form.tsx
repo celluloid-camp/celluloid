@@ -104,7 +104,7 @@ export function LoginForm() {
         {t("signin.title")}
       </StyledDialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent sx={{ margin: 1, padding: 2, width: 400 }}>
+        <DialogContent className="box-border w-full">
           <TextField
             {...register("username")}
             margin="dense"

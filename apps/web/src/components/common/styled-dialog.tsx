@@ -13,10 +13,8 @@ import DialogContent from "@mui/material/DialogContent";
 export const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
+    boxSizing: "border-box",
   },
-  // "& .MuiBox-root": {
-  // 	padding: theme.spacing(2),
-  // },
 }));
 
 type StyledDialogTitleProps = DialogTitleProps & {

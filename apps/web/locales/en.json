@@ -67,7 +67,7 @@
     "LOADING_PROJECTS": "Unable to load projects. Please try again later or contact support for assistance."
   },
   "footer": {
-    "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
+    "copyright": "<link>CC BY-NC</link> 2026 Consortium Canevas",
     "legalNotice": "Legal notice",
     "termsAndConditions": "Terms & Conditions"
   },
@@ -714,6 +714,15 @@
       },
       "search": {
         "placeholder": "Search by email"
+      },
+      "verifyEmail": {
+        "action": "Mark as verified",
+        "success": "Email marked as verified",
+        "error": "Failed to verify email. Please try again.",
+        "dialog": {
+          "title": "Verify email",
+          "description": "Manually mark this user's email as verified?"
+        }
       }
     },
     "projects": {
