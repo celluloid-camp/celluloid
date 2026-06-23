@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.8.0](https://github.com/celluloid-camp/celluloid/compare/v3.7.0...v3.8.0) (2026-06-11)
+
+### Features
+
+* add new translation keys and improve video analysis UI interactions ([9aed99c](https://github.com/celluloid-camp/celluloid/commit/9aed99cef432e850cbc24966aabe5238e0bd0f24))
+
 ## [3.7.0](https://github.com/celluloid-camp/celluloid/compare/v3.6.2...v3.7.0) (2026-06-11)
 
 ### Features
