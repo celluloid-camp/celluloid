@@ -58,7 +58,7 @@
     "ce-la-react": "^0.3.2",
     "client-only": "^0.0.1",
     "copy-to-clipboard": "^3.3.3",
-    "dayjs": "^1.11.19",
+    "dayjs": "^1.11.21",
     "file-saver": "^2.0.5",
     "formik": "^2.4.9",
     "jotai": "^2.18.0",
