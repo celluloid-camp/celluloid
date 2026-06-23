@@ -80,7 +80,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-draggable": "^4.5.0",
-    "react-error-boundary": "^6.1.0",
+    "react-error-boundary": "^6.1.2",
     "react-hook-form": "^7.71.1",
     "react-konva": "^19.2.2",
     "react-markdown": "^10.1.0",
