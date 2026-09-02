@@ -31,7 +31,7 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "orval": "^7.10.0",
+    "orval": "^8.22.0",
     "@t3-oss/env-core": "catalog:",
     "zod": "catalog:"
   }
