@@ -49,7 +49,7 @@ jobs:
         run: docker compose -f compose.ci.yml logs
 
       - name: Run Playwright tests
-        run: bunx playwright test
+        run: bun --env-file=apps/web/.env.ci playwright test
 
       - name: Stop services
         if: always()

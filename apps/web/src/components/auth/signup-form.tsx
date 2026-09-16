@@ -77,7 +77,7 @@ export function SignupForm() {
       >
         {t("signup.title")}
       </StyledDialogTitle>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form method="post" onSubmit={handleSubmit(onSubmit)} noValidate>
         <DialogContent className="box-border w-full">
           <TextField
             {...register("username")}

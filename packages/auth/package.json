@@ -5,6 +5,11 @@
   "type": "module",
   "main": "./index.ts",
   "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./test-auth": "./test-auth.ts",
+    "./keys": "./keys.ts"
+  },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"

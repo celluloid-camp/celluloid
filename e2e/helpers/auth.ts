@@ -1,0 +1,88 @@
+import { randomUUID } from "node:crypto";
+import { testAuth } from "@celluloid/auth/test-auth";
+import type { BrowserContext } from "@playwright/test";
+
+export type TestUser = {
+  id: string;
+  email: string;
+  username: string;
+  name: string;
+  password: string;
+};
+
+function uniqueSuffix() {
+  return `${Date.now().toString(36)}${Math.floor(Math.random() * 1000)}`;
+}
+
+export async function getTestHelpers() {
+  const ctx = await testAuth.$context;
+  const test = ctx.test;
+  if (!test) {
+    throw new Error(
+      "Better Auth testUtils helpers missing. Import testAuth from @celluloid/auth/test-auth.",
+    );
+  }
+  return test;
+}
+
+/**
+ * Creates a verified user in the DB and injects a signed session cookie
+ * into the Playwright browser context (skips UI login).
+ */
+export async function loginAsTestUser(
+  context: BrowserContext,
+  overrides?: Partial<Pick<TestUser, "email" | "username" | "name">>,
+): Promise<TestUser> {
+  const test = await getTestHelpers();
+  const suffix = uniqueSuffix();
+  const username = overrides?.username ?? `e2e${suffix}`;
+  const email = overrides?.email ?? `${username}@example.com`;
+  const name = overrides?.name ?? username;
+  const password = "testtest";
+
+  const user = test.createUser({
+    id: randomUUID(),
+    email,
+    name,
+    username,
+    displayUsername: username,
+    emailVerified: true,
+    role: "teacher",
+    initial: username.substring(0, 1).toUpperCase(),
+    color: "#3b82f6",
+  });
+
+  await test.saveUser(user);
+
+  const cookies = await test.getCookies({
+    userId: user.id,
+    domain: "localhost",
+  });
+
+  // Playwright rejects cookies that set both `url` and `path`.
+  await context.clearCookies();
+  await context.addCookies(
+    cookies.map((cookie) => ({
+      name: cookie.name,
+      value: cookie.value,
+      domain: "localhost",
+      path: "/",
+      httpOnly: cookie.httpOnly ?? true,
+      secure: false,
+      sameSite: (cookie.sameSite ?? "Lax") as "Lax" | "Strict" | "None",
+    })),
+  );
+
+  return {
+    id: user.id,
+    email,
+    username,
+    name,
+    password,
+  };
+}
+
+export async function deleteTestUser(userId: string) {
+  const test = await getTestHelpers();
+  await test.deleteUser(userId);
+}

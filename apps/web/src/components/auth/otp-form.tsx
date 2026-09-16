@@ -77,7 +77,8 @@ export function OtpForm() {
         variant: "success",
       });
       await refetch();
-      router.back();
+      // replace() — signup navigates here with router.replace, so back() can be about:blank
+      router.replace("/");
     } catch (e) {
       setError("root", {
         message: e instanceof Error ? e.message : "An unknown error occurred",

@@ -11,8 +11,8 @@ import { forwardRef, useState } from "react";
 
 export interface PasswordInputProps extends Omit<TextFieldProps, "type"> {}
 
-export const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>(
-  ({ ...props }, ref) => {
+export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
+  ({ slotProps, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleTogglePasswordVisibility = () => {
@@ -47,14 +47,13 @@ export const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>(
 
     return (
       <TextField
-        ref={ref}
         {...props}
         type={showPassword ? "text" : "password"}
-        // Add the slotProps for future compatibility
+        inputRef={ref}
         slotProps={{
-          ...props.slotProps,
+          ...slotProps,
           input: {
-            ...props.slotProps?.input,
+            ...slotProps?.input,
             endAdornment,
           },
         }}
