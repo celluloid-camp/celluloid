@@ -48,5 +48,18 @@ export function getSecondaryStorage(): SecondaryStorage {
         console.warn("[auth/storage] Redis DEL failed; ignoring.", err);
       }
     },
+    getAndDelete: async (key) => {
+      await redisConnectPromise;
+      if (!redisConnected) return null;
+      try {
+        return await redis.getDel(key);
+      } catch (err) {
+        console.warn(
+          "[auth/storage] Redis GETDEL failed; returning null.",
+          err,
+        );
+        return null;
+      }
+    },
   };
 }

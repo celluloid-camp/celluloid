@@ -18,7 +18,7 @@
     "better-auth": "catalog:",
     "better-auth-localization": "^3.0.0",
     "randomcolor": "^0.6.2",
-    "redis": "^5.11.0",
+    "redis": "^6.2.1",
     "workflow": "catalog:",
     "zod": "catalog:"
   },

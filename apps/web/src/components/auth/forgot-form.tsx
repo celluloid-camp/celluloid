@@ -40,6 +40,13 @@ export function ForgotForm() {
       type: "forget-password",
     });
 
+    if (error) {
+      setError("root", {
+        message: error.message ?? t("forgot.error"),
+      });
+      return;
+    }
+
     handleRecover(values.email);
   };
 

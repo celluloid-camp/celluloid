@@ -30,6 +30,8 @@ function formatTime(time: number): string {
   return `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)},${padNumber(milliseconds, 3)}`;
 }
 
+export { formatTime };
+
 function padNumber(number: number, length = 2): string {
   return number.toString().padStart(length, "0");
 }

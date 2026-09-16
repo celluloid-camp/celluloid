@@ -50,7 +50,7 @@ export const user = pgTable(
       .notNull(),
     emailVerified: boolean().default(false).notNull(),
     image: text(),
-    name: text(),
+    name: text().notNull().default(""),
     updatedAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -607,5 +607,74 @@ export const videoScenes = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("set null"),
+  ],
+);
+
+export const peertubeInstance = pgTable(
+  "PeertubeInstance",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    userId: uuid().notNull(),
+    host: text().notNull(),
+    title: text().notNull(),
+    description: text(),
+    isIndex: boolean().notNull().default(false),
+    thumbnail: text().notNull(),
+    isPublic: boolean().notNull().default(false),
+    createdAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("PeertubeInstance_user_host_key").on(table.userId, table.host),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [user.id],
+      name: "PeertubeInstance_userId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("cascade"),
+  ],
+);
+
+export const peertubeInstanceAuth = pgTable(
+  "PeertubeInstanceAuth",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    userId: uuid().notNull(),
+    instanceHost: text().notNull(),
+    usernameOrEmail: text().notNull(),
+    accessToken: text(),
+    refreshToken: text(),
+    accessTokenExpiresAt: timestamp({
+      precision: 6,
+      withTimezone: true,
+      mode: "string",
+    }),
+    status: text({ enum: ["connected", "expired", "failed"] })
+      .notNull()
+      .default("failed"),
+    lastError: text(),
+    createdAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp({ precision: 6, withTimezone: true, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    lastUsedAt: timestamp({ precision: 6, withTimezone: true, mode: "string" }),
+  },
+  (table) => [
+    uniqueIndex("PeertubeInstanceAuth_user_host_key").on(
+      table.userId,
+      table.instanceHost,
+    ),
+    index("PeertubeInstanceAuth_userId_idx").on(table.userId),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [user.id],
+      name: "PeertubeInstanceAuth_userId_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("cascade"),
   ],
 );

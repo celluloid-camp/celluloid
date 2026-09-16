@@ -1,14 +1,14 @@
 import { db } from "@celluloid/db";
 import { generate6DigitOtp } from "@celluloid/utils";
+import { handleForgetPassword } from "@celluloid/workflows/forget-password";
 import { handleUserSignup } from "@celluloid/workflows/user-signup";
-import { betterAuth, SecondaryStorage } from "better-auth";
+import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { admin, emailOTP, genericOAuth, username } from "better-auth/plugins";
+import { admin, emailOTP, username } from "better-auth/plugins";
 import { localization } from "better-auth-localization";
 import randomColor from "randomcolor";
-import { createClient } from "redis";
 import { start } from "workflow/api";
 import { keys } from "./keys";
 import { signupAsStudent } from "./plugins/signup-as-student";
@@ -68,22 +68,28 @@ export const auth = betterAuth({
           return;
         }
 
-        if (type === "sign-in") {
+        if (type === "forget-password") {
+          await start(handleForgetPassword, [email, otp]);
+          return;
+        }
+
+        if (type === "sign-in" || type === "email-verification") {
           await start(handleUserSignup, [email, otp]);
         }
       },
     }),
-    nextCookies(),
     localization({
       defaultLocale: "fr-FR",
       fallbackLocale: "default",
     }),
+    nextCookies(),
   ],
   secondaryStorage: getSecondaryStorage(),
   session: {
     cookieCache: {
       enabled: true,
       maxAge: 60 * 60 * 24 * 30, // 30 days
+      version: "2", // invalidate caches that had null user.name
     },
   },
   advanced: {
@@ -105,6 +111,7 @@ export const auth = betterAuth({
             ...ctx,
             body: {
               ...ctx.body,
+              name: ctx.body.name || ctx.body.username,
               initial: ctx.body.username
                 .split(" ")
                 .map((part: string) => part.substring(0, 1))

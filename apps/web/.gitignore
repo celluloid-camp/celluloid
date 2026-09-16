@@ -44,3 +44,4 @@ bun.lock
 next-env.d.ts
 locales/*.d.json.ts
 src/app/.well-known/workflows
+/.swc

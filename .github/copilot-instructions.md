@@ -169,7 +169,7 @@ Key environment variables used in the codebase:
 - Storage: `STORAGE_URL`, `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY`, `STORAGE_SECRET_KEY`
 - Auth: `AUTH_SECRET`, `BASE_URL`
 - SMTP: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_EMAIL_FROM`
-- Other: `NODE_ENV`, `MISTRAL_API_KEY` (optional)
+- Other: `NODE_ENV`, `OPENROUTER_API_KEY` (optional)
 
 Use `.env` file for local development (copy from `env.sample`).
 

@@ -9,7 +9,7 @@ import {
 import { getDbErrorMessage } from "@celluloid/db/utils";
 import { defaultUserSelect } from "@celluloid/db/validator";
 import { getNotificationsClient } from "@celluloid/notifications";
-import { toSrt } from "@celluloid/utils";
+import { formatTime, toSrt } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { username } from "better-auth/plugins";
@@ -274,24 +274,42 @@ export const annotationRouter = router({
         orderBy: desc(annotation.createdAt),
       });
 
-      const formated = annotations.map((a) => ({
-        startTime: a.startTime,
-        endTime: a.stopTime,
-        text: a.text,
-        comments: a.comments.map((c) => c.text),
-        contextX: a.extra ? a.extra.x : null,
-        contextY: a.extra ? a.extra.y : null,
-        username: a.user.username,
-      }));
+      const formated = annotations
+        .map((a) => ({
+          startTime: a.startTime,
+          endTime: a.stopTime,
+          text: a.text,
+          comments: a.comments.map((c) => c.text),
+          ...(a.extra?.x != null ? { contextX: a.extra.x } : {}),
+          ...(a.extra?.y != null ? { contextY: a.extra.y } : {}),
+          username: a.user.username,
+        }))
+        .sort((a, b) => a.startTime - b.startTime);
 
       let content = "";
       if (format === "xml") {
-        content = toXML("annotations", formated, {
-          cdataKeys: ["comments", "text"],
-        });
+        content = toXML(
+          "annotations",
+          {
+            annotation: formated.map((a) => ({
+              ...a,
+              startTime: formatTime(a.startTime),
+              endTime: formatTime(a.endTime),
+            })),
+          },
+          {
+            cdataKeys: ["comments", "text"],
+          },
+        );
       } else if (format === "csv") {
-        const sorted = formated.sort((a, b) => a.startTime - b.startTime);
-        content = Papa.unparse(sorted);
+        content = Papa.unparse(
+          formated.map((a) => ({
+            ...a,
+            startTime: formatTime(a.startTime),
+            endTime: formatTime(a.endTime),
+            comments: a.comments.join(" | "),
+          })),
+        );
       } else if (format === "srt") {
         content = toSrt(formated);
       }

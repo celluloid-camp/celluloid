@@ -12,6 +12,7 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { keys } from "../keys";
 
 export type ForgetPasswordEmailProps = {
   username?: string;
@@ -19,12 +20,11 @@ export type ForgetPasswordEmailProps = {
   email: string;
 };
 
-const baseUrl = process.env.BASE_URL ? `https://${process.env.BASE_URL}` : "";
-
 export const ForgetPasswordEmail = ({
   username = "",
   otp = "123456",
 }: ForgetPasswordEmailProps) => {
+  const baseUrl = keys().BASE_URL;
   return (
     <Html>
       <Head />
@@ -32,7 +32,7 @@ export const ForgetPasswordEmail = ({
       <Tailwind>
         <Body className="bg-white my-auto mx-auto font-sans">
           <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
-            <Section className="mt-[32px]">
+            <Section className="mt-8">
               <Img
                 src={`${baseUrl}/celluloid-email-logo.png`}
                 width="188"

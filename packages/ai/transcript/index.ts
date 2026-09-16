@@ -1,5 +1,5 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { ChatMistralAI } from "@langchain/mistralai";
+import { ChatOpenRouter } from "@langchain/openrouter";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { keys } from "../keys";
 import { SYSTEM_PROMPT } from "./prompts";
@@ -26,9 +26,8 @@ export const transcribeCaptions = async (
     .join("\n");
 
   // Initialize text splitter with chunk size and overlap
-  // Using conservative chunk sizes to stay well under token limits
-  // Mistral Large has context window of 32k tokens, we'll use ~10k tokens per chunk as safety margin
-  // Assuming ~4 characters per token, that's roughly 40k characters per chunk
+  // Conservative chunk sizes to stay under model context limits
+  // Assuming ~4 characters per token, ~20k chars ≈ ~5k tokens per chunk
   const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize: 20000,
     chunkOverlap: 1000, // Small overlap to maintain context between chunks
@@ -39,6 +38,12 @@ export const transcribeCaptions = async (
   const chunks = await textSplitter.splitText(captionText);
 
   console.debug(`Split captions into ${chunks.length} chunks`);
+
+  const model = new ChatOpenRouter({
+    model: env.TRANSCRIPT_MODEL,
+    apiKey: env.OPENROUTER_API_KEY,
+    temperature: 0,
+  });
 
   // Helper function to process a single chunk with error handling
   const processChunk = async (
@@ -59,19 +64,8 @@ export const transcribeCaptions = async (
       console.debug(
         `Invoking model for chunk ${chunkIndex + 1}/${totalChunks}`,
       );
-      // const response = await withTimeout(
-      //   model.invoke(messages),
-      //   60000, // 1 minute timeout per request
-      // );
 
-      const mistralLargeModel = new ChatMistralAI({
-        modelName: "mistral-large-latest",
-        apiKey: env.MISTRAL_API_KEY,
-        streaming: false,
-        temperature: 0,
-      });
-
-      const response = await mistralLargeModel.invoke(messages);
+      const response = await model.invoke(messages);
 
       if (!response || !response.content) {
         throw new Error(

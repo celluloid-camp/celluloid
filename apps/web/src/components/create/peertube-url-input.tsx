@@ -4,13 +4,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import LinkIcon from "@mui/icons-material/Link";
 import {
-  Alert,
-  Chip,
   IconButton,
   InputAdornment,
   TextField,
 } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -21,12 +19,14 @@ import {
 } from "@/services/peertube";
 
 type PeerTubeVideoUrlFormProps = {
+  autoLoad?: boolean;
   onLoaded: (data: PeerTubeVideoDataResult | null) => void;
   onReset: () => void;
   url?: string;
 };
 
 export function PeerTubeUrlInput({
+  autoLoad = false,
   onLoaded,
   onReset,
   url,
@@ -60,30 +60,6 @@ export function PeerTubeUrlInput({
     retry: false,
   });
 
-  // React.useEffect(() => {
-  //   if (query.data && !isSubmitted) {
-  //     onLoaded(query.data);
-  //   }
-  // }, [query.data, isSubmitted, onLoaded]);
-
-  // React.useEffect(() => {
-  //   if (query.error) {
-  //     setValue("error", t("project.create.error.video-info-failed"));
-  //   }
-  // }, [query.error, setValue, t]);
-
-  // React.useEffect(() => {
-  //   if (data === null && isSubmitted) {
-  //     reset();
-  //   }
-  // }, [data, reset, isSubmitted]);
-
-  const handleReset = () => {
-    reset();
-    onReset();
-    onLoaded(null);
-  };
-
   const onSubmit = async (values: FormValues) => {
     try {
       const data = await mutation.mutateAsync(values.url);
@@ -96,6 +72,20 @@ export function PeerTubeUrlInput({
         { shouldFocus: true },
       );
     }
+  };
+
+  React.useEffect(() => {
+    if (autoLoad && url?.trim()) {
+      void handleSubmit(onSubmit)();
+    }
+    // Only auto-load once when arriving from search with a URL.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoLoad, url]);
+
+  const handleReset = () => {
+    reset();
+    onReset();
+    onLoaded(null);
   };
 
   return (

@@ -14,6 +14,8 @@ import {
   userToProject,
   videoAnalysis,
   videoScenes,
+  peertubeInstance,
+  peertubeInstanceAuth,
 } from "./schema";
 
 export const userRelations = relations(user, ({ one, many }) => ({
@@ -30,6 +32,8 @@ export const userRelations = relations(user, ({ one, many }) => ({
   sessions: many(session),
   accounts: many(account),
   projectNotes: many(projectNote),
+  peertubeInstances: many(peertubeInstance),
+  peertubeInstanceAuths: many(peertubeInstanceAuth),
 }));
 
 export const storageRelations = relations(storage, ({ many }) => ({
@@ -172,3 +176,23 @@ export const videoScenesRelations = relations(videoScenes, ({ one }) => ({
     references: [storage.id],
   }),
 }));
+
+export const peertubeInstanceRelations = relations(
+  peertubeInstance,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [peertubeInstance.userId],
+      references: [user.id],
+    }),
+  }),
+);
+
+export const peertubeInstanceAuthRelations = relations(
+  peertubeInstanceAuth,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [peertubeInstanceAuth.userId],
+      references: [user.id],
+    }),
+  }),
+);

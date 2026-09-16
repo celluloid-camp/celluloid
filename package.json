@@ -4,7 +4,7 @@
   "author": "Younes Benaomar <younes.benaomar@gmail.com>",
   "repository": "http://github.com/celluloid-edu/celluloid",
   "devDependencies": {
-    "@biomejs/biome": "^2.4.12",
+    "@biomejs/biome": "^2.5.14",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@playwright/test": "^1.59.1",
@@ -14,7 +14,7 @@
     "conventional-changelog-conventionalcommits": "9.3.1",
     "lefthook": "^2.1.6",
     "release-it": "^20.0.0",
-    "turbo": "^2.9.6",
+    "turbo": "^2.10.13",
     "typescript": "^6.0.3"
   },
   "catalog": {
@@ -23,7 +23,7 @@
     "@types/node": "^25.3.5",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "better-auth": "^1.4.18",
+    "better-auth": "^1.7.5",
     "date-fns": "^4.4.0",
     "dotenv": "^17.2.3",
     "dotenv-cli": "^11.0.0",
@@ -34,8 +34,8 @@
     "server-only": "^0.0.1",
     "superjson": "^2.2.6",
     "typescript": "^6.0.3",
-    "workflow": "4.5.0",
-    "zod": "^4.4.3",
+    "workflow": "4.8.9",
+    "zod": "^4.6.5",
     "drizzle-orm": "^0.45.1",
     "pino": "^10.3.1",
     "drizzle-kit": "^0.31.9",
