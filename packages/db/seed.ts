@@ -1,82 +1,85 @@
-import type { UserInsert } from "@celluloid/db";
-import { db, project, user } from "@celluloid/db";
-import { faker } from "@faker-js/faker";
+import { and, eq } from "drizzle-orm";
+import { db } from "./index";
+import { peertubeInstance, user } from "./schema";
 
-async function main() {
-  console.log("Starting to seed users...");
+const DEFAULT_PEERTUBE_INSTANCES = [
+  {
+    title: "Public Peertube",
+    host: "https://sepiasearch.org",
+    thumbnail: "https://sepiasearch.org/theme/framasoft/img/title.svg",
+    description: "Public PeerTube meta-search (SepiaSearch).",
+    isIndex: true,
+  },
+  {
+    title: "Celluloid",
+    host: "https://celluloid.cloud",
+    thumbnail:
+      "https://celluloid.cloud/lazy-static/avatars/195e16ff-c0c2-4ccd-b3d7-3bfe09c55ffd.jpg",
+    description: "Celluloid PeerTube instance.",
+    isIndex: false,
+  },
+  {
+    title: "MSH Paris Nord",
+    host: "https://video.mshparisnord.fr",
+    thumbnail:
+      "https://video.mshparisnord.fr/lazy-static/avatars/c17d855c-e600-4c89-865d-89c13bb1d5ca.jpg",
+    description: "MSH Paris Nord PeerTube instance.",
+    isIndex: false,
+  },
+] as const;
 
-  const usersData: UserInsert[] = [];
+export async function seedPeerTubeInstances() {
+  const [adminUser] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.role, "Admin"))
+    .limit(1);
 
-  for (let i = 0; i < 50; i++) {
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const username = faker.internet
-      .username({ firstName, lastName })
-      .toLowerCase();
-    usersData.push({
-      email: faker.internet.email({ firstName, lastName }).toLowerCase(),
-      username,
-      emailVerified: true,
-      firstname: firstName,
-      lastname: lastName,
-      bio: faker.person.bio(),
-      name: `${firstName} ${lastName}`,
-      role: "Teacher",
-    });
+  const owner =
+    adminUser ?? (await db.select({ id: user.id }).from(user).limit(1))[0];
+
+  if (!owner) {
+    console.log("No users found — skipping PeerTube instance seed.");
+    return;
   }
 
-  const insertedUsers = await db.transaction(async (tx) => {
-    const result = [];
-    for (const userData of usersData) {
-      const [row] = await tx.insert(user).values(userData).returning();
-      if (row) result.push(row);
-    }
-    return result;
-  });
+  for (const instance of DEFAULT_PEERTUBE_INSTANCES) {
+    const [existing] = await db
+      .select({ id: peertubeInstance.id })
+      .from(peertubeInstance)
+      .where(
+        and(
+          eq(peertubeInstance.userId, owner.id),
+          eq(peertubeInstance.host, instance.host),
+        ),
+      )
+      .limit(1);
 
-  console.log(`Successfully created ${insertedUsers.length} users`);
-
-  console.log("Starting to seed projects...");
-
-  const projectsData: (typeof project.$inferInsert)[] = [];
-
-  for (let i = 0; i < 20; i++) {
-    const userIndex = i % 10;
-    const userId = insertedUsers[userIndex]?.id;
-
-    if (!userId) {
-      console.log(
-        `Skipping project creation for missing user at index ${userIndex}`,
-      );
+    if (existing) {
       continue;
     }
 
-    projectsData.push({
-      userId,
-      title: faker.lorem.words(3),
-      description: faker.lorem.paragraph(),
-      videoId: faker.string.alphanumeric(11),
-      host: "youtube",
-      objective: faker.lorem.sentence(),
-      public: faker.datatype.boolean(),
-      collaborative: faker.datatype.boolean(),
-      shared: faker.datatype.boolean(),
-      thumbnailURL: faker.image.url(),
-      keywords: faker.word.words(5).split(" "),
-      publishedAt: faker.date.anytime().toISOString(),
+    await db.insert(peertubeInstance).values({
+      userId: owner.id,
+      host: instance.host,
+      title: instance.title,
+      description: instance.description,
+      thumbnail: instance.thumbnail,
+      isIndex: instance.isIndex,
+      isPublic: true,
     });
   }
 
-  await db.transaction(async (tx) => {
-    for (const projectData of projectsData) {
-      await tx.insert(project).values(projectData);
-    }
-  });
-
-  console.log(`Successfully created ${projectsData.length} projects`);
+  console.log("PeerTube instances seeded.");
 }
 
-main().catch((e) => {
-  console.error("Error seeding database:", e);
-  process.exit(1);
-});
+if (import.meta.main) {
+  seedPeerTubeInstances()
+    .catch((error) => {
+      console.error("Failed to seed PeerTube instances:", error);
+      process.exit(1);
+    })
+    .finally(() => {
+      process.exit(0);
+    });
+}

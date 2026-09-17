@@ -39,22 +39,7 @@ export function CreateLayoutShell({ children }: { children: ReactNode }) {
       : pathname.startsWith(href);
 
   return (
-    <Box
-      className="relative min-h-screen overflow-hidden px-4 py-10 sm:px-8 sm:py-14"
-      sx={{
-        background:
-          "linear-gradient(180deg, #FFE7DB 0%, #FFF1E9 38%, #F9FAFC 100%)",
-      }}
-    >
-      <Box
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        sx={{
-          background:
-            "radial-gradient(60% 45% at 85% 0%, rgba(85,124,255,0.12) 0%, rgba(85,124,255,0) 60%), radial-gradient(50% 40% at 0% 10%, rgba(255,107,104,0.10) 0%, rgba(255,107,104,0) 55%)",
-        }}
-      />
-
+    <Box className="relative min-h-screen overflow-hidden bg-[#FFE7DB] px-4 py-10 sm:px-8 sm:py-14">
       <Box className="relative mx-auto max-w-7xl">
         <Box className="mb-8 px-1 sm:mb-10">
           <Box

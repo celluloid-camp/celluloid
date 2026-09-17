@@ -14,8 +14,7 @@
     "studio": "drizzle-kit studio",
     "generate": "drizzle-kit generate",
     "drop": "drizzle-kit drop",
-    "seed": "bun run seed.ts",
-    "seed:peertube-instances": "bun --env-file ../../apps/web/.env seed-peertube-instances.ts"
+    "seed": "bun --env-file ../../apps/web/.env seed.ts"
   },
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",

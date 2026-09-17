@@ -5,6 +5,7 @@ import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Client } from "pg";
 import { fixOldScenes } from "./patches/fix-old-scenes";
 import { fixUserAttributes } from "./patches/fix-user-attributes";
+import { seedPeerTubeInstances } from "./seed";
 
 async function waitForPostgres(
   connectionString: string,
@@ -55,6 +56,7 @@ async function waitForPostgres(
 
     await fixUserAttributes();
     await fixOldScenes();
+    await seedPeerTubeInstances();
 
     console.log("Migrations completed successfully");
     await client.end();
