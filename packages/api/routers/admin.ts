@@ -107,7 +107,7 @@ export const adminRouter = router({
       });
 
       return {
-        items: ordered.filter(Boolean),
+        items: ordered.filter((p): p is NonNullable<typeof p> => p != null),
         total,
       };
     }),

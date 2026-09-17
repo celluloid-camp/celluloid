@@ -75,7 +75,7 @@ export function HomePageHero() {
                     sx={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
                   >
                     {t.rich("tutoriel.description", {
-                      peertube: (chunks: string) => (
+                      peertube: (chunks) => (
                         <Link
                           href="https://joinpeertube.org/fr_FR"
                           target="_blank"
@@ -106,7 +106,7 @@ export function HomePageHero() {
                     sx={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
                   >
                     {t.rich("tutoriel.link", {
-                      tutorial: (chunks: string) => (
+                      tutorial: (chunks) => (
                         <Link
                           href="https://video.mshparisnord.fr/w/7r2FxoQdYjun6tYWJfHUCa"
                           target="_blank"

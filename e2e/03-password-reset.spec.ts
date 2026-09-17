@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 import { createTestUser, deleteTestUser } from "./helpers/auth";
 import { E2E_OTP } from "./helpers/constants";
 
@@ -8,7 +8,9 @@ import { E2E_OTP } from "./helpers/constants";
  */
 function authForm(page: Page): Locator {
   const dialog = page.getByRole("dialog");
-  return dialog.or(page.locator("form").filter({ has: page.getByTestId("submit") }));
+  return dialog.or(
+    page.locator("form").filter({ has: page.getByTestId("submit") }),
+  );
 }
 
 test.describe("password reset", () => {

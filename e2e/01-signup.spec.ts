@@ -45,7 +45,9 @@ test.describe("signup", () => {
       await page.getByTestId("header-account-menu").click();
       await page.getByTestId("header-profile-button").click();
 
-      await expect(page.getByTestId("profile-header-title")).toHaveText(username);
+      await expect(page.getByTestId("profile-header-title")).toHaveText(
+        username,
+      );
     } finally {
       await deleteTestUserByEmail(email);
     }

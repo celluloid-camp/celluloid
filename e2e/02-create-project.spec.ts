@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import { deleteTestUser, loginAsTestUser } from "./helpers/auth";
 import { E2E_PEERTUBE_VIDEO_URL } from "./helpers/constants";
 import { mockPeerTubeVideoApi } from "./helpers/peertube";

@@ -93,23 +93,24 @@ export const signupAsStudent = () => {
 
           const id = generateId();
           const email = `temp-${id}@celluloid.me`;
-          const newUser = await ctx.context.internalAdapter.createUser({
-            email,
-            emailVerified: true,
-            name: ctx.body.username,
-            role: "student",
-            username: ctx.body.username,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            initial: ctx.body.username
-              .split(" ")
-              .map((part: string) => part.substring(0, 1))
-              .join(""),
-            color: randomColor({
-              seed: id,
-              luminosity: "bright",
-            }),
-          });
+          const newUser = await ctx.context.internalAdapter.createUser(
+            {
+              email,
+              emailVerified: true,
+              name: ctx.body.username,
+              role: "student",
+              username: ctx.body.username,
+              initial: ctx.body.username
+                .split(" ")
+                .map((part: string) => part.substring(0, 1))
+                .join(""),
+              color: randomColor({
+                seed: id,
+                luminosity: "bright",
+              }),
+            },
+            { method: "email-password" },
+          );
           if (!newUser) {
             return ctx.json(null, {
               status: 500,

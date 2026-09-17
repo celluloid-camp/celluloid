@@ -29,7 +29,9 @@ export async function getTestHelpers() {
  * Creates a verified credential user in the DB (no browser session).
  */
 export async function createTestUser(
-  overrides?: Partial<Pick<TestUser, "email" | "username" | "name" | "password">>,
+  overrides?: Partial<
+    Pick<TestUser, "email" | "username" | "name" | "password">
+  >,
 ): Promise<TestUser> {
   const test = await getTestHelpers();
   const ctx = await testAuth.$context;

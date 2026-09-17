@@ -45,7 +45,7 @@ export const Members: React.FC<SideBarProps> = ({ project }) => {
         <PeopleIcon />
         <Typography variant="h6">
           {t("project.members", {
-            count: members.length == 0 ? 1 : members.length,
+            count: String(members.length == 0 ? 1 : members.length),
           })}
         </Typography>
       </Box>

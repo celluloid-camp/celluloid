@@ -86,6 +86,7 @@
         "@tanstack/react-query-devtools": "^5.91.3",
         "@tanstack/react-query-persist-client": "^5.90.27",
         "@tanstack/react-virtual": "^3.13.23",
+        "@tiptap/core": "^2.27.2",
         "@tiptap/extension-mention": "^2.27.2",
         "@tiptap/extension-placeholder": "^2.27.2",
         "@tiptap/extension-strike": "^2.27.2",
@@ -284,6 +285,7 @@
       },
       "devDependencies": {
         "@celluloid/typescript-config": "workspace:*",
+        "@types/node": "catalog:",
         "typescript": "catalog:",
       },
     },

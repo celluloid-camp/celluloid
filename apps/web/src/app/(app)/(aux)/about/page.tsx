@@ -36,8 +36,8 @@ export default function About() {
       </Typography>
       <Typography variant="subtitle1" gutterBottom={true}>
         {t.rich("about.intro", {
-          celluloid: (chunks: string) => <b>{chunks}</b>,
-          consortium: (chunks: string) => (
+          celluloid: (chunks) => <b>{chunks}</b>,
+          consortium: (chunks) => (
             <Link
               href="https://www.huma-num.fr/les-consortiums-hn/"
               target="_blank"
@@ -59,7 +59,7 @@ export default function About() {
         }}
       >
         {t.rich("about.opensource.prefix", {
-          canevas: (chunks: string) => (
+          canevas: (chunks) => (
             <Link
               href="https://canevas.hypotheses.org/a-propos"
               target="_blank"
@@ -68,27 +68,9 @@ export default function About() {
               {chunks}
             </Link>
           ),
-          oasis: (chunks: string) => (
-            <Link
-              href="https://oscars-project.eu/projects/oasis-open-audiovisual-science-innovation-scheme"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {chunks}
-            </Link>
-          ),
-          mshpn: (chunks: string) => (
+          mshpn: (chunks) => (
             <Link
               href="https://www.mshparisnord.fr/programmes/consortium-humanum-cannevas/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {chunks}
-            </Link>
-          ),
-          younes: (chunks: string) => (
-            <Link
-              href="https://github.com/younes200"
               target="_blank"
               rel="noreferrer"
             >
@@ -105,7 +87,7 @@ export default function About() {
         }}
       >
         {t.rich("about.opensource.github", {
-          github: (chunks: string) => (
+          github: (chunks) => (
             <Link
               href="https://github.com/celluloid-camp/"
               target="_blank"

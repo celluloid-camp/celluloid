@@ -22,7 +22,10 @@ export const useHumanizeError = () => {
   const t = useTranslations("errors");
 
   function getLocaleLabel(error: string) {
-    return t(error);
+    if (error === "ERR_ALREADY_EXISTING_PROJECT") {
+      return t("ALREADY_EXISTING_PROJECT");
+    }
+    return t("UNKNOWN");
   }
   return getLocaleLabel;
 };

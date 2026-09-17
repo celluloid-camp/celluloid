@@ -1,4 +1,4 @@
-import type { DetectionResultsModel } from "@celluloid/vision";
+import type { DetectionResultsModel } from "@celluloid/toolkit-api/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,

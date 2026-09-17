@@ -70,100 +70,103 @@ const sharedPlugins = [
   }),
 ] as const;
 
-function createAuthOptions(options?: {
-  includeTestUtils?: boolean;
-}): BetterAuthOptions {
-  return {
-    baseURL: keys().BASE_URL,
-    secret: keys().AUTH_SECRET,
-    logger: {
-      level: process.env.NODE_ENV === "development" ? "debug" : "info",
+const authOptionsBase = {
+  baseURL: keys().BASE_URL,
+  secret: keys().AUTH_SECRET,
+  logger: {
+    level: process.env.NODE_ENV === "development" ? "debug" : "info",
+  },
+  database: drizzleAdapter(db, {
+    provider: "pg",
+  }),
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: true,
+  },
+  user: {
+    modelName: "user",
+    additionalFields: {
+      role: {
+        type: "string" as const,
+        required: true,
+        defaultValue: "teacher",
+        input: false,
+      },
+      color: {
+        type: "string" as const,
+        required: false,
+        input: true,
+      },
+      initial: {
+        type: "string" as const,
+        required: false,
+        input: true,
+      },
     },
-    database: drizzleAdapter(db, {
-      provider: "pg",
-    }),
-    emailAndPassword: {
+  },
+  secondaryStorage: getSecondaryStorage(),
+  session: {
+    cookieCache: {
       enabled: true,
-      requireEmailVerification: true,
+      maxAge: 60 * 60 * 24 * 30,
+      version: "2",
     },
-    user: {
-      modelName: "user",
-      additionalFields: {
-        role: {
-          type: "string" as const,
-          required: true,
-          defaultValue: "teacher",
-          input: false,
-        },
-        color: {
-          type: "string" as const,
-          required: false,
-          input: true,
-        },
-        initial: {
-          type: "string" as const,
-          required: false,
-          input: true,
-        },
+  },
+  rateLimit: {
+    enabled: !(
+      process.env.NODE_ENV === "test" ||
+      process.env.CI_TEST === "true" ||
+      process.env.E2E === "1"
+    ),
+  },
+  advanced: {
+    database: {
+      generateId: false,
+    },
+    cookies: {
+      session_token: {
+        name: "celluloid_session",
       },
     },
-    plugins: options?.includeTestUtils
-      ? [...sharedPlugins, testUtils({ captureOTP: true }), nextCookies()]
-      : [...sharedPlugins, nextCookies()],
-    secondaryStorage: getSecondaryStorage(),
-    session: {
-      cookieCache: {
-        enabled: true,
-        maxAge: 60 * 60 * 24 * 30,
-        version: "2",
-      },
-    },
-    rateLimit: {
-      enabled: !(
-        process.env.NODE_ENV === "test" ||
-        process.env.CI_TEST === "true" ||
-        process.env.E2E === "1"
-      ),
-    },
-    advanced: {
-      database: {
-        generateId: false,
-      },
-      cookies: {
-        session_token: {
-          name: "celluloid_session",
-        },
-      },
-    },
-    trustedOrigins: [
-      "*.localhost",
-      "http://127.0.0.1:3000",
-      "https://*.celluloid.me",
-    ],
-    hooks: {
-      before: createAuthMiddleware(async (ctx) => {
-        if (ctx.path.includes("sign-up")) {
-          return {
-            context: {
-              ...ctx,
-              body: {
-                ...ctx.body,
-                name: ctx.body.name || ctx.body.username,
-                initial: ctx.body.username
-                  .split(" ")
-                  .map((part: string) => part.substring(0, 1))
-                  .join(""),
-                color: randomColor({
-                  seed: ctx.body.id,
-                  luminosity: "bright",
-                }),
-              },
+  },
+  trustedOrigins: [
+    "*.localhost",
+    "http://127.0.0.1:3000",
+    "https://*.celluloid.me",
+  ],
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path.includes("sign-up")) {
+        return {
+          context: {
+            ...ctx,
+            body: {
+              ...ctx.body,
+              name: ctx.body.name || ctx.body.username,
+              initial: ctx.body.username
+                .split(" ")
+                .map((part: string) => part.substring(0, 1))
+                .join(""),
+              color: randomColor({
+                seed: ctx.body.id,
+                luminosity: "bright",
+              }),
             },
-          };
-        }
-      }),
-    },
-  } as unknown as BetterAuthOptions;
-}
+          },
+        };
+      }
+    }),
+  },
+} satisfies Omit<BetterAuthOptions, "plugins">;
 
-export { createAuthOptions };
+export const authOptions = {
+  ...authOptionsBase,
+  plugins: [...sharedPlugins, nextCookies()],
+} satisfies BetterAuthOptions;
+
+export function createTestAuthOptions() {
+  return {
+    ...authOptionsBase,
+    plugins: [...sharedPlugins, testUtils({ captureOTP: true }), nextCookies()],
+  } satisfies BetterAuthOptions;
+}

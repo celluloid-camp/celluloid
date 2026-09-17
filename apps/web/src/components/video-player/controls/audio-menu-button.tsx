@@ -67,7 +67,9 @@ export const AudioMenuButton = () => {
               }}
             >
               {selected && <CheckIcon sx={{ mr: 1 }} />}
-              {audioTrack.label}
+              {"label" in audioTrack
+                ? String(audioTrack.label)
+                : (audioTrack.id ?? "Audio")}
             </MenuItem>
           );
         })}

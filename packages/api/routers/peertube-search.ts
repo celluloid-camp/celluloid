@@ -53,7 +53,7 @@ export const peertubeSearchRouter = router({
           accessToken,
         );
 
-        return mapSearchResults(input.baseUrl, result);
+        return mapSearchResults(input.baseUrl, result as never);
       }
 
       const accessToken = ctx.user?.id
@@ -70,7 +70,7 @@ export const peertubeSearchRouter = router({
         accessToken ?? undefined,
       );
 
-      return mapSearchResults(input.baseUrl, result);
+      return mapSearchResults(input.baseUrl, result as never);
     }),
 
   searchPlaylists: publicProcedure

@@ -1,10 +1,13 @@
 import { ReactRenderer } from "@tiptap/react";
-import tippy from "tippy.js";
+import type { SuggestionOptions, SuggestionProps } from "@tiptap/suggestion";
+import tippy, { type Instance as TippyInstance } from "tippy.js";
 
 import MentionList from "./mention-list";
 
-export default {
-  items: ({ query }) => {
+type MentionSuggestionProps = SuggestionProps<string>;
+
+const suggestion: Omit<SuggestionOptions<string>, "editor"> = {
+  items: ({ query }: { query: string }) => {
     return [
       "Lea Thompson",
       "Cyndi Lauper",
@@ -37,11 +40,11 @@ export default {
   },
 
   render: () => {
-    let component;
-    let popup;
+    let component: ReactRenderer | null = null;
+    let popup: TippyInstance[] | null = null;
 
     return {
-      onStart: (props) => {
+      onStart: (props: MentionSuggestionProps) => {
         component = new ReactRenderer(MentionList, {
           props,
           editor: props.editor,
@@ -52,7 +55,7 @@ export default {
         }
 
         popup = tippy("body", {
-          getReferenceClientRect: props.clientRect,
+          getReferenceClientRect: props.clientRect as () => DOMRect,
           appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
@@ -62,32 +65,40 @@ export default {
         });
       },
 
-      onUpdate(props) {
-        component.updateProps(props);
+      onUpdate(props: MentionSuggestionProps) {
+        component?.updateProps(props);
 
         if (!props.clientRect) {
           return;
         }
 
-        popup[0].setProps({
-          getReferenceClientRect: props.clientRect,
+        popup?.[0]?.setProps({
+          getReferenceClientRect: props.clientRect as () => DOMRect,
         });
       },
 
-      onKeyDown(props) {
+      onKeyDown(props: { event: KeyboardEvent }) {
         if (props.event.key === "Escape") {
-          popup[0].hide();
+          popup?.[0]?.hide();
 
           return true;
         }
 
-        return component.ref?.onKeyDown(props);
+        return (
+          (
+            component?.ref as {
+              onKeyDown?: (props: { event: KeyboardEvent }) => boolean;
+            } | null
+          )?.onKeyDown?.(props) ?? false
+        );
       },
 
       onExit() {
-        popup[0].destroy();
-        component.destroy();
+        popup?.[0]?.destroy();
+        component?.destroy();
       },
     };
   },
 };
+
+export default suggestion;

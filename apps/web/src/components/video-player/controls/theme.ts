@@ -23,6 +23,7 @@ const theme = createTheme({
   },
   palette: {
     primary: { main: "#ffffff" },
+    brand: { green: "#ffffff", orange: "#ffffff" },
   },
 });
 

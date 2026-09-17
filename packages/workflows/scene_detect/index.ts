@@ -153,8 +153,9 @@ async function startSceneDetect({
 
   if (!analysisResponse) {
     throw new Error(
-      "Failed to start scene detect, caused by: " + response.statusText,
-      { cause: response.status },
+      "Failed to start scene detect, caused by: " +
+        (response?.statusText ?? "unknown"),
+      { cause: response?.status },
     );
   }
 

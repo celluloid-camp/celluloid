@@ -75,7 +75,7 @@ export const CaptionsMenuButton = () => {
           );
           return (
             <MenuItem
-              key={subtitleTrack.id ?? subtitleTrack.label}
+              key={subtitleTrack.label}
               selected={selected}
               onClick={() => {
                 dispatch({

@@ -7,7 +7,6 @@ import type React from "react";
 import { useState } from "react";
 import { Avatar } from "@/components/common/avatar";
 import { useTRPC } from "@/lib/trpc/client";
-import { trpcClient } from "@/lib/trpc/provider";
 
 const Input = styled("input")({
   display: "none",

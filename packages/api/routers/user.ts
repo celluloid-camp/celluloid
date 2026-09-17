@@ -35,6 +35,9 @@ function withAvatarUrl(
     lastname: string | null;
     bio: string | null;
     avatarStorageId: string | null;
+    image?: string | null;
+    color?: string | null;
+    initial?: string | null;
     storage?: { id: string; path: string; bucket: string } | null;
   } | null,
 ) {
@@ -52,11 +55,13 @@ function withAvatarUrl(
   return {
     ...rest,
     avatar,
-    color: "#000000",
-    initial: u.username
-      .split(" ")
-      .map((part) => part.substring(0, 1))
-      .join(""),
+    color: u.color ?? "#000000",
+    initial:
+      u.initial ??
+      u.username
+        .split(" ")
+        .map((part) => part.substring(0, 1))
+        .join(""),
   };
 }
 
@@ -103,7 +108,7 @@ export const userRouter = router({
       columns: { ...userColumnsSelect, email: true, avatarStorageId: true },
       with: { storage: true },
     });
-    return record;
+    return withAvatarUrl(record ?? null);
   }),
 
   update: protectedProcedure

@@ -3,9 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
       "@celluloid/*": ["../../packages/*"]
-    }
+    },
+    "types": ["node"]
   },
   "include": ["./**/*.ts", "./**/*.tsx"],
   "exclude": ["node_modules"]

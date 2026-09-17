@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "strict": true,
+    "allowArbitraryExtensions": true,
     "plugins": [
       {
         "name": "next"

@@ -60,6 +60,7 @@
     "build": "turbo run build",
     "format": "biome check --fix",
     "prepare": "lefthook install",
+    "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:watch": "bunx vitest",
     "--": "--",

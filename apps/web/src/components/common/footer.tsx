@@ -123,7 +123,7 @@ export const Footer: React.FC<FooterProps> = (props) => {
                 }}
               >
                 {t.rich("footer.copyright", {
-                  link: (chunks: string) => (
+                  link: (chunks) => (
                     <Link
                       href="https://creativecommons.org/licenses/by-nc/2.0/fr/"
                       target="_blank"
