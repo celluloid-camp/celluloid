@@ -28,7 +28,7 @@
     "superjson": "catalog:",
     "uuid": "^9.0.1",
     "workflow": "catalog:",
-    "ws": "^8.18.0",
+    "ws": "^8.21.3",
     "zod": "catalog:"
   },
   "devDependencies": {
