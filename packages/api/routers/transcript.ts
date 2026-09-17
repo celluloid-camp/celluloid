@@ -54,15 +54,34 @@ export const transcriptRouter = router({
         });
       }
 
-      const transcriptRun = await start(videoTranscriptWorkflow, [proj.id]);
-
+      // Mark in progress before starting the workflow so the UI can reflect
+      // loading immediately (workflow start can take a few seconds).
       await db
         .update(project)
         .set({
-          transcriptProcessingStatus: "not_started",
-          transcriptProcessingRunId: transcriptRun.runId,
+          transcriptProcessingStatus: "in_progress",
         })
         .where(eq(project.id, proj.id));
+
+      try {
+        const transcriptRun = await start(videoTranscriptWorkflow, [proj.id]);
+
+        await db
+          .update(project)
+          .set({
+            transcriptProcessingRunId: transcriptRun.runId,
+          })
+          .where(eq(project.id, proj.id));
+      } catch (error) {
+        await db
+          .update(project)
+          .set({
+            transcriptProcessingStatus: "failed",
+            transcriptProcessingRunId: null,
+          })
+          .where(eq(project.id, proj.id));
+        throw error;
+      }
 
       return null;
     }),
@@ -119,7 +138,6 @@ export const transcriptRouter = router({
           projectId: input.projectId,
           content: input.content,
           language: "en",
-          entries: {},
           updatedAt: sql`CURRENT_TIMESTAMP`,
         })
         .returning();

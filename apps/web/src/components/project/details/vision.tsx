@@ -43,9 +43,29 @@ export function ProjectVision({ project, user }: Props) {
 
   const mutation = useMutation(
     api.vision.generate.mutationOptions({
+      onMutate: async () => {
+        await queryClient.cancelQueries(
+          api.vision.byProjectId.queryFilter({ projectId: project.id }),
+        );
+        queryClient.setQueriesData(
+          api.vision.byProjectId.queryFilter({ projectId: project.id }),
+          (old: { status: string } | null | undefined) =>
+            old
+              ? { ...old, status: "pending" }
+              : {
+                  status: "pending",
+                  visionJobId: null,
+                  data: null,
+                  spriteURL: null,
+                },
+        );
+      },
       onSettled: () => {
         queryClient.invalidateQueries(
           api.project.byId.queryFilter({ id: project.id }),
+        );
+        queryClient.invalidateQueries(
+          api.vision.byProjectId.queryFilter({ projectId: project.id }),
         );
       },
     }),
@@ -69,9 +89,15 @@ export function ProjectVision({ project, user }: Props) {
   }
 
   const canGenerateVision =
-    project.editable && (data == null || data?.status === "failed");
+    project.editable &&
+    !mutation.isPending &&
+    (data == null || data?.status === "failed");
 
   const canViewStudio = project.editable && data?.status === "completed";
+
+  const isAnalyzing =
+    mutation.isPending ||
+    ["processing", "pending"].includes(data?.status ?? "");
 
   return (
     <Card
@@ -99,7 +125,7 @@ export function ProjectVision({ project, user }: Props) {
         }
       />
       <CardContent sx={{ p: 3, maxHeight: "300px", overflowY: "auto" }}>
-        {["processing", "pending"].includes(data?.status ?? "") ? (
+        {isAnalyzing ? (
           <Box sx={{ py: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={12} color="primary" />
             <Typography variant="body1">
@@ -119,7 +145,7 @@ export function ProjectVision({ project, user }: Props) {
           {canGenerateVision && (
             <Button
               startIcon={<AutoModeIcon />}
-              loading={mutation.isPending}
+              loading={mutation.isPending || isAnalyzing}
               onClick={async () => {
                 mutation.mutate({
                   projectId: project.id,

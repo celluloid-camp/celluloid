@@ -37,6 +37,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { BackButton } from "@/components/common/back-button";
+import { PasswordInput } from "@/components/common/password-input";
+import { authClient } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
 import type { AdminGetUserById } from "@/lib/trpc/types";
 
@@ -70,6 +72,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
   const queryClient = useQueryClient();
   const confirm = useConfirm();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const editUserSchema = z.object({
@@ -79,6 +82,23 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
   });
 
   type EditUserFormValues = z.infer<typeof editUserSchema>;
+
+  const resetPasswordSchema = z
+    .object({
+      newPassword: z
+        .string()
+        .min(8, t("profile.security.password-min-length"))
+        .min(1, t("profile.security.password-required")),
+      passwordConfirmation: z
+        .string()
+        .min(1, t("profile.security.password-required")),
+    })
+    .refine((values) => values.passwordConfirmation === values.newPassword, {
+      path: ["passwordConfirmation"],
+      message: t("password.unmatch"),
+    });
+
+  type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
   const mutation = useMutation(
     api.admin.updateUser.mutationOptions({
@@ -136,6 +156,23 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
     mode: "onBlur",
   });
 
+  const {
+    register: registerResetPassword,
+    handleSubmit: handleSubmitResetPassword,
+    reset: resetPasswordForm,
+    formState: {
+      errors: resetPasswordErrors,
+      isSubmitting: isResettingPassword,
+    },
+  } = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      newPassword: "",
+      passwordConfirmation: "",
+    },
+    mode: "onBlur",
+  });
+
   const onSubmit = async (values: EditUserFormValues) => {
     try {
       await mutation.mutateAsync({
@@ -147,6 +184,36 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
       reset();
     } catch (error) {
       console.error("Error updating user:", error);
+    }
+  };
+
+  const onResetPassword = async (values: ResetPasswordFormValues) => {
+    try {
+      const { error } = await authClient.admin.setUserPassword({
+        userId: data.id,
+        newPassword: values.newPassword,
+      });
+
+      if (error) {
+        enqueueSnackbar(error.message ?? t("admin.users.resetPassword.error"), {
+          variant: "error",
+          key: "admin.users.resetPassword.error",
+        });
+        return;
+      }
+
+      enqueueSnackbar(t("admin.users.resetPassword.success"), {
+        variant: "success",
+        key: "admin.users.resetPassword.success",
+      });
+      resetPasswordForm();
+      setResetPasswordDialogOpen(false);
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      enqueueSnackbar(t("admin.users.resetPassword.error"), {
+        variant: "error",
+        key: "admin.users.resetPassword.error",
+      });
     }
   };
 
@@ -248,7 +315,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
               <DetailField label={t("users.table.role")}>
                 <span
                   className={
-                    data.role === "admin"
+                    data.role === "Admin"
                       ? "inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary capitalize"
                       : "inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 capitalize"
                   }
@@ -292,6 +359,15 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
                   {new Date(data.createdAt).toLocaleDateString()}
                 </Typography>
               </DetailField>
+
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => setResetPasswordDialogOpen(true)}
+                className="normal-case self-start"
+              >
+                {t("admin.users.resetPassword.action")}
+              </Button>
             </Box>
           </Paper>
         </Grid>
@@ -367,6 +443,76 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
                   loading={isSubmitting}
                 >
                   {t("profile.update.submit")}
+                </Button>
+              </Box>
+            </Box>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={resetPasswordDialogOpen}
+        onClose={() => {
+          resetPasswordForm();
+          setResetPasswordDialogOpen(false);
+        }}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{
+          paper: {
+            className: "rounded-2xl",
+          },
+        }}
+      >
+        <DialogTitle className="font-semibold">
+          {t("admin.users.resetPassword.dialog.title")}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" className="mb-4 text-slate-600">
+            {t("admin.users.resetPassword.dialog.description")}
+          </Typography>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmitResetPassword(onResetPassword)(e);
+            }}
+          >
+            <Box className="flex flex-col gap-4 pt-1">
+              <PasswordInput
+                id="newPassword"
+                label={t("profile.security.new-password.label")}
+                fullWidth
+                {...registerResetPassword("newPassword")}
+                error={Boolean(resetPasswordErrors.newPassword)}
+                helperText={resetPasswordErrors.newPassword?.message}
+                disabled={isResettingPassword}
+              />
+              <PasswordInput
+                id="passwordConfirmation"
+                label={t("profile.security.confirmation-password.label")}
+                fullWidth
+                {...registerResetPassword("passwordConfirmation")}
+                error={Boolean(resetPasswordErrors.passwordConfirmation)}
+                helperText={resetPasswordErrors.passwordConfirmation?.message}
+                disabled={isResettingPassword}
+              />
+              <Box className="flex justify-end gap-2">
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    resetPasswordForm();
+                    setResetPasswordDialogOpen(false);
+                  }}
+                  disabled={isResettingPassword}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  loading={isResettingPassword}
+                >
+                  {t("admin.users.resetPassword.dialog.submit")}
                 </Button>
               </Box>
             </Box>

@@ -780,6 +780,16 @@
           "title": "Vérifier l'e-mail",
           "description": "Marquer manuellement l'e-mail de cet utilisateur comme vérifié ?"
         }
+      },
+      "resetPassword": {
+        "action": "Réinitialiser le mot de passe",
+        "success": "Mot de passe réinitialisé avec succès",
+        "error": "Échec de la réinitialisation du mot de passe. Veuillez réessayer.",
+        "dialog": {
+          "title": "Réinitialiser le mot de passe",
+          "description": "Définir un nouveau mot de passe pour cet utilisateur.",
+          "submit": "Réinitialiser"
+        }
       }
     },
     "projects": {

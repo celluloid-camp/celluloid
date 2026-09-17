@@ -74,6 +74,16 @@ export function ProjectTranscript({ project, user }: Props) {
 
   const generateMutation = useMutation(
     api.transcript.generate.mutationOptions({
+      onMutate: async () => {
+        await queryClient.cancelQueries(
+          api.project.byId.queryFilter({ id: project.id }),
+        );
+        queryClient.setQueriesData(
+          api.project.byId.queryFilter({ id: project.id }),
+          (old: ProjectById | undefined) =>
+            old ? { ...old, transcriptProcessingStatus: "in_progress" } : old,
+        );
+      },
       onSettled: () => {
         queryClient.invalidateQueries(
           api.project.byId.queryFilter({ id: project.id }),
@@ -102,12 +112,11 @@ export function ProjectTranscript({ project, user }: Props) {
 
   const canEdit = project.editable && data?.content;
 
-  const canGenerate =
-    project.editable && project.transcriptProcessingStatus !== "in_progress";
+  const isGenerating =
+    generateMutation.isPending ||
+    ["in_progress", "pending"].includes(project.transcriptProcessingStatus);
 
-  const isGenerating = ["in_progress", "pending"].includes(
-    project.transcriptProcessingStatus,
-  );
+  const canGenerate = project.editable && !isGenerating;
 
   const downloadTranscript = (content: string) => {
     const blob = new Blob([content], { type: "text/plain" });

@@ -78,13 +78,12 @@ export const visionRouter = router({
         });
       }
 
-      const visionRun = await start(visionAnalysisWorkflow, [proj.id]);
-
+      // Mark pending before starting the workflow so the UI can reflect
+      // loading immediately (workflow start can take a few seconds).
       await db
         .insert(videoAnalysis)
         .values({
           projectId: proj.id,
-          runId: visionRun.runId,
           status: "pending",
           updatedAt: sql`CURRENT_TIMESTAMP`,
         })
@@ -92,10 +91,31 @@ export const visionRouter = router({
           target: videoAnalysis.projectId,
           set: {
             status: "pending",
-            runId: visionRun.runId,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           },
         });
+
+      try {
+        const visionRun = await start(visionAnalysisWorkflow, [proj.id]);
+
+        await db
+          .update(videoAnalysis)
+          .set({
+            runId: visionRun.runId,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(videoAnalysis.projectId, proj.id));
+      } catch (error) {
+        await db
+          .update(videoAnalysis)
+          .set({
+            status: "failed",
+            runId: null,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(videoAnalysis.projectId, proj.id));
+        throw error;
+      }
 
       return null;
     }),

@@ -786,6 +786,16 @@
           "title": "Verify email",
           "description": "Manually mark this user's email as verified?"
         }
+      },
+      "resetPassword": {
+        "action": "Reset password",
+        "success": "Password reset successfully",
+        "error": "Failed to reset password. Please try again.",
+        "dialog": {
+          "title": "Reset password",
+          "description": "Set a new password for this user.",
+          "submit": "Reset password"
+        }
       }
     },
     "projects": {
