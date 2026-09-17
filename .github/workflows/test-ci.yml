@@ -50,7 +50,13 @@ jobs:
 
       - name: Show container logs on failure
         if: failure()
-        run: docker compose -f compose.ci.yml logs
+        run: docker compose -f compose.ci.yml logs --no-color
+
+      - name: Smoke-check web responds
+        run: |
+          curl -sfS http://127.0.0.1:3000/api/health
+          curl -sfS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/signup | tee /tmp/signup-status.txt
+          test "$(cat /tmp/signup-status.txt)" = "200"
 
       - name: Run Playwright tests
         env:
@@ -59,6 +65,10 @@ jobs:
           E2E: "1"
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
         run: bun --env-file=apps/web/.env.ci playwright test
+
+      - name: Dump web logs after tests
+        if: failure()
+        run: docker compose -f compose.ci.yml logs web --no-color | tail -n 200
 
       - name: Stop services
         if: always()

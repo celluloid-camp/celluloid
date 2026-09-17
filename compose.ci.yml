@@ -22,7 +22,7 @@ services:
       MINIO_ROOT_PASSWORD: StrongPass2022
     command: server /data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -95,6 +95,15 @@ services:
       STORAGE_ACCESS_KEY: root
       STORAGE_SECRET_KEY: StrongPass2022
       OPENROUTER_API_KEY: xxx
+      RESEND_API_KEY: re_xxxx
+      EMAIL_FROM: contact@updates.celluloid.me
+      VISION_CALLBACK_URL: http://127.0.0.1:3000/api/vision/webhook
+      VISION_API_URL: http://127.0.0.1:8081
+      VISION_API_KEY: xxx
+      KNOCK_SECRET_API_KEY: sk_test_xxx
+      NEXT_PUBLIC_KNOCK_API_KEY: pk_test_xx
+      NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: xxx
+      NEXT_PUBLIC_STAGE: testing
       CI_TEST: "true"
       E2E: "1"
       BASE_URL: http://127.0.0.1:3000
