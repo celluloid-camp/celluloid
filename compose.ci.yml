@@ -97,4 +97,4 @@ services:
       OPENROUTER_API_KEY: xxx
       CI_TEST: "true"
       E2E: "1"
-      BASE_URL: http://localhost:3000
+      BASE_URL: http://127.0.0.1:3000

@@ -39,6 +39,7 @@ export async function loginAsTestUser(
   const email = overrides?.email ?? `${username}@example.com`;
   const name = overrides?.name ?? username;
   const password = "testtest";
+  const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
 
   const user = test.createUser({
     id: randomUUID(),
@@ -56,17 +57,16 @@ export async function loginAsTestUser(
 
   const cookies = await test.getCookies({
     userId: user.id,
-    domain: "localhost",
+    domain: "127.0.0.1",
   });
 
-  // Playwright rejects cookies that set both `url` and `path`.
+  // Prefer url-bound cookies (Playwright rejects url+path together).
   await context.clearCookies();
   await context.addCookies(
     cookies.map((cookie) => ({
       name: cookie.name,
       value: cookie.value,
-      domain: "localhost",
-      path: "/",
+      url: baseURL,
       httpOnly: cookie.httpOnly ?? true,
       secure: false,
       sameSite: (cookie.sameSite ?? "Lax") as "Lax" | "Strict" | "None",

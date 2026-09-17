@@ -57,6 +57,7 @@ jobs:
           CI: true
           CI_TEST: true
           E2E: "1"
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
         run: bun --env-file=apps/web/.env.ci playwright test
 
       - name: Stop services
