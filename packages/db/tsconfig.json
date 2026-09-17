@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "noEmit": true,
-    "allowImportingTsExtensions": true
+    "paths": {
+      "@celluloid/*": ["../*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

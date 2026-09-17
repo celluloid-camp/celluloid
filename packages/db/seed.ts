@@ -1,6 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { db } from "./index";
-import { peertubeInstance, user } from "./schema";
+import { db, peertubeInstance, user } from "./index";
 
 const DEFAULT_PEERTUBE_INSTANCES = [
   {

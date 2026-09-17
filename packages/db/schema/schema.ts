@@ -1,4 +1,4 @@
-import { PeerTubeVideo } from "@celluloid/peertube";
+import type { PeerTubeVideo } from "@celluloid/peertube";
 import type {
   DetectionResultsModel,
   SceneDetectResultsModel,
