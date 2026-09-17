@@ -1,9 +1,16 @@
 "use client";
 
-import type { AnnotationShape } from "@celluloid/prisma";
+import type { AnnotationShape } from "@celluloid/db";
 import { Box } from "@mui/material";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { KonvaEventObject } from "konva/lib/Node";
+import {
+  MediaActionTypes,
+  useMediaDispatch,
+  useMediaSelector,
+} from "media-chrome/react/media-store";
+import React, { useMemo, useRef, useState } from "react";
 import { Circle, Ellipse, Layer, Line, Rect, Stage } from "react-konva";
+import { AnnotationsByProjectId } from "@/lib/trpc/types";
 import { ShapeTooltip } from "./shape-tooltip";
 import { DEFAULT_DIMENSIONS, SHAPE_STYLES, SHAPE_TYPES } from "./shapes-config";
 
@@ -27,18 +34,29 @@ export function ShapesViewer({
   shapes,
   width = DEFAULT_DIMENSIONS.width,
   height = DEFAULT_DIMENSIONS.height,
-  onClick,
 }: {
   shapes: AnnotationShapeWithMetadata[];
   width: number;
   height: number;
-  onClick: () => void;
 }) {
   const stageRef = useRef<any>(null);
 
+  const dispatch = useMediaDispatch();
+  const mediaPaused = useMediaSelector(
+    (state) => typeof state.mediaPaused !== "boolean" || state.mediaPaused,
+  );
+
+  const handleClick = () => {
+    if (mediaPaused) {
+      dispatch({ type: MediaActionTypes.MEDIA_PLAY_REQUEST });
+    } else {
+      dispatch({ type: MediaActionTypes.MEDIA_PAUSE_REQUEST });
+    }
+  };
+
   const [tooltip, setTooltip] = useState<TooltipState>(null);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: KonvaEventObject<MouseEvent>) => {
     const stage = stageRef.current.getStage();
     if (!stage) return;
 
@@ -187,7 +205,7 @@ export function ShapesViewer({
         height={height - 100}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onClick={onClick}
+        onClick={handleClick}
         style={{
           position: "absolute",
           left: 0,

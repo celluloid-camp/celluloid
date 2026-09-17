@@ -1,14 +1,23 @@
 import {
   defaultShouldDehydrateQuery,
+  MutationCache,
   QueryClient,
 } from "@tanstack/react-query";
 import superjson from "superjson";
 
 export function makeQueryClient() {
-  return new QueryClient({
+  const queryClient = new QueryClient({
+    mutationCache: new MutationCache({
+      onError: (error) => {
+        console.error(error.message);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries();
+      },
+    }),
     defaultOptions: {
       queries: {
-        staleTime: 30 * 1000,
+        gcTime: 1000 * 60 * 60 * 24, // 24 hours
         refetchOnWindowFocus: true,
         retry: 2,
       },
@@ -23,4 +32,5 @@ export function makeQueryClient() {
       },
     },
   });
+  return queryClient;
 }

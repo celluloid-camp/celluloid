@@ -1,10 +1,11 @@
 import { Button, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { saveAs } from "file-saver";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import type * as React from "react";
-import { trpc } from "@/lib/trpc/client";
-import type { ProjectById, UserMe } from "@/lib/trpc/types";
+import { useTRPC } from "@/lib/trpc/client";
+import type { ProjectById } from "@/lib/trpc/types";
 
 interface Props {
   project: ProjectById;
@@ -13,11 +14,17 @@ interface Props {
 export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
   const t = useTranslations();
 
-  const utils = trpc.useUtils();
+  const api = useTRPC();
   const { enqueueSnackbar } = useSnackbar();
+  const { data: annotations } = useQuery(
+    api.annotation.byProjectId.queryOptions({
+      id: project.id,
+    }),
+  );
+  const exportMutation = useMutation(api.annotation.export.mutationOptions());
 
   const handleExport = async (format: "csv" | "xml" | "srt") => {
-    const data = await utils.client.annotation.export.mutate({
+    const data = await exportMutation.mutateAsync({
       projectId: project.id,
       format,
     });
@@ -33,7 +40,7 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
     });
   };
 
-  if (project._count.annotations === 0) {
+  if (annotations?.length === 0) {
     return null;
   }
 
@@ -45,7 +52,12 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
         paddingY: 3,
       }}
     >
-      <Typography variant="h6" mb={2}>
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 2,
+        }}
+      >
         {t("project.export.title")}
       </Typography>
       <Stack direction={"row"} spacing={1}>

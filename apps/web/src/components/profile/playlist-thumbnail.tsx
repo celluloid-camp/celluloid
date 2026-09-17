@@ -136,19 +136,33 @@ const PlaylistThumbnail: React.FC<Props> = ({ playlist }) => {
         </Box>
 
         <Box
-          display="flex"
-          alignItems={"flex-start"}
-          gap={1}
-          sx={{ paddingX: 1, paddingTop: 2, paddingBottom: 0 }}
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 1,
+            paddingX: 1,
+            paddingTop: 2,
+            paddingBottom: 0,
+          }}
         >
-          <Stack spacing={0} flex={1}>
-            <Typography fontWeight={"bold"} noWrap>
+          <Stack
+            spacing={0}
+            sx={{
+              flex: 1,
+            }}
+          >
+            <Typography
+              noWrap
+              sx={{
+                fontWeight: "bold",
+              }}
+            >
               {playlist.title}
             </Typography>
             <Typography
               variant="body2"
-              color={"grey.700"}
               sx={{
+                color: "grey.700",
                 display: "-webkit-box",
                 overflow: "hidden",
                 WebkitBoxOrient: "vertical",
@@ -160,10 +174,12 @@ const PlaylistThumbnail: React.FC<Props> = ({ playlist }) => {
           </Stack>
 
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"flex-start"}
-            gap={0.5}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-start",
+              gap: 0.5,
+            }}
           >
             <IconButton
               size="small"

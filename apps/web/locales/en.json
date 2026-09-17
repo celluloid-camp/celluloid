@@ -34,7 +34,13 @@
       "send": "Edit"
     },
     "form": {
-      "add-annotation": "Add annotation"
+      "add-annotation": "Add annotation",
+      "pause": {
+        "tooltip": "Automatically pause when annotation is displayed."
+      },
+      "context": {
+        "tooltip": "Place a visual marker"
+      }
     },
     "hintLabel": "{ count} annotation",
     "hintLabel_many": "{{count}} annotations",
@@ -61,7 +67,7 @@
     "LOADING_PROJECTS": "Unable to load projects. Please try again later or contact support for assistance."
   },
   "footer": {
-    "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
+    "copyright": "<link>CC BY-NC</link> 2026 Consortium Canevas",
     "legalNotice": "Legal notice",
     "termsAndConditions": "Terms & Conditions"
   },
@@ -88,7 +94,14 @@
       "subtitle": "You want to know more or you encounter difficulties?",
       "title": "How to use Celluloid ?"
     },
-    "member": "Joined"
+    "member": "Joined",
+    "explorer": "Explore",
+    "collaboration": "Collaboration",
+    "sortBy": {
+      "recent_added": "Recently added",
+      "publication_date": "Publication date",
+      "name": "Name"
+    }
   },
   "menu": {
     "about": "About",
@@ -113,7 +126,8 @@
         "empty": "You have no projects."
       },
       "playlist": {
-        "empty": "You have no playlists."
+        "empty": "You have no playlists.",
+        "emptyDescription": "Create a playlist to group your projects and share them."
       }
     },
     "role": {
@@ -190,6 +204,67 @@
       "title": "Delete project"
     },
     "create": {
+      "subtitle": "Turn any PeerTube video into an annotated, collaborative project.",
+      "importFromLink": "Import from link",
+      "importFromLinkDescription": "Paste a video or playlist URL",
+      "searchPeertube": "Search PeerTube",
+      "searchPeertubeDescription": "Browse instances and pick a video",
+      "linkTitle": "Paste a PeerTube link",
+      "linkDescription": "Add a video or playlist URL to start a new project.",
+      "linkGuideTitle": "How to import from a link",
+      "linkGuideDescription": "Follow these steps to add a PeerTube video to your project.",
+      "linkGuideStep1": "Open your PeerTube instance and go to the video you want.",
+      "linkGuideStep2": "Copy the full video URL from your browser address bar.",
+      "linkGuideStep3": "Paste it above and press Enter to load the video.",
+      "peerTubeInstancesTitle": "PeerTube instances",
+      "searchImportDescription": "Choose an instance and search for videos to use in your project.",
+      "noPublicInstances": "No public instances configured",
+      "instance": "Instance",
+      "addInstance": "Add instance",
+      "addInstanceTitle": "Add your PeerTube instance",
+      "addInstanceDescription": "Paste the URL of a PeerTube instance to search it.",
+      "instanceUrlLabel": "Instance URL",
+      "searchTargetLabel": "What to search",
+      "searchTargetVideos": "Videos",
+      "searchTargetPlaylists": "Playlists",
+      "searchVideosLabel": "Search",
+      "searchVideosPlaceholder": "Video title or keywords...",
+      "searchVideosSubmit": "Search",
+      "searchPlaylistsLabel": "Search",
+      "searchPlaylistsPlaceholder": "Playlist name or keywords...",
+      "searchPlaylistsSubmit": "Search",
+      "searchMineOnly": "Search only my videos",
+      "searchGuideTitle": "How to search PeerTube",
+      "searchGuideDescription": "Find a video on a PeerTube instance and use it to create a project.",
+      "searchGuideStep1": "Choose a PeerTube instance, or add your own with the + button.",
+      "searchGuideStep2": "Enter a video title or keywords and run the search.",
+      "searchGuideStep3": "Select a video and continue to the project creation form.",
+      "results": "Results",
+      "searching": "Searching...",
+      "searchFailed": "Search failed.",
+      "videosFound": "{count, plural, one {# video found.} other {# videos found.}}",
+      "playlistsFound": "{count, plural, one {# playlist found.} other {# playlists found.}}",
+      "playlistVideoCount": "{count, plural, one {# video} other {# videos}}",
+      "resultsPlaceholder": "Results will appear here after you start a search.",
+      "reset": "Reset",
+      "noVideosFound": "No videos found. Try different keywords.",
+      "noPlaylistsFound": "No playlists found. Try different keywords.",
+      "selectVideoHint": "Click a video to select it.",
+      "selectPlaylistHint": "Click a playlist to select it.",
+      "videoSelected": "1 video selected",
+      "playlistSelected": "1 playlist selected",
+      "useSelectedVideo": "Use selected video",
+      "useSelectedPlaylist": "Use selected playlist",
+      "connect": "Connect",
+      "connected": "Connected",
+      "expired": "Expired",
+      "failed": "Failed",
+      "connectTitle": "Connect to PeerTube",
+      "connectDescription": "Sign in with your PeerTube account to search your own videos.",
+      "connectDescriptionWithTitle": "Sign in to {title} with your PeerTube account.",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "cancel": "Cancel",
       "error": {
         "video-info-failed": "Failed to retrieve video information. Please check the URL and try again."
       },
@@ -219,7 +294,12 @@
       },
       "dialog": {
         "title": "Edit Project"
-      }
+      },
+      "thumbnailLoadError": "Preview unavailable",
+      "syncThumbnail": "Sync thumbnail",
+      "syncThumbnailSuccess": "Thumbnail updated from PeerTube",
+      "syncThumbnailError": "Could not refresh thumbnail from PeerTube",
+      "syncThumbnailPassword": "This video is password-protected on PeerTube"
     },
     "export": {
       "success": "Project exported successfully",
@@ -285,7 +365,9 @@
           "title": "Title",
           "description": "Chapter description"
         }
-      }
+      },
+      "failed": "Scenes processing failed",
+      "retry": "Retry generation"
     },
     "note": {
       "title": "Notes",
@@ -323,18 +405,92 @@
           "minLength": "Comment doit comporter minimum 2 character",
           "required": "Comment is required"
         }
+      },
+      "controls": {
+        "fullscreen": {
+          "enter": "Full screen",
+          "exit": "Exit full screen"
+        },
+        "play": {
+          "play": "Play",
+          "pause": "Pause"
+        },
+        "mute": {
+          "mute": "Mute",
+          "unmute": "Unmute"
+        },
+        "seekBackward": "Seek backward",
+        "seekForward": "Seek forward",
+        "audioMenu": {
+          "open": "Select audio track",
+          "close": "Close audio tracks menu"
+        },
+        "captionsMenu": {
+          "open": "Select subtitles",
+          "close": "Close subtitles menu",
+          "none": "None"
+        },
+        "volume": "Volume",
+        "seek": "Seek",
+        "playbackRate": "Playback speed",
+        "detectionOverlay": {
+          "show": "Show detection overlay",
+          "hide": "Hide detection overlay"
+        },
+        "annotationHints": {
+          "show": "Show annotations",
+          "hide": "Hide annotations"
+        },
+        "captionsButton": {
+          "label": "Subtitles/closed captions"
+        }
       }
     },
     "vision": {
       "button": {
-        "analyse": "Analyze Video"
+        "analyse": "Analyze Video",
+        "editDetections": "Edit detections",
+        "checkManually": "Check manually"
       },
       "empty": "Video analysis not available.",
       "failed": "Failed to analyse the video.",
+      "try-again": "Try again",
       "analyse": {
-        "in-progress": "Video analysis in progress..."
+        "in-progress": "Video analysis in progress, an email will be sent to you when the analysis is complete."
       },
       "title": "Video Analysis"
+    },
+    "scenes": {
+      "title": "Scenes"
+    },
+    "studio": {
+      "title": "Studio",
+      "close": "Close studio",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "deleteSelected": "Delete selected segment",
+      "merge": "Merge",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Analysis saved",
+      "objects": "Detections",
+      "trackActions": "Actions for {id}",
+      "edit": "Edit",
+      "remove": "Remove",
+      "mergeDialog": {
+        "title": "Merge detections",
+        "description": "Choose the label to keep for the merged detection."
+      },
+      "rename": {
+        "title": "Edit detection label",
+        "label": "Label",
+        "required": "Label is required",
+        "duplicate": "This label is already used"
+      },
+      "removeSegment": {
+        "title": "Remove detection segment",
+        "description": "Remove this appearance of \"{id}\" from {start} to {end}? You can undo by not saving."
+      }
     }
   },
   "chapter": {
@@ -359,13 +515,22 @@
       },
       "button": {
         "add": " Add Chapter",
-        "reset": "Reset Chapters"
+        "reset": "Reset Chapters",
+        "regenerate": "Regenerate chapters"
       },
       "title": {
-        "placeholder": "Chapter title"
+        "placeholder": "Chapter title",
+        "label": "Title"
       },
       "description": {
-        "placeholder": "Chapter description"
+        "placeholder": "Chapter description",
+        "label": "Description"
+      },
+      "timeRange": {
+        "label": "Time range"
+      },
+      "edit": {
+        "title": "Edit Scene"
       }
     }
   },
@@ -444,6 +609,7 @@
       "placeholder": "Enter your email"
     },
     "title": "Forgot your password?",
+    "error": "Unable to send the reset code. Please try again.",
     "button": {
       "recover": "Recover account",
       "submit": "Get code"
@@ -501,6 +667,7 @@
       "placeholder": "Password confirmation"
     },
     "title": "Recover account",
+    "error": "Unable to reset password. Please try again.",
     "button": {
       "submit": "Recover"
     },
@@ -520,7 +687,8 @@
     },
     "email": {
       "label": "Email",
-      "placeholder": "Email"
+      "placeholder": "Email",
+      "required": "Email required"
     },
     "password": {
       "label": "Password",
@@ -609,6 +777,25 @@
       },
       "search": {
         "placeholder": "Search by email"
+      },
+      "verifyEmail": {
+        "action": "Mark as verified",
+        "success": "Email marked as verified",
+        "error": "Failed to verify email. Please try again.",
+        "dialog": {
+          "title": "Verify email",
+          "description": "Manually mark this user's email as verified?"
+        }
+      },
+      "resetPassword": {
+        "action": "Reset password",
+        "success": "Password reset successfully",
+        "error": "Failed to reset password. Please try again.",
+        "dialog": {
+          "title": "Reset password",
+          "description": "Set a new password for this user.",
+          "submit": "Reset password"
+        }
       }
     },
     "projects": {
@@ -714,7 +901,10 @@
     "password-min-length": "Password must be at least 8 characters",
     "table": {
       "rowsPerPage": "Rows per page"
-    }
+    },
+    "save": "Save",
+    "verified": "Verified",
+    "unverified": "Unverified"
   },
   "profil": {
     "update": {
@@ -729,6 +919,7 @@
       "userame": "Username",
       "username": "Username",
       "email": "Email",
+      "emailVerified": "Email Verified",
       "role": "Role",
       "createAt": "Created At"
     }

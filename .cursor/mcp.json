@@ -1,11 +1,8 @@
 {
-  "mcp": {
-    "servers": {
-      "mui-mcp": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@mui/mcp@latest"]
-      }
+  "mcpServers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"]
     }
   }
 }

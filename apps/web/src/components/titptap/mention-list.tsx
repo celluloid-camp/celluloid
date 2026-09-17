@@ -5,10 +5,19 @@ import React, {
   useState,
 } from "react";
 
-export default forwardRef((props, ref) => {
+type MentionListProps = {
+  items: string[];
+  command: (item: { id: string }) => void;
+};
+
+type MentionListHandle = {
+  onKeyDown: (props: { event: KeyboardEvent }) => boolean;
+};
+
+export default forwardRef<MentionListHandle, MentionListProps>((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const selectItem = (index) => {
+  const selectItem = (index: number) => {
     const item = props.items[index];
 
     if (item) {
@@ -61,6 +70,7 @@ export default forwardRef((props, ref) => {
             className={index === selectedIndex ? "is-selected" : ""}
             key={index}
             onClick={() => selectItem(index)}
+            type="button"
           >
             {item}
           </button>

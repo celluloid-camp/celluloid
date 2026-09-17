@@ -13,7 +13,9 @@ export default function LegalNoticePage() {
       <Typography
         variant="h2"
         gutterBottom={true}
-        fontFamily={"abril_fatfaceregular"}
+        sx={{
+          fontFamily: "abril_fatfaceregular",
+        }}
       >
         Mentions légales
       </Typography>

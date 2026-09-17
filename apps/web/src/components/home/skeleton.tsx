@@ -37,9 +37,9 @@ export function ProjectGridSkeleton() {
             <Skeleton sx={{ width: 200 }} />
           </StyledTitle>
 
-          <Grid container={true} spacing={5} direction="row">
+          <Grid container spacing={5}>
             {[1, 2, 3, 4, 5, 6].map((item) => (
-              <Grid xs={12} sm={6} lg={4} xl={3} item key={item}>
+              <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 3 }} key={item}>
                 <Skeleton
                   variant="rectangular"
                   sx={{

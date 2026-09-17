@@ -15,11 +15,9 @@
     "editor.formatOnPaste": false,
     "editor.formatOnType": false
   },
-  "[prisma]": {
-    "editor.defaultFormatter": "Prisma.prisma"
-  },
   "i18n-ally.localesPaths": [
     "apps/web/locales",
     "apps/web/src/i18n"
-  ]
+  ],
+  "loccy.sourceLocale": "fr"
 }

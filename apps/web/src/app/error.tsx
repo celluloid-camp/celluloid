@@ -31,20 +31,27 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
       }}
     >
       <Header />
-
       <Container maxWidth="sm" sx={{ py: 10 }}>
-        <Stack spacing={3} alignItems="center" textAlign="center">
+        <Stack
+          spacing={3}
+          sx={{
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           <Typography variant="h3" component="h1">
             {t("error.title")}
           </Typography>
-          <Typography color="text.secondary">
-            {t("error.description", {
-              default: "An unexpected error occurred. Please try again.",
-            })}
+          <Typography
+            sx={{
+              color: "text.secondary",
+            }}
+          >
+            {t("error.description")}
           </Typography>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Button variant="contained" color="primary" onClick={() => reset()}>
-              {t("error.retry", "Try again")}
+              {t("error.retry")}
             </Button>
             <Button
               component={Link}
@@ -52,7 +59,7 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
               variant="outlined"
               color="secondary"
             >
-              {t("error.goHome", { default: "Go to home" })}
+              {t("error.goHome")}
             </Button>
           </Stack>
         </Stack>

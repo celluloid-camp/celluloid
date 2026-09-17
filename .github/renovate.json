@@ -13,9 +13,7 @@
   "baseBranches": ["staging"],
   "rangeStrategy": "bump",
   "labels": ["dependencies"],
-  "enabledManagers": ["npm", "pnpm", "dockerfile", "github-actions"],
-  "pnpm": { "enabled": true },
-  "npm": { "postUpdateOptions": ["pnpmDedupe"] },
+  "enabledManagers": ["npm", "dockerfile", "github-actions"],
   "ignorePaths": ["**/node_modules/**", "**/dist/**", "**/.next/**"],
   "packageRules": [
     {
@@ -55,15 +53,5 @@
     "enabled": true,
     "schedule": ["before 3am on sunday"]
   },
-  "schedule": ["after 9am and before 6pm on monday"],
-  "regexManagers": [
-    {
-      "fileMatch": ["^pnpm-workspace\\.yaml$"],
-      "matchStrings": [
-        "catalog:\\s*[\\s\\S]*?(?<depName>@?[a-zA-Z0-9_./-]+):\\s*\"?(?<currentValue>\\^?[0-9][^\\n\"\\r]*)"
-      ],
-      "datasourceTemplate": "npm",
-      "versioningTemplate": "npm"
-    }
-  ]
+  "schedule": ["after 9am and before 6pm on monday"]
 }

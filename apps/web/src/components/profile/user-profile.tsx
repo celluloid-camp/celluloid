@@ -1,16 +1,21 @@
 "use client";
 import { Box, Container, Skeleton, Stack, Typography } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import { Suspense } from "react";
-
 import { Avatar } from "@/components/common/avatar";
 import { UserProjectGrid } from "@/components/profile/user-project-grid";
 import { useLocaleRole } from "@/i18n/roles";
-import { trpc } from "@/lib/trpc/client";
+import { useTRPC } from "@/lib/trpc/client";
 
 function ProfileSkeleton() {
   return (
-    <Stack alignItems="center" spacing={2}>
+    <Stack
+      spacing={2}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <Skeleton variant="circular" width={100} height={100} />
       <Skeleton variant="text" width={200} height={40} />
       <Skeleton variant="text" width={250} height={24} />
@@ -22,12 +27,17 @@ function ProfileSkeleton() {
 
 function ProfileContent() {
   const localeRole = useLocaleRole();
-  const [data] = trpc.user.me.useSuspenseQuery();
+  const api = useTRPC();
+  const { data } = useSuspenseQuery(api.user.me.queryOptions());
 
   if (!data) return null;
   return (
     <>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Avatar
           sx={{
             background: data.color,
@@ -58,12 +68,15 @@ function ProfileContent() {
           {localeRole(data.role)}
         </Typography>
       </Stack>
-      <Stack alignItems="center">
+      <Stack
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Typography variant="body2" color="textPrimary">
           {data.bio}
         </Typography>
       </Stack>
-
       <UserProjectGrid />
     </>
   );

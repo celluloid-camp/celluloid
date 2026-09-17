@@ -1,62 +1,102 @@
-networks:
-  local:
-    driver: bridge
+configs:
+  garage_toml:
+    content: |
+      metadata_dir = "/var/lib/garage/meta"
+      data_dir = "/var/lib/garage/data"
+      db_engine = "sqlite"
+      replication_factor = 1
+      rpc_bind_addr = "[::]:3901"
+      rpc_public_addr = "127.0.0.1:3901"
+      rpc_secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+      [s3_api]
+      s3_region = "us-east-1"
+      api_bind_addr = "[::]:3900"
+      root_domain = ".s3.garage.localhost"
+
+      [s3_web]
+      bind_addr = "[::]:3902"
+      root_domain = ".web.garage.localhost"
+      index = "index.html"
+
+      [admin]
+      api_bind_addr = "[::]:3903"
 
 volumes:
-  postgres:
-  redis:
-  minio_data:
+  garage_cli:
 
 services:
   postgres:
-    image: postgres:13
+    image: postgis/postgis:13-3.4-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: celluloid
     volumes:
-      - ./.data:/var/lib/postgresql/data
+      - ./.data/postgres:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
       test: "pg_isready -h 127.0.0.1 -U postgres -d celluloid"
-    networks:
-      - local
 
-  minio:
+  garage:
     restart: unless-stopped
-    image: minio/minio
+    image: dxflrs/garage:v2.3.0
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9000:3900"
+      - "3902:3902"
+      - "3903:3903"
     volumes:
-      - minio_data:/data
-    environment:
-      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY}
-    command: server /data --console-address ":9001"
+      - ./.data/garage/meta:/var/lib/garage/meta
+      - ./.data/garage/data:/var/lib/garage/data
+    configs:
+      - source: garage_toml
+        target: /etc/garage.toml
+    command: ["/garage", "server", "--single-node"]
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "/garage", "status"]
       interval: 5s
       timeout: 5s
-      retries: 5
-    networks:
-      - local
+      retries: 10
+      start_period: 5s
 
   createbuckets:
-    image: minio/mc
+    image: alpine:3.21
     depends_on:
-      - minio
-    entrypoint: >
-      /bin/sh -c " mc alias set myminio http://minio:9000 ${STORAGE_ACCESS_KEY} ${STORAGE_SECRET_KEY}; mc mb
-      myminio/${STORAGE_BUCKET}; mc anonymous set public myminio/${STORAGE_BUCKET}; echo '{\"Version\": \"2012-10-17\",
-      \"Statement\": [{\"Effect\": \"Allow\", \"Action\": \"s3:PutObject\", \"Resource\":
-      \"arn:aws:s3:::${STORAGE_BUCKET}/*\"}]}' > /tmp/mypolicy.json; mc admin policy create myminio mypolicy
-      /tmp/mypolicy.json; exit 0; "
-    networks:
-      - local
+      garage:
+        condition: service_healthy
+    network_mode: service:garage
+    volumes:
+      - ./.data/garage/meta:/var/lib/garage/meta
+      - ./.data/garage/data:/var/lib/garage/data
+      - garage_cli:/usr/local/bin
+    configs:
+      - source: garage_toml
+        target: /etc/garage.toml
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -eu
+        if [ ! -x /usr/local/bin/garage ]; then
+          apk add --no-cache wget >/dev/null
+          ARCH="$$(uname -m)"
+          case "$$ARCH" in
+            x86_64) ARCH=x86_64-unknown-linux-musl ;;
+            aarch64|arm64) ARCH=aarch64-unknown-linux-musl ;;
+            *) echo "unsupported arch: $$ARCH"; exit 1 ;;
+          esac
+          wget -qO /usr/local/bin/garage \
+            "https://garagehq.deuxfleurs.fr/_releases/v2.3.0/$$ARCH/garage"
+          chmod +x /usr/local/bin/garage
+        fi
+        garage bucket create celluloid || true
+        garage key import --yes -n celluloid celluloid 'StrongPass2022!!' || true
+        garage bucket allow --read --write --owner celluloid --key celluloid || true
+        garage bucket website --allow celluloid || true
+        echo "garage bucket celluloid is ready"
 
   redis:
     image: redis:6-alpine
@@ -65,5 +105,3 @@ services:
       - "6379:6379"
     volumes:
       - ./.data/redis:/data
-    networks:
-      - local

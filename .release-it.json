@@ -1,6 +1,6 @@
 {
   "git": {
-    "commitMessage": "🔖 Release ${version}",
+    "commitMessage": "chore(release): ${version}",
     "commitsPath": ".",
     "push": true,
     "requireCommits": false,
@@ -15,9 +15,9 @@
     }
   },
   "plugins": {
-    "release-it-pnpm": {
-      "publish": false,
-      "inFile": "CHANGELOG.md"
+    "@release-it/conventional-changelog": {
+      "preset": "conventionalcommits",
+      "infile": "CHANGELOG.md"
     }
   },
   "npm": {

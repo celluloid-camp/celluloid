@@ -1,38 +1,64 @@
-import "server-only"; // <-- ensure this file cannot be imported from the client
+/**
+ * Server-side tRPC caller
+ * Use this to call tRPC procedures from Server Components
+ */
+
+import "server-only";
+
+import { appRouter } from "@celluloid/api";
 import { auth } from "@celluloid/auth";
+import { db } from "@celluloid/db";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import {
-  appRouter,
-  createCallerFactory,
-  createTRPCContext,
-} from "@celluloid/trpc";
-import { createHydrationHelpers } from "@trpc/react-query/rsc";
+  createTRPCOptionsProxy,
+  type TRPCQueryOptions,
+} from "@trpc/tanstack-react-query";
 import { headers } from "next/headers";
 import { cache } from "react";
 import { makeQueryClient } from "./query-client";
 
-// async function createContext() {
-//   const reqHeaders = (await headers()) as Headers;
-//   const session = await auth.api.getSession({
-//     headers: reqHeaders,
-//   });
-//   return createTRPCContext({
-//     session,
-//   });
-// }
-// IMPORTANT: Create a stable getter for the query client that
-//            will return the same client during the same request.
+export const getQueryClient = cache(makeQueryClient);
 
-const createContent = cache(async () => {
-  const reqHeaders = (await headers()) as Headers;
+const createContext = cache(async () => {
+  const heads = new Headers(await headers());
+  heads.set("x-trpc-source", "rsc");
+
+  // Get session from Better Auth
   const session = await auth.api.getSession({
-    headers: reqHeaders,
+    headers: heads,
   });
-  return createTRPCContext({ session });
+
+  return {
+    db,
+    user: session?.user ?? undefined,
+    req: {} as Request,
+  };
 });
 
-export const getQueryClient = cache(makeQueryClient);
-const caller = createCallerFactory(appRouter)(createContent);
-export const { trpc, HydrateClient } = createHydrationHelpers<typeof appRouter>(
-  caller,
-  getQueryClient,
-);
+export const trpc = createTRPCOptionsProxy({
+  ctx: createContext,
+  router: appRouter,
+  queryClient: getQueryClient,
+});
+
+export function HydrateClient(props: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {props.children}
+    </HydrationBoundary>
+  );
+}
+
+export function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(
+  queryOptions: T,
+) {
+  const queryClient = getQueryClient();
+  if (queryOptions.queryKey[1]?.type === "infinite") {
+    void queryClient.prefetchInfiniteQuery(queryOptions as any);
+  } else {
+    void queryClient.prefetchQuery(queryOptions);
+  }
+}
+
+export const caller = appRouter.createCaller(createContext);

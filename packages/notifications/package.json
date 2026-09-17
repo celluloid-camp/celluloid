@@ -1,0 +1,24 @@
+{
+  "name": "@celluloid/notifications",
+  "version": "3.5.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@knocklabs/node": "^1.24.0",
+    "@knocklabs/react": "^0.9.4",
+    "@t3-oss/env-nextjs": "catalog:",
+    "notistack": "catalog:",
+    "react": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@celluloid/typescript-config": "workspace:*",
+    "typescript": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:"
+  }
+}

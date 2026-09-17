@@ -3,7 +3,7 @@
     "intro": "Le développement de <celluloid>Celluloid</celluloid> est piloté par Michaël Bourgatte et Laurent Tessier dans le cadre d'un <consortium>Consortium Huma-Num</consortium> pluridisciplinaire réunissant des chercheuses et chercheurs mobilisant des corpus audiovisuels.",
     "opensource": {
       "github": "Celluloid est un projet Open Source en Humanités numériques. L'ensemble du code est accessible librement sur <github>GitHub</github>",
-      "prefix": "La version 2.0, dite 'Alphaville', ainsi que ses développements successifs, sont réalisés dans le cadre du consortium Huma-Num <canevas>CANEVAS</canevas> (hébergé par la <mshpn>Maison des Sciences de l'Homme Paris Nord</mshpn>). Cette version est développée par Younès Benomar."
+      "prefix": "La version 2.0, dite 'Alphaville', ainsi que ses développements successifs, sont réalisés dans le cadre du consortium Huma-Num <canevas>CANEVAS</canevas> et du projet européen Eosc-Oscars <oasis>OASIS</oasis>  (hébergés par la Maison des Sciences Humaines et sociales Paris Nord) Cette version est développée par <younes>Younès Benomar</younes>"
     },
     "support": "La version 1.0 de Celluloid dite 'Pierrot', ainsi que ses développements successifs, ont bénéficié du soutien de l'Institut Catholique de Paris, de la Fondation Saint Matthieu et de l'incubateur La Paillasse. Cette version a été développée par Erwan Queffélec avec la participation de Jean-Frédéric Bruzek, Souleymane Thiam et de Guillaume Aichhorn.",
     "title": "À propos"
@@ -32,7 +32,13 @@
       "send": "Modifier"
     },
     "form": {
-      "add-annotation": "Ajouter une annotation"
+      "add-annotation": "Ajouter une annotation",
+      "pause": {
+        "tooltip": "Pause automatique à l'affichage de l'annotation"
+      },
+      "context": {
+        "tooltip": "Placer un repère visuel"
+      }
     },
     "hintLabel": "{count} annotation",
     "hintLabel_many": "{{count}} annotations",
@@ -59,7 +65,7 @@
     "LOADING_PROJECTS": "Impossible de charger les projets. Veuillez réessayer ultérieurement ou contacter l'assistance pour obtenir de l'aide."
   },
   "footer": {
-    "copyright": "<link>CC BY-NC</link> 2023 Consortium Canevas",
+    "copyright": "<link>CC BY-NC</link> 2026 Consortium Canevas",
     "legalNotice": "Mention légales",
     "termsAndConditions": "Conditions Générales d'Utilisation"
   },
@@ -69,7 +75,7 @@
     "emptySearchResult": "Aucun projet ne correspond à votre recherche",
     "joinProject": "Rejoindre un projet",
     "myProjects": "Mes projets",
-    "myPlaylists": "Mes playlists",
+    "myPlaylists": "Mes Listes de lecture",
     "newProject": "Créer un projet",
     "publicProjects": "Explorer",
     "searchProject": "Rechercher un projet…",
@@ -86,7 +92,14 @@
       "subtitle": "Vous voulez en savoir plus ou vous rencontrez des difficultés ?",
       "title": "Comment utiliser Celluloid ?"
     },
-    "member": "Projets rejoints"
+    "member": "Projets rejoints",
+    "explorer": "Explorer",
+    "collaboration": "Collaboration",
+    "sortBy": {
+      "recent_added": "Ajoutés récemment",
+      "publication_date": "Date de publication",
+      "name": "Nom"
+    }
   },
   "menu": {
     "about": "à propos",
@@ -111,7 +124,8 @@
         "empty": "Vous n'avez aucun projet"
       },
       "playlist": {
-        "empty": "Vous n'avez aucune playlist"
+        "empty": "Vous n'avez aucune playlist",
+        "emptyDescription": "Créez une playlist pour regrouper vos projets et les partager."
       }
     },
     "role": {
@@ -188,6 +202,67 @@
       "title": "Supprimer le projet"
     },
     "create": {
+      "subtitle": "Transformez n'importe quelle vidéo PeerTube en projet annoté et collaboratif.",
+      "importFromLink": "Importer depuis un lien",
+      "importFromLinkDescription": "Collez l'URL d'une vidéo ou d'une playlist",
+      "searchPeertube": "Rechercher sur PeerTube",
+      "searchPeertubeDescription": "Parcourez les instances et choisissez une vidéo",
+      "linkTitle": "Collez un lien PeerTube",
+      "linkDescription": "Ajoutez l'URL d'une vidéo ou d'une playlist pour créer un projet.",
+      "linkGuideTitle": "Comment importer depuis un lien",
+      "linkGuideDescription": "Suivez ces étapes pour ajouter une vidéo PeerTube à votre projet.",
+      "linkGuideStep1": "Ouvrez votre instance PeerTube et accédez à la vidéo souhaitée.",
+      "linkGuideStep2": "Copiez l'URL complète de la vidéo depuis la barre d'adresse.",
+      "linkGuideStep3": "Collez-la ci-dessus et appuyez sur Entrée pour charger la vidéo.",
+      "peerTubeInstancesTitle": "Instances PeerTube",
+      "searchImportDescription": "Choisissez une instance et recherchez des vidéos pour votre projet.",
+      "noPublicInstances": "Aucune instance publique configurée",
+      "instance": "Instance",
+      "addInstance": "Ajouter une instance",
+      "addInstanceTitle": "Ajouter votre instance PeerTube",
+      "addInstanceDescription": "Collez l'URL d'une instance PeerTube pour la rechercher.",
+      "instanceUrlLabel": "URL de l'instance",
+      "searchTargetLabel": "Que rechercher",
+      "searchTargetVideos": "Vidéos",
+      "searchTargetPlaylists": "Listes de lecture",
+      "searchVideosLabel": "Recherche",
+      "searchVideosPlaceholder": "Titre ou mots-clés...",
+      "searchVideosSubmit": "Rechercher",
+      "searchPlaylistsLabel": "Recherche",
+      "searchPlaylistsPlaceholder": "Nom de liste ou mots-clés...",
+      "searchPlaylistsSubmit": "Rechercher",
+      "searchMineOnly": "Rechercher uniquement mes vidéos",
+      "searchGuideTitle": "Comment rechercher sur PeerTube",
+      "searchGuideDescription": "Trouvez une vidéo sur une instance PeerTube et utilisez-la pour créer un projet.",
+      "searchGuideStep1": "Choisissez une instance PeerTube, ou ajoutez la vôtre avec le bouton +.",
+      "searchGuideStep2": "Saisissez un titre ou des mots-clés et lancez la recherche.",
+      "searchGuideStep3": "Sélectionnez une vidéo et continuez vers le formulaire de création.",
+      "results": "Résultats",
+      "searching": "Recherche en cours...",
+      "searchFailed": "La recherche a échoué.",
+      "videosFound": "{count, plural, one {# vidéo trouvée.} other {# vidéos trouvées.}}",
+      "playlistsFound": "{count, plural, one {# liste de lecture trouvée.} other {# listes de lecture trouvées.}}",
+      "playlistVideoCount": "{count, plural, one {# vidéo} other {# vidéos}}",
+      "resultsPlaceholder": "Les résultats apparaîtront ici après une recherche.",
+      "reset": "Réinitialiser",
+      "noVideosFound": "Aucune vidéo trouvée. Essayez d'autres mots-clés.",
+      "noPlaylistsFound": "Aucune liste de lecture trouvée. Essayez d'autres mots-clés.",
+      "selectVideoHint": "Cliquez sur une vidéo pour la sélectionner.",
+      "selectPlaylistHint": "Cliquez sur une liste de lecture pour la sélectionner.",
+      "videoSelected": "1 vidéo sélectionnée",
+      "playlistSelected": "1 liste de lecture sélectionnée",
+      "useSelectedVideo": "Utiliser la vidéo sélectionnée",
+      "useSelectedPlaylist": "Utiliser la liste sélectionnée",
+      "connect": "Se connecter",
+      "connected": "Connecté",
+      "expired": "Expiré",
+      "failed": "Échec",
+      "connectTitle": "Se connecter à PeerTube",
+      "connectDescription": "Connectez-vous avec votre compte PeerTube pour rechercher vos propres vidéos.",
+      "connectDescriptionWithTitle": "Connectez-vous à {title} avec votre compte PeerTube.",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Mot de passe",
+      "cancel": "Annuler",
       "error": {
         "video-info-failed": "Impossible de récupérer les informations de la vidéo. Veuillez vérifier l'URL et réessayer"
       },
@@ -217,11 +292,16 @@
       },
       "dialog": {
         "title": "Modifier le projet"
-      }
+      },
+      "thumbnailLoadError": "Aperçu indisponible",
+      "syncThumbnail": "Synchroniser la miniature",
+      "syncThumbnailSuccess": "Miniature mise à jour depuis PeerTube",
+      "syncThumbnailError": "Impossible de mettre à jour la miniature depuis PeerTube",
+      "syncThumbnailPassword": "Cette vidéo est protégée par un mot de passe sur PeerTube"
     },
     "export": {
       "success": "Projet exporté avec succès",
-      "title": "Exporter"
+      "title": "Exporter les annotations"
     },
     "keywords": "Mots clés",
     "members": "{ count } participant",
@@ -271,22 +351,24 @@
     "videoUrlHelper": "Lien vers la vidéo originale",
     "visibilitySection": "Partage",
     "chapters": {
-      "title": "Chapitres",
-      "empty": "Cette vidéo n'a pas de chapitres",
-      "in-progress": "Génération des chapitres en cours",
-      "not-found": "Aucun chapitre trouvé pour cette vidéo.",
+      "title": "Plans",
+      "empty": "Cette vidéo n'a pas de plans",
+      "in-progress": "Génération des plans en cours",
+      "not-found": "Aucun plan trouvé pour cette vidéo.",
       "button": {
-        "generate": "Générer les chapitres"
+        "generate": "Générer les plans"
       },
       "item": {
         "placeholder": {
-          "title": "Titre du chapitre",
-          "description": "Description du chapitre"
+          "title": "Titre du plan",
+          "description": "Description du plan"
         }
       },
       "inProgress": {
-        "description": "La génération des chapitres est en cours..."
-      }
+        "description": "La génération des plans est en cours..."
+      },
+      "failed": "Échec du traitement des scènes",
+      "retry": "Réessayer la génération"
     },
     "note": {
       "title": "Notes",
@@ -321,23 +403,98 @@
           "minLength": "Comment doit comporter minimum 2 character",
           "required": "Commentaire est obligatoire"
         }
+      },
+      "controls": {
+        "fullscreen": {
+          "enter": "Plein écran",
+          "exit": "Quitter le plein écran"
+        },
+        "play": {
+          "play": "Lecture",
+          "pause": "Pause"
+        },
+        "mute": {
+          "mute": "Couper le son",
+          "unmute": "Réactiver le son"
+        },
+        "seekBackward": "Reculer de 30 s",
+        "seekForward": "Avancer de 30 s",
+        "audioMenu": {
+          "open": "Choisir la piste audio",
+          "close": "Fermer le menu des pistes audio"
+        },
+        "captionsMenu": {
+          "open": "Choisir les sous-titres",
+          "close": "Fermer le menu des sous-titres",
+          "none": "Aucun"
+        },
+        "volume": "Volume",
+        "seek": "Position dans la vidéo",
+        "playbackRate": "Vitesse de lecture",
+        "detectionOverlay": {
+          "show": "Afficher la superposition de détection",
+          "hide": "Masquer la superposition de détection"
+        },
+        "annotationHints": {
+          "show": "Afficher les annotations",
+          "hide": "Masquer les annotations"
+        },
+        "captionsButton": {
+          "label": "Sous-titres / sous-titres pour sourds et malentendants"
+        }
       }
     },
     "vision": {
       "button": {
-        "analyse": "Analyser la vidéo"
+        "analyse": "Analyser la vidéo",
+        "editDetections": "Modifier les détections",
+        "checkManually": "Vérifier manuellement"
       },
       "empty": "Analyse vidéo non disponible.",
+      "failed": "Échec de l'analyse vidéo.",
+      "try-again": "Réessayer",
       "analyse": {
-        "in-progress": "Analyse vidéo en cours..."
+        "in-progress": "Analyse vidéo en cours, un email vous serez envoyé quand l'analyse est terminé"
       },
       "title": "Analyse vidéo"
+    },
+    "scenes": {
+      "title": "Plans"
+    },
+    "studio": {
+      "title": "Studio",
+      "close": "Fermer le studio",
+      "zoomIn": "Zoom avant",
+      "zoomOut": "Zoom arrière",
+      "deleteSelected": "Supprimer le segment sélectionné",
+      "merge": "Fusionner",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saved": "Analyse enregistrée",
+      "objects": "Detections",
+      "trackActions": "Actions pour {id}",
+      "edit": "Modifier",
+      "remove": "Supprimer",
+      "mergeDialog": {
+        "title": "Fusionner les détections",
+        "description": "Choisissez le libellé à conserver pour la détection fusionnée."
+      },
+      "rename": {
+        "title": "Modifier le libellé de la détection",
+        "label": "Libellé",
+        "required": "Le libellé est obligatoire",
+        "duplicate": "Ce libellé est déjà utilisé"
+      },
+      "removeSegment": {
+        "title": "Supprimer le segment de détection",
+        "description": "Supprimer cette apparition de « {id} » de {start} à {end} ? Vous pouvez annuler en n'enregistrant pas."
+      }
     }
   },
   "chapter": {
     "confirm-delete": {
-      "title": "Supprimer le chapitre",
-      "description": "Etes-vous sûr de vouloir supprimer le chapitre ?"
+      "title": "Supprimer le plan",
+      "description": "Etes-vous sûr de vouloir supprimer le plan ?"
     },
     "form": {
       "button": {
@@ -350,19 +507,28 @@
     "form": {
       "reset": {
         "confirm": {
-          "title": "Réinitialiser tous les chapitres",
-          "description": "Etes-vous sûr de vouloir réinitialiser tous les chapitres ?"
+          "title": "Supprimer le découpage automatique",
+          "description": "Etes-vous sûr de vouloir réinitialiser tous les plans ?"
         }
       },
       "button": {
-        "add": " Ajouter un chapitre",
-        "reset": "Réinitialiser les chapitres"
+        "add": " Ajouter un plan",
+        "reset": "Supprimer le découpage automatique",
+        "regenerate": "Regénérer les plans"
       },
       "title": {
-        "placeholder": "Titre du chapitre"
+        "placeholder": "Titre du plan",
+        "label": "Titre"
       },
       "description": {
-        "placeholder": "Description du chapitre"
+        "placeholder": "Description du plan",
+        "label": "Description"
+      },
+      "timeRange": {
+        "label": "Plage horaire"
+      },
+      "edit": {
+        "title": "Modifier le plan"
       }
     }
   },
@@ -426,7 +592,7 @@
       "resend": "Renvoyer le code"
     },
     "generation": {
-      "sent": "La génération des chapitres a commencé"
+      "sent": "La génération des plans a commencé"
     },
     "resend": {
       "success": "Code de vérification renvoyé."
@@ -438,6 +604,7 @@
       "placeholder": "Entrez votre email"
     },
     "title": "Mot de passe oublié?",
+    "error": "Impossible d'envoyer le code. Veuillez réessayer.",
     "button": {
       "recover": "Récupérer un compte",
       "submit": "Obtenir le code"
@@ -495,6 +662,7 @@
       "placeholder": "Confirmer le mot de passe"
     },
     "title": "Récupérer le compte",
+    "error": "Impossible de réinitialiser le mot de passe. Veuillez réessayer.",
     "button": {
       "submit": "Envoyer"
     },
@@ -514,7 +682,8 @@
     },
     "email": {
       "label": "Adresse email",
-      "placeholder": "Adresse email"
+      "placeholder": "Adresse email",
+      "required": "Saisissez votre adresse e-mail"
     },
     "password": {
       "label": "Mot de passe",
@@ -602,6 +771,25 @@
       },
       "search": {
         "placeholder": "Rechercher par e-mail"
+      },
+      "verifyEmail": {
+        "action": "Marquer comme vérifié",
+        "success": "E-mail marqué comme vérifié",
+        "error": "Échec de la vérification de l'e-mail. Veuillez réessayer.",
+        "dialog": {
+          "title": "Vérifier l'e-mail",
+          "description": "Marquer manuellement l'e-mail de cet utilisateur comme vérifié ?"
+        }
+      },
+      "resetPassword": {
+        "action": "Réinitialiser le mot de passe",
+        "success": "Mot de passe réinitialisé avec succès",
+        "error": "Échec de la réinitialisation du mot de passe. Veuillez réessayer.",
+        "dialog": {
+          "title": "Réinitialiser le mot de passe",
+          "description": "Définir un nouveau mot de passe pour cet utilisateur.",
+          "submit": "Réinitialiser"
+        }
       }
     },
     "projects": {
@@ -704,7 +892,10 @@
     "cancel": "Annuler",
     "table": {
       "rowsPerPage": "Lignes par page"
-    }
+    },
+    "save": "Enregistrer les modifications",
+    "verified": "Vérifié",
+    "unverified": "Non vérifié"
   },
   "profil": {
     "update": {
@@ -718,6 +909,7 @@
     "table": {
       "username": "Nom d'utilisateur",
       "email": "E-mail",
+      "emailVerified": "E-mail vérifié",
       "role": "Rôle",
       "createAt": "Date de création"
     }

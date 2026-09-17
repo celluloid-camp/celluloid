@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=https://loccy.dev/schemas/config.schema.json
+
+# Single config for Loccy i18n tools
+# https://loccy.dev
+
+modules:
+  default:
+    framework: next-intl
+    translations:
+      glob: 'apps/web/locales/**/*.json'
+    usages:
+      include:
+        - '**/*.{js,ts,jsx,tsx}'
+
+# styleguide:
+#   product: |
+#     Whisker Café: staff app for a real cat café.
+#     Used by baristas mid-shift, on a phone, one hand free.
+#   voice: |
+#     Warm, lightly cheeky, cat-first. Address the user informally.
+#     No marketing filler, no fake urgency. Exclamation marks only for genuine surprise.
+#   mechanics: |
+#     Buttons and menu labels max ~25 characters.
+#     No emoji.
+#   localeRules:
+#     en: |
+#       Sentence case for headings and buttons ("Book now" instead of "Book Now").
+#       Contractions are fine.
+#     de: |
+#       Avoid anglicisms when a natural German word exists.
+#       German runs long: compress rather than truncate.
+#     de-CH:
+#       extends: de
+#       style: |
+#         Replace ß with ss (schliessen).
+#         Use Swiss guillemets «…».
+#   doNotTranslate:
+#     - term: Whisker Café
+#       definition: Café brand name
+#       caseSensitive: true
+#     - term: Mister Mittens
+#   glossary:
+#     - definition: A cat that lives at the café
+#       terms:
+#         en: Resident
+#         de: Bewohner
+#     - definition: One staff member's working block, opening to closing handover
+#       terms:
+#         en: Shift
+#         de: Schicht
+#     - definition: A booked seating slot (the booking itself, not the act of reserving)
+#       terms:
+#         en: Reservation
+#         de: Reservierung
+#         de-CH:
+#           preferred: Reservation
+#           deprecated: [Buchung]
+#   keys: |
+#     Group keys by feature, dot-separated ("checkout.button.submit").

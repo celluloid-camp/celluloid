@@ -19,10 +19,10 @@ export const TransparentInput: React.FC<Props> = ({
   ...props
 }) => (
   <Box
-    display={"flex"}
-    flex={1}
-    flexDirection={"column"}
     sx={{
+      display: "flex",
+      flex: 1,
+      flexDirection: "column",
       borderRadius: 2,
       position: "relative",
       transition: "all 0.1s ease-out",

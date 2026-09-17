@@ -13,7 +13,9 @@ export default function TermsAndConditions() {
       <Typography
         variant="h2"
         gutterBottom={true}
-        fontFamily={"abril_fatfaceregular"}
+        sx={{
+          fontFamily: "abril_fatfaceregular",
+        }}
       >
         Conditions Générales d'Utilisation
       </Typography>

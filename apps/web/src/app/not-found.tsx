@@ -1,3 +1,4 @@
+"use client";
 import { Box, Button, Container, Typography } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";

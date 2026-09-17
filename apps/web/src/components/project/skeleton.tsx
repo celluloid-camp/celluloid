@@ -11,7 +11,12 @@ import {
 
 export const ProjectSkeleton = () => {
   return (
-    <Box display={"flex"} flexDirection={"column"}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Grid
         container
         sx={{
@@ -22,13 +27,13 @@ export const ProjectSkeleton = () => {
           paddingX: 2,
         }}
       >
-        <Grid item xs={8} sx={{ position: "relative" }}>
+        <Grid sx={{ position: "relative" }} size={8}>
           <Box
-            display={"flex"}
-            alignContent={"center"}
-            justifyContent={"center"}
-            alignItems={"center"}
             sx={{
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "center",
+              alignItems: "center",
               backgroundColor: "black",
               height: "100%",
               minHeight: "100%",
@@ -38,14 +43,13 @@ export const ProjectSkeleton = () => {
           </Box>
         </Grid>
         <Grid
-          item
-          xs={4}
           sx={{
             height: "100%",
             position: "relative",
             paddingY: 2,
             paddingX: 2,
           }}
+          size={4}
         >
           <Box
             sx={{
@@ -85,7 +89,6 @@ export const ProjectSkeleton = () => {
           </Box>
         </Grid>
       </Grid>
-
       <Box sx={{ minHeight: "60vh" }}>
         <Box
           sx={{
@@ -107,10 +110,18 @@ export const ProjectSkeleton = () => {
               <Grid
                 container
                 direction="row"
-                alignItems="flex-start"
                 spacing={4}
+                sx={{
+                  alignItems: "flex-start",
+                }}
               >
-                <Grid item xs={12} md={8} lg={8}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 8,
+                    lg: 8,
+                  }}
+                >
                   <Box sx={{ p: 2 }}>
                     <Skeleton
                       variant="text"
@@ -127,8 +138,20 @@ export const ProjectSkeleton = () => {
                     <Skeleton variant="text" width="80%" height={24} />
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4}>
-                  <Box gap={4} display={"flex"} flexDirection={"column"}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 4,
+                    lg: 4,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      gap: 4,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     <Skeleton
                       variant="rectangular"
                       sx={{

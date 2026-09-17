@@ -1,0 +1,12 @@
+{
+  "extends": "@celluloid/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "paths": {
+      "@celluloid/*": ["../*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

@@ -3,14 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import LinkIcon from "@mui/icons-material/Link";
-import {
-  Alert,
-  Chip,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -21,12 +15,14 @@ import {
 } from "@/services/peertube";
 
 type PeerTubeVideoUrlFormProps = {
+  autoLoad?: boolean;
   onLoaded: (data: PeerTubeVideoDataResult | null) => void;
   onReset: () => void;
   url?: string;
 };
 
 export function PeerTubeUrlInput({
+  autoLoad = false,
   onLoaded,
   onReset,
   url,
@@ -60,30 +56,6 @@ export function PeerTubeUrlInput({
     retry: false,
   });
 
-  // React.useEffect(() => {
-  //   if (query.data && !isSubmitted) {
-  //     onLoaded(query.data);
-  //   }
-  // }, [query.data, isSubmitted, onLoaded]);
-
-  // React.useEffect(() => {
-  //   if (query.error) {
-  //     setValue("error", t("project.create.error.video-info-failed"));
-  //   }
-  // }, [query.error, setValue, t]);
-
-  // React.useEffect(() => {
-  //   if (data === null && isSubmitted) {
-  //     reset();
-  //   }
-  // }, [data, reset, isSubmitted]);
-
-  const handleReset = () => {
-    reset();
-    onReset();
-    onLoaded(null);
-  };
-
   const onSubmit = async (values: FormValues) => {
     try {
       const data = await mutation.mutateAsync(values.url);
@@ -98,6 +70,20 @@ export function PeerTubeUrlInput({
     }
   };
 
+  React.useEffect(() => {
+    if (autoLoad && url?.trim()) {
+      void handleSubmit(onSubmit)();
+    }
+    // Only auto-load once when arriving from search with a URL.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoLoad, url]);
+
+  const handleReset = () => {
+    reset();
+    onReset();
+    onLoaded(null);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <TextField
@@ -110,32 +96,35 @@ export function PeerTubeUrlInput({
         error={Boolean(errors.url)}
         helperText={errors.url?.message}
         sx={{ borderRadius: 20 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <LinkIcon />
-            </InputAdornment>
-          ),
-          endAdornment:
-            isSubmitted && isValid ? (
-              <InputAdornment position="end">
-                <IconButton onClick={handleReset} edge="end">
-                  <ClearIcon />
-                </IconButton>
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <LinkIcon />
               </InputAdornment>
-            ) : (
-              <IconButton
-                data-testid="submit-url"
-                onClick={handleSubmit(onSubmit)}
-                color="primary"
-                edge="end"
-              >
-                <KeyboardReturnIcon />
-              </IconButton>
             ),
-        }}
-        inputProps={{
-          "data-testid": "url",
+            endAdornment:
+              isSubmitted && isValid ? (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleReset} edge="end">
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              ) : (
+                <IconButton
+                  data-testid="submit-url"
+                  onClick={handleSubmit(onSubmit)}
+                  color="primary"
+                  edge="end"
+                >
+                  <KeyboardReturnIcon />
+                </IconButton>
+              ),
+          },
+
+          htmlInput: {
+            "data-testid": "url",
+          },
         }}
       />
     </form>

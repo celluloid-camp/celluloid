@@ -1,5 +1,5 @@
-import { CreateProjectPage } from "@/components/create/create-project";
+import { redirect } from "next/navigation";
 
 export default function CreatePage() {
-  return <CreateProjectPage />;
+  redirect("/create/link");
 }

@@ -1,0 +1,13 @@
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
+
+export const keys = () =>
+  createEnv({
+    server: {
+      VISION_CALLBACK_URL: z.url(),
+      VISION_API_URL: z.string().default("https://vision.celluloid.me"),
+      VISION_API_KEY: z.string().default("test"),
+    },
+    experimental__runtimeEnv: process.env,
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  });

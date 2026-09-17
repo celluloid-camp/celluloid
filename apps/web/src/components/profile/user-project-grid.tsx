@@ -3,10 +3,11 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import ProjectThumbnail from "@/components/common/project-thumbnail";
-import { trpc } from "@/lib/trpc/client";
+import { ProjectThumbnail } from "@/components/common/project-thumbnail";
+import { useTRPC } from "@/lib/trpc/client";
 import { StyledTitle } from "../common/typography";
 import PlaylistThumbnail from "./playlist-thumbnail";
 
@@ -19,18 +20,19 @@ function a11yProps(index: number) {
 
 export const UserProjectGrid: React.FC = () => {
   const t = useTranslations();
+  const api = useTRPC();
   const [value, setValue] = useState(0);
 
   const {
     data: projectsData,
     error: projectsError,
     isFetching: projectsFetching,
-  } = trpc.user.projects.useQuery({});
+  } = useQuery(api.user.projects.queryOptions({}));
   const {
     data: playlistsData,
     error: playlistsError,
     isFetching: playlistsFetching,
-  } = trpc.user.playlists.useQuery({});
+  } = useQuery(api.user.playlists.queryOptions({}));
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -60,7 +62,6 @@ export const UserProjectGrid: React.FC = () => {
           />
         </Tabs>
       </Box>
-
       {/* My Projects Tab */}
       {value === 0 && (
         <Box
@@ -70,12 +71,14 @@ export const UserProjectGrid: React.FC = () => {
         >
           {projectsFetching || !projectsData ? (
             <Box
-              mx={2}
-              my={10}
-              display={"flex"}
-              alignContent={"center"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              sx={{
+                mx: 2,
+                my: 10,
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Box>
                 <CircularProgress />
@@ -88,9 +91,12 @@ export const UserProjectGrid: React.FC = () => {
               }}
             >
               {projectsData.items?.length > 0 && (
-                <Grid container={true} spacing={5} direction="row">
+                <Grid container spacing={5}>
                   {projectsData.items.map((project) => (
-                    <Grid xs={12} sm={6} lg={4} xl={3} item key={project.id}>
+                    <Grid
+                      size={{ xs: 12, sm: 6, lg: 4, xl: 3 }}
+                      key={project.id}
+                    >
                       <ProjectThumbnail showPublic={true} project={project} />
                     </Grid>
                   ))}
@@ -127,7 +133,6 @@ export const UserProjectGrid: React.FC = () => {
           )}
         </Box>
       )}
-
       {/* My Playlists Tab */}
       {value === 1 && (
         <Box
@@ -137,12 +142,14 @@ export const UserProjectGrid: React.FC = () => {
         >
           {playlistsFetching || !playlistsData ? (
             <Box
-              mx={2}
-              my={10}
-              display={"flex"}
-              alignContent={"center"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              sx={{
+                mx: 2,
+                my: 10,
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Box>
                 <CircularProgress />
@@ -155,9 +162,12 @@ export const UserProjectGrid: React.FC = () => {
               }}
             >
               {playlistsData.items?.length > 0 && (
-                <Grid container={true} spacing={5} direction="row">
+                <Grid container spacing={5}>
                   {playlistsData.items.map((playlist) => (
-                    <Grid xs={12} sm={6} lg={4} xl={3} item key={playlist.id}>
+                    <Grid
+                      size={{ xs: 12, sm: 6, lg: 4, xl: 3 }}
+                      key={playlist.id}
+                    >
                       <PlaylistThumbnail playlist={playlist} />
                     </Grid>
                   ))}
