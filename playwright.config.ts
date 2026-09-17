@@ -54,9 +54,9 @@ export default defineConfig({
     // Nitro targets Bun when the app is built with Bun — runtime must be Bun.
     command: `bun apps/web/.next/standalone/apps/web/server.js`,
     url: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
-    // Always start a fresh standalone server so E2E/CI_TEST env and the latest
-    // build are actually used (reusing a stale :3000 process caused false failures).
-    reuseExistingServer: false,
+    // CI already starts the app via compose.ci.yml on :3000 — reuse it.
+    // Locally prefer a fresh standalone process over a stale server.
+    reuseExistingServer: !!process.env.CI,
     timeout: 120_000,
     env: {
       ...process.env,

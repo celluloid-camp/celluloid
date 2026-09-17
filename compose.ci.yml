@@ -87,7 +87,8 @@ services:
       DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
       WORKFLOW_TARGET_WORLD: "@workflow/world-postgres"
       WORKFLOW_POSTGRES_URL: postgres://postgres:root@postgres:5432/celluloid
-      AUTH_SECRET: "0/cB/YzCq87Yp6MmClnzap7vOhDywpQ5Q+yTGCnHnLU="
+      # Must match apps/web/.env.ci so Playwright testUtils cookies verify on the server
+      AUTH_SECRET: "USTxFK1LSOg1mdjBplDxreXg9w8WX57iJSJ2/zOsxTc="
       REDIS_URL: redis://redis:6379
       STORAGE_URL: http://minio:9000
       STORAGE_BUCKET: celluloid
@@ -95,4 +96,5 @@ services:
       STORAGE_SECRET_KEY: StrongPass2022
       OPENROUTER_API_KEY: xxx
       CI_TEST: "true"
+      E2E: "1"
       BASE_URL: http://localhost:3000

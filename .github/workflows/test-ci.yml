@@ -11,6 +11,10 @@ on:
     paths:
       - "apps/web/**"
       - "packages/**"
+      - "e2e/**"
+      - "compose.ci.yml"
+      - "playwright.config.ts"
+      - ".github/workflows/test-ci.yml"
   workflow_dispatch:
 
 jobs:
@@ -49,6 +53,10 @@ jobs:
         run: docker compose -f compose.ci.yml logs
 
       - name: Run Playwright tests
+        env:
+          CI: true
+          CI_TEST: true
+          E2E: "1"
         run: bun --env-file=apps/web/.env.ci playwright test
 
       - name: Stop services
