@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.10.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.9.0...celluloid-v3.10.0) (2026-09-17)
+
+
+### Features
+
+* add chapter form ([306c440](https://github.com/celluloid-camp/celluloid/commit/306c440e49d588f8cfe7fa6685b13eeb3f87b98b))
+* add edit chapters ([4302a6b](https://github.com/celluloid-camp/celluloid/commit/4302a6b321b86d9273a91db40f3bd707c1d2fc7c))
+* add queue and clean up ([#286](https://github.com/celluloid-camp/celluloid/issues/286)) ([40e42ce](https://github.com/celluloid-camp/celluloid/commit/40e42cec74acc01becedacc8f1e1257fe2e08058))
+* better-auth migration ([#291](https://github.com/celluloid-camp/celluloid/issues/291)) ([1f87e86](https://github.com/celluloid-camp/celluloid/commit/1f87e867ccebe38acb57394192889711ec720748))
+* migration to pnpm ([4f87c36](https://github.com/celluloid-camp/celluloid/commit/4f87c368159c3640cfadae9b504ae3ff816cd285))
+* **README:** add Erwan Queffelec as initial tech contributor ([#324](https://github.com/celluloid-camp/celluloid/issues/324)) ([4d4702d](https://github.com/celluloid-camp/celluloid/commit/4d4702d1460d14110f1913f4a6c104f0a7399aa5))
+
+
+### Bug Fixes
+
+* .snyk & package.json to reduce vulnerabilities ([f5f82d4](https://github.com/celluloid-camp/celluloid/commit/f5f82d461a5f09d2134167d170247fd4d4fb98b7))
+* .snyk & package.json to reduce vulnerabilities ([607c98f](https://github.com/celluloid-camp/celluloid/commit/607c98f24f2781bae07a8e8ad64d80e127a23042))
+* add migration ([2bc4829](https://github.com/celluloid-camp/celluloid/commit/2bc4829bdf29fc57d5ae12ebe4fe9bd8eebfcad7))
+* add pnpm action ([f567fc3](https://github.com/celluloid-camp/celluloid/commit/f567fc3a1aae0822a7b449d2cd7fca9a7b676103))
+* add pnpm action ([34e85fd](https://github.com/celluloid-camp/celluloid/commit/34e85fde97f85ffb83162f8f9147432813b16d68))
+* change context annotation issue ([#321](https://github.com/celluloid-camp/celluloid/issues/321)) ([f26fb36](https://github.com/celluloid-camp/celluloid/commit/f26fb36eac2cb9de2ada73c3fd971885e188dd6e))
+* fix create project error handling ([#334](https://github.com/celluloid-camp/celluloid/issues/334)) ([ea59098](https://github.com/celluloid-camp/celluloid/commit/ea59098e92afefc26b34ded017c830f924c18d8a))
+* playwright e2e ([e8342b6](https://github.com/celluloid-camp/celluloid/commit/e8342b6ca4f71399284eb7168bdecee55399f81a))
+* re-create db migration ([96c848d](https://github.com/celluloid-camp/celluloid/commit/96c848d09cb0033639bbcda9445ec410a64d12d8))
+* smtp config ([59401c0](https://github.com/celluloid-camp/celluloid/commit/59401c0d06c6d2988a683bcaf522f98c5fb0a4e4))
+* update migration ([9d67589](https://github.com/celluloid-camp/celluloid/commit/9d67589e37f6af4dea67078db5a0ef80792726da))
+* update translations ([7631396](https://github.com/celluloid-camp/celluloid/commit/763139629a728e3e7a441920b760b7f95280fd47))
+* update tutorial link ([#299](https://github.com/celluloid-camp/celluloid/issues/299)) ([934401a](https://github.com/celluloid-camp/celluloid/commit/934401ad06bece8849651e1127062f5f311ced2a))
+* upgrade playwright ([e93edaa](https://github.com/celluloid-camp/celluloid/commit/e93edaaebf5bee8682042b333a7a02607e66e865))
+
 ## [3.9.0](https://github.com/celluloid-camp/celluloid/compare/v3.8.0...v3.9.0) (2026-06-23)
 
 ### Features
