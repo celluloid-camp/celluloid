@@ -73,7 +73,7 @@
     "minio": "^8.0.6",
     "mui-image": "^1.0.9",
     "next": "^16.2.0",
-    "next-intl": "^4.8.2",
+    "next-intl": "^4.14.5",
     "notistack": "catalog:",
     "nuqs": "^2.8.9",
     "posthog-js": "^1.347.2",
