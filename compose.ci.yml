@@ -88,7 +88,7 @@ services:
       WORKFLOW_TARGET_WORLD: "@workflow/world-postgres"
       WORKFLOW_POSTGRES_URL: postgres://postgres:root@postgres:5432/celluloid
       # Must match apps/web/.env.ci so Playwright testUtils cookies verify on the server
-      AUTH_SECRET: "USTxFK1LSOg1mdjBplDxreXg9w8WX57iJSJ2/zOsxTc="
+      AUTH_SECRET: ci-auth-secret-for-e2e-tests-only
       REDIS_URL: redis://redis:6379
       STORAGE_URL: http://minio:9000
       STORAGE_BUCKET: celluloid
