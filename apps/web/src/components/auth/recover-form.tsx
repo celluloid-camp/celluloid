@@ -8,13 +8,14 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { authClient } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { PasswordInput } from "../common/password-input";
 import { StyledDialogTitle } from "../common/styled-dialog";
 
 export function RecoverForm({ email }: { email?: string }) {
   const t = useTranslations();
   const router = useRouter();
+  const { refetch } = useSession();
 
   const recoverSchema = z
     .object({
@@ -57,16 +58,29 @@ export function RecoverForm({ email }: { email?: string }) {
       password: values.password,
     });
 
-    if (error && error.code === "INVALID_OTP") {
-      setError("code", { message: t("recover.code.invalid") });
+    if (error) {
+      if (error.code === "INVALID_OTP") {
+        setError("code", { message: t("recover.code.invalid") });
+        return;
+      }
+      setError("root", { message: error.message ?? t("recover.error") });
       return;
     }
 
-    await authClient.signIn.email({
+    const { error: signInError } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
     });
 
+    if (signInError) {
+      setError("root", {
+        message: signInError.message ?? t("recover.error"),
+      });
+      return;
+    }
+
+    await refetch();
+    router.refresh();
     router.replace("/");
   };
 
@@ -87,6 +101,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.email}
             helperText={errors.email?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "email",
+              },
+            }}
           />
           <TextField
             {...register("code")}
@@ -98,6 +117,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.code}
             helperText={errors.code?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "code",
+              },
+            }}
           />
           <PasswordInput
             {...register("password")}
@@ -109,6 +133,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.password}
             helperText={errors.password?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "password",
+              },
+            }}
           />
           <PasswordInput
             {...register("passwordConfirmation")}
@@ -120,6 +149,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.passwordConfirmation}
             helperText={errors.passwordConfirmation?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "passwordConfirmation",
+              },
+            }}
           />
         </DialogContent>
         <Divider />
@@ -128,6 +162,7 @@ export function RecoverForm({ email }: { email?: string }) {
             variant="contained"
             color="primary"
             type="submit"
+            data-testid="submit"
             loading={isSubmitting}
           >
             {t("recover.button.submit")}

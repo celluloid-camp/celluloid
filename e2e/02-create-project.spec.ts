@@ -1,61 +1,67 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+import { deleteTestUser, loginAsTestUser } from "./helpers/auth";
+import { E2E_PEERTUBE_VIDEO_URL } from "./helpers/constants";
+import { mockPeerTubeVideoApi } from "./helpers/peertube";
 
-test.fixme("test create project without authentification", async ({ page }) => {
-  await page.goto("http://127.0.0.1:3000/");
+/** Visible create-link panel (Next can leave a hidden duplicate in the DOM). */
+function createLinkPanel(page: Page) {
+  return page.getByTestId("create-link-panel").filter({ visible: true });
+}
 
-  await page.getByTestId("create").click();
-  await expect(page).toHaveURL(/.*\/create/);
+async function loadVideoFromUrl(page: Page) {
+  const panel = createLinkPanel(page);
+  const urlInput = panel.getByTestId("url");
+  await expect(urlInput).toBeVisible();
+  await urlInput.fill(E2E_PEERTUBE_VIDEO_URL);
+  await Promise.all([
+    page.waitForRequest(/\/api\/v1\/videos\//),
+    panel.getByTestId("submit-url").click(),
+  ]);
+  await expect(panel.getByTestId("title")).toBeVisible();
+}
 
-  await page.getByTestId("url").click();
-  await page
-    .getByTestId("url")
-    .fill("https://celluloid-media.huma-num.fr/w/aV6nSKeXYsTe6jJ8BLb8Zg");
+test.describe("create project", () => {
+  test("guest is redirected to login on submit", async ({ page }) => {
+    await mockPeerTubeVideoApi(page);
 
-  await page.getByTestId("url").press("Enter");
+    await page.goto("/create/link");
+    const panel = createLinkPanel(page);
+    await expect(panel).toBeVisible();
 
-  await page.getByTestId("submit-url").click();
+    await loadVideoFromUrl(page);
+    await panel.getByTestId("title").fill("test-title-e2e");
+    await panel.getByTestId("description").fill("test-description");
+    await panel.getByTestId("public-switch").locator("input").check();
+    await panel.getByTestId("collaborative-switch").locator("input").check();
 
-  await page.getByTestId("title").click();
-  await page.getByTestId("title").fill("test-title");
+    await panel.getByTestId("submit").click();
+    await expect(page).toHaveURL(/.*\/login/);
+  });
 
-  await page.getByTestId("description").click();
-  await page.getByTestId("description").fill("test");
-  await page.getByTestId("description").fill("test-description");
+  test("authenticated user can submit create form", async ({
+    context,
+    page,
+  }) => {
+    const user = await loginAsTestUser(context);
+    try {
+      await mockPeerTubeVideoApi(page);
 
-  await page.getByTestId("keywords").click();
-  await page.getByTestId("keywords").fill("test");
-  await page.getByTestId("keywords").press("Enter");
+      await page.goto("/create/link");
+      const panel = createLinkPanel(page);
+      await expect(panel).toBeVisible();
+      await expect(page.getByTestId("header-account-menu")).toBeVisible();
 
-  await page.getByTestId("public-switch").getByRole("checkbox").check();
-  await page.getByTestId("collaborative-switch").getByRole("checkbox").check();
-  // try to submit the form without autentification
-  await page.getByTestId("submit").click();
-  await expect(page).toHaveURL(/.*\/login/);
+      await loadVideoFromUrl(page);
+      await panel.getByTestId("title").fill("test-title-e2e");
+      await panel.getByTestId("description").fill("test-description");
+      await panel.getByTestId("public-switch").locator("input").check();
+      await panel.getByTestId("collaborative-switch").locator("input").check();
 
-  // should pop signup dialog
-  await page.getByTestId("signup").click();
-  await expect(page).toHaveURL(/.*\/signup/);
-
-  await page.getByTestId("username").click();
-  await page.getByTestId("username").fill("test6");
-
-  await page.getByTestId("email").click();
-  await page.getByTestId("email").fill("test6@server.com");
-
-  await page.getByTestId("password").click();
-  await page.getByTestId("password").fill("testtest");
-
-  await page.getByTestId("passwordConfirmation").click();
-  await page.getByTestId("passwordConfirmation").fill("testtest");
-
-  await page.getByTestId("submit").click();
-  await expect(page).toHaveURL(/.*\/confirm/);
-
-  await page.getByTestId("code").click();
-  await page.getByTestId("code").fill("0000");
-  await page.getByTestId("submit").click();
-
-  await expect(page).toHaveURL(/.*\/create/);
-
-  await page.getByTestId("submit").click();
+      await panel.getByTestId("submit").click();
+      await expect(page).not.toHaveURL(/.*\/login/);
+      await expect(page).toHaveURL(/\/project\//);
+    } finally {
+      await deleteTestUser(user.id);
+    }
+  });
 });

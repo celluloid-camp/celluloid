@@ -26,5 +26,5 @@ services:
       STORAGE_BUCKET: celluloid
       STORAGE_ACCESS_KEY: root
       STORAGE_SECRET_KEY: StrongPass2022
-      MISTRAL_API_KEY: xxx
+      OPENROUTER_API_KEY: xxx
       CI_TEST: "true"

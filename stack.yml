@@ -54,7 +54,7 @@ services:
 
 
   minio:
-    image: minio/minio
+    image: quay.io/minio/minio
     volumes:
       - storage:/data
     ports:

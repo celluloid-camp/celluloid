@@ -66,3 +66,6 @@ packages/db/generated
 # react.email
 .react-email
 sandbox
+
+# Google service account credentials (never commit)
+**/edit-google-spreadsheets.json

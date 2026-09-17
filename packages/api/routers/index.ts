@@ -8,6 +8,8 @@ import { annotationRouter } from "./annotation";
 import { chapterRouter } from "./chapter";
 import { commentRouter } from "./comment";
 import { noteRouter } from "./note";
+import { peertubeInstanceRouter } from "./peertube-instance";
+import { peertubeSearchRouter } from "./peertube-search";
 import { playlistRouter } from "./playlist";
 import { projectRouter } from "./project";
 import { storageRouter } from "./storage";
@@ -32,6 +34,8 @@ export const appRouter = router({
   note: noteRouter,
   transcript: transcriptRouter,
   vision: visionRouter,
+  peertubeInstance: peertubeInstanceRouter,
+  peertubeSearch: peertubeSearchRouter,
 });
 
 export type AppRouter = typeof appRouter;

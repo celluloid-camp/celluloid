@@ -3,22 +3,24 @@
  * https://github.com/motdotla/dotenv
  */
 
-import { defineConfig, devices } from "@playwright/test";
+import {
+  defineConfig,
+  devices,
+  type PlaywrightTestConfig,
+} from "@playwright/test";
+import { config as loadEnv } from "dotenv";
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
-export default defineConfig({
+loadEnv({ path: "apps/web/.env" });
+loadEnv({ path: "apps/web/.env.ci", override: !!process.env.CI });
+
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
+
+const config: PlaywrightTestConfig = {
   testDir: "e2e",
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  retries: process.env.CI ? 1 : 0,
+  workers: process.env.CI ? 1 : 5,
   reporter: process.env.CI
     ? [
         ["github"],
@@ -26,52 +28,36 @@ export default defineConfig({
         ["html", { outputFolder: "playwright-report" }],
       ]
     : "html",
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    baseURL,
     trace: "on-first-retry",
-    /* Screenshot on failure */
     screenshot: "only-on-failure",
-    /* Video on failure */
     video: "retain-on-failure",
   },
-
-  /* Configure projects for major browsers */
   projects: [
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
-    // {
-    //   name: "firefox",
-    //   use: { ...devices["Desktop Firefox"] },
-    // },
-    //{
-    //  name: 'webkit',
-    //  use: { ...devices['Desktop Safari'] },
-    //},
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
-});
+};
+
+// CI serves the app via compose.ci.yml — do not start a local standalone process.
+if (!process.env.CI) {
+  config.webServer = {
+    command: "bun apps/web/.next/standalone/apps/web/server.js",
+    url: baseURL,
+    reuseExistingServer: false,
+    timeout: 120_000,
+    env: {
+      ...process.env,
+      E2E: "1",
+      CI_TEST: "true",
+      NODE_ENV: "production",
+      // Must match Playwright baseURL so Better Auth accepts the Origin header.
+      BASE_URL: baseURL,
+    },
+  };
+}
+
+export default defineConfig(config);

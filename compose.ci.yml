@@ -13,7 +13,7 @@ services:
 
   minio:
     restart: unless-stopped
-    image: minio/minio
+    image: quay.io/minio/minio
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -22,13 +22,13 @@ services:
       MINIO_ROOT_PASSWORD: StrongPass2022
     command: server /data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   createbuckets:
-    image: minio/mc
+    image: quay.io/minio/mc
     depends_on:
       minio:
         condition: service_healthy
@@ -87,12 +87,23 @@ services:
       DATABASE_URL: postgres://postgres:root@postgres:5432/celluloid
       WORKFLOW_TARGET_WORLD: "@workflow/world-postgres"
       WORKFLOW_POSTGRES_URL: postgres://postgres:root@postgres:5432/celluloid
-      AUTH_SECRET: "0/cB/YzCq87Yp6MmClnzap7vOhDywpQ5Q+yTGCnHnLU="
+      # Must match apps/web/.env.ci so Playwright testUtils cookies verify on the server
+      AUTH_SECRET: "USTxFK1LSOg1mdjBplDxreXg9w8WX57iJSJ2/zOsxTc="
       REDIS_URL: redis://redis:6379
       STORAGE_URL: http://minio:9000
       STORAGE_BUCKET: celluloid
       STORAGE_ACCESS_KEY: root
       STORAGE_SECRET_KEY: StrongPass2022
-      MISTRAL_API_KEY: xxx
+      OPENROUTER_API_KEY: xxx
+      RESEND_API_KEY: re_xxxx
+      EMAIL_FROM: contact@updates.celluloid.me
+      VISION_CALLBACK_URL: http://127.0.0.1:3000/api/vision/webhook
+      VISION_API_URL: http://127.0.0.1:8081
+      VISION_API_KEY: xxx
+      KNOCK_SECRET_API_KEY: sk_test_xxx
+      NEXT_PUBLIC_KNOCK_API_KEY: pk_test_xx
+      NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: xxx
+      NEXT_PUBLIC_STAGE: testing
       CI_TEST: "true"
-      BASE_URL: http://localhost:3000
+      E2E: "1"
+      BASE_URL: http://127.0.0.1:3000

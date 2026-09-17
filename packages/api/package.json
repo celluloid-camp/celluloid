@@ -4,17 +4,20 @@
   "private": true,
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "codegen": "bun run scripts/codegen.ts"
   },
   "dependencies": {
     "@celluloid/auth": "workspace:*",
     "@celluloid/db": "workspace:*",
     "@celluloid/notifications": "workspace:*",
+    "@celluloid/peertube-api": "^1.4.1",
     "@celluloid/peertube": "workspace:*",
     "@celluloid/storage": "workspace:*",
     "@celluloid/utils": "workspace:*",
     "@celluloid/workflows": "workspace:*",
     "@t3-oss/env-nextjs": "catalog:",
+    "@trpc/openapi": "^11.18.0-alpha",
     "@trpc/server": "catalog:",
     "better-auth": "catalog:",
     "dotenv": "catalog:",

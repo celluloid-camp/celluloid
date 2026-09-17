@@ -48,5 +48,42 @@ export function getSecondaryStorage(): SecondaryStorage {
         console.warn("[auth/storage] Redis DEL failed; ignoring.", err);
       }
     },
+    getAndDelete: async (key) => {
+      await redisConnectPromise;
+      if (!redisConnected) return null;
+      try {
+        return await redis.getDel(key);
+      } catch (err) {
+        console.warn(
+          "[auth/storage] Redis GETDEL failed; returning null.",
+          err,
+        );
+        return null;
+      }
+    },
+    /**
+     * Atomic counter for Better Auth secondary-storage rate limiting.
+     * TTL is applied only when the key is created (first increment).
+     */
+    increment: async (key, ttl) => {
+      await redisConnectPromise;
+      if (!redisConnected) {
+        // Fail open when Redis is down so auth endpoints stay available.
+        return 1;
+      }
+      try {
+        const count = await redis.incr(key);
+        if (count === 1 && ttl > 0) {
+          await redis.expire(key, ttl);
+        }
+        return count;
+      } catch (err) {
+        console.warn(
+          "[auth/storage] Redis INCR failed; failing open for rate limit.",
+          err,
+        );
+        return 1;
+      }
+    },
   };
 }
