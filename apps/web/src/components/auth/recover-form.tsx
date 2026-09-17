@@ -101,6 +101,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.email}
             helperText={errors.email?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "email",
+              },
+            }}
           />
           <TextField
             {...register("code")}
@@ -112,6 +117,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.code}
             helperText={errors.code?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "code",
+              },
+            }}
           />
           <PasswordInput
             {...register("password")}
@@ -123,6 +133,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.password}
             helperText={errors.password?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "password",
+              },
+            }}
           />
           <PasswordInput
             {...register("passwordConfirmation")}
@@ -134,6 +149,11 @@ export function RecoverForm({ email }: { email?: string }) {
             disabled={isSubmitting}
             error={!!errors.passwordConfirmation}
             helperText={errors.passwordConfirmation?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "passwordConfirmation",
+              },
+            }}
           />
         </DialogContent>
         <Divider />
@@ -142,6 +162,7 @@ export function RecoverForm({ email }: { email?: string }) {
             variant="contained"
             color="primary"
             type="submit"
+            data-testid="submit"
             loading={isSubmitting}
           >
             {t("recover.button.submit")}

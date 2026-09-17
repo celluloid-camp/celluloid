@@ -67,6 +67,11 @@ export function ForgotForm() {
             disabled={isSubmitting}
             error={!!errors.email}
             helperText={errors.email?.message}
+            slotProps={{
+              htmlInput: {
+                "data-testid": "email",
+              },
+            }}
           />
         </DialogContent>
         <Divider />
@@ -83,6 +88,7 @@ export function ForgotForm() {
               size="small"
               color="primary"
               type="submit"
+              data-testid="submit"
               loading={isSubmitting}
             >
               {t("forgot.button.submit")}

@@ -4,6 +4,7 @@ import {
   deleteTestUserByEmail,
   loginAsTestUser,
 } from "./helpers/auth";
+import { E2E_OTP } from "./helpers/constants";
 
 /** Wait until the header auth UI has resolved (not the loading skeleton). */
 async function waitForAuthUi(page: import("@playwright/test").Page) {
@@ -35,7 +36,7 @@ test.describe("signup", () => {
       await expect(page).toHaveURL(/.*\/otp/);
 
       // CI_TEST / E2E forces a deterministic OTP on the server
-      await page.getByTestId("code").fill("123456");
+      await page.getByTestId("code").fill(E2E_OTP);
       await page.getByTestId("submit-otp").click();
 
       await expect(page).toHaveURL("/");

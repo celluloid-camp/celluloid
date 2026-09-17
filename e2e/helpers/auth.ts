@@ -26,20 +26,18 @@ export async function getTestHelpers() {
 }
 
 /**
- * Creates a verified user in the DB and injects a signed session cookie
- * into the Playwright browser context (skips UI login).
+ * Creates a verified credential user in the DB (no browser session).
  */
-export async function loginAsTestUser(
-  context: BrowserContext,
-  overrides?: Partial<Pick<TestUser, "email" | "username" | "name">>,
+export async function createTestUser(
+  overrides?: Partial<Pick<TestUser, "email" | "username" | "name" | "password">>,
 ): Promise<TestUser> {
   const test = await getTestHelpers();
+  const ctx = await testAuth.$context;
   const suffix = uniqueSuffix();
   const username = overrides?.username ?? `e2e${suffix}`;
   const email = overrides?.email ?? `${username}@example.com`;
   const name = overrides?.name ?? username;
-  const password = "testtest";
-  const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
+  const password = overrides?.password ?? "testtest";
 
   const user = test.createUser({
     id: randomUUID(),
@@ -54,6 +52,35 @@ export async function loginAsTestUser(
   });
 
   await test.saveUser(user);
+
+  const hash = await ctx.password.hash(password);
+  await ctx.internalAdapter.linkAccount({
+    userId: user.id,
+    providerId: "credential",
+    accountId: user.id,
+    password: hash,
+  });
+
+  return {
+    id: user.id,
+    email,
+    username,
+    name,
+    password,
+  };
+}
+
+/**
+ * Creates a verified user in the DB and injects a signed session cookie
+ * into the Playwright browser context (skips UI login).
+ */
+export async function loginAsTestUser(
+  context: BrowserContext,
+  overrides?: Partial<Pick<TestUser, "email" | "username" | "name">>,
+): Promise<TestUser> {
+  const user = await createTestUser(overrides);
+  const test = await getTestHelpers();
+  const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
 
   const cookies = await test.getCookies({
     userId: user.id,
@@ -73,13 +100,7 @@ export async function loginAsTestUser(
     })),
   );
 
-  return {
-    id: user.id,
-    email,
-    username,
-    name,
-    password,
-  };
+  return user;
 }
 
 export async function deleteTestUser(userId: string) {
