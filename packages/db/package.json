@@ -19,7 +19,7 @@
   "devDependencies": {
     "@celluloid/typescript-config": "workspace:*",
     "@types/randomcolor": "^0.5.7",
-    "@faker-js/faker": "^10.3.0",
+    "@faker-js/faker": "^10.6.0",
     "@types/dotenv": "^8.2.3",
     "@types/node-fetch": "^2.6.7",
     "@types/pg": "^8.16.0",
