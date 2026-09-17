@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { deleteTestUser, loginAsTestUser } from "./helpers/auth";
+import {
+  deleteTestUser,
+  deleteTestUserByEmail,
+  loginAsTestUser,
+} from "./helpers/auth";
 
 /** Wait until the header auth UI has resolved (not the loading skeleton). */
 async function waitForAuthUi(page: import("@playwright/test").Page) {
@@ -16,30 +20,34 @@ test.describe("signup", () => {
     const username = `u${suffix}`;
     const email = `${username}@server.com`;
 
-    await page.goto("/signup");
-    await waitForAuthUi(page);
-    await expect(page.getByTestId("submit")).toBeEnabled();
+    try {
+      await page.goto("/signup");
+      await waitForAuthUi(page);
+      await expect(page.getByTestId("submit")).toBeEnabled();
 
-    await page.getByTestId("username").fill(username);
-    await page.getByTestId("email").fill(email);
-    await page.getByTestId("password").fill("testtest");
-    await page.getByTestId("passwordConfirmation").fill("testtest");
+      await page.getByTestId("username").fill(username);
+      await page.getByTestId("email").fill(email);
+      await page.getByTestId("password").fill("testtest");
+      await page.getByTestId("passwordConfirmation").fill("testtest");
 
-    await page.getByTestId("submit").click();
+      await page.getByTestId("submit").click();
 
-    await expect(page).toHaveURL(/.*\/otp/);
+      await expect(page).toHaveURL(/.*\/otp/);
 
-    // CI_TEST / E2E forces a deterministic OTP on the server
-    await page.getByTestId("code").fill("123456");
-    await page.getByTestId("submit-otp").click();
+      // CI_TEST / E2E forces a deterministic OTP on the server
+      await page.getByTestId("code").fill("123456");
+      await page.getByTestId("submit-otp").click();
 
-    await expect(page).toHaveURL("/");
-    await waitForAuthUi(page);
+      await expect(page).toHaveURL("/");
+      await waitForAuthUi(page);
 
-    await page.getByTestId("header-account-menu").click();
-    await page.getByTestId("header-profile-button").click();
+      await page.getByTestId("header-account-menu").click();
+      await page.getByTestId("header-profile-button").click();
 
-    await expect(page.getByTestId("profile-header-title")).toHaveText(username);
+      await expect(page.getByTestId("profile-header-title")).toHaveText(username);
+    } finally {
+      await deleteTestUserByEmail(email);
+    }
   });
 
   test("session cookie from testUtils authenticates and can logout", async ({

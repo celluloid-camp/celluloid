@@ -86,3 +86,11 @@ export async function deleteTestUser(userId: string) {
   const test = await getTestHelpers();
   await test.deleteUser(userId);
 }
+
+/** Looks up a user created via UI signup, then deletes them. No-op if missing. */
+export async function deleteTestUserByEmail(email: string) {
+  const ctx = await testAuth.$context;
+  const found = await ctx.internalAdapter.findUserByEmail(email);
+  if (!found?.user?.id) return;
+  await deleteTestUser(found.user.id);
+}

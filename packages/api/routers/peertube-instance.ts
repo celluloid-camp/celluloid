@@ -2,10 +2,7 @@ import { peertubeInstance, peertubeInstanceAuth } from "@celluloid/db";
 import { authenticatePeerTube } from "@celluloid/peertube";
 import { and, eq, or } from "drizzle-orm";
 import { z } from "zod";
-import {
-  fetchInstanceMetadata,
-  normalizeHost,
-} from "../lib/peertube-instance";
+import { fetchInstanceMetadata, normalizeHost } from "../lib/peertube-instance";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const peertubeInstanceRouter = router({

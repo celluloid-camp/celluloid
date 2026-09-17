@@ -1,7 +1,7 @@
+import type { db as DbClient } from "@celluloid/db";
 import { peertubeInstanceAuth } from "@celluloid/db";
 import { refreshPeerTubeToken } from "@celluloid/peertube";
 import { and, eq } from "drizzle-orm";
-import type { db as DbClient } from "@celluloid/db";
 
 export function normalizeHost(host: string): string {
   try {

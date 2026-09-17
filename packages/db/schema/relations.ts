@@ -4,6 +4,8 @@ import {
   annotation,
   chapter,
   comment,
+  peertubeInstance,
+  peertubeInstanceAuth,
   playlist,
   project,
   projectNote,
@@ -14,8 +16,6 @@ import {
   userToProject,
   videoAnalysis,
   videoScenes,
-  peertubeInstance,
-  peertubeInstanceAuth,
 } from "./schema";
 
 export const userRelations = relations(user, ({ one, many }) => ({

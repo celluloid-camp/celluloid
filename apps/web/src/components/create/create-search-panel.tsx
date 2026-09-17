@@ -1,5 +1,6 @@
 "use client";
 
+import type { AppRouter } from "@celluloid/api";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
@@ -17,12 +18,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import type { inferRouterOutputs } from "@trpc/server";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import type { inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "@celluloid/api";
 import { useSession } from "@/lib/auth-client";
 import { useTRPC } from "@/lib/trpc/client";
 import { AddInstanceDialog } from "./add-instance-dialog";
@@ -37,7 +37,8 @@ import {
 } from "./peertube-search-results";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
-type PeerTubeInstance = RouterOutput["peertubeInstance"]["listWithAuth"][number];
+type PeerTubeInstance =
+  RouterOutput["peertubeInstance"]["listWithAuth"][number];
 
 export function CreateSearchPanel() {
   const router = useRouter();
@@ -158,7 +159,11 @@ export function CreateSearchPanel() {
                 className="h-14 justify-between normal-case"
               >
                 {activeInstance ? (
-                  <Stack direction="row" spacing={1.5} className="min-w-0 items-center">
+                  <Stack
+                    direction="row"
+                    spacing={1.5}
+                    className="min-w-0 items-center"
+                  >
                     {activeInstance.thumbnail ? (
                       <Box className="relative h-8 w-8 shrink-0 overflow-hidden rounded-sm bg-white">
                         <Image

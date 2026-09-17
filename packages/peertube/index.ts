@@ -1,19 +1,19 @@
-export * from "./types/caption";
-export * from "./types/metadata";
-export * from "./types/video";
 export {
   authenticatePeerTube,
-  refreshPeerTubeToken,
   type PeerTubeTokenResponse,
+  refreshPeerTubeToken,
 } from "./auth";
 export {
-  searchPeerTubePlaylists,
-  searchPeerTubePrivateVideos,
-  searchPeerTubeVideos,
   type PeerTubeSearchPlaylistsParams,
   type PeerTubeSearchPrivateVideosParams,
   type PeerTubeSearchVideosParams,
+  searchPeerTubePlaylists,
+  searchPeerTubePrivateVideos,
+  searchPeerTubeVideos,
 } from "./search";
+export * from "./types/caption";
+export * from "./types/metadata";
+export * from "./types/video";
 export {
   fetchPeerTubeVideoDetails,
   fetchPeerTubeVideoDownloadInfo,

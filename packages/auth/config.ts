@@ -135,7 +135,11 @@ function createAuthOptions(options?: {
         },
       },
     },
-    trustedOrigins: ["*.localhost", "https://*.celluloid.me"],
+    trustedOrigins: [
+      "*.localhost",
+      "http://127.0.0.1:3000",
+      "https://*.celluloid.me",
+    ],
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
         if (ctx.path.includes("sign-up")) {

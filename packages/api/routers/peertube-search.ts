@@ -33,11 +33,7 @@ export const peertubeSearchRouter = router({
           throw new TRPCError({ code: "UNAUTHORIZED" });
         }
 
-        const accessToken = await resolveAccessToken(
-          ctx.db,
-          ctx.user.id,
-          host,
-        );
+        const accessToken = await resolveAccessToken(ctx.db, ctx.user.id, host);
 
         if (!accessToken) {
           throw new TRPCError({

@@ -1,17 +1,23 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { deleteTestUser, loginAsTestUser } from "./helpers/auth";
 import { E2E_PEERTUBE_VIDEO_URL } from "./helpers/constants";
 import { mockPeerTubeVideoApi } from "./helpers/peertube";
 
-async function loadVideoFromUrl(page: import("@playwright/test").Page) {
-  const urlInput = page.getByTestId("url").first();
+/** Visible create-link panel (Next can leave a hidden duplicate in the DOM). */
+function createLinkPanel(page: Page) {
+  return page.getByTestId("create-link-panel").filter({ visible: true });
+}
+
+async function loadVideoFromUrl(page: Page) {
+  const panel = createLinkPanel(page);
+  const urlInput = panel.getByTestId("url");
   await expect(urlInput).toBeVisible();
   await urlInput.fill(E2E_PEERTUBE_VIDEO_URL);
   await Promise.all([
     page.waitForRequest(/\/api\/v1\/videos\//),
-    page.getByTestId("submit-url").first().click(),
+    panel.getByTestId("submit-url").click(),
   ]);
-  await expect(page.getByTestId("title").first()).toBeVisible();
+  await expect(panel.getByTestId("title")).toBeVisible();
 }
 
 test.describe("create project", () => {
@@ -19,23 +25,16 @@ test.describe("create project", () => {
     await mockPeerTubeVideoApi(page);
 
     await page.goto("/create/link");
-    await expect(
-      page
-        .getByTestId("header-signup-button")
-        .or(page.getByTestId("header-account-menu")),
-    ).toBeVisible();
+    const panel = createLinkPanel(page);
+    await expect(panel).toBeVisible();
 
     await loadVideoFromUrl(page);
-    await page.getByTestId("title").first().fill("test-title-e2e");
-    await page.getByTestId("description").first().fill("test-description");
-    await page.getByTestId("public-switch").first().locator("input").check();
-    await page
-      .getByTestId("collaborative-switch")
-      .first()
-      .locator("input")
-      .check();
+    await panel.getByTestId("title").fill("test-title-e2e");
+    await panel.getByTestId("description").fill("test-description");
+    await panel.getByTestId("public-switch").locator("input").check();
+    await panel.getByTestId("collaborative-switch").locator("input").check();
 
-    await page.getByTestId("submit").first().click();
+    await panel.getByTestId("submit").click();
     await expect(page).toHaveURL(/.*\/login/);
   });
 
@@ -48,19 +47,17 @@ test.describe("create project", () => {
       await mockPeerTubeVideoApi(page);
 
       await page.goto("/create/link");
+      const panel = createLinkPanel(page);
+      await expect(panel).toBeVisible();
       await expect(page.getByTestId("header-account-menu")).toBeVisible();
 
       await loadVideoFromUrl(page);
-      await page.getByTestId("title").first().fill("test-title-e2e");
-      await page.getByTestId("description").first().fill("test-description");
-      await page.getByTestId("public-switch").first().locator("input").check();
-      await page
-        .getByTestId("collaborative-switch")
-        .first()
-        .locator("input")
-        .check();
+      await panel.getByTestId("title").fill("test-title-e2e");
+      await panel.getByTestId("description").fill("test-description");
+      await panel.getByTestId("public-switch").locator("input").check();
+      await panel.getByTestId("collaborative-switch").locator("input").check();
 
-      await page.getByTestId("submit").first().click();
+      await panel.getByTestId("submit").click();
       await expect(page).not.toHaveURL(/.*\/login/);
       await expect(page).toHaveURL(/\/project\//);
     } finally {

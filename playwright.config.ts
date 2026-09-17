@@ -54,6 +54,8 @@ if (!process.env.CI) {
       E2E: "1",
       CI_TEST: "true",
       NODE_ENV: "production",
+      // Must match Playwright baseURL so Better Auth accepts the Origin header.
+      BASE_URL: baseURL,
     },
   };
 }

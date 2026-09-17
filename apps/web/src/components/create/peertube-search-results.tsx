@@ -118,7 +118,7 @@ export function PeerTubeSearchResults({
           [author, v.duration ? formatDuration(v.duration) : null]
             .filter(Boolean)
             .join(" · ") || null,
-        chipLabel: isNonPublic ? v.privacy?.label ?? null : null,
+        chipLabel: isNonPublic ? (v.privacy?.label ?? null) : null,
         url: `${base}/w/${v.uuid}`,
       };
     });

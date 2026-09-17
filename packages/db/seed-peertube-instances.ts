@@ -35,7 +35,8 @@ async function seedPeerTubeInstances() {
     .where(eq(user.role, "Admin"))
     .limit(1);
 
-  const owner = adminUser ?? (await db.select({ id: user.id }).from(user).limit(1))[0];
+  const owner =
+    adminUser ?? (await db.select({ id: user.id }).from(user).limit(1))[0];
 
   if (!owner) {
     console.log("No users found — skipping PeerTube instance seed.");

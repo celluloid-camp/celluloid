@@ -15,11 +15,7 @@ import { VideoSnapshots } from "./video-snapshots";
 
 function LinkGuide() {
   const t = useTranslations("project.create");
-  const steps = [
-    t("linkGuideStep1"),
-    t("linkGuideStep2"),
-    t("linkGuideStep3"),
-  ];
+  const steps = [t("linkGuideStep1"), t("linkGuideStep2"), t("linkGuideStep3")];
 
   return (
     <Box className="mt-6 rounded-2xl border border-black/6 bg-[#FBFBFD] p-6">
@@ -99,7 +95,7 @@ export function CreateLinkPanel() {
   };
 
   return (
-    <>
+    <Box data-testid="create-link-panel">
       <Box className="mb-2">
         <Typography variant="h6" className="font-semibold">
           {t("linkTitle")}
@@ -134,7 +130,7 @@ export function CreateLinkPanel() {
         onClose={handleClose}
         onAddVideo={handleAddVideo}
       />
-    </>
+    </Box>
   );
 }
 

@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  Chip,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -58,7 +58,12 @@ export function ConnectInstanceDialog({
 
   if (isConnected) {
     return (
-      <Chip color="success" label={t("connected")} size="small" variant="outlined" />
+      <Chip
+        color="success"
+        label={t("connected")}
+        size="small"
+        variant="outlined"
+      />
     );
   }
 
@@ -153,13 +158,23 @@ export function ConnectionStatusBadge({ status }: { status: string | null }) {
 
   if (status === "connected") {
     return (
-      <Chip color="success" label={t("connected")} size="small" variant="outlined" />
+      <Chip
+        color="success"
+        label={t("connected")}
+        size="small"
+        variant="outlined"
+      />
     );
   }
 
   if (status === "expired") {
     return (
-      <Chip color="warning" label={t("expired")} size="small" variant="outlined" />
+      <Chip
+        color="warning"
+        label={t("expired")}
+        size="small"
+        variant="outlined"
+      />
     );
   }
 
