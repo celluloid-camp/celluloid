@@ -36,6 +36,13 @@
       "when": 1789562325057,
       "tag": "0004_cynical_roxanne_simpson",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789924265492,
+      "tag": "0005_peertube_instance",
+      "breakpoints": true
     }
   ]
 }

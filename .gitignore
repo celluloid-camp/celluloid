@@ -69,3 +69,7 @@ sandbox
 
 # Google service account credentials (never commit)
 **/edit-google-spreadsheets.json
+
+# k8s secrets — never commit real credentials
+/infra/**/secrets.yml
+!/infra/**/secrets.example.yml

@@ -3,12 +3,14 @@
   "extends": [
     "config:recommended",
     ":semanticCommits",
-    ":separateMajorReleases",
-    ":dependencyDashboard"
+    ":dependencyDashboard",
+    ":groupAll",
+    "schedule:monthly"
   ],
   "onboarding": true,
   "requireConfig": "ignored",
-  "prConcurrentLimit": 5,
+  "prConcurrentLimit": 1,
+  "prHourlyLimit": 1,
   "timezone": "Europe/Paris",
   "baseBranches": ["staging"],
   "rangeStrategy": "bump",
@@ -17,41 +19,14 @@
   "ignorePaths": ["**/node_modules/**", "**/dist/**", "**/.next/**"],
   "packageRules": [
     {
-      "matchUpdateTypes": ["patch", "digest"],
-      "automerge": true,
-      "automergeType": "pr"
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "groupName": "github-actions"
-    },
-    {
-      "matchManagers": ["dockerfile"],
-      "groupName": "docker base images"
-    },
-    {
-      "matchPackagePatterns": ["^@celluloid/"],
-      "groupName": "workspace internal packages"
-    },
-    {
-      "matchPackageNames": [
-        "turbo",
-        "typescript",
-        "tsup",
-        "pkgroll",
-        "@playwright/test",
-        "@biomejs/biome"
-      ],
-      "groupName": "build tooling"
-    },
-    {
-      "matchDepTypes": ["devDependencies"],
-      "groupName": "dev dependencies"
+      "groupName": "all dependencies",
+      "groupSlug": "all-dependencies",
+      "matchPackageNames": ["*"]
     }
   ],
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 3am on sunday"]
+    "schedule": ["before 5am on the first day of the month"]
   },
-  "schedule": ["after 9am and before 6pm on monday"]
+  "schedule": ["before 5am on the first day of the month"]
 }
