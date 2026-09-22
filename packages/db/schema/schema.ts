@@ -33,8 +33,8 @@ export const user = pgTable(
     username: varchar({ length: 255 }).notNull(),
     role: text()
       .notNull()
-      .$type<"Admin" | "Teacher" | "Student">()
-      .default("Teacher"),
+      .$type<"admin" | "teacher" | "student">()
+      .default("teacher"),
     extra: jsonb().default({}),
     avatarStorageId: uuid(),
     bio: text(),

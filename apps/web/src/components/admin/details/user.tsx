@@ -12,11 +12,14 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
   Menu,
   MenuItem,
   Paper,
+  Select,
   Skeleton,
   Table,
   TableBody,
@@ -34,7 +37,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { BackButton } from "@/components/common/back-button";
 import { PasswordInput } from "@/components/common/password-input";
@@ -79,6 +82,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
     username: z.string().min(1, t("profile.update.username")),
     firstName: z.string().min(1, t("profile.update.firstname")),
     lastName: z.string().min(1, t("profile.update.lastname")),
+    role: z.enum(["admin", "teacher", "student"]),
   });
 
   type EditUserFormValues = z.infer<typeof editUserSchema>;
@@ -145,6 +149,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<EditUserFormValues>({
     resolver: zodResolver(editUserSchema),
@@ -152,6 +157,7 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
       username: data.username,
       firstName: data.firstname ?? "",
       lastName: data.lastname ?? "",
+      role: (data.role?.toLowerCase() as EditUserFormValues["role"]) ?? "teacher",
     },
     mode: "onBlur",
   });
@@ -180,8 +186,9 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
         username: values.username,
         firstName: values.firstName,
         lastName: values.lastName,
+        role: values.role,
       });
-      reset();
+      reset(values);
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -271,12 +278,22 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
                     {t("profile.update.title")}
                   </Typography>
                   <Typography variant="caption" className="text-slate-500">
-                    {data.role}
+                    {t(`profile.role.${data.role?.toLowerCase() as "admin" | "teacher" | "student"}`)}
                   </Typography>
                 </Box>
               </Box>
               <IconButton
-                onClick={() => setEditDialogOpen(true)}
+                onClick={() => {
+                  reset({
+                    username: data.username,
+                    firstName: data.firstname ?? "",
+                    lastName: data.lastname ?? "",
+                    role:
+                      (data.role?.toLowerCase() as EditUserFormValues["role"]) ??
+                      "teacher",
+                  });
+                  setEditDialogOpen(true);
+                }}
                 size="small"
                 className="text-slate-400 hover:bg-white hover:text-slate-700"
               >
@@ -315,12 +332,14 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
               <DetailField label={t("users.table.role")}>
                 <span
                   className={
-                    data.role === "Admin"
+                    data.role?.toLowerCase() === "admin"
                       ? "inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary capitalize"
                       : "inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 capitalize"
                   }
                 >
-                  {data.role}
+                  {t(
+                    `profile.role.${data.role?.toLowerCase() as "admin" | "teacher" | "student"}`,
+                  )}
                 </span>
               </DetailField>
 
@@ -425,6 +444,30 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
                 error={Boolean(errors.lastName)}
                 helperText={errors.lastName?.message}
               />
+
+              <FormControl fullWidth error={Boolean(errors.role)}>
+                <InputLabel id="role-label">{t("users.table.role")}</InputLabel>
+                <Controller
+                  name="role"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      labelId="role-label"
+                      label={t("users.table.role")}
+                      disabled={isSubmitting}
+                    >
+                      <MenuItem value="admin">{t("profile.role.admin")}</MenuItem>
+                      <MenuItem value="teacher">
+                        {t("profile.role.teacher")}
+                      </MenuItem>
+                      <MenuItem value="student">
+                        {t("profile.role.student")}
+                      </MenuItem>
+                    </Select>
+                  )}
+                />
+              </FormControl>
 
               <Box className="flex justify-end gap-2">
                 <Button
