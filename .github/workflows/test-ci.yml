@@ -1,6 +1,5 @@
 name: E2E Tests
 
-# Add concurrency group to cancel previous runs
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -19,9 +18,11 @@ on:
 
 jobs:
   tests:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.actor != 'renovate[bot]' && !startsWith(github.head_ref, 'renovate/'))
     timeout-minutes: 60
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -39,6 +40,35 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Build web container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/web/Dockerfile
+          load: true
+          tags: celluloid-web:latest
+          cache-from: type=gha,scope=celluloid-web-ci
+          cache-to: type=gha,mode=max,scope=celluloid-web-ci
+          build-args: |
+            VERSION=ci
+            COMMIT_SHA=${{ github.sha }}
+            BUILD_TIME=${{ github.run_started_at }}
+            NEXT_PUBLIC_STAGE=testing
+
+      - name: Build db migrate container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/db/Dockerfile
+          load: true
+          tags: celluloid-db-migrate:latest
+          cache-from: type=gha,scope=celluloid-db-migrate-ci
+          cache-to: type=gha,mode=max,scope=celluloid-db-migrate-ci
+          build-args: |
+            VERSION=ci
+            COMMIT_SHA=${{ github.sha }}
+            BUILD_TIME=${{ github.run_started_at }}
+
       - name: Install Playwright Browsers
         run: bunx playwright install --with-deps chromium firefox
 
@@ -46,7 +76,7 @@ jobs:
         run: bun install @playwright/test
 
       - name: Start services with Docker Compose (wait for healthchecks)
-        run: docker compose -f compose.ci.yml up -d --wait
+        run: docker compose -f compose.ci.yml up -d --wait --no-build
 
       - name: Show container logs on failure
         if: failure()

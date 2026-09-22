@@ -363,12 +363,23 @@ export const userRouter = router({
           title: project.title,
           thumbnailURL: project.thumbnailURL,
           playlistId: project.playlistId,
+          playlistPosition: project.playlistPosition,
         })
         .from(project)
-        .where(inArray(project.playlistId, playlistIds));
+        .where(inArray(project.playlistId, playlistIds))
+        .orderBy(
+          asc(project.playlistPosition),
+          asc(project.publishedAt),
+        );
 
       const projectsByPlaylist = playlistIds.map((id) =>
-        projects.filter((p) => p.playlistId === id),
+        projects
+          .filter((p) => p.playlistId === id)
+          .sort(
+            (a, b) =>
+              (a.playlistPosition ?? Number.MAX_SAFE_INTEGER) -
+              (b.playlistPosition ?? Number.MAX_SAFE_INTEGER),
+          ),
       );
 
       const enriched = items.map((p, i) => ({

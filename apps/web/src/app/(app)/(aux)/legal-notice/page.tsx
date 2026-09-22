@@ -23,19 +23,18 @@ export default function LegalNoticePage() {
         <p>
           En accédant ou en utilisant le Site Web,{" "}
           <a href="https://celluloid.huma-num.fr">celluloid.huma-num.fr</a>,
-          exploité par l'Institut Catholique de Paris, ("ICP"), vous acceptez
-          les termes des Règles de confidentialité en ligne présentées ci-après.
-          Si vous n'êtes pas d'accord avec ces termes, veuillez ne plus utiliser
-          ou accéder à ce site.
+          vous acceptez les termes des Règles de confidentialité en ligne
+          présentées ci-après. Si vous n'êtes pas d'accord avec ces termes,
+          veuillez ne plus utiliser ou accéder à ce site.
         </p>
         <p>
           <b>Editeur :</b>
           <br />
-          Institut Catholique de Paris
+          Maison des Sciences de l'Homme Paris Nord
           <br />
-          21, rue d'Assas
+          20, avenue George Sand
           <br />
-          75270 PARIS Cedex 06
+          93210 La Plaine St-Denis
         </p>
         <p>
           Les informations et documents présentés sur{" "}
@@ -46,15 +45,15 @@ export default function LegalNoticePage() {
           site.
         </p>
         <p>
-          L’Institut Catholique de Paris ne saurait être tenu pour responsable
-          des erreurs ou omissions présentées sur son site ou par tout document
-          référencé. Les informations contenues dans le site ne sont pas
-          contractuelles et sont sujettes à modification sans préavis.
+          L’équipe qui administre Celluloid ne saurait être tenu pour
+          responsable des erreurs ou omissions présentées sur son site ou par
+          tout document référencé. Les informations contenues dans le site ne
+          sont pas contractuelles et sont sujettes à modification sans préavis.
         </p>
         <p>
           Les informations présentées sur le site font régulièrement l'objet de
-          mises à jour. Mais en aucune circonstance, l’Institut Catholique de
-          Paris ne sera responsable des préjudices fortuits, directs ou
+          mises à jour. Mais en aucune circonstance, l’équipe qui administre
+          Celluloid ne sera responsable des préjudices fortuits, directs ou
           indirects résultant de l'utilisation des éléments du Site.
         </p>
         <p>
@@ -120,21 +119,23 @@ export default function LegalNoticePage() {
         <p>
           Vous êtes en droit d'accéder et de modifier vos informations
           personnelles et préférences en matière de confidentialité. Pour ce
-          faire, envoyez un courrier à l'Institut Catholique de Paris à
+          faire, envoyez un courrier à l'équipe qui administre Celluloid à
           l'adresse suivante :
         </p>
         <p>
-          Atelier du numérique
+          Maison des Sciences de l'Homme Paris Nord
           <br />
-          Institut Catholique de Paris
+          20, avenue George Sand
           <br />
-          21, rue d'Assas
-          <br />
-          75270 PARIS Cedex 06
+          93210 La Plaine St-Denis
         </p>
         <p>
           ou par courriel :{" "}
-          <a href="mailto:celluloid@icp.fr">celluloid@icp.fr</a>
+          <a href="mailto:michael.bourgatte@univ-lorraine.fr">
+            michael.bourgatte@univ-lorraine.fr
+          </a>{" "}
+          et{" "}
+          <a href="mailto:l.tessier@icp.fr">l.tessier@icp.fr</a>
         </p>
       </Typography>
       <Typography variant="h4" gutterBottom={true}>
@@ -142,11 +143,9 @@ export default function LegalNoticePage() {
       </Typography>
       <Typography component="div">
         <p>
-          Lorsque vous visitez le site internet de l'Institut Catholique de
-          Paris, vous pouvez l'explorer de manière anonyme et accéder à des
-          informations sans révéler votre identité. Vous restez anonyme sauf si
-          vous avez vous-même fourni à l'Institut Catholique de Paris des
-          informations personnelles.
+          Lorsque vous visitez ce site internet, vous pouvez l'explorer de
+          manière anonyme et accéder à des informations sans révéler votre
+          identité. Vous restez anonyme.
         </p>
         <p>
           Un cookie est un petit volume de données qui est transféré à votre

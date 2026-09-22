@@ -1,0 +1,160 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: celluloid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celluloid
+  template:
+    metadata:
+      labels:
+        app: celluloid
+    spec:
+      initContainers:
+        - name: db-migrate
+          image: ghcr.io/celluloid-camp/celluloid/celluloid-db-migrate:TAG
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: DATABASE_URL
+            - name: STORAGE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: STORAGE_URL
+      containers:
+        - name: web
+          image: ghcr.io/celluloid-camp/celluloid/celluloid-web:TAG
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: PORT
+              value: "3000"
+            - name: BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: BASE_URL
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: DATABASE_URL
+            - name: WORKFLOW_POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: WORKFLOW_POSTGRES_URL
+            - name: WORKFLOW_TARGET_WORLD
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: WORKFLOW_TARGET_WORLD
+            - name: AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: AUTH_SECRET
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: REDIS_URL
+            - name: STORAGE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: STORAGE_URL
+            - name: STORAGE_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: STORAGE_ACCESS_KEY
+            - name: STORAGE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: STORAGE_SECRET_KEY
+            - name: STORAGE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: STORAGE_BUCKET
+            - name: EMAIL_FROM
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: EMAIL_FROM
+            - name: RESEND_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: RESEND_API_KEY
+            - name: MISTRAL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: MISTRAL_API_KEY
+            - name: VISION_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: VISION_API_URL
+            - name: VISION_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: VISION_API_KEY
+            - name: VISION_CALLBACK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: VISION_CALLBACK_URL
+            - name: KNOCK_SECRET_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: KNOCK_SECRET_API_KEY
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: celluloid
+                  key: OPENROUTER_API_KEY
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 40
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  labels:
+    app: celluloid
+spec:
+  selector:
+    app: celluloid
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000

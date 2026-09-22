@@ -2,9 +2,11 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
+import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { AppProviders } from "@/components/providers";
+import { env } from "@/env";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +53,14 @@ export default async function RootLayout({
             <AppProviders>{children}</AppProviders>
           </AppRouterCacheProvider>
         </NextIntlClientProvider>
+        {env.NEXT_PUBLIC_STAGE === "production" && (
+          <Script
+            defer
+            data-domain="celluloid.me"
+            src="https://p0x53.up.railway.app/js/script.js"
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

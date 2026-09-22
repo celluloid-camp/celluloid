@@ -5,6 +5,22 @@ import {
 } from "@celluloid/peertube/caption";
 import { FatalError } from "workflow";
 
+function pickCaptionTrack<T extends { language: string }>(
+  captions: T[],
+  preferredLanguage?: string | null,
+): T {
+  if (preferredLanguage) {
+    const preferred = captions.find(
+      (caption) =>
+        caption.language.toLowerCase() === preferredLanguage.toLowerCase(),
+    );
+    if (preferred) {
+      return preferred;
+    }
+  }
+  return captions[0]!;
+}
+
 export async function getProjectCaptions(projectId: string) {
   "use step";
 
@@ -14,6 +30,7 @@ export async function getProjectCaptions(projectId: string) {
       id: true,
       videoId: true,
       host: true,
+      metadata: true,
     },
   });
 
@@ -33,10 +50,20 @@ export async function getProjectCaptions(projectId: string) {
     throw new FatalError("No captions found. Skipping retries.");
   }
 
+  const videoLanguage =
+    typeof foundProject.metadata?.language === "string"
+      ? foundProject.metadata.language
+      : foundProject.metadata?.language?.id;
+
+  const selectedCaption = pickCaptionTrack(captions, videoLanguage);
+
   const parsedCaption = await parsePeerTubeVideoCaptions(
     normalizedHost,
-    captions[0].captionData,
+    selectedCaption.captionData,
   );
 
-  return parsedCaption;
+  return {
+    language: selectedCaption.language,
+    cues: parsedCaption,
+  };
 }

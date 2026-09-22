@@ -39,6 +39,7 @@
         "tooltip": "Automatically pause when annotation is displayed."
       },
       "context": {
+        "label": "Context",
         "tooltip": "Place a visual marker"
       }
     },
@@ -984,10 +985,16 @@
       "success": "Playlist has been updated.",
       "error": "Failed to update playlist. Please try again.",
       "projects": {
-        "current": "Current Projects",
+        "current": "Projects",
         "add": "Add Projects",
         "empty": "No projects in playlist",
-        "noAvailable": "No available projects to add"
+        "noAvailable": "No available projects to add",
+        "search": "Search projects",
+        "noMatch": "No projects match your search",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "remove": "Remove from playlist",
+        "done": "Done"
       }
     },
     "delete": {

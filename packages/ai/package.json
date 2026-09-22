@@ -12,9 +12,9 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@langchain/core": "^1.2.11",
+    "@langchain/core": "^1.2.12",
     "@celluloid/utils": "workspace:*",
-    "@langchain/openrouter": "^0.4.10",
+    "@langchain/openrouter": "^0.4.13",
     "@langchain/textsplitters": "^1.0.1",
     "@t3-oss/env-nextjs": "catalog:",
     "zod": "catalog:"

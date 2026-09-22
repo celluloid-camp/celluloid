@@ -17,7 +17,7 @@ import Image from "mui-image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import EditPlaylistDialog from "@/components/profile/edit-playlist-dialog";
+import PlaylistFormDialog from "@/components/profile/playlist-form-dialog";
 import { useTRPC } from "@/lib/trpc/client";
 import type { ProjectById } from "@/lib/trpc/types";
 
@@ -120,44 +120,41 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
                       project.id === p.id ? "secondary.main" : "black",
                     borderWidth: 2,
                     borderStyle: "solid",
+                    display: "block",
+                    textAlign: "left",
                   }}
                   onClick={() => handleClick(p.id)}
                 >
-                  <Stack
-                    sx={[
-                      {
-                        width: 150,
-                        height: 100,
-                      },
-                      { backgroundColor: "black" },
-                    ]}
-                  >
-                    <Image
-                      src={p.thumbnailURL}
-                      showLoading={<CircularProgress />}
-                      bgColor="#000000"
-                    />
-
-                    <Stack
+                  <Stack sx={{ width: 150 }}>
+                    <Box
                       sx={{
-                        flex: 1,
-                        marginX: 1,
-                        paddingBottom: 3,
+                        width: 150,
+                        height: 84,
+                        bgcolor: "black",
+                        overflow: "hidden",
                       }}
                     >
-                      <Typography
-                        variant="caption"
-                        color={"white"}
-                        sx={{
-                          display: "-webkit-box",
-                          overflow: "hidden",
-                          WebkitBoxOrient: "vertical",
-                          WebkitLineClamp: 1,
-                        }}
-                      >
-                        {p.title}
-                      </Typography>
-                    </Stack>
+                      <Image
+                        src={p.thumbnailURL}
+                        showLoading={<CircularProgress />}
+                        bgColor="#000000"
+                      />
+                    </Box>
+                    <Typography
+                      variant="caption"
+                      color="text.primary"
+                      sx={{
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 2,
+                        px: 1,
+                        py: 0.75,
+                        bgcolor: "background.paper",
+                      }}
+                    >
+                      {p.title}
+                    </Typography>
                   </Stack>
                 </ButtonBase>
               </ListItem>
@@ -166,7 +163,8 @@ export const Playlist: React.FC<{ project: ProjectById }> = ({ project }) => {
         </CardContent>
       </Card>
       {playlist?.canEdit && (
-        <EditPlaylistDialog
+        <PlaylistFormDialog
+          mode="edit"
           open={editDialogOpen}
           onClose={() => setEditDialogOpen(false)}
           playlistId={playlist.id}
