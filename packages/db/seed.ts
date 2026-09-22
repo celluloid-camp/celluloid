@@ -31,7 +31,7 @@ export async function seedPeerTubeInstances() {
   const [adminUser] = await db
     .select({ id: user.id })
     .from(user)
-    .where(eq(user.role, "Admin"))
+    .where(eq(user.role, "admin"))
     .limit(1);
 
   const owner =

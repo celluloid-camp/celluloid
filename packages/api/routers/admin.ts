@@ -148,6 +148,7 @@ export const adminRouter = router({
         username: z.string(),
         firstName: z.string(),
         lastName: z.string(),
+        role: z.enum(["admin", "teacher", "student"]),
         userId: z.string().uuid(),
       }),
     )
@@ -169,6 +170,7 @@ export const adminRouter = router({
           username: input.username,
           firstname: input.firstName,
           lastname: input.lastName,
+          role: input.role,
         })
         .where(eq(user.id, input.userId));
       return true;
