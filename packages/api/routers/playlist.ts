@@ -1,7 +1,7 @@
 import { db, playlist, project } from "@celluloid/db";
 import { generateUniqueShareName } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
-import { and, asc, desc, eq, inArray, lt, or } from "drizzle-orm";
+import { and, asc, desc, eq, lt, or } from "drizzle-orm";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
@@ -139,7 +139,10 @@ export const playlistRouter = router({
         })
         .from(project)
         .where(eq(project.playlistId, input.id))
-        .orderBy(asc(project.publishedAt));
+        .orderBy(
+          asc(project.playlistPosition),
+          asc(project.publishedAt),
+        );
 
       return {
         ...pl,
@@ -196,7 +199,7 @@ export const playlistRouter = router({
 
       if (input.projects.length > 0) {
         await db.insert(project).values(
-          input.projects.map((p) => ({
+          input.projects.map((p, index) => ({
             videoId: p.videoId,
             host: p.host,
             title: p.title,
@@ -214,6 +217,7 @@ export const playlistRouter = router({
             shareCode: generateUniqueShareName(p.title),
             keywords: p.keywords,
             playlistId: createdPlaylist.id,
+            playlistPosition: index,
           })),
         );
       }
@@ -222,7 +226,10 @@ export const playlistRouter = router({
         .select()
         .from(project)
         .where(eq(project.playlistId, createdPlaylist.id))
-        .orderBy(asc(project.publishedAt));
+        .orderBy(
+          asc(project.playlistPosition),
+          asc(project.publishedAt),
+        );
 
       return {
         ...createdPlaylist,
@@ -266,19 +273,23 @@ export const playlistRouter = router({
       if (input.projectIds !== undefined) {
         await db
           .update(project)
-          .set({ playlistId: null })
+          .set({ playlistId: null, playlistPosition: null })
           .where(eq(project.playlistId, input.id));
 
         if (input.projectIds.length > 0) {
-          await db
-            .update(project)
-            .set({ playlistId: input.id })
-            .where(
-              and(
-                inArray(project.id, input.projectIds),
-                eq(project.userId, ctx.user.id),
-              ),
-            );
+          await Promise.all(
+            input.projectIds.map((projectId, index) =>
+              db
+                .update(project)
+                .set({ playlistId: input.id, playlistPosition: index })
+                .where(
+                  and(
+                    eq(project.id, projectId),
+                    eq(project.userId, ctx.user.id),
+                  ),
+                ),
+            ),
+          );
         }
       }
 
@@ -347,15 +358,19 @@ export const playlistRouter = router({
       if (!created) throw new Error("Failed to create playlist");
 
       if (input.projectIds && input.projectIds.length > 0) {
-        await db
-          .update(project)
-          .set({ playlistId: created.id })
-          .where(
-            and(
-              inArray(project.id, input.projectIds),
-              eq(project.userId, ctx.user.id),
-            ),
-          );
+        await Promise.all(
+          input.projectIds.map((projectId, index) =>
+            db
+              .update(project)
+              .set({ playlistId: created.id, playlistPosition: index })
+              .where(
+                and(
+                  eq(project.id, projectId),
+                  eq(project.userId, ctx.user.id),
+                ),
+              ),
+          ),
+        );
       }
 
       const projects = await db
@@ -367,7 +382,10 @@ export const playlistRouter = router({
         })
         .from(project)
         .where(eq(project.playlistId, created.id))
-        .orderBy(asc(project.publishedAt));
+        .orderBy(
+          asc(project.playlistPosition),
+          asc(project.publishedAt),
+        );
 
       return {
         ...created,

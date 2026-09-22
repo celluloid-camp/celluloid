@@ -27,7 +27,7 @@ volumes:
 
 services:
   postgres:
-    image: postgis/postgis:13-3.4-alpine
+    image: postgres:13-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root

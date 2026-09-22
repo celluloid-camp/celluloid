@@ -1,4 +1,4 @@
-CREATE TABLE "PeertubeInstance" (
+CREATE TABLE IF NOT EXISTS "PeertubeInstance" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" uuid NOT NULL,
 	"host" text NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE "PeertubeInstance" (
 	"createdAt" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "PeertubeInstanceAuth" (
+CREATE TABLE IF NOT EXISTS "PeertubeInstanceAuth" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" uuid NOT NULL,
 	"instanceHost" text NOT NULL,
@@ -25,8 +25,16 @@ CREATE TABLE "PeertubeInstanceAuth" (
 	"lastUsedAt" timestamp(6) with time zone
 );
 --> statement-breakpoint
-ALTER TABLE "PeertubeInstance" ADD CONSTRAINT "PeertubeInstance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "PeertubeInstanceAuth" ADD CONSTRAINT "PeertubeInstanceAuth_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
-CREATE UNIQUE INDEX "PeertubeInstance_user_host_key" ON "PeertubeInstance" USING btree ("userId","host");--> statement-breakpoint
-CREATE UNIQUE INDEX "PeertubeInstanceAuth_user_host_key" ON "PeertubeInstanceAuth" USING btree ("userId","instanceHost");--> statement-breakpoint
-CREATE INDEX "PeertubeInstanceAuth_userId_idx" ON "PeertubeInstanceAuth" USING btree ("userId");
+DO $$ BEGIN
+ ALTER TABLE "PeertubeInstance" ADD CONSTRAINT "PeertubeInstance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE cascade;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "PeertubeInstanceAuth" ADD CONSTRAINT "PeertubeInstanceAuth_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE cascade;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "PeertubeInstance_user_host_key" ON "PeertubeInstance" USING btree ("userId","host");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "PeertubeInstanceAuth_user_host_key" ON "PeertubeInstanceAuth" USING btree ("userId","instanceHost");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "PeertubeInstanceAuth_userId_idx" ON "PeertubeInstanceAuth" USING btree ("userId");

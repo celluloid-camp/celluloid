@@ -45,10 +45,22 @@ export const SideBar: React.FC<SideBarProps> = ({ project }) => {
     );
   }
   return (
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
       <Playlist project={project} />
       {session ? (
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
           <Share project={project} user={session.user} />
           <Members project={project} user={session.user} />
           <ExportPanel project={project} />

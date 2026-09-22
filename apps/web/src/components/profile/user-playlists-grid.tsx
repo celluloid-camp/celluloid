@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useMemo, useState } from "react";
 import { useTRPC } from "@/lib/trpc/client";
-import CreatePlaylistDialog from "./create-playlist-dialog";
+import PlaylistFormDialog from "./playlist-form-dialog";
 import PlaylistThumbnail from "./playlist-thumbnail";
 
 const ITEMS_PER_PAGE = 12;
@@ -240,7 +240,8 @@ export const UserPlaylistsGrid: React.FC = () => {
           />
         </Box>
       )}
-      <CreatePlaylistDialog
+      <PlaylistFormDialog
+        mode="create"
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
       />

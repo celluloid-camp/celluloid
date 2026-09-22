@@ -10,10 +10,10 @@ export async function videoTranscriptWorkflow(projectId: string) {
   try {
     await updateProjectStatus(projectId, "in_progress");
 
-    const captions = await getProjectCaptions(projectId);
+    const { language, cues } = await getProjectCaptions(projectId);
 
     const result = await Promise.race([
-      generateTranscript(captions),
+      generateTranscript(cues),
       sleep("15min").then(() => "timeout" as const),
     ]);
 
@@ -22,7 +22,7 @@ export async function videoTranscriptWorkflow(projectId: string) {
     }
 
     const transcript = result;
-    await updateProjectTranscript(projectId, transcript, "fr");
+    await updateProjectTranscript(projectId, transcript, language);
 
     await updateProjectStatus(projectId, "completed");
   } catch (error) {
