@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.11.0...celluloid-v3.12.0) (2026-09-22)
+
+
+### Features
+
+* enhance user details management with role selection and validation ([b138e93](https://github.com/celluloid-camp/celluloid/commit/b138e9331fc1c7d539f15f592717cf8ff38c7f22))
+* enhance user details management with role selection and validation ([f8fab80](https://github.com/celluloid-camp/celluloid/commit/f8fab806840b90d18132a01883f433321f997c9b))
+
 ## [3.11.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.10.0...celluloid-v3.11.0) (2026-09-22)
 
 
