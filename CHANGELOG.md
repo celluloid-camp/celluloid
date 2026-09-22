@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.11.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.10.0...celluloid-v3.11.0) (2026-09-22)
+
+
+### Features
+
+* add Docker build workflow for staging environment ([73d42c1](https://github.com/celluloid-camp/celluloid/commit/73d42c10a4e30f0fba08fbc3a41caebedac39e58))
+* add production script integration for analytics ([e2ca6e6](https://github.com/celluloid-camp/celluloid/commit/e2ca6e6c80c17801c21ae33d2eed1f7581b8a08d))
+* update playlist management components and enhance user interface ([#472](https://github.com/celluloid-camp/celluloid/issues/472)) ([e49e836](https://github.com/celluloid-camp/celluloid/commit/e49e836a548aecd8ba12e1836b21d5c24f69d090))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @langchain/core to ^1.2.12 ([#470](https://github.com/celluloid-camp/celluloid/issues/470)) ([54097f6](https://github.com/celluloid-camp/celluloid/commit/54097f6c94e0aef44d2dd86b709581498a11ca82))
+* **deps:** update dependency @langchain/openrouter to ^0.4.13 ([#471](https://github.com/celluloid-camp/celluloid/issues/471)) ([e1b384f](https://github.com/celluloid-camp/celluloid/commit/e1b384f002f1af6603c8bf2ec67a7695b0c8b285))
+
 ## [3.10.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.9.0...celluloid-v3.10.0) (2026-09-17)
 
 
