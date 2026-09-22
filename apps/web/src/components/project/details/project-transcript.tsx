@@ -20,6 +20,7 @@ import {
   ToggleButton,
   Typography,
 } from "@mui/material";
+import { paramCase } from "@celluloid/utils";
 import {
   useMutation,
   useQueryClient,
@@ -123,7 +124,7 @@ export function ProjectTranscript({ project, user }: Props) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${project.title}.txt`;
+    a.download = `${paramCase(project.title) || "transcript"}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -293,6 +293,51 @@ export const projectRouter = router({
       return result;
     }),
 
+  /** Resolve a shared project from its human-facing share code. */
+  byShareCode: publicProcedure
+    .input(
+      z.object({
+        shareCode: z.string().min(1),
+      }),
+    )
+    .query(async ({ input }) => {
+      const proj = await db.query.project.findFirst({
+        where: eq(project.shareCode, input.shareCode.trim()),
+        columns: {
+          id: true,
+          videoId: true,
+          title: true,
+          description: true,
+          host: true,
+          duration: true,
+          shareCode: true,
+          shareExpiresAt: true,
+          shared: true,
+          public: true,
+          thumbnailURL: true,
+        },
+      });
+
+      if (!proj || !proj.shared || !proj.shareCode) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      if (
+        proj.shareExpiresAt &&
+        new Date(proj.shareExpiresAt).getTime() < Date.now()
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "SHARE_CODE_EXPIRED",
+        });
+      }
+
+      return proj;
+    }),
+
   add: protectedProcedure
     .input(
       z.object({
@@ -599,7 +644,12 @@ export const projectRouter = router({
               title: true,
               description: true,
               thumbnailURL: true,
+              playlistPosition: true,
             },
+            orderBy: (projects, { asc }) => [
+              asc(projects.playlistPosition),
+              asc(projects.publishedAt),
+            ],
           },
         },
       });

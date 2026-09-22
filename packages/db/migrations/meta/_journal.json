@@ -43,6 +43,13 @@
       "when": 1789924265492,
       "tag": "0005_peertube_instance",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790000000000,
+      "tag": "0006_playlist_position",
+      "breakpoints": true
     }
   ]
 }

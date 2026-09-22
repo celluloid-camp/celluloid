@@ -14,7 +14,7 @@ import Image from "mui-image";
 import { useRouter } from "next/navigation";
 import type * as React from "react";
 import { useState } from "react";
-import EditPlaylistDialog from "./edit-playlist-dialog";
+import PlaylistFormDialog from "./playlist-form-dialog";
 
 interface PlaylistProject {
   id: string;
@@ -202,7 +202,8 @@ const PlaylistThumbnail: React.FC<Props> = ({ playlist }) => {
           </Box>
         </Box>
       </Card>
-      <EditPlaylistDialog
+      <PlaylistFormDialog
+        mode="edit"
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         playlistId={playlist.id}

@@ -1,4 +1,5 @@
 import { Button, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
+import { paramCase } from "@celluloid/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { saveAs } from "file-saver";
 import { useTranslations } from "next-intl";
@@ -32,7 +33,8 @@ export const ExportPanel: React.FC<Props> = ({ project }: Props) => {
     const blob = new Blob([data], {
       type: `text/${format};charset=utf-8`,
     });
-    saveAs(blob, `export.${format}`);
+    const filename = `${paramCase(project.title) || "export"}.${format}`;
+    saveAs(blob, filename);
 
     enqueueSnackbar(t("project.export.success"), {
       variant: "success",

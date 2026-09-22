@@ -179,6 +179,7 @@ export const project = pgTable(
     }),
     extra: json().default({}),
     playlistId: uuid(),
+    playlistPosition: integer(),
     duration: doublePrecision().default(0).notNull(),
     metadata: json()
       .$type<PeerTubeVideo>()

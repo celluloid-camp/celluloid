@@ -46,9 +46,6 @@ export const Footer: React.FC<FooterProps> = (props) => {
               <Link href="/legal-notice" className="text-white" variant="body2">
                 {t("footer.legalNotice")}
               </Link>
-              <Link href="/api-doc" className="text-white" variant="body2">
-                API
-              </Link>
               <Stack
                 direction={"row"}
                 spacing={1}

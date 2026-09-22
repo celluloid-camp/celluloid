@@ -264,7 +264,7 @@ export const AnnotationFormContent: React.FC<
           <Box>
             <Tooltip title={t("annotation.form.context.tooltip")} arrow>
               <FormControlLabel
-                label="Contexte"
+                label={t("annotation.form.context.label")}
                 sx={{ color: "white" }}
                 checked={contextEditorVisible}
                 onChange={(_, v) =>
