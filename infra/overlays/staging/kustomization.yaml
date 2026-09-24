@@ -21,5 +21,6 @@ patches:
         value:
           keel.sh/policy: force
           keel.sh/match-tag: "true"
+          keel.sh/initContainers: "true"
           keel.sh/trigger: poll
           keel.sh/pollSchedule: "@every 5m"
