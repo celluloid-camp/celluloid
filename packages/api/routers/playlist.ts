@@ -139,10 +139,7 @@ export const playlistRouter = router({
         })
         .from(project)
         .where(eq(project.playlistId, input.id))
-        .orderBy(
-          asc(project.playlistPosition),
-          asc(project.publishedAt),
-        );
+        .orderBy(asc(project.playlistPosition), asc(project.publishedAt));
 
       return {
         ...pl,
@@ -226,10 +223,7 @@ export const playlistRouter = router({
         .select()
         .from(project)
         .where(eq(project.playlistId, createdPlaylist.id))
-        .orderBy(
-          asc(project.playlistPosition),
-          asc(project.publishedAt),
-        );
+        .orderBy(asc(project.playlistPosition), asc(project.publishedAt));
 
       return {
         ...createdPlaylist,
@@ -364,10 +358,7 @@ export const playlistRouter = router({
               .update(project)
               .set({ playlistId: created.id, playlistPosition: index })
               .where(
-                and(
-                  eq(project.id, projectId),
-                  eq(project.userId, ctx.user.id),
-                ),
+                and(eq(project.id, projectId), eq(project.userId, ctx.user.id)),
               ),
           ),
         );
@@ -382,10 +373,7 @@ export const playlistRouter = router({
         })
         .from(project)
         .where(eq(project.playlistId, created.id))
-        .orderBy(
-          asc(project.playlistPosition),
-          asc(project.publishedAt),
-        );
+        .orderBy(asc(project.playlistPosition), asc(project.publishedAt));
 
       return {
         ...created,

@@ -432,9 +432,7 @@ const PlaylistFormDialog: React.FC<PlaylistFormDialogProps> = (props) => {
                             <Stack direction="row" spacing={0}>
                               <IconButton
                                 size="small"
-                                aria-label={t(
-                                  "playlist.edit.projects.moveUp",
-                                )}
+                                aria-label={t("playlist.edit.projects.moveUp")}
                                 disabled={index === 0}
                                 onClick={() => moveProject(project.id, -1)}
                               >
@@ -445,18 +443,14 @@ const PlaylistFormDialog: React.FC<PlaylistFormDialogProps> = (props) => {
                                 aria-label={t(
                                   "playlist.edit.projects.moveDown",
                                 )}
-                                disabled={
-                                  index === selectedProjects.length - 1
-                                }
+                                disabled={index === selectedProjects.length - 1}
                                 onClick={() => moveProject(project.id, 1)}
                               >
                                 <ArrowDownwardIcon fontSize="small" />
                               </IconButton>
                               <IconButton
                                 size="small"
-                                aria-label={t(
-                                  "playlist.edit.projects.remove",
-                                )}
+                                aria-label={t("playlist.edit.projects.remove")}
                                 onClick={() => removeProject(project.id)}
                               >
                                 <CloseIcon fontSize="small" />

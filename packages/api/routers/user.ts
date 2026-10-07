@@ -367,10 +367,7 @@ export const userRouter = router({
         })
         .from(project)
         .where(inArray(project.playlistId, playlistIds))
-        .orderBy(
-          asc(project.playlistPosition),
-          asc(project.publishedAt),
-        );
+        .orderBy(asc(project.playlistPosition), asc(project.publishedAt));
 
       const projectsByPlaylist = playlistIds.map((id) =>
         projects

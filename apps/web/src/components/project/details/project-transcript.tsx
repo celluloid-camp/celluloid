@@ -1,5 +1,6 @@
 "use client";
 
+import { paramCase } from "@celluloid/utils";
 import { Download as DownloadIcon } from "@mui/icons-material";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
@@ -20,7 +21,6 @@ import {
   ToggleButton,
   Typography,
 } from "@mui/material";
-import { paramCase } from "@celluloid/utils";
 import {
   useMutation,
   useQueryClient,
