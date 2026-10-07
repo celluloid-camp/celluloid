@@ -77,6 +77,9 @@ export const projectRouter = router({
           inArray(project.id, memberProjectIds),
           ne(project.userId, ctx.user.id),
         )!;
+      } else {
+        // explorer: only public projects
+        scopeWhere = eq(project.public, true);
       }
 
       const termWhere = term ? ilike(project.title, `%${term}%`) : undefined;

@@ -157,7 +157,8 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
       username: data.username,
       firstName: data.firstname ?? "",
       lastName: data.lastname ?? "",
-      role: (data.role?.toLowerCase() as EditUserFormValues["role"]) ?? "teacher",
+      role:
+        (data.role?.toLowerCase() as EditUserFormValues["role"]) ?? "teacher",
     },
     mode: "onBlur",
   });
@@ -278,7 +279,9 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
                     {t("profile.update.title")}
                   </Typography>
                   <Typography variant="caption" className="text-slate-500">
-                    {t(`profile.role.${data.role?.toLowerCase() as "admin" | "teacher" | "student"}`)}
+                    {t(
+                      `profile.role.${data.role?.toLowerCase() as "admin" | "teacher" | "student"}`,
+                    )}
                   </Typography>
                 </Box>
               </Box>
@@ -457,7 +460,9 @@ export function UserDetails({ data }: { data: AdminGetUserById }) {
                       label={t("users.table.role")}
                       disabled={isSubmitting}
                     >
-                      <MenuItem value="admin">{t("profile.role.admin")}</MenuItem>
+                      <MenuItem value="admin">
+                        {t("profile.role.admin")}
+                      </MenuItem>
                       <MenuItem value="teacher">
                         {t("profile.role.teacher")}
                       </MenuItem>

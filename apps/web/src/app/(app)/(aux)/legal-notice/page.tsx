@@ -134,8 +134,7 @@ export default function LegalNoticePage() {
           <a href="mailto:michael.bourgatte@univ-lorraine.fr">
             michael.bourgatte@univ-lorraine.fr
           </a>{" "}
-          et{" "}
-          <a href="mailto:l.tessier@icp.fr">l.tessier@icp.fr</a>
+          et <a href="mailto:l.tessier@icp.fr">l.tessier@icp.fr</a>
         </p>
       </Typography>
       <Typography variant="h4" gutterBottom={true}>
