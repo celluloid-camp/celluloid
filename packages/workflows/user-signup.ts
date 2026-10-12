@@ -1,5 +1,5 @@
 import { sendEmailVerificationEmail } from "@celluloid/emails";
-import { FatalError, sleep } from "workflow";
+import { FatalError } from "workflow";
 
 export async function handleUserSignup(email: string, otp: string) {
   "use workflow";

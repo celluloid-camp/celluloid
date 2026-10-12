@@ -36,7 +36,7 @@
     "server-only": "^0.0.1",
     "superjson": "^2.2.6",
     "typescript": "^6.0.3",
-    "workflow": "4.8.9",
+    "workflow": "5.1.0",
     "zod": "^4.6.5",
     "drizzle-orm": "^0.45.1",
     "pino": "^10.3.1",
