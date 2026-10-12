@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.1](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.0...celluloid-v3.12.1) (2026-10-07)
+
+
+### Bug Fixes
+
+* hide private projects from the home explorer feed ([3e7e768](https://github.com/celluloid-camp/celluloid/commit/3e7e768c2038918eca8073b8a879db700a007b31))
+* keep web and db-migrate on the same Keel version ([72b4517](https://github.com/celluloid-camp/celluloid/commit/72b4517a50012e9335e804ced81a5819919e075e))
+
 ## [3.12.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.11.0...celluloid-v3.12.0) (2026-09-22)
 
 
