@@ -26,8 +26,11 @@ async function sendEmail(params: {
   const resend = getResendClient();
   const recipient =
     process.env.NODE_ENV === "development" ? "delivered@resend.dev" : email;
+  const from = env.EMAIL_FROM.includes("<")
+    ? env.EMAIL_FROM
+    : `Celluloid <${env.EMAIL_FROM}>`;
   const { data, error } = await resend.emails.send({
-    from: env.EMAIL_FROM,
+    from,
     to: [recipient],
     subject,
     html,

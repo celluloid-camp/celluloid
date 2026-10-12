@@ -10,7 +10,15 @@ export const keys = () =>
     server: {
       // Email Configuration
       RESEND_API_KEY: z.string().min(1, "Resend API key is required"),
-      EMAIL_FROM: z.email().default("Celluloid <contact@updates.celluloid.me>"),
+      EMAIL_FROM: z
+        .string()
+        .refine(
+          (value) =>
+            z.email().safeParse(value).success ||
+            /^[^<>]+ <[^<>@\s]+@[^<>@\s]+>$/.test(value),
+          "EMAIL_FROM must be an email or Name <email>",
+        )
+        .default("Celluloid <contact@updates.celluloid.me>"),
       BASE_URL: z.string(),
     },
     experimental__runtimeEnv: process.env,
