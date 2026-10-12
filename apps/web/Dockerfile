@@ -54,8 +54,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 
-## workaround for error: Cannot find module '@workflow/world-postgres' from ''
-RUN bun install @workflow/world-postgres
+## Standalone output omits the world package. Pin the version to the
+## lockfile so a floating install cannot reject the app's queue names.
+RUN bun install @workflow/world-postgres@5.0.2
 
 # # Copy and set up startup script
 # COPY --chown=nextjs:nodejs apps/web/start.sh /app/start.sh
