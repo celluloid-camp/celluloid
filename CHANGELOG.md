@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.2](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.1...celluloid-v3.12.2) (2026-10-12)
+
+
+### Bug Fixes
+
+* align workflow schema so signup emails can be sent ([9d83eaa](https://github.com/celluloid-camp/celluloid/commit/9d83eaa92d2f02d1309b686a18b525b0e76a25c3))
+* send signup and password reset emails on workflow 5.1 ([1f76f6d](https://github.com/celluloid-camp/celluloid/commit/1f76f6dcb403f1e1e1b040f194da6bee3d268c43))
+
 ## [3.12.1](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.0...celluloid-v3.12.1) (2026-10-07)
 
 
