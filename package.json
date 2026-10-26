@@ -46,7 +46,7 @@
   },
   "description": "Celluloid helps students and teachers to interact by annotating online educational videos",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.23.4"
   },
   "ignoreScripts": [
     "unrs-resolver"
