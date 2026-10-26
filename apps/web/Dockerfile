@@ -4,7 +4,7 @@
 FROM oven/bun:1.3.13-alpine AS deps
 
 # Install system dependencies for native modules
-RUN apk add --no-cache libc6-compat python3 make g++ pkgconfig nodejs npm \
+RUN apk add --no-cache libc6-compat python3 make g++ pkgconfig "nodejs>=22.23.4-r0" npm \
     cairo-dev pango-dev giflib-dev pixman-dev jpeg-dev pangomm-dev libpng-dev
 
 WORKDIR /app
