@@ -1,13 +1,11 @@
-import { NotificationsTrigger } from "@celluloid/notifications/components/trigger";
-import { Box, IconButton, Menu, MenuItem, Skeleton } from "@mui/material";
-import Button from "@mui/material/Button";
-import Link from "next/link";
+import { NotificationsInbox } from "@celluloid/notifications/components/inbox";
+import { Box } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import * as React from "react";
 import { useState } from "react";
-import { signOut, type User, useSession } from "@/lib/auth-client";
-import { Avatar } from "./avatar";
+import { useSession } from "@/lib/auth-client";
+import { useTRPC } from "@/lib/trpc/client";
 
 export const Notifications = () => {
   const [mounted, setMounted] = useState(false);
@@ -17,22 +15,34 @@ export const Notifications = () => {
     setMounted(true);
   }, []);
   const { data: session, isPending } = useSession();
-  const t = useTranslations();
+  const router = useRouter();
+  const api = useTRPC();
+
+  const { data: subscriber } = useQuery({
+    ...api.notification.subscriber.queryOptions(),
+    enabled: Boolean(session?.user),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
 
   if (!mounted || isPending) {
     return null;
   }
 
-  if (!session?.user) {
+  if (!(session?.user && subscriber)) {
     return null;
   }
+
   return (
     <Box
       sx={{
         marginX: 1,
       }}
     >
-      <NotificationsTrigger />
+      <NotificationsInbox
+        subscriberId={subscriber.subscriberId}
+        subscriberHash={subscriber.subscriberHash}
+        routerPush={(path) => router.push(path)}
+      />
     </Box>
   );
 };

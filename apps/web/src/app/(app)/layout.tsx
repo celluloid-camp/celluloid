@@ -9,7 +9,6 @@ import {
 import { headers } from "next/headers";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
-import { NotificationsProvider } from "@/components/common/notifications-provider";
 
 export default async function Layout({
   modal,
@@ -22,21 +21,19 @@ export default async function Layout({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotificationsProvider>
-        <Box
-          sx={{
-            minHeight: "100vh",
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          {modal}
-          <Header />
-          <Box sx={{ flexGrow: 1, pt: 6 }}>{children}</Box>
-          <Footer />
-        </Box>
-      </NotificationsProvider>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {modal}
+        <Header />
+        <Box sx={{ flexGrow: 1, pt: 6 }}>{children}</Box>
+        <Footer />
+      </Box>
     </HydrationBoundary>
   );
 }

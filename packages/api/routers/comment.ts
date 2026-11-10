@@ -1,8 +1,7 @@
 import { comment, db, project } from "@celluloid/db";
-import { getNotificationsClient } from "@celluloid/notifications";
+import { notifyProjectActivity } from "@celluloid/notifications";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { keys } from "../keys";
 import { protectedProcedure, router } from "../trpc";
 
 export const commentRouter = router({
@@ -34,17 +33,11 @@ export const commentRouter = router({
         .where(eq(project.id, input.projectId))
         .limit(1);
 
-      if (proj?.userId !== ctx.user.id) {
-        await getNotificationsClient().workflows.trigger("new-annotation", {
-          recipients: [
-            {
-              id: proj?.userId,
-            },
-          ],
-          data: {
-            message: `Nouveau commentaire de ${ctx.user?.username} sur le projet ${proj?.title}`,
-            link: `${keys().BASE_URL}/project/${input.projectId}`,
-          },
+      if (proj && proj.userId !== ctx.user.id) {
+        await notifyProjectActivity({
+          recipientId: proj.userId,
+          message: `Nouveau commentaire de ${ctx.user.username} sur le projet ${proj.title}`,
+          link: `/project/${input.projectId}`,
         });
       }
 

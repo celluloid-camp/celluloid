@@ -122,11 +122,11 @@ spec:
                 secretKeyRef:
                   name: celluloid
                   key: VISION_CALLBACK_URL
-            - name: KNOCK_SECRET_API_KEY
+            - name: NOVU_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: celluloid
-                  key: KNOCK_SECRET_API_KEY
+                  key: NOVU_SECRET_KEY
             - name: OPENROUTER_API_KEY
               valueFrom:
                 secretKeyRef:

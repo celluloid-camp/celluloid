@@ -12,8 +12,7 @@ permissions:
 
 env:
   NEXT_PUBLIC_POSTHOG_KEY: ${{ vars.NEXT_PUBLIC_POSTHOG_KEY }}
-  NEXT_PUBLIC_KNOCK_API_KEY: ${{ vars.NEXT_PUBLIC_KNOCK_API_KEY }}
-  NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: ${{ vars.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID }}
+  NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER: ${{ vars.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER }}
 
 jobs:
   release-please:
@@ -96,8 +95,7 @@ jobs:
             BUILD_TIME=${{ github.run_started_at }}
             NEXT_PUBLIC_STAGE=production
             NEXT_PUBLIC_POSTHOG_KEY=${{ env.NEXT_PUBLIC_POSTHOG_KEY }}
-            NEXT_PUBLIC_KNOCK_API_KEY=${{ env.NEXT_PUBLIC_KNOCK_API_KEY }}
-            NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID=${{ env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID }}
+            NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER=${{ env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER }}
 
       - name: Build and push db migrate container
         uses: docker/build-push-action@v5
