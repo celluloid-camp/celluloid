@@ -8,9 +8,9 @@ resources:
   - namespace.yaml
 images:
   - name: ghcr.io/celluloid-camp/celluloid/celluloid-web
-    newTag: "3.12"
+    newTag: latest
   - name: ghcr.io/celluloid-camp/celluloid/celluloid-db-migrate
-    newTag: "3.12"
+    newTag: latest
 patches:
   - target:
       kind: Deployment
@@ -19,7 +19,8 @@ patches:
       - op: add
         path: /metadata/annotations
         value:
-          keel.sh/policy: minor
+          keel.sh/policy: force
+          keel.sh/match-tag: "true"
           keel.sh/initContainers: "true"
           keel.sh/trigger: poll
           keel.sh/pollSchedule: "@every 5m"
