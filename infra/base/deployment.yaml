@@ -17,6 +17,7 @@ spec:
       initContainers:
         - name: db-migrate
           image: ghcr.io/celluloid-camp/celluloid/celluloid-db-migrate:TAG
+          imagePullPolicy: Always
           env:
             - name: DATABASE_URL
               valueFrom:
@@ -31,7 +32,8 @@ spec:
       containers:
         - name: web
           image: ghcr.io/celluloid-camp/celluloid/celluloid-web:TAG
-          imagePullPolicy: IfNotPresent
+          # Keel redeploys moving tags (staging); Always makes the node pull the new digest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
               name: http
