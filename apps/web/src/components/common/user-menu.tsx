@@ -1,5 +1,4 @@
 "use client";
-import { NotificationsTrigger } from "@celluloid/notifications/components/trigger";
 import {
   Box,
   Divider,

@@ -8,6 +8,7 @@ import { annotationRouter } from "./annotation";
 import { chapterRouter } from "./chapter";
 import { commentRouter } from "./comment";
 import { noteRouter } from "./note";
+import { notificationRouter } from "./notification";
 import { peertubeInstanceRouter } from "./peertube-instance";
 import { peertubeSearchRouter } from "./peertube-search";
 import { playlistRouter } from "./playlist";
@@ -32,6 +33,7 @@ export const appRouter = router({
   storage: storageRouter,
   admin: adminRouter,
   note: noteRouter,
+  notification: notificationRouter,
   transcript: transcriptRouter,
   vision: visionRouter,
   peertubeInstance: peertubeInstanceRouter,

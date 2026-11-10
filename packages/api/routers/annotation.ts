@@ -8,7 +8,7 @@ import {
 } from "@celluloid/db";
 import { getDbErrorMessage } from "@celluloid/db/utils";
 import { defaultUserSelect } from "@celluloid/db/validator";
-import { getNotificationsClient } from "@celluloid/notifications";
+import { notifyProjectActivity } from "@celluloid/notifications";
 import { formatTime, toSrt } from "@celluloid/utils";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
@@ -17,7 +17,6 @@ import { desc, eq } from "drizzle-orm";
 import { parse as toXML } from "js2xmlparser";
 import Papa from "papaparse";
 import { z } from "zod";
-import { keys } from "../keys";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 // create a global event emitter (could be replaced by redis, etc)
@@ -136,16 +135,10 @@ export const annotationRouter = router({
       ee.emit("change", record);
 
       if (projectOwner.userId !== ctx.user.id) {
-        await getNotificationsClient().workflows.trigger("new-annotation", {
-          recipients: [
-            {
-              id: projectOwner.userId,
-            },
-          ],
-          data: {
-            message: `Nouvelle annotation de ${ctx.user?.username} sur le projet ${projectOwner?.title}`,
-            link: `${keys().BASE_URL}/project/${input.projectId}`,
-          },
+        await notifyProjectActivity({
+          recipientId: projectOwner.userId,
+          message: `Nouvelle annotation de ${ctx.user.username} sur le projet ${projectOwner.title}`,
+          link: `/project/${input.projectId}`,
         });
       }
 

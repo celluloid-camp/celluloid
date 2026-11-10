@@ -7,10 +7,9 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@knocklabs/node": "^1.24.0",
-    "@knocklabs/react": "^0.9.4",
+    "@novu/api": "^3.19.1",
+    "@novu/react": "^3.19.2",
     "@t3-oss/env-nextjs": "catalog:",
-    "notistack": "catalog:",
     "react": "catalog:",
     "zod": "catalog:"
   },
