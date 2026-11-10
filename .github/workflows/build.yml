@@ -69,6 +69,8 @@ jobs:
             COMMIT_SHA=${{ github.sha }}
             BUILD_TIME=${{ github.run_started_at }}
             NEXT_PUBLIC_STAGE=staging
+            NEXT_PUBLIC_KNOCK_API_KEY=${{ vars.STAGING_NEXT_PUBLIC_KNOCK_API_KEY }}
+            NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID=${{ vars.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID }}
 
       - name: Build and push db migrate container
         uses: docker/build-push-action@v5

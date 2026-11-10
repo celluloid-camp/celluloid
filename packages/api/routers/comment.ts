@@ -43,7 +43,7 @@ export const commentRouter = router({
           ],
           data: {
             message: `Nouveau commentaire de ${ctx.user?.username} sur le projet ${proj?.title}`,
-            link: `${keys().BASE_URL}/projects/${input.projectId}`,
+            link: `${keys().BASE_URL}/project/${input.projectId}`,
           },
         });
       }
