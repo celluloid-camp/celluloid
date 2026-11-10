@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.3](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.2...celluloid-v3.12.3) (2026-10-26)
+
+
+### Bug Fixes
+
+* require patched Node.js for October 2026 CVEs ([4fdab08](https://github.com/celluloid-camp/celluloid/commit/4fdab08793f412f22263703515129087cf504c53))
+* send signup and password reset emails on workflow ([907aa27](https://github.com/celluloid-camp/celluloid/commit/907aa27f00d35c51b74ad9bbcf2ebf8aba61ea9d))
+
 ## [3.12.2](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.1...celluloid-v3.12.2) (2026-10-12)
 
 
