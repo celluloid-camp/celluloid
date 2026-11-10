@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.13.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.3...celluloid-v3.13.0) (2026-11-10)
+
+
+### Features
+
+* replace Knock with Novu for in-app notifications ([b0e0573](https://github.com/celluloid-camp/celluloid/commit/b0e05732dd9d6895a51317812556bb0243209854))
+
+
+### Bug Fixes
+
+* **infra:** always pull images so Keel redeploys moving staging tag ([56a43a9](https://github.com/celluloid-camp/celluloid/commit/56a43a976b13afa9ad4458f74a315f1bfa80fa1a))
+* pass Knock public keys to web build so notification bell renders ([c10782c](https://github.com/celluloid-camp/celluloid/commit/c10782c82456890f2f5209f8c847a0a1f8b4a077))
+
 ## [3.12.3](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.2...celluloid-v3.12.3) (2026-10-26)
 
 
