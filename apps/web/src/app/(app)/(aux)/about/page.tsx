@@ -68,9 +68,27 @@ export default function About() {
               {chunks}
             </Link>
           ),
+          oasis: (chunks) => (
+            <Link
+              href="https://oscars-project.eu/projects/oasis-open-audiovisual-science-innovation-scheme"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {chunks}
+            </Link>
+          ),
           mshpn: (chunks) => (
             <Link
               href="https://www.mshparisnord.fr/programmes/consortium-humanum-cannevas/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {chunks}
+            </Link>
+          ),
+          younes: (chunks) => (
+            <Link
+              href="https://github.com/younes200"
               target="_blank"
               rel="noreferrer"
             >
