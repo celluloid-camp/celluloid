@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.13.1](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.13.0...celluloid-v3.13.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* **infra:** track latest tag in production so Keel auto-deploys releases ([5b33c63](https://github.com/celluloid-camp/celluloid/commit/5b33c63cc4199fd9f0a3121859849af1b1caa5ce))
+* restore OASIS and author links so French about text renders ([158d72f](https://github.com/celluloid-camp/celluloid/commit/158d72f71fa9748df3bd5d9fbe23cd6583c48fea))
+
 ## [3.13.0](https://github.com/celluloid-camp/celluloid/compare/celluloid-v3.12.3...celluloid-v3.13.0) (2026-11-10)
 
 
